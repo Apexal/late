@@ -1,10 +1,10 @@
 # LATE
 > Lazy Automatic Time Evaluator
 
-[RCOS Project Profile](https://rcos.io/projects/apexal/late/profile)
-Project Proposal
-
-An awesome [RCOS](rcos.io) project
+#### Links
+- [RCOS Project Profile](https://rcos.io/projects/apexal/late/profile)
+- [Project Proposal](https://docs.google.com/document/d/1bq5DBvEQhnIkPUz-keMvDHq_dEQ21vwJqSUVB9zdSYk/edit)
+- [RCOS Observatory](https://rcos.io/)
 
 ### Overview
 **LATE** is a progressive web app that automatically distributes your homework/study time for you based on your Google Calendar while also adapting if you fall off schedule.
