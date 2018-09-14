@@ -1,10 +1,15 @@
- - *Frank Matranga (Computer Science) ’22
- - Zach Love (Computer Science) ‘21
- - Shweta Burgula
- - Abigail Medina
- - Kikola Sanusi
- - Seth Laurenceau
- - Zachary Fernandez
- - Joseph Cengel
+- Frank Matranga^
+- Zach Love
+- Joey Cengel
+- Abigail Medina
+- Christie Nero
+- Kikiola Sanusi
+- Seth Laurenceau
+- Seungwon Kim
+- Shweta Burgula
+- Tyler Machado
+- Zachary Fernandes
+- Ziyi Wang
 
-*\* project leader*
+
+*^ project leader*
