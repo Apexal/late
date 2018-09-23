@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "dependencies": {
     "koa": "^2.5.3",
     "koa-helmet": "^4.0.0",
@@ -10,7 +13,10 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.6.0",
+    "eslint-plugin-node": "^7.0.1"
+  },
   "scripts": {
     "dev": "NODE_ENV=development node index.js",
     "debug": "NODE_ENV=debug node index.js",
