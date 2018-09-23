@@ -15,20 +15,16 @@ app.use(Helmet());
 app.use(Logger());
 
 /* Serve static files (CSS, JS, audio, etc.) */
-app.use(static('client/public'));
+app.use(Static('client/public'));
 
 app.use(async (ctx, next) => {
-  /* This is run before every single request is handled specifically. */
-  await next();
+    /* This is run before every single request is handled specifically. */
+    await next();
 });
 
 /* Router setup */
 require('./routes')(router);
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-app.on('error', err => {
-  log.error('server error', err);
-});
 
 module.exports = app;
