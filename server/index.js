@@ -18,8 +18,8 @@ app.use(Logger());
 app.use(Static('client/public'));
 
 app.use(async (ctx, next) => {
-    /* This is run before every single request is handled specifically. */
-    await next();
+  /* This is run before every single request is handled specifically. */
+  await next();
 });
 
 /* Router setup */
