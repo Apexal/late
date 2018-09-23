@@ -1,0 +1,31 @@
+{
+  "name": "late",
+  "version": "0.0.1",
+  "description": "Lazy Automatic Time Evaluator",
+  "main": "index.js",
+  "dependencies": {
+    "koa": "^2.5.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "debug": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Apexal/late.git"
+  },
+  "keywords": [
+    "school",
+    "time",
+    "schedule",
+    "education",
+    "management"
+  ],
+  "author": "Frank Matranga <thefrankmatranga@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Apexal/late/issues"
+  },
+  "homepage": "https://github.com/Apexal/late#readme"
+}
