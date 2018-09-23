@@ -3,10 +3,15 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const Logger = require('koa-logger');
 const Static = require('koa-static');
+const Helmet = require('koa-helmet');
 
 const app = new Koa();
 const router = new Router();
 
+/* Better security by default */
+app.use(Helmet());
+
+/* Log web server requests */
 app.use(Logger());
 
 /* Serve static files (CSS, JS, audio, etc.) */
