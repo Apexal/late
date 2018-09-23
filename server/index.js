@@ -2,11 +2,15 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 const Logger = require('koa-logger');
+const Static = require('koa-static');
 
 const app = new Koa();
 const router = new Router();
 
 app.use(Logger());
+
+/* Serve static files (CSS, JS, audio, etc.) */
+app.use(static('client/public'));
 
 app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
