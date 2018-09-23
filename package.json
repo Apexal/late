@@ -4,7 +4,8 @@
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "dependencies": {
-    "koa": "^2.5.3"
+    "koa": "^2.5.3",
+    "koa-router": "^7.4.0"
   },
   "devDependencies": {},
   "scripts": {
