@@ -17,3 +17,10 @@
 
 **Target Audience**
 The target audience is college students who use Google Calendar to track their daily schedules. Proper use of the web app depends on a user’s Google Calendar to be populated and accurate in regards to free time.
+
+### Local Setup
+Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with version `>= 10.0.0`.
+
+- Clone the repo 
+- `$ npm install`
+- `$ npm run dev`
