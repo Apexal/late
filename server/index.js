@@ -5,9 +5,12 @@ const Logger = require('koa-logger');
 const Static = require('koa-static');
 const Helmet = require('koa-helmet');
 const Session = require('koa-session');
+const KoaBody = require('koa-body');
 
 const app = new Koa();
 const router = new Router();
+
+app.use(KoaBody());
 
 app.keys = ['WE ARE GOING TO CHANGE THIS'];
 
@@ -29,7 +32,6 @@ app.use(Static('client/public'));
 
 app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
-
   await next();
 });
 
