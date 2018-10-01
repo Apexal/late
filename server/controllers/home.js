@@ -1,5 +1,5 @@
 async function index(ctx) {
-  ctx.body = 'Don\'t be LATE';
+  await ctx.render('home/index');
 }
 
 async function about(ctx) {

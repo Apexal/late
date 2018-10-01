@@ -8,6 +8,8 @@ const Session = require('koa-session');
 const KoaBody = require('koa-body');
 const Views = require('koa-views');
 
+const path = require('path');
+
 const app = new Koa();
 const router = new Router();
 
@@ -34,17 +36,17 @@ app.use(Static('client/public'));
 /* Setup view system */
 // TODO: UNCOMMENT WHEN TEMPLATING LANGUAGE IS CHOSEN
 /*
+/* Views setup using Pug */
 app.use(
-  Views(__dirname + '/views', {
-    map: {
-      html: 'underscore'
-    }
+  Views(path.join(__dirname, '..', 'views'), {
+    extension: 'pug'
   })
 );
-*/
 
 app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
+  ctx.state.basedir = path.join(__dirname, '..', 'views');
+
   await next();
 });
 
