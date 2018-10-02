@@ -29,5 +29,5 @@ Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with vers
 - Clone the repository
 - If you want to use a specific branch, switch to it with `$ git checkout branch_name`
 - `$ npm install`
-- `$ node index.js`
+- `$ npm start`
 - Go to url `http://localhost:3000` in your browser

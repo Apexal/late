@@ -1,6 +1,7 @@
 {
+  "private": true,
   "name": "late",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
@@ -22,9 +23,11 @@
     "eslint-plugin-node": "^7.0.1"
   },
   "scripts": {
+    "start": "node index.js",
     "dev": "NODE_ENV=development node index.js",
     "debug": "NODE_ENV=debug node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "echo \"You are all set up! Now run '$ node index.js' to run the server!\""
   },
   "repository": {
     "type": "git",
