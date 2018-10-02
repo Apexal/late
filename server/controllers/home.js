@@ -3,7 +3,7 @@ async function index(ctx) {
 }
 
 async function about(ctx) {
-  ctx.body = 'About LATE';
+  await ctx.render('home/about');
 }
 
 async function honorable(ctx) {
