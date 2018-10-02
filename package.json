@@ -1,0 +1,51 @@
+{
+  "private": true,
+  "name": "late",
+  "version": "0.0.2",
+  "description": "Lazy Automatic Time Evaluator",
+  "main": "index.js",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "koa": "^2.5.3",
+    "koa-body": "^4.0.4",
+    "koa-helmet": "^4.0.0",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.9.0",
+    "koa-static": "^5.0.0",
+    "koa-views": "^6.1.4",
+    "pug": "^2.0.3"
+  },
+  "devDependencies": {
+    "sass": "*",
+    "eslint": "^5.6.0",
+    "eslint-plugin-node": "^7.0.1"
+  },
+  "scripts": {
+    "start": "npm run sass; node index.js",
+    "dev": "npm run sass; NODE_ENV=development node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "echo \"You are all set up! Now run '$ node index.js' to run the server!\"",
+    "sass": "sass ./client/sass/styles.scss client/public/css/styles.css",
+    "sass-watch": "sass --watch client/sass/:client/public/css/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Apexal/late.git"
+  },
+  "keywords": [
+    "school",
+    "time",
+    "schedule",
+    "education",
+    "management"
+  ],
+  "author": "Frank Matranga <thefrankmatranga@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Apexal/late/issues"
+  },
+  "homepage": "https://github.com/Apexal/late#readme"
+}
