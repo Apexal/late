@@ -1,7 +1,5 @@
-body {
-  /* Temporary until we use a CSS framework */
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  padding: 50px;
+#late-image {
+  max-width: 400px;
 }
 
 /*# sourceMappingURL=styles.css.map */
