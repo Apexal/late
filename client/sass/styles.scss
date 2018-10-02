@@ -1,0 +1,15 @@
+// This is where global styles for the website will go.
+
+// Each SASS file must be imported here for it to take effect
+// Each route should have a specific stylesheet
+@import "routes/home";
+
+// Some general components should have their own stylesheets
+@import "components/header";
+@import "components/footer";
+
+body {
+  /* Temporary until we use a CSS framework */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 50px;
+}
