@@ -8,6 +8,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "config": "^2.0.1",
     "koa": "^2.5.3",
     "koa-body": "^4.0.4",
     "koa-helmet": "^4.0.0",

@@ -1,8 +1,10 @@
 const app = require('./server');
+const config = require('config');
 
-const port = process.env.PORT || 3000;
-app.listen(port);
+const port = config.get('server.port');
+const host = config.get('server.host');
+app.listen(port, host);
 
 console.log(
-  `Server running on port ${port}\nGo to http://localhost:${port} to view.`
+  `Server running on host ${host} on port ${port}\nGo to http://localhost:${port} to view.`
 );
