@@ -18,11 +18,13 @@ const connection = mongoose.connect(
   { useNewUrlParser: true }
 );
 
-fs.readdirSync(__dirname + '/schemas').forEach(file => {
-  console.log(file);
-  var schema = require(path.join(__dirname + '/schemas/', file));
-  models[schema.name] = mongoose.model(schema.name, schema.schema);
-});
+fs.readdirSync(__dirname + '/schemas')
+  .filter(file => file.endsWith('.js'))
+  .forEach(file => {
+    console.log(file);
+    var schema = require(path.join(__dirname + '/schemas/', file));
+    models[schema.name] = mongoose.model(schema.name, schema.schema);
+  });
 console.log('Loaded schemas...');
 
 module.exports = {
