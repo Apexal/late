@@ -1,6 +1,7 @@
 {
   "mongo": {
     "host": "localhost",
+    "port": 1234,
     "db": "late",
     "user": "root",
     "password": ""

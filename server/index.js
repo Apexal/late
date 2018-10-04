@@ -13,6 +13,11 @@ const path = require('path');
 const app = new Koa();
 const router = new Router();
 
+const db = require('../db').models;
+
+/* MongoDB setup */
+app.context.db = db; // The db is now available on every request
+
 app.use(KoaBody());
 
 app.keys = ['WE ARE GOING TO CHANGE THIS'];
