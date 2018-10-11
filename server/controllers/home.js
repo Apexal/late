@@ -1,8 +1,10 @@
 async function index(ctx) {
+  ctx.state.title = "Home";
   await ctx.render('home/index');
 }
 
 async function about(ctx) {
+  ctx.state.title = "About";
   await ctx.render('home/about');
 }
 
