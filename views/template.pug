@@ -6,7 +6,7 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     meta(http-equiv="X-UA-Compatible", content="ie=edge")
 
-    title #{title || "LATE"} | LATE
+    title #{title ? title + ' | ' : ''}LATE
 
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css")
     link(rel="stylesheet", href="css/styles.css")
