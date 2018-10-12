@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
@@ -17,6 +17,7 @@
     "koa-session": "^5.9.0",
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.4",
+    "mongoose": "^5.3.1",
     "pug": "^2.0.3"
   },
   "devDependencies": {
