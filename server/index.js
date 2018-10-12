@@ -7,6 +7,7 @@ const Helmet = require('koa-helmet');
 const Session = require('koa-session');
 const KoaBody = require('koa-body');
 const Views = require('koa-views');
+const CAS = require('./auth');
 
 const path = require('path');
 
@@ -18,8 +19,6 @@ const db = require('../db').models;
 /* MongoDB setup */
 app.context.db = db; // The db is now available on every request
 
-app.use(KoaBody());
-
 app.keys = ['WE ARE GOING TO CHANGE THIS'];
 
 /* Setup session */
@@ -28,6 +27,8 @@ const CONFIG = {
   maxAge: 86400000
 };
 app.use(Session(CONFIG, app));
+
+app.use(KoaBody());
 
 /* Better security by default */
 app.use(Helmet());
@@ -51,6 +52,11 @@ app.use(
 app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
   ctx.state.basedir = path.join(__dirname, '..', 'views');
+
+  ctx.state.loggedIn = !!ctx.session.cas_user;
+  ctx.state.user = ctx.session.cas_user;
+
+  console.log(ctx.session);
 
   await next();
 });
