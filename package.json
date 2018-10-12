@@ -21,13 +21,14 @@
     "pug": "^2.0.3"
   },
   "devDependencies": {
-    "sass": "*",
+    "cross-env": "^5.2.0",
     "eslint": "^5.6.0",
-    "eslint-plugin-node": "^7.0.1"
+    "eslint-plugin-node": "^7.0.1",
+    "sass": "*"
   },
   "scripts": {
-    "start": "npm run sass; node index.js",
-    "dev": "npm run sass; NODE_ENV=development node index.js",
+    "start": "npm run sass; cross-env NODE_ENV=production node index.js",
+    "dev": "npm run sass; cross-env NODE_ENV=development node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "echo \"You are all set up! Now run '$ node index.js' to run the server!\"",
     "sass": "sass ./client/sass/styles.scss client/public/css/styles.css",
