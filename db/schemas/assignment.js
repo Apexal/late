@@ -21,7 +21,11 @@ const schema = new Schema({
 });
 
 /* QUERY HELPERS */
+
+// This will help us find assignments due on a certain date
 schema.query.dueOn = function(date) {
+  if (!date) date = new Date();
+
   return this.where({
     dueDate: {
       $gte: moment(date).startOf('day'),
@@ -30,7 +34,11 @@ schema.query.dueOn = function(date) {
   });
 };
 
+// With this we can do something like
+// Assignments.dueBy(tomorrow).find();
 schema.query.dueBy = function(date) {
+  if (!date) date = new Date();
+
   return this.where({
     dueDate: { $gte: moment().startOf('day'), $lte: moment(date).endOf('day') }
   });
