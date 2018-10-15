@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -17,6 +19,22 @@ const schema = new Schema({
     }
   ]
 });
+
+/* QUERY HELPERS */
+schema.query.dueOn = function(date) {
+  return this.where({
+    dueDate: {
+      $gte: moment(date).startOf('day'),
+      $lt: moment(date).endOf('day')
+    }
+  });
+};
+
+schema.query.dueBy = function(date) {
+  return this.where({
+    dueDate: { $gte: moment().startOf('day'), $lte: moment(date).endOf('day') }
+  });
+};
 
 module.exports = {
   name: 'Assignment',
