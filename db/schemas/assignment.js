@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
+  _student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student',
+    required: true
+  },
   title: { type: String, required: true },
   description: { type: String, maxlength: 4000 },
   dueDate: { type: Date, required: true },

@@ -28,7 +28,13 @@ const schema = new Schema({
     free_time: { type: Boolean, default: false }
   },
   joined_date: { type: Date, required: true },
-  last_login: Date
+  last_login: Date,
+  _assignments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Assignment'
+    }
+  ]
 });
 
 /* QUERY HELPERS */
