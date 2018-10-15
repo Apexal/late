@@ -31,6 +31,32 @@ const schema = new Schema({
   last_login: Date
 });
 
+/* QUERY HELPERS */
+// https://mongoosejs.com/docs/guide.html#query-helpers
+
+/* VIRTUALS */
+// https://mongoosejs.com/docs/guide.html#virtuals
+
+schema.virtual('full_name').get(function() {
+  return (this.name.preferred || this.name.first) + ' ' + this.name.last;
+});
+
+schema.virtual('grade_name').get(function() {
+  // TODO: implement properly
+  switch (this.grad_year) {
+  case 2022:
+    return 'Freshman';
+  case 2021:
+    return 'Sophomore';
+  case 2020:
+    return 'Junior';
+  case 2019:
+    return 'Senior';
+  default:
+    return 'Unknown Grade';
+  }
+});
+
 module.exports = {
   name: 'Student',
   schema
