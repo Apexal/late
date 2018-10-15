@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// TODO: look into making this a subdocument
+// https://mongoosejs.com/docs/subdocs.html
+
 const schema = new Schema({
   _assignment: {
     type: mongoose.Schema.Types.ObjectId,
