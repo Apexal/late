@@ -5,37 +5,38 @@ block content
     .container
       h1.title New Assignment
 
-      form.form
+      form.form(method='POST', action='/assignments/new')
         .field
-          label.label Course
+          label.label(for='courseId') Course
           .control
-            select.input(name='course_id')
+            select.input#courseId(name='course_id')
               option No courses found.
 
         .field
-          label.label Title
+          label.label(for='title') Title
           .control
-            input.input(name='title', type='text' placeholder='This is the title of the assignment. Keep it concise.', maxlength=200)
+            input.input#title(name='title', type='text' placeholder='This is the title of the assignment. Keep it concise.', maxlength=200)
         
         .field
-          label.label Description
+          label.label(for='description') Description
           .control
-            textarea.input(name='description', placeholder='Description of the assignment.', maxlength=4000)
+            textarea.input#description(name='description', placeholder='Description of the assignment.', maxlength=4000)
 
         .field
-          label.label Due
+          label.label(for='dueDate') Due
           .control
-            input.input(name='due_date', type='date', min=moment().subtract(1, 'day').format('YYYY-MM-DD'), max=moment().add(1, 'year').format('YYYY-MM-DD'))
+            input.input#dueDate(name='due_date', type='date', min=moment().subtract(1, 'day').format('YYYY-MM-DD'), max=moment().add(1, 'year').format('YYYY-MM-DD'))
         
         .field
-          label.label Time Estimate
+          label.label(for='timeEstimate') Time Estimate
           p.help How many hours do you think this will take you?
           .control
-            input.input(name='time_estimate', type='number', min=0)
+            input.input#timeEstimate(name='time_estimate', type='number', min=0)
         
         .field
-          label.label Priority
+          label.label(for='priority') Priority
           .control
-            input.input(name='priority', type='range', min=0, max=10, step=1)
+            // TODO: label low, medium, high
+            input.input#priority(name='priority', type='range', min=0, max=10, step=1)
         
         button.button.is-primary(type='submit') Add
