@@ -7,6 +7,7 @@ const Helmet = require('koa-helmet');
 const Session = require('koa-session');
 const KoaBody = require('koa-body');
 const Views = require('koa-views');
+const Respond = require('koa-respond');
 
 const path = require('path');
 
@@ -19,6 +20,8 @@ const db = require('../db').models;
 app.context.db = db; // The db is now available on every request
 
 app.use(KoaBody());
+
+app.use(Respond());
 
 app.keys = ['WE ARE GOING TO CHANGE THIS'];
 
