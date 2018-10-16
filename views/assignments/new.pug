@@ -1,0 +1,41 @@
+extends /template
+
+block content
+  section.section
+    .container
+      h1.title New Assignment
+
+      form.form
+        .field
+          label.label Course
+          .control
+            select.input(name='course_id')
+              option No courses found.
+
+        .field
+          label.label Title
+          .control
+            input.input(name='title', type='text' placeholder='This is the title of the assignment. Keep it concise.')
+        
+        .field
+          label.label Description
+          .control
+            textarea.input(name='description', placeholder='Description of the assignment.')
+
+        .field
+          label.label Due
+          .control
+            input.input(name='due_date', type='date')
+        
+        .field
+          label.label Time Estimate
+          p.help How many hours do you think this will take you?
+          .control
+            input.input(name='time_estimate', type='number', min=0)
+        
+        .field
+          label.label Priority
+          .control
+            input.input(name='priority', type='range', min=0, max=10, step=1)
+        
+        button.button.is-primary(type='submit') Add
