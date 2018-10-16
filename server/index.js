@@ -10,6 +10,7 @@ const Views = require('koa-views');
 const Respond = require('koa-respond');
 
 const path = require('path');
+const moment = require('moment');
 
 const app = new Koa();
 const router = new Router();
@@ -41,9 +42,6 @@ app.use(Logger());
 /* Serve static files (CSS, JS, audio, etc.) */
 app.use(Static('client/public'));
 
-/* Setup view system */
-// TODO: UNCOMMENT WHEN TEMPLATING LANGUAGE IS CHOSEN
-/*
 /* Views setup using Pug */
 app.use(
   Views(path.join(__dirname, '..', 'views'), {
@@ -54,7 +52,7 @@ app.use(
 app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
   ctx.state.basedir = path.join(__dirname, '..', 'views');
-
+  ctx.state.moment = moment;
   await next();
 });
 

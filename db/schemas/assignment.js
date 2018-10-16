@@ -9,7 +9,7 @@ const schema = new Schema({
     ref: 'Student',
     required: true
   },
-  title: { type: String, required: true },
+  title: { type: String, required: true, maxlength: 200 },
   description: { type: String, maxlength: 4000 },
   dueDate: { type: Date, required: true },
   course: { type: String, required: true }, // CRN

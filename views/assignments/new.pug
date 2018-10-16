@@ -15,17 +15,17 @@ block content
         .field
           label.label Title
           .control
-            input.input(name='title', type='text' placeholder='This is the title of the assignment. Keep it concise.')
+            input.input(name='title', type='text' placeholder='This is the title of the assignment. Keep it concise.', maxlength=200)
         
         .field
           label.label Description
           .control
-            textarea.input(name='description', placeholder='Description of the assignment.')
+            textarea.input(name='description', placeholder='Description of the assignment.', maxlength=4000)
 
         .field
           label.label Due
           .control
-            input.input(name='due_date', type='date')
+            input.input(name='due_date', type='date', min=moment().subtract(1, 'day').format('YYYY-MM-DD'), max=moment().add(1, 'year').format('YYYY-MM-DD'))
         
         .field
           label.label Time Estimate
