@@ -16,7 +16,7 @@ const schema = new Schema({
   },
   name: {
     first: { type: String, required: true },
-    preferred: { type: String, required: true },
+    preferred: { type: String },
     last: { type: String, required: true }
   },
   rcs_id: { type: String, required: true },
