@@ -1,4 +1,5 @@
-const cas = require('../auth.js');
+const auth = require('../auth.js');
+const cas = auth.cas;
 
 const Router = require('koa-router');
 const router = new Router();
@@ -18,7 +19,12 @@ router.get(
     ctx.query.redirectTo = ctx.query.redirectTo || '/';
     await next();
   },
-  cas.bounce_redirect
+  cas.bounce,
+  async (ctx, next) => {
+    ctx.session.cas_user = ctx.session.cas_user.toLowerCase();
+    await next();
+  },
+  auth.loginStudent
 );
 router.get('logout', cas.logout);
 

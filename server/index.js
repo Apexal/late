@@ -7,7 +7,7 @@ const Helmet = require('koa-helmet');
 const Session = require('koa-session');
 const KoaBody = require('koa-body');
 const Views = require('koa-views');
-const CAS = require('./auth');
+const CAS = require('./auth').cas;
 const Respond = require('koa-respond');
 
 const path = require('path');
