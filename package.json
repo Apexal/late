@@ -9,17 +9,22 @@
   },
   "dependencies": {
     "config": "^2.0.1",
+    "install": "^0.12.2",
     "koa": "^2.5.3",
     "koa-body": "^4.0.4",
     "koa-helmet": "^4.0.0",
     "koa-logger": "^3.2.0",
+    "koa-respond": "^2.1.0",
     "koa-router": "^7.4.0",
     "koa-session": "^5.9.0",
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.4",
     "koa2-cas": "^1.0.5",
+    "moment": "^2.22.2",
     "mongoose": "^5.3.1",
-    "pug": "^2.0.3"
+    "npm": "^6.4.1",
+    "pug": "^2.0.3",
+    "rpi-validator": "^1.0.1"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
