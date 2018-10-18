@@ -59,7 +59,10 @@ app.use(async (ctx, next) => {
   ctx.state.basedir = path.join(__dirname, '..', 'views');
 
   ctx.state.loggedIn = !!ctx.session.cas_user;
-  ctx.state.user = ctx.session.cas_user;
+  ctx.state.username = ctx.session.cas_user;
+  ctx.state.user = await ctx.db.Student.findOne().byUsername(
+    ctx.session.cas_user
+  );
 
   console.log(ctx.session);
 
