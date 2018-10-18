@@ -7,6 +7,7 @@ const Helmet = require('koa-helmet');
 const Session = require('koa-session');
 const KoaBody = require('koa-body');
 const Views = require('koa-views');
+const CAS = require('./auth');
 const Respond = require('koa-respond');
 
 const path = require('path');
@@ -32,6 +33,8 @@ const CONFIG = {
 };
 app.use(Session(CONFIG, app));
 
+app.use(KoaBody());
+
 /* Better security by default */
 app.use(Helmet());
 
@@ -54,6 +57,11 @@ app.use(
 app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
   ctx.state.basedir = path.join(__dirname, '..', 'views');
+
+  ctx.state.loggedIn = !!ctx.session.cas_user;
+  ctx.state.user = ctx.session.cas_user;
+
+  console.log(ctx.session);
 
   await next();
 });
