@@ -5,8 +5,8 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
   rin: {
-    type: String,
-    required: true
+    type: String
+    //required: true
     /*validate: {
       validator: function(rin) {
         return rpiValidator.isRIN(rin);
@@ -15,12 +15,12 @@ const schema = new Schema({
     }*/
   },
   name: {
-    first: { type: String, required: true },
+    first: { type: String /*, required: true */ },
     preferred: { type: String },
-    last: { type: String, required: true }
+    last: { type: String /*, required: true */ }
   },
   rcs_id: { type: String, required: true },
-  grad_year: { type: Number, required: true }, // maybe?
+  grad_year: { type: Number /*, required: true */ }, // maybe?
   admin: { type: Boolean, default: false },
   setup: {
     personal_info: { type: Boolean, default: false },
@@ -39,6 +39,12 @@ const schema = new Schema({
 
 /* QUERY HELPERS */
 // https://mongoosejs.com/docs/guide.html#query-helpers
+
+schema.query.byUsername = function(rcs_id) {
+  return this.where({
+    rcs_id
+  });
+};
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
