@@ -34,8 +34,6 @@ const CONFIG = {
 };
 app.use(Session(CONFIG, app));
 
-app.use(KoaBody());
-
 /* Better security by default */
 app.use(Helmet());
 
