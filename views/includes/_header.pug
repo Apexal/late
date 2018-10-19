@@ -4,4 +4,15 @@ header
       .container
         h1.title LATE
         h2.subtitle Lazy Automatic Time Evaluator
-  
+    .hero-foot
+      nav.tabs
+        .container
+          ul
+            if loggedIn
+              li
+                a Logged in as&nbsp;#[b= username]
+              li
+                a(href='/logout') Logout
+            else
+              li
+                a(href='/login') Not Logged In
