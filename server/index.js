@@ -7,9 +7,9 @@ const Helmet = require('koa-helmet');
 const Session = require('koa-session');
 const KoaBody = require('koa-body');
 const Views = require('koa-views');
-const CAS = require('./auth').cas;
 const Respond = require('koa-respond');
 
+const logger = require('./logger');
 const path = require('path');
 const moment = require('moment');
 
@@ -55,7 +55,9 @@ app.use(async (ctx, next) => {
   ctx.state.basedir = path.join(__dirname, '..', 'views');
   ctx.state.moment = moment;
 
+  /* ctx.state is passed to the views, but can also of course be accessed in a route */
   ctx.state.loggedIn = !!ctx.session.cas_user;
+
   if (ctx.state.loggedIn) {
     ctx.state.username = ctx.session.cas_user.toLowerCase();
     ctx.state.user = await ctx.db.Student.findOne().byUsername(

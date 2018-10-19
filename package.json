@@ -24,7 +24,8 @@
     "mongoose": "^5.3.1",
     "npm": "^6.4.1",
     "pug": "^2.0.3",
-    "rpi-validator": "^1.0.1"
+    "rpi-validator": "^1.0.1",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
