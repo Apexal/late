@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const config = require('config');
 
+const logger = require('../server/logger');
+
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
@@ -21,11 +23,10 @@ const connection = mongoose.connect(
 fs.readdirSync(__dirname + '/schemas')
   .filter(file => file.endsWith('.js'))
   .forEach(file => {
-    console.log(file);
     var schema = require(path.join(__dirname + '/schemas/', file));
     models[schema.name] = mongoose.model(schema.name, schema.schema);
   });
-console.log('Loaded schemas...');
+logger.info('Loaded database schemas.');
 
 module.exports = {
   connection,
