@@ -56,9 +56,9 @@ app.use(async (ctx, next) => {
   ctx.state.moment = moment;
 
   ctx.state.loggedIn = !!ctx.session.cas_user;
-  ctx.state.username = ctx.session.cas_user;
+  ctx.state.username = ctx.session.cas_user.toLowerCase();
   ctx.state.user = await ctx.db.Student.findOne().byUsername(
-    ctx.session.cas_user
+    ctx.state.username
   );
 
   console.log(ctx.session);
