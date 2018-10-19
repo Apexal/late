@@ -1,4 +1,5 @@
 const moment = require('moment');
+const logger = require('../logger');
 
 async function getNew(ctx, next) {
   ctx.state.title = 'New Assignment';
@@ -26,9 +27,13 @@ async function postNew(ctx) {
     priority: parseInt(body.priority)
   });
 
-  console.log(newAssignment);
-
   await newAssignment.save();
+
+  logger.info(
+    `Saved new assignment titled '${newAssignment.title}' for student ${
+      ctx.state.user.rcs_id
+    } due on ${due.format('YYYY-MM-DD hh:mm a')}`
+  );
 
   ctx.redirect('/');
 }
