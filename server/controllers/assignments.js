@@ -19,7 +19,7 @@ async function postNew(ctx) {
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),
-    course: body.courseId,
+    course: body.course_id,
     timeEstimate: parseInt(body.time_estimate, 10),
     timeRemaining: parseInt(body.time_estimate, 10),
     isAssessment: false,
@@ -28,7 +28,7 @@ async function postNew(ctx) {
 
   console.log(newAssignment);
 
-  //await newAssignment.save();
+  await newAssignment.save();
 
   ctx.redirect('/');
 }
