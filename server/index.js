@@ -57,6 +57,7 @@ app.use(async (ctx, next) => {
 
   /* ctx.state is passed to the views, but can also of course be accessed in a route */
   ctx.state.loggedIn = !!ctx.session.cas_user;
+
   if (ctx.state.loggedIn) {
     ctx.state.username = ctx.session.cas_user.toLowerCase();
     ctx.state.user = await ctx.db.Student.findOne().byUsername(
