@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const moment = require('moment');
 
 //const rpiValidator = require('rpi-validator');
 
@@ -28,13 +29,7 @@ const schema = new Schema({
     free_time: { type: Boolean, default: false }
   },
   joined_date: { type: Date, required: true },
-  last_login: Date,
-  _assignments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Assignment'
-    }
-  ]
+  last_login: Date
 });
 
 /* QUERY HELPERS */
@@ -44,6 +39,52 @@ schema.query.byUsername = function(rcs_id) {
   return this.where({
     rcs_id
   });
+};
+
+/* METHODS */
+schema.methods.findAllAssignments = function(past = false) {
+  let query = {
+    _student: this._id
+  };
+  if (!past)
+    query.dueDate = {
+      $gte: moment()
+        .startOf('day')
+        .toDate()
+    };
+
+  return this.model('Assignment')
+    .find(query)
+    .exec();
+};
+
+schema.methods.findAssignmentsDueOn = function(date) {
+  return this.model('Assignment')
+    .find({
+      _student: this._id,
+      dueDate: {
+        $gte: moment(date).startOf('day'),
+        $lte: moment(date).endOf('day')
+      }
+    })
+    .exec();
+};
+
+schema.methods.findAssignmentsDueBy = function(date, past = false) {
+  let query = {
+    _student: this._id,
+    dueDate: { $lte: moment(date).endOf('day') }
+  };
+  if (!past)
+    query.dueDate = {
+      $gte: moment()
+        .startOf('day')
+        .toDate()
+    };
+
+  return this.model('Assignment')
+    .find(query)
+    .exec();
 };
 
 /* VIRTUALS */

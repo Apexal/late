@@ -1,5 +1,3 @@
-const moment = require('moment');
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -24,30 +22,6 @@ const schema = new Schema({
     }
   ]
 });
-
-/* QUERY HELPERS */
-
-// This will help us find assignments due on a certain date
-schema.query.dueOn = function(date) {
-  if (!date) date = new Date();
-
-  return this.where({
-    dueDate: {
-      $gte: moment(date).startOf('day'),
-      $lt: moment(date).endOf('day')
-    }
-  });
-};
-
-// With this we can do something like
-// Assignments.dueBy(tomorrow).find();
-schema.query.dueBy = function(date) {
-  if (!date) date = new Date();
-
-  return this.where({
-    dueDate: { $gte: moment().startOf('day'), $lte: moment(date).endOf('day') }
-  });
-};
 
 module.exports = {
   name: 'Assignment',
