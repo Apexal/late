@@ -5,7 +5,7 @@ const Logger = require('koa-logger');
 const Static = require('koa-static');
 const Helmet = require('koa-helmet');
 const Session = require('koa-session');
-const KoaBody = require('koa-body');
+const KoaBody = require('koa-bodyparser');
 const Views = require('koa-views');
 const Respond = require('koa-respond');
 
