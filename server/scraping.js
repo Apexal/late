@@ -1,6 +1,8 @@
 const request = require('request-promise');
 const cheerio = require('cheerio');
 
+const logger = require('./logger');
+
 const sis_login_url = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin';
 const sis_schedule_url = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl';
 
@@ -13,14 +15,16 @@ function checkLogin($) {
 }
 
 /**
- * Given a student's id (their RCS ID) and their PIN,
+ * Given a student's id (their RIN) and their PIN,
  * login to SIS for them and navigate to their shedule page
  * and simply grab the CRNs of each of their courses and forget their credentials.
  **/
-async function scrapeSISForCRNS(sid, PIN, term) {
+async function scrapeSISForCRNS(RIN, PIN, term) {
   // The cookie jar to persist the login session
   // Must be used with each request
   const jar = request.jar();
+
+  logger.info(`Getting CRNs student ${RIN} from SIS.`);
 
   // Attempt to login to SIS
   let $ = await request({
@@ -28,7 +32,7 @@ async function scrapeSISForCRNS(sid, PIN, term) {
     uri: sis_login_url,
     method: 'POST',
     form: {
-      sid,
+      sid: RIN,
       PIN
     },
     headers: {

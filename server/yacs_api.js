@@ -1,10 +1,13 @@
 const request = require('request-promise');
+const logger = require('./logger');
 
 const YACS_SECTION_API_BASE_URL =
   'https://nightly.yacs.io/api/v6/sections?filter[crn][eql]=';
 
 async function getSectionInfoFromCRN(crn) {
   const uri = YACS_SECTION_API_BASE_URL + crn;
+
+  logger.info(`Getting info for course ${crn} from YACS API.`);
 
   let data = (await request({ uri, json: true })).data;
 
