@@ -70,6 +70,20 @@ app.use(async (ctx, next) => {
   await next();
 });
 
+/* Error handling */
+app.use(async (ctx, next) => {
+  try {
+    await next();
+    if (ctx.status == 404) ctx.throw(404, 'Page Not Found');
+  } catch (err) {
+    ctx.status = err.status || 500;
+    ctx.state.error = err;
+    //ctx.app.emit('error', err, ctx);
+
+    await ctx.render('error');
+  }
+});
+
 /* Router setup */
 require('./routes')(router);
 app.use(router.routes());
