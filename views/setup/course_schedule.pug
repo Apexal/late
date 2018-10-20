@@ -1,0 +1,26 @@
+extends /template
+
+block content
+  section.section
+    .container
+      h2.title Course Schedule Setup
+    
+
+      #sis-option
+        form.form(method='POST')
+          .field
+            label.label(for='pin') SIS PIN
+            p.help #[b WARNING] Using this method means you trust us not to mess with your SIS account!
+            .control
+              input.input#pin(name='pin', type='password', placeholder='This is not saved or logged anywhere on the server.')
+        
+          hr
+
+
+          .field
+            label.label(for='crns') Your Course CRNs
+
+            .control
+              input.input#crns(name='crns', type='text', placeholder='123456, 654321, ...')
+        
+          button.button.is-primary(type='submit') Send
