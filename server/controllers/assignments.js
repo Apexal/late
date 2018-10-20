@@ -9,8 +9,6 @@ async function postNew(ctx) {
   const body = ctx.request.body;
   console.log(body);
 
-  // TODO: validation
-
   const due = moment(body.due_date);
   // set time from body.time
 
@@ -23,14 +21,33 @@ async function postNew(ctx) {
     timeEstimate: parseInt(body.time_estimate, 10),
     timeRemaining: parseInt(body.time_estimate, 10),
     isAssessment: false,
-    priority: parseInt(body.priority)
+    priority: parseInt(body.priority, 10)
   });
 
   console.log(newAssignment);
 
-  await newAssignment.save();
-
-  ctx.redirect('/');
+  try {
+    await newAssignment.save();
+    ctx.status = 205; // reload content
+  } catch(err) {
+    // mapping schema fields to form fields
+    const errMap = {
+      title: 'title',
+      description: 'description',
+      dueDate: 'due_date',
+      course: 'course_id',
+      timeEstimate: 'time_estimate',
+      timeRemaining: 'time_estimate',
+      isAssesment: '',
+      priority: 'priority'
+    };
+    const errs = [];
+    for(const key in err.errors) {
+      errs.push(errMap[key]);
+    }
+    ctx.status = 422; // unprocessable entity
+    ctx.body = errs;
+  }
 }
 
 module.exports = { getNew, postNew };
