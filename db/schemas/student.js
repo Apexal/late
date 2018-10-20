@@ -21,6 +21,9 @@ const schema = new Schema({
   },
   rcs_id: { type: String, required: true },
   grad_year: { type: Number /*, required: true */ }, // maybe?
+  course_schedule: {
+    // term: [{ course name, id, and periods }]
+  },
   admin: { type: Boolean, default: false },
   setup: {
     personal_info: { type: Boolean, default: false },
