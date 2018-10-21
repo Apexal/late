@@ -28,6 +28,8 @@ async function loginStudent(ctx) {
   student.last_login = new Date();
   await student.save();
 
+  ctx.request.flash('success', 'Successfully logged in.');
+
   ctx.redirect(ctx.query.redirectTo);
 }
 
