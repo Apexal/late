@@ -33,7 +33,7 @@ const CONFIG = {
 };
 app.use(Session(CONFIG, app));
 
-app.use(KoaBody());
+//app.use(KoaBody());
 
 /* Better security by default */
 app.use(Helmet());
@@ -58,6 +58,18 @@ app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
   ctx.state.basedir = path.join(__dirname, '..', 'views');
 
+  // Create flash session object if does not exist yet (first request)
+  if (ctx.session.flash === undefined) ctx.session.flash = {};
+
+  // Inject flash function into request
+  ctx.request.flash = (type, msg) => {
+    ctx.session.flash[type] = msg;
+  };
+
+  // Empty the flash but before that pass it to the state to use in views
+  ctx.state.flash = ctx.session.flash;
+  ctx.session.flash = {};
+
   /* ctx.state is passed to the views, but can also of course be accessed in a route */
   ctx.state.loggedIn = !!ctx.session.cas_user;
   ctx.state.username = ctx.session.cas_user;
@@ -68,6 +80,10 @@ app.use(async (ctx, next) => {
     : undefined;
 
   await next();
+
+  // Keep flash on redirect so it is not lost
+  if (ctx.status === 302 && ctx.session && !ctx.session.flash)
+    ctx.session.flash = ctx.state.flash;
 });
 
 /* Router setup */
