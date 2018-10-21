@@ -55,6 +55,18 @@ app.use(async (ctx, next) => {
   ctx.state.basedir = path.join(__dirname, '..', 'views');
   ctx.state.moment = moment;
 
+  // Create flash session object if does not exist yet (first request)
+  if (ctx.session.flash === undefined) ctx.session.flash = {};
+
+  // Inject flash function into request
+  ctx.request.flash = (type, msg) => {
+    ctx.session.flash[type] = msg;
+  };
+
+  // Empty the flash but before that pass it to the state to use in views
+  ctx.state.flash = ctx.session.flash;
+  ctx.session.flash = {};
+
   /* ctx.state is passed to the views, but can also of course be accessed in a route */
   ctx.state.loggedIn = !!ctx.session.cas_user;
 
@@ -67,6 +79,10 @@ app.use(async (ctx, next) => {
   console.log(ctx.session);
 
   await next();
+
+  // Keep flash on redirect so it is not lost
+  if (ctx.status === 302 && ctx.session && !ctx.session.flash)
+    ctx.session.flash = ctx.state.flash;
 });
 
 /* Router setup */
