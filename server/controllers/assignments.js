@@ -58,4 +58,10 @@ async function postNew(ctx) {
   }
 }
 
-module.exports = { getNew, postNew };
+async function getList(ctx) {
+  ctx.state.assignments = await ctx.state.user.findAllAssignments(true);
+  console.log(ctx.state.assignments);
+  await ctx.render('assignments/list');
+}
+
+module.exports = { getNew, postNew, getList };
