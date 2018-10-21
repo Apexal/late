@@ -1,0 +1,3 @@
+.container.flash-messages
+  for message, type in flash
+    .notification(class="is-" + type)= message
