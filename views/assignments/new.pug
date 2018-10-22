@@ -12,6 +12,8 @@ block content
               label.label(for='courseId') Course
               .control
                 select.input#courseId(name='course_id', required)
+                  each c in courses
+                    option(value=c._id)= c.longname
                   option Other
           .column
             .field

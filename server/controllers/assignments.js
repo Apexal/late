@@ -3,6 +3,10 @@ const logger = require('../logger');
 
 async function getNew(ctx, next) {
   ctx.state.title = 'New Assignment';
+
+  // Get courses for course select box
+  ctx.state.courses = []; //ctx.state.user.course_schedule;
+
   await ctx.render('assignments/new');
 }
 
