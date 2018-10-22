@@ -7,36 +7,49 @@ block content
       
       nav.breadcrumb
         ul
-          li
-            a(href='/setup/personal')
-              span Personal Info
-              span.icon.is-small
-                if user.setup.personal_info
-                  i.fas.fa-check
-                else
-                  i.fas.fa-times
-          li
-            a(href='/setup/RIN')
-              span RIN
-              span.icon.is-small
-                if user.setup.RIN
-                  i.fas.fa-check
-                else
-                  i.fas.fa-times
-          li
-            a(href='/setup/course_schedule')
-              span Course Schedule
-              span.icon.is-small
-                if user.setup.course_schedule
-                  i.fas.fa-check
-                else
-                  i.fas.fa-times
-          li
-            a(href='/setup/work_schedule')
-              span Work Schedule
-              span.icon.is-small
-                if user.setup.work_schedule
-                  i.fas.fa-check
-                else
-                  i.fas.fa-times
+          each item, check in user.setup
+            if user.setup.hasOwnProperty(check) && check !== '$init'
+              li
+                a(href='/setup/'+check)
+                  //- TODO: clean this up
+                  span(style='text-transform: capitalize;')= check.split('_').join(' ')
+                  span.icon.is-small
+                  if item
+                    i.fas.fa-check
+                  else
+                    i.fas.fa-times
+      //- nav.breadcrumb
+      //-   ul
+      //-     li
+      //-       a(href='/setup/personal')
+      //-         span Personal Info
+      //-         span.icon.is-small
+      //-           if user.setup.personal_info
+      //-             i.fas.fa-check
+      //-           else
+      //-             i.fas.fa-times
+      //-     li
+      //-       a(href='/setup/RIN')
+      //-         span RIN
+      //-         span.icon.is-small
+      //-           if user.setup.RIN
+      //-             i.fas.fa-check
+      //-           else
+      //-             i.fas.fa-times
+      //-     li
+      //-       a(href='/setup/course_schedule')
+      //-         span Course Schedule
+      //-         span.icon.is-small
+      //-           if user.setup.course_schedule
+      //-             i.fas.fa-check
+      //-           else
+      //-             i.fas.fa-times
+      //-     li
+      //-       a(href='/setup/work_schedule')
+      //-         span Work Schedule
+      //-         span.icon.is-small
+      //-           if user.setup.work_schedule
+      //-             i.fas.fa-check
+      //-           else
+      //-             i.fas.fa-times
       block setup
