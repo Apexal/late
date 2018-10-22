@@ -78,7 +78,7 @@ app.use(async (ctx, next) => {
   } catch (err) {
     ctx.status = err.status || 500;
     ctx.state.error = err;
-    //ctx.app.emit('error', err, ctx);
+    logger.error(err);
 
     await ctx.render('error');
   }
