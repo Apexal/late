@@ -8,8 +8,14 @@ html(lang='en')
 
     title #{title ? title + ' | ' : ''}LATE
 
+    // Bulma CSS
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
+    
+    // Custom CSS
     link(rel='stylesheet', href='/css/styles.css')
+
+    // Font Awesome 5
+    script(defer, src='https://use.fontawesome.com/releases/v5.3.1/js/all.js')
   body
     include /includes/_header
     main
