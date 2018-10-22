@@ -10,7 +10,7 @@ header
           ul
             if loggedIn
               li
-                a Logged in as&nbsp;#[b= username]
+                a Logged in as&nbsp;#[b= user.display_name]
               li
                 a(href='/logout') Logout
             else

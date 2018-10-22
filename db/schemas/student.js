@@ -65,6 +65,12 @@ schema.virtual('full_name').get(function() {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
 });
 
+schema.virtual('display_name').get(function() {
+  if (this.name)
+    return `${this.full_name} '${this.grad_year.toString().slice(-2)}`;
+  else return this.rcs_id;
+});
+
 schema.virtual('setup_checks').get(function() {
   return Object.keys(this.setup).filter(check => !check.startsWith('$'));
 });
