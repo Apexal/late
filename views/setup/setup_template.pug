@@ -8,7 +8,7 @@ block content
       nav.breadcrumb
         ul
           each check in user.setup_checks
-            li
+            li(class=(path.endsWith(check) ? 'is-active': ''))
               a(href='/setup/'+check)
                 span(style='text-transform: capitalize;')= check.split('_').join(' ')
                 span.icon.is-small

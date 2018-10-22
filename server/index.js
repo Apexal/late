@@ -58,6 +58,9 @@ app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
   ctx.state.basedir = path.join(__dirname, '..', 'views');
 
+  // Allow views to know the url
+  ctx.state.path = ctx.request.url;
+
   // Create flash session object if does not exist yet (first request)
   if (ctx.session.flash === undefined) ctx.session.flash = {};
 
