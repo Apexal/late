@@ -16,6 +16,7 @@ async function loginStudent(ctx) {
   if (student) {
     logger.info(`Logging in ${student.rcs_id}`);
   } else {
+    // TODO: CMS api to get personal info here
     student = ctx.db.Student({
       rcs_id: ctx.session.cas_user,
       joined_date: new Date()
@@ -30,7 +31,9 @@ async function loginStudent(ctx) {
 
   ctx.request.flash('success', 'Successfully logged in.');
 
-  ctx.redirect(ctx.query.redirectTo);
+  // Check if user has things to setup and redirect to the setup page if they do
+  if (student.next_to_setup) ctx.redirect(`/setup/${student.next_to_setup}`);
+  else ctx.redirect(ctx.query.redirectTo);
 }
 
 module.exports = { cas, loginStudent };

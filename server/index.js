@@ -5,7 +5,7 @@ const Logger = require('koa-logger');
 const Static = require('koa-static');
 const Helmet = require('koa-helmet');
 const Session = require('koa-session');
-const KoaBody = require('koa-body');
+const KoaBody = require('koa-bodyparser');
 const Views = require('koa-views');
 const Respond = require('koa-respond');
 
@@ -67,6 +67,9 @@ app.use(async (ctx, next) => {
   ctx.state.flash = ctx.session.flash;
   ctx.session.flash = {};
 
+  // Allow views to know the url
+  ctx.state.path = ctx.request.url;
+
   // Create flash session object if does not exist yet (first request)
   if (ctx.session.flash === undefined) ctx.session.flash = {};
 
@@ -95,6 +98,20 @@ app.use(async (ctx, next) => {
   // Keep flash on redirect so it is not lost
   if (ctx.status === 302 && ctx.session && !ctx.session.flash)
     ctx.session.flash = ctx.state.flash;
+});
+
+/* Error handling */
+app.use(async (ctx, next) => {
+  try {
+    await next();
+    if (ctx.status == 404) ctx.throw(404, 'Page Not Found');
+  } catch (err) {
+    ctx.status = err.status || 500;
+    ctx.state.error = err;
+    logger.error(err);
+
+    await ctx.render('error');
+  }
 });
 
 /* Router setup */

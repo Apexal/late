@@ -1,0 +1,20 @@
+extends /template
+
+block content
+  section.section
+    .container
+      h1.title Account Setup
+      
+      nav.breadcrumb
+        ul
+          each check in user.setup_checks
+            li(class=(path.endsWith(check) ? 'is-active': ''))
+              a(href='/setup/'+check)
+                span(style='text-transform: capitalize;')= check.split('_').join(' ')
+                span.icon.is-small
+                if user.setup[check]
+                  i.fas.fa-check
+                else
+                  i.fas.fa-times
+
+      block setup
