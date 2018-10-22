@@ -7,17 +7,15 @@ block content
       
       nav.breadcrumb
         ul
-          each item, check in user.setup
-            if user.setup.hasOwnProperty(check) && check !== '$init'
-              li
-                a(href='/setup/'+check)
-                  //- TODO: clean this up
-                  span(style='text-transform: capitalize;')= check.split('_').join(' ')
-                  span.icon.is-small
-                  if item
-                    i.fas.fa-check
-                  else
-                    i.fas.fa-times
+          each check in user.setup_checks
+            li
+              a(href='/setup/'+check)
+                span(style='text-transform: capitalize;')= check.split('_').join(' ')
+                span.icon.is-small
+                if user.setup[check]
+                  i.fas.fa-check
+                else
+                  i.fas.fa-times
       //- nav.breadcrumb
       //-   ul
       //-     li

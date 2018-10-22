@@ -65,6 +65,10 @@ schema.virtual('full_name').get(function() {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
 });
 
+schema.virtual('setup_checks').get(function() {
+  return Object.keys(this.setup).filter(check => !check.startsWith('$'));
+});
+
 schema.virtual('grade_name').get(function() {
   // TODO: implement properly
   switch (this.grad_year) {
