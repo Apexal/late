@@ -17,7 +17,10 @@ async function postCourseScheduleSetup(ctx) {
     ? await scrapeSISForCRNS(ctx.state.user.rin, body.pin, '201809')
     : body.crns.split(',').map(crn => crn.trim());
 
-  const course_schedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+  let course_schedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+
+  // Remove courses that YACS could not find
+  course_schedule = course_schedule.filter(course => !!course);
 
   ctx.state.user.course_schedule = course_schedule;
 
