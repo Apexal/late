@@ -29,6 +29,8 @@ async function loginStudent(ctx) {
   student.last_login = new Date();
   await student.save();
 
+  ctx.request.flash('success', 'Successfully logged in.');
+
   // Check if user has things to setup and redirect to the setup page if they do
   if (student.next_to_setup) ctx.redirect(`/setup/${student.next_to_setup}`);
   else ctx.redirect(ctx.query.redirectTo);
