@@ -47,6 +47,7 @@ async function scrapeSISForCRNS(RIN, PIN, term) {
   });
 
   // TODO: validate login
+  if (!checkLogin($)) throw `Failed to login to SIS as ${RIN}.`;
 
   // Submit schedule form choosing the right term
   $ = await request({
