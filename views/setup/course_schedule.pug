@@ -1,20 +1,25 @@
 extends setup_template
 
 block setup
-  #sis-option
+  .box#sis-option
+    
     form.form(method='POST')
       .field
-        label.label(for='pin') SIS PIN
-        p.help #[b WARNING] Using this method means you trust us not to mess with your SIS account!
+        label.label(for='pin') Enter your SIS PIN
+
+        details.help
+          summary Is this safe?
+          p #[b LATE] takes your PIN here, logs into SIS, navigates to the schedule page, and grabs only the CRNs. The PIN is never logged or saved anywhere on the server. #[a(target='_blank', href='https://github.com/Apexal/late/blob/master/server/auth.js') Check the code for proof!]
         .control
           input.input#pin(name='pin', type='password', placeholder='This is not saved or logged anywhere on the server.')
     
       hr
-
+      h1.title OR
+      hr
 
       .field
-        label.label(for='crns') Your Course CRNs
-
+        label.label(for='crns') Directly Enter Your Course CRNs
+        p.help These are found in SIS under 'View Weekly Schedule'.
         .control
           input.input#crns(name='crns', type='text', placeholder='123456, 654321, ...')
     
