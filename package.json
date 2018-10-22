@@ -8,10 +8,12 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "config": "^2.0.1",
     "install": "^0.12.2",
     "koa": "^2.5.3",
     "koa-body": "^4.0.4",
+    "koa-bodyparser": "^4.2.1",
     "koa-helmet": "^4.0.0",
     "koa-logger": "^3.2.0",
     "koa-respond": "^2.1.0",
@@ -24,6 +26,8 @@
     "mongoose": "^5.3.1",
     "npm": "^6.4.1",
     "pug": "^2.0.3",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
     "rpi-validator": "^1.0.1",
     "winston": "^3.1.0"
   },

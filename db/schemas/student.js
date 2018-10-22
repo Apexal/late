@@ -21,11 +21,14 @@ const schema = new Schema({
   },
   rcs_id: { type: String, required: true },
   grad_year: { type: Number /*, required: true */ }, // maybe?
+  course_schedule: {
+    // term: [{ course name, id, and periods }]
+  },
   admin: { type: Boolean, default: false },
   setup: {
-    personal_info: { type: Boolean, default: false },
-    course_schedule: { type: Boolean, default: false },
-    free_time: { type: Boolean, default: false }
+    personal_info: { type: Boolean, default: false }, // what CMS API will give us
+    course_schedule: { type: Boolean, default: false } // what SIS and YACS will give us
+    //work_schedule: { type: Boolean, default: false } // when the student can study or work
   },
   joined_date: { type: Date, required: true },
   last_login: Date,
@@ -49,8 +52,27 @@ schema.query.byUsername = function(rcs_id) {
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
+schema.virtual('is_setup').get(function() {
+  for (let check in this.setup) if (!this.setup[check]) return false;
+  return true;
+});
+
+schema.virtual('next_to_setup').get(function() {
+  for (let check in this.setup) if (!this.setup[check]) return check;
+});
+
 schema.virtual('full_name').get(function() {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
+});
+
+schema.virtual('display_name').get(function() {
+  if (this.name)
+    return `${this.full_name} '${this.grad_year.toString().slice(-2)}`;
+  else return this.rcs_id;
+});
+
+schema.virtual('setup_checks').get(function() {
+  return Object.keys(this.setup).filter(check => !check.startsWith('$'));
 });
 
 schema.virtual('grade_name').get(function() {
