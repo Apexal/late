@@ -3,21 +3,30 @@ extends setup_template
 block setup
   .box#personal-info-setup
     form.form
+      .columns.is-multiline
+        .column.is-half
+          .field
+            label.label(for='firstName') First Name
+            .control
+              input.input#firstName(name='first_name', type='text', value=user.name.first, required)
 
-      .field
-        label.label(for='firstName') First Name
-        .control
-          input.input#firstName(name='first_name', type='text', required)
-
-      .field
-        label.label(for='lastName') Last Name
-        .control
-          input.input#lastName(name='last_name', type='text', required)
-      
-      .field
-        label.label(for='gradYear') Graduation Year
-        .control
-          input.input#gradYear(name='grad_year', type='number', min=new Date().getFullYear(), value=new Date().getFullYear(), required)
-      
-      button.button.is-primary(type='submit') Save and Continue
-      
+        .column.is-half
+          .field
+            label.label(for='lastName') Last Name
+            .control
+              input.input#lastName(name='last_name', type='text', value=user.name.last, required)
+        
+        .column.is-half
+          .field
+            label.label(for='gradYear') Graduation Year
+            .control
+              input.input#gradYear(name='grad_year', type='number', min=new Date().getFullYear(), value=new Date().getFullYear(), required)
+        
+        .column.is-half
+          .field
+            label.label(for='rin') RIN
+            .control
+              input.input#rin(name='rin', type='text', value=user.rin, required)
+        
+        button.button.is-primary(type='submit') Save and Continue
+        
