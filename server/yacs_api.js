@@ -11,7 +11,10 @@ async function getSectionInfoFromCRN(crn) {
 
   let data = (await request({ uri, json: true })).data;
 
-  if (data.length == 0) return false;
+  if (data.length == 0) {
+    logger.info(`Could not find course ${crn} on YACS API. Skipping.`);
+    return false;
+  }
   data = data[0];
 
   // get listing
@@ -19,11 +22,16 @@ async function getSectionInfoFromCRN(crn) {
   const listing = (await request({ uri: listing_uri, json: true })).data;
 
   const section = {
+    section_id: data.attributes.shortname,
     listing_id: listing.id,
     longname: listing.attributes.longname,
     crn,
     periods: data.attributes.periods
   };
+
+  logger.info(
+    `Course ${crn} is ${section.longname} section ${section.section_id}`
+  );
 
   return section;
 }
