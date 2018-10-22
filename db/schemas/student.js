@@ -27,8 +27,8 @@ const schema = new Schema({
   admin: { type: Boolean, default: false },
   setup: {
     personal_info: { type: Boolean, default: false }, // what CMS API will give us
-    course_schedule: { type: Boolean, default: false }, // what SIS and YACS will give us
-    work_schedule: { type: Boolean, default: false } // when the student can study or work
+    course_schedule: { type: Boolean, default: false } // what SIS and YACS will give us
+    //work_schedule: { type: Boolean, default: false } // when the student can study or work
   },
   joined_date: { type: Date, required: true },
   last_login: Date,
