@@ -2,7 +2,7 @@ extends setup_template
 
 block setup
   .box#personal-info-setup
-    form.form
+    form.form(method='POST', action='/setup/personal_info')
       .columns.is-multiline
         .column.is-half
           .field
@@ -20,7 +20,7 @@ block setup
           .field
             label.label(for='gradYear') Graduation Year
             .control
-              input.input#gradYear(name='grad_year', type='number', min=new Date().getFullYear(), value=new Date().getFullYear(), required)
+              input.input#gradYear(name='grad_year', type='number', min=new Date().getFullYear(), value=user.grad_year||new Date().getFullYear(), required)
         
         .column.is-half
           .field

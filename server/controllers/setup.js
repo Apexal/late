@@ -14,11 +14,33 @@ async function getSetupIndex(ctx) {
 }
 
 async function getPersonalInfoSetup(ctx) {
+  ctx.state.title = 'Setup Personal Info';
   await ctx.render('setup/personal_info');
 }
 
+async function postPersonalInfoSetup(ctx) {
+  const body = ctx.request.body;
+  console.log(body);
+
+  // TODO: validate RIN
+  ctx.state.user.rin = body.rin;
+
+  ctx.state.user.name.first = body.first_name;
+  ctx.state.user.name.last = body.last_name;
+
+  ctx.state.user.grad_year = parseInt(body.grad_year);
+
+  ctx.state.user.setup.personal_info = true;
+
+  await ctx.state.user.save();
+
+  ctx.request.flash('success', 'Saved personal info.');
+
+  ctx.redirect('/setup');
+}
+
 async function getCourseScheduleSetup(ctx) {
-  ctx.state.title = 'Course Schedule Setup';
+  ctx.state.title = 'Setup Course Schedule';
   await ctx.render('setup/course_schedule');
 }
 
@@ -50,6 +72,7 @@ async function postCourseScheduleSetup(ctx) {
 module.exports = {
   getSetupIndex,
   getPersonalInfoSetup,
+  postPersonalInfoSetup,
   getCourseScheduleSetup,
   postCourseScheduleSetup
 };
