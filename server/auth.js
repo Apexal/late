@@ -28,7 +28,8 @@ async function loginStudent(ctx) {
   student.last_login = new Date();
   await student.save();
 
-  ctx.redirect(ctx.query.redirectTo);
+  if (student.next_to_setup) ctx.redirect(`/setup/${student.next_to_setup}`);
+  else ctx.redirect(ctx.query.redirectTo);
 }
 
 module.exports = { cas, loginStudent };

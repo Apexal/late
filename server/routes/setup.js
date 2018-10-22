@@ -3,6 +3,8 @@ const router = new Router();
 
 const Ctrl = require('../controllers/setup');
 
+router.get('/', Ctrl.getSetupIndex);
+
 router.get('/course_schedule', Ctrl.getCourseScheduleSetup);
 router.post('/course_schedule', Ctrl.postCourseScheduleSetup);
 

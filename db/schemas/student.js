@@ -27,8 +27,9 @@ const schema = new Schema({
   admin: { type: Boolean, default: false },
   setup: {
     personal_info: { type: Boolean, default: false },
+    rin: { type: Boolean, default: false },
     course_schedule: { type: Boolean, default: false },
-    free_time: { type: Boolean, default: false }
+    work_schedule: { type: Boolean, default: false } // When the student can study or work
   },
   joined_date: { type: Date, required: true },
   last_login: Date,
@@ -51,6 +52,15 @@ schema.query.byUsername = function(rcs_id) {
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
+
+schema.virtual('is_setup').get(function() {
+  for (let check in this.setup) if (!this.setup[check]) return false;
+  return true;
+});
+
+schema.virtual('next_to_setup').get(function() {
+  for (let check in this.setup) if (!this.setup[check]) return check;
+});
 
 schema.virtual('full_name').get(function() {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
