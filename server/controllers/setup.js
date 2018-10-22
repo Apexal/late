@@ -13,6 +13,10 @@ async function getSetupIndex(ctx) {
   ctx.redirect.flash('warning', 'You are already totally setup!');
 }
 
+async function getPersonalInfoSetup(ctx) {
+  await ctx.render('setup/personal_info');
+}
+
 async function getCourseScheduleSetup(ctx) {
   ctx.state.title = 'Course Schedule Setup';
   await ctx.render('setup/course_schedule');
@@ -45,6 +49,7 @@ async function postCourseScheduleSetup(ctx) {
 
 module.exports = {
   getSetupIndex,
+  getPersonalInfoSetup,
   getCourseScheduleSetup,
   postCourseScheduleSetup
 };
