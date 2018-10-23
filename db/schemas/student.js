@@ -107,8 +107,10 @@ schema.virtual('full_name').get(function() {
 });
 
 schema.virtual('display_name').get(function() {
-  if (this.name)
-    return `${this.full_name} '${this.grad_year.toString().slice(-2)}`;
+  if (this.name.first)
+    return `${this.full_name} ${
+      this.grad_year ? '\'' + this.grad_year.toString().slice(-2) : ''
+    }`;
   else return this.rcs_id;
 });
 
