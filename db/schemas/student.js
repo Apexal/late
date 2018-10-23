@@ -63,6 +63,7 @@ schema.methods.findAllAssignments = function(past = false) {
 
   return this.model('Assignment')
     .find(query)
+    .sort('dueDate')
     .exec();
 };
 
@@ -75,6 +76,7 @@ schema.methods.findAssignmentsDueOn = function(date) {
         $lte: moment(date).endOf('day')
       }
     })
+    .sort('dueDate')
     .exec();
 };
 
@@ -92,6 +94,7 @@ schema.methods.findAssignmentsDueBy = function(date, past = false) {
 
   return this.model('Assignment')
     .find(query)
+    .sort('dueDate')
     .exec();
 };
 
