@@ -1,22 +1,31 @@
 const moment = require('moment');
 const logger = require('../logger');
 
-async function getNew(ctx, next) {
+/**
+ * Render the new assignment page which needs a
+ * course list for the course select box.
+ */
+async function getNew(ctx) {
   ctx.state.title = 'New Assignment';
 
   // Get courses for course select box
+  // This is just shorthand since the user and their schedule is already passed to the view
   ctx.state.courses = ctx.state.user.course_schedule;
 
   await ctx.render('assignments/new');
 }
 
+/**
+ * Given the data from the new assignment form,
+ * create a new assignment and attempt to save it.
+ */
 async function postNew(ctx) {
   const body = ctx.request.body;
-  console.log(body);
 
   const due = moment(body.due_date);
-  // set time from body.time
+  // TODO: set time from body.time
 
+  // TODO: validate these
   const newAssignment = new ctx.db.Assignment({
     _student: ctx.state.user._id,
     title: body.title,
@@ -61,18 +70,21 @@ async function postNew(ctx) {
   }
 }
 
+/**
+ * Find all upcoming assignments for the current user
+ * and group them by due date. Renders a list of all
+ * upcoming assignments.
+ */
 async function getList(ctx) {
-  const assignments = (ctx.state.assignments = await ctx.state.user.findAllAssignments(
-    true
-  ));
+  const assignments = (ctx.state.assignments = await ctx.state.user.findAllAssignments());
 
   // Group by date
   const dueDates = {};
 
+  // Iterate through assignments and based on their due date
+  // (not time) group them in the dueDates object
   for (let a of assignments) {
-    const day = moment(a.dueDate)
-      .startOf('day')
-      .format('YYYY-MM-DD');
+    const day = moment(a.dueDate).format('YYYY-MM-DD');
 
     if (!dueDates[day]) dueDates[day] = [];
 
@@ -80,8 +92,6 @@ async function getList(ctx) {
   }
 
   ctx.state.groupedByDate = dueDates;
-
-  console.log(dueDates);
 
   await ctx.render('assignments/list');
 }

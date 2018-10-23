@@ -8,6 +8,7 @@ async function about(ctx) {
   await ctx.render('home/about');
 }
 
+/* THE HONORABLE */
 async function honorable(ctx) {
   ctx.body = '<img style="height: 100%;" src="/images/honorable.jpg">';
 }
