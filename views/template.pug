@@ -8,8 +8,14 @@ html(lang='en')
 
     title #{title ? title + ' | ' : ''}LATE
 
+    // Bulma CSS
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
-    link(rel='stylesheet', href='css/styles.css')
+    
+    // Custom CSS
+    link(rel='stylesheet', href='/css/styles.css')
+
+    // Font Awesome 5
+    script(defer, src='https://use.fontawesome.com/releases/v5.3.1/js/all.js')
   body
     include /includes/_header
     main
@@ -17,5 +23,6 @@ html(lang='en')
         .notification.is-danger
           b Warning
           |  This is the development server of LATE. Features are subject to change and bugs are possible.
+      include /includes/_flash
       block content
     include /includes/_footer
