@@ -70,18 +70,6 @@ app.use(async (ctx, next) => {
   // Allow views to know the url
   ctx.state.path = ctx.request.url;
 
-  // Create flash session object if does not exist yet (first request)
-  if (ctx.session.flash === undefined) ctx.session.flash = {};
-
-  // Inject flash function into request
-  ctx.request.flash = (type, msg) => {
-    ctx.session.flash[type] = msg;
-  };
-
-  // Empty the flash but before that pass it to the state to use in views
-  ctx.state.flash = ctx.session.flash;
-  ctx.session.flash = {};
-
   /* ctx.state is passed to the views, but can also of course be accessed in a route */
   ctx.state.loggedIn = !!ctx.session.cas_user;
 
