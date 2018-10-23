@@ -15,6 +15,7 @@ const schema = new Schema({
   timeRemaining: { type: Number, required: true },
   isAssessment: { type: Boolean, required: true },
   priority: { type: Number, min: 0, max: 10 },
+  completed: { type: Boolean, default: false },
   _blocks: [
     {
       type: mongoose.Schema.Types.ObjectId,
