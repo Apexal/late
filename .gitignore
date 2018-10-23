@@ -65,3 +65,4 @@ package-lock.json
 
 config/
 !config/default.json
+client/public/css/
