@@ -54,6 +54,7 @@ app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
   ctx.state.basedir = path.join(__dirname, '..', 'views');
   ctx.state.moment = moment;
+  ctx.state.env = process.env.NODE_ENV || 'production';
 
   // Create flash session object if does not exist yet (first request)
   if (ctx.session.flash === undefined) ctx.session.flash = {};
@@ -62,6 +63,12 @@ app.use(async (ctx, next) => {
   ctx.request.flash = (type, msg) => {
     ctx.session.flash[type] = msg;
   };
+
+  if (ctx.state.env == 'development')
+    ctx.request.flash(
+      'warning',
+      'This is the unstable development server of LATE. Things will break and crash.'
+    );
 
   // Empty the flash but before that pass it to the state to use in views
   ctx.state.flash = ctx.session.flash;

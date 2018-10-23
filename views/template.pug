@@ -6,7 +6,7 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     meta(http-equiv='X-UA-Compatible', content='ie=edge')
 
-    title #{title ? title + ' | ' : ''}LATE
+    title #{env == 'development' ? '[D] ': ''}#{title ? title + ' | ' : ''}LATE
 
     // Custom CSS
     link(rel='stylesheet', href='/css/styles.css')
@@ -16,10 +16,6 @@ html(lang='en')
   body
     include /includes/_header
     main
-      .container
-        .notification.is-danger
-          b Warning
-          |  This is the development server of LATE. Features are subject to change and bugs are possible.
       include /includes/_flash
       block content
     include /includes/_footer
