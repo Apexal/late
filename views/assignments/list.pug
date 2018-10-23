@@ -17,13 +17,13 @@ block content
                 each a in assignments
                   -let c = user.courseFromCRN(a.courseCRN)
                   li
-                    .box.assignment(data-assignment-id=a._id)
+                    .box.assignment(data-assignment-id=a._id, class=a.completed ? 'completed' : '')
                       span.actions.is-pulled-right
                         span.action.fas.fa-check(title='Toggle assignment completion.', onclick='alert("Not yet implemented...")')
                         span.action.fas.fa-pencil-alt(title='Edit assignment.', onclick='alert("Not yet implemented...")')
                         //span.action.fas.fa-times(title='Delete assignment.')
                       details
-                        summary
+                        summary(title=a.completed ? 'You completed this assignment.' : 'This is not yet completed.')
                           b.course-longname= c.longname
                           | : 
                           span.assignment-title= a.title

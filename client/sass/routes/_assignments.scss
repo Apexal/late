@@ -3,6 +3,12 @@
     .box.assignment {
       padding: 0.6rem;
 
+      &.completed {
+        details summary {
+          color: $grey-light;
+        }
+      }
+
       span.actions {
         cursor: pointer;
         display: none;
