@@ -11,6 +11,7 @@ async function getSetupIndex(ctx) {
   if (ctx.state.user.next_to_setup)
     return ctx.redirect(`/setup/${ctx.state.user.next_to_setup}`);
   ctx.request.flash('warning', 'You are already totally setup!');
+  ctx.redirect('/');
 }
 
 async function getPersonalInfoSetup(ctx) {
