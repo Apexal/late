@@ -9,22 +9,29 @@ block content
         each assignments, date in groupedByDate
           .column.is-half
             h2.subtitle
-              span.has-text-grey (#{assignments.length})
-              |  Due #{moment(date, 'YYYY-MM-DD').format('dddd, MMMM Do YYYY')}
+              span.has-text-grey(title=assignments.length + ' assignments due') (#{assignments.length})
+              | 
+              span(title=moment(date, 'YYYY-MM-DD').fromNow()) Due #{moment(date, 'YYYY-MM-DD').format('dddd, MMMM Do YYYY')}
             .assignments
               ul
                 each a in assignments
                   -let c = user.courseFromCRN(a.courseCRN)
                   li
-                    .box.assignment
+                    .box.assignment(data-assignment-id=a._id)
+                      span.actions.is-pulled-right
+                        span.action.fas.fa-check(title='Toggle assignment completion.', onclick='alert("Not yet implemented...")')
+                        span.action.fas.fa-pencil-alt(title='Edit assignment.', onclick='alert("Not yet implemented...")')
+                        //span.action.fas.fa-times(title='Delete assignment.')
                       details
                         summary
-                          b= c.longname
+                          b.course-longname= c.longname
                           | : 
-                          span= a.title
+                          span.assignment-title= a.title
                         .content
-                          //blockquote
-                          p= a.description || 'No description given.'
+                          if a.description
+                            p.assignment-description= a.description
+                          else
+                            p.has-text-grey-light No description given.
       hr
       
       a.button.is-primary(href='/assignments/new') New Assignment

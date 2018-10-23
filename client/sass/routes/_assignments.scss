@@ -2,6 +2,21 @@
   .assignments {
     .box.assignment {
       padding: 0.6rem;
+
+      span.actions {
+        cursor: pointer;
+        display: none;
+
+        .action {
+          margin-left: 5px;
+        }
+      }
+
+      &:hover {
+        span.actions {
+          display: initial;
+        }
+      }
     }
   }
 }
