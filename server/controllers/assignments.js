@@ -76,6 +76,7 @@ async function postNew(ctx) {
  * upcoming assignments.
  */
 async function getList(ctx) {
+  ctx.state.title = 'All Assignment';
   const assignments = (ctx.state.assignments = await ctx.state.user.findAllAssignments());
 
   // Group by date
