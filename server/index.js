@@ -11,6 +11,7 @@ const Respond = require('koa-respond');
 
 const logger = require('./logger');
 const path = require('path');
+const moment = require('moment');
 
 const app = new Koa();
 const router = new Router();
@@ -33,8 +34,6 @@ const CONFIG = {
 };
 app.use(Session(CONFIG, app));
 
-//app.use(KoaBody());
-
 /* Better security by default */
 app.use(Helmet());
 
@@ -44,9 +43,6 @@ app.use(Logger());
 /* Serve static files (CSS, JS, audio, etc.) */
 app.use(Static('client/public'));
 
-/* Setup view system */
-// TODO: UNCOMMENT WHEN TEMPLATING LANGUAGE IS CHOSEN
-/*
 /* Views setup using Pug */
 app.use(
   Views(path.join(__dirname, '..', 'views'), {
@@ -57,6 +53,19 @@ app.use(
 app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
   ctx.state.basedir = path.join(__dirname, '..', 'views');
+  ctx.state.moment = moment;
+
+  // Create flash session object if does not exist yet (first request)
+  if (ctx.session.flash === undefined) ctx.session.flash = {};
+
+  // Inject flash function into request
+  ctx.request.flash = (type, msg) => {
+    ctx.session.flash[type] = msg;
+  };
+
+  // Empty the flash but before that pass it to the state to use in views
+  ctx.state.flash = ctx.session.flash;
+  ctx.session.flash = {};
 
   // Allow views to know the url
   ctx.state.path = ctx.request.url;
@@ -75,12 +84,14 @@ app.use(async (ctx, next) => {
 
   /* ctx.state is passed to the views, but can also of course be accessed in a route */
   ctx.state.loggedIn = !!ctx.session.cas_user;
-  ctx.state.username = ctx.session.cas_user;
-  ctx.state.user = ctx.state.loggedIn
-    ? await ctx.db.Student.findOne().byUsername(
-      ctx.session.cas_user // serialize the logged in user
-    )
-    : undefined;
+
+  if (ctx.state.loggedIn) {
+    ctx.state.username = ctx.session.cas_user.toLowerCase();
+    ctx.state.user = await ctx.db.Student.findOne().byUsername(
+      ctx.state.username
+    );
+  }
+  console.log(ctx.session);
 
   await next();
 

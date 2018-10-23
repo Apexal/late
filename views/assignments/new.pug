@@ -1,0 +1,70 @@
+extends /template
+
+block content
+  section.section
+    .container
+      h1.title New Assignment
+
+      form.form(method='POST', action='/assignments/new')
+        .columns
+          .column
+            .field
+              label.label(for='courseId') Course
+              .control
+                select.input#courseId(name='course_id', required)
+                  each c in courses
+                    option(value=c._id)= c.longname
+                  option Other
+          .column
+            .field
+              label.label(for='title') Title
+              .control
+                input.input#title(name='title', type='text' placeholder='This is the title of the assignment. Keep it concise.', maxlength=200, required)
+          
+        .field
+          label.label(for='description') Description
+          .control
+            textarea.input#description(name='description', placeholder='Description of the assignment.', maxlength=4000)
+        
+        hr
+
+        .columns
+          .column
+            .field
+              label.label(for='dueDate') Due Date
+              p.help What day is this due?
+              .control
+                input.input#dueDate(name='due_date', type='date', min=moment().subtract(1, 'day').format('YYYY-MM-DD'), max=moment().add(1, 'year').format('YYYY-MM-DD'), required)
+          .column
+            .field
+              label.label(for='time') Time
+              p.help When is it due that day?
+              .control
+                input.input#time(name='time', type='text', placeholder='e.g. class, 8 AM, midnight')
+       
+          .column
+            .field
+              label.label(for='timeEstimate') Time Estimate
+              p.help How many hours do you think this will take you?
+              .control
+                input.input#timeEstimate(name='time_estimate', type='number', min=0, value=1, step=1, required)
+            
+          .column
+            .field
+              label.label(for='priority') Priority
+              p.help How important is this assignment?
+              .control
+                input#priority(style='width:100%;', name='priority', type='range', list='priorities' min=1, max=10, step=1, required)
+                datalist(id='priorities')
+                  option(value=1, label='Unimportant')
+                  option(value=2)
+                  option(value=3)
+                  option(value=4)
+                  option(value=5)
+                  option(value=6)
+                  option(value=7)
+                  option(value=8)
+                  option(value=9)
+                  option(value=10, label='Important')
+        hr
+        button.button.is-primary(type='submit') Add Assignment

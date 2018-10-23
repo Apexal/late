@@ -1,0 +1,24 @@
+extends /template
+
+block content
+  section.section
+    .container
+      h1.title All Assignments
+
+      .assignments.columns.is-multiline
+        for a in assignments
+          .column
+            .card
+              header.card-header
+                p.card-header-title= a.title
+                a.card-header-icon(href='#', aria-label='more options')
+                  span.icon
+                    i.fas.fa-angle-down(aria-hidden='true')
+              .card-content
+                .content= a.description
+                  br
+                  i
+                    time= moment(a.dueDate).fromNow()
+              footer.card-footer
+                a.card-footer-item(href='#') Done
+                a.card-footer-item(href='#') Edit
