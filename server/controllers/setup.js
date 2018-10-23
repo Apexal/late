@@ -10,7 +10,7 @@ const { getSectionInfoFromCRN } = require('../yacs_api');
 async function getSetupIndex(ctx) {
   if (ctx.state.user.next_to_setup)
     return ctx.redirect(`/setup/${ctx.state.user.next_to_setup}`);
-  ctx.redirect.flash('warning', 'You are already totally setup!');
+  ctx.request.flash('warning', 'You are already totally setup!');
 }
 
 async function getPersonalInfoSetup(ctx) {
