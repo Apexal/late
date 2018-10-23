@@ -4,6 +4,7 @@
 // Each SASS file must be imported here for it to take effect
 // Each route should have a specific stylesheet
 @import 'routes/home';
+@import 'routes/assignments';
 
 // Some general components should have their own stylesheets
 @import 'components/header';

@@ -10,7 +10,7 @@ const schema = new Schema({
   title: { type: String, required: true, maxlength: 200 },
   description: { type: String, maxlength: 4000 },
   dueDate: { type: Date, required: true },
-  course: { type: String, required: true }, // CRN
+  courseCRN: { type: String, required: true }, // CRN
   timeEstimate: { type: Number, required: true, min: 0, max: 696969420 },
   timeRemaining: { type: Number, required: true },
   isAssessment: { type: Boolean, required: true },

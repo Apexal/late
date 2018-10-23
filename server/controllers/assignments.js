@@ -22,7 +22,7 @@ async function postNew(ctx) {
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),
-    course: body.course_id,
+    courseCRN: body.course_crn,
     timeEstimate: parseInt(body.time_estimate, 10),
     timeRemaining: parseInt(body.time_estimate, 10),
     isAssessment: false,
@@ -63,8 +63,27 @@ async function postNew(ctx) {
 }
 
 async function getList(ctx) {
-  ctx.state.assignments = await ctx.state.user.findAllAssignments(true);
-  console.log(ctx.state.assignments);
+  const assignments = (ctx.state.assignments = await ctx.state.user.findAllAssignments(
+    true
+  ));
+
+  // Group by date
+  const dueDates = {};
+
+  for (let a of assignments) {
+    const day = moment(a.dueDate)
+      .startOf('day')
+      .format('YYYY-MM-DD');
+
+    if (!dueDates[day]) dueDates[day] = [];
+
+    dueDates[day].push(a);
+  }
+
+  ctx.state.groupedByDate = dueDates;
+
+  console.log(dueDates);
+
   await ctx.render('assignments/list');
 }
 

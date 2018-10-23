@@ -1,24 +1,30 @@
 extends /template
 
 block content
-  section.section
+  section.section#assignment-list
     .container
-      h1.title All Assignments
-
-      .assignments.columns.is-multiline
-        for a in assignments
-          .column
-            .card
-              header.card-header
-                p.card-header-title= a.title
-                a.card-header-icon(href='#', aria-label='more options')
-                  span.icon
-                    i.fas.fa-angle-down(aria-hidden='true')
-              .card-content
-                .content= a.description
-                  br
-                  i
-                    time= moment(a.dueDate).fromNow()
-              footer.card-footer
-                a.card-footer-item(href='#') Done
-                a.card-footer-item(href='#') Edit
+      h1.title All Upcoming Assignments
+      
+      .columns.is-multiline
+        each assignments, date in groupedByDate
+          .column.is-half
+            h2.subtitle
+              span.has-text-grey (#{assignments.length})
+              |  Due #{moment(date, 'YYYY-MM-DD').format('dddd, MMMM Do YYYY')}
+            .assignments
+              ul
+                each a in assignments
+                  -let c = user.courseFromCRN(a.courseCRN)
+                  li
+                    .box.assignment
+                      details
+                        summary
+                          b= c.longname
+                          | : 
+                          span= a.title
+                        .content
+                          //blockquote
+                          p= a.description || 'No description given.'
+      hr
+      
+      a.button.is-primary(href='/assignments/new') New Assignment
