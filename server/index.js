@@ -86,7 +86,6 @@ app.use(async (ctx, next) => {
       ctx.state.username
     );
   }
-  console.log(ctx.session);
 
   await next();
 

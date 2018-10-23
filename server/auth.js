@@ -10,6 +10,10 @@ const cas = new CAS({
   cas_version: '3.0'
 });
 
+/**
+ * Middleware called after CAS returns a username.
+ * Creates student in database if first login.
+ */
 async function loginStudent(ctx) {
   let student = await ctx.db.Student.findOne().byUsername(ctx.session.cas_user);
 
