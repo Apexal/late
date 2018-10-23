@@ -29,18 +29,17 @@ async function postNew(ctx) {
     priority: parseInt(body.priority, 10)
   });
 
-  await newAssignment.save();
-
-  logger.info(
-    `Saved new assignment titled '${newAssignment.title}' for student ${
-      ctx.state.user.rcs_id
-    } due on ${due.format('YYYY-MM-DD hh:mm a')}`
-  );
-
   try {
     await newAssignment.save();
+
+    logger.info(
+      `Saved new assignment titled '${newAssignment.title}' for student ${
+        ctx.state.user.rcs_id
+      } due on ${due.format('YYYY-MM-DD hh:mm a')}`
+    );
+
     ctx.request.flash('success', 'Added new assignment.');
-    ctx.redirect('/');
+    ctx.redirect('back');
   } catch (err) {
     // mapping schema fields to form fields
     const errMap = {
