@@ -100,6 +100,9 @@ app.use(async (ctx, next) => {
     await next();
     if (ctx.status == 404) ctx.throw(404, 'Page Not Found');
   } catch (err) {
+    if (ctx.request.url.startsWith('/api/'))
+      return ctx.notFound('API path not found.');
+
     ctx.status = err.status || 500;
     ctx.state.error = err;
     logger.error(err);
