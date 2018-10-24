@@ -62,9 +62,11 @@ async function postNew(ctx) {
     await newAssignment.save();
 
     logger.info(
-      `Saved new assignment titled '${newAssignment.title}' for student ${
-        ctx.state.user.rcs_id
-      } due on ${due.format('YYYY-MM-DD hh:mm a')}`
+      `Saved new assignment titled '${newAssignment.title}' (${
+        newAssignment._id
+      }) for student ${ctx.state.user.rcs_id} due on ${due.format(
+        'YYYY-MM-DD hh:mm a'
+      )}`
     );
 
     ctx.request.flash('success', 'Added new assignment.');
