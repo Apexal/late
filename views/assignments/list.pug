@@ -19,7 +19,8 @@ block content
                   li
                     .box.assignment(data-assignment-id=a._id, class=a.completed ? 'completed' : '')
                       span.actions.is-pulled-right
-                        span.action.fas.fa-check(title='Toggle assignment completion.', onclick='alert("Not yet implemented...")')
+                        a(href='/assignments/' + a._id + '/toggle')
+                          span.action.fas.fa-check(title='Toggle assignment completion.')
                         span.action.fas.fa-pencil-alt(title='Edit assignment.', onclick='alert("Not yet implemented...")')
                         //span.action.fas.fa-times(title='Delete assignment.')
                       details

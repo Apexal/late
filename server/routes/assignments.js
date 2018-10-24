@@ -1,10 +1,12 @@
 const Router = require('koa-router');
 const router = new Router();
-const Routes = require('../controllers/assignments');
+const Ctrl = require('../controllers/assignments');
 
-router.get('/new', Routes.getNew);
-router.post('/new', Routes.postNew);
+router.get('/:assignmentID/toggle', Ctrl.toggleAssignment);
 
-router.get('/list', Routes.getList);
+router.get('/new', Ctrl.getNew);
+router.post('/new', Ctrl.postNew);
+
+router.get('/list', Ctrl.getList);
 
 module.exports = router.routes();
