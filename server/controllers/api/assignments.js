@@ -1,5 +1,6 @@
 async function listAllAssignments(ctx) {
-  ctx.ok({ assignments: [1, 3, 5] });
+  const assignments = await ctx.state.user.findAllAssignments();
+  ctx.ok({ assignments });
 }
 
 module.exports = { listAllAssignments };
