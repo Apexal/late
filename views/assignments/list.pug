@@ -29,10 +29,11 @@ block content
                           | : 
                           span.assignment-title= a.title
                         .content
-                          if a.description
-                            p.assignment-description= a.description
-                          else
-                            p.has-text-grey-light No description given.
+                          blockquote
+                            if a.description
+                              p.assignment-description= a.description
+                            else
+                              p.has-text-grey-light No description given.
       hr
       
       a.button.is-primary(href='/assignments/new') New Assignment

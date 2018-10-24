@@ -23,6 +23,10 @@
           display: initial;
         }
       }
+
+      details .content blockquote {
+        padding: 0.55em 0.4em;
+      }
     }
   }
 }
