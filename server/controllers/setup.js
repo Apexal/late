@@ -40,11 +40,15 @@ async function postPersonalInfoSetup(ctx) {
 
   ctx.state.user.setup.personal_info = true;
 
-  await ctx.state.user.save();
+  try {
+    await ctx.state.user.save();
+    ctx.request.flash('success', 'Saved personal info.');
 
-  ctx.request.flash('success', 'Saved personal info.');
-
-  ctx.redirect('/setup'); // Redirects to next setup step
+    ctx.redirect('/setup'); // Redirects to next setup step
+  } catch(err) {
+    ctx.request.flash('danger', 'Failed to save personal info. Some fields contain errors.');
+    ctx.redirect('back');
+  }
 }
 
 /**
