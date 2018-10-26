@@ -4,8 +4,8 @@
       padding: 0.6rem;
 
       &.completed {
-        details summary {
-          color: $grey-light;
+        .assignment-header {
+          text-decoration: line-through;
         }
       }
 

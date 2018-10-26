@@ -25,9 +25,10 @@ block content
                         //span.action.fas.fa-times(title='Delete assignment.')
                       details
                         summary(title=a.completed ? 'You completed this assignment.' : 'This is not yet completed.')
-                          b.course-longname= c.longname
-                          | : 
-                          span.assignment-title= a.title
+                          span.assignment-header
+                            b.course-longname= c.longname
+                            | : 
+                            span.assignment-title= a.title
                         .content
                           blockquote
                             if a.description
