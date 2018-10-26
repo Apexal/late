@@ -19,19 +19,22 @@ block content
                   li
                     .box.assignment(data-assignment-id=a._id, class=a.completed ? 'completed' : '')
                       span.actions.is-pulled-right
-                        span.action.fas.fa-check(title='Toggle assignment completion.', onclick='alert("Not yet implemented...")')
+                        a(href='/assignments/' + a._id + '/toggle')
+                          span.action.fas.fa-check(title='Toggle assignment completion.')
                         span.action.fas.fa-pencil-alt(title='Edit assignment.', onclick='alert("Not yet implemented...")')
                         //span.action.fas.fa-times(title='Delete assignment.')
                       details
                         summary(title=a.completed ? 'You completed this assignment.' : 'This is not yet completed.')
-                          b.course-longname= c.longname
-                          | : 
-                          span.assignment-title= a.title
+                          span.assignment-header
+                            b.course-longname= c.longname
+                            | : 
+                            span.assignment-title= a.title
                         .content
-                          if a.description
-                            p.assignment-description= a.description
-                          else
-                            p.has-text-grey-light No description given.
+                          blockquote
+                            if a.description
+                              p.assignment-description= a.description
+                            else
+                              p.has-text-grey-light No description given.
       hr
       
       a.button.is-primary(href='/assignments/new') New Assignment

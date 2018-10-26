@@ -15,7 +15,9 @@ const cas = new CAS({
  * Creates student in database if first login.
  */
 async function loginStudent(ctx) {
-  let student = await ctx.db.Student.findOne().byUsername(ctx.session.cas_user);
+  let student = await ctx.db.Student.findOne().byUsername(
+    ctx.session.cas_user.toLowerCase()
+  );
 
   if (student) {
     logger.info(`Logging in ${student.rcs_id}`);

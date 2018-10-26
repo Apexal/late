@@ -4,8 +4,8 @@
       padding: 0.6rem;
 
       &.completed {
-        details summary {
-          color: $grey-light;
+        .assignment-header {
+          text-decoration: line-through;
         }
       }
 
@@ -22,6 +22,10 @@
         span.actions {
           display: initial;
         }
+      }
+
+      details .content blockquote {
+        padding: 0.55em 0.4em;
       }
     }
   }

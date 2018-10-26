@@ -6,7 +6,9 @@ const moment = require('moment');
 
 const schema = new Schema({
   rin: {
-    type: String
+    type: String,
+    minlength: 9,
+    trim: true
     //required: true
     /*validate: {
       validator: function(rin) {
@@ -16,12 +18,29 @@ const schema = new Schema({
     }*/
   },
   name: {
-    first: { type: String /*, required: true */ },
-    preferred: { type: String },
-    last: { type: String /*, required: true */ }
+    first: {
+      type: String,
+      trim: true,
+      minlength: 1,
+      maxlength: 100 /*, required: true */
+    },
+    preferred: { type: String, trim: true },
+    last: {
+      type: String,
+      trim: true,
+      minlength: 1,
+      maxlength: 100 /*, required: true */
+    }
   },
-  rcs_id: { type: String, required: true },
-  grad_year: { type: Number /*, required: true */ }, // maybe?
+  rcs_id: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 100,
+    required: true
+  },
+  grad_year: { type: Number, min: 2000, max: 3000 /*, required: true */ }, // maybe?
   course_schedule: {
     // term: [{ course name, id, and periods }]
   },

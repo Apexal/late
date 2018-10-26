@@ -2,6 +2,26 @@ const moment = require('moment');
 const logger = require('../logger');
 
 /**
+ * Toggle the completion status of an object.
+ */
+async function toggleAssignment(ctx) {
+  const assignmentID = ctx.params.assignmentID;
+  const assignment = await ctx.db.Assignment.findById(assignmentID).exec();
+
+  if (!assignment) throw new Error('Assignment not found.');
+
+  assignment.completed = !assignment.completed;
+
+  await assignment.save();
+  logger.info(
+    `${ctx.state.user.rcs_id} toggled assignment ${assignment.title} (${
+      assignment._id
+    })`
+  );
+  ctx.redirect('back');
+}
+
+/**
  * Render the new assignment page which needs a
  * course list for the course select box.
  */
@@ -42,9 +62,11 @@ async function postNew(ctx) {
     await newAssignment.save();
 
     logger.info(
-      `Saved new assignment titled '${newAssignment.title}' for student ${
-        ctx.state.user.rcs_id
-      } due on ${due.format('YYYY-MM-DD hh:mm a')}`
+      `Saved new assignment titled '${newAssignment.title}' (${
+        newAssignment._id
+      }) for student ${ctx.state.user.rcs_id} due on ${due.format(
+        'YYYY-MM-DD hh:mm a'
+      )}`
     );
 
     ctx.request.flash('success', 'Added new assignment.');
@@ -97,4 +119,4 @@ async function getList(ctx) {
   await ctx.render('assignments/list');
 }
 
-module.exports = { getNew, postNew, getList };
+module.exports = { toggleAssignment, getNew, postNew, getList };

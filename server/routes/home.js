@@ -20,10 +20,6 @@ router.get(
     await next();
   },
   cas.bounce,
-  async (ctx, next) => {
-    ctx.session.cas_user = ctx.session.cas_user.toLowerCase(); // it is return from CAS as all uppercase
-    await next();
-  },
   auth.loginStudent
 );
 router.get('logout', cas.logout);
