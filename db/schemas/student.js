@@ -43,9 +43,7 @@ const schema = new Schema({
     required: true
   },
   grad_year: { type: Number, min: 2000, max: 3000 /*, required: true */ }, // maybe?
-  course_schedule: {
-    // term: [{ course name, id, and periods }]
-  },
+  semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
   admin: { type: Boolean, default: false },
   setup: {
     personal_info: { type: Boolean, default: false }, // what CMS API will give us
@@ -128,9 +126,15 @@ schema.methods.findAssignmentsDueBy = function(date, past = false) {
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
-schema.virtual('current_schedule').get(function() {
-  return this.course_schedule[CURRENT_TERM] || [];
-});
+schema
+  .virtual('current_schedule')
+  .get(function() {
+    return this.semester_schedules[CURRENT_TERM] || [];
+  })
+  .set(function(new_schedule) {
+    this.semester_schedules[CURRENT_TERM] = new_schedule;
+    this.markModified('semester_schedules');
+  });
 
 schema.virtual('is_setup').get(function() {
   for (let check in this.setup) if (!this.setup[check]) return false;
