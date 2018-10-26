@@ -4,6 +4,8 @@ const moment = require('moment');
 
 //const rpiValidator = require('rpi-validator');
 
+const CURRENT_TERM = '201809';
+
 const schema = new Schema({
   rin: {
     type: String,
@@ -125,6 +127,10 @@ schema.methods.findAssignmentsDueBy = function(date, past = false) {
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
+
+schema.virtual('current_schedule').get(function() {
+  return this.course_schedule[CURRENT_TERM] || [];
+});
 
 schema.virtual('is_setup').get(function() {
   for (let check in this.setup) if (!this.setup[check]) return false;
