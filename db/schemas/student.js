@@ -66,7 +66,7 @@ schema.query.byUsername = function(rcs_id) {
 /* METHODS */
 
 schema.methods.courseFromCRN = function(crn) {
-  return this.course_schedule.filter(c => c.crn === crn)[0];
+  return this.current_schedule.filter(c => c.crn === crn)[0];
 };
 
 schema.methods.findAllAssignments = function(past = false) {
