@@ -9,4 +9,16 @@ async function listAllAssignments(ctx) {
   ctx.ok({ assignments });
 }
 
-module.exports = { listAllAssignments };
+async function removeAssignment(ctx) {
+  const assignmentID = ctx.params.assignmentID;
+  const removedAssignment = await ctx.db.Assignment.findOneAndDelete({
+    //_student: ctx.state.user._id,
+    _id: assignmentID
+  }).exec();
+
+  if (!removedAssignment) return ctx.notFound({ removedCount: 0 });
+
+  ctx.ok({ removedAssignment, removedCount: 1 });
+}
+
+module.exports = { listAllAssignments, removeAssignment };
