@@ -18,7 +18,10 @@ async function getSectionInfoFromCRN(crn) {
   data = data[0];
 
   // get listing
-  const listing_uri = data.relationships.listing.links.related;
+  let listing_uri = data.relationships.listing.links.related;
+  if (!listing_uri.startsWith('https://'))
+    listing_uri = 'https://' + listing_uri;
+
   const listing = (await request({ uri: listing_uri, json: true })).data;
 
   const section = {
