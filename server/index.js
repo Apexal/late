@@ -5,8 +5,7 @@ const Logger = require('koa-logger');
 const Static = require('koa-static');
 const Helmet = require('koa-helmet');
 const Session = require('koa-session');
-const KoaBody = require('koa-bodyparser');
-//const Views = require('koa-views');
+const Body = require('koa-bodyparser');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
 
@@ -22,8 +21,10 @@ const db = require('../db').models;
 /* MongoDB setup */
 app.context.db = db; // The db is now available on every request
 
-app.use(KoaBody());
+/* Body Parser Setup */
+app.use(Body());
 
+/* Adds useful ctx functions for API responses */
 app.use(Respond());
 
 app.keys = ['WE ARE GOING TO CHANGE THIS'];
@@ -38,34 +39,15 @@ app.use(Session(CONFIG, app));
 /* Better security by default */
 app.use(Helmet());
 
-/* Log web server requests */
+/* Log web server requests to console */
 app.use(Logger());
 
 /* Serve static files (CSS, JS, audio, etc.) */
 app.use(Static('dist/'));
 
-/* Views setup using Pug */
-/*app.use(
-  Views(path.join(__dirname, '..', 'views'), {
-    extension: 'pug'
-  })
-);
-*/
 
+/* Route all non api calls and non-static files (already handled above) to index.html so Vue takse over */
 app.use(async (ctx, next) => {
-  /* This is run before every single request is handled specifically. */
-  ctx.state.env = process.env.NODE_ENV || 'production';
-
-  /* ctx.state is passed to the views, but can also of course be accessed in a route */
-  ctx.state.loggedIn = !!ctx.session.cas_user;
-
-  if (ctx.state.loggedIn) {
-    ctx.state.username = ctx.session.cas_user.toLowerCase();
-    ctx.state.user = await ctx.db.Student.findOne().byUsername(
-      ctx.state.username
-    );
-  }
-
   if (!ctx.request.url.startsWith('/api/')) await Send(ctx, 'dist/index.html');
   else await next();
 });
