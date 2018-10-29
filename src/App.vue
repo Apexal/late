@@ -20,6 +20,5 @@ export default {
 </script>
 
 <style lang="scss">
-  /* These styles will apply to the whole app. */
-
+/* These styles will apply to the whole app. */
 </style>

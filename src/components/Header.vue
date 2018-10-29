@@ -30,8 +30,11 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'Header',
+
   computed: {
     user () {
       return this.$store.state.user;
@@ -39,7 +42,14 @@ export default {
     loggedIn () {
       return this.$store.getters.loggedIn;
     }
-  }
+  },
+  created () {
+    this.GET_USER();
+    alert(this.user.toString());
+  },
+  methods: mapActions([
+    'GET_USER'
+  ]),
 };
 </script>
 
