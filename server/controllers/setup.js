@@ -10,7 +10,6 @@ const { getSectionInfoFromCRN } = require('../yacs_api');
 async function getSetupIndex(ctx) {
   if (ctx.state.user.next_to_setup)
     return ctx.redirect(`/setup/${ctx.state.user.next_to_setup}`);
-  ctx.request.flash('warning', 'You are already totally setup!');
   ctx.redirect('/');
 }
 
@@ -42,11 +41,9 @@ async function postPersonalInfoSetup(ctx) {
 
   try {
     await ctx.state.user.save();
-    ctx.request.flash('success', 'Saved personal info.');
 
     ctx.redirect('/setup'); // Redirects to next setup step
-  } catch(err) {
-    ctx.request.flash('danger', 'Failed to save personal info. Some fields contain errors.');
+  } catch (err) {
     ctx.redirect('back');
   }
 }
@@ -81,8 +78,6 @@ async function postCourseScheduleSetup(ctx) {
 
   ctx.state.user.course_schedule = course_schedule;
   ctx.state.user.setup.course_schedule = true;
-
-  ctx.request.flash('success', 'Your course schedule was successfully setup!');
 
   await ctx.state.user.save();
 

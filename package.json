@@ -30,10 +30,10 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "rpi-validator": "^1.0.1",
-    "winston": "^3.1.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
@@ -45,6 +45,7 @@
     "@vue/eslint-config-prettier": "^3.0.5",
     "eslint": "^5.8.0",
     "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-vue": "^5.0.0-beta.3",
     "lint-staged": "^7.2.2",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
@@ -84,10 +85,60 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "@vue/prettier"
+      "plugin:vue/recommended"
     ],
-    "rules": {},
+    "rules": {
+      "indent": [
+        "error",
+        2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "no-multiple-empty-lines": [
+        1,
+        {
+          "max": 2,
+          "maxEOF": 1
+        }
+      ],
+      "no-trailing-spaces": [
+        1,
+        {
+          "skipBlankLines": false
+        }
+      ],
+      "no-mixed-spaces-and-tabs": [
+        1
+      ],
+      "no-unused-vars": [
+        1,
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ],
+      "no-console": [
+        1,
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ]
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }

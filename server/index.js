@@ -56,24 +56,6 @@ app.use(async (ctx, next) => {
   ctx.state.moment = moment;
   ctx.state.env = process.env.NODE_ENV || 'production';
 
-  // Create flash session object if does not exist yet (first request)
-  if (ctx.session.flash === undefined) ctx.session.flash = {};
-
-  // Inject flash function into request
-  ctx.request.flash = (type, msg) => {
-    ctx.session.flash[type] = msg;
-  };
-
-  if (ctx.state.env == 'development')
-    ctx.request.flash(
-      'warning',
-      'This is the unstable development server of LATE. Things will break and crash.'
-    );
-
-  // Empty the flash but before that pass it to the state to use in views
-  ctx.state.flash = ctx.session.flash;
-  ctx.session.flash = {};
-
   // Allow views to know the url
   ctx.state.path = ctx.request.url;
 
@@ -88,10 +70,6 @@ app.use(async (ctx, next) => {
   }
 
   await next();
-
-  // Keep flash on redirect so it is not lost
-  if (ctx.status === 302 && ctx.session && !ctx.session.flash)
-    ctx.session.flash = ctx.state.flash;
 });
 
 /* Error handling */
