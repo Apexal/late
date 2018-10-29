@@ -109,11 +109,9 @@ schema.methods.findAssignmentsDueBy = function(date, past = false) {
     dueDate: { $lte: moment(date).endOf('day') }
   };
   if (!past)
-    query.dueDate = {
-      $gte: moment()
-        .startOf('day')
-        .toDate()
-    };
+    query.dueDate.$gte = moment()
+      .startOf('day')
+      .toDate();
 
   return this.model('Assignment')
     .find(query)
