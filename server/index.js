@@ -6,8 +6,9 @@ const Static = require('koa-static');
 const Helmet = require('koa-helmet');
 const Session = require('koa-session');
 const KoaBody = require('koa-bodyparser');
-const Views = require('koa-views');
+//const Views = require('koa-views');
 const Respond = require('koa-respond');
+const Send = require('koa-send');
 
 const logger = require('./logger');
 const path = require('path');
@@ -41,23 +42,19 @@ app.use(Helmet());
 app.use(Logger());
 
 /* Serve static files (CSS, JS, audio, etc.) */
-app.use(Static('client/public'));
+app.use(Static('dist/'));
 
 /* Views setup using Pug */
-app.use(
+/*app.use(
   Views(path.join(__dirname, '..', 'views'), {
     extension: 'pug'
   })
 );
+*/
 
 app.use(async (ctx, next) => {
   /* This is run before every single request is handled specifically. */
-  ctx.state.basedir = path.join(__dirname, '..', 'views');
-  ctx.state.moment = moment;
   ctx.state.env = process.env.NODE_ENV || 'production';
-
-  // Allow views to know the url
-  ctx.state.path = ctx.request.url;
 
   /* ctx.state is passed to the views, but can also of course be accessed in a route */
   ctx.state.loggedIn = !!ctx.session.cas_user;
@@ -69,7 +66,8 @@ app.use(async (ctx, next) => {
     );
   }
 
-  await next();
+  if (!ctx.request.url.startsWith('/api/')) await Send(ctx, 'dist/index.html');
+  else await next();
 });
 
 /* Error handling */
@@ -79,10 +77,9 @@ app.use(async (ctx, next) => {
     if (ctx.status == 404) ctx.throw(404, 'Page Not Found');
   } catch (err) {
     ctx.status = err.status || 500;
-    ctx.state.error = err;
     logger.error(err);
 
-    await ctx.render('error');
+    ctx.send(err.status, err);
   }
 });
 
