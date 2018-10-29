@@ -8,6 +8,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bulma": "^0.7.2",
     "cheerio": "^1.0.0-rc.2",
     "config": "^2.0.1",
