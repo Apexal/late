@@ -7,7 +7,9 @@ const moment = require('moment');
  * @param {Koa context} ctx
  */
 async function listAllAssignments(ctx) {
-  const user = await ctx.db.Student.findOne().byUsername(ctx.session.cas_user.toLowerCase()).exec();
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
   let assignments;
   if (ctx.query.dueBy)
     assignments = await user.findAssignmentsDueBy(ctx.query.dueBy);
@@ -25,10 +27,13 @@ async function listAllAssignments(ctx) {
  * @param {Koa context} ctx
  */
 async function getAssignment(ctx) {
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
   const assignmentID = ctx.params.assignmentID;
   const assignment = await ctx.db.Assignment.findOne({
     _id: assignmentID,
-    _student: ctx.state.user._id
+    _student: user._id
   });
 
   if (!assignment) return ctx.notFound('Assignment not found.');
@@ -44,7 +49,9 @@ async function getAssignment(ctx) {
  * @param {Koa context} ctx
  */
 async function createAssignment(ctx) {
-  const user = await ctx.db.Student.findOne().byUsername(ctx.session.cas_user.toLowerCase()).exec();
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
 
   const body = ctx.request.body;
   console.log(body);
@@ -106,9 +113,10 @@ async function removeAssignment(ctx) {
     _id: assignmentID
   }).exec();
 
-  if (!removedAssignment) return ctx.notFound({
-    removedCount: 0
-  });
+  if (!removedAssignment)
+    return ctx.notFound({
+      removedCount: 0
+    });
 
   ctx.ok({
     removedAssignment,

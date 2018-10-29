@@ -7,7 +7,8 @@ const cas = require('../../auth').cas;
  * @param {Koa session} ctx
  **/
 async function loginAs(ctx) {
-  console.log(ctx.request);
+  if (ctx.state.env !== 'development')
+    return ctx.forbidden('Not in development mode.');
 
   const rcs_id = ctx.request.query.rcs_id;
   ctx.session.cas_user = rcs_id;
@@ -17,20 +18,16 @@ async function loginAs(ctx) {
 }
 
 async function getUser(ctx) {
-  const user = await ctx.db.Student.find().byUsername(ctx.session.cas_user.toLowerCase()).exec();
-  if (!user) {
-    ctx.internalServerError('Cannot find logged in user.');
-    await cas.logout;
-  } else {
-    ctx.ok({
-      user
-    });
-  }
+  const user = await ctx.db.Student.find()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
+
+  ctx.ok({
+    user
+  });
 }
 
-async function getStudent(ctx) {
-
-}
+async function getStudent(ctx) {}
 
 module.exports = {
   loginAs,
