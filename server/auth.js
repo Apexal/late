@@ -11,10 +11,14 @@ const cas = new CAS({
 });
 
 /**
- * Middleware called after CAS returns a username.
- * Creates student in database if first login.
+ * Middleware that finds the student from the session 'cas_user' and
+ * creates the student if it does not exist yet.
+ *
+ * @param {Koa context} ctx
  */
 async function loginStudent(ctx) {
+  if (!ctx.session.cas_user) await cas.bounce();
+
   let student = await ctx.db.Student.findOne().byUsername(
     ctx.session.cas_user.toLowerCase()
   );
@@ -35,9 +39,7 @@ async function loginStudent(ctx) {
   student.last_login = new Date();
   await student.save();
 
-  // Check if user has things to setup and redirect to the setup page if they do
-  if (student.next_to_setup) ctx.redirect(`/setup/${student.next_to_setup}`);
-  else ctx.redirect(ctx.query.redirectTo);
+  ctx.redirect(ctx.query.redirectTo || '/');
 }
 
 module.exports = { cas, loginStudent };

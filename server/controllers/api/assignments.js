@@ -7,14 +7,17 @@ const moment = require('moment');
  * @param {Koa context} ctx
  */
 async function listAllAssignments(ctx) {
+  const user = await ctx.db.Student.findOne().byUsername(ctx.session.cas_user.toLowerCase()).exec();
   let assignments;
   if (ctx.query.dueBy)
-    assignments = await ctx.state.user.findAssignmentsDueBy(ctx.query.dueBy);
+    assignments = await user.findAssignmentsDueBy(ctx.query.dueBy);
   else if (ctx.query.dueOn)
-    assignments = await ctx.state.user.findAssignmentsDueOn(ctx.query.dueOn);
-  else assignments = await ctx.state.user.findAllAssignments();
+    assignments = await user.findAssignmentsDueOn(ctx.query.dueOn);
+  else assignments = await user.findAllAssignments();
 
-  ctx.ok({ assignments });
+  ctx.ok({
+    assignments
+  });
 }
 
 /**
@@ -30,7 +33,9 @@ async function getAssignment(ctx) {
 
   if (!assignment) return ctx.notFound('Assignment not found.');
 
-  ctx.ok({ assignment });
+  ctx.ok({
+    assignment
+  });
 }
 
 /**
@@ -39,14 +44,17 @@ async function getAssignment(ctx) {
  * @param {Koa context} ctx
  */
 async function createAssignment(ctx) {
+  const user = await ctx.db.Student.findOne().byUsername(ctx.session.cas_user.toLowerCase()).exec();
+
   const body = ctx.request.body;
+  console.log(body);
 
   const due = moment(body.due_date);
   // TODO: set time from body.time
 
   // TODO: validate these
   const newAssignment = new ctx.db.Assignment({
-    _student: ctx.state.user._id,
+    _student: user._id,
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),
@@ -60,7 +68,9 @@ async function createAssignment(ctx) {
   try {
     await newAssignment.save();
 
-    ctx.ok({ createdAssignment: newAssignment });
+    ctx.ok({
+      createdAssignment: newAssignment
+    });
   } catch (err) {
     // mapping schema fields to form fields
     const errMap = {
@@ -78,7 +88,9 @@ async function createAssignment(ctx) {
       errors.push(errMap[key]);
     }
 
-    ctx.badRequest({ errors });
+    ctx.badRequest({
+      errors
+    });
   }
 }
 
@@ -94,9 +106,14 @@ async function removeAssignment(ctx) {
     _id: assignmentID
   }).exec();
 
-  if (!removedAssignment) return ctx.notFound({ removedCount: 0 });
+  if (!removedAssignment) return ctx.notFound({
+    removedCount: 0
+  });
 
-  ctx.ok({ removedAssignment, removedCount: 1 });
+  ctx.ok({
+    removedAssignment,
+    removedCount: 1
+  });
 }
 
 module.exports = {

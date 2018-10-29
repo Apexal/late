@@ -45,11 +45,14 @@ app.use(Logger());
 /* Serve static files (CSS, JS, audio, etc.) */
 app.use(Static('dist/'));
 
+/* Router setup */
+require('./routes')(router);
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 /* Route all non api calls and non-static files (already handled above) to index.html so Vue takse over */
 app.use(async (ctx, next) => {
-  if (!ctx.request.url.startsWith('/api/')) await Send(ctx, 'dist/index.html');
-  else await next();
+  await Send(ctx, 'dist/index.html');
 });
 
 /* Error handling */
@@ -68,9 +71,5 @@ app.use(async (ctx, next) => {
   }
 });
 
-/* Router setup */
-require('./routes')(router);
-app.use(router.routes());
-app.use(router.allowedMethods());
 
 module.exports = app;
