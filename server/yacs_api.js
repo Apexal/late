@@ -4,6 +4,16 @@ const logger = require('./logger');
 const YACS_SECTION_API_BASE_URL =
   'https://nightly.yacs.io/api/v6/sections?filter[crn][eql]=';
 
+/**
+ * Use the public YACS API to find general info on a section:
+ * - section id
+ * - listing id
+ * - course name (long name)
+ * - periods
+ *
+ * @param {string} crn The CRN of the period
+ * @returns {object} The found info in one object
+ */
 async function getSectionInfoFromCRN(crn) {
   const uri = YACS_SECTION_API_BASE_URL + crn;
 
