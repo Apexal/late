@@ -1,3 +1,11 @@
+const moment = require('moment');
+
+/**
+ * Returns a list of all assignments with optional dueOn or dueBy filters.
+ * dueOn and dueBy are optional URL query options in YYYY-MM-DD format.
+ *
+ * @param {Koa context} ctx
+ */
 async function listAllAssignments(ctx) {
   let assignments;
   if (ctx.query.dueBy)
@@ -9,6 +17,76 @@ async function listAllAssignments(ctx) {
   ctx.ok({ assignments });
 }
 
+/**
+ * Given an assignment ID, return the assignment only if it belongs to the logged in user.
+ * @param {Koa context} ctx
+ */
+async function getAssignment(ctx) {
+  const assignmentID = ctx.params.assignmentID;
+  const assignment = await ctx.db.Assignment.findOne({
+    _id: assignmentID,
+    _student: ctx.state.user._id
+  });
+
+  if (!assignment) return ctx.notFound('Assignment not found.');
+
+  ctx.ok({ assignment });
+}
+
+/**
+ * Create an assignment given the assignment properies in the request body.
+ *
+ * @param {Koa context} ctx
+ */
+async function createAssignment(ctx) {
+  const body = ctx.request.body;
+
+  const due = moment(body.due_date);
+  // TODO: set time from body.time
+
+  // TODO: validate these
+  const newAssignment = new ctx.db.Assignment({
+    _student: ctx.state.user._id,
+    title: body.title,
+    description: body.description,
+    dueDate: due.toDate(),
+    courseCRN: body.course_crn,
+    timeEstimate: parseInt(body.time_estimate, 10),
+    timeRemaining: parseInt(body.time_estimate, 10),
+    isAssessment: false,
+    priority: parseInt(body.priority, 10)
+  });
+
+  try {
+    await newAssignment.save();
+
+    ctx.ok({ createdAssignment: newAssignment });
+  } catch (err) {
+    // mapping schema fields to form fields
+    const errMap = {
+      title: 'title',
+      description: 'description',
+      dueDate: 'due_date',
+      course: 'course_id',
+      timeEstimate: 'time_estimate',
+      timeRemaining: 'time_estimate',
+      isAssesment: '',
+      priority: 'priority'
+    };
+    const errors = [];
+    for (const key in err.errors) {
+      errors.push(errMap[key]);
+    }
+
+    ctx.badRequest({ errors });
+  }
+}
+
+/**
+ * Given an assignment ID, remove the assignment only if it belongs to the logged in user.
+ *
+ * @param {Koa context} ctx
+ */
 async function removeAssignment(ctx) {
   const assignmentID = ctx.params.assignmentID;
   const removedAssignment = await ctx.db.Assignment.findOneAndDelete({
@@ -21,4 +99,9 @@ async function removeAssignment(ctx) {
   ctx.ok({ removedAssignment, removedCount: 1 });
 }
 
-module.exports = { listAllAssignments, removeAssignment };
+module.exports = {
+  listAllAssignments,
+  getAssignment,
+  createAssignment,
+  removeAssignment
+};
