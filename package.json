@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.0.5",
+  "version": "0.0.9",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
@@ -30,13 +30,25 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "rpi-validator": "^1.0.1",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "cross-env": "^5.2.0",
-    "eslint": "^5.6.0",
-    "eslint-plugin-node": "^7.0.1",
-    "sass": "*"
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@vue/cli-plugin-babel": "^3.0.5",
+    "@vue/cli-plugin-eslint": "^3.0.5",
+    "@vue/cli-service": "^3.0.5",
+    "@vue/eslint-config-prettier": "^3.0.5",
+    "eslint": "^5.8.0",
+    "eslint-plugin-node": "^8.0.0",
+    "lint-staged": "^7.2.2",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "vue-template-compiler": "^2.5.17"
   },
   "scripts": {
     "start": "npm run sass; cross-env NODE_ENV=production node index.js",
@@ -44,7 +56,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "echo \"You are all set up! Now run '$ node index.js' to run the server!\"",
     "sass": "sass ./client/sass/styles.scss client/public/css/styles.css",
-    "sass-watch": "sass --watch client/sass/:client/public/css/"
+    "sass-watch": "sass --watch client/sass/:client/public/css/",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "repository": {
     "type": "git",
@@ -62,5 +77,42 @@
   "bugs": {
     "url": "https://github.com/Apexal/late/issues"
   },
-  "homepage": "https://github.com/Apexal/late#readme"
+  "homepage": "https://github.com/Apexal/late#readme",
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "@vue/prettier"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
 }
