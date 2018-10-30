@@ -31,12 +31,16 @@ async function getAssignment(ctx) {
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
   const assignmentID = ctx.params.assignmentID;
-  const assignment = await ctx.db.Assignment.findOne({
-    _id: assignmentID,
-    _student: user._id
-  });
-
-  if (!assignment) return ctx.notFound('Assignment not found.');
+  let assignment;
+  try {
+    assignment = await ctx.db.Assignment.findOne({
+      _id: assignmentID,
+      _student: user._id
+    });
+    if (!assignment) throw '';
+  } catch (e) {
+    return ctx.notFound('Failed to find assignment.');
+  }
 
   ctx.ok({
     assignment
@@ -54,7 +58,6 @@ async function createAssignment(ctx) {
     .exec();
 
   const body = ctx.request.body;
-  console.log(body);
 
   const due = moment(body.due_date);
   // TODO: set time from body.time
@@ -102,25 +105,38 @@ async function createAssignment(ctx) {
 }
 
 /**
+ *
+ * @param {Koa context} ctx
+ */
+async function editAssignment(ctx) {
+  ctx.badRequest('Not yet implemented.');
+}
+
+/**
  * Given an assignment ID, remove the assignment only if it belongs to the logged in user.
  *
  * @param {Koa context} ctx
  */
 async function removeAssignment(ctx) {
-  const assignmentID = ctx.params.assignmentID;
-  const removedAssignment = await ctx.db.Assignment.findOneAndDelete({
-    //_student: ctx.state.user._id,
-    _id: assignmentID
-  }).exec();
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
 
-  if (!removedAssignment)
-    return ctx.notFound({
-      removedCount: 0
+  const assignmentID = ctx.params.assignmentID;
+  let removedAssignment;
+  try {
+    removedAssignment = await ctx.db.Assignment.findOne({
+      _id: assignmentID,
+      _student: user._id
     });
 
+    if (!removedAssignment) throw '';
+  } catch (e) {
+    return ctx.notFound('Failed to find assignment.');
+  }
+
   ctx.ok({
-    removedAssignment,
-    removedCount: 1
+    removedAssignment
   });
 }
 
@@ -128,5 +144,6 @@ module.exports = {
   listAllAssignments,
   getAssignment,
   createAssignment,
+  editAssignment,
   removeAssignment
 };
