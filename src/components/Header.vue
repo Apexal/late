@@ -30,26 +30,16 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-
 export default {
   name: 'Header',
-
   computed: {
     user () {
-      return this.$store.state.user;
+      return this.$store.state.auth.user;
     },
     loggedIn () {
-      return this.$store.getters.loggedIn;
+      return this.$store.getters.isAuthenticated;
     }
-  },
-  created () {
-    this.GET_USER();
-    alert(this.user.toString());
-  },
-  methods: mapActions([
-    'GET_USER'
-  ]),
+  }
 };
 </script>
 

@@ -10,12 +10,20 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export default {
   name: 'LATE',
-  components: { Header, Footer }
+  components: { Header, Footer },
+  created () {
+    this.GET_USER();
+  },
+  methods: mapActions([
+    'GET_USER'
+  ]),
 };
 </script>
 
