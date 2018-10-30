@@ -20,8 +20,9 @@ export default {
   components: { Header, Footer },
   created() {
     this.GET_USER();
+    this.GET_UPCOMING_ASSIGNMENTS();
   },
-  methods: mapActions(['GET_USER'])
+  methods: mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS'])
 };
 </script>
 
