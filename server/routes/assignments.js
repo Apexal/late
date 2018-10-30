@@ -2,7 +2,7 @@ const Router = require('koa-router');
 const router = new Router();
 const Ctrl = require('../controllers/assignments');
 
-router.get('/:assignmentID/toggle', Ctrl.toggleAssignment);
+router.post('/:assignmentID/toggle', Ctrl.toggleAssignment);
 
 router.get('/new', Ctrl.getNew);
 router.post('/new', Ctrl.postNew);
