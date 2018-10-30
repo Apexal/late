@@ -33,10 +33,10 @@
 export default {
   name: 'Header',
   computed: {
-    user () {
+    user() {
       return this.$store.state.auth.user;
     },
-    loggedIn () {
+    loggedIn() {
       return this.$store.getters.isAuthenticated;
     }
   }
