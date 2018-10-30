@@ -31,12 +31,16 @@ async function getAssignment(ctx) {
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
   const assignmentID = ctx.params.assignmentID;
-  const assignment = await ctx.db.Assignment.findOne({
-    _id: assignmentID,
-    _student: user._id
-  });
-
-  if (!assignment) return ctx.notFound('Assignment not found.');
+  let assignment;
+  try {
+    assignment = await ctx.db.Assignment.findOne({
+      _id: assignmentID,
+      _student: user._id
+    });
+    if (!assignment) throw '';
+  } catch (e) {
+    return ctx.notFound('Failed to find assignment.');
+  }
 
   ctx.ok({
     assignment
@@ -54,7 +58,6 @@ async function createAssignment(ctx) {
     .exec();
 
   const body = ctx.request.body;
-  console.log(body);
 
   const due = moment(body.due_date);
   // TODO: set time from body.time
@@ -120,13 +123,17 @@ async function removeAssignment(ctx) {
     .exec();
 
   const assignmentID = ctx.params.assignmentID;
-  const removedAssignment = await ctx.db.Assignment.findOneAndDelete({
-    _student: user._id,
-    _id: assignmentID
-  }).exec();
+  let removedAssignment;
+  try {
+    removedAssignment = await ctx.db.Assignment.findOne({
+      _id: assignmentID,
+      _student: user._id
+    });
 
-  if (!removedAssignment)
-    return ctx.notFound('The assignment could not be found.');
+    if (!removedAssignment) throw '';
+  } catch (e) {
+    return ctx.notFound('Failed to find assignment.');
+  }
 
   ctx.ok({
     removedAssignment
