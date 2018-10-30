@@ -28,10 +28,6 @@ async function toggleAssignment(ctx) {
 async function getNew(ctx) {
   ctx.state.title = 'New Assignment';
 
-  // Get courses for course select box
-  // This is just shorthand since the user and their schedule is already passed to the view
-  ctx.state.courses = ctx.state.user.course_schedule;
-
   await ctx.render('assignments/new');
 }
 

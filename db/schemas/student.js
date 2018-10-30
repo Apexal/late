@@ -4,6 +4,8 @@ const moment = require('moment');
 
 //const rpiValidator = require('rpi-validator');
 
+const CURRENT_TERM = '201809';
+
 const schema = new Schema({
   rin: {
     type: String,
@@ -41,9 +43,7 @@ const schema = new Schema({
     required: true
   },
   grad_year: { type: Number, min: 2000, max: 3000 /*, required: true */ }, // maybe?
-  course_schedule: {
-    // term: [{ course name, id, and periods }]
-  },
+  semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
   admin: { type: Boolean, default: false },
   setup: {
     personal_info: { type: Boolean, default: false }, // what CMS API will give us
@@ -66,7 +66,7 @@ schema.query.byUsername = function(rcs_id) {
 /* METHODS */
 
 schema.methods.courseFromCRN = function(crn) {
-  return this.course_schedule.filter(c => c.crn === crn)[0];
+  return this.current_schedule.filter(c => c.crn === crn)[0];
 };
 
 schema.methods.findAllAssignments = function(past = false) {
@@ -125,6 +125,16 @@ schema.methods.findAssignmentsDueBy = function(date, past = false) {
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
+
+schema
+  .virtual('current_schedule')
+  .get(function() {
+    return this.semester_schedules[CURRENT_TERM] || [];
+  })
+  .set(function(new_schedule) {
+    this.semester_schedules[CURRENT_TERM] = new_schedule;
+    this.markModified('semester_schedules');
+  });
 
 schema.virtual('is_setup').get(function() {
   for (let check in this.setup) if (!this.setup[check]) return false;

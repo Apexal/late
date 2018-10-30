@@ -79,8 +79,14 @@ async function postCourseScheduleSetup(ctx) {
   // Remove courses that YACS could not find
   course_schedule = course_schedule.filter(course => !!course);
 
-  ctx.state.user.course_schedule = course_schedule;
+  course_schedule.push({
+    longname: 'Other',
+    crn: '00000',
+    periods: []
+  });
+
   ctx.state.user.setup.course_schedule = true;
+  ctx.state.user.current_schedule = course_schedule;
 
   ctx.request.flash('success', 'Your course schedule was successfully setup!');
 
