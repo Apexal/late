@@ -4,6 +4,8 @@ const moment = require('moment');
 
 //const rpiValidator = require('rpi-validator');
 
+const CURRENT_TERM = '201809';
+
 const schema = new Schema({
   rin: {
     type: String,
@@ -43,18 +45,9 @@ const schema = new Schema({
     maxlength: 100,
     required: true
   },
-  grad_year: {
-    type: Number,
-    min: 2000,
-    max: 3000 /*, required: true */
-  }, // maybe?
-  course_schedule: {
-    // term: [{ course name, id, and periods }]
-  },
-  admin: {
-    type: Boolean,
-    default: false
-  },
+  grad_year: { type: Number, min: 2000, max: 3000 /*, required: true */ }, // maybe?
+  semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+  admin: { type: Boolean, default: false },
   setup: {
     personal_info: {
       type: Boolean,
@@ -76,7 +69,7 @@ const schema = new Schema({
 /* QUERY HELPERS */
 // https://mongoosejs.com/docs/guide.html#query-helpers
 
-schema.query.byUsername = function (rcs_id) {
+schema.query.byUsername = function(rcs_id) {
   return this.where({
     rcs_id
   });
@@ -84,11 +77,11 @@ schema.query.byUsername = function (rcs_id) {
 
 /* METHODS */
 
-schema.methods.courseFromCRN = function (crn) {
-  return this.course_schedule.filter(c => c.crn === crn)[0];
+schema.methods.courseFromCRN = function(crn) {
+  return this.current_schedule.filter(c => c.crn === crn)[0];
 };
 
-schema.methods.findAllAssignments = function (past = false) {
+schema.methods.findAllAssignments = function(past = false) {
   let query = {
     _student: this._id
   };
@@ -107,7 +100,7 @@ schema.methods.findAllAssignments = function (past = false) {
     .exec();
 };
 
-schema.methods.findAssignmentsDueOn = function (date) {
+schema.methods.findAssignmentsDueOn = function(date) {
   return this.model('Assignment')
     .find({
       _student: this._id,
@@ -122,7 +115,7 @@ schema.methods.findAssignmentsDueOn = function (date) {
     .exec();
 };
 
-schema.methods.findAssignmentsDueBy = function (date, past = false) {
+schema.methods.findAssignmentsDueBy = function(date, past = false) {
   let query = {
     _student: this._id,
     dueDate: {
@@ -145,22 +138,30 @@ schema.methods.findAssignmentsDueBy = function (date, past = false) {
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
-schema.virtual('is_setup').get(function () {
-  for (let check in this.setup)
-    if (!this.setup[check]) return false;
+schema
+  .virtual('current_schedule')
+  .get(function() {
+    return this.semester_schedules[CURRENT_TERM] || [];
+  })
+  .set(function(new_schedule) {
+    this.semester_schedules[CURRENT_TERM] = new_schedule;
+    this.markModified('semester_schedules');
+  });
+
+schema.virtual('is_setup').get(function() {
+  for (let check in this.setup) if (!this.setup[check]) return false;
   return true;
 });
 
-schema.virtual('next_to_setup').get(function () {
-  for (let check in this.setup)
-    if (!this.setup[check]) return check;
+schema.virtual('next_to_setup').get(function() {
+  for (let check in this.setup) if (!this.setup[check]) return check;
 });
 
-schema.virtual('full_name').get(function () {
+schema.virtual('full_name').get(function() {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
 });
 
-schema.virtual('display_name').get(function () {
+schema.virtual('display_name').get(function() {
   if (this.name.first)
     return `${this.full_name} ${
       this.grad_year ? '\'' + this.grad_year.toString().slice(-2) : ''
@@ -168,11 +169,11 @@ schema.virtual('display_name').get(function () {
   else return this.rcs_id;
 });
 
-schema.virtual('setup_checks').get(function () {
+schema.virtual('setup_checks').get(function() {
   return Object.keys(this.setup).filter(check => !check.startsWith('$'));
 });
 
-schema.virtual('grade_name').get(function () {
+schema.virtual('grade_name').get(function() {
   // TODO: implement properly
   switch (this.grad_year) {
   case 2022:

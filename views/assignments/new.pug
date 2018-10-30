@@ -12,9 +12,10 @@ block content
               label.label(for='courseId') Course
               .control
                 select.input#courseId(name='course_crn', required)
-                  each c in courses
+                  each c in user.current_schedule
                     option(value=c.crn)= c.longname
-                  option Other
+                  else
+                    option No courses found.
           .column
             .field
               label.label(for='title') Title
