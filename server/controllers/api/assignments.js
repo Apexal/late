@@ -102,25 +102,34 @@ async function createAssignment(ctx) {
 }
 
 /**
+ *
+ * @param {Koa context} ctx
+ */
+async function editAssignment(ctx) {
+  ctx.badRequest('Not yet implemented.');
+}
+
+/**
  * Given an assignment ID, remove the assignment only if it belongs to the logged in user.
  *
  * @param {Koa context} ctx
  */
 async function removeAssignment(ctx) {
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
+
   const assignmentID = ctx.params.assignmentID;
   const removedAssignment = await ctx.db.Assignment.findOneAndDelete({
-    //_student: ctx.state.user._id,
+    _student: user._id,
     _id: assignmentID
   }).exec();
 
   if (!removedAssignment)
-    return ctx.notFound({
-      removedCount: 0
-    });
+    return ctx.notFound('The assignment could not be found.');
 
   ctx.ok({
-    removedAssignment,
-    removedCount: 1
+    removedAssignment
   });
 }
 
@@ -128,5 +137,6 @@ module.exports = {
   listAllAssignments,
   getAssignment,
   createAssignment,
+  editAssignment,
   removeAssignment
 };
