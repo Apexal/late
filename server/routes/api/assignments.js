@@ -7,7 +7,7 @@ router.get('/list', Ctrl.listAllAssignments);
 
 router.get('/:assignmentID', Ctrl.getAssignment);
 
-router.put('/create', Ctrl.createAssignment);
-router.get('/:assignmentID/remove', Ctrl.removeAssignment);
+router.post('/create', Ctrl.createAssignment);
+router.post('/:assignmentID/remove', Ctrl.removeAssignment);
 
 module.exports = router.routes();
