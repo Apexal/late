@@ -12,8 +12,8 @@ module.exports = router => {
     },
     require('./api')
   );
-  router.use('/assignments', cas.bounce, require('./assignments'));
-  router.use('/setup', cas.bounce, require('./setup'));
+  //router.use('/assignments', cas.bounce, require('./assignments'));
+  //router.use('/setup', cas.bounce, require('./setup'));
   router.use('/auth', require('./auth'));
-  router.use('/', require('./home'));
+  //router.use('/', require('./home'));
 };
