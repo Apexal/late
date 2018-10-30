@@ -10,7 +10,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -22,7 +22,10 @@ export default {
     this.GET_USER();
     this.GET_UPCOMING_ASSIGNMENTS();
   },
-  methods: mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS'])
+  methods: {
+    ...mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS']),
+    ...mapGetters(['UPDATE_SCHEDULE'])
+  }
 };
 </script>
 
