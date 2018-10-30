@@ -66,6 +66,9 @@ const schema = new Schema({
   last_login: Date
 });
 
+schema.set('toObject', { getters: true, virtuals: true });
+schema.set('toJSON', { getters: true, virtuals: true });
+
 /* QUERY HELPERS */
 // https://mongoosejs.com/docs/guide.html#query-helpers
 
