@@ -21,16 +21,15 @@ export default {
   created() {
     this.GET_USER();
     this.GET_UPCOMING_ASSIGNMENTS();
-    this.UPDATE_SCHEDULE();
+    //this.UPDATE_SCHEDULE();
   },
   methods: {
-    ...mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS']),
-    ...mapMutations(['UPDATE_SCHEDULE'])
+    ...mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS', 'UPDATE_SCHEDULE'])
   }
 };
 </script>
 
 <style lang="scss">
 /* These styles will apply to the whole app. */
-@import "@/assets/bulma.scss";
+@import '@/assets/bulma.scss';
 </style>

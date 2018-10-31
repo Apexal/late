@@ -5,17 +5,27 @@ const state = {
   periods: []
 };
 
-const actions = {};
-
-const mutations = {
-  UPDATE_SCHEDULE: (state, getters, rootState) => {
+const actions = {
+  UPDATE_SCHEDULE({ commit, rootState }) {
     // Reset all state values
+    console.log(rootState.auth);
     const semester_schedule = rootState.auth.user.current_schedule;
 
     const day = new Date().getDay();
 
-    const day_periods = semester_schedule.filter(p => p.day = day);
-    state.periods = day_periods;
+    let day_periods = [];
+
+    semester_schedule.forEach(course => {
+      day_periods.concat(course.periods.filter(p => p.day == day));
+    });
+    console.log(day_periods);
+    commit('UPDATE_SCHEDULE', day_periods);
+  }
+};
+
+const mutations = {
+  UPDATE_SCHEDULE: (state, periods) => {
+    state.periods = periods;
     // Find current period
   }
 };
