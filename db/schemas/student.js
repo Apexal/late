@@ -26,7 +26,10 @@ const schema = new Schema({
       minlength: 1,
       maxlength: 100 /*, required: true */
     },
-    preferred: { type: String, trim: true },
+    preferred: {
+      type: String,
+      trim: true
+    },
     last: {
       type: String,
       trim: true,
@@ -46,13 +49,25 @@ const schema = new Schema({
   semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
   admin: { type: Boolean, default: false },
   setup: {
-    personal_info: { type: Boolean, default: false }, // what CMS API will give us
-    course_schedule: { type: Boolean, default: false } // what SIS and YACS will give us
+    personal_info: {
+      type: Boolean,
+      default: false
+    }, // what CMS API will give us
+    course_schedule: {
+      type: Boolean,
+      default: false
+    } // what SIS and YACS will give us
     //work_schedule: { type: Boolean, default: false } // when the student can study or work
   },
-  joined_date: { type: Date, required: true },
+  joined_date: {
+    type: Date,
+    required: true
+  },
   last_login: Date
 });
+
+schema.set('toObject', { getters: true, virtuals: true });
+schema.set('toJSON', { getters: true, virtuals: true });
 
 /* QUERY HELPERS */
 // https://mongoosejs.com/docs/guide.html#query-helpers
@@ -106,14 +121,14 @@ schema.methods.findAssignmentsDueOn = function(date) {
 schema.methods.findAssignmentsDueBy = function(date, past = false) {
   let query = {
     _student: this._id,
-    dueDate: { $lte: moment(date).endOf('day') }
+    dueDate: {
+      $lte: moment(date).endOf('day')
+    }
   };
   if (!past)
-    query.dueDate = {
-      $gte: moment()
-        .startOf('day')
-        .toDate()
-    };
+    query.dueDate.$gte = moment()
+      .startOf('day')
+      .toDate();
 
   return this.model('Assignment')
     .find(query)

@@ -1,17 +1,17 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.0.5",
+  "version": "0.0.9",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bulma": "^0.7.2",
     "cheerio": "^1.0.0-rc.2",
     "config": "^2.0.1",
-    "install": "^0.12.2",
     "koa": "^2.5.3",
     "koa-body": "^4.0.4",
     "koa-bodyparser": "^4.2.1",
@@ -19,9 +19,9 @@
     "koa-logger": "^3.2.0",
     "koa-respond": "^2.1.0",
     "koa-router": "^7.4.0",
+    "koa-send": "^5.0.0",
     "koa-session": "^5.9.0",
     "koa-static": "^5.0.0",
-    "koa-views": "^6.1.4",
     "koa2-cas": "^1.0.5",
     "moment": "^2.22.2",
     "mongoose": "^5.3.1",
@@ -30,21 +30,35 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "rpi-validator": "^1.0.1",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@vue/cli-plugin-babel": "^3.0.5",
+    "@vue/cli-plugin-eslint": "^3.0.5",
+    "@vue/cli-service": "^3.0.5",
+    "@vue/eslint-config-prettier": "^3.0.5",
     "cross-env": "^5.2.0",
-    "eslint": "^5.6.0",
-    "eslint-plugin-node": "^7.0.1",
-    "sass": "*"
+    "eslint": "^5.8.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-vue": "^5.0.0-beta.3",
+    "lint-staged": "^7.2.2",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "vue-template-compiler": "^2.5.17"
   },
   "scripts": {
-    "start": "npm run sass; cross-env NODE_ENV=production node index.js",
-    "dev": "npm run sass; cross-env NODE_ENV=development node index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "echo \"You are all set up! Now run '$ node index.js' to run the server!\"",
-    "sass": "sass ./client/sass/styles.scss client/public/css/styles.css",
-    "sass-watch": "sass --watch client/sass/:client/public/css/"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "repository": {
     "type": "git",
@@ -62,5 +76,92 @@
   "bugs": {
     "url": "https://github.com/Apexal/late/issues"
   },
-  "homepage": "https://github.com/Apexal/late#readme"
+  "homepage": "https://github.com/Apexal/late#readme",
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/recommended"
+    ],
+    "rules": {
+      "indent": [
+        "error",
+        2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "no-multiple-empty-lines": [
+        1,
+        {
+          "max": 2,
+          "maxEOF": 1
+        }
+      ],
+      "no-trailing-spaces": [
+        1,
+        {
+          "skipBlankLines": false
+        }
+      ],
+      "no-mixed-spaces-and-tabs": [
+        1
+      ],
+      "no-unused-vars": [
+        1,
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ],
+      "no-console": [
+        1,
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ]
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
 }

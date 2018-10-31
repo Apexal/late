@@ -65,7 +65,6 @@ async function postNew(ctx) {
       )}`
     );
 
-    ctx.request.flash('success', 'Added new assignment.');
     ctx.redirect('back');
   } catch (err) {
     // mapping schema fields to form fields
