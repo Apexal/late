@@ -19,3 +19,9 @@ const mutations = {
     // Find current period
   }
 };
+
+export default {
+  state,
+  actions,
+  mutations
+};
