@@ -21,7 +21,7 @@ export default {
   created() {
     this.GET_USER();
     this.GET_UPCOMING_ASSIGNMENTS();
-    //this.UPDATE_SCHEDULE();
+    this.UPDATE_SCHEDULE();
   },
   methods: {
     ...mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS', 'UPDATE_SCHEDULE'])

@@ -13,14 +13,19 @@
           </p>
           <p>Aliquam id malesuada risus. Nullam nec eros a magna placerat porta. Donec vestibulum gravida elit ut suscipit. Ut ut libero a tellus elementum cursus et vitae est. Mauris massa mauris, sollicitudin sed turpis eget, laoreet posuere justo. Nam ut arcu at ipsum molestie dictum quis sed est. Aenean tincidunt lacinia elit vitae mattis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris a ex et turpis mattis imperdiet a aliquam elit.</p>
         </div>
+
+        <Schedule />
       </div>
     </section>
   </div>
 </template>
 
 <script>
+import Schedule from '@/components/Schedule';
+
 export default {
-  name: 'Home'
+  name: 'Home',
+  components: { Schedule }
 };
 </script>
 
