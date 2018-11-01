@@ -18,10 +18,10 @@ import Footer from '@/components/Footer';
 export default {
   name: 'LATE',
   components: { Header, Footer },
-  created() {
-    this.GET_USER();
-    this.GET_UPCOMING_ASSIGNMENTS();
-    this.UPDATE_SCHEDULE();
+  async created() {
+    await this.GET_USER();
+    await this.GET_UPCOMING_ASSIGNMENTS();
+    //await this.UPDATE_SCHEDULE();
   },
   methods: {
     ...mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS', 'UPDATE_SCHEDULE'])

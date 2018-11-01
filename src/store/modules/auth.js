@@ -8,12 +8,11 @@ const getters = {
 };
 
 const actions = {
-  async GET_USER({
-    commit
-  }) {
+  async GET_USER({ dispatch, commit }) {
     const response = await axios.get('/students/user');
     const user = response.data.user[0];
     commit('SET_USER', user);
+    await dispatch('UPDATE_SCHEDULE');
   }
 };
 

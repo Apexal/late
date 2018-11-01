@@ -10,30 +10,38 @@ const state = {
 const actions = {
   UPDATE_SCHEDULE({ commit, rootState }) {
     // Reset all state values
-    console.log(rootState.auth);
-    //const semester_schedule = rootState.auth.user.current_schedule;
+    const semester_schedule = rootState.auth.user.current_schedule;
 
     const now = moment();
-    //const day = now.day();
+    const day = now.day();
 
-    let day_periods = [];
+    // Find periods for current day
+    const day_periods = semester_schedule
+      .map(course => course.periods.filter(p => p.day == day))
+      .flat();
 
-    /*
-    semester_schedule.forEach(course => {
-      day_periods.concat(course.periods.filter(p => p.day == day));
+    // Check for current class
+    const current_period = day_periods.find(p => {
+      const start = moment(p.start, 'Hmm');
+      const end = moment(p.end, 'Hmm');
+
+      return p.start < now && now < end;
     });
-    */
 
-    console.log(day_periods);
-    commit('UPDATE_SCHEDULE', now, day_periods);
+    commit('UPDATE_SCHEDULE', {
+      datetime: now,
+      current_period,
+      periods: day_periods
+    });
   }
 };
 
 const mutations = {
-  UPDATE_SCHEDULE: (state, datetime, periods) => {
-    state.date = datetime.toDate();
-    state.periods = periods;
-    // Find current period
+  UPDATE_SCHEDULE: (state, payload) => {
+    state.date = payload.datetime.toDate();
+    state.periods = payload.periods;
+    state.current_period = payload.current_period;
+    state.in_class = !!payload.current_period;
   }
 };
 
