@@ -6,7 +6,7 @@
         <span class="icon">
           <i class="fas fa-chalkboard-teacher"/>
         </span>
-        <b>{{ schedule.current_period.longname }} {{ currentPeriodType }}</b>
+        <b>{{ schedule.current_course.longname }} {{ currentPeriodType }}</b>
       </template>
     </div>
   </div>
@@ -24,10 +24,12 @@ export default {
   },
   computed: {
     schedule () { return this.$store.state.schedule; },
+    current_course () { return this.schedule.current_course; },
+    current_period () { return this.schedule.current_period; },
     dateStr () { return moment(this.schedule.date).format('YYYY-MM-DD'); },
     currentPeriodType () {
       if (!this.schedule.in_class) return;
-      switch(this.schedule.current_period.type) {
+      switch(this.current_period.type) {
       case 'TES':
         return 'Test';
       case 'LEC':
