@@ -17,7 +17,7 @@ async function loginAs(ctx) {
 }
 
 async function getUser(ctx) {
-  const user = await ctx.db.Student.find()
+  const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
 
