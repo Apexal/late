@@ -1,11 +1,14 @@
 <template>
   <div id="app">
     <Header />
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div class="columns">
+      <div class="column is-3">
+        <Sidebar />
+      </div>
+      <div class="columm">
+        <router-view />
+      </div>
     </div>
-    <router-view />
     <Footer />
   </div>
 </template>
@@ -13,11 +16,12 @@
 import { mapActions, mapMutations } from 'vuex';
 
 import Header from '@/components/Header';
+import Sidebar from '@/components/Sidebar';
 import Footer from '@/components/Footer';
 
 export default {
   name: 'LATE',
-  components: { Header, Footer },
+  components: { Header, Sidebar, Footer },
   async created() {
     await this.GET_USER();
     await this.GET_UPCOMING_ASSIGNMENTS();
