@@ -1,27 +1,35 @@
 import axios from '@/api';
 
 const state = {
-  user: {}
+  user: {},
+  isAuthenticated: false
 };
-const getters = {
-  isAuthenticated: state => !!state.user
-};
+const getters = {};
 
 const actions = {
-  async GET_USER({ dispatch, commit }) {
-    const response = await axios.get('/students/user');
-    const user = response.data.user[0];
-    commit('SET_USER', user);
-    await dispatch('UPDATE_SCHEDULE');
+  async GET_USER({
+    dispatch,
+    commit
+  }) {
+    try {
+      const response = await axios.get('/students/user');
+      const user = response.data.user[0];
+      commit('SET_USER', user);
+      await dispatch('UPDATE_SCHEDULE');
+    } catch (e) {
+      console.error('Not logged in!');
+    }
   }
 };
 
 const mutations = {
   SET_USER: (state, user) => {
     state.user = user;
+    state.isAuthenticated = true;
   },
   UNSET_USER: state => {
     state.user = {};
+    state.isAuthenticated = false;
   }
 };
 
