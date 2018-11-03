@@ -8,14 +8,18 @@ const getters = {
   getAssigmentsDueOn: state => date => {
     return state.assignments.filter(a => a.dueDate == date);
   },
-  getAssigmentsDueBy: state => date => {},
+  getAssigmentsDueBy: state => date => {
+    return state.assignments.filter(a => a.dueDate <= date);
+  },
   getAssignmentById: state => assignmentID => {
     return state.assignments.find(a => a.id == assignmentID);
   }
 };
 
 const actions = {
-  async GET_UPCOMING_ASSIGNMENTS({ commit }) {
+  async GET_UPCOMING_ASSIGNMENTS({
+    commit
+  }) {
     const response = await axios.get('/assignments/list');
     const assignments = response.data.assignments;
     commit('SET_ASSIGNMENTS', assignments);
