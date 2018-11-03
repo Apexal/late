@@ -1,7 +1,7 @@
 import axios from '@/api';
 
 const state = {
-  user: null
+  user: {}
 };
 const getters = {
   isAuthenticated: state => !!state.user
