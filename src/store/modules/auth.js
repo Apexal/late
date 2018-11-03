@@ -16,6 +16,7 @@ const actions = {
       const user = response.data.user[0];
       commit('SET_USER', user);
       await dispatch('UPDATE_SCHEDULE');
+      await dispatch('GET_UPCOMING_ASSIGNMENTS');
     } catch (e) {
       console.error('Not logged in!');
     }

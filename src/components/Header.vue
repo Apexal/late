@@ -66,7 +66,13 @@
 
           <div class="navbar-end">
             <template v-if="loggedIn">
-              <a class="navbar-item">Logged in as <b class="rcs_id">{{ user.rcs_id }}</b></a>
+              <a class="navbar-item">
+                <router-link
+                  tag="span"
+                  to="/profile">
+                  Logged in as <b class="rcs_id">{{ user.display_name }}</b>
+                </router-link>
+              </a>
               <a
                 class="navbar-item"
                 href="/auth/logout">Logout</a>
