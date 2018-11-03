@@ -92,7 +92,7 @@ export default {
       return this.$store.state.auth.user;
     },
     loggedIn() {
-      return this.$store.getters.isAuthenticated;
+      return this.$store.state.auth.isAuthenticated;
     }
   }
 };
