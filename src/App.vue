@@ -7,7 +7,7 @@
         class="column is-3">
         <Sidebar />
       </div>
-      <div class="columm">
+      <div :class="loggedIn ? 'columm' : 'container'">
         <router-view />
       </div>
     </div>
@@ -31,11 +31,9 @@ export default {
   },
   async created() {
     await this.GET_USER();
-    await this.GET_UPCOMING_ASSIGNMENTS();
-    //await this.UPDATE_SCHEDULE();
   },
   methods: {
-    ...mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS', 'UPDATE_SCHEDULE'])
+    ...mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS'])
   }
 };
 </script>
