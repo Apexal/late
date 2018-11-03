@@ -58,6 +58,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build-dev": "cross-env NODE_ENV=development npm run build",
     "lint": "vue-cli-service lint"
   },
   "repository": {
