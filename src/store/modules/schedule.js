@@ -3,8 +3,14 @@ import moment from 'moment';
 const state = {
   date: null,
   in_class: false,
-  current_course: null,
-  current_period: null,
+  current: {
+    course: {},
+    period: {}
+  },
+  next: {
+    course: {},
+    period: {}
+  },
   periods: []
 };
 
@@ -13,7 +19,7 @@ const actions = {
     // Reset all state values
     const semester_schedule = rootState.auth.user.current_schedule;
 
-    const now = moment('1610', 'Hmm');
+    const now = moment('1430', 'Hmm');
     const dateStr = now.format('YYYY-MM-DD');
     const day = now.day();
 
@@ -35,8 +41,10 @@ const actions = {
 
     commit('UPDATE_SCHEDULE', {
       datetime: now,
-      current_course,
-      current_period,
+      current: {
+        course: current_course,
+        period: current_period
+      },
       periods: day_periods
     });
   }
@@ -46,9 +54,8 @@ const mutations = {
   UPDATE_SCHEDULE: (state, payload) => {
     state.date = payload.datetime.toDate();
     state.periods = payload.periods;
-    state.current_course = payload.current_course;
-    state.current_period = payload.current_period;
-    state.in_class = !!payload.current_period;
+    state.current = payload.current;
+    state.in_class = !!payload.current.period;
   }
 };
 
