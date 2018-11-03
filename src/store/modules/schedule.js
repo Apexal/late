@@ -2,7 +2,6 @@ import moment from 'moment';
 
 const state = {
   date: null,
-  in_class: false,
   current: {
     course: {},
     period: {}
@@ -14,8 +13,15 @@ const state = {
   periods: []
 };
 
+const getters = {
+  in_class: state => !!state.current.period
+};
+
 const actions = {
-  UPDATE_SCHEDULE({ commit, rootState }) {
+  UPDATE_SCHEDULE({
+    commit,
+    rootState
+  }) {
     // Reset all state values
     const semester_schedule = rootState.auth.user.current_schedule;
 
@@ -55,12 +61,12 @@ const mutations = {
     state.date = payload.datetime.toDate();
     state.periods = payload.periods;
     state.current = payload.current;
-    state.in_class = !!payload.current.period;
   }
 };
 
 export default {
   state,
+  getters,
   actions,
   mutations
 };

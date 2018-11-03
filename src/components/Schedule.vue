@@ -1,10 +1,15 @@
 <template>
   <div class="schedule panel user-courses">
     <p class="panel-heading">Today's Schedule</p>
-    <template v-if="schedule.in_class">
+    <template v-if="in_class">
       <div class="panel-block">
         <b>Current: </b>
         <span>{{ current_course.longname }} {{ currentPeriodType }}</span>
+      </div>
+    </template>
+    <template v-else-if="is_weekend">
+      <div class="panel-block">
+        <h2 class="subtitle">It's the weekend!</h2>
       </div>
     </template>
     <template v-if="schedule.next"/>
@@ -16,19 +21,31 @@ import moment from 'moment';
 
 export default {
   name: 'Schedule',
-  data () {
-    return {
-
-    };
+  data() {
+    return {};
   },
   computed: {
-    schedule () { return this.$store.state.schedule; },
-    current_course () { return this.schedule.current.course; },
-    current_period () { return this.schedule.current.period; },
-    dateStr () { return moment(this.schedule.date).format('YYYY-MM-DD'); },
-    currentPeriodType () {
-      if (!this.schedule.in_class) return;
-      switch(this.current_period.type) {
+    schedule() {
+      return this.$store.state.schedule;
+    },
+    current_course() {
+      return this.schedule.current.course;
+    },
+    current_period() {
+      return this.schedule.current.period;
+    },
+    in_class() {
+      return this.$store.getters.in_class;
+    },
+    is_weekend() {
+      return new Date().getDay() == 6 || new Date().getDay() == 0;
+    },
+    dateStr() {
+      return moment(this.schedule.date).format('YYYY-MM-DD');
+    },
+    currentPeriodType() {
+      if (!this.in_class) return;
+      switch (this.current_period.type) {
       case 'TES':
         return 'Test';
       case 'LEC':
