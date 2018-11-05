@@ -30,7 +30,7 @@ export default {
     }
   },
   async created() {
-    await this.GET_USER();
+    //await this.GET_USER();
   },
   methods: {
     ...mapActions(['GET_USER', 'GET_UPCOMING_ASSIGNMENTS'])
