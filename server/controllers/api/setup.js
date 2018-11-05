@@ -40,6 +40,51 @@ async function setPersonalInfo(ctx) {
   }
 }
 
+/**
+ * Given the following data in the request body:
+ * - SIS PIN as sis_pin
+ *  OR
+ * - Period CRNs as crns
+ * Set the user's course schedule using the YACS API and possibly SIS scraping.
+ *
+ * @param {Koa context} ctx
+ */
+async function setCourseScheduleInfo(ctx) {
+  const body = ctx.request.body;
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
+
+  logger.info(`Setting schedule info for ${user.rcs_id}`);
+
+  const CRNs = body.pin
+    ? await scrapeSISForCRNS(user.rin, body.pin, '201809')
+    : body.crns.split(',').map(crn => crn.trim());
+
+  let course_schedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+
+  // Remove courses that YACS could not find
+  course_schedule = course_schedule.filter(course => !!course);
+
+  course_schedule.push({
+    longname: 'Other',
+    crn: '00000',
+    periods: []
+  });
+
+  user.setup.course_schedule = true;
+  ctx.state.user.current_schedule = course_schedule;
+
+  try {
+    await ctx.state.user.save();
+    ctx.ok({ updatedUser: user });
+  } catch (error) {
+    ctx.badRequest({ error });
+    logger.error(`Failed to set course schedule for ${user.rcs_id}`);
+  }
+}
+
 module.exports = {
-  setPersonalInfo
+  setPersonalInfo,
+  setCourseScheduleInfo
 };
