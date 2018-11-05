@@ -18,14 +18,11 @@ const getters = {
 };
 
 const actions = {
-  UPDATE_SCHEDULE({
-    commit,
-    rootState
-  }) {
+  UPDATE_SCHEDULE({ commit, rootState }) {
     // Reset all state values
     const semester_schedule = rootState.auth.user.current_schedule;
 
-    const now = moment('1430', 'Hmm');
+    const now = moment(); //moment('1430', 'Hmm');
     const dateStr = now.format('YYYY-MM-DD');
     const day = now.day();
 

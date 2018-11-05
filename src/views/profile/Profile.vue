@@ -12,7 +12,17 @@
             :class="{ 'is-active' : currentForm==s.component}">
             <a
               href="#"
-              @click="currentForm=s.component">{{ s.label }}</a>
+              @click="currentForm=s.component">
+              {{ s.label }}
+              <span class="icon">
+                <i
+                  v-if="user.setup[s.setup_check]"
+                  class="fas fa-check"/>
+                <i
+                  v-else
+                  class="fas fa-times"/>
+              </span>
+            </a>
           </li>
         </ul>
       </nav>
@@ -38,6 +48,9 @@ export default {
         { label: 'Course Schedule', component: 'CourseScheduleForm', setup_check: 'course_schedule' }
       ]
     };
+  },
+  computed: {
+    user () { return this.$store.state.auth.user; }
   }
 };
 </script>
