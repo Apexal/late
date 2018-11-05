@@ -7,12 +7,12 @@
         aria-label="breadcrumbs">
         <ul>
           <li
-            v-for="(componentName, name) in setups"
-            :key="name"
-            :class="{ &quot;is-active&quot;: currentForm==componentName}">
+            v-for="s in setups"
+            :key="s.component"
+            :class="{ 'is-active' : currentForm==s.component}">
             <a
               href="#"
-              @click="currentForm=componentName">{{ name }}</a>
+              @click="currentForm=s.component">{{ s.label }}</a>
           </li>
         </ul>
       </nav>
@@ -25,16 +25,18 @@
 
 <script>
 import PersonalInfoForm from './PersonalInfoForm';
+import CourseScheduleForm from './CourseScheduleForm';
 
 export default {
   name: 'Profile',
-  components: { PersonalInfoForm },
+  components: { PersonalInfoForm, CourseScheduleForm },
   data() {
     return {
       currentForm: '',
-      setups: {
-        'Personal Info': 'PersonalInfoForm'
-      }
+      setups: [
+        { label: 'Personal Info', component: 'PersonalInfoForm', setup_check: 'personal_info' },
+        { label: 'Course Schedule', component: 'CourseScheduleForm', setup_check: 'course_schedule' }
+      ]
     };
   }
 };

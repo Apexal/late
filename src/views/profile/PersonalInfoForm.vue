@@ -1,12 +1,14 @@
 <template>
   <div
-    v-if="isAuthenticated"
-    id="personalInfoForm">
+    id="personal-info-form">
     <form @submit.prevent="save">
       <div class="field">
-        <label class="label">First Name</label>
+        <label
+          class="label"
+          for="first-name">First Name</label>
         <div class="control">
           <input
+            id="first-name"
             v-model="first_name"
             class="input"
             type="text"
@@ -15,9 +17,12 @@
       </div>
 
       <div class="field">
-        <label class="label">Last Name</label>
+        <label
+          class="label"
+          for="last-name">Last Name</label>
         <div class="control">
           <input
+            id="last-name"
             v-model="last_name"
             class="input"
             type="text"
@@ -26,9 +31,12 @@
       </div>
 
       <div class="field">
-        <label class="label">RIN</label>
+        <label
+          class="label"
+          for="rin">RIN</label>
         <div class="control">
           <input
+            id="rin"
             v-model="rin"
             class="input"
             type="text"
@@ -72,7 +80,7 @@ export default {
         grad_year: this.grad_year
       });
 
-      this.$store.commit('SET_USER', request.data.updatedUser);
+      this.$store.dispatch('SET_USER', request.data.updatedUser);
     }
   }
 };

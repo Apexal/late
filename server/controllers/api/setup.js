@@ -1,4 +1,6 @@
 const logger = require('../../logger');
+const { scrapeSISForCRNS } = require('../../scraping');
+const { getSectionInfoFromCRN } = require('../../yacs_api');
 
 /**
  * Given personal info in the request body:
@@ -73,10 +75,10 @@ async function setCourseScheduleInfo(ctx) {
   });
 
   user.setup.course_schedule = true;
-  ctx.state.user.current_schedule = course_schedule;
+  user.current_schedule = course_schedule;
 
   try {
-    await ctx.state.user.save();
+    await user.save();
     ctx.ok({ updatedUser: user });
   } catch (error) {
     ctx.badRequest({ error });

@@ -11,12 +11,15 @@ const actions = {
     try {
       const response = await axios.get('/students/user');
       const user = response.data.user;
-      commit('SET_USER', user);
-      await dispatch('UPDATE_SCHEDULE');
-      await dispatch('GET_UPCOMING_ASSIGNMENTS');
+      await dispatch('SET_USER', user);
     } catch (e) {
       console.error('Not logged in!');
     }
+  },
+  async SET_USER({ dispatch, commit }, user) {
+    commit('SET_USER', user);
+    await dispatch('UPDATE_SCHEDULE');
+    await dispatch('GET_UPCOMING_ASSIGNMENTS');
   }
 };
 
