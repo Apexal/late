@@ -1,6 +1,8 @@
 <template>
-  <div id="personalInfoForm">
-    <form>
+  <div
+    v-if="isAuthenticated"
+    id="personalInfoForm">
+    <form @submit.prevent="save">
       <div class="field">
         <label class="label">First Name</label>
         <div class="control">
@@ -34,7 +36,7 @@
         </div>
       </div>
 
-      <button @click="save">Save</button>
+      <button class="button is-primary">Save</button>
     </form>
   </div>
 </template>
@@ -44,25 +46,33 @@ import API from '../../api';
 
 export default {
   name: 'PersonalInfoForm',
-  data () {
+  data() {
     return {
-      first_name: '',
-      last_name: '',
+      first_name: this.$store.state.auth.user.name.first,
+      last_name: this.$store.state.auth.user.name.last,
       rin: this.$store.state.auth.user.rin,
       grad_year: this.$store.state.auth.user.grad_year
     };
   },
+
   computed: {
-    user () { return this.$store.state.auth.user; }
+    isAuthenticated() {
+      return this.$store.state.auth.isAuthenticated;
+    },
+    user() {
+      return this.$store.state.auth.user;
+    }
   },
   methods: {
-    async save () {
-      const updatedUser = await API.post('/setup/personalinfo', {
+    async save() {
+      const request = await API.post('/setup/personalinfo', {
         first_name: this.first_name,
         last_name: this.last_name,
         rin: this.rin,
         grad_year: this.grad_year
       });
+
+      this.$store.commit('SET_USER', request.data.updatedUser);
     }
   }
 };
