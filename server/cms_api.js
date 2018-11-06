@@ -1,6 +1,5 @@
 const request = require('request-promise');
 const logger = require('./logger');
-const config = require('config');
 
 const CMS_API_RCS_ID_BASE_URL = 'https://cms.union.rpi.edu/api/users/view_rcs/';
 

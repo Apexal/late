@@ -1,12 +1,11 @@
-const config = require('config');
 const CAS = require('koa2-cas');
 const logger = require('./logger');
 
 const cas = new CAS({
   cas_url: 'https://cas-auth.rpi.edu/cas',
-  service_url: `http://${config.get('server.base_url')}:${config.get(
-    'server.port'
-  )}`,
+  service_url: `http://${process.env.SERVER_BASE_URL}:${
+    process.env.SERVER_PORT
+  }`,
   cas_version: '3.0'
 });
 

@@ -1,17 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const config = require('config');
 
 const logger = require('../server/logger');
 
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-const dbURL = `mongodb://${config.get('mongo.user')}:${config.get(
-  'mongo.password'
-)}@${config.get('mongo.host')}:${config.get('mongo.port')}/${config.get(
-  'mongo.db'
-)}`;
+const dbURL = process.env.MONGODB_URI;
 
 let models = {};
 
