@@ -32,25 +32,24 @@
           id="top-navbar"
           class="navbar-menu container">
           <div class="navbar-start">
-            <li class="navbar-item">
-              <router-link to="/dashboard">Dashboard</router-link>
-            </li>
+            <router-link
+              class="navbar-item"
+              to="/dashboard">Dashboard</router-link>
+            <router-link
+              class="navbar-item"
+              to="/about">About</router-link>
 
-            <li class="navbar-item">
-              <router-link to="/about">About</router-link>
-            </li>
-
-            <!--
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
-                More
+                Assignments
               </a>
 
-
               <div class="navbar-dropdown">
-                <a class="navbar-item">
-                  Dropdown
-                </a>
+                <router-link
+                  class="navbar-item"
+                  to="/assignments">
+                  List
+                </router-link>
 
                 <a class="navbar-item">
                   Contact
@@ -61,18 +60,15 @@
                 </a>
               </div>
             </div>
-            -->
           </div>
 
           <div class="navbar-end">
             <template v-if="loggedIn">
-              <a class="navbar-item">
-                <router-link
-                  tag="span"
-                  to="/profile">
-                  Logged in as <b class="rcs_id">{{ user.display_name }}</b>
-                </router-link>
-              </a>
+              <router-link
+                class="navbar-item"
+                to="/profile">
+                Logged in as <b class="rcs_id">{{ user.display_name }}</b>
+              </router-link>
               <a
                 class="navbar-item"
                 href="/auth/logout">Logout</a>
