@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import API from '../../api';
 
 export default {
@@ -115,6 +116,8 @@ export default {
       );
       this.title = '';
       this.description = '';
+
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment due ${moment(this.due_date).fromNow()}.`});
     }
   }
 };

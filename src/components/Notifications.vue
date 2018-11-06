@@ -1,5 +1,7 @@
 <template>
-  <div class="notifications">
+  <div
+    v-show="notifications.length > 0"
+    class="notifications">
     <div
       v-for="(n, index) in notifications"
       :key="index"
