@@ -1,5 +1,5 @@
 <template>
-  <div id="notfound">
+  <div class="not-found">
     <section class="section">
       <h1 class="title">Page Not Found</h1>
       <div class="content">
@@ -10,8 +10,7 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: 'NotFound'
+};
 </script>
-
-<style lang='scss' scoped>
-</style>

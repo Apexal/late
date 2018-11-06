@@ -1,5 +1,5 @@
 <template>
-  <div id="home">
+  <div class="home">
     <section class="section">
       <h2 class="title">Welcome to LATE</h2><img
         id="late-image"

@@ -1,5 +1,5 @@
 <template>
-  <div id="dasboard">
+  <div class="dasboard">
     <ul>
       <li
         v-for="a in assignments"
@@ -17,10 +17,8 @@
 <script>
 export default {
   name: 'Dashboard',
-  data () {
-    return {
-
-    };
+  data() {
+    return {};
   },
   computed: {
     assignments() {
