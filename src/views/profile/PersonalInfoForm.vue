@@ -5,6 +5,21 @@
       <div class="field">
         <label
           class="label"
+          for="rcs-id">RCS ID</label>
+        <div class="control">
+          <input
+            id="rcs-id"
+            :value="user.rcs_id"
+            class="input"
+            type="text"
+            placeholder="RCS ID"
+            disabled>
+        </div>
+      </div>
+
+      <div class="field">
+        <label
+          class="label"
           for="first-name">First Name</label>
         <div class="control">
           <input
@@ -41,6 +56,23 @@
             class="input"
             type="text"
             placeholder="RIN">
+        </div>
+      </div>
+
+      <div class="field">
+        <label
+          for="grad-year"
+          class="label">Graduation Year</label>
+        <div class="control">
+          <input
+            id="grad-year"
+            v-model.number="grad_year"
+            type="number"
+            min="2000"
+            max="3000"
+            step="1"
+            class="input"
+            placeholder="2022">
         </div>
       </div>
 

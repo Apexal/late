@@ -42,7 +42,7 @@ export default {
   components: { PersonalInfoForm, CourseScheduleForm },
   data() {
     return {
-      currentForm: '',
+      currentForm: 'PersonalInfoForm',
       setups: [
         { label: 'Personal Info', component: 'PersonalInfoForm', setup_check: 'personal_info' },
         { label: 'Course Schedule', component: 'CourseScheduleForm', setup_check: 'course_schedule' }
