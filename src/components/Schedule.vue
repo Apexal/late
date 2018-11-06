@@ -13,6 +13,11 @@
       </div>
     </template>
     <template v-if="schedule.next"/>
+    <template v-if="classes_over">
+      <div class="panel-block">
+        <h2 class="subtitle">Classes are over for today!</h2>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -36,6 +41,9 @@ export default {
     },
     in_class() {
       return this.$store.getters.in_class;
+    },
+    classes_over() {
+      return this.$store.getters.classes_over;
     },
     is_weekend() {
       return new Date().getDay() == 6 || new Date().getDay() == 0;

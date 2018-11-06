@@ -7,7 +7,9 @@ const state = {
 const getters = {};
 
 const actions = {
-  async GET_USER({ dispatch, commit }) {
+  async GET_USER({
+    dispatch
+  }) {
     try {
       const response = await axios.get('/students/user');
       const user = response.data.user;
@@ -16,7 +18,10 @@ const actions = {
       console.error('Not logged in!');
     }
   },
-  async SET_USER({ dispatch, commit }, user) {
+  async SET_USER({
+    dispatch,
+    commit
+  }, user) {
     commit('SET_USER', user);
     await dispatch('UPDATE_SCHEDULE');
     await dispatch('GET_UPCOMING_ASSIGNMENTS');
