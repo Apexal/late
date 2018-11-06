@@ -2,6 +2,7 @@
   <aside
     id="sidebar"
     class="menu">
+    <AddAssignmentModal />
     <Schedule />
     <div class="panel user-courses">
       <p class="panel-heading">Your Courses</p>
@@ -20,12 +21,15 @@
 
 <script>
 import Schedule from '@/components/Schedule';
+import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
 
 export default {
   name: 'Sidebar',
-  components: { Schedule },
+  components: { AddAssignmentModal, Schedule },
   computed: {
-    courses () { return this.$store.state.auth.user.current_schedule; }
+    courses() {
+      return this.$store.state.auth.user.current_schedule;
+    }
   }
 };
 </script>

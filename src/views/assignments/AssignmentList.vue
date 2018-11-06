@@ -2,7 +2,6 @@
   <div class="assignment-list">
     <section class="section">
       <h1 class="title">All Assignments</h1>
-
       <div class="upcoming-assignments">
         <div
           v-for="(assignments, date) in assignmentsGroupedByDueDate"

@@ -38,6 +38,13 @@ const actions = {
     const response = await axios.get('/assignments/list');
     const assignments = response.data.assignments;
     commit('SET_ASSIGNMENTS', assignments);
+  },
+  async ADD_ASSIGNMENT({
+    dispatch,
+    commit
+  }, assignment) {
+    commit('ADD_ASSIGNMENT', assignment);
+    await dispatch('GET_UPCOMING_ASSIGNMENTS');
   }
 };
 
