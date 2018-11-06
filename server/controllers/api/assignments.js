@@ -84,7 +84,9 @@ async function createAssignment(ctx) {
   try {
     await newAssignment.save();
 
-    logger.info(`Created new assigment '${newAssignment.title}' for ${user.rcs_id}`);
+    logger.info(
+      `Created new assigment '${newAssignment.title}' for ${user.rcs_id}`
+    );
 
     ctx.ok({
       createdAssignment: newAssignment
@@ -140,13 +142,17 @@ async function removeAssignment(ctx) {
       _student: user._id
     });
 
+    removedAssignment.remove();
+
     if (!removedAssignment) throw '';
   } catch (e) {
     logger.error(`Failed to remove assignment for  ${user.rcs_id}`);
     return ctx.notFound('Failed to find assignment.');
   }
 
-  logger.info(`Removed assignment '${removedAssignment.title}' for ${user.rcs_id}`);
+  logger.info(
+    `Removed assignment '${removedAssignment.title}' for ${user.rcs_id}`
+  );
 
   ctx.ok({
     removedAssignment
