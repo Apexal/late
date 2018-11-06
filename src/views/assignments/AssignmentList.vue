@@ -10,9 +10,10 @@
           <h3 class="subtitle is-4">{{ toDateShortString(date) }}</h3>
           <div
             v-for="a in assignments"
-            :key="a.id"
+            :key="a._id"
             class="box">
-            <b class="assignment-title">{{ a.title }}
+            <b class="assignment-title">
+              <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
               <span
                 v-if="a.priority >= 7"
                 class="tag is-danger"

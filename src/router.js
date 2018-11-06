@@ -39,6 +39,7 @@ const router = new Router({
     },
     {
       path: '/assignments/:assignmentID',
+      name: 'assignment-overview',
       component: () => import('@/views/assignments/AssignmentOverview.vue'),
       meta: {
         requiresAuth: true

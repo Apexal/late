@@ -3,7 +3,7 @@
     <ul>
       <li
         v-for="a in assignments"
-        :key="a.id"
+        :key="a._id"
         class="box">
         <b>{{ a.title }}</b>
         <blockquote>

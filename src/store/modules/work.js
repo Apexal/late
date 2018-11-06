@@ -43,6 +43,11 @@ const actions = {
   async ADD_ASSIGNMENT({ dispatch, commit }, assignment) {
     commit('ADD_ASSIGNMENT', assignment);
     await dispatch('GET_UPCOMING_ASSIGNMENTS');
+  },
+  async REMOVE_ASSIGNMENT({ dispatch, commit }, assignmentID) {
+    commit('REMOVE_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
+    const request = await axios.post(`/assignments/a/${assignmentID}/remove`);
+    await dispatch('GET_UPCOMING_ASSIGNMENTS');
   }
 };
 
@@ -54,7 +59,7 @@ const mutations = {
     state.assignments.push(assignment);
   },
   REMOVE_ASSIGNMENT: (state, assignmentID) => {
-    state.assignments = state.assignments.filter(a => a.id != assignmentID);
+    state.assignments = state.assignments.filter(a => a._id != assignmentID);
   }
 };
 

@@ -1,8 +1,14 @@
 <template>
   <div class="assignment-overview">
-    <template v-if="!assignment">
+    <section
+      v-if="!assignment"
+      class="section">
       <h1 class="title">Assignment Not Found</h1>
-    </template>
+      <router-link
+        to="/assignments"
+        tag="button"
+        class="button is-primary">Assignment List</router-link>
+    </section>
     <section
       v-else
       class="section">
@@ -34,7 +40,9 @@ export default {
   methods: {
     remove () {
       if (!confirm(`Are you sure you want to remove assignment ${this.assignment.title}?`)) return;
-
+      this.$store.dispatch('REMOVE_ASSIGNMENT', this.assignment._id);
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Successfully removed assignment.' });
+      this.$router.push('/assignments');
     }
   }
 };
