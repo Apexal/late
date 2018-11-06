@@ -39,27 +39,30 @@
               class="navbar-item"
               to="/about">About</router-link>
 
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
-                Assignments
-              </a>
-
-              <div class="navbar-dropdown">
-                <router-link
-                  class="navbar-item"
-                  to="/assignments">
-                  List
-                </router-link>
-
-                <a class="navbar-item">
-                  Contact
+            <template v-if="loggedIn">
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                  Assignments
                 </a>
-                <hr class="navbar-divider">
-                <a class="navbar-item">
-                  Report an issue
-                </a>
+
+                <div class="navbar-dropdown">
+                  <router-link
+                    class="navbar-item"
+                    to="/assignments">
+                    List
+                  </router-link>
+
+                  <a class="navbar-item">
+                    Contact
+                  </a>
+                  <hr class="navbar-divider">
+                  <a class="navbar-item">
+                    Report an issue
+                  </a>
+                </div>
               </div>
-            </div>
+            </template>
+
           </div>
 
           <div class="navbar-end">
