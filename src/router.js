@@ -28,6 +28,14 @@ const router = new Router({
     }
   },
   {
+    path: '/assignments',
+    name: 'assignments',
+    component: () => import('@/views/assignments/AssignmentList.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/profile',
     name: 'profile',
     component: () => import('@/views/profile/Profile.vue'),

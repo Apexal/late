@@ -1,4 +1,5 @@
 import axios from '@/api';
+import moment from 'moment';
 
 const state = {
   assignments: []
@@ -13,6 +14,20 @@ const getters = {
   },
   getAssignmentById: state => assignmentID => {
     return state.assignments.find(a => a.id == assignmentID);
+  },
+  assignmentsGroupedByDueDate: state => {
+    const grouped = {};
+
+    for (let a of state.assignments) {
+      const day = moment(a.dueDate)
+        .startOf('day')
+        .toDate();
+      if (!grouped[day]) grouped[day] = [];
+
+      grouped[day].push(a);
+    }
+
+    return grouped;
   }
 };
 
