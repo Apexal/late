@@ -32,7 +32,7 @@
                       required>
                       <option
                         v-for="c in courses"
-                        :key="c.listing_id"
+                        :key="c.crn"
                         :value="c.crn">{{ c.longname }}</option>
                     </select>
                   </div>

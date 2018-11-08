@@ -65,12 +65,10 @@
     </form>
 
     <div class="course-list">
-      <div
+      <Course
         v-for="c in courses"
-        :key="c.listing_id"
-        class="box">
-        {{ c.longname }}
-      </div>
+        :key="c.crn"
+        :course="c" />
     </div>
   </div>
 </template>
@@ -78,8 +76,11 @@
 <script>
 import API from '../../api';
 
+import Course from '@/components/profile/Course';
+
 export default {
   name: 'CourseScheduleForm',
+  components: { Course },
   data() {
     return {
       method: 'sis',
