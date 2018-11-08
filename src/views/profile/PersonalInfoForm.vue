@@ -17,62 +17,72 @@
         </div>
       </div>
 
-      <div class="field">
-        <label
-          class="label"
-          for="first-name">First Name</label>
-        <div class="control">
-          <input
-            id="first-name"
-            v-model="first_name"
-            class="input"
-            type="text"
-            placeholder="First Name">
+      <div class="columns is-multiline">
+        <div class="column is-half">
+          <div class="field">
+            <label
+              class="label"
+              for="first-name">First Name</label>
+            <div class="control">
+              <input
+                id="first-name"
+                v-model="first_name"
+                class="input"
+                type="text"
+                placeholder="First Name">
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label
-          class="label"
-          for="last-name">Last Name</label>
-        <div class="control">
-          <input
-            id="last-name"
-            v-model="last_name"
-            class="input"
-            type="text"
-            placeholder="Last Name">
+        <div class="column is-half">
+          <div class="field">
+            <label
+              class="label"
+              for="last-name">Last Name</label>
+            <div class="control">
+              <input
+                id="last-name"
+                v-model="last_name"
+                class="input"
+                type="text"
+                placeholder="Last Name">
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label
-          class="label"
-          for="rin">RIN</label>
-        <div class="control">
-          <input
-            id="rin"
-            v-model="rin"
-            class="input"
-            type="text"
-            placeholder="RIN">
+        <div class="column is-half">
+          <div class="field">
+            <label
+              class="label"
+              for="rin">RIN</label>
+            <div class="control">
+              <input
+                id="rin"
+                v-model="rin"
+                class="input"
+                type="text"
+                placeholder="RIN">
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label
-          for="grad-year"
-          class="label">Graduation Year</label>
-        <div class="control">
-          <input
-            id="grad-year"
-            v-model.number="grad_year"
-            type="number"
-            min="2000"
-            max="3000"
-            step="1"
-            class="input"
-            placeholder="2022">
+        <div class="column">
+          <div class="field">
+            <label
+              for="grad-year"
+              class="label">Graduation Year</label>
+            <div class="control">
+              <input
+                id="grad-year"
+                v-model.number="grad_year"
+                type="number"
+                min="2000"
+                max="3000"
+                step="1"
+                class="input"
+                placeholder="2022">
+            </div>
+          </div>
         </div>
       </div>
 
