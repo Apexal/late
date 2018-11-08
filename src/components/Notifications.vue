@@ -5,7 +5,8 @@
     <div
       v-for="(n, index) in notifications"
       :key="index"
-      class="notification is-danger"><button
+      :class="'is-' + n.type"
+      class="notification"><button
         class="delete"
         @click="remove(index)"/>{{ n.description }}</div>
   </div>
