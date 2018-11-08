@@ -3,33 +3,62 @@
     <form
       class="box"
       @submit.prevent="save">
-      <div class="field">
-        <label
-          for="pin"
-          class="label">SIS PIN</label>
-        <div class="control">
-          <input
-            id="pin"
-            v-model="pin"
-            type="password"
-            class="input">
+      <h2 class="subtitle">Automatically Set Your Course Schedule</h2>
+      <div class="columns">
+        <div class="field column is-narrow">
+          <label
+            for="method"
+            class="label">Method</label>
+          <div class="control">
+            <select
+              id="method"
+              v-model="method"
+              name="method"
+              class="control">
+              <option value="sis">SIS</option>
+              <option value="crn">CRNs</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label
-          class="label"
-          for="crns">Directly Enter Your Course CRNs</label>
-        <p class="help">These are found in SIS under 'View Weekly Schedule'.</p>
-        <div class="control">
-          <input
-            id="crns"
-            v-model="crns"
-            class="input"
-            name="crns"
-            type="text"
-            placeholder="123456, 654321, ...">
+        <div
+          v-if="method == 'sis'"
+          class="sis-method column">
+          <div class="field">
+            <label
+              for="pin"
+              class="label">SIS PIN</label>
+            <p class="help">Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.</p>
+            <div class="control">
+              <input
+                id="pin"
+                v-model="pin"
+                type="password"
+                class="input"
+                placeholder="Enter your SIS password.">
+            </div>
+          </div>
         </div>
+        <div
+          v-else-if="method == 'crn'"
+          class="crn-method column">
+          <div class="field">
+            <label
+              class="label"
+              for="crns">Directly Enter Your Course CRNs</label>
+            <p class="help">These are found in SIS under 'View Weekly Schedule'.</p>
+            <div class="control">
+              <input
+                id="crns"
+                v-model="crns"
+                class="input"
+                name="crns"
+                type="text"
+                placeholder="123456, 654321, ...">
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <button class="button is-primary">{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
@@ -53,6 +82,7 @@ export default {
   name: 'CourseScheduleForm',
   data() {
     return {
+      method: 'sis',
       pin: '',
       crns: this.$store.state.auth.user.current_schedule
         .map(c => c.crn)
