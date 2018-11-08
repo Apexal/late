@@ -51,7 +51,11 @@ const router = new Router({
       component: () => import('@/views/profile/Profile.vue'),
       meta: {
         requiresAuth: true
-      }
+      },
+      children: [
+        { path: 'personalinfo', component: () => import('@/views/profile/PersonalInfoForm.vue') },
+        { path: 'courseschedule', component: () => import('@/views/profile/CourseScheduleForm.vue') }
+      ]
     },
     {
       path: '*',

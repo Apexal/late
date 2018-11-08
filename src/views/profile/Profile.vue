@@ -6,13 +6,12 @@
         class="breadcrumb"
         aria-label="breadcrumbs">
         <ul>
-          <li
+          <router-link
             v-for="s in setups"
             :key="s.component"
-            :class="{ 'is-active' : currentForm==s.component}">
-            <a
-              href="#"
-              @click="currentForm=s.component">
+            :to="{ path: s.link }"
+            tag="li">
+            <a>
               {{ s.label }}
               <span class="icon">
                 <i
@@ -23,29 +22,24 @@
                   class="fas fa-times"/>
               </span>
             </a>
-          </li>
+          </router-link>
         </ul>
       </nav>
       <keep-alive>
-        <component :is="currentForm"/>
+        <router-view/>
       </keep-alive>
     </section>
   </div>
 </template>
 
 <script>
-import PersonalInfoForm from './PersonalInfoForm';
-import CourseScheduleForm from './CourseScheduleForm';
-
 export default {
   name: 'Profile',
-  components: { PersonalInfoForm, CourseScheduleForm },
   data() {
     return {
-      currentForm: 'PersonalInfoForm',
       setups: [
-        { label: 'Personal Info', component: 'PersonalInfoForm', setup_check: 'personal_info' },
-        { label: 'Course Schedule', component: 'CourseScheduleForm', setup_check: 'course_schedule' }
+        { label: 'Personal Info', link: '/profile/personalinfo', setup_check: 'personal_info' },
+        { label: 'Course Schedule', link: '/profile/courseschedule', setup_check: 'course_schedule' }
       ]
     };
   },
