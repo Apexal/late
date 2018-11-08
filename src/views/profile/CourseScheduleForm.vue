@@ -32,7 +32,7 @@
             <div class="control">
               <input
                 id="pin"
-                v-model="pin"
+                v-model.trim="pin"
                 type="password"
                 class="input"
                 placeholder="Enter your SIS password.">
@@ -50,7 +50,7 @@
             <div class="control">
               <input
                 id="crns"
-                v-model="crns"
+                v-model.trim="crns"
                 class="input"
                 name="crns"
                 type="text"

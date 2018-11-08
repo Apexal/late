@@ -29,7 +29,8 @@
                 v-model="first_name"
                 class="input"
                 type="text"
-                placeholder="First Name">
+                placeholder="First Name"
+                required>
             </div>
           </div>
         </div>
@@ -45,7 +46,8 @@
                 v-model="last_name"
                 class="input"
                 type="text"
-                placeholder="Last Name">
+                placeholder="Last Name"
+                required>
             </div>
           </div>
         </div>
@@ -61,7 +63,8 @@
                 v-model="rin"
                 class="input"
                 type="text"
-                placeholder="RIN">
+                placeholder="RIN"
+                required>
             </div>
           </div>
         </div>
@@ -80,7 +83,8 @@
                 max="3000"
                 step="1"
                 class="input"
-                placeholder="2022">
+                placeholder="2022"
+                required>
             </div>
           </div>
         </div>
