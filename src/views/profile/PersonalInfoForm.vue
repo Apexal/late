@@ -86,7 +86,7 @@
         </div>
       </div>
 
-      <button class="button is-primary">Save</button>
+      <button class="button is-primary">Save and Continue</button>
     </form>
   </div>
 </template>
@@ -123,7 +123,8 @@ export default {
       });
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Set personal info!'});
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!'});
+      this.$router.push('/profile/courseschedule');
     }
   }
 };

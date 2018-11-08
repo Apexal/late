@@ -108,7 +108,7 @@ export default {
       this.$store.dispatch('SET_USER', request.data.updatedUser);
       this.$store.commit('ADD_NOTIFICATION', {
         type: 'success',
-        description: 'Set course schedule!'
+        description: 'Got course schedule!'
       });
     }
   }
