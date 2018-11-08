@@ -1,6 +1,8 @@
 <template>
   <div class="course-schedule-form">
-    <form @submit.prevent="save">
+    <form
+      class="box"
+      @submit.prevent="save">
       <div class="field">
         <label
           for="pin"
@@ -30,8 +32,17 @@
         </div>
       </div>
 
-      <button class="button is-primary">Save</button>
+      <button class="button is-primary">{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
     </form>
+
+    <div class="course-list">
+      <div
+        v-for="c in courses"
+        :key="c.listing_id"
+        class="box">
+        {{ c.longname }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -40,26 +51,34 @@ import API from '../../api';
 
 export default {
   name: 'CourseScheduleForm',
-  data () {
+  data() {
     return {
       pin: '',
-      crns: this.$store.state.auth.user.current_schedule.map(c => c.crn).join(',')
+      crns: this.$store.state.auth.user.current_schedule
+        .map(c => c.crn)
+        .join(',')
     };
   },
   computed: {
     user() {
       return this.$store.state.auth.user;
+    },
+    courses() {
+      return this.user.current_schedule;
     }
   },
   methods: {
-    async save () {
+    async save() {
       const request = await API.post('/setup/courseschedule', {
         pin: this.pin,
         crns: this.crns
       });
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Set course schedule!'});
+      this.$store.commit('ADD_NOTIFICATION', {
+        type: 'success',
+        description: 'Set course schedule!'
+      });
     }
   }
 };
