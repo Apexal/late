@@ -4,16 +4,27 @@
     class="menu">
     <AddAssignmentModal />
     <Schedule />
-    <div class="panel user-courses">
-      <p class="panel-heading">Your Courses</p>
+    <div class="panel sidebar-upcoming-assignments">
+      <p class="panel-heading">Pressing Assignments</p>
       <div
-        v-for="course in courses"
-        :key="course.listing_id"
-        class="panel-block course-block">
-        <span
-          :title="'Section ' + course.section_id"
-          class="period-id has-text-grey-light">{{ course.section_id }} </span>
-        <span>{{ course.longname }}</span>
+        v-for="a in pressing"
+        :key="a._id"
+        class="assignment panel-block">
+        <router-link
+          :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+          tag="span"
+          class="full-width">
+          {{ a.title }}
+          <span
+            v-if="a.priority >= 7"
+            class="tag is-danger priority-tag">!</span>
+          <small class="is-pulled-right has-text-grey">{{ getCourseFromCRN(a.courseCRN).longname }}</small>
+        </router-link>
+      </div>
+      <div class="panel-block">
+        <router-link
+          tag="b"
+          to="/assignments">View All Assignments</router-link>
       </div>
     </div>
   </aside>
@@ -27,8 +38,11 @@ export default {
   name: 'Sidebar',
   components: { AddAssignmentModal, Schedule },
   computed: {
-    courses() {
-      return this.$store.state.auth.user.current_schedule;
+    pressing () { return this.$store.getters.pressingAssignments(5); }
+  },
+  methods: {
+    getCourseFromCRN(crn) {
+      return this.$store.getters.getCourseFromCRN(crn);
     }
   }
 };
@@ -38,11 +52,14 @@ export default {
 #sidebar {
   padding: 15px;
 
-  .user-courses {
-    .course-block {
-      .period-id {
-        margin-right: 5px;
-      }
+  .full-width {
+    width: 100%;
+  }
+
+  .assignment {
+    cursor: pointer;
+    .priority-tag {
+      margin-left: 5px;
     }
   }
 }
