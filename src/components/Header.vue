@@ -43,6 +43,7 @@
               <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
                   Assignments
+                  <span class="tag is-warning assignment-count">{{ assignmentCount }}</span>
                 </a>
 
                 <div class="navbar-dropdown">
@@ -98,6 +99,9 @@ export default {
     },
     loggedIn() {
       return this.$store.state.auth.isAuthenticated;
+    },
+    assignmentCount() {
+      return this.$store.state.work.assignments.length;
     }
   }
 };
@@ -120,6 +124,12 @@ export default {
       }
       background-color: white;
     }
+  }
+
+  span.tag.assignment-count {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 4px;
   }
 }
 </style>
