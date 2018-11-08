@@ -52,10 +52,108 @@
                       type="text"
                       class="input"
                       maxlength="200"
+                      placeholder="Short descriptive title"
                       required>
                   </div>
                 </div>
               </div>
+
+              <div class="column">
+                <div class="field">
+                  <label
+                    for="description"
+                    class="label">Description</label>
+                  <div class="control">
+                    <textarea
+                      id="description"
+                      v-model="description"
+                      name="description"
+                      cols="30"
+                      rows="10"
+                      class="input"
+                      placeholder="Long description of the assignment here!"/>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <label
+                    for="due-date"
+                    class="label">Due Date</label>
+                  <div class="control">
+                    <input
+                      id="due-date"
+                      v-model="due_date"
+                      type="date"
+                      name="due_date">
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <label
+                    for="time"
+                    class="label">Due Time</label>
+                  <div class="control">
+                    <input
+                      id="time"
+                      v-model="time"
+                      type="time"
+                      name="time">
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <label
+                    for="time-estimate"
+                    class="label">Time Estimate (hrs)</label>
+                  <input
+                    id="time-estimate"
+                    v-model.number="time_estimate"
+                    type="number"
+                    name="time-estimate"
+                    min="0.5"
+                    step="0.5">
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="field">
+                  <label
+                    for="priority"
+                    class="label">Priority</label>
+                  <input
+                    id="priority"
+                    v-model.number="priority"
+                    list="priorities"
+                    type="range"
+                    min="1"
+                    max="10"
+                    name="priority"
+                    step="1"
+                    placeholder="0 - 10">
+                  <datalist id="priorities">
+                    <option value="1" />
+                    <option value="2" />
+                    <option value="3" />
+                    <option value="4" />
+                    <option value="5" />
+                    <option value="6" />
+                    <option value="7" />
+                    <option value="8" />
+                    <option value="9" />
+                    <option value="10" />
+                  </datalist>
+                </div>
+              </div>
+
             </div>
           </form>
 
@@ -87,9 +185,9 @@ export default {
       open: false,
       course_crn: '',
       title: '',
-      description: 'from VueJS',
-      due_date: new Date(),
-      time: 'class',
+      description: '',
+      due_date: moment().add(1, 'days').format('YYYY-MM-DD'),
+      time: '08:00',
       time_estimate: 1,
       priority: 5
     };
@@ -105,6 +203,7 @@ export default {
         title: this.title,
         description: this.description,
         due_date: this.due_date,
+        time: this.time,
         course_crn: this.course_crn,
         time_estimate: this.time_estimate,
         priority: this.priority
@@ -124,4 +223,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.add-assignment-modal {
+  #description {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    max-height: 500px;
+  }
+}
 </style>
