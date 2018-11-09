@@ -56,7 +56,7 @@
     "postinstall": "npm run build",
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run lint",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build-dev": "cross-env NODE_ENV=development npm run build",
