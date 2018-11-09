@@ -38,14 +38,14 @@
           class="navbar-menu"
         >
           <div class="navbar-start">
-            <RouterLink
+            <router-link
               class="navbar-item"
               to="/dashboard"
-            >Dashboard</RouterLink>
-            <RouterLink
+            >Dashboard</router-link>
+            <router-link
               class="navbar-item"
               to="/about"
-            >About</RouterLink>
+            >About</router-link>
 
             <template v-if="loggedIn">
               <div class="navbar-item has-dropdown is-hoverable">
@@ -55,12 +55,12 @@
                 </a>
 
                 <div class="navbar-dropdown">
-                  <RouterLink
+                  <router-link
                     class="navbar-item"
                     to="/assignments"
                   >
                     List
-                  </RouterLink>
+                  </router-link>
 
                   <a class="navbar-item">
                     Contact
@@ -77,12 +77,12 @@
 
           <div class="navbar-end">
             <template v-if="loggedIn">
-              <RouterLink
+              <router-link
                 class="navbar-item"
                 to="/profile"
               >
                 Logged in as <b class="rcs_id">{{ user.display_name }}</b>
-              </RouterLink>
+              </router-link>
               <a
                 class="navbar-item"
                 href="/auth/logout"

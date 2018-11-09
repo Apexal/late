@@ -13,7 +13,7 @@
         style="flex: 1;"
       >
         <Notifications />
-        <RouterView />
+        <router-view />
       </div>
     </div>
     <Footer />
@@ -40,7 +40,7 @@ export default {
 
 <style lang="scss">
 /* These styles will apply to the whole app. */
-@import "@/assets/bulma.scss";
+@import '@/assets/bulma.scss';
 
 .is-full-width {
   width: 100%;

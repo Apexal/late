@@ -7,7 +7,7 @@
         aria-label="breadcrumbs"
       >
         <ul>
-          <RouterLink
+          <router-link
             v-for="s in setups"
             :key="s.component"
             :to="{ path: s.link }"
@@ -26,11 +26,11 @@
                 />
               </span>
             </a>
-          </RouterLink>
+          </router-link>
         </ul>
       </nav>
       <KeepAlive>
-        <RouterView />
+        <router-view />
       </KeepAlive>
     </section>
   </div>

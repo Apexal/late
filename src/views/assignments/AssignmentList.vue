@@ -15,7 +15,7 @@
             class="box"
           >
             <b class="assignment-title">
-              <RouterLink :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</RouterLink>
+              <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
               <span
                 v-if="a.priority >= 7"
                 class="tag is-danger"

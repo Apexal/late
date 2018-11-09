@@ -5,11 +5,11 @@
       class="section"
     >
       <h1 class="title">Assignment Not Found</h1>
-      <RouterLink
+      <router-link
         to="/assignments"
         tag="button"
         class="button is-primary"
-      >Assignment List</RouterLink>
+      >Assignment List</router-link>
     </section>
     <section
       v-else

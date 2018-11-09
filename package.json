@@ -138,7 +138,16 @@
           ]
         }
       ],
-      "vue/component-name-in-template-casing": "error",
+      "vue/component-name-in-template-casing": [
+        "error",
+        "PascalCase",
+        {
+          "ignores": [
+            "router-view",
+            "router-link"
+          ]
+        }
+      ],
       "vue/script-indent": "error",
       "vue/no-spaces-around-equal-signs-in-attribute": "error",
       "vue/no-unused-components": "off",

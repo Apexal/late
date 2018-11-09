@@ -22,7 +22,7 @@
         :key="a._id"
         class="assignment panel-block"
       >
-        <RouterLink
+        <router-link
           :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
           tag="span"
           class="is-full-width"
@@ -33,13 +33,13 @@
             class="tag is-danger priority-tag"
           >!</span>
           <small class="is-pulled-right has-text-grey">{{ getCourseFromCRN(a.courseCRN).longname }}</small>
-        </RouterLink>
+        </router-link>
       </div>
       <div class="panel-block">
-        <RouterLink
+        <router-link
           tag="b"
           to="/assignments"
-        >View All Assignments</RouterLink>
+        >View All Assignments</router-link>
       </div>
     </div>
   </aside>
