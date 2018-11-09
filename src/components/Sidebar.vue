@@ -2,10 +2,18 @@
   <aside
     id="sidebar"
     class="menu">
-    <AddAssignmentModal />
+    <AddAssignmentModal
+      :open="addAssignmentModalOpen"
+      @toggle-modal="addAssignmentModalOpen = !addAssignmentModalOpen" />
     <Schedule />
     <div class="panel sidebar-upcoming-assignments">
-      <p class="panel-heading">Pressing Assignments</p>
+      <p class="panel-heading is-clearfix">Pressing Assignments
+        <span class="is-pulled-right icon">
+          <i
+            class="fas fa-plus add-assignment"
+            @click="addAssignmentModalOpen = !addAssignmentModalOpen"/>
+        </span>
+      </p>
       <div
         v-for="a in pressing"
         :key="a._id"
@@ -37,6 +45,11 @@ import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
 export default {
   name: 'Sidebar',
   components: { AddAssignmentModal, Schedule },
+  data () {
+    return {
+      addAssignmentModalOpen: false
+    };
+  },
   computed: {
     pressing() {
       return this.$store.getters.pressingAssignments(5);
@@ -59,6 +72,10 @@ export default {
     .priority-tag {
       margin-left: 5px;
     }
+  }
+
+  .add-assignment {
+    cursor: pointer;
   }
 }
 </style>
