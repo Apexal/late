@@ -21,7 +21,7 @@
               v-for="p in sortedPeriods"
               :key="p.day + p.start">
               <td>{{ day(p.day) }}</td>
-              <td>{{ time(p.start) }} - {{ time(p.end) }}</td>
+              <td>{{ time(p.start) }} <span class="has-text-grey-light">-</span> {{ time(p.end) }}</td>
               <td>{{ p.location }}</td>
               <td>{{ type(p.type) }}</td>
             </tr>
@@ -67,10 +67,17 @@ export default {
         'Friday',
         'Saturday'
       ][num],
-    time: t => moment(t, 'Hmm').format('h:mm A'),
+    time: t => {
+      const dt = moment(t, 'Hmm');
+      if (dt.hours() == 12 && dt.minutes() == 0)
+        return 'Noon';
+      else if (dt.minutes() == 0)
+        return dt.format('h A');
+      return dt.format('h:mm A');
+    },
     type: pType => {
       return (
-        { LEC: 'Lecture', LAB: 'Lab', TES: 'Test', REC: 'Recitation' }[pType] ||
+        { LEC: 'Lecture', LAB: 'Lab', TES: 'Test', REC: 'Recitation', 'STU': 'Studio' }[pType] ||
         pType
       );
     }
