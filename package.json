@@ -1,11 +1,11 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=11.0.0"
   },
   "dependencies": {
     "axios": "^0.18.0",
