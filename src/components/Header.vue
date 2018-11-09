@@ -17,11 +17,13 @@
         aria-label="main navigation">
         <div class="navbar-brand">
           <a
+            :class="navbarExpanded ? 'is-active' : ''"
             role="button"
             class="navbar-burger burger"
             aria-label="menu"
             aria-expanded="false"
-            data-target="top-navbar">
+            data-target="top-navbar"
+            @click="navbarExpanded = !navbarExpanded">
             <span aria-hidden="true"/>
             <span aria-hidden="true"/>
             <span aria-hidden="true"/>
@@ -30,7 +32,8 @@
 
         <div
           id="top-navbar"
-          class="navbar-menu container">
+          :class="navbarExpanded ? 'is-active' : ''"
+          class="navbar-menu">
           <div class="navbar-start">
             <router-link
               class="navbar-item"
@@ -93,6 +96,11 @@
 <script>
 export default {
   name: 'Header',
+  data() {
+    return {
+      navbarExpanded: false
+    };
+  },
   computed: {
     user() {
       return this.$store.state.auth.user;

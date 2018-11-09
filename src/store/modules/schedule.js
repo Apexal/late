@@ -40,8 +40,6 @@ const actions = {
       .map(course => course.periods.filter(p => p.day == day))
       .flat().sort((a, b) => parseInt(a.start) - parseInt(b.start));
 
-    console.log(day_periods.map(p => p.start));
-
     // Check for current class
     const current_period = day_periods.find(p => {
       const start = moment(dateStr + ' ' + p.start, 'YYYY-MM-DD Hmm');
