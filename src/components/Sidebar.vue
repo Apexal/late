@@ -1,38 +1,45 @@
 <template>
   <aside
     id="sidebar"
-    class="menu">
+    class="menu"
+  >
     <AddAssignmentModal
       :open="addAssignmentModalOpen"
-      @toggle-modal="addAssignmentModalOpen = !addAssignmentModalOpen" />
+      @toggle-modal="addAssignmentModalOpen = !addAssignmentModalOpen"
+    />
     <Schedule />
     <div class="panel sidebar-upcoming-assignments">
       <p class="panel-heading is-clearfix">Pressing Assignments
         <span class="is-pulled-right icon">
           <i
             class="fas fa-plus add-assignment"
-            @click="addAssignmentModalOpen = !addAssignmentModalOpen"/>
+            @click="addAssignmentModalOpen = !addAssignmentModalOpen"
+          />
         </span>
       </p>
       <div
         v-for="a in pressing"
         :key="a._id"
-        class="assignment panel-block">
-        <router-link
+        class="assignment panel-block"
+      >
+        <RouterLink
           :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
           tag="span"
-          class="is-full-width">
+          class="is-full-width"
+        >
           {{ a.title }}
           <span
             v-if="a.priority >= 7"
-            class="tag is-danger priority-tag">!</span>
+            class="tag is-danger priority-tag"
+          >!</span>
           <small class="is-pulled-right has-text-grey">{{ getCourseFromCRN(a.courseCRN).longname }}</small>
-        </router-link>
+        </RouterLink>
       </div>
       <div class="panel-block">
-        <router-link
+        <RouterLink
           tag="b"
-          to="/assignments">View All Assignments</router-link>
+          to="/assignments"
+        >View All Assignments</RouterLink>
       </div>
     </div>
   </aside>

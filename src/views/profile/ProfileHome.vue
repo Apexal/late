@@ -5,9 +5,10 @@
       work/study schedule, and (optionally) accounts you want to integrate <b>LATE</b> with.
     </p>
 
-    <router-link
+    <RouterLink
       class="button is-primary"
-      to="/profile/personalinfo">Start Setup</router-link>
+      to="/profile/personalinfo"
+    >Start Setup</RouterLink>
   </div>
 </template>
 

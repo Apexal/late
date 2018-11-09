@@ -1,14 +1,17 @@
 <template>
   <div
     v-show="notifications.length > 0"
-    class="notifications">
+    class="notifications"
+  >
     <div
       v-for="(n, index) in notifications"
       :key="index"
       :class="'is-' + n.type"
-      class="notification"><button
-        class="delete"
-        @click="remove(index)"/>{{ n.description }}</div>
+      class="notification"
+    ><button
+      class="delete"
+      @click="remove(index)"
+    />{{ n.description }}</div>
   </div>
 </template>
 

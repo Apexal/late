@@ -19,7 +19,8 @@
           <tbody>
             <tr
               v-for="p in sortedPeriods"
-              :key="p.day + p.start">
+              :key="p.day + p.start"
+            >
               <td>{{ day(p.day) }}</td>
               <td>{{ time(p.start) }} <span class="has-text-grey-light">-</span> {{ time(p.end) }}</td>
               <td>{{ p.location }}</td>

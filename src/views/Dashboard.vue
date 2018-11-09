@@ -4,7 +4,8 @@
       <li
         v-for="a in assignments"
         :key="a._id"
-        class="box">
+        class="box"
+      >
         <b>{{ a.title }}</b>
         <blockquote>
           <p>{{ a.description }}</p>

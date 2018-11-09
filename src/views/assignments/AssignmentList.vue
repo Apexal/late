@@ -6,25 +6,30 @@
         <div
           v-for="(assignments, date) in assignmentsGroupedByDueDate"
           :key="date"
-          class="due-date">
+          class="due-date"
+        >
           <h3 class="subtitle is-4">{{ toDateShortString(date) }}</h3>
           <div
             v-for="a in assignments"
             :key="a._id"
-            class="box">
+            class="box"
+          >
             <b class="assignment-title">
-              <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
+              <RouterLink :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</RouterLink>
               <span
                 v-if="a.priority >= 7"
                 class="tag is-danger"
-                title="You marked this assignment as high priority!">!</span>
+                title="You marked this assignment as high priority!"
+              >!</span>
             </b>
             <span
               :title="toFullDateTimeString(a.dueDate)"
-              class="is-pulled-right">due {{ toTimeString(a.dueDate) }}</span>
+              class="is-pulled-right"
+            >due {{ toTimeString(a.dueDate) }}</span>
             <div
               :title="toFullDateTimeString(a.dueDate)"
-              class="content">
+              class="content"
+            >
               <blockquote>
                 <p>{{ a.description }}</p>
               </blockquote>
@@ -36,7 +41,7 @@
 
       <hr>
 
-      <div class="past-assignments"/>
+      <div class="past-assignments" />
     </section>
 
   </div>
