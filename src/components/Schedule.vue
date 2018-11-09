@@ -12,7 +12,7 @@
         <h2 class="subtitle">It's the weekend!</h2>
       </div>
     </template>
-    <template v-if="schedule.next"/>
+    <template v-if="schedule.next" />
     <template v-if="classes_over">
       <div class="panel-block">
         <h2 class="subtitle">Classes are over for today!</h2>
@@ -53,14 +53,7 @@ export default {
     },
     currentPeriodType() {
       if (!this.in_class) return;
-      switch (this.current_period.type) {
-      case 'TES':
-        return 'Test';
-      case 'LEC':
-        return 'Lecture';
-      default:
-        return 'Class';
-      }
+      return this.$store.getters.periodType(this.current_period.type);
     }
   }
 };

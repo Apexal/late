@@ -18,16 +18,26 @@ const getters = {
   classes_over: state => {
     // Get last end time
     const now = moment();
-    const lastEnd = moment(now.format('YYYY-MM-DD') + ' ' + state.periods[state.periods.length - 1].end, 'YYYY-MM-DD Hmm');
+    const lastEnd = moment(
+      now.format('YYYY-MM-DD') +
+        ' ' +
+        state.periods[state.periods.length - 1].end,
+      'YYYY-MM-DD Hmm'
+    );
     return now > lastEnd;
-  }
+  },
+  periodType: state => type =>
+    ({
+      LEC: 'Lecture',
+      LAB: 'Lab',
+      TES: 'Test',
+      REC: 'Recitation',
+      STU: 'Studio'
+    }[type] || type)
 };
 
 const actions = {
-  UPDATE_SCHEDULE({
-    commit,
-    rootState
-  }) {
+  UPDATE_SCHEDULE({ commit, rootState }) {
     // Reset all state values
     const semester_schedule = rootState.auth.user.current_schedule;
 
@@ -38,7 +48,8 @@ const actions = {
     // Find periods for current day
     let day_periods = semester_schedule
       .map(course => course.periods.filter(p => p.day == day))
-      .flat().sort((a, b) => parseInt(a.start) - parseInt(b.start));
+      .flat()
+      .sort((a, b) => parseInt(a.start) - parseInt(b.start));
 
     // Check for current class
     const current_period = day_periods.find(p => {

@@ -14,7 +14,8 @@
       <nav
         class="navbar is-dark"
         role="navigation"
-        aria-label="main navigation">
+        aria-label="main navigation"
+      >
         <div class="navbar-brand">
           <a
             :class="navbarExpanded ? 'is-active' : ''"
@@ -23,24 +24,28 @@
             aria-label="menu"
             aria-expanded="false"
             data-target="top-navbar"
-            @click="$store.commit('TOGGLE_NAVBAR')">
-            <span aria-hidden="true"/>
-            <span aria-hidden="true"/>
-            <span aria-hidden="true"/>
+            @click="$store.commit('TOGGLE_NAVBAR')"
+          >
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
           </a>
         </div>
 
         <div
           id="top-navbar"
           :class="navbarExpanded ? 'is-active' : ''"
-          class="navbar-menu">
+          class="navbar-menu"
+        >
           <div class="navbar-start">
             <router-link
               class="navbar-item"
-              to="/dashboard">Dashboard</router-link>
+              to="/dashboard"
+            >Dashboard</router-link>
             <router-link
               class="navbar-item"
-              to="/about">About</router-link>
+              to="/about"
+            >About</router-link>
 
             <template v-if="loggedIn">
               <div class="navbar-item has-dropdown is-hoverable">
@@ -52,7 +57,8 @@
                 <div class="navbar-dropdown">
                   <router-link
                     class="navbar-item"
-                    to="/assignments">
+                    to="/assignments"
+                  >
                     List
                   </router-link>
 
@@ -73,17 +79,20 @@
             <template v-if="loggedIn">
               <router-link
                 class="navbar-item"
-                to="/profile">
+                to="/profile"
+              >
                 Logged in as <b class="rcs_id">{{ user.display_name }}</b>
               </router-link>
               <a
                 class="navbar-item"
-                href="/auth/logout">Logout</a>
+                href="/auth/logout"
+              >Logout</a>
             </template>
             <a
               v-else
               class="navbar-item"
-              href="/auth/login"><b>Login</b></a>
+              href="/auth/login"
+            ><b>Login</b></a>
 
           </div>
         </div>

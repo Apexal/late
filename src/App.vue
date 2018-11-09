@@ -4,12 +4,14 @@
     <div class="columns">
       <div
         v-if="loggedIn"
-        class="column is-3">
+        class="column is-3"
+      >
         <Sidebar />
       </div>
       <div
         :class="loggedIn ? 'columm' : 'container'"
-        style="flex: 1;">
+        style="flex: 1;"
+      >
         <Notifications />
         <router-view />
       </div>
@@ -38,7 +40,7 @@ export default {
 
 <style lang="scss">
 /* These styles will apply to the whole app. */
-@import "@/assets/bulma.scss";
+@import '@/assets/bulma.scss';
 
 .is-full-width {
   width: 100%;

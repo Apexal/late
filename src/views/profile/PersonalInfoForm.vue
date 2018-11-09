@@ -1,11 +1,13 @@
 <template>
   <div
-    id="personal-info-form">
+    id="personal-info-form"
+  >
     <form @submit.prevent="save">
       <div class="field">
         <label
           class="label"
-          for="rcs-id">RCS ID</label>
+          for="rcs-id"
+        >RCS ID</label>
         <div class="control">
           <input
             id="rcs-id"
@@ -13,7 +15,8 @@
             class="input"
             type="text"
             placeholder="RCS ID"
-            disabled>
+            disabled
+          >
         </div>
       </div>
 
@@ -22,7 +25,8 @@
           <div class="field">
             <label
               class="label"
-              for="first-name">First Name</label>
+              for="first-name"
+            >First Name</label>
             <div class="control">
               <input
                 id="first-name"
@@ -30,7 +34,8 @@
                 class="input"
                 type="text"
                 placeholder="First Name"
-                required>
+                required
+              >
             </div>
           </div>
         </div>
@@ -39,7 +44,8 @@
           <div class="field">
             <label
               class="label"
-              for="last-name">Last Name</label>
+              for="last-name"
+            >Last Name</label>
             <div class="control">
               <input
                 id="last-name"
@@ -47,7 +53,8 @@
                 class="input"
                 type="text"
                 placeholder="Last Name"
-                required>
+                required
+              >
             </div>
           </div>
         </div>
@@ -56,7 +63,8 @@
           <div class="field">
             <label
               class="label"
-              for="rin">RIN</label>
+              for="rin"
+            >RIN</label>
             <div class="control">
               <input
                 id="rin"
@@ -64,7 +72,8 @@
                 class="input"
                 type="text"
                 placeholder="RIN"
-                required>
+                required
+              >
             </div>
           </div>
         </div>
@@ -73,7 +82,8 @@
           <div class="field">
             <label
               for="grad-year"
-              class="label">Graduation Year</label>
+              class="label"
+            >Graduation Year</label>
             <div class="control">
               <input
                 id="grad-year"
@@ -84,7 +94,8 @@
                 step="1"
                 class="input"
                 placeholder="2022"
-                required>
+                required
+              >
             </div>
           </div>
         </div>

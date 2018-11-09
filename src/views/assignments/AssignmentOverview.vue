@@ -2,16 +2,19 @@
   <div class="assignment-overview">
     <section
       v-if="!assignment"
-      class="section">
+      class="section"
+    >
       <h1 class="title">Assignment Not Found</h1>
       <router-link
         to="/assignments"
         tag="button"
-        class="button is-primary">Assignment List</router-link>
+        class="button is-primary"
+      >Assignment List</router-link>
     </section>
     <section
       v-else
-      class="section">
+      class="section"
+    >
       <h2 class="subtitle">{{ course.longname }}</h2>
       <h1 class="title">{{ assignment.title }}</h1>
       <div class="content">
@@ -22,7 +25,8 @@
       <hr>
       <button
         class="button is-danger"
-        @click="remove">Remove</button>
+        @click="remove"
+      >Remove</button>
     </section>
   </div>
 </template>

@@ -4,30 +4,34 @@
       <h1 class="title">Your Profile</h1>
       <nav
         class="breadcrumb"
-        aria-label="breadcrumbs">
+        aria-label="breadcrumbs"
+      >
         <ul>
           <router-link
             v-for="s in setups"
             :key="s.component"
             :to="{ path: s.link }"
-            tag="li">
+            tag="li"
+          >
             <a>
               {{ s.label }}
               <span class="icon">
                 <i
                   v-if="user.setup[s.setup_check]"
-                  class="fas fa-check"/>
+                  class="fas fa-check"
+                />
                 <i
                   v-else
-                  class="fas fa-times"/>
+                  class="fas fa-times"
+                />
               </span>
             </a>
           </router-link>
         </ul>
       </nav>
-      <keep-alive>
-        <router-view/>
-      </keep-alive>
+      <KeepAlive>
+        <router-view />
+      </KeepAlive>
     </section>
   </div>
 </template>

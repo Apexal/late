@@ -1,10 +1,12 @@
 <template>
   <div
     :class="{'is-active': open}"
-    class="add-assignment-modal modal">
+    class="add-assignment-modal modal"
+  >
     <div
       class="modal-background"
-      @click="$emit('toggle-modal')"/>
+      @click="$emit('toggle-modal')"
+    />
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">Add Assignment</p>
@@ -14,24 +16,28 @@
         <form
           id="add-assignment-form"
           class="form"
-          @submit.prevent="save">
+          @submit.prevent="save"
+        >
           <div class="columns is-multiline">
             <div class="column is-half">
               <div class="field">
                 <label
                   for="course-id"
-                  class="label">Course</label>
+                  class="label"
+                >Course</label>
                 <div class="control">
                   <select
                     id="course-id"
                     v-model="course_crn"
                     name="course_crn"
                     class="input"
-                    required>
+                    required
+                  >
                     <option
                       v-for="c in courses"
                       :key="c.crn"
-                      :value="c.crn">{{ c.longname }}</option>
+                      :value="c.crn"
+                    >{{ c.longname }}</option>
                   </select>
                 </div>
               </div>
@@ -41,7 +47,8 @@
               <div class="field">
                 <label
                   for="title"
-                  class="label">Title</label>
+                  class="label"
+                >Title</label>
                 <div class="control">
                   <input
                     id="title"
@@ -51,7 +58,8 @@
                     class="input"
                     maxlength="200"
                     placeholder="Short descriptive title"
-                    required>
+                    required
+                  >
                 </div>
               </div>
             </div>
@@ -60,7 +68,8 @@
               <div class="field">
                 <label
                   for="description"
-                  class="label">Description</label>
+                  class="label"
+                >Description</label>
                 <div class="control">
                   <textarea
                     id="description"
@@ -69,7 +78,8 @@
                     cols="30"
                     rows="10"
                     class="input"
-                    placeholder="Long description of the assignment here!"/>
+                    placeholder="Long description of the assignment here!"
+                  />
                 </div>
               </div>
             </div>
@@ -81,13 +91,15 @@
               <div class="field">
                 <label
                   for="due-date"
-                  class="label">Due Date</label>
+                  class="label"
+                >Due Date</label>
                 <div class="control">
                   <input
                     id="due-date"
                     v-model="due_date"
                     type="date"
-                    name="due_date">
+                    name="due_date"
+                  >
                 </div>
               </div>
             </div>
@@ -96,13 +108,15 @@
               <div class="field">
                 <label
                   for="time"
-                  class="label">Due Time</label>
+                  class="label"
+                >Due Time</label>
                 <div class="control">
                   <input
                     id="time"
                     v-model="time"
                     type="time"
-                    name="time">
+                    name="time"
+                  >
                 </div>
               </div>
             </div>
@@ -111,14 +125,16 @@
               <div class="field">
                 <label
                   for="time-estimate"
-                  class="label">Time Estimate (hrs)</label>
+                  class="label"
+                >Time Estimate (hrs)</label>
                 <input
                   id="time-estimate"
                   v-model.number="time_estimate"
                   type="number"
                   name="time-estimate"
                   min="0.5"
-                  step="0.5">
+                  step="0.5"
+                >
               </div>
             </div>
 
@@ -126,7 +142,8 @@
               <div class="field">
                 <label
                   for="priority"
-                  class="label">Priority</label>
+                  class="label"
+                >Priority</label>
                 <input
                   id="priority"
                   v-model.number="priority"
@@ -136,7 +153,8 @@
                   max="10"
                   name="priority"
                   step="1"
-                  placeholder="0 - 10">
+                  placeholder="0 - 10"
+                >
                 <datalist id="priorities">
                   <option value="1" />
                   <option value="2" />
@@ -161,10 +179,12 @@
       <footer class="modal-card-foot">
         <button
           class="button is-warning"
-          @click="$emit('toggle-modal')">Cancel</button>
+          @click="$emit('toggle-modal')"
+        >Cancel</button>
         <button
           form="add-assignment-form"
-          class="button is-success">Save</button>
+          class="button is-success"
+        >Save</button>
       </footer>
     </div>
   </div>

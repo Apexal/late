@@ -19,7 +19,8 @@
           <tbody>
             <tr
               v-for="p in sortedPeriods"
-              :key="p.day + p.start">
+              :key="p.day + p.start"
+            >
               <td>{{ day(p.day) }}</td>
               <td>{{ time(p.start) }} <span class="has-text-grey-light">-</span> {{ time(p.end) }}</td>
               <td>{{ p.location }}</td>
@@ -75,11 +76,8 @@ export default {
         return dt.format('h A');
       return dt.format('h:mm A');
     },
-    type: pType => {
-      return (
-        { LEC: 'Lecture', LAB: 'Lab', TES: 'Test', REC: 'Recitation', 'STU': 'Studio' }[pType] ||
-        pType
-      );
+    type (pType) {
+      return this.$store.getters.periodType(pType);
     }
   }
 };
