@@ -19,6 +19,9 @@ const router = new Router({
     {
       path: '/about',
       name: 'about',
+      meta: {
+        title: 'About'
+      },
       component: () => import('@/views/About.vue')
     },
     {
@@ -26,6 +29,7 @@ const router = new Router({
       name: 'dashboard',
       component: () => import('@/views/Dashboard.vue'),
       meta: {
+        title: 'Dashboard',
         requiresAuth: true
       }
     },
@@ -34,6 +38,7 @@ const router = new Router({
       name: 'assignments',
       component: () => import('@/views/assignments/AssignmentList.vue'),
       meta: {
+        title: 'Assignments',
         requiresAuth: true
       }
     },
@@ -42,6 +47,7 @@ const router = new Router({
       name: 'assignment-overview',
       component: () => import('@/views/assignments/AssignmentOverview.vue'),
       meta: {
+        title: 'View Assignment',
         requiresAuth: true
       }
     },
@@ -55,14 +61,23 @@ const router = new Router({
       children: [
         {
           path: '',
+          meta: {
+            title: 'Your Profile'
+          },
           component: () => import('@/views/profile/ProfileHome.vue')
         },
         {
           path: 'personalinfo',
+          meta: {
+            title: 'Personal Info'
+          },
           component: () => import('@/views/profile/PersonalInfoForm.vue')
         },
         {
           path: 'courseschedule',
+          meta: {
+            title: 'Course Schedule'
+          },
           component: () => import('@/views/profile/CourseScheduleForm.vue')
         }
       ]
@@ -70,13 +85,19 @@ const router = new Router({
     {
       path: '*',
       name: 'NotFound',
+      meta: {
+        title: 'Not Found'
+      },
       component: () => import('@/views/NotFound.vue')
     }
   ]
 });
 
 router.beforeEach(async (to, from, next) => {
+  if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR');
+
   if (!store.state.auth.user.name) await store.dispatch('GET_USER');
+  if (to.meta.title) document.title = to.meta.title + ' | LATE';
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.

@@ -23,7 +23,7 @@
             aria-label="menu"
             aria-expanded="false"
             data-target="top-navbar"
-            @click="navbarExpanded = !navbarExpanded">
+            @click="$store.commit('TOGGLE_NAVBAR')">
             <span aria-hidden="true"/>
             <span aria-hidden="true"/>
             <span aria-hidden="true"/>
@@ -98,10 +98,10 @@ export default {
   name: 'Header',
   data() {
     return {
-      navbarExpanded: false
     };
   },
   computed: {
+    navbarExpanded () { return this.$store.state.navbarExpanded; },
     user() {
       return this.$store.state.auth.user;
     },

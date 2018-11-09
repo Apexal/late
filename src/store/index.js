@@ -18,5 +18,11 @@ export default new Vuex.Store({
     schedule,
     notifications
   },
+  state: {
+    navbarExpanded: false
+  },
+  mutations: {
+    TOGGLE_NAVBAR: state => (state.navbarExpanded = !state.navbarExpanded)
+  },
   strict: debug
 });
