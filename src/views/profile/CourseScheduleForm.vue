@@ -70,7 +70,10 @@
 
       </div>
 
-      <button class="button is-primary">{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
+      <button
+        class="button is-primary"
+        :class="loading ? 'is-loading' : ''"
+      >{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
     </form>
 
     <div class="columns is-multiline course-list">
@@ -95,6 +98,7 @@ export default {
   components: { Course },
   data() {
     return {
+      loading: false,
       method: 'sis',
       pin: '',
       crns: this.$store.state.auth.user.current_schedule
@@ -112,6 +116,7 @@ export default {
   },
   methods: {
     async save() {
+      this.loading = true;
       const request = await API.post('/setup/courseschedule', {
         pin: this.pin,
         crns: this.crns
@@ -122,6 +127,8 @@ export default {
         type: 'success',
         description: 'Got course schedule!'
       });
+
+      this.loading = false;
     }
   }
 };

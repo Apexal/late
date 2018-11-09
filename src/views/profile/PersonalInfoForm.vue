@@ -101,7 +101,10 @@
         </div>
       </div>
 
-      <button class="button is-primary">Save and Continue</button>
+      <button
+        class="button is-primary"
+        :class="loading ? 'is-loading': ''"
+      >Save and Continue</button>
     </form>
   </div>
 </template>
@@ -113,6 +116,7 @@ export default {
   name: 'PersonalInfoForm',
   data() {
     return {
+      loading: false,
       first_name: this.$store.state.auth.user.name.first,
       last_name: this.$store.state.auth.user.name.last,
       rin: this.$store.state.auth.user.rin,
@@ -130,6 +134,8 @@ export default {
   },
   methods: {
     async save() {
+      this.loading = true;
+
       const request = await API.post('/setup/personalinfo', {
         first_name: this.first_name,
         last_name: this.last_name,
@@ -140,6 +146,8 @@ export default {
       this.$store.dispatch('SET_USER', request.data.updatedUser);
       this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!'});
       this.$router.push('/profile/courseschedule');
+
+      this.loading = false;
     }
   }
 };
