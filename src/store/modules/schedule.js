@@ -36,9 +36,11 @@ const actions = {
     const day = now.day();
 
     // Find periods for current day
-    const day_periods = semester_schedule
+    let day_periods = semester_schedule
       .map(course => course.periods.filter(p => p.day == day))
-      .flat();
+      .flat().sort((a, b) => parseInt(a.start) - parseInt(b.start));
+
+    console.log(day_periods.map(p => p.start));
 
     // Check for current class
     const current_period = day_periods.find(p => {
