@@ -1,24 +1,42 @@
 <template>
-  <div class="schedule panel user-courses">
-    <p class="panel-heading">Today's Schedule</p>
-    <template v-if="in_class">
-      <div class="panel-block">
-        <b>Current: </b>
-        <span>{{ current_course.longname }} {{ currentPeriodType }}</span>
-      </div>
-    </template>
-    <template v-else-if="is_weekend">
+  <details
+    class="schedule panel user-courses"
+    open
+  >
+    <summary class="panel-heading">Today's Schedule
+      <span
+        v-show="in_class"
+        class="tag is-info"
+      >In Class</span>
+      <span
+        v-show="classes_over"
+        class="tag is-warning"
+      >Classes Over</span>
+    </summary>
+    <template v-if="is_weekend">
       <div class="panel-block">
         <h2 class="subtitle">It's the weekend!</h2>
       </div>
     </template>
-    <template v-if="schedule.next" />
+    <template v-else>
+      <div
+        v-for="p in periods"
+        :key="p.start"
+        class="panel-block is-clearfix"
+        :class="current_period == p ? 'is-active' : ''"
+      >
+        <span class="course-longname is-full-width">
+          {{ course(p).longname }}
+          <small class="course-times is-pulled-right has-text-grey">{{ timeFormat(p.start) }}-{{ timeFormat(p.end) }} </small>
+        </span>
+      </div>
+    </template>
     <template v-if="classes_over">
       <div class="panel-block">
         <h2 class="subtitle">Classes are over for today!</h2>
       </div>
     </template>
-  </div>
+  </details>
 </template>
 
 <script>
@@ -33,11 +51,18 @@ export default {
     schedule() {
       return this.$store.state.schedule;
     },
+    periods() { return this.schedule.periods || []; },
     current_course() {
       return this.schedule.current.course;
     },
     current_period() {
       return this.schedule.current.period;
+    },
+    next_course() {
+      return this.schedule.next.course;
+    },
+    next_period() {
+      return this.schedule.next.period;
     },
     in_class() {
       return this.$store.getters.in_class;
@@ -50,10 +75,12 @@ export default {
     },
     dateStr() {
       return moment(this.schedule.date).format('YYYY-MM-DD');
-    },
-    currentPeriodType() {
-      if (!this.in_class) return;
-      return this.$store.getters.periodType(this.current_period.type);
+    }
+  },
+  methods: {
+    timeFormat: datetime => moment(datetime, 'Hmm').format('h:mma'),
+    course(p) {
+      return this.$store.getters.getCourseFromPeriod(p);
     }
   }
 };
@@ -61,4 +88,3 @@ export default {
 
 <style lang='scss' scoped>
 </style>
-
