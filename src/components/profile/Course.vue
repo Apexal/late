@@ -11,8 +11,7 @@
           <thead>
             <tr>
               <th>Day</th>
-              <th>Start</th>
-              <th>End</th>
+              <th>Time</th>
               <th>Location</th>
               <th>Type</th>
             </tr>
@@ -22,8 +21,7 @@
               v-for="p in sortedPeriods"
               :key="p.day + p.start">
               <td>{{ day(p.day) }}</td>
-              <td>{{ endTime(p.start) }}</td>
-              <td>{{ endTime(p.end) }}</td>
+              <td>{{ time(p.start) }} - {{ time(p.end) }}</td>
               <td>{{ p.location }}</td>
               <td>{{ type(p.type) }}</td>
             </tr>
@@ -69,8 +67,7 @@ export default {
         'Friday',
         'Saturday'
       ][num],
-    startTime: start => moment(start, 'Hmm').format('hh:mm a'),
-    endTime: end => moment(end, 'Hmm').format('hh:mm a'),
+    time: t => moment(t, 'Hmm').format('h:mm A'),
     type: pType => {
       return (
         { LEC: 'Lecture', LAB: 'Lab', TES: 'Test', REC: 'Recitation' }[pType] ||
