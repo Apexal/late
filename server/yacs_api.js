@@ -1,8 +1,9 @@
 const request = require('request-promise');
 const logger = require('./logger');
 
+const YACS_BASE_URL = 'https://nightly.yacs.io';
 const YACS_SECTION_API_BASE_URL =
-  'https://nightly.yacs.io/api/v6/sections?filter[crn][eql]=';
+  YACS_BASE_URL + '/api/v6/sections?filter[crn][eql]=';
 
 /**
  * Use the public YACS API to find general info on a section:
@@ -29,8 +30,8 @@ async function getSectionInfoFromCRN(crn) {
 
   // get listing
   let listing_uri = data.relationships.listing.links.related;
-  if (!listing_uri.startsWith('https://'))
-    listing_uri = 'https://' + listing_uri;
+  if (listing_uri.includes('localhost'))
+    listing_uri = listing_uri.replace('https://localhost', YACS_BASE_URL);
 
   const listing = (await request({ uri: listing_uri, json: true })).data;
 

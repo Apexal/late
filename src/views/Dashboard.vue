@@ -1,9 +1,9 @@
 <template>
-  <div id="dasboard">
+  <div class="dasboard">
     <ul>
       <li
         v-for="a in assignments"
-        :key="a.id"
+        :key="a._id"
         class="box">
         <b>{{ a.title }}</b>
         <blockquote>
@@ -17,10 +17,8 @@
 <script>
 export default {
   name: 'Dashboard',
-  data () {
-    return {
-
-    };
+  data() {
+    return {};
   },
   computed: {
     assignments() {

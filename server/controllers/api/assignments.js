@@ -1,4 +1,5 @@
 const moment = require('moment');
+const logger = require('../../logger');
 
 /**
  * Returns a list of all assignments with optional dueOn or dueBy filters.
@@ -16,6 +17,8 @@ async function listAllAssignments(ctx) {
   else if (ctx.query.dueOn)
     assignments = await user.findAssignmentsDueOn(ctx.query.dueOn);
   else assignments = await user.findAllAssignments();
+
+  logger.info(`Sending all assignments to ${user.rcs_id}`);
 
   ctx.ok({
     assignments
@@ -39,8 +42,11 @@ async function getAssignment(ctx) {
     });
     if (!assignment) throw '';
   } catch (e) {
+    logger.error(`Failed to get assignment ${assignmentID} for ${user.rcs_id}`);
     return ctx.notFound('Failed to find assignment.');
   }
+
+  logger.info(`Sending assignment ${assignmentID} to ${user.rcs_id}`);
 
   ctx.ok({
     assignment
@@ -58,8 +64,7 @@ async function createAssignment(ctx) {
     .exec();
 
   const body = ctx.request.body;
-
-  const due = moment(body.due_date);
+  const due = moment(body.due_date + ' ' + body.time, 'YYYY-MM-DD HH:mm');
   // TODO: set time from body.time
 
   // TODO: validate these
@@ -77,6 +82,10 @@ async function createAssignment(ctx) {
 
   try {
     await newAssignment.save();
+
+    logger.info(
+      `Created new assigment '${newAssignment.title}' for ${user.rcs_id}`
+    );
 
     ctx.ok({
       createdAssignment: newAssignment
@@ -97,6 +106,8 @@ async function createAssignment(ctx) {
     for (const key in err.errors) {
       errors.push(errMap[key]);
     }
+
+    logger.error(`Failed to create new assignment for ${user.rcs_id}`);
 
     ctx.badRequest({
       errors
@@ -130,10 +141,17 @@ async function removeAssignment(ctx) {
       _student: user._id
     });
 
+    removedAssignment.remove();
+
     if (!removedAssignment) throw '';
   } catch (e) {
+    logger.error(`Failed to remove assignment for  ${user.rcs_id}`);
     return ctx.notFound('Failed to find assignment.');
   }
+
+  logger.info(
+    `Removed assignment '${removedAssignment.title}' for ${user.rcs_id}`
+  );
 
   ctx.ok({
     removedAssignment

@@ -9,6 +9,7 @@ Vue.use(Router);
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
+  linkActiveClass: 'is-active',
   routes: [
     {
       path: '/',
@@ -18,23 +19,93 @@ const router = new Router({
     {
       path: '/about',
       name: 'about',
+      meta: {
+        title: 'About'
+      },
       component: () => import('@/views/About.vue')
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('@/views/Dashboard.vue')
+      component: () => import('@/views/Dashboard.vue'),
+      meta: {
+        title: 'Dashboard',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/assignments',
+      name: 'assignments',
+      component: () => import('@/views/assignments/AssignmentList.vue'),
+      meta: {
+        title: 'Assignments',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/assignments/:assignmentID',
+      name: 'assignment-overview',
+      component: () => import('@/views/assignments/AssignmentOverview.vue'),
+      meta: {
+        title: 'View Assignment',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/profile/Profile.vue'),
+      meta: {
+        requiresAuth: true
+      },
+      children: [
+        {
+          path: '',
+          meta: {
+            title: 'Your Profile'
+          },
+          component: () => import('@/views/profile/ProfileHome.vue')
+        },
+        {
+          path: 'personalinfo',
+          meta: {
+            title: 'Personal Info'
+          },
+          component: () => import('@/views/profile/PersonalInfoForm.vue')
+        },
+        {
+          path: 'courseschedule',
+          meta: {
+            title: 'Course Schedule'
+          },
+          component: () => import('@/views/profile/CourseScheduleForm.vue')
+        }
+      ]
+    },
+    {
+      path: '*',
+      name: 'NotFound',
+      meta: {
+        title: 'Not Found'
+      },
+      component: () => import('@/views/NotFound.vue')
     }
   ]
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR');
+
+  if (!store.state.auth.user.name) await store.dispatch('GET_USER');
+  if (to.meta.title) document.title = to.meta.title + ' | LATE';
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isAuthenticated) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!store.state.auth.isAuthenticated) {
+      window.location = '/auth/login?redirectTo' + to.fullPath;
+    } else {
       next();
-      return;
     }
-    window.location = '/auth/login';
   } else {
     next();
   }

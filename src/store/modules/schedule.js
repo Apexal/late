@@ -1,37 +1,78 @@
+import moment from 'moment';
+
 const state = {
   date: null,
-  in_class: false,
-  current_period: null,
+  current: {
+    course: {},
+    period: {}
+  },
+  next: {
+    course: {},
+    period: {}
+  },
   periods: []
 };
 
+const getters = {
+  in_class: state => !!state.current.period,
+  classes_over: state => {
+    // Get last end time
+    const now = moment();
+    const lastEnd = moment(now.format('YYYY-MM-DD') + ' ' + state.periods[state.periods.length - 1].end, 'YYYY-MM-DD Hmm');
+    return now > lastEnd;
+  }
+};
+
 const actions = {
-  UPDATE_SCHEDULE({ commit, rootState }) {
+  UPDATE_SCHEDULE({
+    commit,
+    rootState
+  }) {
     // Reset all state values
-    console.log(rootState.auth);
     const semester_schedule = rootState.auth.user.current_schedule;
 
-    const day = new Date().getDay();
+    const now = moment(); //moment('1430', 'Hmm');
+    const dateStr = now.format('YYYY-MM-DD');
+    const day = now.day();
 
-    let day_periods = [];
+    // Find periods for current day
+    let day_periods = semester_schedule
+      .map(course => course.periods.filter(p => p.day == day))
+      .flat().sort((a, b) => parseInt(a.start) - parseInt(b.start));
 
-    semester_schedule.forEach(course => {
-      day_periods.concat(course.periods.filter(p => p.day == day));
+    // Check for current class
+    const current_period = day_periods.find(p => {
+      const start = moment(dateStr + ' ' + p.start, 'YYYY-MM-DD Hmm');
+      const end = moment(dateStr + ' ' + p.end, 'YYYY-MM-DD Hmm');
+
+      return start < now && now < end;
     });
-    console.log(day_periods);
-    commit('UPDATE_SCHEDULE', day_periods);
+    const current_course = semester_schedule.find(c =>
+      c.periods.includes(current_period)
+    );
+
+    commit('UPDATE_SCHEDULE', {
+      datetime: now,
+      current: {
+        course: current_course,
+        period: current_period
+      },
+      periods: day_periods
+    });
   }
 };
 
 const mutations = {
-  UPDATE_SCHEDULE: (state, periods) => {
-    state.periods = periods;
-    // Find current period
+  UPDATE_SCHEDULE: (state, payload) => {
+    state.date = payload.datetime.toDate();
+    state.periods = payload.periods;
+    state.current = payload.current;
   }
 };
 
 export default {
   state,
+  getters,
   actions,
   mutations
 };

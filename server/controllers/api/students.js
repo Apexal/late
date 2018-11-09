@@ -1,5 +1,4 @@
 const logger = require('../../logger');
-const cas = require('../../auth').cas;
 
 /**
  * Only available in development mode. Login as a user given their ID.
@@ -18,9 +17,11 @@ async function loginAs(ctx) {
 }
 
 async function getUser(ctx) {
-  const user = await ctx.db.Student.find()
+  const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
+
+  logger.info(`Getting user info for ${ctx.session.cas_user.toLowerCase()}`);
 
   ctx.ok({
     user
