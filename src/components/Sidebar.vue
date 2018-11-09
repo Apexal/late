@@ -13,7 +13,7 @@
         <router-link
           :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
           tag="span"
-          class="full-width">
+          class="is-full-width">
           {{ a.title }}
           <span
             v-if="a.priority >= 7"
@@ -38,7 +38,9 @@ export default {
   name: 'Sidebar',
   components: { AddAssignmentModal, Schedule },
   computed: {
-    pressing () { return this.$store.getters.pressingAssignments(5); }
+    pressing() {
+      return this.$store.getters.pressingAssignments(5);
+    }
   },
   methods: {
     getCourseFromCRN(crn) {
@@ -51,10 +53,6 @@ export default {
 <style lang='scss' scoped>
 #sidebar {
   padding: 15px;
-
-  .full-width {
-    width: 100%;
-  }
 
   .assignment {
     cursor: pointer;

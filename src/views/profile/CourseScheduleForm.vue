@@ -64,11 +64,13 @@
       <button class="button is-primary">{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
     </form>
 
-    <div class="course-list">
-      <Course
+    <div class="columns is-multiline course-list">
+      <div
         v-for="c in courses"
         :key="c.crn"
-        :course="c" />
+        class="column is-half">
+        <Course :course="c" />
+      </div>
     </div>
   </div>
 </template>

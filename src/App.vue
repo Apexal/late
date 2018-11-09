@@ -39,4 +39,8 @@ export default {
 <style lang="scss">
 /* These styles will apply to the whole app. */
 @import "@/assets/bulma.scss";
+
+.is-full-width {
+  width: 100%;
+}
 </style>

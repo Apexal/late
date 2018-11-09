@@ -2,11 +2,11 @@
   <div class="course box">
     <details>
       <summary>{{ course.longname }}
-        <span class="tag is-info is-pulled-right">{{ course.periods.length }} periods</span>
+        <span class="tag is-info is-pulled-right">{{ course.periods.length }} Periods</span>
         <span class="tag is-dark is-pulled-right">Section {{ course.section_id }}</span>
       </summary>
 
-      <table class="table">
+      <table class="table is-full-width">
         <thead>
           <tr>
             <th>Day</th>
@@ -44,19 +44,31 @@ export default {
       default: () => {}
     }
   },
-  data () {
+  data() {
     return {
       editing: false
     };
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
-    day: num => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][num],
+    day: num =>
+      [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday'
+      ][num],
     startTime: start => moment(start, 'Hmm').format('hh:mm a'),
     endTime: end => moment(end, 'Hmm').format('hh:mm a'),
-    type: pType => { return { 'LEC': 'Lecture', 'LAB': 'Lab', 'TES': 'Test', 'REC': 'Recitation' }[pType] || pType; }
+    type: pType => {
+      return (
+        { LEC: 'Lecture', LAB: 'Lab', TES: 'Test', REC: 'Recitation' }[pType] ||
+        pType
+      );
+    }
   }
 };
 </script>
