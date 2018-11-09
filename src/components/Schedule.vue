@@ -53,14 +53,7 @@ export default {
     },
     currentPeriodType() {
       if (!this.in_class) return;
-      switch (this.current_period.type) {
-      case 'TES':
-        return 'Test';
-      case 'LEC':
-        return 'Lecture';
-      default:
-        return 'Class';
-      }
+      return this.$store.getters.periodType(this.current_period.type);
     }
   }
 };

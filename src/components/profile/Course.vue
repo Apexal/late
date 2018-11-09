@@ -75,11 +75,8 @@ export default {
         return dt.format('h A');
       return dt.format('h:mm A');
     },
-    type: pType => {
-      return (
-        { LEC: 'Lecture', LAB: 'Lab', TES: 'Test', REC: 'Recitation', 'STU': 'Studio' }[pType] ||
-        pType
-      );
+    type (pType) {
+      return this.$store.getters.periodType(pType);
     }
   }
 };
