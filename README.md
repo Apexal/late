@@ -24,10 +24,11 @@ The target audience is college students who use tools such as Google Calendar to
 
 ### Local Setup
 
-Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with version `>= 10.0.0`.
+Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with version `>= 11.0.0`.
 
 - Clone the repository
 - If you want to use a specific branch, switch to it with `$ git checkout branch_name`
+- `$ npm install -g @vue/cli`
 - `$ npm install`
 - `$ npm run build-dev`
 - `$ npm run dev`
