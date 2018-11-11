@@ -79,7 +79,7 @@ schema.set('toJSON', { getters: true, virtuals: true });
 
 schema.query.byUsername = function (rcsID) {
   return this.where({
-    rcsID
+    rcs_id: rcsID
   });
 };
 
