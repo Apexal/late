@@ -16,6 +16,8 @@ const state = {
 const getters = {
   in_class: state => !!state.current.period,
   classes_over: state => {
+    if (state.periods.length === 0) return true;
+
     // Get last end time
     const now = moment();
     const lastEnd = moment(

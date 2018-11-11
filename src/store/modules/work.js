@@ -31,9 +31,10 @@ const getters = {
   },
   pressingAssignments: state => count =>
     state.assignments.filter(a => !a.completed).slice(0, count),
-  getCourseFromCRN: (state, getters, rootState) => crn => {
-    return rootState.auth.user.current_schedule.find(c => c.crn === crn);
-  }
+  getCourseFromCRN: (state, getters, rootState) => crn =>
+    rootState.auth.user.current_schedule.find(c => c.crn === crn),
+  getCourseFromPeriod: (state, getters, rootState) => period =>
+    rootState.auth.user.current_schedule.find(c => c.periods.includes(period))
 };
 
 const actions = {
