@@ -14,30 +14,21 @@
             :key="a._id"
             class="box"
           >
-            <details>
-              <summary>
 
-                <b class="assignment-title">
-                  <small class="course-title">{{ course(a).longname }}</small>
-                  <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
-                  <span
-                    v-if="a.priority >= 7"
-                    class="tag is-danger"
-                    title="You marked this assignment as high priority!"
-                  >!</span>
-                </b>
-                <span
-                  :title="toFullDateTimeString(a.dueDate)"
-                  class="is-pulled-right"
-                >due {{ toTimeString(a.dueDate) }}</span>
-              </summary>
+            <b class="assignment-title">
+              <small class="course-title">{{ course(a).longname }}</small>
+              <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
+              <span
+                v-if="a.priority >= 7"
+                class="tag is-danger"
+                title="You marked this assignment as high priority!"
+              >!</span>
+            </b>
+            <small
+              :title="toFullDateTimeString(a.dueDate)"
+              class="is-pulled-right has-text-grey"
+            >{{ toTimeString(a.dueDate) }}</small>
 
-              <div class="content">
-                <blockquote>
-                  <p>{{ a.description }}</p>
-                </blockquote>
-              </div>
-            </details>
           </div>
           <hr>
         </div>
@@ -66,13 +57,13 @@ export default {
   },
   methods: {
     toFullDateTimeString (dueDate) {
-      return moment(dueDate).format('dddd, MMMM Do YYYY, h:mm a');
+      return moment(dueDate).format('dddd, MMMM Do YYYY, h:mma');
     },
     toDateShortString (dueDate) {
       return moment(dueDate).format('dddd [the] Do');
     },
     toTimeString (dueDate) {
-      return moment(dueDate).format('hh:mm a');
+      return moment(dueDate).format('h:mma');
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
@@ -86,5 +77,10 @@ export default {
   .course-title {
     margin-right: 10px;
   }
+}
+
+.assignment-description {
+  padding: 10px;
+  font-size: 0.9em;
 }
 </style>
