@@ -18,11 +18,11 @@
 <script>
 export default {
   name: 'Dashboard',
-  data() {
+  data () {
     return {};
   },
   computed: {
-    assignments() {
+    assignments () {
       return this.$store.state.work.assignments;
     }
   }

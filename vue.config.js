@@ -1,3 +1,3 @@
 module.exports = {
-  lintOnSave: undefined
+  lintOnSave: true
 };

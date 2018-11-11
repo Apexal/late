@@ -39,7 +39,7 @@
 <script>
 export default {
   name: 'Profile',
-  data() {
+  data () {
     return {
       setups: [
         { label: 'Personal Info', link: '/profile/personalinfo', setup_check: 'personal_info' },

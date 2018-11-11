@@ -7,16 +7,15 @@ const { getSectionInfoFromCRN } = require('../yacs_api');
  * not set up yet and redirect them to that. If everything is setup,
  * send a flash message and redirect them to `/`.
  **/
-async function getSetupIndex(ctx) {
-  if (ctx.state.user.next_to_setup)
-    return ctx.redirect(`/setup/${ctx.state.user.next_to_setup}`);
+async function getSetupIndex (ctx) {
+  if (ctx.state.user.next_to_setup) { return ctx.redirect(`/setup/${ctx.state.user.next_to_setup}`); }
   ctx.redirect('/');
 }
 
 /**
  * Render the form for inputting personal info.
  */
-async function getPersonalInfoSetup(ctx) {
+async function getPersonalInfoSetup (ctx) {
   ctx.state.title = 'Setup Personal Info';
   await ctx.render('setup/personal_info');
 }
@@ -25,7 +24,7 @@ async function getPersonalInfoSetup(ctx) {
  * Given the data from the personal info form,
  * update the student object in the database.
  */
-async function postPersonalInfoSetup(ctx) {
+async function postPersonalInfoSetup (ctx) {
   const body = ctx.request.body;
   console.log(body);
 
@@ -51,7 +50,7 @@ async function postPersonalInfoSetup(ctx) {
 /**
  *  Render the course schedule setup page
  */
-async function getCourseScheduleSetup(ctx) {
+async function getCourseScheduleSetup (ctx) {
   ctx.state.title = 'Setup Course Schedule';
   await ctx.render('setup/course_schedule');
 }
@@ -61,7 +60,7 @@ async function getCourseScheduleSetup(ctx) {
  * use the proper API or web scraper to grab schedule and period info
  * and save it as the student's schedule in the database.
  */
-async function postCourseScheduleSetup(ctx) {
+async function postCourseScheduleSetup (ctx) {
   // Determine method chosen (CRNs or SIS)
   const body = ctx.request.body;
 
@@ -71,19 +70,19 @@ async function postCourseScheduleSetup(ctx) {
     ? await scrapeSISForCRNS(ctx.state.user.rin, body.pin, '201809')
     : body.crns.split(',').map(crn => crn.trim());
 
-  let course_schedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+  let courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
 
   // Remove courses that YACS could not find
-  course_schedule = course_schedule.filter(course => !!course);
+  courseSchedule = courseSchedule.filter(course => !!course);
 
-  course_schedule.push({
+  courseSchedule.push({
     longname: 'Other',
     crn: '00000',
     periods: []
   });
 
   ctx.state.user.setup.course_schedule = true;
-  ctx.state.user.current_schedule = course_schedule;
+  ctx.state.user.current_schedule = courseSchedule;
 
   await ctx.state.user.save();
 

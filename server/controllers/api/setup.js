@@ -12,7 +12,7 @@ const { getSectionInfoFromCRN } = require('../../yacs_api');
  *
  * @param {Koa context} ctx
  */
-async function setPersonalInfo(ctx) {
+async function setPersonalInfo (ctx) {
   const body = ctx.request.body;
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
@@ -51,7 +51,7 @@ async function setPersonalInfo(ctx) {
  *
  * @param {Koa context} ctx
  */
-async function setCourseScheduleInfo(ctx) {
+async function setCourseScheduleInfo (ctx) {
   const body = ctx.request.body;
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
@@ -63,19 +63,19 @@ async function setCourseScheduleInfo(ctx) {
     ? await scrapeSISForCRNS(user.rin, body.pin, '201809')
     : body.crns.split(',').map(crn => crn.trim());
 
-  let course_schedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+  let courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
 
   // Remove courses that YACS could not find
-  course_schedule = course_schedule.filter(course => !!course);
+  courseSchedule = courseSchedule.filter(course => !!course);
 
-  course_schedule.push({
+  courseSchedule.push({
     longname: 'Other',
     crn: '00000',
     periods: []
   });
 
   user.setup.course_schedule = true;
-  user.current_schedule = course_schedule;
+  user.current_schedule = courseSchedule;
 
   try {
     await user.save();

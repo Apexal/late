@@ -52,22 +52,22 @@ import moment from 'moment';
 
 export default {
   name: 'AssignmentList',
-  data() {
+  data () {
     return {};
   },
   computed: {
-    assignmentsGroupedByDueDate() {
+    assignmentsGroupedByDueDate () {
       return this.$store.getters.assignmentsGroupedByDueDate;
     }
   },
   methods: {
-    toFullDateTimeString(dueDate) {
+    toFullDateTimeString (dueDate) {
       return moment(dueDate).format('dddd, MMMM Do YYYY, h:mm a');
     },
-    toDateShortString(dueDate) {
+    toDateShortString (dueDate) {
       return moment(dueDate).format('dddd [the] Do');
     },
-    toTimeString(dueDate) {
+    toTimeString (dueDate) {
       return moment(dueDate).format('hh:mm a');
     }
   }

@@ -26,32 +26,32 @@ import moment from 'moment';
 
 export default {
   name: 'Schedule',
-  data() {
+  data () {
     return {};
   },
   computed: {
-    schedule() {
+    schedule () {
       return this.$store.state.schedule;
     },
-    current_course() {
+    current_course () {
       return this.schedule.current.course;
     },
-    current_period() {
+    current_period () {
       return this.schedule.current.period;
     },
-    in_class() {
+    in_class () {
       return this.$store.getters.in_class;
     },
-    classes_over() {
+    classes_over () {
       return this.$store.getters.classes_over;
     },
-    is_weekend() {
-      return new Date().getDay() == 6 || new Date().getDay() == 0;
+    is_weekend () {
+      return new Date().getDay() === 6 || new Date().getDay() === 0;
     },
-    dateStr() {
+    dateStr () {
       return moment(this.schedule.date).format('YYYY-MM-DD');
     },
-    currentPeriodType() {
+    currentPeriodType () {
       if (!this.in_class) return;
       return this.$store.getters.periodType(this.current_period.type);
     }

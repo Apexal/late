@@ -93,7 +93,7 @@ import Course from '@/components/profile/Course';
 export default {
   name: 'CourseScheduleForm',
   components: { Course },
-  data() {
+  data () {
     return {
       method: 'sis',
       pin: '',
@@ -103,15 +103,15 @@ export default {
     };
   },
   computed: {
-    user() {
+    user () {
       return this.$store.state.auth.user;
     },
-    courses() {
+    courses () {
       return this.user.current_schedule;
     }
   },
   methods: {
-    async save() {
+    async save () {
       const request = await API.post('/setup/courseschedule', {
         pin: this.pin,
         crns: this.crns

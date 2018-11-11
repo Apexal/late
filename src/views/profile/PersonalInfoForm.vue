@@ -111,7 +111,7 @@ import API from '../../api';
 
 export default {
   name: 'PersonalInfoForm',
-  data() {
+  data () {
     return {
       first_name: this.$store.state.auth.user.name.first,
       last_name: this.$store.state.auth.user.name.last,
@@ -121,15 +121,15 @@ export default {
   },
 
   computed: {
-    isAuthenticated() {
+    isAuthenticated () {
       return this.$store.state.auth.isAuthenticated;
     },
-    user() {
+    user () {
       return this.$store.state.auth.user;
     }
   },
   methods: {
-    async save() {
+    async save () {
       const request = await API.post('/setup/personalinfo', {
         first_name: this.first_name,
         last_name: this.last_name,
@@ -138,7 +138,7 @@ export default {
       });
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!'});
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
       this.$router.push('/profile/courseschedule');
     }
   }

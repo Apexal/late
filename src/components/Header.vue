@@ -105,19 +105,19 @@
 <script>
 export default {
   name: 'Header',
-  data() {
+  data () {
     return {
     };
   },
   computed: {
     navbarExpanded () { return this.$store.state.navbarExpanded; },
-    user() {
+    user () {
       return this.$store.state.auth.user;
     },
-    loggedIn() {
+    loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
-    assignmentCount() {
+    assignmentCount () {
       return this.$store.state.work.assignments.length;
     }
   }

@@ -4,7 +4,7 @@ const logger = require('../logger');
 /**
  * Toggle the completion status of an object.
  */
-async function toggleAssignment(ctx) {
+async function toggleAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
   const assignment = await ctx.db.Assignment.findById(assignmentID).exec();
 
@@ -25,7 +25,7 @@ async function toggleAssignment(ctx) {
  * Render the new assignment page which needs a
  * course list for the course select box.
  */
-async function getNew(ctx) {
+async function getNew (ctx) {
   ctx.state.title = 'New Assignment';
 
   await ctx.render('assignments/new');
@@ -35,7 +35,7 @@ async function getNew(ctx) {
  * Given the data from the new assignment form,
  * create a new assignment and attempt to save it.
  */
-async function postNew(ctx) {
+async function postNew (ctx) {
   const body = ctx.request.body;
 
   const due = moment(body.due_date);
@@ -92,7 +92,7 @@ async function postNew(ctx) {
  * and group them by due date. Renders a list of all
  * upcoming assignments.
  */
-async function getList(ctx) {
+async function getList (ctx) {
   ctx.state.title = 'All Assignment';
   const assignments = (ctx.state.assignments = await ctx.state.user.findAllAssignments());
 

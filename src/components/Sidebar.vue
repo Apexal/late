@@ -58,12 +58,12 @@ export default {
     };
   },
   computed: {
-    pressing() {
+    pressing () {
       return this.$store.getters.pressingAssignments(5);
     }
   },
   methods: {
-    getCourseFromCRN(crn) {
+    getCourseFromCRN (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     }
   }

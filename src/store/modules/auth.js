@@ -7,7 +7,7 @@ const state = {
 const getters = {};
 
 const actions = {
-  async GET_USER({
+  async GET_USER ({
     dispatch
   }) {
     try {
@@ -18,7 +18,7 @@ const actions = {
       console.error('Not logged in!');
     }
   },
-  async SET_USER({
+  async SET_USER ({
     dispatch,
     commit
   }, user) {

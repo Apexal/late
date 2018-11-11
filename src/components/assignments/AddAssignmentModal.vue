@@ -204,7 +204,7 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       course_crn: '',
       title: '',
@@ -216,12 +216,12 @@ export default {
     };
   },
   computed: {
-    courses() {
+    courses () {
       return this.$store.state.auth.user.current_schedule;
     }
   },
   methods: {
-    async save() {
+    async save () {
       const request = await API.post('/assignments/create', {
         title: this.title,
         description: this.description,
@@ -239,7 +239,7 @@ export default {
       this.title = '';
       this.description = '';
 
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment due ${moment(this.due_date).fromNow()}.`});
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment due ${moment(this.due_date).fromNow()}.` });
     }
   }
 };

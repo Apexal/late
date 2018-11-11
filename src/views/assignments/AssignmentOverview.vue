@@ -38,14 +38,27 @@ export default {
     return {};
   },
   computed: {
-    assignment () { return this.$store.getters.getAssignmentById(this.$route.params.assignmentID); },
-    course () { return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN); }
+    assignment () {
+      return this.$store.getters.getAssignmentById(
+        this.$route.params.assignmentID
+      );
+    },
+    course () {
+      return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+    }
   },
   methods: {
     remove () {
-      if (!confirm(`Are you sure you want to remove assignment ${this.assignment.title}?`)) return;
+      if (
+        !confirm(
+          `Are you sure you want to remove assignment ${this.assignment.title}?`
+        )
+      ) { return; }
       this.$store.dispatch('REMOVE_ASSIGNMENT', this.assignment._id);
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Successfully removed assignment.' });
+      this.$store.commit('ADD_NOTIFICATION', {
+        type: 'success',
+        description: 'Successfully removed assignment.'
+      });
       this.$router.push('/assignments');
     }
   }

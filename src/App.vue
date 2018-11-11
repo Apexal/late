@@ -30,7 +30,7 @@ export default {
   name: 'LATE',
   components: { Header, Sidebar, Footer, Notifications },
   computed: {
-    loggedIn() {
+    loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     }
   },
@@ -40,7 +40,7 @@ export default {
 
 <style lang="scss">
 /* These styles will apply to the whole app. */
-@import '@/assets/bulma.scss';
+@import "@/assets/bulma.scss";
 
 .is-full-width {
   width: 100%;

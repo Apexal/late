@@ -45,13 +45,13 @@ export default {
       default: () => {}
     }
   },
-  data() {
+  data () {
     return {
       editing: false
     };
   },
   computed: {
-    sortedPeriods() {
+    sortedPeriods () {
       return this.course.periods
         .concat()
         .sort((a, b) => parseInt(a.day) - parseInt(b.day));
@@ -70,10 +70,7 @@ export default {
       ][num],
     time: t => {
       const dt = moment(t, 'Hmm');
-      if (dt.hours() == 12 && dt.minutes() == 0)
-        return 'Noon';
-      else if (dt.minutes() == 0)
-        return dt.format('h A');
+      if (dt.hours() === 12 && dt.minutes() === 0) { return 'Noon'; } else if (dt.minutes() === 0) { return dt.format('h A'); }
       return dt.format('h:mm A');
     },
     type (pType) {
