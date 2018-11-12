@@ -169,11 +169,8 @@
                 </datalist>
               </div>
             </div>
-
           </div>
         </form>
-
-
       </section>
 
       <footer class="modal-card-foot">
@@ -184,6 +181,7 @@
         <button
           form="add-assignment-form"
           class="button is-success"
+          :class="loading ? 'is-loading' : ''"
         >Save</button>
       </footer>
     </div>
@@ -206,6 +204,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       course_crn: '',
       title: '',
       description: '',
@@ -222,6 +221,7 @@ export default {
   },
   methods: {
     async save () {
+      this.loading = true;
       const request = await API.post('/assignments/create', {
         title: this.title,
         description: this.description,
@@ -239,6 +239,8 @@ export default {
       this.title = '';
       this.description = '';
 
+      this.loading = false;
+      this.$emit('toggle-modal');
       this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment due ${moment(this.due_date).fromNow()}.` });
     }
   }
