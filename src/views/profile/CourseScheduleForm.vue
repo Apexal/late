@@ -76,6 +76,9 @@
       >{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
     </form>
 
+    <hr>
+
+    <h2 class="subtitle">Your Courses</h2>
     <div class="columns is-multiline course-list">
       <div
         v-for="c in courses"
