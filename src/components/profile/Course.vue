@@ -2,11 +2,12 @@
   <div class="course box">
     <details>
       <summary class="is-clearfix">{{ course.longname }}
-        <span class="tag is-info is-pulled-right">{{ course.periods.length }} Periods</span>
+        <small class="has-text-grey">{{ course.periods.length }} periods</small>
         <span
           class="tag is-pulled-right"
           :style="`background-color: ${course.color}; color: white;`"
-        >Section {{ course.section_id }}</span>
+        >Section {{ course.section_id }}
+        </span>
       </summary>
 
       <div class="periods">
@@ -73,7 +74,11 @@ export default {
       ][num],
     time: t => {
       const dt = moment(t, 'Hmm');
-      if (dt.hours() === 12 && dt.minutes() === 0) { return 'Noon'; } else if (dt.minutes() === 0) { return dt.format('ha'); }
+      if (dt.hours() === 12 && dt.minutes() === 0) {
+        return 'noon';
+      } else if (dt.minutes() === 0) {
+        return dt.format('ha');
+      }
       return dt.format('h:mma');
     },
     type (pType) {
