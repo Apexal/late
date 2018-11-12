@@ -8,26 +8,33 @@
           :key="date"
           class="due-date column is-one-third is-half-tablet"
         >
-          <h3 class="subtitle is-4">{{ toDateShortString(date) }}</h3>
-          <div
-            v-for="a in assignments"
-            :key="a._id"
-            class="box"
-          >
+          <div class="panel">
+            <p class="panel-heading">
+              {{ toDateShortString(date) }}
+            </p>
+            <div
+              v-for="a in assignments"
+              :key="a._id"
+              class="panel-block"
+            >
+              <span class="is-full-width">
+                <b class="assignment-title">
+                  <small class="course-title">{{ course(a).longname }}</small>
+                  <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
+                  <span
+                    v-if="a.priority >= 7"
+                    class="tag is-danger"
+                    title="You marked this assignment as high priority!"
+                  >!</span>
+                </b>
+                <small
+                  :title="toFullDateTimeString(a.dueDate)"
+                  class="is-pulled-right has-text-grey"
+                >{{ toTimeString(a.dueDate) }}</small>
 
-            <b class="assignment-title">
-              <small class="course-title">{{ course(a).longname }}</small>
-              <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
-              <span
-                v-if="a.priority >= 7"
-                class="tag is-danger"
-                title="You marked this assignment as high priority!"
-              >!</span>
-            </b>
-            <small
-              :title="toFullDateTimeString(a.dueDate)"
-              class="is-pulled-right has-text-grey"
-            >{{ toTimeString(a.dueDate) }}</small>
+              </span>
+
+            </div>
 
           </div>
           <hr>
@@ -80,7 +87,7 @@ export default {
 }
 
 .assignment-description {
-  padding: 10px;
+  padding: 5px;
   font-size: 0.9em;
 }
 </style>
