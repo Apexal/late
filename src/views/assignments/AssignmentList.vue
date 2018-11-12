@@ -9,7 +9,10 @@
           class="due-date column is-one-third is-half-tablet"
         >
           <div class="panel">
-            <p class="panel-heading">
+            <p
+              class="panel-heading"
+              :title="daysAway(date) + ' days away'"
+            >
               {{ toDateShortString(date) }}
             </p>
             <div
@@ -28,7 +31,7 @@
                   >!</span>
                 </b>
                 <small
-                  :title="toFullDateTimeString(a.dueDate)"
+                  :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
                   class="is-pulled-right has-text-grey"
                 >{{ toTimeString(a.dueDate) }}</small>
 
@@ -74,7 +77,9 @@ export default {
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
-    }
+    },
+    hoursFromNow: date => moment(date).diff(moment(), 'hours'),
+    daysAway: date => moment(date).diff(moment().startOf('day'), 'days')
   }
 };
 </script>
