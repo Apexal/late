@@ -19,10 +19,12 @@ export default new Vuex.Store({
     notifications
   },
   state: {
-    navbarExpanded: false
+    navbarExpanded: false,
+    sidebarExpanded: true
   },
   mutations: {
-    TOGGLE_NAVBAR: state => (state.navbarExpanded = !state.navbarExpanded)
+    TOGGLE_NAVBAR: state => (state.navbarExpanded = !state.navbarExpanded),
+    TOGGLE_SIDEBAR: state => (state.sidebarExpanded = !state.sidebarExpanded)
   },
   strict: debug
 });
