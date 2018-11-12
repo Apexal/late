@@ -91,7 +91,8 @@ export default {
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
             this.$router.push(`/assignments/${calEvent.assignment._id}`);
-          }
+          },
+          timezone: 'local'
         }
       }
     };
@@ -105,7 +106,6 @@ export default {
       return this.$store.state.work.assignments.map(a => ({
         title: a.title,
         start: a.dueDate,
-        end: a.dueDate,
         color: this.course(a).color,
         assignment: a
       }));
