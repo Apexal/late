@@ -74,6 +74,13 @@ async function setCourseScheduleInfo (ctx) {
     periods: []
   });
 
+  for (let c in courseSchedule) {
+    courseSchedule[c].color =
+      '#' +
+      Math.random()
+        .toString(16)
+        .substr(-6);
+  }
   user.setup.course_schedule = true;
   user.current_schedule = courseSchedule;
 
