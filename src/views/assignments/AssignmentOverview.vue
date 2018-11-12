@@ -15,6 +15,12 @@
       v-else
       class="section"
     >
+      <span
+        class="is-pulled-right has-text-grey"
+        :title="toFullDateTimeString(assignment.dueDate)"
+      >
+        {{ fromNow(assignment.dueDate) }}
+      </span>
       <h2 class="subtitle">{{ course.longname }}</h2>
       <h1 class="title">{{ assignment.title }}</h1>
       <div class="content">
@@ -38,6 +44,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   name: 'AssignmentOverview',
   data () {
@@ -54,6 +62,7 @@ export default {
     }
   },
   methods: {
+    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     remove () {
       if (
         !confirm(
@@ -66,7 +75,8 @@ export default {
         description: 'Successfully removed assignment.'
       });
       this.$router.push('/assignments');
-    }
+    },
+    fromNow: date => moment(date).fromNow()
   }
 };
 </script>

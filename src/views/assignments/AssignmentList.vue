@@ -66,9 +66,7 @@ export default {
     }
   },
   methods: {
-    toFullDateTimeString (dueDate) {
-      return moment(dueDate).format('dddd, MMMM Do YYYY, h:mma');
-    },
+    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     toDateShortString (dueDate) {
       return moment(dueDate).format('dddd [the] Do');
     },
