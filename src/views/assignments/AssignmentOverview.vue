@@ -23,6 +23,12 @@
         </blockquote>
       </div>
       <hr>
+      <router-link
+        to="/assignments"
+        class="button is-dark"
+      >
+        Assignment List
+      </router-link>
       <button
         class="button is-danger"
         @click="remove"

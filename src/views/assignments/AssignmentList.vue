@@ -87,12 +87,7 @@ export default {
 <style lang="scss" scoped>
 .assignment-title {
   .course-title {
-    margin-right: 10px;
+    margin-right: 5px;
   }
-}
-
-.assignment-description {
-  padding: 5px;
-  font-size: 0.9em;
 }
 </style>
