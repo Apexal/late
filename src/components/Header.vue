@@ -41,7 +41,11 @@
             <router-link
               class="navbar-item"
               to="/dashboard"
-            >Dashboard</router-link>
+            >
+              <span class="icon">
+                <i class="fas fa-home" />
+              </span>
+              Dashboard</router-link>
             <router-link
               class="navbar-item"
               to="/about"
@@ -50,6 +54,9 @@
             <template v-if="loggedIn">
               <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
+                  <span class="icon">
+                    <i class="fas fa-clipboard-list" />
+                  </span>
                   Assignments
                   <span class="tag is-warning assignment-count">{{ assignmentCount }}</span>
                 </a>
@@ -61,18 +68,22 @@
                   >
                     List
                   </router-link>
-
-                  <a class="navbar-item">
-                    Contact
-                  </a>
                   <hr class="navbar-divider">
                   <a class="navbar-item">
-                    Report an issue
+                    Add Assignment
                   </a>
                 </div>
               </div>
             </template>
-
+            <a
+              href="https://github.com/Apexal/late"
+              target="_blank"
+              class="navbar-item"
+            >
+              <span class="icon">
+                <i class="fab fa-github" />
+              </span>
+              Source Code</a>
           </div>
 
           <div class="navbar-end">
@@ -99,7 +110,6 @@
       </nav>
     </div>
   </header>
-
 </template>
 
 <script>
@@ -130,16 +140,9 @@ export default {
 }
 
 #top-navbar {
-  li.navbar-item {
-    a {
-      color: inherit;
-    }
-
-    &:hover {
-      a {
-        color: black;
-      }
-      background-color: white;
+  a.navbar-item {
+    span.icon {
+      margin-right: 3px;
     }
   }
 
