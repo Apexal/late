@@ -40,7 +40,6 @@
       </router-link>
       <button
         class="button is-danger"
-        :class="loading.removing ? 'is-loading' : ''"
         @click="remove"
       >
         Remove</button>
@@ -55,9 +54,6 @@ export default {
   name: 'AssignmentOverview',
   data () {
     return {
-      loading: {
-        removing: false
-      }
     };
   },
   computed: {
@@ -73,27 +69,26 @@ export default {
   methods: {
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     async remove () {
-      this.loading.removing = true;
-
       // Confirm user wants to remove assignment
       if (
         !confirm(
           `Are you sure you want to remove assignment ${this.assignment.title}?`
         )
-      ) { this.loading.removing = false; return; }
+      ) return;
+
+      const assignmentTitle = this.assignment.title;
+      const assignmentID = this.assignment._id;
+
+      this.$router.push('/assignments');
 
       // This handles the API call and state update
-      await this.$store.dispatch('REMOVE_ASSIGNMENT', this.assignment._id);
-
-      this.loading.removing = false;
+      await this.$store.dispatch('REMOVE_ASSIGNMENT', assignmentID);
 
       // Notify user of success
       this.$store.commit('ADD_NOTIFICATION', {
         type: 'success',
-        description: 'Successfully removed assignment.'
+        description: `Successfully removed assignment '${assignmentTitle}'.`
       });
-
-      this.$router.push('/assignments');
     },
     fromNow: date => moment(date).fromNow()
   }
