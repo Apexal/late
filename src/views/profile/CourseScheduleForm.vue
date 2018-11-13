@@ -41,6 +41,7 @@
                 type="password"
                 class="input"
                 placeholder="Enter your SIS password."
+                @change="saved = false"
               >
             </div>
           </div>
@@ -63,6 +64,7 @@
                 name="crns"
                 type="text"
                 placeholder="123456, 654321, ..."
+                @change="saved = false"
               >
             </div>
           </div>
@@ -73,6 +75,7 @@
       <button
         class="button is-primary"
         :class="{'is-loading': loading}"
+        :disabled="saved"
       >{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
     </form>
 
@@ -101,6 +104,7 @@ export default {
   components: { Course },
   data () {
     return {
+      saved: false,
       loading: false,
       method: 'sis',
       pin: '',
@@ -131,6 +135,7 @@ export default {
         description: 'Got course schedule!'
       });
 
+      // this.saved = true;
       this.loading = false;
     }
   }

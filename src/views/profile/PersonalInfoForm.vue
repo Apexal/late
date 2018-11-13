@@ -28,11 +28,12 @@
             <div class="control">
               <input
                 id="first-name"
-                v-model="first_name"
+                v-model.trim="first_name"
                 class="input"
                 type="text"
                 placeholder="First Name"
                 required
+                @change="saved = false"
               >
             </div>
           </div>
@@ -47,11 +48,12 @@
             <div class="control">
               <input
                 id="last-name"
-                v-model="last_name"
+                v-model.trim="last_name"
                 class="input"
                 type="text"
                 placeholder="Last Name"
                 required
+                @change="saved = false"
               >
             </div>
           </div>
@@ -66,11 +68,12 @@
             <div class="control">
               <input
                 id="rin"
-                v-model="rin"
+                v-model.trim="rin"
                 class="input"
                 type="text"
                 placeholder="RIN"
                 required
+                @change="saved = false"
               >
             </div>
           </div>
@@ -93,6 +96,7 @@
                 class="input"
                 placeholder="2022"
                 required
+                @change="saved = false"
               >
             </div>
           </div>
@@ -102,6 +106,7 @@
       <button
         class="button is-primary"
         :class="{'is-loading': loading}"
+        :disabled="saved"
       >Save and Continue</button>
     </form>
   </div>
@@ -114,6 +119,7 @@ export default {
   name: 'PersonalInfoForm',
   data () {
     return {
+      saved: false,
       loading: false,
       first_name: this.$store.state.auth.user.name.first,
       last_name: this.$store.state.auth.user.name.last,
@@ -149,6 +155,7 @@ export default {
       // Go to next setup
       this.$router.push('/profile/courseschedule');
 
+      // this.saved = true;
       this.loading = false;
     }
   }
