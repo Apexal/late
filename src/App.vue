@@ -14,7 +14,7 @@
         <Sidebar />
       </div>
       <div
-        :class="(loggedIn ? 'columm' : 'container') + (expanded ? '' : ' no-sidebar')"
+        :class="(loggedIn && expanded ? 'columm' : 'container') + (expanded ? '' : ' no-sidebar')"
         style="flex: 1;"
       >
         <Notifications />
@@ -50,8 +50,5 @@ export default {
 
 .is-full-width {
   width: 100%;
-}
-.no-sidebar {
-  margin-left: 20px;
 }
 </style>
