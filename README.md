@@ -31,5 +31,7 @@ Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with vers
 - `$ npm install -g @vue/cli`
 - `$ npm install`
 - `$ npm run build-dev`
+- Create a `.env` file in the root folder with the proper configuration environment variables
+- `$ source .env`
 - `$ npm run dev`
 - Go to url `http://localhost:3000` in your browser
