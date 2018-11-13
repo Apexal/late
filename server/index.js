@@ -8,6 +8,7 @@ const Session = require('koa-session');
 const Body = require('koa-bodyparser');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
+// const CORS = require('@koa/cors');
 
 const logger = require('./logger');
 
@@ -15,6 +16,8 @@ const app = new Koa();
 const router = new Router();
 
 const db = require('../db').models;
+
+// app.use(CORS());
 
 /* MongoDB setup */
 app.context.db = db; // The db is now available on every request
