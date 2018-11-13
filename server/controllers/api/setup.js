@@ -96,6 +96,31 @@ async function setCourseSchedule (ctx) {
 }
 
 /**
+ * Set the logged in user's courses and return the updated user.
+ * Request body:
+ *  - courses: new current_schedules
+ *
+ * @param {Koa context} ctx
+ */
+async function setCourses (ctx) {
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
+
+  const body = ctx.request.body;
+  const updatedCourses = body.courses;
+
+  try {
+    user.current_schedule = updatedCourses;
+    await user.save();
+    ctx.ok({ updatedUser: user });
+  } catch (error) {
+    logger.error(`Failed to set custom courses for ${user.rcs_id}: ${error}`);
+    ctx.badRequest('Failed to set custom courses.');
+  }
+}
+
+/**
  * Set the work schedule of the logged in user.
  *
  * Body:
@@ -134,5 +159,6 @@ async function setWorkSchedule (ctx) {
 module.exports = {
   setPersonalInfo,
   setCourseSchedule,
+  setCourses,
   setWorkSchedule
 };
