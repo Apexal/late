@@ -34,7 +34,9 @@ const getters = {
   getCourseFromCRN: (state, getters, rootState) => crn =>
     rootState.auth.user.current_schedule.find(c => c.crn === crn),
   getCourseFromPeriod: (state, getters, rootState) => period =>
-    rootState.auth.user.current_schedule.find(c => c.periods.includes(period))
+    rootState.auth.user.current_schedule.find(c =>
+      c.periods.find(p => p.day === period.day && p.start === period.start)
+    )
 };
 
 const actions = {
