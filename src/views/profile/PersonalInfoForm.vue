@@ -1,7 +1,5 @@
 <template>
-  <div
-    id="personal-info-form"
-  >
+  <div class="personal-info-form">
     <form @submit.prevent="save">
       <div class="field">
         <label
@@ -143,8 +141,12 @@ export default {
         grad_year: this.grad_year
       });
 
-      this.$store.dispatch('SET_USER', request.data.updatedUser);
+      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+
+      // Notify user of success
       this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
+
+      // Go to next setup
       this.$router.push('/profile/courseschedule');
 
       this.loading = false;
