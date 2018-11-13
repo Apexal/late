@@ -33,8 +33,8 @@
       <div
         v-for="p in periods"
         :key="p.start"
-        class="panel-block is-clearfix"
-        :class="current_period == p ? 'is-active' : ''"
+        class="panel-block period-block is-clearfix"
+        :class="{ 'is-active': p == current_period, 'has-background-white-ter': hasPassed(p) }"
       >
         <span class="course-longname is-full-width">
           {{ course(p).longname }}
@@ -85,6 +85,7 @@ export default {
   },
   methods: {
     timeFormat: datetime => moment(datetime, 'Hmm').format('h:mma'),
+    hasPassed: p => moment(p.end, 'Hmm').isBefore(moment()),
     course (p) {
       return this.$store.getters.getCourseFromPeriod(p);
     }
@@ -93,4 +94,9 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.period-block {
+  &.is-active {
+    font-weight: bold;
+  }
+}
 </style>

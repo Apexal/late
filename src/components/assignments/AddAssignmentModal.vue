@@ -181,7 +181,7 @@
         <button
           form="add-assignment-form"
           class="button is-success"
-          :class="loading ? 'is-loading' : ''"
+          :class="{'is-loading': loading}"
         >Save</button>
       </footer>
     </div>

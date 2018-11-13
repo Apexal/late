@@ -18,7 +18,7 @@
       >
         <div class="navbar-brand">
           <a
-            :class="navbarExpanded ? 'is-active' : ''"
+            :class="{'is-active': navbarExpanded}"
             role="button"
             class="navbar-burger burger"
             aria-label="menu"
@@ -34,7 +34,7 @@
 
         <div
           id="top-navbar"
-          :class="navbarExpanded ? 'is-active' : ''"
+          :class="{'is-active': navbarExpanded}"
           class="navbar-menu"
         >
           <div class="navbar-start">

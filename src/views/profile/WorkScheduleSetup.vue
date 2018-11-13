@@ -13,7 +13,7 @@
     />
     <button
       class="button is-success"
-      :class="loading ? 'is-loading' : ''"
+      :class="{'is-loading': loading}"
       :disabled="saved"
       @click="save"
     >

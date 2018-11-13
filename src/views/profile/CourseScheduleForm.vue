@@ -72,7 +72,7 @@
 
       <button
         class="button is-primary"
-        :class="loading ? 'is-loading' : ''"
+        :class="{'is-loading': loading}"
       >{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
     </form>
 

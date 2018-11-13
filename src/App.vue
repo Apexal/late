@@ -20,7 +20,7 @@
         <Sidebar />
       </div>
       <div
-        :class="(loggedIn && expanded ? 'columm' : 'container') + (expanded ? '' : ' no-sidebar')"
+        :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
       >
         <Notifications />

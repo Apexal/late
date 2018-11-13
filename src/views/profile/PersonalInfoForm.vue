@@ -101,7 +101,7 @@
 
       <button
         class="button is-primary"
-        :class="loading ? 'is-loading': ''"
+        :class="{'is-loading': loading}"
       >Save and Continue</button>
     </form>
   </div>
