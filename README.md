@@ -31,3 +31,22 @@ Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with vers
 - `$ npm install`
 - `$ npm run dev`
 - Go to url `http://localhost:3000` in your browser
+
+To run master branch as of 11/13:
+- Switch to it and update by pulling and npm installing
+- Make sure that you have .env file at base directory
+- `$ source .env`
+- `$ npm run dev` (this is for linux users, windows is a little different)
+- Go to url `http://localhost:3000` in your browser
+
+
+Whats in .env?
+
+export CAS_SERVICE_URL=http://localhost:3000
+export HOST=0.0.0.0
+export PORT=3000
+export MONGODB_URI=mongodb://webapp:gDP6VttbUwDYu9P@ds041861.mlab.com:41861/late-dev
+export API_BASE_URL=http://localhost:3000/api/
+export SENDGRID_API_KEY=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
+
+
