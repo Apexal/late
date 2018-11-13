@@ -10,7 +10,10 @@
         v-for="c in courses"
         :key="c.listing_id"
         :style="`background-color: ${c.color}; color: white;`"
-        class="tag"
+        class="tag course-tag"
+        :class="{'highlighted': highlighted ===c.listing_id}"
+        @mouseover="highlighted=c.listing_id"
+        @mouseleave="highlighted=''"
       >{{ c.longname }}</span>
       <hr>
       <div
@@ -20,7 +23,7 @@
         <div
           v-for="(assignments, date) in assignmentsGroupedByDueDate"
           :key="date"
-          class="due-date column is-one-third is-half-tablet"
+          class="due-date column is-one-third-desktop is-half-tablet"
         >
           <div class="panel">
             <p
@@ -32,20 +35,24 @@
             <div
               v-for="a in assignments"
               :key="a._id"
+              :style="highlighted == course(a).listing_id ? 'color: white !important; background-color: ' + course(a).color : ''"
               class="panel-block"
             >
               <span class="is-full-width">
                 <span
                   class="dot"
+                  :title="course(a).longname"
                   :style="'background-color: ' + course(a).color"
                 />
-                <b
-                  class="course-title"
-                >{{ course(a).longname }}</b>
                 <router-link
-                  class="assignment-link"
+                  class="assignment-link "
                   :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
-                >{{ a.title }}</router-link>
+                >
+                  <b
+                    class="course-title is-hidden-tablet"
+                  >{{ course(a).longname }}</b>
+
+                  {{ a.title }}</router-link>
                 <span
                   v-if="a.priority >= 7"
                   class="tag is-danger"
@@ -53,7 +60,8 @@
                 >!</span>
                 <small
                   :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
-                  class="is-pulled-right has-text-grey"
+                  class="is-pulled-right"
+                  :class="{ 'has-text-grey': highlighted !== course(a).listing_id }"
                 >{{ toTimeString(a.dueDate) }}</small>
               </span>
             </div>
@@ -88,6 +96,7 @@ export default {
   data () {
     return {
       view: 'list',
+      highlighted: '',
       calendar: {
         header: {
           left: 'title',
@@ -139,6 +148,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+span.tag.course-tag {
+  cursor: pointer;
+  margin-right: 5px;
+  &.highlighted {
+    font-weight: bold;
+  }
+}
+
 .course-title {
   margin-right: 5px;
 }
