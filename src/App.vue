@@ -1,11 +1,13 @@
 <template>
   <div id="app">
     <Header />
-    <button
+    <span
       v-if="loggedIn"
-      class="button is-black"
+      class="icon button is-black toggle-sidebar"
       @click="$store.commit('TOGGLE_SIDEBAR')"
-    >Toggle Sidebar</button>
+    >
+      <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
+    </span>
     <div class="columns">
       <div
         v-if="loggedIn && expanded"
@@ -50,5 +52,9 @@ export default {
 
 .is-full-width {
   width: 100%;
+}
+
+.toggle-sidebar {
+  position: absolute;
 }
 </style>
