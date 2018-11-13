@@ -8,6 +8,7 @@
     "node": ">=11.0.0"
   },
   "dependencies": {
+    "@koa/cors": "^2.2.2",
     "axios": "^0.18.0",
     "bulma": "^0.7.2",
     "cheerio": "^1.0.0-rc.2",
