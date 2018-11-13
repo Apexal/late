@@ -6,6 +6,13 @@
         @click="view = (view == 'calendar' ? 'list' : 'calendar')"
       >Toggle Calendar</button>
       <h1 class="title">All Assignments</h1>
+      <span
+        v-for="c in courses"
+        :key="c.listing_id"
+        :style="`background-color: ${c.color}; color: white;`"
+        class="tag"
+      >{{ c.longname }}</span>
+      <hr>
       <div
         v-show="view == 'list'"
         class="upcoming-assignments columns is-multiline"
@@ -28,15 +35,17 @@
               class="panel-block"
             >
               <span class="is-full-width">
-                <b class="assignment-title">
-                  <small class="course-title">{{ course(a).longname }}</small>
-                  <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
-                  <span
-                    v-if="a.priority >= 7"
-                    class="tag is-danger"
-                    title="You marked this assignment as high priority!"
-                  >!</span>
-                </b>
+                <b
+                  class="course-title"
+                  :style="`color: ${course(a).color};`"
+                >{{ course(a).longname }}</b>
+                &nbsp;
+                <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
+                <span
+                  v-if="a.priority >= 7"
+                  class="tag is-danger"
+                  title="You marked this assignment as high priority!"
+                >!</span>
                 <small
                   :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
                   class="is-pulled-right has-text-grey"
@@ -57,12 +66,6 @@
           :header="calendar.header"
           :config="calendar.config"
         />
-        <span
-          v-for="c in courses"
-          :key="c.listing_id"
-          :style="`background-color: ${c.color}; color: white;`"
-          class="tag"
-        >{{ c.longname }}</span>
       </div>
     </section>
 
