@@ -69,7 +69,10 @@
                     List
                   </router-link>
                   <hr class="navbar-divider">
-                  <a class="navbar-item">
+                  <a
+                    class="navbar-item"
+                    @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+                  >
                     Add Assignment
                   </a>
                 </div>

@@ -3,26 +3,21 @@
     id="sidebar"
     class="menu"
   >
-    <AddAssignmentModal
-      :open="addAssignmentModalOpen"
-      @toggle-modal="addAssignmentModalOpen = !addAssignmentModalOpen"
-    />
     <Schedule />
     <PressingAssignments
       :pressing="pressing"
-      @toggle-modal="addAssignmentModalOpen = !addAssignmentModalOpen"
+      @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     />
   </aside>
 </template>
 
 <script>
-import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
 import Schedule from '@/components/sidebar/Schedule';
 import PressingAssignments from '@/components/sidebar/PressingAssignments';
 
 export default {
   name: 'Sidebar',
-  components: { AddAssignmentModal, PressingAssignments, Schedule },
+  components: { PressingAssignments, Schedule },
   data () {
     return {
       addAssignmentModalOpen: false
