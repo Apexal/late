@@ -79,6 +79,13 @@ const router = new Router({
             title: 'Course Schedule'
           },
           component: () => import('@/views/profile/CourseScheduleForm.vue')
+        },
+        {
+          path: 'workschedule',
+          meta: {
+            title: 'Work/Study Schedule'
+          },
+          component: () => import('@/views/profile/WorkScheduleSetup.vue')
         }
       ]
     },
