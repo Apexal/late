@@ -250,7 +250,7 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment due ${moment(this.due_date + ' ' + this.time, 'YYYY-MM-DD HH:mm').fromNow()}.` });
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment '${request.data.createdAssignment.title}' due ${moment(this.due_date + ' ' + this.time, 'YYYY-MM-DD HH:mm').fromNow()}.` });
     }
   }
 };
