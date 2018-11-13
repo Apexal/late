@@ -35,12 +35,17 @@
               class="panel-block"
             >
               <span class="is-full-width">
+                <span
+                  class="dot"
+                  :style="'background-color: ' + course(a).color"
+                />
                 <b
                   class="course-title"
-                  :style="`color: ${course(a).color};`"
                 >{{ course(a).longname }}</b>
-                &nbsp;
-                <router-link :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}">{{ a.title }}</router-link>
+                <router-link
+                  class="assignment-link"
+                  :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+                >{{ a.title }}</router-link>
                 <span
                   v-if="a.priority >= 7"
                   class="tag is-danger"
@@ -117,6 +122,8 @@ export default {
   methods: {
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     toDateShortString (dueDate) {
+      if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
+      if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) return 'Tomorrow';
       return moment(dueDate).format('dddd [the] Do');
     },
     toTimeString (dueDate) {
@@ -132,9 +139,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.assignment-title {
-  .course-title {
-    margin-right: 5px;
-  }
+.course-title {
+  margin-right: 5px;
+}
+
+.assignment-link {
+  color: inherit;
+}
+
+.dot {
+  margin-right: 5px;
 }
 </style>

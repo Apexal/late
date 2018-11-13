@@ -64,4 +64,13 @@ export default {
   z-index: 99;
   position: absolute;
 }
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  cursor: pointer;
+  background-color: green;
+  display: inline-block;
+}
 </style>

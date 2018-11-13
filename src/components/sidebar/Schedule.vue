@@ -36,9 +36,19 @@
         class="panel-block period-block is-clearfix"
         :class="{ 'is-active': p == current_period, 'has-background-white-ter': hasPassed(p) }"
       >
-        <span class="course-longname is-full-width">
-          {{ course(p).longname }}
-          <small class="course-times is-pulled-right has-text-grey">{{ timeFormat(p.start) }}-{{ timeFormat(p.end) }} </small>
+        <span
+          class="course-longname is-full-width"
+          :title="periodType(p)"
+        >
+          <span
+            class="dot"
+            :style="'background-color: ' + course(p).color"
+          />
+          {{ course(p).longname }} {{ periodType(p) }}
+          <div class="course-times is-pulled-right has-text-grey">
+            <span>{{ timeFormat(p.start) }}</span>
+            <span>{{ timeFormat(p.end) }}</span>
+          </div>
         </span>
       </div>
     </template>
@@ -88,7 +98,8 @@ export default {
     hasPassed: p => moment(p.end, 'Hmm').isBefore(moment()),
     course (p) {
       return this.$store.getters.getCourseFromPeriod(p);
-    }
+    },
+    periodType (p) { return this.$store.getters.periodType(p.type); }
   }
 };
 </script>
@@ -98,5 +109,11 @@ export default {
   &.is-active {
     font-weight: bold;
   }
+}
+
+.course-times {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
 }
 </style>
