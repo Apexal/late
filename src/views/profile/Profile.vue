@@ -39,11 +39,12 @@
 <script>
 export default {
   name: 'Profile',
-  data() {
+  data () {
     return {
       setups: [
         { label: 'Personal Info', link: '/profile/personalinfo', setup_check: 'personal_info' },
-        { label: 'Course Schedule', link: '/profile/courseschedule', setup_check: 'course_schedule' }
+        { label: 'Course Schedule', link: '/profile/courseschedule', setup_check: 'course_schedule' },
+        { label: 'Work/Study Schedule', link: '/profile/workschedule', setup_check: 'work_schedule' }
       ]
     };
   },

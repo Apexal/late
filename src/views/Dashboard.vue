@@ -1,28 +1,17 @@
 <template>
-  <div class="dasboard">
-    <ul>
-      <li
-        v-for="a in assignments"
-        :key="a._id"
-        class="box"
-      >
-        <b>{{ a.title }}</b>
-        <blockquote>
-          <p>{{ a.description }}</p>
-        </blockquote>
-      </li>
-    </ul>
-  </div>
+  <section class="section dasboard">
+    <h1 class="title">Coming soon...</h1>
+  </section>
 </template>
 
 <script>
 export default {
   name: 'Dashboard',
-  data() {
+  data () {
     return {};
   },
   computed: {
-    assignments() {
+    assignments () {
       return this.$store.state.work.assignments;
     }
   }

@@ -67,5 +67,3 @@ package-lock.json
 .vscode
 
 config/
-!config/default.json
-client/public/css/

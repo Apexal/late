@@ -41,6 +41,7 @@
                 type="password"
                 class="input"
                 placeholder="Enter your SIS password."
+                @change="saved = false"
               >
             </div>
           </div>
@@ -63,6 +64,7 @@
                 name="crns"
                 type="text"
                 placeholder="123456, 654321, ..."
+                @change="saved = false"
               >
             </div>
           </div>
@@ -70,16 +72,26 @@
 
       </div>
 
-      <button class="button is-primary">{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
+      <button
+        class="button is-primary"
+        :class="{'is-loading': loading}"
+        :disabled="saved"
+      >{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
     </form>
 
+    <hr>
+
+    <h2 class="subtitle">Your Courses</h2>
     <div class="columns is-multiline course-list">
       <div
         v-for="c in courses"
         :key="c.crn"
         class="column is-half"
       >
-        <Course :course="c" />
+        <Course
+          :course="c"
+          @update-course="updatedCourse"
+        />
       </div>
     </div>
   </div>
@@ -93,8 +105,10 @@ import Course from '@/components/profile/Course';
 export default {
   name: 'CourseScheduleForm',
   components: { Course },
-  data() {
+  data () {
     return {
+      saved: false,
+      loading: false,
       method: 'sis',
       pin: '',
       crns: this.$store.state.auth.user.current_schedule
@@ -103,15 +117,30 @@ export default {
     };
   },
   computed: {
-    user() {
+    user () {
       return this.$store.state.auth.user;
     },
-    courses() {
+    courses () {
       return this.user.current_schedule;
     }
   },
   methods: {
-    async save() {
+    async updatedCourse (updatedCourse) {
+      this.loading = true;
+
+      await this.$store.dispatch('UPDATE_COURSE', updatedCourse);
+
+      this.$store.commit('ADD_NOTIFICATION', {
+        type: 'success',
+        description: 'Updated course info!'
+      });
+
+      // this.saved = true;
+      this.loading = false;
+    },
+    async save () {
+      this.loading = true;
+
       const request = await API.post('/setup/courseschedule', {
         pin: this.pin,
         crns: this.crns
@@ -122,6 +151,9 @@ export default {
         type: 'success',
         description: 'Got course schedule!'
       });
+
+      // this.saved = true;
+      this.loading = false;
     }
   }
 };

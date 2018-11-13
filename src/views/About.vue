@@ -17,13 +17,28 @@
         <div class="content">
           <h1 class="title is-4">The Team</h1>
           <h4 class="subtitle">Project Contributors</h4>
-          <p>Frank Matranga Zach Love Joseph Cengel</p>
-          <p>Shweta Burgula Abigail Medina Kikola Sanusi</p>
-          <p>Seth Laurenceau Zachary Fernandez Tyler Machado</p>
-          <p>Ziyi Wang Seungwon Kim Christie Nero</p>
-          <p>Bowen Wang</p>
+          <ul>
+            <li
+              v-for="c in contributors"
+              :key="c"
+            >
+              {{ c }}
+            </li>
+          </ul>
         </div>
       </div>
     </section>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'About',
+  data () {
+    return {
+      contributors: ['Frank Matranga', 'Christie Nero', 'Abigail Medina', 'Bowen Wang', 'Ziyi Wang', 'Seth Laurenceau', 'Zach Love', 'Kikiola Sanusi', 'Tyler Machado', 'Shweta Burgula']
+    };
+  }
+};
+</script>
+

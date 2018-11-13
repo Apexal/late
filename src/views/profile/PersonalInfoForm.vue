@@ -1,7 +1,5 @@
 <template>
-  <div
-    id="personal-info-form"
-  >
+  <div class="personal-info-form">
     <form @submit.prevent="save">
       <div class="field">
         <label
@@ -30,11 +28,12 @@
             <div class="control">
               <input
                 id="first-name"
-                v-model="first_name"
+                v-model.trim="first_name"
                 class="input"
                 type="text"
                 placeholder="First Name"
                 required
+                @change="saved = false"
               >
             </div>
           </div>
@@ -49,11 +48,12 @@
             <div class="control">
               <input
                 id="last-name"
-                v-model="last_name"
+                v-model.trim="last_name"
                 class="input"
                 type="text"
                 placeholder="Last Name"
                 required
+                @change="saved = false"
               >
             </div>
           </div>
@@ -68,11 +68,12 @@
             <div class="control">
               <input
                 id="rin"
-                v-model="rin"
+                v-model.trim="rin"
                 class="input"
                 type="text"
                 placeholder="RIN"
                 required
+                @change="saved = false"
               >
             </div>
           </div>
@@ -95,13 +96,18 @@
                 class="input"
                 placeholder="2022"
                 required
+                @change="saved = false"
               >
             </div>
           </div>
         </div>
       </div>
 
-      <button class="button is-primary">Save and Continue</button>
+      <button
+        class="button is-primary"
+        :class="{'is-loading': loading}"
+        :disabled="saved"
+      >Save and Continue</button>
     </form>
   </div>
 </template>
@@ -111,8 +117,10 @@ import API from '../../api';
 
 export default {
   name: 'PersonalInfoForm',
-  data() {
+  data () {
     return {
+      saved: false,
+      loading: false,
       first_name: this.$store.state.auth.user.name.first,
       last_name: this.$store.state.auth.user.name.last,
       rin: this.$store.state.auth.user.rin,
@@ -121,15 +129,17 @@ export default {
   },
 
   computed: {
-    isAuthenticated() {
+    isAuthenticated () {
       return this.$store.state.auth.isAuthenticated;
     },
-    user() {
+    user () {
       return this.$store.state.auth.user;
     }
   },
   methods: {
-    async save() {
+    async save () {
+      this.loading = true;
+
       const request = await API.post('/setup/personalinfo', {
         first_name: this.first_name,
         last_name: this.last_name,
@@ -137,9 +147,16 @@ export default {
         grad_year: this.grad_year
       });
 
-      this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!'});
+      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+
+      // Notify user of success
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
+
+      // Go to next setup
       this.$router.push('/profile/courseschedule');
+
+      // this.saved = true;
+      this.loading = false;
     }
   }
 };

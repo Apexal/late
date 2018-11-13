@@ -5,18 +5,17 @@ const logger = require('../../logger');
  *
  * @param {Koa session} ctx
  **/
-async function loginAs(ctx) {
-  if (ctx.state.env !== 'development')
-    return ctx.forbidden('Not in development mode.');
+async function loginAs (ctx) {
+  if (ctx.state.env !== 'development') { return ctx.forbidden('Not in development mode.'); }
 
-  const rcs_id = ctx.request.query.rcs_id;
-  ctx.session.cas_user = rcs_id;
-  logger.info(`Logging in as ${rcs_id}`);
+  const rcsID = ctx.request.query.rcs_id;
+  ctx.session.cas_user = rcsID;
+  logger.info(`Logging in as ${rcsID}`);
 
   await getUser(ctx);
 }
 
-async function getUser(ctx) {
+async function getUser (ctx) {
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
@@ -28,10 +27,13 @@ async function getUser(ctx) {
   });
 }
 
-async function getStudent(ctx) {}
+/*
+async function getStudent (ctx) {
 
+}
+*/
 module.exports = {
   loginAs,
-  getUser,
-  getStudent
+  getUser
+  // getStudent
 };

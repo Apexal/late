@@ -169,11 +169,8 @@
                 </datalist>
               </div>
             </div>
-
           </div>
         </form>
-
-
       </section>
 
       <footer class="modal-card-foot">
@@ -184,6 +181,7 @@
         <button
           form="add-assignment-form"
           class="button is-success"
+          :class="{'is-loading': loading}"
         >Save</button>
       </footer>
     </div>
@@ -204,24 +202,27 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
+      loading: false,
       course_crn: '',
       title: '',
       description: '',
       due_date: moment().add(1, 'days').format('YYYY-MM-DD'),
-      time: '08:00',
+      time: '08:00', // HH:mm
       time_estimate: 1,
       priority: 5
     };
   },
   computed: {
-    courses() {
+    courses () {
       return this.$store.state.auth.user.current_schedule;
     }
   },
   methods: {
-    async save() {
+    async save () {
+      this.loading = true;
+      // TODO: error handle
       const request = await API.post('/assignments/create', {
         title: this.title,
         description: this.description,
@@ -232,14 +233,24 @@ export default {
         priority: this.priority
       });
 
+      // Calls API and updates state
       await this.$store.dispatch(
         'ADD_ASSIGNMENT',
         request.data.createdAssignment
       );
+
+      // Reset important fields
       this.title = '';
       this.description = '';
+      this.priority = 5;
 
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment due ${moment(this.due_date).fromNow()}.`});
+      this.loading = false;
+
+      // Close modal
+      this.$emit('toggle-modal');
+
+      // Notify user
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment '${request.data.createdAssignment.title}' due ${moment(this.due_date + ' ' + this.time, 'YYYY-MM-DD HH:mm').fromNow()}.` });
     }
   }
 };

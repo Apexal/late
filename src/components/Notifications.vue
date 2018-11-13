@@ -18,16 +18,16 @@
 <script>
 export default {
   name: 'Notifications',
-  data() {
+  data () {
     return {};
   },
   computed: {
-    notifications() {
+    notifications () {
       return this.$store.state.notifications.list;
     }
   },
   methods: {
-    remove(index) {
+    remove (index) {
       this.$store.commit('REMOVE_NOTIFICATION', index);
     }
   }

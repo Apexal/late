@@ -3,10 +3,10 @@ const logger = require('./logger');
 
 const CMS_API_RCS_ID_BASE_URL = 'https://cms.union.rpi.edu/api/users/view_rcs/';
 
-async function getStudentInfoFromRCS(rcs_id) {
-  const uri = CMS_API_RCS_ID_BASE_URL + rcs_id;
+async function getStudentInfoFromRCS (rcsID) {
+  const uri = CMS_API_RCS_ID_BASE_URL + rcsID;
 
-  logger.info(`Getting student info for ${rcs_id} from CMS API.`);
+  logger.info(`Getting student info for ${rcsID} from CMS API.`);
 
   // TODO: authenticate with API key if it arrives
   let data = await request({ uri, json: true });

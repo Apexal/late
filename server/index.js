@@ -8,15 +8,16 @@ const Session = require('koa-session');
 const Body = require('koa-bodyparser');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
+// const CORS = require('@koa/cors');
 
 const logger = require('./logger');
-const path = require('path');
-const moment = require('moment');
 
 const app = new Koa();
 const router = new Router();
 
 const db = require('../db').models;
+
+// app.use(CORS());
 
 /* MongoDB setup */
 app.context.db = db; // The db is now available on every request
@@ -64,10 +65,9 @@ app.use(async ctx => {
 app.use(async (ctx, next) => {
   try {
     await next();
-    if (ctx.status == 404) ctx.throw(404, 'Page Not Found');
+    if (ctx.status === 404) ctx.throw(404, 'Page Not Found');
   } catch (err) {
-    if (ctx.request.url.startsWith('/api/'))
-      return ctx.notFound('API path not found.');
+    if (ctx.request.url.startsWith('/api/')) { return ctx.notFound('API path not found.'); }
 
     ctx.status = err.status || 500;
     logger.error(err);
