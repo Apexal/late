@@ -55,6 +55,7 @@ export default {
 }
 
 .toggle-sidebar {
+  z-index: 99;
   position: absolute;
 }
 </style>

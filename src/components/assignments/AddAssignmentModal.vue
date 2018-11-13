@@ -209,7 +209,7 @@ export default {
       title: '',
       description: '',
       due_date: moment().add(1, 'days').format('YYYY-MM-DD'),
-      time: '08:00',
+      time: '08:00', // HH:mm
       time_estimate: 1,
       priority: 5
     };
@@ -222,6 +222,7 @@ export default {
   methods: {
     async save () {
       this.loading = true;
+      // TODO: error handle
       const request = await API.post('/assignments/create', {
         title: this.title,
         description: this.description,
@@ -232,16 +233,24 @@ export default {
         priority: this.priority
       });
 
+      // Calls API and updates state
       await this.$store.dispatch(
         'ADD_ASSIGNMENT',
         request.data.createdAssignment
       );
+
+      // Reset important fields
       this.title = '';
       this.description = '';
+      this.priority = 5;
 
       this.loading = false;
+
+      // Close modal
       this.$emit('toggle-modal');
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment due ${moment(this.due_date).fromNow()}.` });
+
+      // Notify user
+      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Added assignment due ${moment(this.due_date + ' ' + this.time, 'YYYY-MM-DD HH:mm').fromNow()}.` });
     }
   }
 };
