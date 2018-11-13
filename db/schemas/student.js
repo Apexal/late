@@ -52,6 +52,7 @@ const schema = new Schema({
     /*, required: true */
   }, // maybe?
   semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+  work_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
   admin: { type: Boolean, default: false },
   setup: {
     personal_info: {
@@ -61,8 +62,8 @@ const schema = new Schema({
     course_schedule: {
       type: Boolean,
       default: false
-    } // what SIS and YACS will give us
-    // work_schedule: { type: Boolean, default: false } // when the student can study or work
+    }, // what SIS and YACS will give us
+    work_schedule: { type: Boolean, default: false } // when the student can study or work
   },
   joined_date: {
     type: Date,
@@ -156,6 +157,16 @@ schema
   .set(function (newSchedule) {
     this.semester_schedules[CURRENT_TERM] = newSchedule;
     this.markModified('semester_schedules');
+  });
+
+schema
+  .virtual('current_work_schedule')
+  .get(function () {
+    return this.work_schedules[CURRENT_TERM] || [];
+  })
+  .set(function (newSchedule) {
+    this.work_schedules[CURRENT_TERM] = newSchedule;
+    this.markModified('work_schedules');
   });
 
 schema.virtual('is_setup').get(function () {
