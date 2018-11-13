@@ -1,39 +1,79 @@
 <template>
   <div class="course box">
-    <details>
-      <summary class="is-clearfix">{{ course.longname }}
-        <small class="has-text-grey">{{ course.periods.length }} periods</small>
-        <span
-          class="tag is-pulled-right"
-          :style="`background-color: ${course.color}; color: white;`"
-        >Section {{ course.section_id }}
-        </span>
-      </summary>
+    <template v-if="!editing">
+      <details>
+        <summary class="is-clearfix">{{ courseData.longname }}
+          <span
+            class="icon edit-course is-pulled-right"
+            @click="editing = true"
+          >
+            <i class="fas fa-pencil-alt" />
+          </span>
+          <small class="has-text-grey">{{ courseData.periods.length }} periods</small>
+          <span
+            class="tag is-pulled-right"
+            :style="`background-color: ${courseData.color}; color: white;`"
+          >Section {{ courseData.section_id }}
+          </span>
+        </summary>
 
-      <div class="periods">
-        <table class="table is-full-width">
-          <thead>
-            <tr>
-              <th>Day</th>
-              <th>Time</th>
-              <th>Location</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="p in sortedPeriods"
-              :key="p.day + p.start"
-            >
-              <td>{{ day(p.day) }}</td>
-              <td>{{ time(p.start) }}<span class="has-text-grey-light">-</span>{{ time(p.end) }}</td>
-              <td>{{ p.location }}</td>
-              <td>{{ type(p.type) }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </details>
+        <div class="periods">
+          <table class="table is-full-width">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="p in sortedPeriods"
+                :key="p.day + p.start"
+              >
+                <td>{{ day(p.day) }}</td>
+                <td>{{ time(p.start) }}<span class="has-text-grey-light">-</span>{{ time(p.end) }}</td>
+                <td>{{ p.location }}</td>
+                <td>{{ type(p.type) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </template>
+    <template v-else>
+      <form @submit.prevent="save">
+        <input
+          v-model.trim="courseData.longname"
+          type="text"
+          placeholder="Course Title"
+          class="input course-longname-input"
+          required
+        >
+        <input
+          v-model.trim="courseData.section_id"
+          type="text"
+          placeholder="Section"
+          class="input course-section-input"
+          required
+        >
+        <input
+          v-model="courseData.color"
+          type="color"
+          class="input course-color-input"
+        >
+        <button
+          type="button"
+          class="button is-warning"
+          @click="cancel"
+        >Cancel</button>
+        <button
+          :disabled="saved"
+          class="button is-primary"
+        >Save</button>
+      </form>
+    </template>
   </div>
 </template>
 
@@ -51,15 +91,17 @@ export default {
   },
   data () {
     return {
+      courseData: Object.assign({}, this.course),
       editing: false
     };
   },
   computed: {
     sortedPeriods () {
-      return this.course.periods
+      return this.courseData.periods
         .concat()
         .sort((a, b) => parseInt(a.day) - parseInt(b.day));
-    }
+    },
+    saved () { return JSON.stringify(this.course) === JSON.stringify(this.courseData); }
   },
   methods: {
     day: num =>
@@ -83,6 +125,14 @@ export default {
     },
     type (pType) {
       return this.$store.getters.periodType(pType);
+    },
+    cancel () {
+      this.courseData = Object.assign({}, this.course);
+      this.editing = false;
+    },
+    async save () {
+      this.$emit('update-course', this.courseData);
+      this.editing = false;
     }
   }
 };
@@ -91,5 +141,17 @@ export default {
 <style lang="scss" scoped>
 .periods {
   overflow: auto;
+}
+
+.course.box {
+  .edit-course {
+    display: none;
+    cursor: pointer;
+  }
+  &:hover {
+    .edit-course {
+      display: inherit;
+    }
+  }
 }
 </style>

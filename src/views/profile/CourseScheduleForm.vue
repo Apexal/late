@@ -88,7 +88,10 @@
         :key="c.crn"
         class="column is-half"
       >
-        <Course :course="c" />
+        <Course
+          :course="c"
+          @update-course="updatedCourse"
+        />
       </div>
     </div>
   </div>
@@ -122,8 +125,22 @@ export default {
     }
   },
   methods: {
+    async updatedCourse (updatedCourse) {
+      this.loading = true;
+
+      await this.$store.dispatch('UPDATE_COURSE', updatedCourse);
+
+      this.$store.commit('ADD_NOTIFICATION', {
+        type: 'success',
+        description: 'Updated course info!'
+      });
+
+      // this.saved = true;
+      this.loading = false;
+    },
     async save () {
       this.loading = true;
+
       const request = await API.post('/setup/courseschedule', {
         pin: this.pin,
         crns: this.crns
