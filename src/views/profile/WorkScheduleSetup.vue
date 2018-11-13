@@ -42,7 +42,6 @@ export default {
           right: ''
         },
         config: {
-          timezone: 'local',
           navLinks: false,
           defaultView: 'agendaWeek',
           selectHelper: true,
