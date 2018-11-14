@@ -1,8 +1,32 @@
 <template>
   <footer class="footer">
-    <div class="content has-text-centered">
-      <p>An RCOS project!</p>
-      <p>Learn more <router-link to="/about">about us</router-link>.</p>
+    <h1 class="is-size-5 has-text-centered">An RCOS project!</h1>
+    <div class="content has-text-centered columns">
+      <p class="column">Learn more <a
+        href="/about"
+        class=""
+      >about us</a>.</p>
+      <p class="column">Source code licensed <a
+        href="https://opensource.org/licenses/mit-license.php"
+        class=""
+      >MIT</a>.</p>
+      <p class="column">
+        <span
+          data-v-61dd7a3d=""
+          class="icon"
+        ><i
+          data-v-61dd7a3d=""
+          class="fab fa-github"
+        /></span>
+        Contribute on <a
+          href="https://github.com/Apexal/late/"
+          class=""
+        >Github</a>.
+      </p>
+      <p class="column">View on <a
+        href="https://rcos.io/projects/apexal/late/profile"
+        class=""
+      >Observatory</a>.</p>
     </div>
   </footer>
 </template>
@@ -14,4 +38,10 @@ export default {
 </script>
 
 <style lang="scss">
+  .footer {
+    padding: 2rem 6rem 2rem!important;
+    h1 {
+      padding-bottom: 1rem;
+    }
+  }
 </style>
