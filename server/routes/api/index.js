@@ -5,5 +5,6 @@ const router = new Router();
 router.use('/assignments', require('./assignments'));
 router.use('/students', require('./students'));
 router.use('/setup', require('./setup'));
+router.use('/blockify', require('./blockify'));
 
 module.exports = router.routes();

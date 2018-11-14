@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const Schema = mongoose.Schema;
 
 // TODO: look into making this a subdocument
@@ -11,9 +12,18 @@ const schema = new Schema({
     required: true
   },
   startTime: { type: Date, required: true },
-  endTime: { type: Date, required: true },
+  duration: { type: Number, required: true, min: 0 },
   completed: { type: Boolean, default: false }
 });
+
+schema
+  .virtual('endTime')
+  .get(function () {
+    if (!this.startTime) {
+      return null;
+    }
+    return moment(this.startTime).add(this.duration, 'minutes').toDate();
+  });
 
 module.exports = {
   name: 'Block',
