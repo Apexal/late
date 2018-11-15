@@ -12,7 +12,10 @@
     >
       <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
     </span>
-    <div class="columns">
+    <div
+      class="columns"
+      style="margin-right: initial;"
+    >
       <div
         v-if="loggedIn && expanded"
         class="column is-3"

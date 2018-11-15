@@ -7,21 +7,15 @@ const logger = require('../../logger');
  *
  * @param {Koa context} ctx
  */
-async function listAllAssignments (ctx) {
+async function getAssignments (ctx) {
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
   let assignments;
 
-  if (ctx.query.dueBy) {
-    assignments = await user.findAssignmentsDueBy(ctx.query.dueBy);
-  } else if (ctx.query.dueOn) {
-    assignments = await user.findAssignmentsDueOn(ctx.query.dueOn);
-  } else {
-    assignments = await user.findAllAssignments();
-  }
+  assignments = await user.getAssignments(ctx.query.startDate, ctx.query.endDate);
 
-  logger.info(`Sending all assignments to ${user.rcs_id}`);
+  logger.info(`Sending assignments to ${user.rcs_id}`);
 
   ctx.ok({
     assignments
@@ -162,7 +156,7 @@ async function removeAssignment (ctx) {
 }
 
 module.exports = {
-  listAllAssignments,
+  getAssignments,
   getAssignment,
   createAssignment,
   editAssignment,

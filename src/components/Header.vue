@@ -78,15 +78,6 @@
                 </div>
               </div>
             </template>
-            <a
-              href="https://github.com/Apexal/late"
-              target="_blank"
-              class="navbar-item"
-            >
-              <span class="icon">
-                <i class="fab fa-github" />
-              </span>
-              Source Code</a>
           </div>
 
           <div class="navbar-end">
@@ -131,7 +122,7 @@ export default {
       return this.$store.state.auth.isAuthenticated;
     },
     assignmentCount () {
-      return this.$store.state.work.assignments.length;
+      return this.$store.getters.incompleteUpcomingAssignments.length;
     }
   }
 };

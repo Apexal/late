@@ -3,7 +3,7 @@ const router = new Router();
 
 const Ctrl = require('../../controllers/api/assignments');
 
-router.get('/list', Ctrl.listAllAssignments);
+router.get('/list', Ctrl.getAssignments);
 
 router.get('/a/:assignmentID', Ctrl.getAssignment);
 
