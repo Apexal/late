@@ -4,7 +4,7 @@
       class="columns is-multiline"
     >
       <div
-        v-for="(assignments, date) in assignmentsGroupedByDueDate"
+        v-for="(assignments, date) in filtered"
         :key="date"
         class="due-date column is-one-third-desktop is-half-tablet"
       >
@@ -68,14 +68,33 @@ export default {
     showCompleted: {
       type: Boolean,
       default: true
+    },
+    filter: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
+    filtered () {
+      if (this.filter.length === 0) {
+        return this.assignmentsGroupedByDueDate;
+      } else {
+        const filtered = {};
+        for (let date in this.assignmentsGroupedByDueDate) {
+          filtered[date] = this.assignmentsGroupedByDueDate[date].filter(a => !this.filter.includes(this.course(a).crn));
+          if (filtered[date].length === 0) delete filtered[date];
+        }
+        return filtered;
+      }
+    },
     assignmentsGroupedByDueDate () {
       return this.$store.getters.assignmentsGroupedByDueDate(false);
     }
   },
   methods: {
+    course (a) {
+      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+    },
     isHighlighted (c) { return this.highlighted.includes(c.crn); },
     toDateShortString (dueDate) {
       if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
@@ -84,9 +103,6 @@ export default {
     },
     toTimeString (dueDate) {
       return moment(dueDate).format('h:mma');
-    },
-    course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
     hoursFromNow: date => moment(date).diff(moment(), 'hours'),
     daysAway: date => moment(date).diff(moment().startOf('day'), 'days')

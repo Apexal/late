@@ -11,7 +11,7 @@
       </thead>
       <tbody>
         <tr
-          v-for="a in pastAssignments"
+          v-for="a in filtered"
           :key="a._id"
         >
           <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }}</td>
@@ -46,17 +46,24 @@ export default {
     showCompleted: {
       type: Boolean,
       default: true
+    },
+    filter: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
+    filtered () {
+      if (this.filter.length === 0) { return this.pastAssignments; } else { return this.pastAssignments.filter(a => !this.filter.includes(this.course(a).crn)); }
+    },
     pastAssignments () { return this.$store.getters.pastAssignments; }
   },
   methods: {
-    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
-    toDateShorterString (dueDate) { return moment(dueDate).format('MM/DD/YY'); },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
-    }
+    },
+    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    toDateShorterString (dueDate) { return moment(dueDate).format('MM/DD/YY'); }
   }
 };
 </script>

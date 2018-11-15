@@ -22,11 +22,12 @@
           <span
             v-for="c in courses"
             :key="c.listing_id"
-            :style="`background-color: ${c.color}; color: white;`"
+            :style="isFiltered(c) ? '' : `background-color: ${c.color}; color: white;`"
             class="tag course-tag level-item"
-            :class="{'highlighted': isHighlighted(c)}"
+            :class="{'highlighted': isHighlighted(c), 'filtered': isFiltered(c), 'is-light': !isFiltered(c) }"
             @mouseover="addHighlight(c)"
             @mouseleave="removeHighlight(c)"
+            @click="toggleFilter(c)"
           >{{ c.longname }}</span>
         </div>
       </div>
@@ -47,6 +48,7 @@
     <router-view
       :highlighted="highlighted"
       :show-completed="showCompleted"
+      :filter="filter"
     />
   </section>
 
@@ -58,7 +60,8 @@ export default {
   data () {
     return {
       showCompleted: true,
-      highlighted: []
+      highlighted: [],
+      filter: []
     };
   },
   computed: {
@@ -69,6 +72,10 @@ export default {
   methods: {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
+    },
+    isFiltered (c) { return this.filter.includes(c.crn); },
+    toggleFilter (c) {
+      if (this.filter.includes(c.crn)) { this.filter.splice(this.filter.indexOf(c.crn), 1); } else { this.filter.push(c.crn); }
     },
     isHighlighted (c) { return this.highlighted.includes(c.crn); },
     addHighlight (c) { if (!this.isHighlighted(c)) this.highlighted.push(c.crn); },
@@ -81,8 +88,10 @@ export default {
 span.tag.course-tag {
   cursor: pointer;
   margin-right: 5px;
-  &.highlighted {
-    font-weight: bold;
+  font-weight: bold;
+
+  &.filtered {
+    font-weight: normal;
   }
 }
 

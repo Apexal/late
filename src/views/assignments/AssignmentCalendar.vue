@@ -3,8 +3,9 @@
     class="assignment-calendar"
   >
     <FullCalendar
-      :events="events"
+      :events="filtered"
       :editable="false"
+      :selectable="false"
       :header="calendar.header"
       :config="calendar.config"
     />
@@ -26,6 +27,10 @@ export default {
     showCompleted: {
       type: Boolean,
       default: true
+    },
+    filter: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -48,6 +53,9 @@ export default {
     };
   },
   computed: {
+    filtered () {
+      return this.events.filter(e => !this.filter.includes(this.course(e.assignment).crn));
+    },
     events () {
       return this.$store.state.work.assignments.map(a => ({
         title: a.title,
