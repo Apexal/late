@@ -15,13 +15,17 @@ const getters = {
   getAssignmentById: state => assignmentID => {
     return state.assignments.find(a => a._id === assignmentID);
   },
-  assignmentsGroupedByDueDate: state => {
+  pastAssignments: state => state.assignments.filter(a => moment(a.dueDate).startOf('day').isBefore(moment().startOf('day'))),
+  assignmentsGroupedByDueDate: state => pastIncluded => {
     const grouped = {};
 
     for (let a of state.assignments) {
       const day = moment(a.dueDate)
         .startOf('day')
         .toDate();
+
+      if (!pastIncluded && moment(day).isBefore(moment().startOf('day'))) continue;
+
       if (!grouped[day]) grouped[day] = [];
 
       grouped[day].push(a);

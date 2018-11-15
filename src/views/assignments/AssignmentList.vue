@@ -6,67 +6,122 @@
         @click="view = (view == 'calendar' ? 'list' : 'calendar')"
       >Toggle Calendar</button>
       <h1 class="title">All Assignments</h1>
-      <span
-        v-for="c in courses"
-        :key="c.listing_id"
-        :style="`background-color: ${c.color}; color: white;`"
-        class="tag course-tag"
-        :class="{'highlighted': highlighted ===c.listing_id}"
-        @mouseover="highlighted=c.listing_id"
-        @mouseleave="highlighted=''"
-      >{{ c.longname }}</span>
+
+      <div class="level box">
+        <div class="level-left disable-shrink">
+          <div class="filters">
+            <span
+              v-for="c in courses"
+              :key="c.listing_id"
+              :style="`background-color: ${c.color}; color: white;`"
+              class="tag course-tag level-item"
+              :class="{'highlighted': highlighted ===c.listing_id}"
+              @mouseover="highlighted=c.listing_id"
+              @mouseleave="highlighted=''"
+            >{{ c.longname }}</span>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="field">
+            <label class="checkbox">
+              <input
+                v-model="showCompleted"
+                type="checkbox"
+              >
+              Show Completed
+            </label>
+          </div>
+        </div>
+      </div>
       <hr>
+      <h2 class="subtitle">Upcoming Assignments</h2>
       <div
         v-show="view == 'list'"
-        class="upcoming-assignments columns is-multiline"
+        class="assignment-lists"
       >
         <div
-          v-for="(assignments, date) in assignmentsGroupedByDueDate"
-          :key="date"
-          class="due-date column is-one-third-desktop is-half-tablet"
+          class="upcoming-assignments columns is-multiline"
         >
-          <div class="panel">
-            <p
-              class="panel-heading"
-              :title="daysAway(date) + ' days away'"
-            >
-              {{ toDateShortString(date) }}
-            </p>
-            <div
-              v-for="a in assignments"
+          <div
+            v-for="(assignments, date) in assignmentsGroupedByDueDate"
+            :key="date"
+            class="due-date column is-one-third-desktop is-half-tablet"
+          >
+            <div class="panel">
+              <p
+                class="panel-heading"
+                :title="daysAway(date) + ' days away'"
+              >
+                {{ toDateShortString(date) }}
+              </p>
+              <div
+                v-for="a in assignments"
+                :key="a._id"
+                :style="highlighted == course(a).listing_id ? 'color: white !important; background-color: ' + course(a).color : ''"
+                class="panel-block"
+              >
+                <span class="is-full-width">
+                  <span
+                    class="dot"
+                    :title="course(a).longname"
+                    :style="'background-color: ' + course(a).color"
+                  />
+                  <router-link
+                    class="assignment-link "
+                    :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+                  >
+                    <b
+                      class="course-title is-hidden-tablet"
+                    >{{ course(a).longname }}</b>
+
+                    {{ a.title }}</router-link>
+                  <span
+                    v-if="a.priority >= 7"
+                    class="tag is-danger"
+                    title="You marked this assignment as high priority!"
+                  >!</span>
+                  <small
+                    :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
+                    class="is-pulled-right"
+                    :class="{ 'has-text-grey': highlighted !== course(a).listing_id }"
+                  >{{ toTimeString(a.dueDate) }}</small>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <h2 class="subtitle">Past Assignments</h2>
+        <table class="table is-full-width">
+          <thead>
+            <tr>
+              <th>Due</th>
+              <th>Course</th>
+              <th>Assignment</th>
+              <th>Completed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="a in pastAssignments"
               :key="a._id"
-              :style="highlighted == course(a).listing_id ? 'color: white !important; background-color: ' + course(a).color : ''"
-              class="panel-block"
             >
-              <span class="is-full-width">
+              <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }}</td>
+              <td>
                 <span
                   class="dot"
                   :title="course(a).longname"
                   :style="'background-color: ' + course(a).color"
                 />
-                <router-link
-                  class="assignment-link "
-                  :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
-                >
-                  <b
-                    class="course-title is-hidden-tablet"
-                  >{{ course(a).longname }}</b>
-
-                  {{ a.title }}</router-link>
-                <span
-                  v-if="a.priority >= 7"
-                  class="tag is-danger"
-                  title="You marked this assignment as high priority!"
-                >!</span>
-                <small
-                  :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
-                  class="is-pulled-right"
-                  :class="{ 'has-text-grey': highlighted !== course(a).listing_id }"
-                >{{ toTimeString(a.dueDate) }}</small>
-              </span>
-            </div>
-          </div>
-        </div>
+                <b
+                  class="course-title"
+                >{{ course(a).longname }}</b>
+              </td>
+              <td>{{ a.title }}</td>
+              <td>{{ a.completed }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div
@@ -95,6 +150,7 @@ export default {
   components: { FullCalendar },
   data () {
     return {
+      showCompleted: false,
       view: 'list',
       highlighted: '',
       calendar: {
@@ -116,8 +172,9 @@ export default {
   },
   computed: {
     assignmentsGroupedByDueDate () {
-      return this.$store.getters.assignmentsGroupedByDueDate;
+      return this.$store.getters.assignmentsGroupedByDueDate(false);
     },
+    pastAssignments () { return this.$store.getters.pastAssignments; },
     courses () { return this.$store.state.auth.user.current_schedule; },
     events () {
       return this.$store.state.work.assignments.map(a => ({
@@ -130,6 +187,7 @@ export default {
   },
   methods: {
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    toDateShorterString (dueDate) { return moment(dueDate).format('MM/DD/YY'); },
     toDateShortString (dueDate) {
       if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
       if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) return 'Tomorrow';
@@ -168,4 +226,9 @@ span.tag.course-tag {
 .dot {
   margin-right: 5px;
 }
+
+.level .disable-shrink {
+  flex-shrink: initial;
+}
+
 </style>
