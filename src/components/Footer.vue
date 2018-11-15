@@ -2,13 +2,12 @@
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">An RCOS project!</h1>
     <div class="content has-text-centered columns">
-      <p class="column">Learn more <a
-        href="/about"
-        class=""
-      >about us</a>.</p>
+      <p class="column">Learn more <router-link
+        to="/about"
+      >about us</router-link>.</p>
       <p class="column">Source code licensed <a
         href="https://opensource.org/licenses/mit-license.php"
-        class=""
+        target="_blank"
       >MIT</a>.</p>
       <p class="column">
         <span
@@ -20,12 +19,12 @@
         /></span>
         Contribute on <a
           href="https://github.com/Apexal/late/"
-          class=""
+          target="_blank"
         >Github</a>.
       </p>
       <p class="column">View on <a
         href="https://rcos.io/projects/apexal/late/profile"
-        class=""
+        target="_blank"
       >Observatory</a>.</p>
     </div>
   </footer>
