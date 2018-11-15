@@ -49,7 +49,12 @@
             <router-link
               class="navbar-item"
               to="/about"
-            >About</router-link>
+            >
+              <span class="icon">
+                <i class="fas fa-info-circle" />
+              </span>
+              About
+            </router-link>
 
             <template v-if="loggedIn">
               <div class="navbar-item has-dropdown is-hoverable">
@@ -98,6 +103,9 @@
                 class="navbar-item"
                 to="/profile"
               >
+                <span class="icon">
+                  <i class="fas fa-user-circle" />
+                </span>
                 Logged in as <b class="rcs_id">{{ user.display_name }}</b>
               </router-link>
               <a
