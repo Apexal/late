@@ -18,7 +18,7 @@
           <div
             v-for="a in assignments"
             :key="a._id"
-            :style="isHighlighted(course(a)) ? 'color: white !important; background-color: ' + course(a).color : ''"
+            :style="{ color: isHighlighted(course(a)) ? 'white !important' : '', 'background-color': isHighlighted(course(a)) ? course(a).color : '' }"
             class="panel-block"
           >
             <span class="is-full-width">

@@ -13,6 +13,8 @@
         <tr
           v-for="a in filtered"
           :key="a._id"
+          :class="{'highlighted': isHighlighted(course(a)) }"
+          :style="{ color: isHighlighted(course(a)) ? 'white !important' : '', 'background-color': isHighlighted(course(a)) ? course(a).color : '' }"
         >
           <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }}</td>
           <td class="is-hidden-mobile">
@@ -33,13 +35,21 @@
             />
             <router-link
               class="assignment-link"
+              :title="a.description.substring(0, 500)"
               :to="{name: 'assignment-overview', params: { assignmentID: a._id }}"
             >
               {{ a.title }}
             </router-link>
 
           </td>
-          <td>{{ a.completed }}</td>
+          <td>
+            <span class="icon">
+              <i
+                class="fas"
+                :class="{ 'fa-check': a.computed, 'fa-times': !a.Completed }"
+              />
+            </span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -75,6 +85,7 @@ export default {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
+    isHighlighted (c) { return this.highlighted.includes(c.crn); },
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     toDateShorterString (dueDate) { return moment(dueDate).format('MM/DD/YY'); }
   }
@@ -88,5 +99,15 @@ export default {
 
 .assignment-link {
   color: inherit;
+}
+
+.fas {
+  &.fa-check {
+    color: green;
+  }
+
+  &.fa-times {
+    color: red;
+  }
 }
 </style>
