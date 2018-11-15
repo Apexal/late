@@ -4,7 +4,7 @@
       <thead>
         <tr>
           <th>Due</th>
-          <th>Course</th>
+          <th class="is-hidden-mobile">Course</th>
           <th>Assignment</th>
           <th>Completed</th>
         </tr>
@@ -15,7 +15,7 @@
           :key="a._id"
         >
           <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }}</td>
-          <td>
+          <td class="is-hidden-mobile">
             <span
               class="dot"
               :title="course(a).longname"
@@ -25,7 +25,20 @@
               class="course-title"
             >{{ course(a).longname }}</b>
           </td>
-          <td>{{ a.title }}</td>
+          <td>
+            <span
+              class="dot is-hidden-tablet"
+              :title="course(a).longname"
+              :style="'background-color: ' + course(a).color"
+            />
+            <router-link
+              class="assignment-link"
+              :to="{name: 'assignment-overview', params: { assignmentID: a._id }}"
+            >
+              {{ a.title }}
+            </router-link>
+
+          </td>
           <td>{{ a.completed }}</td>
         </tr>
       </tbody>
@@ -71,5 +84,9 @@ export default {
 <style lang="scss" scoped>
 .dot {
   margin-right: 5px;
+}
+
+.assignment-link {
+  color: inherit;
 }
 </style>
