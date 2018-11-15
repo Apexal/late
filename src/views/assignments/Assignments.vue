@@ -4,14 +4,17 @@
       <router-link
         class="button"
         to="/assignments/upcoming"
+        title="Switch to view upcoming assignments."
       >Upcoming</router-link>
       <router-link
         class="button"
         to="/assignments/past"
+        title="Switch to view past assignments."
       >Past</router-link>
       <router-link
         class="button"
         to="/assignments/calendar"
+        title="Switch to view your assignment calendar."
       >Calendar</router-link>
     </div>
     <h1 class="title">{{ title }}</h1>
@@ -25,6 +28,7 @@
             :style="isFiltered(c) ? '' : `background-color: ${c.color}; color: white;`"
             class="tag course-tag level-item"
             :class="{'highlighted': isHighlighted(c), 'filtered': isFiltered(c), 'is-light': !isFiltered(c) }"
+            :title="`Click to toggle filtering out ${c.longname} assignments.`"
             @mouseover="addHighlight(c)"
             @mouseleave="removeHighlight(c)"
             @click="toggleFilter(c)"

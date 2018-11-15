@@ -41,6 +41,7 @@
             <router-link
               class="navbar-item"
               to="/dashboard"
+              title="View your dashboard."
             >
               <span class="icon">
                 <i class="fas fa-home" />
@@ -49,6 +50,7 @@
             <router-link
               class="navbar-item"
               to="/about"
+              title="View information about LATE's mission and its developer team."
             >
               <span class="icon">
                 <i class="fas fa-info-circle" />
@@ -70,24 +72,28 @@
                   <router-link
                     class="navbar-item"
                     to="/assignments/upcoming"
+                    title="View upcoming assignments (due in the future)."
                   >
                     <b>Upcoming</b>
                   </router-link>
                   <router-link
                     class="navbar-item"
                     to="/assignments/past"
+                    title="Browse all past assignments."
                   >
                     Past
                   </router-link>
                   <router-link
                     class="navbar-item"
                     to="/assignments/calendar"
+                    title="View a calendar of all your assignment due dates."
                   >
                     Calendar
                   </router-link>
                   <hr class="navbar-divider">
                   <a
                     class="navbar-item"
+                    title="Add a new assignment."
                     @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                   >
                     <span class="icon">
@@ -105,6 +111,7 @@
               <router-link
                 class="navbar-item"
                 to="/profile"
+                title="Setup your profile."
               >
                 <span class="icon">
                   <i class="fas fa-user-circle" />
@@ -125,6 +132,7 @@
               v-else
               class="navbar-item"
               href="/auth/login"
+              title="Login to LATE with RPI CAS."
             ><b>Login</b></a>
 
           </div>
