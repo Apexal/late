@@ -35,12 +35,41 @@ const router = new Router({
     },
     {
       path: '/assignments',
-      name: 'assignments',
-      component: () => import('@/views/assignments/AssignmentList.vue'),
+      component: () => import('@/views/assignments/Assignments.vue'),
       meta: {
         title: 'Assignments',
         requiresAuth: true
-      }
+      },
+      children: [
+        {
+          path: '',
+          redirect: 'upcoming'
+        },
+        {
+          path: 'calendar',
+          name: 'assignment-calendar',
+          meta: {
+            title: 'Assignment Calendar'
+          },
+          component: () => import('@/views/assignments/AssignmentCalendar.vue')
+        },
+        {
+          path: 'upcoming',
+          name: 'upcoming-assignments',
+          meta: {
+            title: 'Upcoming Assignments'
+          },
+          component: () => import('@/views/assignments/UpcomingAssignments.vue')
+        },
+        {
+          path: 'past',
+          name: 'past-assignments',
+          meta: {
+            title: 'Past Assignments'
+          },
+          component: () => import('@/views/assignments/PastAssignments.vue')
+        }
+      ]
     },
     {
       path: '/assignments/:assignmentID',

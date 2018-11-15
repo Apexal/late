@@ -1,0 +1,69 @@
+<template>
+  <div
+    class="assignment-calendar"
+  >
+    <FullCalendar
+      :events="events"
+      :editable="false"
+      :header="calendar.header"
+      :config="calendar.config"
+    />
+  </div>
+</template>
+
+<script>
+import { FullCalendar } from 'vue-full-calendar';
+import 'fullcalendar/dist/fullcalendar.css';
+
+export default {
+  name: 'AssignmentCalendar',
+  components: { FullCalendar },
+  props: {
+    highlighted: {
+      type: Array,
+      default: () => []
+    },
+    showCompleted: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data () {
+    return {
+      calendar: {
+        header: {
+          left: 'title',
+          center: '',
+          right: 'today prev,next'
+        },
+        config: {
+          defaultView: 'month',
+          timeFormat: 'h(:mm)t',
+          eventClick: (calEvent, jsEvent, view) => {
+            this.$router.push(`/assignments/${calEvent.assignment._id}`);
+          },
+          timezone: 'local'
+        }
+      }
+    };
+  },
+  computed: {
+    events () {
+      return this.$store.state.work.assignments.map(a => ({
+        title: a.title,
+        start: a.dueDate,
+        color: this.course(a).color,
+        assignment: a
+      }));
+    }
+  },
+  methods: {
+    course (a) {
+      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+    }
+  }
+};
+</script>
+
+<style>
+</style>

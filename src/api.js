@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ax = axios.create({
+export default axios.create({
   baseURL: '/api/',
   withCredentials: false,
   headers: {
@@ -8,5 +8,3 @@ const ax = axios.create({
     'Content-Type': 'application/json'
   }
 });
-
-export default ax;

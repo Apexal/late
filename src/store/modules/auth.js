@@ -6,8 +6,9 @@ const state = {
   isAuthenticated: false
 };
 const getters = {
-  getWorkBlocksAsEvents: state =>
-    state.user.current_work_schedule.map(p => {
+  getWorkBlocksAsEvents: state => {
+    if (!state.user.current_work_schedule) return [];
+    return state.user.current_work_schedule.map(p => {
       const sunday = moment().startOf('day');
       while (sunday.day() !== 0) sunday.subtract(1, 'days');
       const sundayStr = sunday.format('YYYY-MM-DD');
@@ -27,8 +28,11 @@ const getters = {
         end,
         isWorkBlock: true
       };
-    }),
+    });
+  },
   getCourseScheduleAsEvents: state => {
+    if (!state.user.current_schedule) return [];
+
     const sunday = moment().startOf('day');
     while (sunday.day() !== 0) sunday.subtract(1, 'days');
 
