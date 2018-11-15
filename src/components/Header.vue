@@ -71,25 +71,28 @@
                     class="navbar-item"
                     to="/assignments/upcoming"
                   >
-                    Upcoming Assignments
+                    <b>Upcoming</b>
                   </router-link>
                   <router-link
                     class="navbar-item"
                     to="/assignments/past"
                   >
-                    Past Assignments
+                    Past
                   </router-link>
                   <router-link
                     class="navbar-item"
                     to="/assignments/calendar"
                   >
-                    Assignment Calendar
+                    Calendar
                   </router-link>
                   <hr class="navbar-divider">
                   <a
                     class="navbar-item"
                     @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                   >
+                    <span class="icon">
+                      <i class="fas fa-plus" />
+                    </span>
                     Add Assignment
                   </a>
                 </div>
@@ -111,7 +114,12 @@
               <a
                 class="navbar-item"
                 href="/auth/logout"
-              >Logout</a>
+              >
+                <span class="icon">
+                  <i class="fas fa-sign-out-alt" />
+                </span>
+                Logout
+              </a>
             </template>
             <a
               v-else
