@@ -15,7 +15,7 @@ const getters = {
   getAssignmentById: state => assignmentID => {
     return state.assignments.find(a => a._id === assignmentID);
   },
-  pastAssignments: state => state.assignments.filter(a => moment(a.dueDate).startOf('day').isBefore(moment().startOf('day'))),
+  pastAssignments: state => state.assignments.filter(a => moment(a.dueDate).isBefore(moment().startOf('day'))),
   assignmentsGroupedByDueDate: state => pastIncluded => {
     const grouped = {};
 
@@ -24,7 +24,7 @@ const getters = {
         .startOf('day')
         .toDate();
 
-      if (!pastIncluded && moment(day).isBefore(moment().startOf('day'))) continue;
+      if (!pastIncluded && moment(day).isBefore(moment())) continue;
 
       if (!grouped[day]) grouped[day] = [];
 
@@ -33,8 +33,7 @@ const getters = {
 
     return grouped;
   },
-  pressingAssignments: state => count =>
-    state.assignments.filter(a => !a.completed).slice(0, count),
+  incompleteUpcomingAssignments: state => state.assignments.filter(a => moment(a.dueDate).isAfter(moment()) && !a.completed),
   getCourseFromCRN: (state, getters, rootState) => crn =>
     rootState.auth.user.current_schedule.find(c => c.crn === crn),
   getCourseFromPeriod: (state, getters, rootState) => period =>
