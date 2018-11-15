@@ -1,6 +1,6 @@
 <template>
   <section class="section assignment-list">
-    <div class="buttons has-addons is-pulled-right">
+    <div class="assignment-view-buttons buttons has-addons is-pulled-right">
       <router-link
         class="button"
         to="/assignments/upcoming"
@@ -16,7 +16,7 @@
     </div>
     <h1 class="title">{{ title }}</h1>
 
-    <div class="level box">
+    <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
           <span
@@ -89,13 +89,23 @@ span.tag.course-tag {
   cursor: pointer;
   margin-right: 5px;
   font-weight: bold;
-
-  &.filtered {
-    font-weight: normal;
-  }
 }
 
 .level .disable-shrink {
   flex-shrink: initial;
+}
+
+.assignment-controls {
+  padding: 10px !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .buttons.assignment-view-buttons {
+    float: unset !important;
+  }
+
+  .level-left + .level-right {
+    margin-top: 5px !important;
+  }
 }
 </style>
