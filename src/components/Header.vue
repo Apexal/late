@@ -64,9 +64,21 @@
                 <div class="navbar-dropdown">
                   <router-link
                     class="navbar-item"
-                    to="/assignments"
+                    to="/assignments/upcoming"
                   >
-                    List
+                    Upcoming Assignments
+                  </router-link>
+                  <router-link
+                    class="navbar-item"
+                    to="/assignments/past"
+                  >
+                    Past Assignments
+                  </router-link>
+                  <router-link
+                    class="navbar-item"
+                    to="/assignments/calendar"
+                  >
+                    Assignment Calendar
                   </router-link>
                   <hr class="navbar-divider">
                   <a
