@@ -90,16 +90,19 @@ schema.methods.courseFromCRN = function (crn) {
   return this.current_schedule.filter(c => c.crn === crn)[0];
 };
 
-schema.methods.findAllAssignments = function (past = false) {
+schema.methods.getAssignments = function (start, end) {
   let query = {
     _student: this._id
   };
-  if (!past) {
-    query.dueDate = {
-      $gte: moment()
-        .startOf('day')
-        .toDate()
-    };
+
+  if (start) {
+    query.dueDate = query.dueDate || {};
+    query.dueDate['$gte'] = moment(start, 'YYYY-MM-DD').toDate();
+  }
+
+  if (end) {
+    query.dueDate = query.dueDate || {};
+    query.dueDate['$lte'] = moment(end, 'YYYY-MM-DD').toDate();
   }
 
   return this.model('Assignment')
@@ -110,41 +113,6 @@ schema.methods.findAllAssignments = function (past = false) {
     .exec();
 };
 
-schema.methods.findAssignmentsDueOn = function (date) {
-  return this.model('Assignment')
-    .find({
-      _student: this._id,
-      dueDate: {
-        $gte: moment(date).startOf('day'),
-        $lte: moment(date).endOf('day')
-      }
-    })
-    .sort('dueDate')
-    .sort('-priority')
-    .sort('completed')
-    .exec();
-};
-
-schema.methods.findAssignmentsDueBy = function (date, past = false) {
-  let query = {
-    _student: this._id,
-    dueDate: {
-      $lte: moment(date).endOf('day')
-    }
-  };
-  if (!past) {
-    query.dueDate.$gte = moment()
-      .startOf('day')
-      .toDate();
-  }
-
-  return this.model('Assignment')
-    .find(query)
-    .sort('dueDate')
-    .sort('-priority')
-    .sort('completed')
-    .exec();
-};
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
