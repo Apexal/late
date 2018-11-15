@@ -16,28 +16,27 @@ const { getSectionInfoFromCRN } = require('../../yacs_api');
  */
 async function setPersonalInfo (ctx) {
   const body = ctx.request.body;
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
 
   // TODO: validate RIN
-  user.rin = body.rin;
-  user.name.first = body.first_name;
-  user.name.last = body.last_name;
+  ctx.state.user.rin = body.rin;
+  ctx.state.user.name.first = body.first_name;
+  ctx.state.user.name.last = body.last_name;
 
-  user.grad_year = parseInt(body.grad_year);
+  ctx.state.user.grad_year = parseInt(body.grad_year);
 
-  user.setup.personal_info = true;
+  ctx.state.user.setup.personal_info = true;
 
   try {
-    await user.save();
+    await ctx.state.user.save();
 
-    logger.info(`Saved personal info for ${user.rcs_id}`);
+    logger.info(`Saved personal info for ${ctx.state.user.rcs_id}`);
     ctx.ok({
-      updatedUser: user
+      updatedUser: ctx.state.user
     });
   } catch (err) {
-    logger.error(`Failed to save personal info for ${user.rcs_id}: ${err}`);
+    logger.error(
+      `Failed to save personal info for ${ctx.state.user.rcs_id}: ${err}`
+    );
     ctx.badRequest({
       err
     });
@@ -55,14 +54,11 @@ async function setPersonalInfo (ctx) {
  */
 async function setCourseSchedule (ctx) {
   const body = ctx.request.body;
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
 
-  logger.info(`Setting schedule info for ${user.rcs_id}`);
+  logger.info(`Setting schedule info for ${ctx.state.user.rcs_id}`);
 
   const CRNs = body.pin
-    ? await scrapeSISForCRNS(user.rin, body.pin, '201809')
+    ? await scrapeSISForCRNS(ctx.state.user.rin, body.pin, '201809')
     : body.crns.split(',').map(crn => crn.trim());
 
   let courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
@@ -83,15 +79,17 @@ async function setCourseSchedule (ctx) {
         .toString(16)
         .substr(-6);
   }
-  user.setup.course_schedule = true;
+  ctx.state.user.setup.course_schedule = true;
 
   try {
-    user.current_schedule = courseSchedule;
-    await user.save();
-    ctx.ok({ updatedUser: user });
+    ctx.state.user.current_schedule = courseSchedule;
+    await ctx.state.user.save();
+    ctx.ok({ updatedUser: ctx.state.user });
   } catch (error) {
     ctx.badRequest({ error });
-    logger.error(`Failed to set course schedule for ${user.rcs_id}: ${error}`);
+    logger.error(
+      `Failed to set course schedule for ${ctx.state.user.rcs_id}: ${error}`
+    );
   }
 }
 
@@ -103,19 +101,17 @@ async function setCourseSchedule (ctx) {
  * @param {Koa context} ctx
  */
 async function setCourses (ctx) {
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
-
   const body = ctx.request.body;
   const updatedCourses = body.courses;
 
   try {
-    user.current_schedule = updatedCourses;
-    await user.save();
-    ctx.ok({ updatedUser: user });
+    ctx.state.user.current_schedule = updatedCourses;
+    await ctx.state.user.save();
+    ctx.ok({ updatedUser: ctx.state.user });
   } catch (error) {
-    logger.error(`Failed to set custom courses for ${user.rcs_id}: ${error}`);
+    logger.error(
+      `Failed to set custom courses for ${ctx.state.user.rcs_id}: ${error}`
+    );
     ctx.badRequest('Failed to set custom courses.');
   }
 }
@@ -128,10 +124,6 @@ async function setCourses (ctx) {
  * @param {Koa context} ctx
  */
 async function setWorkSchedule (ctx) {
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
-
   const events = ctx.request.body.events;
 
   // Remove dates, split times
@@ -141,17 +133,17 @@ async function setWorkSchedule (ctx) {
     end: moment(e.end).format('Hmm')
   }));
 
-  user.setup.work_schedule = true;
+  ctx.state.user.setup.work_schedule = true;
 
   try {
-    user.current_work_schedule = workPeriods;
-    await user.save();
-    logger.info(`Set work/study periods for ${user.rcs_id}`);
-    ctx.ok({ updatedUser: user });
+    ctx.state.user.current_work_schedule = workPeriods;
+    await ctx.state.user.save();
+    logger.info(`Set work/study periods for ${ctx.state.user.rcs_id}`);
+    ctx.ok({ updatedUser: ctx.state.user });
   } catch (error) {
     ctx.badRequest({ error });
     logger.error(
-      `Failed to set work/study schedule for ${user.rcs_id}: ${error}`
+      `Failed to set work/study schedule for ${ctx.state.user.rcs_id}: ${error}`
     );
   }
 }

@@ -48,6 +48,13 @@ app.use(Static('dist/'));
 
 app.use(async (ctx, next) => {
   ctx.state.env = process.env.NODE_ENV;
+
+  try {
+    ctx.state.user = await ctx.db.Student.findOne()
+      .byUsername(ctx.session.cas_user.toLowerCase())
+      .exec();
+  } catch (e) {}
+
   await next();
 });
 
@@ -67,7 +74,9 @@ app.use(async (ctx, next) => {
     await next();
     if (ctx.status === 404) ctx.throw(404, 'Page Not Found');
   } catch (err) {
-    if (ctx.request.url.startsWith('/api/')) { return ctx.notFound('API path not found.'); }
+    if (ctx.request.url.startsWith('/api/')) {
+      return ctx.notFound('API path not found.');
+    }
 
     ctx.status = err.status || 500;
     logger.error(err);

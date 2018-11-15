@@ -6,7 +6,9 @@ const logger = require('../../logger');
  * @param {Koa session} ctx
  **/
 async function loginAs (ctx) {
-  if (ctx.state.env !== 'development') { return ctx.forbidden('Not in development mode.'); }
+  if (ctx.state.env !== 'development') {
+    return ctx.forbidden('Not in development mode.');
+  }
 
   const rcsID = ctx.request.query.rcs_id;
   ctx.session.cas_user = rcsID;
@@ -16,14 +18,10 @@ async function loginAs (ctx) {
 }
 
 async function getUser (ctx) {
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
-
-  logger.info(`Getting user info for ${ctx.session.cas_user.toLowerCase()}`);
+  logger.info(`Getting user info for ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
-    user
+    user: ctx.state.user
   });
 }
 

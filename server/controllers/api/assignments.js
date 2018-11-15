@@ -8,14 +8,12 @@ const logger = require('../../logger');
  * @param {Koa context} ctx
  */
 async function getAssignments (ctx) {
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
-  let assignments;
+  const assignments = await ctx.state.user.getAssignments(
+    ctx.query.startDate,
+    ctx.query.endDate
+  );
 
-  assignments = await user.getAssignments(ctx.query.startDate, ctx.query.endDate);
-
-  logger.info(`Sending assignments to ${user.rcs_id}`);
+  logger.info(`Sending assignments to ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
     assignments
@@ -27,23 +25,22 @@ async function getAssignments (ctx) {
  * @param {Koa context} ctx
  */
 async function getAssignment (ctx) {
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
   const assignmentID = ctx.params.assignmentID;
   let assignment;
   try {
     assignment = await ctx.db.Assignment.findOne({
       _id: assignmentID,
-      _student: user._id
+      _student: ctx.state.user._id
     });
     if (!assignment) throw new Error();
   } catch (e) {
-    logger.error(`Failed to get assignment ${assignmentID} for ${user.rcs_id}`);
+    logger.error(
+      `Failed to get assignment ${assignmentID} for ${ctx.state.user.rcs_id}`
+    );
     return ctx.notFound('Failed to find assignment.');
   }
 
-  logger.info(`Sending assignment ${assignmentID} to ${user.rcs_id}`);
+  logger.info(`Sending assignment ${assignmentID} to ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
     assignment
@@ -56,17 +53,13 @@ async function getAssignment (ctx) {
  * @param {Koa context} ctx
  */
 async function createAssignment (ctx) {
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
-
   const body = ctx.request.body;
   const due = moment(body.due_date + ' ' + body.time, 'YYYY-MM-DD HH:mm');
   // TODO: set time from body.time
 
   // TODO: validate these
   const newAssignment = new ctx.db.Assignment({
-    _student: user._id,
+    _student: ctx.state.user._id,
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),
@@ -81,7 +74,9 @@ async function createAssignment (ctx) {
     await newAssignment.save();
 
     logger.info(
-      `Created new assigment '${newAssignment.title}' for ${user.rcs_id}`
+      `Created new assigment '${newAssignment.title}' for ${
+        ctx.state.user.rcs_id
+      }`
     );
 
     ctx.ok({
@@ -104,7 +99,9 @@ async function createAssignment (ctx) {
       errors.push(errMap[key]);
     }
 
-    logger.error(`Failed to create new assignment for ${user.rcs_id}`);
+    logger.error(
+      `Failed to create new assignment for ${ctx.state.user.rcs_id}`
+    );
 
     ctx.badRequest({
       errors
@@ -126,28 +123,26 @@ async function editAssignment (ctx) {
  * @param {Koa context} ctx
  */
 async function removeAssignment (ctx) {
-  const user = await ctx.db.Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
-
   const assignmentID = ctx.params.assignmentID;
   let removedAssignment;
   try {
     removedAssignment = await ctx.db.Assignment.findOne({
       _id: assignmentID,
-      _student: user._id
+      _student: ctx.state.user._id
     });
 
     removedAssignment.remove();
 
     if (!removedAssignment) throw new Error();
   } catch (e) {
-    logger.error(`Failed to remove assignment for  ${user.rcs_id}`);
+    logger.error(`Failed to remove assignment for  ${ctx.state.user.rcs_id}`);
     return ctx.notFound('Failed to find assignment.');
   }
 
   logger.info(
-    `Removed assignment '${removedAssignment.title}' for ${user.rcs_id}`
+    `Removed assignment '${removedAssignment.title}' for ${
+      ctx.state.user.rcs_id
+    }`
   );
 
   ctx.ok({
