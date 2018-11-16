@@ -51,6 +51,9 @@ export default {
     addAssignmentModalExpanded () { return this.$store.state.addAssignmentModalExpanded; },
     expanded () { return this.$store.state.sidebarExpanded; }
   },
+  created () {
+    this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
+  },
   methods: {}
 };
 </script>

@@ -22,8 +22,8 @@ const getters = {
     const now = moment();
     const lastEnd = moment(
       now.format('YYYY-MM-DD') +
-      ' ' +
-      state.periods[state.periods.length - 1].end,
+        ' ' +
+        state.periods[state.periods.length - 1].end,
       'YYYY-MM-DD Hmm'
     );
     return now > lastEnd;
@@ -39,6 +39,11 @@ const getters = {
 };
 
 const actions = {
+  AUTO_UPDATE_SCHEDULE ({ dispatch }) {
+    setInterval(() => {
+      dispatch('UPDATE_SCHEDULE');
+    }, 1000 * 60);
+  },
   UPDATE_SCHEDULE ({ commit, rootState }) {
     // Reset all state values
     const semesterSchedule = rootState.auth.user.current_schedule;

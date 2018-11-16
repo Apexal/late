@@ -54,7 +54,7 @@ export default {
             if (!calEvent.isWorkBlock) return;
             this.saved = false;
             this.calendar.events = this.calendar.events.filter(e => {
-              return moment(e.start).format('YYYY-MM-DD Hmm') !== moment(calEvent.start).format('YYYY-MM-DD Hmm');
+              return !moment(e.start).isSame(moment(calEvent.start).format('YYYY-MM-DD Hmm'));
             });
           },
 

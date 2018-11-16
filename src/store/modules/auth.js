@@ -24,7 +24,7 @@ const getters = {
 
       return {
         title: 'Work/Study',
-        start: start.toDate(),
+        start: start,
         end,
         isWorkBlock: true
       };
