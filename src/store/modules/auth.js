@@ -41,10 +41,11 @@ const getters = {
     const events = state.user.current_schedule
       .map(c =>
         c.periods.map(p => {
-          let start = moment(sundayStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true).add(
-            parseInt(p.day),
-            'days'
-          );
+          let start = moment(
+            sundayStr + ' ' + p.start,
+            'YYYY-MM-DD Hmm',
+            true
+          ).add(parseInt(p.day), 'days');
           let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true).add(
             parseInt(p.day),
             'days'
@@ -52,7 +53,7 @@ const getters = {
 
           return {
             title: c.longname,
-            start: start.toDate(),
+            start: start,
             end,
             color: c.color,
             editable: false
