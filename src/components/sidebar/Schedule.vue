@@ -87,7 +87,7 @@ export default {
       return this.$store.getters.classes_over;
     },
     is_weekend () {
-      return new Date().getDay() === 6 || new Date().getDay() === 0;
+      return moment().getDay() === 6 || moment().getDay() === 0;
     },
     dateStr () {
       return moment(this.schedule.date).format('YYYY-MM-DD');
