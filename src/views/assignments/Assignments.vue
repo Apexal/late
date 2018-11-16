@@ -26,7 +26,7 @@
             v-for="c in courses"
             :key="c.listing_id"
             :style="isFiltered(c) ? '' : `background-color: ${c.color}; color: white;`"
-            class="tag course-tag level-item"
+            class="tag course-tag level-item is-unselectable"
             :class="{'highlighted': isHighlighted(c), 'filtered': isFiltered(c), 'is-light': !isFiltered(c) }"
             :title="`Click to toggle filtering out ${c.longname} assignments.`"
             @mouseover="addHighlight(c)"
