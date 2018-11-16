@@ -150,7 +150,7 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
 
       // Go to next setup
       this.$router.push('/profile/courseschedule');

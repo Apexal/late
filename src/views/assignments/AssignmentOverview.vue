@@ -85,7 +85,7 @@ export default {
       await this.$store.dispatch('REMOVE_ASSIGNMENT', assignmentID);
 
       // Notify user of success
-      this.$store.commit('ADD_NOTIFICATION', {
+      this.$store.dispatch('ADD_NOTIFICATION', {
         type: 'success',
         description: `Successfully removed assignment '${assignmentTitle}'.`
       });

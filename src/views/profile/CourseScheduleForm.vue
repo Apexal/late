@@ -130,7 +130,7 @@ export default {
 
       await this.$store.dispatch('UPDATE_COURSE', updatedCourse);
 
-      this.$store.commit('ADD_NOTIFICATION', {
+      this.$store.dispatch('ADD_NOTIFICATION', {
         type: 'success',
         description: 'Updated course info!'
       });
@@ -147,7 +147,7 @@ export default {
       });
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.commit('ADD_NOTIFICATION', {
+      this.$store.dispatch('ADD_NOTIFICATION', {
         type: 'success',
         description: 'Got course schedule!'
       });

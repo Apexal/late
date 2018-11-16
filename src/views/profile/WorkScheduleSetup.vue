@@ -91,7 +91,7 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Set work/study availability schedule!' });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Set work/study availability schedule!' });
 
       this.loading = false;
       this.saved = true;
