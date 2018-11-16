@@ -50,13 +50,23 @@ function orderBlocks (blocks) {
   // loop.
   for (let i = blocks.length - 1; i > 0; i--) {
     const block = blocks[i];
-    const j = Math.floor(Math.random() * (i + 1) / (block._assignment.priority));
+    const j = calcPosition(block, i, blocks);
     if (i !== j) {
       blocks[i] = blocks[j];
       blocks[j] = block;
     }
   }
   blocks.reverse();
+}
+
+/**
+ * Calculates a new index for the given block.
+ * @param block the block
+ * @param idx the current index of the block
+ * @param blocks the array of blocks
+ */
+function calcPosition (block, idx, blocks) {
+  return Math.floor(Math.random() * (idx + 1) / (block._assignment.priority));
 }
 
 module.exports = {
