@@ -7,10 +7,9 @@ async function makeBlocks (ctx) {
   const blocks = splitAssignments(ctx, assigns);
   orderBlocks(blocks);
   const ret = blocks.map(block => {
-    block._assignment = {
-      title: block._assignment.title,
-      priority: block._assignment.priority
-    };
+    block.priority = block._assignment.priority;
+    block.title = block._assignment.title;
+    delete block._assignment;
     return block;
   });
   return ctx.ok(ret);
@@ -43,15 +42,21 @@ function splitAssignments (ctx, assignments) {
  * Orders the blocks in some way.
  */
 function orderBlocks (blocks) {
-  // priority is from 1 to 10, 10 does not affect random placement at all
+  // priority is from 1 to 10, 1 does not affect random placement at all
+  // while 10 (high priority) is likely to be placed at the beginning
+  // This for loop randomly shuffles the blocks with a bias for placing
+  // high priority assignments at the end. We reverse the array afterwards.
+  // This backwards loop results in a better distribution than the forwards
+  // loop.
   for (let i = blocks.length - 1; i > 0; i--) {
     const block = blocks[i];
-    const j = Math.floor(Math.random() * (i + 1) / (11 - block._assignment.priority));
+    const j = Math.floor(Math.random() * (i + 1) / (block._assignment.priority));
     if (i !== j) {
       blocks[i] = blocks[j];
       blocks[j] = block;
     }
   }
+  blocks.reverse();
 }
 
 module.exports = {
