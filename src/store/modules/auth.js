@@ -24,7 +24,7 @@ const getters = {
 
       return {
         title: 'Work/Study',
-        start,
+        start: start.toDate(),
         end,
         isWorkBlock: true
       };
@@ -53,7 +53,7 @@ const getters = {
 
           return {
             title: c.longname,
-            start: start,
+            start,
             end,
             color: c.color,
             editable: false
