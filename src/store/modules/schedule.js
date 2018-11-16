@@ -55,8 +55,8 @@ const actions = {
 
     // Check for current class
     const currentPeriod = dayPeriods.find(p => {
-      const start = moment(dateStr + ' ' + p.start, 'YYYY-MM-DD Hmm');
-      const end = moment(dateStr + ' ' + p.end, 'YYYY-MM-DD Hmm');
+      const start = moment(dateStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true);
+      const end = moment(dateStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true);
 
       return start < now && now < end;
     });

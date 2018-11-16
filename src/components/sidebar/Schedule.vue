@@ -94,8 +94,8 @@ export default {
     }
   },
   methods: {
-    timeFormat: datetime => moment(datetime, 'Hmm').format('h:mma'),
-    hasPassed: p => moment(p.end, 'Hmm').isBefore(moment()),
+    timeFormat: datetime => moment(datetime, 'Hmm', true).format('h:mma'),
+    hasPassed: p => moment(p.end, 'Hmm', true).isBefore(moment()),
     course (p) {
       return this.$store.getters.getCourseFromPeriod(p);
     },

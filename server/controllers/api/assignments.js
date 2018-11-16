@@ -54,7 +54,7 @@ async function getAssignment (ctx) {
  */
 async function createAssignment (ctx) {
   const body = ctx.request.body;
-  const due = moment(body.due_date + ' ' + body.time, 'YYYY-MM-DD HH:mm');
+  const due = moment(body.due_date);
   // TODO: set time from body.time
 
   // TODO: validate these

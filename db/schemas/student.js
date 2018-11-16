@@ -97,12 +97,12 @@ schema.methods.getAssignments = function (start, end) {
 
   if (start) {
     query.dueDate = query.dueDate || {};
-    query.dueDate['$gte'] = moment(start, 'YYYY-MM-DD').toDate();
+    query.dueDate['$gte'] = moment(start, 'YYYY-MM-DD', true).toDate();
   }
 
   if (end) {
     query.dueDate = query.dueDate || {};
-    query.dueDate['$lte'] = moment(end, 'YYYY-MM-DD').toDate();
+    query.dueDate['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate();
   }
 
   return this.model('Assignment')

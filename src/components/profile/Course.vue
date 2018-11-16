@@ -115,7 +115,7 @@ export default {
         'Saturday'
       ][num],
     time: t => {
-      const dt = moment(t, 'Hmm');
+      const dt = moment(t, 'Hmm', true);
       if (dt.hours() === 12 && dt.minutes() === 0) {
         return 'noon';
       } else if (dt.minutes() === 0) {
