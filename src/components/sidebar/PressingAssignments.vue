@@ -16,18 +16,32 @@
       :key="a._id"
       class="assignment panel-block"
     >
-      <router-link
-        :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
-        tag="span"
-        class="is-full-width"
-      >
-        {{ a.title }}
+      <span class="is-full-width">
+        <span
+          class="dot course-dot"
+          :title="course(a).longname"
+          :style="'background-color: ' + course(a).color"
+        />
+        <router-link
+          class="assignment-link"
+          :title="a.description.substring(0, 500)"
+          :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+        >
+          <b
+            class="course-title is-hidden-tablet"
+          >{{ course(a).longname }}</b>
+
+          {{ a.title }}</router-link>
         <span
           v-if="a.priority >= 7"
-          class="tag is-danger priority-tag"
+          class="tag priority-tag is-danger"
+          title="You marked this assignment as high priority!"
         >!</span>
-        <small class="is-pulled-right has-text-grey">{{ getCourseFromCRN(a.courseCRN).longname }}</small>
-      </router-link>
+        <small
+          class="is-pulled-right"
+          :title="toFullDateTimeString(a.dueDate)"
+        >{{ fromNow(a.dueDate) }}</small>
+      </span>
     </div>
     <div class="panel-block">
       <router-link
@@ -39,6 +53,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   name: 'PressingAssignments',
   props: {
@@ -49,6 +65,11 @@ export default {
     }
   },
   methods: {
+    fromNow: date => moment(date).fromNow(),
+    course (a) {
+      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+    },
+    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     getCourseFromCRN (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     }
@@ -61,6 +82,9 @@ export default {
   cursor: pointer;
   .priority-tag {
     margin-left: 5px;
+  }
+  .assignment-link {
+    color: inherit;
   }
 }
 
