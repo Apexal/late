@@ -19,7 +19,8 @@
             v-for="a in assignments"
             :key="a._id"
             :style="{ color: isHighlighted(course(a)) ? 'white !important' : '', 'background-color': isHighlighted(course(a)) ? course(a).color : '' }"
-            class="panel-block"
+            class="panel-block assignment"
+            :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
           >
             <span class="is-full-width">
               <span
@@ -115,8 +116,14 @@ export default {
   margin-right: 5px;
 }
 
-.assignment-link {
-  color: inherit;
+
+.assignment {
+  .assignment-link {
+    color: inherit;
+  }
+  .is-completed {
+    text-decoration: line-through;
+  }
 }
 
 .dot {
