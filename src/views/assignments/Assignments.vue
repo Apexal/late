@@ -37,7 +37,7 @@
       </div>
       <div class="level-right">
         <div class="field">
-          <label class="checkbox">
+          <label class="checkbox is-unselectable">
             <input
               v-model="showCompleted"
               type="checkbox"

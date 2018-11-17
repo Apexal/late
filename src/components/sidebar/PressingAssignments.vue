@@ -3,7 +3,7 @@
     class="panel sidebar-upcoming-assignments"
     open
   >
-    <summary class="panel-heading is-clearfix">Pressing Assignments
+    <summary class="panel-heading is-clearfix is-unselectable">Pressing Assignments
       <span class="is-pulled-right icon">
         <i
           class="fas fa-plus add-assignment"
@@ -45,9 +45,12 @@
     </div>
     <div class="panel-block">
       <router-link
-        tag="b"
+        tag="button"
+        class="button is-link is-outlined is-fullwidth"
         to="/assignments"
-      >View All Assignments</router-link>
+      >
+        View All Assignments
+      </router-link>
     </div>
   </details>
 </template>

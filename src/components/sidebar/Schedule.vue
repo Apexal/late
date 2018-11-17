@@ -3,7 +3,7 @@
     class="schedule panel user-courses"
     open
   >
-    <summary class="panel-heading">Today's Schedule
+    <summary class="panel-heading is-unselectable">Today's Schedule
       <span
         v-if="in_class"
         class="tag is-info"
@@ -14,10 +14,6 @@
       >
         Weekend
       </span>
-      <span
-        v-else-if="classes_over"
-        class="tag is-warning"
-      >Classes Over</span>
     </summary>
     <template v-if="is_weekend">
       <div class="panel-block">

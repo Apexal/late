@@ -10,7 +10,7 @@
       >
         <div class="panel">
           <p
-            class="panel-heading"
+            class="panel-heading is-unselectable"
             :title="daysAway(date) + ' days away'"
           >
             {{ toDateShortString(date) }}
