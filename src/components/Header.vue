@@ -35,7 +35,7 @@
         <div
           id="top-navbar"
           :class="{'is-active': navbarExpanded}"
-          class="navbar-menu"
+          class="navbar-menu is-unselectable"
         >
           <div class="navbar-start">
             <router-link

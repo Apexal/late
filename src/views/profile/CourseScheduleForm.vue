@@ -4,7 +4,7 @@
       class="box"
       @submit.prevent="save"
     >
-      <h2 class="subtitle">Automatically Set Your Course Schedule</h2>
+      <h2 class="subtitle is-unselectable">Automatically Set Your Course Schedule</h2>
       <div class="columns">
         <div class="field column is-narrow">
           <label
