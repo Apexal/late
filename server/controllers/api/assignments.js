@@ -118,6 +118,52 @@ async function editAssignment (ctx) {
 }
 
 /**
+ * Toggle an assignment's completion status.
+ *
+ * @param {Koa context} ctx
+ */
+
+async function toggleAssignment (ctx) {
+  const assignmentID = ctx.params.assignmentID;
+
+  if (!assignmentID) return ctx.badRequest('Invalid assignment id.');
+
+  let assignment;
+
+  try {
+    assignment = await ctx.db.Assignment.findOne({
+      _id: assignmentID,
+      _student: ctx.state.user._id
+    }).exec();
+
+    assignment.completed = !assignment.completed;
+
+    await assignment.save();
+  } catch (e) {
+    logger.error(
+      `Failed to update completion status of assignment for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    );
+    return ctx.badRequest(
+      `Failed to update completion status of assignment for ${
+        ctx.state.user.rcs_id
+      }`
+    );
+  }
+
+  logger.info(
+    `Set assigment '${assignment.title}' completion status to ${
+      assignment.completed
+    }.`
+  );
+
+  ctx.ok({
+    updatedAssignment: assignment
+  });
+}
+
+/**
  * Given an assignment ID, remove the assignment only if it belongs to the logged in user.
  *
  * @param {Koa context} ctx
@@ -154,6 +200,7 @@ module.exports = {
   getAssignments,
   getAssignment,
   createAssignment,
+  toggleAssignment,
   editAssignment,
   removeAssignment
 };

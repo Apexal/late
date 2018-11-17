@@ -109,10 +109,8 @@ schema.methods.getAssignments = function (start, end) {
     .find(query)
     .sort('dueDate')
     .sort('-priority')
-    .sort('completed')
     .exec();
 };
-
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
