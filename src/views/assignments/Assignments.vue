@@ -53,6 +53,7 @@
       :highlighted="highlighted"
       :show-completed="showCompleted"
       :filter="filter"
+      @toggle-assignment="toggleAssignment"
     />
   </section>
 
@@ -74,6 +75,9 @@ export default {
     courses () { return this.$store.state.auth.user.current_schedule; }
   },
   methods: {
+    async toggleAssignment (assignmentID) {
+      alert('Toggle assignment ' + assignmentID);
+    },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },

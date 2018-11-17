@@ -23,11 +23,14 @@
             :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
           >
             <span class="is-full-width">
-              <span
-                class="dot"
-                :title="course(a).longname"
-                :style="'background-color: ' + course(a).color"
-              />
+              <span class="icon toggle-assignment">
+                <span
+                  :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
+                  :title="course(a).longname"
+                  :style="{ 'color': course(a).color }"
+                  @click="$emit('toggle-assignment', a._id)"
+                />
+              </span>
               <router-link
                 class="assignment-link "
                 :title="a.description.substring(0, 500)"
@@ -116,13 +119,16 @@ export default {
   margin-right: 5px;
 }
 
-
 .assignment {
   .assignment-link {
     color: inherit;
   }
   .is-completed {
     text-decoration: line-through;
+  }
+
+  .toggle-assignment {
+    cursor: pointer;
   }
 }
 
