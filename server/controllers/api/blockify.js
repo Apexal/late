@@ -60,6 +60,19 @@ function orderBlocks (blocks) {
 }
 
 /**
+ * Assigns start date times to each block.
+ */
+function placeBlocks (user, block) {
+  // collect free time slots as bins
+
+  // place blocks into bins first-come-first-serve
+
+  // continue until blocks are filled
+
+  // if we can't fit...we don't sit?
+}
+
+/**
  * Calculates a new index for the given block.
  * @param block the block
  * @param idx the current index of the block
