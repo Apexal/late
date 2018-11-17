@@ -7,16 +7,19 @@ const logger = require('../../logger');
  *
  * @param {Koa context} ctx
  */
-async function listAllAssignments(ctx) {
+async function listAllAssignments (ctx) {
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
   let assignments;
-  if (ctx.query.dueBy)
+
+  if (ctx.query.dueBy) {
     assignments = await user.findAssignmentsDueBy(ctx.query.dueBy);
-  else if (ctx.query.dueOn)
+  } else if (ctx.query.dueOn) {
     assignments = await user.findAssignmentsDueOn(ctx.query.dueOn);
-  else assignments = await user.findAllAssignments();
+  } else {
+    assignments = await user.findAllAssignments();
+  }
 
   logger.info(`Sending all assignments to ${user.rcs_id}`);
 
@@ -29,7 +32,7 @@ async function listAllAssignments(ctx) {
  * Given an assignment ID, return the assignment only if it belongs to the logged in user.
  * @param {Koa context} ctx
  */
-async function getAssignment(ctx) {
+async function getAssignment (ctx) {
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
@@ -40,7 +43,7 @@ async function getAssignment(ctx) {
       _id: assignmentID,
       _student: user._id
     });
-    if (!assignment) throw '';
+    if (!assignment) throw new Error();
   } catch (e) {
     logger.error(`Failed to get assignment ${assignmentID} for ${user.rcs_id}`);
     return ctx.notFound('Failed to find assignment.');
@@ -58,7 +61,7 @@ async function getAssignment(ctx) {
  *
  * @param {Koa context} ctx
  */
-async function createAssignment(ctx) {
+async function createAssignment (ctx) {
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
@@ -119,7 +122,7 @@ async function createAssignment(ctx) {
  *
  * @param {Koa context} ctx
  */
-async function editAssignment(ctx) {
+async function editAssignment (ctx) {
   ctx.badRequest('Not yet implemented.');
 }
 
@@ -128,7 +131,7 @@ async function editAssignment(ctx) {
  *
  * @param {Koa context} ctx
  */
-async function removeAssignment(ctx) {
+async function removeAssignment (ctx) {
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
@@ -143,7 +146,7 @@ async function removeAssignment(ctx) {
 
     removedAssignment.remove();
 
-    if (!removedAssignment) throw '';
+    if (!removedAssignment) throw new Error();
   } catch (e) {
     logger.error(`Failed to remove assignment for  ${user.rcs_id}`);
     return ctx.notFound('Failed to find assignment.');

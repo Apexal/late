@@ -13,7 +13,7 @@ const cas = new CAS({
  *
  * @param {Koa context} ctx
  */
-async function loginStudent(ctx) {
+async function loginStudent (ctx) {
   if (!ctx.session.cas_user) await cas.bounce();
 
   let student = await ctx.db.Student.findOne().byUsername(

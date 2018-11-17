@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const moment = require('moment');
 
-//const rpiValidator = require('rpi-validator');
+// const rpiValidator = require('rpi-validator');
 
 const CURRENT_TERM = '201809';
 
@@ -11,13 +11,13 @@ const schema = new Schema({
     type: String,
     minlength: 9,
     trim: true
-    //required: true
-    /*validate: {
+    // required: true
+    /* validate: {
       validator: function(rin) {
         return rpiValidator.isRIN(rin);
       },
       message: props => `${props.value} is not a valid RIN!`
-    }*/
+    } */
   },
   name: {
     first: {
@@ -45,8 +45,14 @@ const schema = new Schema({
     maxlength: 100,
     required: true
   },
-  grad_year: { type: Number, min: 2000, max: 3000 /*, required: true */ }, // maybe?
+  grad_year: {
+    type: Number,
+    min: 2000,
+    max: 3000
+    /*, required: true */
+  }, // maybe?
   semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+  work_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
   admin: { type: Boolean, default: false },
   setup: {
     personal_info: {
@@ -56,8 +62,8 @@ const schema = new Schema({
     course_schedule: {
       type: Boolean,
       default: false
-    } // what SIS and YACS will give us
-    //work_schedule: { type: Boolean, default: false } // when the student can study or work
+    }, // what SIS and YACS will give us
+    work_schedule: { type: Boolean, default: false } // when the student can study or work
   },
   joined_date: {
     type: Date,
@@ -72,28 +78,29 @@ schema.set('toJSON', { getters: true, virtuals: true });
 /* QUERY HELPERS */
 // https://mongoosejs.com/docs/guide.html#query-helpers
 
-schema.query.byUsername = function(rcs_id) {
+schema.query.byUsername = function (rcsID) {
   return this.where({
-    rcs_id
+    rcs_id: rcsID
   });
 };
 
 /* METHODS */
 
-schema.methods.courseFromCRN = function(crn) {
+schema.methods.courseFromCRN = function (crn) {
   return this.current_schedule.filter(c => c.crn === crn)[0];
 };
 
-schema.methods.findAllAssignments = function(past = false) {
+schema.methods.findAllAssignments = function (past = false) {
   let query = {
     _student: this._id
   };
-  if (!past)
+  if (!past) {
     query.dueDate = {
       $gte: moment()
         .startOf('day')
         .toDate()
     };
+  }
 
   return this.model('Assignment')
     .find(query)
@@ -103,7 +110,7 @@ schema.methods.findAllAssignments = function(past = false) {
     .exec();
 };
 
-schema.methods.findAssignmentsDueOn = function(date) {
+schema.methods.findAssignmentsDueOn = function (date) {
   return this.model('Assignment')
     .find({
       _student: this._id,
@@ -118,17 +125,18 @@ schema.methods.findAssignmentsDueOn = function(date) {
     .exec();
 };
 
-schema.methods.findAssignmentsDueBy = function(date, past = false) {
+schema.methods.findAssignmentsDueBy = function (date, past = false) {
   let query = {
     _student: this._id,
     dueDate: {
       $lte: moment(date).endOf('day')
     }
   };
-  if (!past)
+  if (!past) {
     query.dueDate.$gte = moment()
       .startOf('day')
       .toDate();
+  }
 
   return this.model('Assignment')
     .find(query)
@@ -143,40 +151,50 @@ schema.methods.findAssignmentsDueBy = function(date, past = false) {
 
 schema
   .virtual('current_schedule')
-  .get(function() {
+  .get(function () {
     return this.semester_schedules[CURRENT_TERM] || [];
   })
-  .set(function(new_schedule) {
-    this.semester_schedules[CURRENT_TERM] = new_schedule;
+  .set(function (newSchedule) {
+    this.semester_schedules[CURRENT_TERM] = newSchedule;
     this.markModified('semester_schedules');
   });
 
-schema.virtual('is_setup').get(function() {
+schema
+  .virtual('current_work_schedule')
+  .get(function () {
+    return this.work_schedules[CURRENT_TERM] || [];
+  })
+  .set(function (newSchedule) {
+    this.work_schedules[CURRENT_TERM] = newSchedule;
+    this.markModified('work_schedules');
+  });
+
+schema.virtual('is_setup').get(function () {
   for (let check in this.setup) if (!this.setup[check]) return false;
   return true;
 });
 
-schema.virtual('next_to_setup').get(function() {
+schema.virtual('next_to_setup').get(function () {
   for (let check in this.setup) if (!this.setup[check]) return check;
 });
 
-schema.virtual('full_name').get(function() {
+schema.virtual('full_name').get(function () {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
 });
 
-schema.virtual('display_name').get(function() {
-  if (this.name.first)
+schema.virtual('display_name').get(function () {
+  if (this.name.first) {
     return `${this.full_name} ${
       this.grad_year ? '\'' + this.grad_year.toString().slice(-2) : ''
     }`;
-  else return this.rcs_id;
+  } else return this.rcs_id;
 });
 
-schema.virtual('setup_checks').get(function() {
+schema.virtual('setup_checks').get(function () {
   return Object.keys(this.setup).filter(check => !check.startsWith('$'));
 });
 
-schema.virtual('grade_name').get(function() {
+schema.virtual('grade_name').get(function () {
   // TODO: implement properly
   switch (this.grad_year) {
   case 2022:

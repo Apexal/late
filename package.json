@@ -1,13 +1,14 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
     "node": ">=11.0.0"
   },
   "dependencies": {
+    "@koa/cors": "^2.2.2",
     "axios": "^0.18.0",
     "bulma": "^0.7.2",
     "cheerio": "^1.0.0-rc.2",
@@ -31,6 +32,7 @@
     "request-promise": "^4.2.2",
     "rpi-validator": "^1.0.2",
     "vue": "^2.5.17",
+    "vue-full-calendar": "^2.7.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "winston": "^3.1.0"
@@ -45,7 +47,11 @@
     "@vue/eslint-config-prettier": "^3.0.5",
     "cross-env": "^5.2.0",
     "eslint": "^5.9.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^5.0.0-beta.3",
     "lint-staged": "^7.2.2",
     "node-sass": "^4.10.0",
@@ -85,6 +91,7 @@
       "node": true
     },
     "extends": [
+      "standard",
       "plugin:vue/recommended"
     ],
     "rules": {

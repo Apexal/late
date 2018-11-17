@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const logger = require('../../logger');
 const { scrapeSISForCRNS } = require('../../scraping');
 const { getSectionInfoFromCRN } = require('../../yacs_api');
@@ -12,7 +14,7 @@ const { getSectionInfoFromCRN } = require('../../yacs_api');
  *
  * @param {Koa context} ctx
  */
-async function setPersonalInfo(ctx) {
+async function setPersonalInfo (ctx) {
   const body = ctx.request.body;
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
@@ -51,7 +53,7 @@ async function setPersonalInfo(ctx) {
  *
  * @param {Koa context} ctx
  */
-async function setCourseScheduleInfo(ctx) {
+async function setCourseSchedule (ctx) {
   const body = ctx.request.body;
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
@@ -63,30 +65,100 @@ async function setCourseScheduleInfo(ctx) {
     ? await scrapeSISForCRNS(user.rin, body.pin, '201809')
     : body.crns.split(',').map(crn => crn.trim());
 
-  let course_schedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+  let courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
 
   // Remove courses that YACS could not find
-  course_schedule = course_schedule.filter(course => !!course);
+  courseSchedule = courseSchedule.filter(course => !!course);
 
-  course_schedule.push({
+  courseSchedule.push({
     longname: 'Other',
     crn: '00000',
     periods: []
   });
 
+  for (let c in courseSchedule) {
+    courseSchedule[c].color =
+      '#' +
+      Math.random()
+        .toString(16)
+        .substr(-6);
+  }
   user.setup.course_schedule = true;
-  user.current_schedule = course_schedule;
 
   try {
+    user.current_schedule = courseSchedule;
     await user.save();
     ctx.ok({ updatedUser: user });
   } catch (error) {
     ctx.badRequest({ error });
-    logger.error(`Failed to set course schedule for ${user.rcs_id}`);
+    logger.error(`Failed to set course schedule for ${user.rcs_id}: ${error}`);
+  }
+}
+
+/**
+ * Set the logged in user's courses and return the updated user.
+ * Request body:
+ *  - courses: new current_schedules
+ *
+ * @param {Koa context} ctx
+ */
+async function setCourses (ctx) {
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
+
+  const body = ctx.request.body;
+  const updatedCourses = body.courses;
+
+  try {
+    user.current_schedule = updatedCourses;
+    await user.save();
+    ctx.ok({ updatedUser: user });
+  } catch (error) {
+    logger.error(`Failed to set custom courses for ${user.rcs_id}: ${error}`);
+    ctx.badRequest('Failed to set custom courses.');
+  }
+}
+
+/**
+ * Set the work schedule of the logged in user.
+ *
+ * Body:
+ * - events
+ * @param {Koa context} ctx
+ */
+async function setWorkSchedule (ctx) {
+  const user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
+
+  const events = ctx.request.body.events;
+
+  // Remove dates, split times
+  const workPeriods = events.map(e => ({
+    day: moment(e.start).day(),
+    start: moment(e.start).format('Hmm'),
+    end: moment(e.end).format('Hmm')
+  }));
+
+  user.setup.work_schedule = true;
+
+  try {
+    user.current_work_schedule = workPeriods;
+    await user.save();
+    logger.info(`Set work/study periods for ${user.rcs_id}`);
+    ctx.ok({ updatedUser: user });
+  } catch (error) {
+    ctx.badRequest({ error });
+    logger.error(
+      `Failed to set work/study schedule for ${user.rcs_id}: ${error}`
+    );
   }
 }
 
 module.exports = {
   setPersonalInfo,
-  setCourseScheduleInfo
+  setCourseSchedule,
+  setCourses,
+  setWorkSchedule
 };

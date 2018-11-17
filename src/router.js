@@ -53,7 +53,6 @@ const router = new Router({
     },
     {
       path: '/profile',
-      name: 'profile',
       component: () => import('@/views/profile/Profile.vue'),
       meta: {
         requiresAuth: true
@@ -61,6 +60,7 @@ const router = new Router({
       children: [
         {
           path: '',
+          name: 'profile',
           meta: {
             title: 'Your Profile'
           },
@@ -79,6 +79,13 @@ const router = new Router({
             title: 'Course Schedule'
           },
           component: () => import('@/views/profile/CourseScheduleForm.vue')
+        },
+        {
+          path: 'workschedule',
+          meta: {
+            title: 'Work/Study Schedule'
+          },
+          component: () => import('@/views/profile/WorkScheduleSetup.vue')
         }
       ]
     },

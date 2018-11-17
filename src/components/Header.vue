@@ -18,7 +18,7 @@
       >
         <div class="navbar-brand">
           <a
-            :class="navbarExpanded ? 'is-active' : ''"
+            :class="{'is-active': navbarExpanded}"
             role="button"
             class="navbar-burger burger"
             aria-label="menu"
@@ -34,14 +34,18 @@
 
         <div
           id="top-navbar"
-          :class="navbarExpanded ? 'is-active' : ''"
+          :class="{'is-active': navbarExpanded}"
           class="navbar-menu"
         >
           <div class="navbar-start">
             <router-link
               class="navbar-item"
               to="/dashboard"
-            >Dashboard</router-link>
+            >
+              <span class="icon">
+                <i class="fas fa-home" />
+              </span>
+              Dashboard</router-link>
             <router-link
               class="navbar-item"
               to="/about"
@@ -50,6 +54,9 @@
             <template v-if="loggedIn">
               <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
+                  <span class="icon">
+                    <i class="fas fa-clipboard-list" />
+                  </span>
                   Assignments
                   <span class="tag is-warning assignment-count">{{ assignmentCount }}</span>
                 </a>
@@ -61,18 +68,25 @@
                   >
                     List
                   </router-link>
-
-                  <a class="navbar-item">
-                    Contact
-                  </a>
                   <hr class="navbar-divider">
-                  <a class="navbar-item">
-                    Report an issue
+                  <a
+                    class="navbar-item"
+                    @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+                  >
+                    Add Assignment
                   </a>
                 </div>
               </div>
             </template>
-
+            <a
+              href="https://github.com/Apexal/late"
+              target="_blank"
+              class="navbar-item"
+            >
+              <span class="icon">
+                <i class="fab fa-github" />
+              </span>
+              Source Code</a>
           </div>
 
           <div class="navbar-end">
@@ -99,25 +113,24 @@
       </nav>
     </div>
   </header>
-
 </template>
 
 <script>
 export default {
   name: 'Header',
-  data() {
+  data () {
     return {
     };
   },
   computed: {
     navbarExpanded () { return this.$store.state.navbarExpanded; },
-    user() {
+    user () {
       return this.$store.state.auth.user;
     },
-    loggedIn() {
+    loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
-    assignmentCount() {
+    assignmentCount () {
       return this.$store.state.work.assignments.length;
     }
   }
@@ -130,16 +143,9 @@ export default {
 }
 
 #top-navbar {
-  li.navbar-item {
-    a {
-      color: inherit;
-    }
-
-    &:hover {
-      a {
-        color: black;
-      }
-      background-color: white;
+  a.navbar-item {
+    span.icon {
+      margin-right: 3px;
     }
   }
 
