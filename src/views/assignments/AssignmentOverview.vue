@@ -1,5 +1,10 @@
 <template>
   <div class="assignment-overview">
+    <EditAssignmentModal
+      :open="editAssignmentModalExpanded"
+      :assignment-id="assignment._id"
+      @toggle-modal="$store.commit('TOGGLE_EDIT_ASSIGNMENT_MODAL')"
+    />
     <section
       v-if="!assignment"
       class="section"
@@ -25,7 +30,19 @@
       <h1 class="title">{{ assignment.title }}</h1>
       <div class="content">
         <blockquote>
-          <p>{{ assignment.description }}</p>
+          <input
+            v-if="editing"
+            id="title"
+            v-model="title"
+            type="text"
+            class="input"
+            maxlength="200"
+            placeholder="Short descriptive title"
+          >
+          <p
+            v-if="!editing"
+            @click="toggleEdit"
+          >{{ assignment.description }}</p>
         </blockquote>
       </div>
       <hr>
@@ -49,13 +66,16 @@
 
 <script>
 import moment from 'moment';
+import EditAssignmentModal from '@/components/assignments/EditAssignmentModal';
 
 export default {
   name: 'AssignmentOverview',
+  components: { EditAssignmentModal },
   data () {
     return {
     };
   },
+
   computed: {
     assignment () {
       return this.$store.getters.getAssignmentById(
@@ -64,6 +84,12 @@ export default {
     },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+    },
+    editing () {
+      return this.$store.getters.getEditState;
+    },
+    editAssignmentModalExpanded () {
+      return this.$store.getters.getEditAssignmentModalExpanded;
     }
   },
   methods: {
@@ -89,6 +115,12 @@ export default {
         type: 'success',
         description: `Successfully removed assignment '${assignmentTitle}'.`
       });
+    },
+
+    async toggleEdit () {
+      // await this.$store.dispatch('EDIT_STATE');//toggles edit state
+      const assignmentID = this.assignment._id;
+      this.$store.dispatch('TOGGLE_EDIT_ASSIGNMENT_MODAL', assignmentID);
     },
     fromNow: date => moment(date).fromNow()
   }

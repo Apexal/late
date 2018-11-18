@@ -2,7 +2,11 @@ import axios from '@/api';
 import moment from 'moment';
 
 const state = {
-  assignments: []
+  assignments: [],
+  editingAssignment: false,
+  editAssignmentModalExpanded: false,
+  assignmentID: ''
+
 };
 
 const getters = {
@@ -29,6 +33,8 @@ const getters = {
 
     return grouped;
   },
+  getEditState: state => state.editingAssignment,
+  getEditAssignmentModalExpanded: state => state.editAssignmentModalExpanded,
   pressingAssignments: state => count =>
     state.assignments.filter(a => !a.completed).slice(0, count),
   getCourseFromCRN: (state, getters, rootState) => crn =>
@@ -53,6 +59,12 @@ const actions = {
     commit('REMOVE_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.post(`/assignments/a/${assignmentID}/remove`);
     await dispatch('GET_UPCOMING_ASSIGNMENTS');
+  },
+  async TOGGLE_EDIT_ASSIGNMENT_MODAL ({ commit }, assignmentID) {
+    commit('TOGGLE_EDIT_ASSIGNMENT_MODAL', assignmentID);
+  },
+  async EDIT_STATE ({ commit }) {
+    commit('EDIT_STATE');
   }
 };
 
@@ -65,6 +77,13 @@ const mutations = {
   },
   REMOVE_ASSIGNMENT: (state, assignmentID) => {
     state.assignments = state.assignments.filter(a => a._id !== assignmentID);
+  },
+  TOGGLE_EDIT_ASSIGNMENT_MODAL: (state, assignmentID) => {
+    state.editAssignmentModalExpanded = !state.editAssignmentModalExpanded;
+    state.assignmentID = assignmentID;
+  },
+  EDIT_STATE: (state) => {
+    state.editingAssignment = !state.editingAssignment;
   }
 };
 
