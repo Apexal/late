@@ -113,8 +113,6 @@
 </template>
 
 <script>
-import API from '../../api';
-
 export default {
   name: 'PersonalInfoForm',
   data () {
@@ -140,7 +138,7 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await API.post('/setup/personalinfo', {
+      const request = await this.$http.post('/setup/personalinfo', {
         first_name: this.first_name,
         last_name: this.last_name,
         rin: this.rin,

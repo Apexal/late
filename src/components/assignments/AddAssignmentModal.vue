@@ -192,7 +192,6 @@
 
 <script>
 import moment from 'moment';
-import API from '../../api';
 
 export default {
   name: 'AddAssignmentModal',
@@ -223,7 +222,7 @@ export default {
     async save () {
       this.loading = true;
       // TODO: error handle
-      const request = await API.post('/assignments/create', {
+      const request = await this.$http.post('/assignments/create', {
         title: this.title,
         description: this.description,
         due_date: moment(this.due_date + ' ' + this.time, 'YYYY-MM-DD HH:mm', true).toDate(),

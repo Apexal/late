@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import API from '../../api';
 import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
@@ -84,7 +83,7 @@ export default {
       this.loading = true;
       const events = this.calendar.events.filter(e => e.isWorkBlock);
 
-      const request = await API.post('/setup/workschedule', {
+      const request = await this.$http.post('/setup/workschedule', {
         events
       });
 

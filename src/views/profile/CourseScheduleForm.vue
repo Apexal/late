@@ -98,8 +98,6 @@
 </template>
 
 <script>
-import API from '../../api';
-
 import Course from '@/components/profile/Course';
 
 export default {
@@ -141,7 +139,7 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await API.post('/setup/courseschedule', {
+      const request = await this.$http.post('/setup/courseschedule', {
         pin: this.pin,
         crns: this.crns
       });
