@@ -3,7 +3,7 @@ const app = require('./server');
 const logger = require('./server/logger');
 
 // Grab server configuration from environment variables
-const port = process.env.API_SERVER_PORT;
+const port = process.env.PORT;
 const host = process.env.HOST;
 app.listen(port, host);
 
