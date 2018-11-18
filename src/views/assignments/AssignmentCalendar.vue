@@ -64,8 +64,8 @@ export default {
           start: a.dueDate,
           color: this.course(a).color,
           assignment: a
-        })
-      );
+          // eslint-disable-next-line
+        }));
     }
   },
   methods: {

@@ -10,11 +10,26 @@
       >
         <div class="panel">
           <p
-            class="panel-heading is-unselectable"
+            class="panel-heading is-unselectable date-heading"
             :title="daysAway(date) + ' days away'"
           >
-            {{ toDateShortString(date) }}
+            <span
+              v-if="percentDone(date) === 100"
+              title="All your assignments are done for this day!"
+              class="icon is-pulled-right completion-check has-text-grey"
+            >
+              <i class="fas fa-check" />
+            </span>
+            <span class="date">{{ toDateShortString(date) }}</span>
+
+            <progress
+              :title="percentDone(date) + '% completed'"
+              class="progress is-small is-full-width assignment-progress"
+              :value="percentDone(date)"
+              max="100"
+            >{{ percentDone(date) }}%</progress>
           </p>
+
           <div
             v-for="a in assignments"
             :key="a._id"
@@ -99,6 +114,10 @@ export default {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
+    percentDone (date) {
+      const assignments = this.assignmentsGroupedByDueDate[date];
+      return Math.round((assignments.filter(a => a.completed).length / assignments.length) * 100);
+    },
     isHighlighted (c) { return this.highlighted.includes(c.crn); },
     toDateShortString (dueDate) {
       if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
@@ -117,6 +136,27 @@ export default {
 <style lang="scss" scoped>
 .course-title {
   margin-right: 5px;
+}
+
+.date-heading {
+  padding-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+
+  .date {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+  }
+
+  .assignment-progress {
+    border-radius: 0;
+    margin-top: 5px;
+  }
+
+  .completion-check {
+    margin-right: 10px;
+  }
 }
 
 .assignment {
