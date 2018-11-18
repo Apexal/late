@@ -80,16 +80,16 @@ export default {
   },
   computed: {
     filtered () {
-      if (this.filter.length === 0) {
-        return this.assignmentsGroupedByDueDate;
-      } else {
-        const filtered = {};
-        for (let date in this.assignmentsGroupedByDueDate) {
-          filtered[date] = this.assignmentsGroupedByDueDate[date].filter(a => !this.filter.includes(this.course(a).crn));
-          if (filtered[date].length === 0) delete filtered[date];
-        }
-        return filtered;
+      const filtered = {};
+      for (let date in this.assignmentsGroupedByDueDate) {
+        filtered[date] = this.assignmentsGroupedByDueDate[date].filter(a => {
+          if (!this.showCompleted && a.completed) return false;
+          return !this.filter.includes(this.course(a).crn);
+        });
+        if (filtered[date].length === 0) delete filtered[date];
       }
+
+      return filtered;
     },
     assignmentsGroupedByDueDate () {
       return this.$store.getters.assignmentsGroupedByDueDate(false);

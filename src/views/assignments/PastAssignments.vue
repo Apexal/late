@@ -46,7 +46,7 @@
             <span class="icon">
               <i
                 class="fas"
-                :class="{ 'fa-check': a.computed, 'fa-times': !a.Completed }"
+                :class="{ 'fa-check': a.completed, 'fa-times': !a.completed }"
               />
             </span>
           </td>
@@ -77,7 +77,10 @@ export default {
   },
   computed: {
     filtered () {
-      if (this.filter.length === 0) { return this.pastAssignments; } else { return this.pastAssignments.filter(a => !this.filter.includes(this.course(a).crn)); }
+      return this.pastAssignments.filter(a => {
+        if (!this.showCompleted && a.completed) return false;
+        return !this.filter.includes(this.course(a).crn);
+      });
     },
     pastAssignments () { return this.$store.getters.pastAssignments; }
   },

@@ -57,12 +57,15 @@ export default {
       return this.events.filter(e => !this.filter.includes(this.course(e.assignment).crn));
     },
     events () {
-      return this.$store.state.work.assignments.map(a => ({
-        title: a.title,
-        start: a.dueDate,
-        color: this.course(a).color,
-        assignment: a
-      }));
+      return this.$store.state.work.assignments
+        .filter(a => this.showCompleted ? true : !a.completed)
+        .map(a => ({
+          title: a.title,
+          start: a.dueDate,
+          color: this.course(a).color,
+          assignment: a
+        })
+      );
     }
   },
   methods: {
