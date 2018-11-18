@@ -53,7 +53,9 @@ app.use(async (ctx, next) => {
     ctx.state.user = await ctx.db.Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
-  } catch (e) {}
+  } catch (e) {
+    logger.error(e);
+  }
 
   await next();
 });

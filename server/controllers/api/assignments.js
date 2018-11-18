@@ -110,11 +110,42 @@ async function createAssignment (ctx) {
 }
 
 /**
+ * Edit assignment.
+ * Request body:
+ * - updates: object of updates to the assignment in the form of the assignment schema, e.g. { title: 'New Title', description: 'New desc.' }
  *
  * @param {Koa context} ctx
  */
 async function editAssignment (ctx) {
-  ctx.badRequest('Not yet implemented.');
+  const assignmentID = ctx.params.assignmentID;
+  const updates = ctx.request.body;
+  console.log(updates);
+
+  const allowedProperties = ['title', 'dueDate', 'description', 'timeEstimate', 'priority'];
+
+  // Ensure no unallowed properties are passed to update
+  if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
+    logger.error(`Failed to update assignment for ${ctx.state.user.rcs_id} because of invalid update properties.`);
+    return ctx.badRequest('Passed unallowed properties.');
+  }
+
+  let assignment;
+  try {
+    assignment = await ctx.db.Assignment.findOne({ _id: assignmentID, _student: ctx.state.user._id });
+
+    Object.assign(assignment, updates); // So cool!
+
+    await assignment.save();
+  } catch (e) {
+    logger.error(`Failed to update assignment for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.internalServerError('Invalid properties to update.');
+  }
+
+  logger.info(`Updated assignment '${assignment.title}' for ${ctx.state.user.rcs_id}.`);
+
+  ctx.ok({
+    updatedAssignment: assignment
+  });
 }
 
 /**
