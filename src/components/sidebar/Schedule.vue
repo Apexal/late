@@ -8,21 +8,15 @@
         v-if="in_class"
         class="tag is-info"
       >In Class</span>
-      <span
-        v-else-if="is_weekend"
-        class="tag is-success"
-      >
-        Weekend
-      </span>
     </summary>
     <template v-if="is_weekend">
       <div class="panel-block">
-        <h2 class="subtitle">It's the weekend!</h2>
+        <h2 class="subtitle has-text-grey">It's the weekend!</h2>
       </div>
     </template>
     <template v-else-if="classes_over">
       <div class="panel-block">
-        <h2 class="subtitle">Classes are over for today!</h2>
+        <h2 class="subtitle has-text-grey">Classes are over for today!</h2>
       </div>
     </template>
     <template v-else>

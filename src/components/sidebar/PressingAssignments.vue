@@ -49,7 +49,7 @@
         class="button is-link is-outlined is-fullwidth"
         to="/assignments"
       >
-        View All Assignments
+        All Assignments
       </router-link>
     </div>
   </details>
