@@ -9,8 +9,8 @@ const logger = require('../../logger');
  */
 async function getAssignments (ctx) {
   const assignments = await ctx.state.user.getAssignments(
-    ctx.query.startDate,
-    ctx.query.endDate
+    ctx.query.start,
+    ctx.query.end
   );
 
   logger.info(`Sending assignments to ${ctx.state.user.rcs_id}`);
@@ -121,27 +121,44 @@ async function editAssignment (ctx) {
   const updates = ctx.request.body;
   console.log(updates);
 
-  const allowedProperties = ['title', 'dueDate', 'description', 'timeEstimate', 'priority'];
+  const allowedProperties = [
+    'title',
+    'dueDate',
+    'description',
+    'timeEstimate',
+    'priority'
+  ];
 
   // Ensure no unallowed properties are passed to update
   if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
-    logger.error(`Failed to update assignment for ${ctx.state.user.rcs_id} because of invalid update properties.`);
+    logger.error(
+      `Failed to update assignment for ${
+        ctx.state.user.rcs_id
+      } because of invalid update properties.`
+    );
     return ctx.badRequest('Passed unallowed properties.');
   }
 
   let assignment;
   try {
-    assignment = await ctx.db.Assignment.findOne({ _id: assignmentID, _student: ctx.state.user._id });
+    assignment = await ctx.db.Assignment.findOne({
+      _id: assignmentID,
+      _student: ctx.state.user._id
+    });
 
     Object.assign(assignment, updates); // So cool!
 
     await assignment.save();
   } catch (e) {
-    logger.error(`Failed to update assignment for ${ctx.state.user.rcs_id}: ${e}`);
+    logger.error(
+      `Failed to update assignment for ${ctx.state.user.rcs_id}: ${e}`
+    );
     return ctx.internalServerError('Invalid properties to update.');
   }
 
-  logger.info(`Updated assignment '${assignment.title}' for ${ctx.state.user.rcs_id}.`);
+  logger.info(
+    `Updated assignment '${assignment.title}' for ${ctx.state.user.rcs_id}.`
+  );
 
   ctx.ok({
     updatedAssignment: assignment

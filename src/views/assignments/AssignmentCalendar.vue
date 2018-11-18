@@ -3,7 +3,7 @@
     class="assignment-calendar"
   >
     <FullCalendar
-      :events="filtered"
+      ref="calendar"
       :editable="false"
       :selectable="false"
       :header="calendar.header"
@@ -36,12 +36,14 @@ export default {
   data () {
     return {
       calendar: {
+        events: [],
         header: {
           left: 'title',
           center: '',
           right: 'today prev,next'
         },
         config: {
+          events: this.events,
           defaultView: 'month',
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
@@ -54,10 +56,25 @@ export default {
   },
   computed: {
     filtered () {
-      return this.events.filter(e => !this.filter.includes(this.course(e.assignment).crn));
+      return this.events
+        .filter(e => !this.filter.includes(this.course(e.assignment).crn))
+        .filter(e => this.showCompleted ? true : !e.assignment.completed);
+    }
+  },
+  watch: {
+    filter: function (newF, oldF) {
+      this.$refs.calendar.fireMethod('refetchEvents');
     },
-    events () {
-      return this.$store.state.work.assignments
+    showCompleted: function (newC, oldC) {
+      this.$refs.calendar.fireMethod('refetchEvents');
+    }
+  },
+  methods: {
+    async events (start, end, tz, callback) {
+      const request = await this.$http.get(`/assignments/list?start=${start.format('YYYY-MM-DD')}&end=${end.format('YYYY-MM-DD')}`);
+      console.log(request);
+      const assignments = request.data.assignments;
+      const events = assignments
         .filter(a => this.showCompleted ? true : !a.completed)
         .map(a => ({
           title: a.title,
@@ -66,9 +83,10 @@ export default {
           assignment: a
           // eslint-disable-next-line
         }));
-    }
-  },
-  methods: {
+
+      this.events = events;
+      callback(this.filtered);
+    },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     }
