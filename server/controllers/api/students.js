@@ -14,6 +14,10 @@ async function loginAs (ctx) {
   ctx.session.cas_user = rcsID;
   logger.info(`Logging in as ${rcsID}`);
 
+  ctx.state.user = await ctx.db.Student.findOne()
+    .byUsername(ctx.session.cas_user.toLowerCase())
+    .exec();
+
   await getUser(ctx);
 }
 
