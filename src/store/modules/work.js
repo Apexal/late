@@ -49,10 +49,9 @@ const getters = {
 };
 
 const actions = {
-  async TOGGLE_ASSIGNMENT ({ commit, dispatch }, assignmentID) {
+  async TOGGLE_ASSIGNMENT ({ commit }, assignmentID) {
     const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
-    console.log(request.data);
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
+    commit('UPDATE_ASSIGNMENT', request.data.updatedAssignment);
   },
   async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
     const response = await axios.get('/assignments/list');
@@ -66,7 +65,6 @@ const actions = {
   async REMOVE_ASSIGNMENT ({ dispatch, commit }, assignmentID) {
     commit('REMOVE_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.post(`/assignments/a/${assignmentID}/remove`);
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
   }
 };
 
@@ -76,6 +74,12 @@ const mutations = {
   },
   ADD_ASSIGNMENT: (state, assignment) => {
     state.assignments.push(assignment);
+  },
+  UPDATE_ASSIGNMENT: (state, updatedAssignment) => {
+    Object.assign(
+      state.assignments.find(a => a._id === updatedAssignment._id),
+      updatedAssignment
+    );
   },
   REMOVE_ASSIGNMENT: (state, assignmentID) => {
     state.assignments = state.assignments.filter(a => a._id !== assignmentID);
