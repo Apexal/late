@@ -109,7 +109,7 @@ export default {
       return filtered;
     },
     upcomingAssignmentsGroupedByDueDate () {
-      return this.$store.getters.upcomingAssignmentsGroupedByDueDate(false);
+      return this.$store.getters.upcomingAssignmentsGroupedByDueDate;
     }
   },
   methods: {

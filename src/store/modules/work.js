@@ -19,15 +19,15 @@ const getters = {
     state.assignments.filter(a =>
       moment(a.dueDate).isBefore(moment().startOf('day'))
     ),
-  upcomingAssignmentsGroupedByDueDate: state => pastIncluded => {
+  upcomingAssignmentsGroupedByDueDate: state => {
     const grouped = {};
 
     for (let a of state.assignments) {
-      if (!pastIncluded && moment(a.dueDate).isBefore(moment())) continue;
       const day = moment(a.dueDate)
         .startOf('day')
         .toDate();
 
+      if (moment(a.dueDate).isBefore(moment().startOf('day'))) continue;
       if (!grouped[day]) grouped[day] = [];
 
       grouped[day].push(a);
