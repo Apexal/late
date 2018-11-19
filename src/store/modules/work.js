@@ -23,10 +23,10 @@ const getters = {
     const grouped = {};
 
     for (let a of state.assignments) {
+      if (!pastIncluded && moment(a.dueDate).isBefore(moment())) continue;
       const day = moment(a.dueDate)
+        .startOf('day')
         .toDate();
-
-      if (!pastIncluded && moment(day).isBefore(moment())) continue;
 
       if (!grouped[day]) grouped[day] = [];
 
