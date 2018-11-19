@@ -96,8 +96,8 @@ export default {
   computed: {
     filtered () {
       const filtered = {};
-      for (let date in this.assignmentsGroupedByDueDate) {
-        filtered[date] = this.assignmentsGroupedByDueDate[date].filter(a => {
+      for (let date in this.upcomingAssignmentsGroupedByDueDate) {
+        filtered[date] = this.upcomingAssignmentsGroupedByDueDate[date].filter(a => {
           if (!this.showCompleted && a.completed) return false;
           return !this.filter.includes(this.course(a).crn);
         });
@@ -106,8 +106,8 @@ export default {
 
       return filtered;
     },
-    assignmentsGroupedByDueDate () {
-      return this.$store.getters.assignmentsGroupedByDueDate(false);
+    upcomingAssignmentsGroupedByDueDate () {
+      return this.$store.getters.upcomingAssignmentsGroupedByDueDate(false);
     }
   },
   methods: {
@@ -115,7 +115,7 @@ export default {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
     percentDone (date) {
-      const assignments = this.assignmentsGroupedByDueDate[date];
+      const assignments = this.upcomingAssignmentsGroupedByDueDate[date];
       return Math.round((assignments.filter(a => a.completed).length / assignments.length) * 100);
     },
     isHighlighted (c) { return this.highlighted.includes(c.crn); },
