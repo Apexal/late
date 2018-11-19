@@ -38,12 +38,14 @@
             :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
           >
             <span class="is-full-width">
-              <span class="icon toggle-assignment">
+              <span
+                class="icon toggle-assignment"
+                @click="$emit('toggle-assignment', a._id)"
+              >
                 <span
                   :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
                   :title="course(a).longname"
                   :style="{ 'color': course(a).color }"
-                  @click="$emit('toggle-assignment', a._id)"
                 />
               </span>
               <router-link
