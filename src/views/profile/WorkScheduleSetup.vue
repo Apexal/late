@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import API from '../../api';
 import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
@@ -42,6 +41,7 @@ export default {
           right: ''
         },
         config: {
+          timezone: 'local',
           navLinks: false,
           defaultView: 'agendaWeek',
           selectHelper: true,
@@ -53,7 +53,7 @@ export default {
             if (!calEvent.isWorkBlock) return;
             this.saved = false;
             this.calendar.events = this.calendar.events.filter(e => {
-              return moment(e.start).format('YYYY-MM-DD Hmm') !== moment(calEvent.start).format('YYYY-MM-DD Hmm');
+              return !moment(e.start).isSame(moment(calEvent.start).format('YYYY-MM-DD Hmm'));
             });
           },
 
@@ -83,14 +83,14 @@ export default {
       this.loading = true;
       const events = this.calendar.events.filter(e => e.isWorkBlock);
 
-      const request = await API.post('/setup/workschedule', {
+      const request = await this.$http.post('/setup/workschedule', {
         events
       });
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Set work/study availability schedule!' });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Set work/study availability schedule!' });
 
       this.loading = false;
       this.saved = true;

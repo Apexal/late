@@ -3,30 +3,20 @@
     class="schedule panel user-courses"
     open
   >
-    <summary class="panel-heading">Today's Schedule
+    <summary class="panel-heading is-unselectable">Today's Schedule
       <span
         v-if="in_class"
         class="tag is-info"
       >In Class</span>
-      <span
-        v-else-if="is_weekend"
-        class="tag is-success"
-      >
-        Weekend
-      </span>
-      <span
-        v-else-if="classes_over"
-        class="tag is-warning"
-      >Classes Over</span>
     </summary>
     <template v-if="is_weekend">
       <div class="panel-block">
-        <h2 class="subtitle">It's the weekend!</h2>
+        <h2 class="subtitle has-text-grey">It's the weekend!</h2>
       </div>
     </template>
     <template v-else-if="classes_over">
       <div class="panel-block">
-        <h2 class="subtitle">Classes are over for today!</h2>
+        <h2 class="subtitle has-text-grey">Classes are over for today!</h2>
       </div>
     </template>
     <template v-else>
@@ -87,15 +77,15 @@ export default {
       return this.$store.getters.classes_over;
     },
     is_weekend () {
-      return new Date().getDay() === 6 || new Date().getDay() === 0;
+      return moment().day() === 6 || moment().day() === 0;
     },
     dateStr () {
       return moment(this.schedule.date).format('YYYY-MM-DD');
     }
   },
   methods: {
-    timeFormat: datetime => moment(datetime, 'Hmm').format('h:mma'),
-    hasPassed: p => moment(p.end, 'Hmm').isBefore(moment()),
+    timeFormat: datetime => moment(datetime, 'Hmm', true).format('h:mma'),
+    hasPassed: p => moment(p.end, 'Hmm', true).isBefore(moment()),
     course (p) {
       return this.$store.getters.getCourseFromPeriod(p);
     },

@@ -4,7 +4,7 @@
       class="box"
       @submit.prevent="save"
     >
-      <h2 class="subtitle">Automatically Set Your Course Schedule</h2>
+      <h2 class="subtitle is-unselectable">Automatically Set Your Course Schedule</h2>
       <div class="columns">
         <div class="field column is-narrow">
           <label
@@ -98,8 +98,6 @@
 </template>
 
 <script>
-import API from '../../api';
-
 import Course from '@/components/profile/Course';
 
 export default {
@@ -130,7 +128,7 @@ export default {
 
       await this.$store.dispatch('UPDATE_COURSE', updatedCourse);
 
-      this.$store.commit('ADD_NOTIFICATION', {
+      this.$store.dispatch('ADD_NOTIFICATION', {
         type: 'success',
         description: 'Updated course info!'
       });
@@ -141,13 +139,13 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await API.post('/setup/courseschedule', {
+      const request = await this.$http.post('/setup/courseschedule', {
         pin: this.pin,
         crns: this.crns
       });
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.commit('ADD_NOTIFICATION', {
+      this.$store.dispatch('ADD_NOTIFICATION', {
         type: 'success',
         description: 'Got course schedule!'
       });

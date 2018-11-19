@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     pressing () {
-      return this.$store.getters.pressingAssignments(5);
+      return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
     }
   }
 };

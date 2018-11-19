@@ -2,7 +2,7 @@
   <div class="course box">
     <template v-if="!editing">
       <details>
-        <summary class="is-clearfix">{{ courseData.longname }}
+        <summary class="is-clearfix is-unselectable">{{ courseData.longname }}
           <span
             class="icon edit-course is-pulled-right"
             @click="editing = true"
@@ -12,14 +12,15 @@
           <small class="has-text-grey">{{ courseData.periods.length }} periods</small>
           <span
             class="tag is-pulled-right"
-            :style="`background-color: ${courseData.color}; color: white;`"
+            :style="{'background-color': courseData.color, 'color': 'white'}"
+            :title="'You are in Section ' + courseData.section_id"
           >Section {{ courseData.section_id }}
           </span>
         </summary>
 
         <div class="periods">
           <table class="table is-full-width">
-            <thead>
+            <thead class="is-unselectable">
               <tr>
                 <th>Day</th>
                 <th>Time</th>
@@ -115,7 +116,7 @@ export default {
         'Saturday'
       ][num],
     time: t => {
-      const dt = moment(t, 'Hmm');
+      const dt = moment(t, 'Hmm', true);
       if (dt.hours() === 12 && dt.minutes() === 0) {
         return 'noon';
       } else if (dt.minutes() === 0) {

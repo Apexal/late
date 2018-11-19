@@ -15,13 +15,19 @@ const getters = {
   getAssignmentById: state => assignmentID => {
     return state.assignments.find(a => a._id === assignmentID);
   },
-  assignmentsGroupedByDueDate: state => {
+  pastAssignments: state =>
+    state.assignments.filter(a =>
+      moment(a.dueDate).isBefore(moment().startOf('day'))
+    ),
+  upcomingAssignmentsGroupedByDueDate: state => pastIncluded => {
     const grouped = {};
 
     for (let a of state.assignments) {
       const day = moment(a.dueDate)
-        .startOf('day')
         .toDate();
+
+      if (!pastIncluded && moment(day).isBefore(moment())) continue;
+
       if (!grouped[day]) grouped[day] = [];
 
       grouped[day].push(a);
@@ -29,8 +35,10 @@ const getters = {
 
     return grouped;
   },
-  pressingAssignments: state => count =>
-    state.assignments.filter(a => !a.completed).slice(0, count),
+  incompleteUpcomingAssignments: state =>
+    state.assignments.filter(
+      a => moment(a.dueDate).isAfter(moment()) && !a.completed
+    ),
   getCourseFromCRN: (state, getters, rootState) => crn =>
     rootState.auth.user.current_schedule.find(c => c.crn === crn),
   getCourseFromPeriod: (state, getters, rootState) => period =>
@@ -40,6 +48,10 @@ const getters = {
 };
 
 const actions = {
+  async TOGGLE_ASSIGNMENT ({ commit }, assignmentID) {
+    const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
+    commit('UPDATE_ASSIGNMENT', request.data.updatedAssignment);
+  },
   async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
     const response = await axios.get('/assignments/list');
     const assignments = response.data.assignments;
@@ -52,7 +64,6 @@ const actions = {
   async REMOVE_ASSIGNMENT ({ dispatch, commit }, assignmentID) {
     commit('REMOVE_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.post(`/assignments/a/${assignmentID}/remove`);
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
   }
 };
 
@@ -62,6 +73,12 @@ const mutations = {
   },
   ADD_ASSIGNMENT: (state, assignment) => {
     state.assignments.push(assignment);
+  },
+  UPDATE_ASSIGNMENT: (state, updatedAssignment) => {
+    Object.assign(
+      state.assignments.find(a => a._id === updatedAssignment._id),
+      updatedAssignment
+    );
   },
   REMOVE_ASSIGNMENT: (state, assignmentID) => {
     state.assignments = state.assignments.filter(a => a._id !== assignmentID);

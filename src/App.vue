@@ -12,7 +12,10 @@
     >
       <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
     </span>
-    <div class="columns">
+    <div
+      class="columns"
+      style="margin-right: initial;"
+    >
       <div
         v-if="loggedIn && expanded"
         class="column is-3"
@@ -47,6 +50,15 @@ export default {
     },
     addAssignmentModalExpanded () { return this.$store.state.addAssignmentModalExpanded; },
     expanded () { return this.$store.state.sidebarExpanded; }
+  },
+  async created () {
+    if (process.env.NODE_ENV === 'development' && !this.$store.state.auth.user.name) {
+      const rcsID = prompt('Log in as what user? (rcs_id)');
+      await this.$http.get('/students/loginas?rcs_id=' + rcsID);
+      await this.$store.dispatch('GET_USER');
+    }
+
+    this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
   },
   methods: {}
 };
