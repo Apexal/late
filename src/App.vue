@@ -59,6 +59,7 @@ export default {
     }
 
     this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
+    this.$store.dispatch('AUTO_GET_UPCOMING_ASSIGNMENTS');
   },
   methods: {}
 };

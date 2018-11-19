@@ -1,15 +1,11 @@
 <template>
   <div class="assignment-overview">
     <section
-      v-if="!assignment"
+      v-if="loading"
       class="section"
     >
-      <h1 class="title">Assignment Not Found</h1>
-      <router-link
-        to="/assignments"
-        tag="button"
-        class="button is-primary"
-      >Assignment List</router-link>
+      <h1 class="title has-text-grey">Loading Assignment</h1>
+
     </section>
     <section
       v-else
@@ -54,19 +50,41 @@ export default {
   name: 'AssignmentOverview',
   data () {
     return {
+      loading: true,
+      isUpcoming: false,
+      assignment: {}
     };
   },
   computed: {
-    assignment () {
-      return this.$store.getters.getAssignmentById(
-        this.$route.params.assignmentID
-      );
-    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
     }
   },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'getAssignment'
+  },
+  created () {
+    this.getAssignment();
+  },
   methods: {
+    async getAssignment () {
+      // If its an upcoming assignment, we already have the data on it
+      if (this.$store.getters.getUpcomingAssignmentById(this.$route.params.assignmentID)) {
+        this.assignment = this.$store.getters.getUpcomingAssignmentById(this.$route.params.assignmentID);
+        this.loading = false;
+        this.isUpcoming = true;
+        return;
+      }
+
+      this.loading = true;
+      this.isUpcoming = false;
+
+      const request = await this.$http.get(`/assignments/a/${this.$route.params.assignmentID}`);
+      this.assignment = request.data.assignment;
+
+      this.loading = false;
+    },
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     async remove () {
       // Confirm user wants to remove assignment
@@ -82,7 +100,11 @@ export default {
       this.$router.push('/assignments');
 
       // This handles the API call and state update
-      await this.$store.dispatch('REMOVE_ASSIGNMENT', assignmentID);
+      if (this.isUpcoming) {
+        await this.$store.dispatch('REMOVE_UPCOMING_ASSIGNMENT', assignmentID);
+      } else {
+        await this.$http.post(`/assignments/a/${assignmentID}/remove`);
+      }
 
       // Notify user of success
       this.$store.dispatch('ADD_NOTIFICATION', {

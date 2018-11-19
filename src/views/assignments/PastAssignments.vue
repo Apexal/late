@@ -1,5 +1,68 @@
 <template>
   <div class="past-assignments">
+    <div class="columns">
+      <div class="column is-narrow">
+        <button
+          class="button"
+          :class="{ 'is-loading': loading }"
+          @click="gotoPrevious"
+        >Previous</button>
+      </div>
+      <div class="column">
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label
+              for="start"
+              class="label"
+            >Start</label>
+          </div>
+          <div class="field-body">
+            <div class="control">
+              <input
+                id="start"
+                v-model="startDate"
+                class="input"
+                type="date"
+                min="2018-09-01"
+                :max="endDate"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label
+              for="end"
+              class="label"
+            >End</label>
+          </div>
+          <div class="field-body">
+            <div class="control">
+              <input
+                id="end"
+                v-model="endDate"
+                class="input"
+                type="date"
+                min="2018-09-01"
+                :max="today"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column is-narrow">
+        <button
+          class="button"
+          :class="{ 'is-loading': loading }"
+          @click="gotoNext"
+        >Next</button>
+      </div>
+    </div>
+
     <table class="table is-full-width">
       <thead>
         <tr>
@@ -75,16 +138,53 @@ export default {
       default: () => []
     }
   },
+  data () {
+    return {
+      loading: true,
+      startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
+      endDate: moment().format('YYYY-MM-DD'),
+      currentAssignments: []
+    };
+  },
   computed: {
+    range () { return moment(this.endDate, 'YYYY-MM-DD', true).diff(moment(this.startDate, 'YYYY-MM-DD', true), 'days'); },
+    today: () => moment().format('YYYY-MM-DD'),
+    yesterday: () => moment().subtract(1, 'days').format('YYYY-MM-DD'),
     filtered () {
-      return this.pastAssignments.filter(a => {
+      return this.currentAssignments.filter(a => {
         if (!this.showCompleted && a.completed) return false;
         return !this.filter.includes(this.course(a).crn);
       });
     },
     pastAssignments () { return this.$store.getters.pastAssignments; }
   },
+  watch: {
+    startDate () { this.getAssignments(); },
+    endDate () { this.getAssignments(); }
+  },
+  created () {
+    this.getAssignments();
+  },
   methods: {
+    gotoPrevious () {
+      const range = this.range;
+      this.startDate = moment(this.startDate, 'YYYY-MM-DD', true).subtract(range, 'days').format('YYYY-MM-DD');
+      this.endDate = moment(this.endDate, 'YYYY-MM-DD', true).subtract(range, 'days').format('YYYY-MM-DD');
+    },
+    gotoNext () {
+      const range = this.range;
+      this.startDate = moment(this.startDate, 'YYYY-MM-DD', true).add(range, 'days').format('YYYY-MM-DD');
+      this.endDate = moment(this.endDate, 'YYYY-MM-DD', true).add(range, 'days').format('YYYY-MM-DD');
+    },
+    async getAssignments () {
+      this.loading = true;
+      const request = await this.$http.get('/assignments/list',
+        { params: { start: this.startDate, end: this.endDate } }
+      );
+
+      this.currentAssignments = request.data.assignments;
+      this.loading = false;
+    },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },

@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     async toggleAssignment (assignmentID) {
-      this.$store.dispatch('TOGGLE_ASSIGNMENT', assignmentID);
+      this.$store.dispatch('TOGGLE_UPCOMING_ASSIGNMENT', assignmentID);
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);

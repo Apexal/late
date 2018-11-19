@@ -96,7 +96,7 @@ async function setCourseSchedule (ctx) {
 /**
  * Set the logged in user's courses and return the updated user.
  * Request body:
- *  - courses: new current_schedules
+ *  - courses: array of objects with the same schema as current_schedule
  *
  * @param {Koa context} ctx
  */
