@@ -5,9 +5,8 @@ const state = {
 const getters = {};
 
 const actions = {
-  async ADD_NOTIFICATION ({ state, commit }, notification) {
+  async ADD_NOTIFICATION ({ commit }, notification) {
     commit('ADD_NOTIFICATION', notification);
-
     setTimeout(() => commit('REMOVE_NOTIFICATION', notification), 1000 * 8);
   }
 };

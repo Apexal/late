@@ -5,7 +5,6 @@
       class="section"
     >
       <h1 class="title has-text-grey">Loading Assignment</h1>
-
     </section>
     <section
       v-else

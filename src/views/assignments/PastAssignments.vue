@@ -1,12 +1,17 @@
 <template>
   <div class="past-assignments">
+    <h2 class="subtitle">Week of {{ weekOf }}</h2>
     <div class="columns">
       <div class="column is-narrow">
         <button
           class="button"
           :class="{ 'is-loading': loading }"
-          @click="gotoPrevious"
-        >Previous</button>
+          @click="shiftDates(-7)"
+        >
+          <span class="icon">
+            <i class="fas fa-chevron-left" />
+          </span>
+        </button>
       </div>
       <div class="column">
         <div class="field is-horizontal">
@@ -20,17 +25,27 @@
             <div class="control">
               <input
                 id="start"
-                v-model="startDate"
+                :value="startDate"
                 class="input"
                 type="date"
                 min="2018-09-01"
                 :max="endDate"
+                disabled
               >
             </div>
           </div>
         </div>
       </div>
-
+      <div class="column is-narrow">
+        <div class="buttons">
+          <button
+            class="button is-primary"
+            :disabled="isLastWeek"
+            @click="gotoLastWeek"
+          >Last Week</button>
+          <button class="button is-link">Goto Week</button>
+        </div>
+      </div>
       <div class="column">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
@@ -43,11 +58,12 @@
             <div class="control">
               <input
                 id="end"
-                v-model="endDate"
+                :value="endDate"
                 class="input"
                 type="date"
                 min="2018-09-01"
                 :max="today"
+                disabled
               >
             </div>
           </div>
@@ -58,8 +74,12 @@
         <button
           class="button"
           :class="{ 'is-loading': loading }"
-          @click="gotoNext"
-        >Next</button>
+          @click="shiftDates(7)"
+        >
+          <span class="icon">
+            <i class="fas fa-chevron-right" />
+          </span>
+        </button>
       </div>
     </div>
 
@@ -141,13 +161,17 @@ export default {
   data () {
     return {
       loading: true,
-      startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
-      endDate: moment().format('YYYY-MM-DD'),
+      startDate: this.$route.query.start || moment().subtract(7, 'days').format('YYYY-MM-DD'),
+      endDate: this.$route.query.end || moment().format('YYYY-MM-DD'),
       currentAssignments: []
     };
   },
   computed: {
-    range () { return moment(this.endDate, 'YYYY-MM-DD', true).diff(moment(this.startDate, 'YYYY-MM-DD', true), 'days'); },
+    startMoment () { return moment(this.startDate, 'YYYY-MM-DD', true); },
+    endMoment () { return moment(this.endDate, 'YYYY-MM-DD', true); },
+    isLastWeek () { return this.endMoment.isSame(moment(), 'day'); },
+    weekOf () { return this.startMoment.format('dddd, MMMM Do YYYY'); },
+    range () { return this.endMoment.diff(moment(this.startDate, 'YYYY-MM-DD', true), 'days'); },
     today: () => moment().format('YYYY-MM-DD'),
     yesterday: () => moment().subtract(1, 'days').format('YYYY-MM-DD'),
     filtered () {
@@ -158,29 +182,25 @@ export default {
     },
     pastAssignments () { return this.$store.getters.pastAssignments; }
   },
-  watch: {
-    startDate () { this.getAssignments(); },
-    endDate () { this.getAssignments(); }
-  },
   created () {
     this.getAssignments();
   },
   methods: {
-    gotoPrevious () {
-      const range = this.range;
-      this.startDate = moment(this.startDate, 'YYYY-MM-DD', true).subtract(range, 'days').format('YYYY-MM-DD');
-      this.endDate = moment(this.endDate, 'YYYY-MM-DD', true).subtract(range, 'days').format('YYYY-MM-DD');
+    gotoLastWeek () {
+      this.endDate = this.today;
+      this.startDate = moment().subtract('1', 'week').format('YYYY-MM-DD');
+
+      this.getAssignments();
     },
-    gotoNext () {
-      const range = this.range;
-      this.startDate = moment(this.startDate, 'YYYY-MM-DD', true).add(range, 'days').format('YYYY-MM-DD');
-      this.endDate = moment(this.endDate, 'YYYY-MM-DD', true).add(range, 'days').format('YYYY-MM-DD');
+    shiftDates (amount) {
+      this.startDate = moment(this.startDate, 'YYYY-MM-DD', true).add(amount, 'days').format('YYYY-MM-DD');
+      this.endDate = moment(this.endDate, 'YYYY-MM-DD', true).add(amount, 'days').format('YYYY-MM-DD');
+
+      this.getAssignments();
     },
     async getAssignments () {
       this.loading = true;
-      const request = await this.$http.get('/assignments/list',
-        { params: { start: this.startDate, end: this.endDate } }
-      );
+      const request = await this.$http.get('/assignments/list', { params: { start: this.startDate, end: this.endDate } });
 
       this.currentAssignments = request.data.assignments;
       this.loading = false;
