@@ -103,7 +103,7 @@
           :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
           :style="{ color: isHighlighted(course(a)) ? 'white !important' : '', 'background-color': isHighlighted(course(a)) ? course(a).color : '' }"
         >
-          <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }}</td>
+          <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }} <span class="has-text-grey">{{ toTimeString(a.dueDate) }}</span></td>
           <td class="is-hidden-mobile">
             <span
               class="dot"
@@ -215,7 +215,8 @@ export default {
     },
     isHighlighted (c) { return this.highlighted.includes(c.crn); },
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
-    toDateShorterString (dueDate) { return moment(dueDate).format('MM/DD/YY'); }
+    toDateShorterString: dueDate => moment(dueDate).format('MM/DD/YY'),
+    toTimeString: time => moment(time).format('h:mm a')
   }
 };
 </script>

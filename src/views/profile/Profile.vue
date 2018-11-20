@@ -2,33 +2,37 @@
   <div id="profile">
     <section class="section">
       <h1 class="title">Your Profile</h1>
-      <nav
-        class="breadcrumb"
-        aria-label="breadcrumbs"
+
+
+      <div
+        class="steps"
       >
-        <ul>
-          <router-link
-            v-for="s in setups"
-            :key="s.component"
-            :to="{ path: s.link }"
-            tag="li"
-          >
-            <a>
-              {{ s.label }}
-              <span class="icon">
-                <i
-                  v-if="user.setup[s.setup_check]"
-                  class="fas fa-check"
-                />
-                <i
-                  v-else
-                  class="fas fa-times"
-                />
-              </span>
-            </a>
-          </router-link>
-        </ul>
-      </nav>
+        <router-link
+          v-for="s in setups"
+          :key="s.component"
+          :to="{ path: s.link }"
+          tag="div"
+          class="step-item"
+          :class="{ 'is-completed': user.setup[s.setup_check] }"
+        >
+          <div class="step-marker">
+            <span class="icon">
+              <i
+                v-if="user.setup[s.setup_check]"
+                class="fas fa-check"
+              />
+              <i
+                v-else
+                class="fas fa-times"
+              />
+            </span>
+          </div>
+
+          <div class="step-details">
+            <p class="step-title">{{ s.label }}</p>
+          </div>
+        </router-link>
+      </div>
       <KeepAlive>
         <router-view />
       </KeepAlive>
@@ -37,6 +41,8 @@
 </template>
 
 <script>
+import 'bulma-steps';
+
 export default {
   name: 'Profile',
   data () {

@@ -36,7 +36,7 @@ export default {
   name: 'About',
   data () {
     return {
-      contributors: ['Frank Matranga', 'Christie Nero', 'Abigail Medina', 'Bowen Wang', 'Ziyi Wang', 'Seth Laurenceau', 'Zach Love', 'Kikiola Sanusi', 'Tyler Machado', 'Shweta Burgula']
+      contributors: ['Frank Matranga', 'Christie Nero', 'Abigail Medina', 'Bowen Wang', 'Ziyi Wang', 'Seth Laurenceau', 'Zach Love', 'Kikiola Sanusi', 'Tyler Machado']
     };
   }
 };
