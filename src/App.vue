@@ -35,8 +35,8 @@
 </template>
 <script>
 import Header from '@/components/Header';
-import Sidebar from '@/components/Sidebar';
 import Footer from '@/components/Footer';
+import Sidebar from '@/components/sidebar/Sidebar';
 import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
 
 import Notifications from '@/components/Notifications';

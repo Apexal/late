@@ -12,6 +12,12 @@
       </span>
     </summary>
     <div
+      v-if="pressing.length == 0"
+      class="panel-block has-text-grey"
+    >
+      <span>No pressing assignments!</span>
+    </div>
+    <div
       v-for="a in pressing"
       :key="a._id"
       class="assignment panel-block"
