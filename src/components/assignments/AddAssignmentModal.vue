@@ -233,7 +233,7 @@ export default {
 
       // Calls API and updates state
       await this.$store.dispatch(
-        'ADD_ASSIGNMENT',
+        'ADD_UPCOMING_ASSIGNMENT',
         request.data.createdAssignment
       );
 
