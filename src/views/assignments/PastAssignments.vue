@@ -43,7 +43,10 @@
             :disabled="isLastWeek"
             @click="gotoLastWeek"
           >Last Week</button>
-          <button class="button is-link">Goto Week</button>
+          <button
+            class="button is-link"
+            onclick="alert('Somebody implement me!')"
+          >Goto Week</button>
         </div>
       </div>
       <div class="column">
@@ -74,6 +77,7 @@
         <button
           class="button"
           :class="{ 'is-loading': loading }"
+          :disabled="!canGoForward"
           @click="shiftDates(7)"
         >
           <span class="icon">
@@ -167,6 +171,7 @@ export default {
     };
   },
   computed: {
+    canGoForward () { return this.endMoment.isBefore(moment().startOf('day')); },
     startMoment () { return moment(this.startDate, 'YYYY-MM-DD', true); },
     endMoment () { return moment(this.endDate, 'YYYY-MM-DD', true); },
     isLastWeek () { return this.endMoment.isSame(moment(), 'day'); },
