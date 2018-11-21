@@ -13,6 +13,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
+      alias: '/dashboard',
       name: 'home',
       component: Home
     },
@@ -23,15 +24,6 @@ const router = new Router({
         title: 'About'
       },
       component: () => import('@/views/About.vue')
-    },
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('@/views/Dashboard.vue'),
-      meta: {
-        title: 'Dashboard',
-        requiresAuth: true
-      }
     },
     {
       path: '/assignments',

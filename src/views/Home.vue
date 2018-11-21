@@ -1,6 +1,10 @@
 <template>
   <div class="home">
-    <section class="section">
+    <Dashboard v-if="loggedIn" />
+    <section
+      v-else
+      class="section"
+    >
       <h2 class="title">Welcome to LATE</h2><img
         id="late-image"
         class="image is-pulled-right"
@@ -17,8 +21,14 @@
 </template>
 
 <script>
+import Dashboard from '@/views/Dashboard';
+
 export default {
-  name: 'Home'
+  name: 'Home',
+  components: { Dashboard },
+  computed: {
+    loggedIn () { return this.$store.state.auth.isAuthenticated; }
+  }
 };
 </script>
 
