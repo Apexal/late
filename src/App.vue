@@ -27,7 +27,9 @@
         style="flex: 1;"
       >
         <Notifications />
-        <router-view />
+        <transition name="fade">
+          <router-view />
+        </transition>
       </div>
     </div>
     <Footer />
@@ -85,5 +87,31 @@ export default {
   cursor: pointer;
   background-color: green;
   display: inline-block;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+.child-view {
+  position: absolute;
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  -webkit-transform: translate(30px, 0);
+  transform: translate(30px, 0);
+}
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  -webkit-transform: translate(-30px, 0);
+  transform: translate(-30px, 0);
 }
 </style>

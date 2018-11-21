@@ -33,9 +33,11 @@
           </div>
         </router-link>
       </div>
-      <KeepAlive>
-        <router-view />
-      </KeepAlive>
+      <keep-alive>
+        <transition name="slide-left">
+          <router-view class="child-view" />
+        </transition>
+      </keep-alive>
     </section>
   </div>
 </template>

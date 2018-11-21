@@ -150,7 +150,9 @@
         {
           "ignores": [
             "router-view",
-            "router-link"
+            "router-link",
+            "transition",
+            "keep-alive"
           ]
         }
       ],

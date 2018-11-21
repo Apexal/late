@@ -48,13 +48,15 @@
       </div>
     </div>
     <hr>
-
-    <router-view
-      :highlighted="highlighted"
-      :show-completed="showCompleted"
-      :filter="filter"
-      @toggle-assignment="toggleAssignment"
-    />
+    <transition name="slide-left">
+      <router-view
+        class="child-view"
+        :highlighted="highlighted"
+        :show-completed="showCompleted"
+        :filter="filter"
+        @toggle-assignment="toggleAssignment"
+      />
+    </transition>
   </section>
 
 </template>
