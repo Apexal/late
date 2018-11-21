@@ -34,7 +34,10 @@
         </router-link>
       </div>
       <keep-alive>
-        <transition name="slide-left">
+        <transition
+          name="slide-left"
+          mode="out-in"
+        >
           <router-view class="child-view" />
         </transition>
       </keep-alive>

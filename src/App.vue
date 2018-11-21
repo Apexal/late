@@ -27,7 +27,10 @@
         style="flex: 1;"
       >
         <Notifications />
-        <transition name="fade">
+        <transition
+          name="component-fade"
+          mode="out-in"
+        >
           <router-view />
         </transition>
       </div>
@@ -89,17 +92,18 @@ export default {
   display: inline-block;
 }
 
-.fade-enter-active,
-.fade-leave-active {
+/* TRANSITIONS */
+.component-fade-enter-active,
+.component-fade-leave-active {
   transition: opacity 0.3s ease;
 }
-.fade-enter,
-.fade-leave-active {
+.component-fade-enter, .component-fade-leave-to
+/* .component-fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
 
 .child-view {
-  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
 }
 .slide-left-enter,
 .slide-right-leave-active {

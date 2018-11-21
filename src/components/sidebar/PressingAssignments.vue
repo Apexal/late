@@ -17,38 +17,44 @@
     >
       <span>No pressing assignments!</span>
     </div>
-    <div
-      v-for="a in pressing"
-      :key="a._id"
-      class="assignment panel-block"
+    <transition-group
+      name="list"
+      mode="out-in"
+      tag="div"
     >
-      <span class="is-full-width">
-        <span
-          class="dot course-dot"
-          :title="course(a).longname"
-          :style="'background-color: ' + course(a).color"
-        />
-        <router-link
-          class="assignment-link"
-          :title="a.description.substring(0, 500)"
-          :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
-        >
-          <b
-            class="course-title is-hidden-tablet"
-          >{{ course(a).longname }}</b>
+      <div
+        v-for="a in pressing"
+        :key="a._id"
+        class="assignment panel-block"
+      >
+        <span class="is-full-width">
+          <span
+            class="dot course-dot"
+            :title="course(a).longname"
+            :style="'background-color: ' + course(a).color"
+          />
+          <router-link
+            class="assignment-link"
+            :title="a.description.substring(0, 500)"
+            :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+          >
+            <b
+              class="course-title is-hidden-tablet"
+            >{{ course(a).longname }}</b>
 
-          {{ a.title }}</router-link>
-        <span
-          v-if="a.priority >= 7"
-          class="tag priority-tag is-danger"
-          title="You marked this assignment as high priority!"
-        >!</span>
-        <small
-          class="is-pulled-right"
-          :title="toFullDateTimeString(a.dueDate)"
-        >{{ fromNow(a.dueDate) }}</small>
-      </span>
-    </div>
+            {{ a.title }}</router-link>
+          <span
+            v-if="a.priority >= 7"
+            class="tag priority-tag is-danger"
+            title="You marked this assignment as high priority!"
+          >!</span>
+          <small
+            class="is-pulled-right"
+            :title="toFullDateTimeString(a.dueDate)"
+          >{{ fromNow(a.dueDate) }}</small>
+        </span>
+      </div>
+    </transition-group>
     <div class="panel-block">
       <router-link
         tag="button"
@@ -87,6 +93,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s;
+}
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  //transform: translateY(30px);
+}
+
 .assignment {
   cursor: pointer;
   .priority-tag {

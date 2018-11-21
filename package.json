@@ -152,6 +152,7 @@
             "router-view",
             "router-link",
             "transition",
+            "transition-group",
             "keep-alive"
           ]
         }

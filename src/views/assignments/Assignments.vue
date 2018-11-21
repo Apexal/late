@@ -48,7 +48,10 @@
       </div>
     </div>
     <hr>
-    <transition name="slide-left">
+    <transition
+      name="slide-left"
+      mode="out-in"
+    >
       <router-view
         class="child-view"
         :highlighted="highlighted"
