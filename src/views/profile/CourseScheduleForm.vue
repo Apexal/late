@@ -141,10 +141,19 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await this.$http.post('/setup/courseschedule', {
-        pin: this.pin,
-        crns: this.crns
-      });
+      let request;
+      try {
+        request = await this.$http.post('/setup/courseschedule', {
+          pin: this.pin,
+          crns: this.crns
+        });
+      } catch (e) {
+        this.loading = false;
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
       this.$store.dispatch('ADD_NOTIFICATION', {

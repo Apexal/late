@@ -205,7 +205,18 @@ export default {
     },
     async getAssignments () {
       this.loading = true;
-      const request = await this.$http.get('/assignments/list', { params: { start: this.startDate, end: this.endDate } });
+      let request;
+
+      try {
+        request = await this.$http.get('/assignments/list', { params: { start: this.startDate, end: this.endDate } });
+      } catch (e) {
+        this.loading = false;
+        this.currentAssignments = [];
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
 
       this.currentAssignments = request.data.assignments;
       this.loading = false;

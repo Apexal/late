@@ -30,16 +30,14 @@ async function setPersonalInfo (ctx) {
     await ctx.state.user.save();
 
     logger.info(`Saved personal info for ${ctx.state.user.rcs_id}`);
-    ctx.ok({
+    return ctx.ok({
       updatedUser: ctx.state.user
     });
   } catch (err) {
     logger.error(
       `Failed to save personal info for ${ctx.state.user.rcs_id}: ${err}`
     );
-    ctx.badRequest({
-      err
-    });
+    return ctx.badRequest('Failed to save personal info.');
   }
 }
 

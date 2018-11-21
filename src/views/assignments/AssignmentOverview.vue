@@ -79,7 +79,18 @@ export default {
       this.loading = true;
       this.isUpcoming = false;
 
-      const request = await this.$http.get(`/assignments/a/${this.$route.params.assignmentID}`);
+      let request;
+      try {
+        request = await this.$http.get(`/assignments/a/${this.$route.params.assignmentID}`);
+      } catch (e) {
+        this.loading = false;
+        this.$router.push('/assignments');
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
+
       this.assignment = request.data.assignment;
 
       this.loading = false;
