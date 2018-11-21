@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Dashboard v-if="loggedIn" />
+    <Dashboard v-if="!loggedIn" />
     <section
       v-else
       class="section"
@@ -12,9 +12,20 @@
       >
       <div class="content">
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus cursus metus at enim bibendum, vel auctor ligula porttitor. Vivamus sollicitudin eget velit ac luctus. Nullam et porttitor lacus. Integer id metus tempor, sagittis sem vitae, dapibus nibh. Vestibulum vitae metus neque. Fusce vitae consectetur risus. Praesent tempus libero et finibus sodales. Aliquam luctus tellus vel sapien varius, ut malesuada orci tempor. Sed mollis sit amet ante eget vehicula. In blandit sem aliquam, maximus nisi vel, cursus justo. Duis euismod convallis magna, ut tempor nulla blandit ut. Aliquam eros enim, accumsan ut varius finibus, dignissim scelerisque sapien.
+          <b>LATE</b> is an automatic time scheduler that, given your assignments with rough time estimates, and your calendar will:
+          <ul>
+            <li>automatically allocate study/work time throughout your schedule</li>
+            <li>allow you to adjust the personal schedule made for you each week</li>
+            <li>readjust itself and your calendar if you fall off track</li>
+            <li><span class="has-text-grey">(optionally)</span>keep you updated on your work and progress with weekly progress emails</li>
+            <li><span class="has-text-grey">(optionally)</span> interact with you through text messages to remind you to study/work at the proper times</li>
+            <li><span class="has-text-grey">(optionally)</span> interact with you through a variety of integrations including Discord and Slack</li>
+          </ul>
         </p>
-        <p>Aliquam id malesuada risus. Nullam nec eros a magna placerat porta. Donec vestibulum gravida elit ut suscipit. Ut ut libero a tellus elementum cursus et vitae est. Mauris massa mauris, sollicitudin sed turpis eget, laoreet posuere justo. Nam ut arcu at ipsum molestie dictum quis sed est. Aenean tincidunt lacinia elit vitae mattis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris a ex et turpis mattis imperdiet a aliquam elit.</p>
+        <p>
+          <b>LATE</b> is a free, open-source project made by RPI students for RPI students only. It integrates with YACS and SIS to be much more than a
+          personal scheduling assistant.
+        </p>
       </div>
     </section>
   </div>
