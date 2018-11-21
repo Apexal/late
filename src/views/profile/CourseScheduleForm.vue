@@ -69,13 +69,12 @@
             </div>
           </div>
         </div>
-
       </div>
 
       <button
         class="button is-primary"
         :class="{'is-loading': loading}"
-        :disabled="saved"
+        :disabled="!canReset"
       >{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
     </form>
 
@@ -115,6 +114,9 @@ export default {
     };
   },
   computed: {
+    canReset () {
+      return !(this.pin.length === 0 && this.crns.length === 0);
+    },
     user () {
       return this.$store.state.auth.user;
     },

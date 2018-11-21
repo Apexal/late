@@ -132,6 +132,9 @@ export default {
       this.editing = false;
     },
     async save () {
+      if (this.courseData.title.length === 0 || this.courseData.section_id.length === 0) {
+        return;
+      }
       this.$emit('update-course', this.courseData);
       this.editing = false;
     }

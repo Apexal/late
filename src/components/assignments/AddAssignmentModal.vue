@@ -52,7 +52,7 @@
                 <div class="control">
                   <input
                     id="title"
-                    v-model="title"
+                    v-model.trim="title"
                     name="title"
                     type="text"
                     class="input"
@@ -73,7 +73,7 @@
                 <div class="control">
                   <textarea
                     id="description"
-                    v-model="description"
+                    v-model.trim="description"
                     name="description"
                     cols="30"
                     rows="10"
