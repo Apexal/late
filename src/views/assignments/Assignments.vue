@@ -76,7 +76,14 @@ export default {
   },
   methods: {
     async toggleAssignment (assignmentID) {
-      this.$store.dispatch('TOGGLE_UPCOMING_ASSIGNMENT', assignmentID);
+      try {
+        await this.$store.dispatch('TOGGLE_UPCOMING_ASSIGNMENT', assignmentID);
+      } catch (e) {
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);

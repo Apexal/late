@@ -153,7 +153,7 @@ export default {
 
   .assignment-progress {
     border-radius: 0;
-    margin-top: 5px;
+    margin-top: 10px;
   }
 
   .completion-check {
