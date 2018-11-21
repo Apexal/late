@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Dashboard v-if="!loggedIn" />
+    <Dashboard v-if="loggedIn" />
     <section
       v-else
       class="section"
