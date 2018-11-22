@@ -1,6 +1,7 @@
 <template>
   <div class="assignment-overview">
     <EditAssignmentModal
+      v-if="!isPast"
       :open="editing"
       :initial-assignment="assignment"
       @toggle-modal="editing = !editing"
@@ -54,6 +55,7 @@
           All Assignments
         </router-link>
         <button
+          v-if="!isPast"
           class="button is-warning"
           @click="editing = !editing"
         >
@@ -97,6 +99,9 @@ export default {
   computed: {
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+    },
+    isPast () {
+      return moment().isAfter(moment(this.assignment.dueDate));
     }
   },
   watch: {
