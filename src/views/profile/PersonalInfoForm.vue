@@ -102,7 +102,7 @@
           </div>
         </div>
       </div>
-
+      <hr>
       <button
         class="button is-primary"
         :class="{'is-loading': loading}"

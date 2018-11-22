@@ -31,24 +31,32 @@
         </blockquote>
       </div>
       <hr>
-      <router-link
-        to="/assignments"
-        class="button is-link"
-      >
-        <span class="icon">
-          <i class="fas fa-angle-left margin-right" />
-        </span>
-        All Assignments
-      </router-link>
-      <button
-        class="button is-danger"
-        @click="remove"
-      >
-        Remove
-        <span class="icon is-small margin-left">
-          <i class="fas fa-times" />
-        </span>
-      </button>
+      <div class="buttons">
+        <router-link
+          to="/assignments"
+          class="button is-link"
+        >
+          <span class="icon">
+            <i class="fas fa-angle-left margin-right" />
+          </span>
+          All Assignments
+        </router-link>
+        <button class="button is-warning">
+          Edit
+          <span class="icon margin-left">
+            <i class="fas fa-pencil-alt" />
+          </span>
+        </button>
+        <button
+          class="button is-danger"
+          @click="remove"
+        >
+          Remove
+          <span class="icon is-small margin-left">
+            <i class="fas fa-times" />
+          </span>
+        </button>
+      </div>
     </section>
   </div>
 </template>
@@ -144,9 +152,5 @@ export default {
 
 .margin-left {
   margin-left: 2px !important;
-}
-
-.dot.course-dot {
-  margin-right: 5px;
 }
 </style>
