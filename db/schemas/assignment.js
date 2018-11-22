@@ -22,7 +22,7 @@ const schema = new Schema({
       ref: 'Block'
     }
   ]
-});
+}, { timestamps: true });
 
 module.exports = {
   name: 'Assignment',
