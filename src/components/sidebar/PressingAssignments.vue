@@ -19,7 +19,6 @@
     </div>
     <transition-group
       name="list"
-      mode="out-in"
       tag="div"
     >
       <div

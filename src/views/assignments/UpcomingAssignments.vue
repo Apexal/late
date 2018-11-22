@@ -1,8 +1,11 @@
 <template>
   <div class="upcoming-assignments">
-    <div
+    <transition-group
+      name="fade"
+      tag="div"
       class="columns is-multiline"
     >
+
       <div
         v-for="(assignments, date) in filtered"
         :key="date"
@@ -32,50 +35,52 @@
               max="100"
             >{{ percentDone(date) }}%</progress>
           </p>
-
-          <div
-            v-for="a in assignments"
-            :key="a._id"
-            :style="{ color: isHighlighted(course(a)) ? 'white !important' : '', 'background-color': isHighlighted(course(a)) ? course(a).color : '' }"
-            class="panel-block assignment"
-            :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
-          >
-            <span class="is-full-width">
-              <span
-                class="icon toggle-assignment"
-                @click="$emit('toggle-assignment', a._id)"
-              >
+          <transition-group name="slide-left">
+            <div
+              v-for="a in assignments"
+              :key="a._id"
+              :style="{ color: isHighlighted(course(a)) ? 'white !important' : '', 'background-color': isHighlighted(course(a)) ? course(a).color : '' }"
+              class="panel-block assignment"
+              :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
+            >
+              <span class="is-full-width">
                 <span
-                  :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
-                  :title="course(a).longname"
-                  :style="{ 'color': course(a).color }"
-                />
-              </span>
-              <router-link
-                class="assignment-link "
-                :title="a.description.substring(0, 500)"
-                :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
-              >
-                <b
-                  class="course-title is-hidden-tablet"
-                >{{ course(a).longname }}</b>
+                  class="icon toggle-assignment"
+                  @click="$emit('toggle-assignment', a._id)"
+                >
+                  <span
+                    :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
+                    :title="course(a).longname"
+                    :style="{ 'color': course(a).color }"
+                  />
+                </span>
+                <router-link
+                  class="assignment-link "
+                  :title="a.description.substring(0, 500)"
+                  :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+                >
+                  <b
+                    class="course-title is-hidden-tablet"
+                  >{{ course(a).longname }}</b>
 
-                {{ a.title }}</router-link>
-              <span
-                v-if="a.priority >= 7"
-                class="tag is-danger"
-                title="You marked this assignment as high priority!"
-              >!</span>
-              <small
-                :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
-                class="is-pulled-right"
-                :class="{ 'has-text-grey': !isHighlighted(course(a)) }"
-              >{{ toTimeString(a.dueDate) }}</small>
-            </span>
-          </div>
+                  {{ a.title }}</router-link>
+                <span
+                  v-if="a.priority >= 7"
+                  class="tag is-danger"
+                  title="You marked this assignment as high priority!"
+                >!</span>
+                <small
+                  :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
+                  class="is-pulled-right"
+                  :class="{ 'has-text-grey': !isHighlighted(course(a)) }"
+                >{{ toTimeString(a.dueDate) }}</small>
+              </span>
+            </div>
+          </transition-group>
         </div>
       </div>
-    </div>
+    </transition-group>
+
   </div>
 </template>
 
@@ -171,6 +176,8 @@ export default {
 }
 
 .assignment {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+
   .assignment-link {
     color: inherit;
   }
