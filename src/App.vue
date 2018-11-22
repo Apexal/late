@@ -8,6 +8,7 @@
     <span
       v-if="loggedIn"
       class="icon button is-black toggle-sidebar"
+      title="Toggle sidebar."
       @click="$store.commit('TOGGLE_SIDEBAR')"
     >
       <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
@@ -16,12 +17,14 @@
       class="columns"
       style="margin-right: initial;"
     >
-      <div
-        v-if="loggedIn && expanded"
-        class="column is-3"
-      >
-        <Sidebar />
-      </div>
+      <transition name="fade">
+        <div
+          v-if="loggedIn && expanded"
+          class="column is-3 child-view"
+        >
+          <Sidebar />
+        </div>
+      </transition>
       <div
         :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
@@ -79,7 +82,7 @@ export default {
 }
 
 .toggle-sidebar {
-  z-index: 99;
+  z-index: 10;
   position: absolute;
 }
 
