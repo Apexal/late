@@ -67,4 +67,4 @@ package-lock.json
 .vscode
 
 config/
-client/public/css/
+client/

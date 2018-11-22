@@ -148,8 +148,9 @@ async function editAssignment (ctx) {
 
   const allowedProperties = [
     'title',
-    'dueDate',
     'description',
+    'dueDate',
+    'courseCRN',
     'timeEstimate',
     'priority'
   ];

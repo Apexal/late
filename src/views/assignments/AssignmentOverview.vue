@@ -1,5 +1,11 @@
 <template>
   <div class="assignment-overview">
+    <EditAssignmentModal
+      :open="editing"
+      :initial-assignment="assignment"
+      @toggle-modal="editing = !editing"
+      @edit-assignment="editedAssignment"
+    />
     <section
       v-if="loading"
       class="section"
@@ -47,7 +53,10 @@
           </span>
           All Assignments
         </router-link>
-        <button class="button is-warning">
+        <button
+          class="button is-warning"
+          @click="editing = !editing"
+        >
           Edit
           <span class="icon margin-left">
             <i class="fas fa-pencil-alt" />
@@ -71,16 +80,20 @@
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 
+import EditAssignmentModal from '@/components/assignments/EditAssignmentModal';
+
 export default {
   name: 'AssignmentOverview',
-  components: { VueMarkdown },
+  components: { VueMarkdown, EditAssignmentModal },
   data () {
     return {
       loading: true,
       isUpcoming: false,
-      assignment: {}
+      assignment: {},
+      editing: false
     };
   },
+
   computed: {
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
@@ -93,6 +106,9 @@ export default {
     this.getAssignment();
   },
   methods: {
+    editedAssignment (newAssignment) {
+      this.assignment = newAssignment;
+    },
     async getAssignment () {
       // If its an upcoming assignment, we already have the data on it
       if (this.$store.getters.getUpcomingAssignmentById(this.$route.params.assignmentID)) {
