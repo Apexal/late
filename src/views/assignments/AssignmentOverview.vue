@@ -26,7 +26,8 @@
       <h1 class="title">{{ assignment.title }}</h1>
       <div class="content">
         <blockquote>
-          <p>{{ assignment.description }}</p>
+          <p v-if="assignment.description.length > 0">{{ assignment.description }}</p>
+          <i v-else>No description given.</i>
         </blockquote>
       </div>
       <hr>
@@ -43,7 +44,11 @@
         class="button is-danger"
         @click="remove"
       >
-        Remove</button>
+        Remove
+        <span class="icon is-small margin-left">
+          <i class="fas fa-times" />
+        </span>
+      </button>
     </section>
   </div>
 </template>
@@ -66,7 +71,6 @@ export default {
     }
   },
   watch: {
-    // call again the method if the route changes
     '$route': 'getAssignment'
   },
   created () {
@@ -136,6 +140,10 @@ export default {
 <style lang="scss" scoped>
 .margin-right {
   margin-right: 5px;
+}
+
+.margin-left {
+  margin-left: 2px !important;
 }
 
 .dot.course-dot {
