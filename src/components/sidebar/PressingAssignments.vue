@@ -109,6 +109,10 @@ export default {
   .assignment-link {
     color: inherit;
   }
+
+  .course-title {
+    margin-left: 5px;
+  }
 }
 
 .add-assignment {
