@@ -4,7 +4,7 @@
       v-if="loading"
       class="section"
     >
-      <h1 class="title has-text-grey">Loading Assignment</h1>
+      <h1 class="title has-text-grey">Loading Assignment...</h1>
     </section>
     <section
       v-else
@@ -14,9 +14,15 @@
         class="is-pulled-right has-text-grey"
         :title="toFullDateTimeString(assignment.dueDate)"
       >
-        {{ fromNow(assignment.dueDate) }}
+        due {{ fromNow(assignment.dueDate) }}
       </span>
-      <h2 class="subtitle">{{ course.longname }}</h2>
+      <h2 class="subtitle">
+        <span
+          class="dot course-dot"
+          :title="course.longname"
+          :style="'background-color: ' + course.color"
+        />
+        {{ course.longname }} Assignment</h2>
       <h1 class="title">{{ assignment.title }}</h1>
       <div class="content">
         <blockquote>
@@ -29,7 +35,7 @@
         class="button is-link"
       >
         <span class="icon">
-          <i class="fas fa-angle-left" />
+          <i class="fas fa-angle-left margin-right" />
         </span>
         All Assignments
       </router-link>
@@ -128,4 +134,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.margin-right {
+  margin-right: 5px;
+}
+
+.dot.course-dot {
+  margin-right: 5px;
+}
 </style>
