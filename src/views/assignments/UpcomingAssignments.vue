@@ -13,18 +13,21 @@
             class="panel-heading is-unselectable date-heading"
             :title="daysAway(date) + ' days away'"
           >
-            <span
-              v-if="percentDone(date) === 100"
-              title="All your assignments are done for this day!"
-              class="icon is-pulled-right completion-check has-text-grey"
-            >
-              <i class="fas fa-check" />
-            </span>
+            <transition name="fade">
+              <span
+                v-if="percentDone(date) === 100"
+                title="All your assignments are done for this day!"
+                class="icon is-pulled-right completion-check has-text-success"
+              >
+                <i class="fas fa-check-circle" />
+              </span>
+            </transition>
             <span class="date">{{ toDateShortString(date) }}</span>
 
             <progress
               :title="percentDone(date) + '% completed'"
               class="progress is-small is-full-width assignment-progress"
+              :class="progressClass(date)"
               :value="percentDone(date)"
               max="100"
             >{{ percentDone(date) }}%</progress>
@@ -119,6 +122,12 @@ export default {
     percentDone (date) {
       const assignments = this.upcomingAssignmentsGroupedByDueDate[date];
       return Math.round((assignments.filter(a => a.completed).length / assignments.length) * 100);
+    },
+    progressClass (date) {
+      const percentDone = this.percentDone(date);
+      if (percentDone === 100) return 'is-success';
+      if (percentDone > 50) return 'is-warning';
+      return 'is-danger';
     },
     isHighlighted (c) { return this.highlighted.includes(c.crn); },
     toDateShortString (dueDate) {
