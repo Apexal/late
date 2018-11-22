@@ -8,6 +8,7 @@
     <span
       v-if="loggedIn"
       class="icon button is-black toggle-sidebar"
+      title="Toggle sidebar."
       @click="$store.commit('TOGGLE_SIDEBAR')"
     >
       <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
@@ -16,18 +17,25 @@
       class="columns"
       style="margin-right: initial;"
     >
-      <div
-        v-if="loggedIn && expanded"
-        class="column is-3"
-      >
-        <Sidebar />
-      </div>
+      <transition name="fade">
+        <div
+          v-if="loggedIn && expanded"
+          class="column is-3 child-view"
+        >
+          <Sidebar />
+        </div>
+      </transition>
       <div
         :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
       >
         <Notifications />
-        <router-view />
+        <transition
+          name="fade"
+          mode="out-in"
+        >
+          <router-view />
+        </transition>
       </div>
     </div>
     <Footer />
@@ -35,8 +43,8 @@
 </template>
 <script>
 import Header from '@/components/Header';
-import Sidebar from '@/components/Sidebar';
 import Footer from '@/components/Footer';
+import Sidebar from '@/components/sidebar/Sidebar';
 import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
 
 import Notifications from '@/components/Notifications';
@@ -59,6 +67,7 @@ export default {
     }
 
     this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
+    this.$store.dispatch('AUTO_GET_UPCOMING_ASSIGNMENTS');
   },
   methods: {}
 };
@@ -73,7 +82,7 @@ export default {
 }
 
 .toggle-sidebar {
-  z-index: 99;
+  z-index: 10;
   position: absolute;
 }
 
@@ -84,5 +93,31 @@ export default {
   cursor: pointer;
   background-color: green;
   display: inline-block;
+}
+
+/* TRANSITIONS */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.child-view {
+  transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  -webkit-transform: translate(30px, 0);
+  transform: translate(30px, 0);
+}
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  -webkit-transform: translate(-30px, 0);
+  transform: translate(-30px, 0);
 }
 </style>

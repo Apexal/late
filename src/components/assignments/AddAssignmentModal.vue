@@ -48,11 +48,11 @@
                 <label
                   for="title"
                   class="label"
-                >Title</label>
+                >What do you have to do?</label>
                 <div class="control">
                   <input
                     id="title"
-                    v-model="title"
+                    v-model.trim="title"
                     name="title"
                     type="text"
                     class="input"
@@ -73,7 +73,7 @@
                 <div class="control">
                   <textarea
                     id="description"
-                    v-model="description"
+                    v-model.trim="description"
                     name="description"
                     cols="30"
                     rows="10"
@@ -233,7 +233,7 @@ export default {
 
       // Calls API and updates state
       await this.$store.dispatch(
-        'ADD_ASSIGNMENT',
+        'ADD_UPCOMING_ASSIGNMENT',
         request.data.createdAssignment
       );
 
@@ -262,8 +262,10 @@ export default {
   #description {
     width: 100%;
     min-width: 100%;
-    max-width: 100%;
+    max-width: 500px;
 
+    min-height: 100px;
+    height: 200px;
     max-height: 500px;
   }
 }

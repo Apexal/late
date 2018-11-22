@@ -30,16 +30,14 @@ async function setPersonalInfo (ctx) {
     await ctx.state.user.save();
 
     logger.info(`Saved personal info for ${ctx.state.user.rcs_id}`);
-    ctx.ok({
+    return ctx.ok({
       updatedUser: ctx.state.user
     });
   } catch (err) {
     logger.error(
       `Failed to save personal info for ${ctx.state.user.rcs_id}: ${err}`
     );
-    ctx.badRequest({
-      err
-    });
+    return ctx.badRequest('Failed to save personal info.');
   }
 }
 
@@ -84,19 +82,20 @@ async function setCourseSchedule (ctx) {
   try {
     ctx.state.user.current_schedule = courseSchedule;
     await ctx.state.user.save();
-    ctx.ok({ updatedUser: ctx.state.user });
-  } catch (error) {
-    ctx.badRequest({ error });
+  } catch (e) {
     logger.error(
-      `Failed to set course schedule for ${ctx.state.user.rcs_id}: ${error}`
+      `Failed to set course schedule for ${ctx.state.user.rcs_id}: ${e}`
     );
+    return ctx.badRequest('Failed to set your schedule course.');
   }
+
+  ctx.ok({ updatedUser: ctx.state.user });
 }
 
 /**
  * Set the logged in user's courses and return the updated user.
  * Request body:
- *  - courses: new current_schedules
+ *  - courses: array of objects with the same schema as current_schedule
  *
  * @param {Koa context} ctx
  */
@@ -107,13 +106,14 @@ async function setCourses (ctx) {
   try {
     ctx.state.user.current_schedule = updatedCourses;
     await ctx.state.user.save();
-    ctx.ok({ updatedUser: ctx.state.user });
-  } catch (error) {
+  } catch (e) {
     logger.error(
-      `Failed to set custom courses for ${ctx.state.user.rcs_id}: ${error}`
+      `Failed to set update courses for ${ctx.state.user.rcs_id}: ${e}`
     );
-    ctx.badRequest('Failed to set custom courses.');
+    return ctx.badRequest('Failed to update your courses.');
   }
+
+  ctx.ok({ updatedUser: ctx.state.user });
 }
 
 /**
@@ -138,14 +138,15 @@ async function setWorkSchedule (ctx) {
   try {
     ctx.state.user.current_work_schedule = workPeriods;
     await ctx.state.user.save();
-    logger.info(`Set work/study periods for ${ctx.state.user.rcs_id}`);
-    ctx.ok({ updatedUser: ctx.state.user });
-  } catch (error) {
-    ctx.badRequest({ error });
+  } catch (e) {
     logger.error(
-      `Failed to set work/study schedule for ${ctx.state.user.rcs_id}: ${error}`
+      `Failed to set study/work schedule for ${ctx.state.user.rcs_id}: ${e}`
     );
+    return ctx.badRequest('Failed to set study/work schedule.');
   }
+
+  logger.info(`Set study/work periods for ${ctx.state.user.rcs_id}`);
+  ctx.ok({ updatedUser: ctx.state.user });
 }
 
 module.exports = {

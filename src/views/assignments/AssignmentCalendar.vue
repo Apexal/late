@@ -62,17 +62,27 @@ export default {
     }
   },
   watch: {
-    filter: function (newF, oldF) {
+    filter () {
       this.$refs.calendar.fireMethod('refetchEvents');
     },
-    showCompleted: function (newC, oldC) {
+    showCompleted () {
       this.$refs.calendar.fireMethod('refetchEvents');
     }
   },
   methods: {
     async events (start, end, tz, callback) {
-      const request = await this.$http.get(`/assignments/list?start=${start.format('YYYY-MM-DD')}&end=${end.format('YYYY-MM-DD')}`);
-      console.log(request);
+      let request;
+
+      try {
+        request = await this.$http.get(`/assignments/list?start=${start.format('YYYY-MM-DD')}&end=${end.format('YYYY-MM-DD')}`);
+      } catch (e) {
+        this.events = [];
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
+
       const assignments = request.data.assignments;
       const events = assignments
         .filter(a => this.showCompleted ? true : !a.completed)

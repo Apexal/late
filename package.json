@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.8.0",
+  "version": "0.8.2",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
@@ -11,6 +11,7 @@
     "@koa/cors": "^2.2.2",
     "axios": "^0.18.0",
     "bulma": "^0.7.2",
+    "bulma-steps": "^2.2.1",
     "cheerio": "^1.0.0-rc.2",
     "config": "^2.0.1",
     "koa": "^2.6.2",
@@ -27,10 +28,8 @@
     "moment": "^2.22.2",
     "mongoose": "^5.3.10",
     "npm": "^6.4.1",
-    "pug": "^2.0.3",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "rpi-validator": "^1.0.2",
     "vue": "^2.5.17",
     "vue-full-calendar": "^2.7.0",
     "vue-router": "^3.0.1",
@@ -151,7 +150,10 @@
         {
           "ignores": [
             "router-view",
-            "router-link"
+            "router-link",
+            "transition",
+            "transition-group",
+            "keep-alive"
           ]
         }
       ],

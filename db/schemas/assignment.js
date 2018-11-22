@@ -7,7 +7,7 @@ const schema = new Schema({
     ref: 'Student',
     required: true
   },
-  title: { type: String, required: true, maxlength: 200 },
+  title: { type: String, required: true, minlength: 3, maxlength: 200 },
   description: { type: String, maxlength: 4000 },
   dueDate: { type: Date, required: true },
   courseCRN: { type: String, required: true }, // CRN
@@ -22,7 +22,7 @@ const schema = new Schema({
       ref: 'Block'
     }
   ]
-});
+}, { timestamps: true });
 
 module.exports = {
   name: 'Assignment',

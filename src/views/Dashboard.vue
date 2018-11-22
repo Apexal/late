@@ -12,7 +12,7 @@ export default {
   },
   computed: {
     assignments () {
-      return this.$store.state.work.assignments;
+      return this.$store.state.work.upcomingAssignments;
     }
   }
 };

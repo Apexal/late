@@ -6,71 +6,74 @@ const moment = require('moment');
 
 const CURRENT_TERM = '201809';
 
-const schema = new Schema({
-  rin: {
-    type: String,
-    minlength: 9,
-    trim: true
-    // required: true
-    /* validate: {
+const schema = new Schema(
+  {
+    rin: {
+      type: String,
+      minlength: 9,
+      trim: true
+      // required: true
+      /* validate: {
       validator: function(rin) {
         return rpiValidator.isRIN(rin);
       },
       message: props => `${props.value} is not a valid RIN!`
     } */
-  },
-  name: {
-    first: {
-      type: String,
-      trim: true,
-      minlength: 1,
-      maxlength: 100 /*, required: true */
     },
-    preferred: {
-      type: String,
-      trim: true
+    name: {
+      first: {
+        type: String,
+        trim: true,
+        minlength: 1,
+        maxlength: 100 /*, required: true */
+      },
+      preferred: {
+        type: String,
+        trim: true
+      },
+      last: {
+        type: String,
+        trim: true,
+        minlength: 1,
+        maxlength: 100 /*, required: true */
+      }
     },
-    last: {
+    rcs_id: {
       type: String,
+      lowercase: true,
       trim: true,
-      minlength: 1,
-      maxlength: 100 /*, required: true */
-    }
+      minlength: 3,
+      maxlength: 100,
+      required: true
+    },
+    grad_year: {
+      type: Number,
+      min: 2000,
+      max: 3000
+      /*, required: true */
+    }, // maybe?
+    semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    work_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    admin: { type: Boolean, default: false },
+    setup: {
+      personal_info: {
+        type: Boolean,
+        default: false
+      }, // what CMS API will give us
+      course_schedule: {
+        type: Boolean,
+        default: false
+      }, // what SIS and YACS will give us
+      work_schedule: { type: Boolean, default: false } // when the student can study or work
+    },
+    joined_date: {
+      type: Date,
+      required: true
+    },
+    last_login: Date
   },
-  rcs_id: {
-    type: String,
-    lowercase: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 100,
-    required: true
-  },
-  grad_year: {
-    type: Number,
-    min: 2000,
-    max: 3000
-    /*, required: true */
-  }, // maybe?
-  semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
-  work_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
-  admin: { type: Boolean, default: false },
-  setup: {
-    personal_info: {
-      type: Boolean,
-      default: false
-    }, // what CMS API will give us
-    course_schedule: {
-      type: Boolean,
-      default: false
-    }, // what SIS and YACS will give us
-    work_schedule: { type: Boolean, default: false } // when the student can study or work
-  },
-  joined_date: {
-    type: Date,
-    required: true
-  },
-  last_login: Date
-});
+  { timestamps: true }
+);
 
 schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });

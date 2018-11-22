@@ -48,13 +48,18 @@
       </div>
     </div>
     <hr>
-
-    <router-view
-      :highlighted="highlighted"
-      :show-completed="showCompleted"
-      :filter="filter"
-      @toggle-assignment="toggleAssignment"
-    />
+    <transition
+      name="slide-left"
+      mode="out-in"
+    >
+      <router-view
+        class="child-view"
+        :highlighted="highlighted"
+        :show-completed="showCompleted"
+        :filter="filter"
+        @toggle-assignment="toggleAssignment"
+      />
+    </transition>
   </section>
 
 </template>
@@ -76,7 +81,14 @@ export default {
   },
   methods: {
     async toggleAssignment (assignmentID) {
-      this.$store.dispatch('TOGGLE_ASSIGNMENT', assignmentID);
+      try {
+        await this.$store.dispatch('TOGGLE_UPCOMING_ASSIGNMENT', assignmentID);
+      } catch (e) {
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
