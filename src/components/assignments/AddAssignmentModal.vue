@@ -78,7 +78,7 @@
                     cols="30"
                     rows="10"
                     class="input"
-                    placeholder="Long description of the assignment here!"
+                    placeholder="Long description of the assignment here! You can use Markdown!"
                   />
                 </div>
               </div>

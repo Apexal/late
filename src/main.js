@@ -6,8 +6,10 @@ import Api from './api';
 
 import FullCalendar from 'vue-full-calendar';
 
-Vue.config.productionTip = false;
 Vue.use(FullCalendar);
+// Vue.use(VueMarkdown);
+
+Vue.config.productionTip = false;
 
 Vue.prototype.$http = Api;
 

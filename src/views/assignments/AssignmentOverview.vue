@@ -26,7 +26,13 @@
       <h1 class="title">{{ assignment.title }}</h1>
       <div class="content">
         <blockquote>
-          <p v-if="assignment.description.length > 0">{{ assignment.description }}</p>
+          <VueMarkdown
+            v-if="assignment.description.length > 0"
+            :source="assignment.description"
+            :html="false"
+            :emoji="true"
+            :anchor-attributes="{target: '_blank'}"
+          />
           <i v-else>No description given.</i>
         </blockquote>
       </div>
@@ -63,9 +69,11 @@
 
 <script>
 import moment from 'moment';
+import VueMarkdown from 'vue-markdown';
 
 export default {
   name: 'AssignmentOverview',
+  components: { VueMarkdown },
   data () {
     return {
       loading: true,
