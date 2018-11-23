@@ -35,7 +35,7 @@
               >
                 <span
                   :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
-                  :title="course(a).longname"
+                  :title="toggleAssignmentTitle(a)"
                   :style="{ 'color': course(a).color }"
                 />
               </span>
@@ -97,6 +97,9 @@ export default {
   methods: {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
+    },
+    toggleAssignmentTitle (a) {
+      return this.course(a).longname + (a.completedAt ? ` | Completed ${moment(a.completedAt).format('MM/DD/YY h:mma')}` : '');
     },
     percentDone (date) {
       const assignments = this.upcomingAssignmentsGroupedByDueDate[date];

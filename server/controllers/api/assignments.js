@@ -240,6 +240,8 @@ async function toggleAssignment (ctx) {
 
   assignment.completed = !assignment.completed;
 
+  assignment.completedAt = assignment.completed ? moment().toDate() : null;
+
   try {
     await assignment.save();
   } catch (e) {
@@ -248,7 +250,7 @@ async function toggleAssignment (ctx) {
   }
 
   logger.info(
-    `Set assigment '${assignment.title}' completion status to ${
+    `Set assigment ${assignment._id} completion status to ${
       assignment.completed
     } for ${ctx.state.user.rcs_id}.`
   );
