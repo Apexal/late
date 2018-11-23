@@ -225,8 +225,6 @@ export default {
   },
   watch: {
     initialAssignment (oldA, newA) {
-      console.log(oldA);
-      console.log(newA);
       this.assignment = this.convertAssignment(newA);
     }
   },
@@ -266,19 +264,21 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: `Edited assignment '${request.data.updatedAssignment.title}' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.` });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: `Edited assignment '${request.data.updatedAssignment.title}' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.` });
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.add-assignment-modal {
+.edit-assignment-modal {
   #description {
     width: 100%;
     min-width: 100%;
-    max-width: 100%;
+    max-width: 500px;
 
+    min-height: 100px;
+    height: 200px;
     max-height: 500px;
   }
 }
