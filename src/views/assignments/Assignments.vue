@@ -25,11 +25,16 @@
           <span
             v-for="c in courses"
             :key="c.listing_id"
-            :style="isFiltered(c) ? '' : `background-color: ${c.color}; color: white;`"
-            class="tag course-tag level-item is-unselectable"
+            class="tag is-white course-tag level-item is-unselectable"
             :title="`Click to toggle filtering out ${c.longname} assignments.`"
+            :class="{ 'has-text-grey-light filtered': isFiltered(c) }"
             @click="toggleFilter(c)"
-          >{{ c.longname }}</span>
+          >
+            <span
+              class="dot course-dot"
+              :style="{ 'background-color': c.color }"
+            />
+            {{ c.longname }}</span>
         </div>
       </div>
       <div class="level-right">
@@ -99,8 +104,11 @@ export default {
 <style lang="scss" scoped>
 span.tag.course-tag {
   cursor: pointer;
-  margin-right: 5px;
   font-weight: bold;
+}
+
+span.dot.course-dot {
+  margin-right: 2px;
 }
 
 .level .disable-shrink {
