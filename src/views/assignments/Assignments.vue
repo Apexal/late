@@ -62,6 +62,16 @@
         @toggle-assignment="toggleAssignment"
       />
     </transition>
+    <hr>
+    <button
+      class="button is-dark"
+      @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+    >Add Assignment</button>
+    <button
+      class="button is-dark is-outlined is-pulled-right"
+      onclick="alert('Not yet implemented!')"
+    >Export Assignments</button>
+
   </section>
 
 </template>
