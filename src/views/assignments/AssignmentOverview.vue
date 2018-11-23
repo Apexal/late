@@ -36,7 +36,7 @@
       <hr>
       <nav
         v-if="!isPast"
-        class="level box assignment-stats"
+        class="level is-mobile box assignment-stats"
       >
         <div class="level-item has-text-centered">
           <div>
