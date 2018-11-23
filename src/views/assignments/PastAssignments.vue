@@ -101,7 +101,6 @@
           v-for="a in filtered"
           :key="a._id"
           :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
-          :style="{ color: isHighlighted(course(a)) ? 'white !important' : '', 'background-color': isHighlighted(course(a)) ? course(a).color : '' }"
         >
           <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }} <span class="has-text-grey">{{ toTimeString(a.dueDate) }}</span></td>
           <td class="is-hidden-mobile">

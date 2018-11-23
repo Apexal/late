@@ -39,7 +39,6 @@
             <div
               v-for="a in assignments"
               :key="a._id"
-              :style="{ color: isHighlighted(course(a)) ? 'white !important' : '', 'background-color': isHighlighted(course(a)) ? course(a).color : '' }"
               class="panel-block assignment"
               :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
             >
