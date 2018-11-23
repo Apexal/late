@@ -80,7 +80,7 @@ async function getAssignment (ctx) {
  */
 async function createAssignment (ctx) {
   const body = ctx.request.body;
-  const due = moment(body.due_date);
+  const due = moment(body.dueDate);
 
   // TODO: validate these
   const newAssignment = new ctx.db.Assignment({
@@ -88,9 +88,9 @@ async function createAssignment (ctx) {
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),
-    courseCRN: body.course_crn,
-    timeEstimate: parseInt(body.time_estimate, 10),
-    timeRemaining: parseInt(body.time_estimate, 10),
+    courseCRN: body.courseCRN,
+    timeEstimate: parseInt(body.timeEstimate, 10),
+    timeRemaining: parseInt(body.timeEstimate, 10),
     isAssessment: false,
     priority: parseInt(body.priority, 10)
   });
@@ -294,9 +294,7 @@ async function removeAssignment (ctx) {
   } catch (e) {}
 
   logger.info(
-    `Removed assignment '${removedAssignment.title}' for ${
-      ctx.state.user.rcs_id
-    }`
+    `Removed assignment ${removedAssignment._id} for ${ctx.state.user.rcs_id}`
   );
 
   ctx.ok({

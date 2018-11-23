@@ -28,8 +28,7 @@
                 <div class="control">
                   <select
                     id="course-id"
-                    v-model="course_crn"
-                    name="course_crn"
+                    v-model="courseCRN"
                     class="input"
                     required
                   >
@@ -53,7 +52,6 @@
                   <input
                     id="title"
                     v-model.trim="title"
-                    name="title"
                     type="text"
                     class="input"
                     maxlength="200"
@@ -74,7 +72,6 @@
                   <textarea
                     id="description"
                     v-model.trim="description"
-                    name="description"
                     cols="30"
                     rows="10"
                     class="input"
@@ -96,9 +93,8 @@
                 <div class="control">
                   <input
                     id="due-date"
-                    v-model="due_date"
+                    v-model="dueDate"
                     type="date"
-                    name="due_date"
                   >
                 </div>
               </div>
@@ -129,9 +125,8 @@
                 >Time Estimate (hrs)</label>
                 <input
                   id="time-estimate"
-                  v-model.number="time_estimate"
+                  v-model.number="timeEstimate"
                   type="number"
-                  name="time-estimate"
                   min="0.5"
                   step="0.5"
                 >
@@ -151,7 +146,6 @@
                   type="range"
                   min="1"
                   max="10"
-                  name="priority"
                   step="1"
                   placeholder="0 - 10"
                 >
@@ -204,12 +198,12 @@ export default {
   data () {
     return {
       loading: false,
-      course_crn: '',
+      courseCRN: '',
       title: '',
       description: '',
-      due_date: moment().add(1, 'days').format('YYYY-MM-DD'),
+      dueDate: moment().add(1, 'days').format('YYYY-MM-DD'),
       time: '08:00', // HH:mm
-      time_estimate: 1,
+      timeEstimate: 1,
       priority: 5
     };
   },
@@ -225,9 +219,9 @@ export default {
       const request = await this.$http.post('/assignments/create', {
         title: this.title,
         description: this.description,
-        due_date: moment(this.due_date + ' ' + this.time, 'YYYY-MM-DD HH:mm', true).toDate(),
-        course_crn: this.course_crn,
-        time_estimate: this.time_estimate,
+        dueDate: moment(this.dueDate + ' ' + this.time, 'YYYY-MM-DD HH:mm', true).toDate(),
+        courseCRN: this.courseCRN,
+        timeEstimate: this.timeEstimate,
         priority: this.priority
       });
 
