@@ -22,6 +22,7 @@
     <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
+          <span class="subtitle is-6">Filter</span>
           <span
             v-for="c in courses"
             :key="c.listing_id"
@@ -105,6 +106,7 @@ export default {
 span.tag.course-tag {
   cursor: pointer;
   font-weight: bold;
+  margin: 0;
 }
 
 span.dot.course-dot {
