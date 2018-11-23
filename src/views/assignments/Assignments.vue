@@ -27,10 +27,7 @@
             :key="c.listing_id"
             :style="isFiltered(c) ? '' : `background-color: ${c.color}; color: white;`"
             class="tag course-tag level-item is-unselectable"
-            :class="{'highlighted': isHighlighted(c), 'filtered': isFiltered(c), 'is-light': !isFiltered(c) }"
             :title="`Click to toggle filtering out ${c.longname} assignments.`"
-            @mouseover="addHighlight(c)"
-            @mouseleave="removeHighlight(c)"
             @click="toggleFilter(c)"
           >{{ c.longname }}</span>
         </div>
@@ -54,7 +51,6 @@
     >
       <router-view
         class="child-view"
-        :highlighted="highlighted"
         :show-completed="showCompleted"
         :filter="filter"
         @toggle-assignment="toggleAssignment"
@@ -70,7 +66,6 @@ export default {
   data () {
     return {
       showCompleted: true,
-      highlighted: [],
       filter: []
     };
   },
@@ -96,10 +91,7 @@ export default {
     isFiltered (c) { return this.filter.includes(c.crn); },
     toggleFilter (c) {
       if (this.filter.includes(c.crn)) { this.filter.splice(this.filter.indexOf(c.crn), 1); } else { this.filter.push(c.crn); }
-    },
-    isHighlighted (c) { return this.highlighted.includes(c.crn); },
-    addHighlight (c) { if (!this.isHighlighted(c)) this.highlighted.push(c.crn); },
-    removeHighlight (c) { if (this.isHighlighted(c)) this.highlighted.splice(this.highlighted.indexOf(c.crn), 1); }
+    }
   }
 };
 </script>

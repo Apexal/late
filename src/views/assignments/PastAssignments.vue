@@ -100,7 +100,6 @@
         <tr
           v-for="a in filtered"
           :key="a._id"
-          :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
         >
           <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }} <span class="has-text-grey">{{ toTimeString(a.dueDate) }}</span></td>
           <td class="is-hidden-mobile">
@@ -126,7 +125,6 @@
             >
               {{ a.title }}
             </router-link>
-
           </td>
           <td>
             <span class="icon">
@@ -148,10 +146,6 @@ import moment from 'moment';
 export default {
   name: 'PastAssignments',
   props: {
-    highlighted: {
-      type: Array,
-      default: () => []
-    },
     showCompleted: {
       type: Boolean,
       default: true
@@ -223,7 +217,6 @@ export default {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
-    isHighlighted (c) { return this.highlighted.includes(c.crn); },
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     toDateShorterString: dueDate => moment(dueDate).format('MM/DD/YY'),
     toTimeString: time => moment(time).format('h:mm a')

@@ -40,7 +40,6 @@
               v-for="a in assignments"
               :key="a._id"
               class="panel-block assignment"
-              :class="{ 'is-highlighted': isHighlighted(course(a)), 'is-completed': a.completed }"
             >
               <span class="is-full-width">
                 <span
@@ -71,7 +70,6 @@
                 <small
                   :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
                   class="is-pulled-right"
-                  :class="{ 'has-text-grey': !isHighlighted(course(a)) }"
                 >{{ toTimeString(a.dueDate) }}</small>
               </span>
             </div>
@@ -89,10 +87,6 @@ import moment from 'moment';
 export default {
   name: 'UpcomingAssignments',
   props: {
-    highlighted: {
-      type: Array,
-      default: () => []
-    },
     showCompleted: {
       type: Boolean,
       default: true
@@ -133,7 +127,6 @@ export default {
       if (percentDone > 50) return 'is-warning';
       return 'is-danger';
     },
-    isHighlighted (c) { return this.highlighted.includes(c.crn); },
     toDateShortString (dueDate) {
       if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
       if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) return 'Tomorrow';
