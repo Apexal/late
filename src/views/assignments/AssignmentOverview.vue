@@ -17,20 +17,46 @@
       v-else
       class="section"
     >
-      <span
-        class="is-pulled-right has-text-grey"
-        :title="toFullDateTimeString(assignment.dueDate)"
+      <div class="is-clearfix">
+        <span class="has-text-grey is-pulled-right">{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
+        <h2 class="subtitle">
+          <span
+            class="dot course-dot"
+            :title="course.longname"
+            :style="'background-color: ' + course.color"
+          />
+          {{ course.longname }}
+          <span class="has-text-grey">{{ isPast ? 'Past ': '' }}Assignment</span>
+        </h2>
+        <h1 class="title">
+          {{ assignment.title }}
+        </h1>
+
+      </div>
+      <hr>
+      <nav
+        v-if="!isPast"
+        class="level box assignment-stats"
       >
-        due {{ fromNow(assignment.dueDate) }}
-      </span>
-      <h2 class="subtitle">
-        <span
-          class="dot course-dot"
-          :title="course.longname"
-          :style="'background-color: ' + course.color"
-        />
-        {{ course.longname }} Assignment</h2>
-      <h1 class="title">{{ assignment.title }}</h1>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Priority</p>
+            <p class="subtitle">{{ assignment.priority }}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Work Left</p>
+            <p class="subtitle">{{ assignment.timeRemaining }} <span class="has-text-grey">hrs</span></p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Due In</p>
+            <p class="subtitle">{{ timeLeft }}</p>
+          </div>
+        </div>
+      </nav>
       <div class="content">
         <blockquote>
           <VueMarkdown
@@ -57,6 +83,7 @@
         <button
           v-if="!isPast"
           class="button is-warning"
+          :title="'Last edited ' + lastEdited"
           @click="editing = !editing"
         >
           Edit
@@ -89,16 +116,23 @@ export default {
   components: { VueMarkdown, EditAssignmentModal },
   data () {
     return {
+      now: moment(),
       loading: true,
       isUpcoming: false,
       assignment: {},
       editing: false
     };
   },
-
   computed: {
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+    },
+    lastEdited () {
+      return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt) ? 'never' : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+    },
+    timeLeft () {
+      const diff = moment.duration(moment(this.assignment.dueDate).diff(this.now));
+      return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
     },
     isPast () {
       return moment().isAfter(moment(this.assignment.dueDate));
@@ -109,6 +143,9 @@ export default {
   },
   created () {
     this.getAssignment();
+    setInterval(() => {
+      this.now = moment();
+    }, 1000 * 60);
   },
   methods: {
     editedAssignment (newAssignment) {
@@ -142,6 +179,7 @@ export default {
 
       this.loading = false;
     },
+    shortDateTimeString: dueDate => moment(dueDate).format('MM/DD/YY h:mma'),
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     async remove () {
       // Confirm user wants to remove assignment
@@ -175,6 +213,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.assignment-stats {
+  padding: 10px;
+}
+
 .margin-right {
   margin-right: 5px;
 }
