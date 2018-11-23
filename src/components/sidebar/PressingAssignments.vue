@@ -3,7 +3,7 @@
     class="panel sidebar-upcoming-assignments"
     open
   >
-    <summary class="panel-heading is-clearfix is-unselectable">Pressing Assignments
+    <summary class="panel-heading is-clearfix is-unselectable is-size-6">Pressing Assignments
       <span class="is-pulled-right icon">
         <i
           class="fas fa-plus add-assignment"
@@ -13,7 +13,7 @@
     </summary>
     <div
       v-if="pressing.length == 0"
-      class="panel-block has-text-grey"
+      class="panel-block has-text-grey is-size-7"
     >
       <span>No pressing assignments!</span>
     </div>
@@ -24,7 +24,7 @@
       <div
         v-for="a in pressing"
         :key="a._id"
-        class="assignment panel-block"
+        class="assignment panel-block is-size-7"
       >
         <span class="is-full-width">
           <span
@@ -57,7 +57,7 @@
     <div class="panel-block">
       <router-link
         tag="button"
-        class="button is-link is-outlined is-fullwidth"
+        class="button is-small is-link is-outlined is-fullwidth"
         to="/assignments"
       >
         All Assignments
