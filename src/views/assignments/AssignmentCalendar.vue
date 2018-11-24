@@ -20,10 +20,6 @@ export default {
   name: 'AssignmentCalendar',
   components: { FullCalendar },
   props: {
-    highlighted: {
-      type: Array,
-      default: () => []
-    },
     showCompleted: {
       type: Boolean,
       default: true

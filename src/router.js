@@ -102,11 +102,11 @@ const router = new Router({
           component: () => import('@/views/profile/CourseScheduleForm.vue')
         },
         {
-          path: 'workschedule',
+          path: 'unavailability',
           meta: {
-            title: 'Work/Study Schedule'
+            title: 'Study/Work Unavailability'
           },
-          component: () => import('@/views/profile/WorkScheduleSetup.vue')
+          component: () => import('@/views/profile/UnavailabilitySetup.vue')
         }
       ]
     },

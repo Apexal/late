@@ -2,19 +2,19 @@
   <section class="section assignment-list">
     <div class="assignment-view-buttons buttons has-addons is-pulled-right">
       <router-link
-        class="button"
+        class="button tooltip"
         to="/assignments/upcoming"
-        title="Switch to view upcoming assignments."
+        data-tooltip="Switch to view upcoming assignments."
       >Upcoming</router-link>
       <router-link
-        class="button"
+        class="button tooltip"
         to="/assignments/past"
-        title="Switch to view past assignments."
+        data-tooltip="Switch to view past assignments."
       >Past</router-link>
       <router-link
-        class="button"
+        class="button tooltip"
         to="/assignments/calendar"
-        title="Switch to view your assignment calendar."
+        data-tooltip="Switch to view your assignment calendar."
       >Calendar</router-link>
     </div>
     <h1 class="title">{{ title }}</h1>
@@ -22,22 +22,28 @@
     <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
+          <span class="subtitle is-6">Filter Courses</span>
           <span
             v-for="c in courses"
             :key="c.listing_id"
-            :style="isFiltered(c) ? '' : `background-color: ${c.color}; color: white;`"
-            class="tag course-tag level-item is-unselectable"
-            :class="{'highlighted': isHighlighted(c), 'filtered': isFiltered(c), 'is-light': !isFiltered(c) }"
+            class="tag is-white course-tag level-item is-unselectable"
             :title="`Click to toggle filtering out ${c.longname} assignments.`"
-            @mouseover="addHighlight(c)"
-            @mouseleave="removeHighlight(c)"
+            :class="{ 'has-text-grey-light filtered': isFiltered(c) }"
             @click="toggleFilter(c)"
-          >{{ c.longname }}</span>
+          >
+            <span
+              class="dot course-dot"
+              :style="{ 'background-color': c.color }"
+            />
+            {{ c.longname }}</span>
         </div>
       </div>
       <div class="level-right">
         <div class="field">
-          <label class="checkbox is-unselectable">
+          <label
+            class="checkbox is-unselectable tooltip"
+            data-tooltip="Toggle completed assignments."
+          >
             <input
               v-model="showCompleted"
               type="checkbox"
@@ -54,12 +60,21 @@
     >
       <router-view
         class="child-view"
-        :highlighted="highlighted"
         :show-completed="showCompleted"
         :filter="filter"
         @toggle-assignment="toggleAssignment"
       />
     </transition>
+    <hr>
+    <button
+      class="button is-dark"
+      @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+    >Add Assignment</button>
+    <button
+      class="button is-dark is-outlined is-pulled-right"
+      onclick="alert('Not yet implemented!')"
+    >Export Assignments</button>
+
   </section>
 
 </template>
@@ -70,7 +85,6 @@ export default {
   data () {
     return {
       showCompleted: true,
-      highlighted: [],
       filter: []
     };
   },
@@ -96,10 +110,7 @@ export default {
     isFiltered (c) { return this.filter.includes(c.crn); },
     toggleFilter (c) {
       if (this.filter.includes(c.crn)) { this.filter.splice(this.filter.indexOf(c.crn), 1); } else { this.filter.push(c.crn); }
-    },
-    isHighlighted (c) { return this.highlighted.includes(c.crn); },
-    addHighlight (c) { if (!this.isHighlighted(c)) this.highlighted.push(c.crn); },
-    removeHighlight (c) { if (this.isHighlighted(c)) this.highlighted.splice(this.highlighted.indexOf(c.crn), 1); }
+    }
   }
 };
 </script>
@@ -107,8 +118,13 @@ export default {
 <style lang="scss" scoped>
 span.tag.course-tag {
   cursor: pointer;
-  margin-right: 5px;
   font-weight: bold;
+  margin: 0;
+  padding-right: 0;
+}
+
+span.dot.course-dot {
+  margin-right: 2px;
 }
 
 .level .disable-shrink {

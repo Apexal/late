@@ -32,6 +32,8 @@ const getters = {
   },
   incompleteUpcomingAssignments: state =>
     state.upcomingAssignments.filter(a => !a.completed),
+  getEditState: state => state.editingAssignment,
+  getEditAssignmentModalExpanded: state => state.editAssignmentModalExpanded,
   getCourseFromCRN: (state, getters, rootState) => crn =>
     rootState.auth.user.current_schedule.find(c => c.crn === crn),
   getCourseFromPeriod: (state, getters, rootState) => period =>

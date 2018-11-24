@@ -6,8 +6,12 @@ import Api from './api';
 
 import FullCalendar from 'vue-full-calendar';
 
-Vue.config.productionTip = false;
+import 'bulma-tooltip';
+
 Vue.use(FullCalendar);
+// Vue.use(VueMarkdown);
+
+Vue.config.productionTip = false;
 
 Vue.prototype.$http = Api;
 

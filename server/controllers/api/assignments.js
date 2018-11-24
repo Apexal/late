@@ -80,7 +80,7 @@ async function getAssignment (ctx) {
  */
 async function createAssignment (ctx) {
   const body = ctx.request.body;
-  const due = moment(body.due_date);
+  const due = moment(body.dueDate);
 
   // TODO: validate these
   const newAssignment = new ctx.db.Assignment({
@@ -88,9 +88,9 @@ async function createAssignment (ctx) {
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),
-    courseCRN: body.course_crn,
-    timeEstimate: parseInt(body.time_estimate, 10),
-    timeRemaining: parseInt(body.time_estimate, 10),
+    courseCRN: body.courseCRN,
+    timeEstimate: body.timeEstimate,
+    timeRemaining: body.timeEstimate,
     isAssessment: false,
     priority: parseInt(body.priority, 10)
   });
@@ -148,8 +148,9 @@ async function editAssignment (ctx) {
 
   const allowedProperties = [
     'title',
-    'dueDate',
     'description',
+    'dueDate',
+    'courseCRN',
     'timeEstimate',
     'priority'
   ];
@@ -200,7 +201,7 @@ async function editAssignment (ctx) {
   }
 
   logger.info(
-    `Updated assignment '${assignment.title}' for ${ctx.state.user.rcs_id}.`
+    `Updated assignment ${assignment._id} for ${ctx.state.user.rcs_id}.`
   );
 
   ctx.ok({
@@ -239,6 +240,8 @@ async function toggleAssignment (ctx) {
 
   assignment.completed = !assignment.completed;
 
+  assignment.completedAt = assignment.completed ? moment().toDate() : null;
+
   try {
     await assignment.save();
   } catch (e) {
@@ -247,7 +250,7 @@ async function toggleAssignment (ctx) {
   }
 
   logger.info(
-    `Set assigment '${assignment.title}' completion status to ${
+    `Set assigment ${assignment._id} completion status to ${
       assignment.completed
     } for ${ctx.state.user.rcs_id}.`
   );
@@ -293,9 +296,7 @@ async function removeAssignment (ctx) {
   } catch (e) {}
 
   logger.info(
-    `Removed assignment '${removedAssignment.title}' for ${
-      ctx.state.user.rcs_id
-    }`
+    `Removed assignment ${removedAssignment._id} for ${ctx.state.user.rcs_id}`
   );
 
   ctx.ok({

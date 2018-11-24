@@ -1,5 +1,12 @@
 <template>
   <div class="assignment-overview">
+    <EditAssignmentModal
+      v-if="!isPast"
+      :open="editing"
+      :initial-assignment="assignment"
+      @toggle-modal="editing = !editing"
+      @edit-assignment="editedAssignment"
+    />
     <section
       v-if="loading"
       class="section"
@@ -10,23 +17,55 @@
       v-else
       class="section"
     >
-      <span
-        class="is-pulled-right has-text-grey"
-        :title="toFullDateTimeString(assignment.dueDate)"
+      <div class="is-clearfix">
+        <span class="has-text-grey is-pulled-right">{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
+        <h2 class="subtitle">
+          <span
+            class="dot course-dot"
+            :title="course.longname"
+            :style="'background-color: ' + course.color"
+          />
+          {{ course.longname }}
+          <span class="has-text-grey">{{ isPast ? 'Past ': '' }}Assignment</span>
+        </h2>
+        <h1 class="title">
+          {{ assignment.title }}
+        </h1>
+
+      </div>
+      <hr>
+      <nav
+        v-if="!isPast"
+        class="level is-mobile box assignment-stats"
       >
-        due {{ fromNow(assignment.dueDate) }}
-      </span>
-      <h2 class="subtitle">
-        <span
-          class="dot course-dot"
-          :title="course.longname"
-          :style="'background-color: ' + course.color"
-        />
-        {{ course.longname }} Assignment</h2>
-      <h1 class="title">{{ assignment.title }}</h1>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Priority</p>
+            <p class="subtitle">{{ assignment.priority }}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Work Left</p>
+            <p class="subtitle">{{ assignment.timeRemaining }} <span class="has-text-grey">hrs</span></p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Due In</p>
+            <p class="subtitle">{{ timeLeft }}</p>
+          </div>
+        </div>
+      </nav>
       <div class="content">
         <blockquote>
-          <p v-if="assignment.description.length > 0">{{ assignment.description }}</p>
+          <VueMarkdown
+            v-if="assignment.description.length > 0"
+            :source="assignment.description"
+            :html="false"
+            :emoji="true"
+            :anchor-attributes="{target: '_blank'}"
+          />
           <i v-else>No description given.</i>
         </blockquote>
       </div>
@@ -41,7 +80,12 @@
           </span>
           All Assignments
         </router-link>
-        <button class="button is-warning">
+        <button
+          v-if="!isPast"
+          class="button is-warning"
+          :title="'Last edited ' + lastEdited"
+          @click="editing = !editing"
+        >
           Edit
           <span class="icon margin-left">
             <i class="fas fa-pencil-alt" />
@@ -63,19 +107,35 @@
 
 <script>
 import moment from 'moment';
+import VueMarkdown from 'vue-markdown';
+
+import EditAssignmentModal from '@/components/assignments/EditAssignmentModal';
 
 export default {
   name: 'AssignmentOverview',
+  components: { VueMarkdown, EditAssignmentModal },
   data () {
     return {
+      now: moment(),
       loading: true,
       isUpcoming: false,
-      assignment: {}
+      assignment: {},
+      editing: false
     };
   },
   computed: {
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+    },
+    lastEdited () {
+      return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt) ? 'never' : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+    },
+    timeLeft () {
+      const diff = moment.duration(moment(this.assignment.dueDate).diff(this.now));
+      return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
+    },
+    isPast () {
+      return moment().isAfter(moment(this.assignment.dueDate));
     }
   },
   watch: {
@@ -83,8 +143,14 @@ export default {
   },
   created () {
     this.getAssignment();
+    setInterval(() => {
+      this.now = moment();
+    }, 1000 * 60);
   },
   methods: {
+    editedAssignment (newAssignment) {
+      this.assignment = newAssignment;
+    },
     async getAssignment () {
       // If its an upcoming assignment, we already have the data on it
       if (this.$store.getters.getUpcomingAssignmentById(this.$route.params.assignmentID)) {
@@ -113,6 +179,7 @@ export default {
 
       this.loading = false;
     },
+    shortDateTimeString: dueDate => moment(dueDate).format('MM/DD/YY h:mma'),
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     async remove () {
       // Confirm user wants to remove assignment
@@ -146,6 +213,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.assignment-stats {
+  padding: 10px;
+}
+
 .margin-right {
   margin-right: 5px;
 }

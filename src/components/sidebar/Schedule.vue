@@ -3,7 +3,7 @@
     class="schedule panel user-courses"
     open
   >
-    <summary class="panel-heading is-unselectable">Today's Schedule
+    <summary class="panel-heading is-unselectable is-size-6">Today's Schedule
       <span
         v-if="in_class"
         class="tag is-info"
@@ -11,19 +11,19 @@
     </summary>
     <template v-if="is_weekend">
       <div class="panel-block">
-        <h2 class="subtitle has-text-grey">It's the weekend!</h2>
+        <h2 class="subtitle has-text-grey is-size-6">It's the weekend!</h2>
       </div>
     </template>
     <template v-else-if="classes_over">
       <div class="panel-block">
-        <h2 class="subtitle has-text-grey">Classes are over for today!</h2>
+        <h2 class="subtitle has-text-grey is-size-6">Classes are over for today!</h2>
       </div>
     </template>
     <template v-else>
       <div
         v-for="p in periods"
         :key="p.start"
-        class="panel-block period-block is-clearfix"
+        class="panel-block period-block is-clearfix is-size-7"
         :class="{ 'is-active': p == current_period, 'has-background-white-ter': hasPassed(p) }"
       >
         <span

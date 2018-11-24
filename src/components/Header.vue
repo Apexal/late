@@ -3,7 +3,13 @@
     <section class="hero is-dark">
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">LATE</h1>
+          <h1 class="title">
+            LATE
+            <span
+              class="tag is-primary"
+              title="LATE is still in active development!"
+            >Beta</span>
+          </h1>
           <h2 class="subtitle">Lazy Automatic Time Evaluator</h2>
         </div>
       </div>

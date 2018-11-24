@@ -46,7 +46,7 @@
                   id="pin"
                   v-model.trim="pin"
                   type="password"
-                  class="input"
+                  class="input is-small"
                   placeholder="Enter your SIS password."
                   @change="saved = false"
                 >
@@ -79,7 +79,7 @@
         </div>
 
         <button
-          class="button is-warning"
+          class="button is-small is-warning"
           :class="{'is-loading': loading}"
           :disabled="!canReset"
         >{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
