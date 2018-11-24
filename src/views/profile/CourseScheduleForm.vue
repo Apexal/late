@@ -109,7 +109,7 @@
     </template>
     <hr>
     <router-link
-      to="/profile/workschedule"
+      to="/profile/unavailability"
       class="button is-primary"
     >
       Save and Continue
