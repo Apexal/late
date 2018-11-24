@@ -23,7 +23,10 @@
           >
         </div>
         <div class="control">
-          <button class="button is-info">
+          <button
+            :class="{ 'is-loading': loading }"
+            class="button is-info"
+          >
             Submit
           </button>
         </div>
@@ -45,7 +48,10 @@
           >
         </div>
         <div class="control">
-          <button class="button is-danger">
+          <button
+            :class="{ 'is-loading': loading }"
+            class="button is-danger"
+          >
             Verify
           </button>
         </div>
@@ -59,6 +65,7 @@ export default {
   name: 'SMSSetup',
   data () {
     return {
+      loading: false,
       phoneNumber: this.$store.state.auth.user.integrations.sms.phoneNumber || '',
       verificationCode: '',
       awaitingVerification: false
@@ -67,13 +74,25 @@ export default {
   methods: {
     async submitPhoneNumber () {
       if (!this.phoneNumber) return;
+      this.loading = true;
 
       // Verify phone number as a phone number
 
       // POST to server
+      let request;
+      try {
+        request = await this.$http.post('/integrations/sms/submit', { phoneNumber: this.phoneNumber });
+      } catch (e) {
+        this.loading = false;
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
 
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'info', description: `A verification number has been sent to '${this.phoneNumber}'. Please enter it here once you get it.` });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'info', description: request.data.message });
 
+      this.loading = false;
       this.awaitingVerification = true;
     },
     async verify () {
