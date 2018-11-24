@@ -46,7 +46,7 @@
                   id="pin"
                   v-model.trim="pin"
                   type="password"
-                  class="input"
+                  class="input is-small"
                   placeholder="Enter your SIS password."
                   @change="saved = false"
                 >

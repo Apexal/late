@@ -6,6 +6,8 @@ import Api from './api';
 
 import FullCalendar from 'vue-full-calendar';
 
+import 'bulma-tooltip';
+
 Vue.use(FullCalendar);
 // Vue.use(VueMarkdown);
 

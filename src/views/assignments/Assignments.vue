@@ -2,19 +2,19 @@
   <section class="section assignment-list">
     <div class="assignment-view-buttons buttons has-addons is-pulled-right">
       <router-link
-        class="button"
+        class="button tooltip"
         to="/assignments/upcoming"
-        title="Switch to view upcoming assignments."
+        data-tooltip="Switch to view upcoming assignments."
       >Upcoming</router-link>
       <router-link
-        class="button"
+        class="button tooltip"
         to="/assignments/past"
-        title="Switch to view past assignments."
+        data-tooltip="Switch to view past assignments."
       >Past</router-link>
       <router-link
-        class="button"
+        class="button tooltip"
         to="/assignments/calendar"
-        title="Switch to view your assignment calendar."
+        data-tooltip="Switch to view your assignment calendar."
       >Calendar</router-link>
     </div>
     <h1 class="title">{{ title }}</h1>
@@ -40,7 +40,10 @@
       </div>
       <div class="level-right">
         <div class="field">
-          <label class="checkbox is-unselectable">
+          <label
+            class="checkbox is-unselectable tooltip"
+            data-tooltip="Toggle completed assignments."
+          >
             <input
               v-model="showCompleted"
               type="checkbox"

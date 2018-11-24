@@ -15,8 +15,8 @@
       >
         <div class="panel">
           <p
-            class="panel-heading is-unselectable date-heading"
-            :title="daysAway(date) + ' days away'"
+            class="panel-heading tooltip is-tooltip-bottom is-unselectable date-heading"
+            :data-tooltip="daysAway(date) + ' days away'"
           >
             <span
               class="tag is-pulled-right"
@@ -44,7 +44,7 @@
                 />
               </span>
               <router-link
-                class="assignment-link "
+                class="assignment-link"
                 :title="a.description.substring(0, 500)"
                 :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
                 :class="{ 'priority': a.priority >= 7 }"
