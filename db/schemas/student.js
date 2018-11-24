@@ -69,6 +69,8 @@ const schema = new Schema(
     admin: { type: Boolean, default: false },
     integrations: {
       sms: {
+        verified: { type: Boolean, default: false },
+        verificationCode: { type: String, minlength: 1 },
         phoneNumber: { type: String, minlength: 12, maxlength: 12 }
       },
       discord: Object,
