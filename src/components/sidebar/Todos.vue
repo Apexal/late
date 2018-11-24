@@ -5,13 +5,15 @@
       TODOs
     </summary>
     <form @submit.prevent="addTodo">
-      <input
-        v-model="newTodo"
-        class="is-small is-full-width"
-        type="text"
-        placeholder="Add todo"
-        required
-      >
+      <div class="control panel-block">
+        <input
+          v-model="newTodo"
+          class="input is-small"
+          type="text"
+          placeholder="Add todo"
+          required
+        >
+      </div>
     </form>
     <div
       v-for="(t, index) in todos"
