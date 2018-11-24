@@ -75,7 +75,8 @@ const schema = new Schema(
         preferences: {
           enabled: { type: Boolean, default: false },
           preWorkText: { type: Boolean, default: false },
-          postWorkText: { type: Boolean, default: false }
+          postWorkText: { type: Boolean, default: false },
+          reminders: { type: Boolean, default: false }
         }
       },
       discord: Object,
