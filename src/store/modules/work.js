@@ -2,26 +2,27 @@ import axios from '@/api';
 import moment from 'moment';
 
 const state = {
-  assignments: []
+  upcomingAssignments: []
 };
 
 const getters = {
-  getAssigmentsDueOn: state => date => {
-    return state.assignments.filter(a => a.dueDate === date);
+  getUpcomingAssigmentsDueOn: state => date => {
+    return state.upcomingAssignments.filter(a => a.dueDate === date);
   },
-  getAssigmentsDueBy: state => date => {
-    return state.assignments.filter(a => a.dueDate <= date);
+  getUpcomingAssigmentsDueBy: state => date => {
+    return state.upcomingAssignments.filter(a => a.dueDate <= date);
   },
-  getAssignmentById: state => assignmentID => {
-    return state.assignments.find(a => a._id === assignmentID);
+  getUpcomingAssignmentById: state => assignmentID => {
+    return state.upcomingAssignments.find(a => a._id === assignmentID);
   },
-  assignmentsGroupedByDueDate: state => {
+  upcomingAssignmentsGroupedByDueDate: state => {
     const grouped = {};
 
-    for (let a of state.assignments) {
+    for (let a of state.upcomingAssignments) {
       const day = moment(a.dueDate)
         .startOf('day')
         .toDate();
+
       if (!grouped[day]) grouped[day] = [];
 
       grouped[day].push(a);
@@ -29,8 +30,10 @@ const getters = {
 
     return grouped;
   },
-  pressingAssignments: state => count =>
-    state.assignments.filter(a => !a.completed).slice(0, count),
+  incompleteUpcomingAssignments: state =>
+    state.upcomingAssignments.filter(a => !a.completed),
+  getEditState: state => state.editingAssignment,
+  getEditAssignmentModalExpanded: state => state.editAssignmentModalExpanded,
   getCourseFromCRN: (state, getters, rootState) => crn =>
     rootState.auth.user.current_schedule.find(c => c.crn === crn),
   getCourseFromPeriod: (state, getters, rootState) => period =>
@@ -40,31 +43,48 @@ const getters = {
 };
 
 const actions = {
+  async AUTO_GET_UPCOMING_ASSIGNMENTS ({ dispatch }) {
+    await dispatch('GET_UPCOMING_ASSIGNMENTS');
+    setTimeout(() => dispatch('GET_UPCOMING_ASSIGNMENTS'), 1000 * 60 * 60);
+  },
+  async TOGGLE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
+    const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
+    commit('UPDATE_UPCOMING_ASSIGNMENT', request.data.updatedAssignment);
+  },
   async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
-    const response = await axios.get('/assignments/list');
+    const response = await axios.get('/assignments/list', {
+      params: { start: moment().format('YYYY-MM-DD') }
+    });
     const assignments = response.data.assignments;
-    commit('SET_ASSIGNMENTS', assignments);
+    commit('SET_UPCOMING_ASSIGNMENTS', assignments);
   },
-  async ADD_ASSIGNMENT ({ dispatch, commit }, assignment) {
-    commit('ADD_ASSIGNMENT', assignment);
+  async ADD_UPCOMING_ASSIGNMENT ({ dispatch, commit }, assignment) {
+    commit('ADD_UPCOMING_ASSIGNMENT', assignment);
     await dispatch('GET_UPCOMING_ASSIGNMENTS');
   },
-  async REMOVE_ASSIGNMENT ({ dispatch, commit }, assignmentID) {
-    commit('REMOVE_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
+  async REMOVE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
+    commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.post(`/assignments/a/${assignmentID}/remove`);
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
   }
 };
 
 const mutations = {
-  SET_ASSIGNMENTS: (state, assignments) => {
-    state.assignments = assignments;
+  SET_UPCOMING_ASSIGNMENTS: (state, assignments) => {
+    state.upcomingAssignments = assignments;
   },
-  ADD_ASSIGNMENT: (state, assignment) => {
-    state.assignments.push(assignment);
+  ADD_UPCOMING_ASSIGNMENT: (state, assignment) => {
+    state.upcomingAssignments.push(assignment);
   },
-  REMOVE_ASSIGNMENT: (state, assignmentID) => {
-    state.assignments = state.assignments.filter(a => a._id !== assignmentID);
+  UPDATE_UPCOMING_ASSIGNMENT: (state, updatedAssignment) => {
+    Object.assign(
+      state.upcomingAssignments.find(a => a._id === updatedAssignment._id),
+      updatedAssignment
+    );
+  },
+  REMOVE_UPCOMING_ASSIGNMENT: (state, assignmentID) => {
+    state.upcomingAssignments = state.upcomingAssignments.filter(
+      a => a._id !== assignmentID
+    );
   }
 };
 

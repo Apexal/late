@@ -30,7 +30,9 @@ async function getSectionInfoFromCRN (crn) {
 
   // get listing
   let listingUri = data.relationships.listing.links.related;
-  if (listingUri.includes('localhost')) { listingUri = listingUri.replace('https://localhost', YACS_BASE_URL); }
+  if (listingUri.includes('localhost')) {
+    listingUri = listingUri.replace('https://localhost', YACS_BASE_URL);
+  }
 
   const listing = (await request({ uri: listingUri, json: true })).data;
 

@@ -13,6 +13,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
+      alias: '/dashboard',
       name: 'home',
       component: Home
     },
@@ -25,22 +26,42 @@ const router = new Router({
       component: () => import('@/views/About.vue')
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('@/views/Dashboard.vue'),
-      meta: {
-        title: 'Dashboard',
-        requiresAuth: true
-      }
-    },
-    {
       path: '/assignments',
-      name: 'assignments',
-      component: () => import('@/views/assignments/AssignmentList.vue'),
+      component: () => import('@/views/assignments/Assignments.vue'),
       meta: {
         title: 'Assignments',
         requiresAuth: true
-      }
+      },
+      children: [
+        {
+          path: '',
+          redirect: 'upcoming'
+        },
+        {
+          path: 'calendar',
+          name: 'assignment-calendar',
+          meta: {
+            title: 'Assignment Calendar'
+          },
+          component: () => import('@/views/assignments/AssignmentCalendar.vue')
+        },
+        {
+          path: 'upcoming',
+          name: 'upcoming-assignments',
+          meta: {
+            title: 'Upcoming Assignments'
+          },
+          component: () => import('@/views/assignments/UpcomingAssignments.vue')
+        },
+        {
+          path: 'past',
+          name: 'past-assignments',
+          meta: {
+            title: 'Past Assignments'
+          },
+          component: () => import('@/views/assignments/PastAssignments.vue')
+        }
+      ]
     },
     {
       path: '/assignments/:assignmentID',
@@ -81,11 +102,11 @@ const router = new Router({
           component: () => import('@/views/profile/CourseScheduleForm.vue')
         },
         {
-          path: 'workschedule',
+          path: 'unavailability',
           meta: {
-            title: 'Work/Study Schedule'
+            title: 'Study/Work Unavailability'
           },
-          component: () => import('@/views/profile/WorkScheduleSetup.vue')
+          component: () => import('@/views/profile/UnavailabilitySetup.vue')
         }
       ]
     },
