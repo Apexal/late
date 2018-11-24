@@ -88,7 +88,8 @@ export default {
         },
         config: {
           // timezone: 'UTC',
-          columnHeader: false,
+          height: 800,
+          columnHeaderFormat: 'ddd',
           allDaySlot: false,
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
           maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
