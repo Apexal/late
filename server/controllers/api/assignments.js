@@ -89,8 +89,8 @@ async function createAssignment (ctx) {
     description: body.description,
     dueDate: due.toDate(),
     courseCRN: body.courseCRN,
-    timeEstimate: parseInt(body.timeEstimate, 10),
-    timeRemaining: parseInt(body.timeEstimate, 10),
+    timeEstimate: body.timeEstimate,
+    timeRemaining: body.timeEstimate,
     isAssessment: false,
     priority: parseInt(body.priority, 10)
   });
@@ -201,7 +201,7 @@ async function editAssignment (ctx) {
   }
 
   logger.info(
-    `Updated assignment '${assignment.title}' for ${ctx.state.user.rcs_id}.`
+    `Updated assignment ${assignment._id} for ${ctx.state.user.rcs_id}.`
   );
 
   ctx.ok({

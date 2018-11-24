@@ -233,7 +233,6 @@ export default {
       const data = Object.assign({}, assignment);
       data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD');
       data.time = moment(assignment.dueDate).format('HH:mm');
-
       return data;
     },
     async save () {

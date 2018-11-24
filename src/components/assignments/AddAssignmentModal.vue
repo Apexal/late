@@ -203,7 +203,7 @@ export default {
       description: '',
       dueDate: moment().add(1, 'days').format('YYYY-MM-DD'),
       time: '08:00', // HH:mm
-      timeEstimate: 1,
+      timeEstimate: 1.0,
       priority: 5
     };
   },
