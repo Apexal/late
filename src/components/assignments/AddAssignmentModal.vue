@@ -244,7 +244,7 @@ export default {
       // Notify user
       this.$store.dispatch('ADD_NOTIFICATION', {
         type: 'success',
-        description: `Added assignment '${request.data.createdAssignment.title}' due ${moment(this.due_date + ' ' + this.time, 'YYYY-MM-DD HH:mm', true).fromNow()}.`
+        description: `Added assignment '${request.data.createdAssignment.title}' due ${moment(request.data.createdAssignment.dueDate, 'YYYY-MM-DD HH:mm', true).fromNow()}.`
       });
     }
   }
