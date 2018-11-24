@@ -13,13 +13,14 @@
 
 <script>
 import SMSSetup from '@/components/profile/SMSSetup';
+import EmailSetup from '@/components/profile/EmailSetup';
 
 export default {
   name: 'IntegrationsSetup',
-  components: { SMSSetup },
+  components: { SMSSetup, EmailSetup },
   data () {
     return {
-      currentTab: '',
+      currentTab: 'SMSSetup',
       discordVerificationCode: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 8)
     };
   }

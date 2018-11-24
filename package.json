@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.8.2",
+  "version": "0.8.5",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
@@ -12,6 +12,7 @@
     "axios": "^0.18.0",
     "bulma": "^0.7.2",
     "bulma-steps": "^2.2.1",
+    "bulma-switch": "^2.0.0",
     "bulma-tooltip": "^2.0.2",
     "cheerio": "^1.0.0-rc.2",
     "config": "^2.0.2",
