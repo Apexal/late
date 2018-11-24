@@ -1,7 +1,7 @@
 <template>
-  <div class="work-schedule-setup">
-    <h2 class="subtit">Drag to set your work/study availability</h2>
-    <p class="help">Click on work/study blocks to remove them. You can also drag, drop, and resive them.</p>
+  <div class="unavailability-setup">
+    <h2 class="subtit">Drag to set your study/work unavailability</h2>
+    <p class="help">Click on blocks to remove them. You can also drag, drop, and resive them.</p>
     <FullCalendar
       ref="calendar"
       :events="calendar.events"
@@ -17,7 +17,7 @@
       :disabled="saved"
       @click="save"
     >
-      Save Availability
+      Save Unavailability
     </button>
   </div>
 </template>
@@ -27,7 +27,7 @@ import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 export default {
-  name: 'WorkScheduleSetup',
+  name: 'UnavailabilitySetup',
   components: { FullCalendar },
   data () {
     return {
@@ -83,14 +83,14 @@ export default {
       this.loading = true;
       const events = this.calendar.events.filter(e => e.isWorkBlock);
 
-      const request = await this.$http.post('/setup/workschedule', {
+      const request = await this.$http.post('/setup/unavailability', {
         events
       });
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Set work/study availability schedule!' });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Set study/work unavailability schedule!' });
 
       this.loading = false;
       this.saved = true;
