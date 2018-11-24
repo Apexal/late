@@ -107,6 +107,13 @@ const router = new Router({
             title: 'Study/Work Unavailability'
           },
           component: () => import('@/views/profile/UnavailabilitySetup.vue')
+        },
+        {
+          path: 'integrations',
+          meta: {
+            title: 'Integrations'
+          },
+          component: () => import('@/views/profile/IntegrationsSetup.vue')
         }
       ]
     },
