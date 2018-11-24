@@ -71,7 +71,7 @@ async function verifySMS (ctx) {
     return ctx.unauthorized('Incorrect verification code.');
   }
 
-  ctx.state.user.integrations.sms.verificationCode = null;
+  ctx.state.user.integrations.sms.verificationCode = undefined;
   ctx.state.user.integrations.sms.verified = true;
 
   try {
