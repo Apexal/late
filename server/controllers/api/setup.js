@@ -124,7 +124,8 @@ async function setCourses (ctx) {
  * @param {Koa context} ctx
  */
 async function setUnavailability (ctx) {
-  const events = ctx.request.body.events;
+  const body = ctx.request.body;
+  const events = body.events;
 
   // Remove dates, split times
   const unavailabilityPeriods = events.map(e => ({
@@ -132,6 +133,9 @@ async function setUnavailability (ctx) {
     start: moment.utc(e.start).format('Hmm'),
     end: moment.utc(e.end).format('Hmm')
   }));
+
+  ctx.state.user.earliestWorkTime = body.earliest;
+  ctx.state.user.latestWorkTime = body.latest;
 
   ctx.state.user.setup.unavailability = true;
 

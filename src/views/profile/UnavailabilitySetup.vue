@@ -1,5 +1,48 @@
 <template>
   <div class="unavailability-setup">
+    <div class="box">
+      <form
+        id="time-preferences"
+        @submit.prevent="save"
+      >
+        <div class="columns">
+          <div class="column field">
+            <label
+              for="earliest"
+              class="label"
+            >Earliest Time Preference</label>
+            <p class="help"><b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.</p>
+            <div class="control">
+              <input
+                id="earliest"
+                v-model="earliest"
+                min="00:00"
+                max="12:00"
+                type="time"
+                class="input is-small"
+                required
+              >
+            </div>
+          </div>
+          <div class="column field">
+            <label
+              for="latest"
+              class="label"
+            >Latest Time Preference</label>
+            <p class="help"><b>LATE</b> will not schedule any work for you after this time unless it absolutely does not fit anywhere else.</p>
+            <div class="control">
+              <input
+                id="latest"
+                v-model="latest"
+                type="time"
+                class="input is-small"
+                required
+              >
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
     <h2 class="subtit">Drag to set your study/work unavailability</h2>
     <p class="help">Click on blocks to remove them. You can also drag, drop, and resive them.</p>
     <FullCalendar
@@ -11,13 +54,14 @@
       :config="calendar.config"
       @event-resize="eventResized"
     />
+    <hr>
     <button
-      class="button is-success"
+      form="time-preferences"
+      class="button is-primary"
       :class="{'is-loading': loading}"
       :disabled="saved"
-      @click="save"
     >
-      Save Unavailability
+      Save and Continue
     </button>
   </div>
 </template>
@@ -33,6 +77,8 @@ export default {
     return {
       loading: false,
       saved: true,
+      earliest: this.$store.state.auth.user.earliestWorkTime,
+      latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
         events: this.$store.getters.getCourseScheduleAsEvents.concat(this.$store.getters.getUnavailabilityAsEvents),
         header: {
@@ -42,6 +88,10 @@ export default {
         },
         config: {
           // timezone: 'UTC',
+          columnHeader: false,
+          allDaySlot: false,
+          minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
+          maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
           navLinks: false,
           defaultView: 'agendaWeek',
           selectHelper: true,
@@ -70,7 +120,9 @@ export default {
       }
     };
   },
-  computed: {
+  watch: {
+    earliest () { this.saved = false; },
+    latest () { this.saved = false; }
   },
   methods: {
     eventResized (calEvent) {
@@ -81,9 +133,17 @@ export default {
       this.loading = true;
       const events = this.calendar.events.filter(e => e.isWorkBlock);
 
-      const request = await this.$http.post('/setup/unavailability', {
-        events
-      });
+      let request;
+      try {
+        request = await this.$http.post('/setup/unavailability', {
+          earliest: this.earliest,
+          latest: this.latest,
+          events
+        });
+      } catch (e) {
+        this.loading = false;
+        return this.$store.dispatch('ADD_NOTIFICATION', { type: 'danger', description: e.response.data.message });
+      }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 

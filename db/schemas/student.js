@@ -53,6 +53,18 @@ const schema = new Schema(
       /*, required: true */
     }, // maybe?
     semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    earliestWorkTime: {
+      type: String,
+      minlength: 5,
+      maxlength: 5,
+      default: '06:00'
+    },
+    latestWorkTime: {
+      type: String,
+      minlength: 5,
+      maxlength: 5,
+      default: '23:00'
+    },
     unavailability_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
     admin: { type: Boolean, default: false },
     setup: {
