@@ -6,9 +6,9 @@ const state = {
   isAuthenticated: false
 };
 const getters = {
-  getWorkBlocksAsEvents: state => {
-    if (!state.user.current_work_schedule) return [];
-    return state.user.current_work_schedule.map(p => {
+  getUnavailabilityAsEvents: state => {
+    if (!state.user.current_unavailability) return [];
+    return state.user.current_unavailability.map(p => {
       const sunday = moment().startOf('day');
       while (sunday.day() !== 0) sunday.subtract(1, 'days');
       const sundayStr = sunday.format('YYYY-MM-DD');
@@ -23,7 +23,7 @@ const getters = {
       );
 
       return {
-        title: 'Work/Study',
+        title: 'Unavailable',
         start: start,
         end,
         isWorkBlock: true

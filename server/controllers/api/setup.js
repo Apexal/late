@@ -117,35 +117,39 @@ async function setCourses (ctx) {
 }
 
 /**
- * Set the work schedule of the logged in user.
+ * Set the study/work unavailability schedule of the logged in user.
  *
  * Body:
  * - events
  * @param {Koa context} ctx
  */
-async function setWorkSchedule (ctx) {
+async function setUnavailability (ctx) {
   const events = ctx.request.body.events;
 
   // Remove dates, split times
-  const workPeriods = events.map(e => ({
+  const unavailabilityPeriods = events.map(e => ({
     day: moment(e.start).day(),
     start: moment(e.start).format('Hmm'),
     end: moment(e.end).format('Hmm')
   }));
 
-  ctx.state.user.setup.work_schedule = true;
+  ctx.state.user.setup.unavailability = true;
 
   try {
-    ctx.state.user.current_work_schedule = workPeriods;
+    ctx.state.user.current_unavailability = unavailabilityPeriods;
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
-      `Failed to set study/work schedule for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to set work/study unavailability schedule for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
     );
-    return ctx.badRequest('Failed to set study/work schedule.');
+    return ctx.badRequest('Failed to set work/study unavailability schedule.');
   }
 
-  logger.info(`Set study/work periods for ${ctx.state.user.rcs_id}`);
+  logger.info(
+    `Set work/study unavailability periods for ${ctx.state.user.rcs_id}`
+  );
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
@@ -153,5 +157,5 @@ module.exports = {
   setPersonalInfo,
   setCourseSchedule,
   setCourses,
-  setWorkSchedule
+  setUnavailability
 };

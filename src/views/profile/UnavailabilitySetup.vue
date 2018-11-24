@@ -34,14 +34,14 @@ export default {
       loading: false,
       saved: true,
       calendar: {
-        events: this.$store.getters.getCourseScheduleAsEvents.concat(this.$store.getters.getWorkBlocksAsEvents),
+        events: this.$store.getters.getCourseScheduleAsEvents.concat(this.$store.getters.getUnavailabilityAsEvents),
         header: {
           left: '',
           center: '',
           right: ''
         },
         config: {
-          timezone: 'local',
+          // timezone: 'local',
           navLinks: false,
           defaultView: 'agendaWeek',
           selectHelper: true,
@@ -52,14 +52,12 @@ export default {
           eventClick: (calEvent, jsEvent, view) => {
             if (!calEvent.isWorkBlock) return;
             this.saved = false;
-            this.calendar.events = this.calendar.events.filter(e => {
-              return !moment(e.start).isSame(moment(calEvent.start).format('YYYY-MM-DD Hmm'));
-            });
+            this.calendar.events = this.calendar.events.filter(e => !moment(e.start).isSame(moment(calEvent.start)));
           },
 
           select: (start, end) => {
             const eventData = {
-              title: 'Work/Study',
+              title: 'Unavailable',
               start: start,
               end: end,
               isWorkBlock: true
