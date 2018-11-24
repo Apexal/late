@@ -12,6 +12,8 @@
         >
         <label for="enabled">Enable weekly email reports</label>
       </div>
+
+      <button class="button is-dark">Save</button>
     </form>
   </div>
 </template>
@@ -23,7 +25,7 @@ export default {
   name: 'EmailSetup',
   data () {
     return {
-      enabled: false
+      enabled: this.$store.state.auth.user.integrations.email.sendWeeklyProgressReports // wew
     };
   },
   methods: {

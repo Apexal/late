@@ -59,7 +59,7 @@ export default {
   name: 'SMSSetup',
   data () {
     return {
-      phoneNumber: this.$store.state.auth.user.phoneNumber,
+      phoneNumber: this.$store.state.auth.user.integrations.sms.phoneNumber || '',
       verificationCode: '',
       awaitingVerification: false
     };

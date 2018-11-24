@@ -67,6 +67,15 @@ const schema = new Schema(
     },
     unavailability_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
     admin: { type: Boolean, default: false },
+    integrations: {
+      sms: {
+        phoneNumber: { type: String, minlength: 12, maxlength: 12 }
+      },
+      discord: Object,
+      email: {
+        sendWeeklyProgressReports: { type: Boolean, default: true }
+      }
+    },
     setup: {
       personal_info: {
         type: Boolean,

@@ -2,7 +2,7 @@
   <div class="integrations-setup">
     <div class="tabs is-centered">
       <ul>
-        <li><a @click="currentTab = 'SMSSetup'">SMS</a></li>
+        <li :class="{ 'is-active': currentTab === 'SMSSetup' }"><a @click="currentTab = 'SMSSetup'">SMS</a></li>
         <li><a @click="currentTab = 'EmailSetup'">Email</a></li>
         <li><a @click="currentTab = 'DiscordSetup'">Discord</a></li>
       </ul>
