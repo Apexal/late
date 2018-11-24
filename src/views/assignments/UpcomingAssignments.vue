@@ -1,9 +1,13 @@
 <template>
   <div class="upcoming-assignments">
+    <p
+      v-if="none"
+      class="has-text-centered has-text-grey"
+    >No upcoming assignments left (with filters)!</p>
     <div
+      v-else
       class="columns is-multiline"
     >
-
       <div
         v-for="(assignments, date) in filtered"
         :key="date"
@@ -52,7 +56,7 @@
               </router-link>
               <small
                 :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
-                class="is-pulled-right"
+                class="is-pulled-right has-text-grey"
               >{{ toTimeString(a.dueDate) }}</small>
             </span>
           </div>
@@ -78,6 +82,7 @@ export default {
     }
   },
   computed: {
+    none () { return Object.keys(this.filtered).length === 0; },
     filtered () {
       const filtered = {};
       for (let date in this.upcomingAssignmentsGroupedByDueDate) {

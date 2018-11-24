@@ -22,6 +22,12 @@
     >
       {{ t }}
     </div>
+    <div
+      v-if="todos.length === 0"
+      class="panel-block has-text-grey-light is-size-7"
+    >
+      No todos saved on this device yet.
+    </div>
   </details>
 </template>
 
