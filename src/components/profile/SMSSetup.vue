@@ -52,7 +52,10 @@
 
         <hr>
 
-        <button class="button is-dark">Save</button>
+        <button
+          :class="{ 'is-loading': loading }"
+          class="button is-dark"
+        >Save</button>
       </form>
     </div>
     <div
@@ -178,12 +181,25 @@ export default {
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: `Successfully verified your phone number ${request.data.updatedUser.integrations.sms.phoneNumber}!` });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: `Successfully verified your phone number ${request.response.data.updatedUser.integrations.sms.phoneNumber}!` });
 
       this.loading = false;
     },
     async savePreferences () {
-      alert('Not yet implemented!');
+      this.loading = true;
+
+      let request;
+      try {
+        request = await this.$http.post('/integrations/sms/preferences', this.preferences);
+      } catch (e) {
+        this.loading = false;
+        return this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: e.response.data.message });
+      }
+
+      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Successfully updated your SMS preferences!' });
+
+      this.loading = false;
     }
   }
 };

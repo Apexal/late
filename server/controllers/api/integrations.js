@@ -86,7 +86,30 @@ async function verifySMS (ctx) {
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
+/**
+ *
+ * @param {Koa context} ctx
+ */
+async function updatePreferencesSMS (ctx) {
+  const preferences = ctx.request.body;
+
+  Object.assign(ctx.state.user.integrations.sms.preferences, preferences);
+
+  try {
+    await ctx.state.user.save();
+  } catch (e) {
+    logger.error(
+      `Failed to update SMS preferences for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('Failed to update SMS preferences.');
+  }
+
+  logger.info(`Updated SMS preferences for ${ctx.state.user.rcs_id}.`);
+  ctx.ok({ updatedUser: ctx.state.user });
+}
+
 module.exports = {
   submitSMS,
-  verifySMS
+  verifySMS,
+  updatePreferencesSMS
 };
