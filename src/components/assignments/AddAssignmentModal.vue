@@ -94,6 +94,8 @@
                   <input
                     id="due-date"
                     v-model="dueDate"
+                    :min="today"
+                    max="2030-01-01"
                     type="date"
                   >
                 </div>
@@ -128,6 +130,7 @@
                   v-model.number="timeEstimate"
                   type="number"
                   min="0.5"
+                  max="100"
                   step="0.5"
                 >
               </div>
@@ -210,7 +213,8 @@ export default {
   computed: {
     courses () {
       return this.$store.state.auth.user.current_schedule;
-    }
+    },
+    today: () => moment().format('YYYY-MM-DD')
   },
   methods: {
     async save () {
