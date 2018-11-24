@@ -32,6 +32,7 @@
     "npm": "^6.4.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
+    "twilio": "^3.24.0",
     "vue": "^2.5.17",
     "vue-full-calendar": "^2.7.0",
     "vue-markdown": "^2.2.4",
