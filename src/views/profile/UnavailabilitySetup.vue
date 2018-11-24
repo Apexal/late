@@ -41,7 +41,7 @@ export default {
           right: ''
         },
         config: {
-          timezone: 'America/New_York',
+          // timezone: 'UTC',
           navLinks: false,
           defaultView: 'agendaWeek',
           selectHelper: true,
