@@ -10,6 +10,8 @@ const Respond = require('koa-respond');
 const Send = require('koa-send');
 const CORS = require('@koa/cors');
 
+const discord = require('./discord');
+
 const logger = require('./logger');
 
 const app = new Koa();

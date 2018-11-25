@@ -1,5 +1,5 @@
 <template>
-  <div class="email-setup box">
+  <div class="email-setup">
     <h2 class="subtitle">Email Notifications</h2>
 
     <form @submit.prevent="save">
@@ -10,8 +10,10 @@
           type="checkbox"
           class="switch"
         >
-        <label for="enabled">Enable weekly email reports</label>
+        <label for="enabled"><b>Enable weekly email reports</b></label>
       </div>
+
+      <hr>
 
       <button class="button is-dark">Save</button>
     </form>
@@ -30,7 +32,7 @@ export default {
   },
   methods: {
     async save () {
-
+      alert('Please implement me!');
     }
   }
 };

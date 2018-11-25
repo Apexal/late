@@ -181,7 +181,7 @@ export default {
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: `Successfully verified your phone number ${request.response.data.updatedUser.integrations.sms.phoneNumber}!` });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: `Successfully verified your phone number ${request.data.updatedUser.integrations.sms.phoneNumber}!` });
 
       this.loading = false;
     },
