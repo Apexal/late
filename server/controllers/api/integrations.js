@@ -4,6 +4,7 @@ const SMS = require('../../sms');
 const { dmStudent } = require('../../discord');
 
 /**
+ * Get a SMS verification code and send it to the user's given phone number.
  *
  * @param {Koa context} ctx
  */
@@ -39,16 +40,27 @@ async function submitSMS (ctx) {
   }
 
   // Send text to the given number
-  const message = await SMS.sendText(
-    phoneNumber,
-    `Your LATE verification code is: ${code}`
-  );
+  let message;
+  try {
+    message = await SMS.sendText(
+      phoneNumber,
+      `Your LATE verification code is: ${code}`
+    );
+  } catch (e) {
+    logger.error(
+      `Failed to send SMS verification code to ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.internalServerError(
+      `Failed to send verification code to ${phoneNumber}.`
+    );
+  }
 
   logger.info(`Sent SMS verification code to ${ctx.state.user.rcs_id}.`);
   ctx.ok(`Successfully sent SMS verification code to ${phoneNumber}.`);
 }
 
 /**
+ * Attempt to verify a user's phone number with the verification code.
  *
  * @param {Koa context} ctx
  */
@@ -89,6 +101,7 @@ async function verifySMS (ctx) {
 }
 
 /**
+ * Update SMS integration preferences passed in the request body.
  *
  * @param {Koa context} ctx
  */
@@ -111,6 +124,7 @@ async function updatePreferencesSMS (ctx) {
 }
 
 /**
+ * Get a random verification code, save it to the user, and return it.
  *
  * @param {Koa context} ctx
  */
@@ -119,12 +133,23 @@ async function startVerifyDiscord (ctx) {
     .toString(36)
     .substr(2, 5));
 
-  await ctx.state.user.save();
+  try {
+    await ctx.state.user.save();
+  } catch (e) {
+    logger.error(
+      `Failed to start verifying Discord for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('Error getting verification code.');
+  }
 
+  logger.info(
+    `Generated Discord verification code for ${ctx.state.use.rcs_id}.`
+  );
   ctx.ok({ verificationCode: code });
 }
 
 /**
+ * Update Discord preferences passed in the request body.
  *
  * @param {Koa context} ctx
  */
