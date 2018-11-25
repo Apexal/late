@@ -11,7 +11,7 @@
         class="button is-warning"
         @click="startVerify"
       >Link Discord Account</button>
-      <p v-else>Direct message <b>LATE bot</b> <code>~verify {{ verificationCode }}</code> to link your account!</p>
+      <p v-else>Direct message <b>LATE bot</b> <code>.verify {{ verificationCode }}</code> to link your account!</p>
     </div>
     <div
       v-else
