@@ -79,7 +79,11 @@ const schema = new Schema(
           reminders: { type: Boolean, default: false }
         }
       },
-      discord: Object,
+      discord: {
+        verified: { type: Boolean, default: false },
+        verificationCode: { type: String, minlength: 1 },
+        userID: { type: String }
+      },
       email: {
         sendWeeklyProgressReports: { type: Boolean, default: true }
       }

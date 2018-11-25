@@ -108,8 +108,19 @@ async function updatePreferencesSMS (ctx) {
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
+async function startVerifyDiscord (ctx) {
+  const code = (ctx.state.user.integrations.discord.verificationCode = Math.random()
+    .toString(36)
+    .substr(2, 5));
+
+  await ctx.state.user.save();
+
+  ctx.ok({ verificationCode: code });
+}
+
 module.exports = {
   submitSMS,
   verifySMS,
-  updatePreferencesSMS
+  updatePreferencesSMS,
+  startVerifyDiscord
 };

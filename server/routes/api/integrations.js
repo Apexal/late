@@ -7,4 +7,6 @@ router.post('/sms/submit', Ctrl.submitSMS);
 router.post('/sms/verify', Ctrl.verifySMS);
 router.post('/sms/preferences', Ctrl.updatePreferencesSMS);
 
+router.post('/discord/startverify', Ctrl.startVerifyDiscord);
+
 module.exports = router.routes();
