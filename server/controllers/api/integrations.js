@@ -1,6 +1,8 @@
 const logger = require('../../logger');
 const SMS = require('../../sms');
 
+const { dmStudent } = require('../../discord');
+
 /**
  *
  * @param {Koa context} ctx
@@ -108,6 +110,10 @@ async function updatePreferencesSMS (ctx) {
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
+/**
+ *
+ * @param {Koa context} ctx
+ */
 async function startVerifyDiscord (ctx) {
   const code = (ctx.state.user.integrations.discord.verificationCode = Math.random()
     .toString(36)
@@ -118,9 +124,34 @@ async function startVerifyDiscord (ctx) {
   ctx.ok({ verificationCode: code });
 }
 
+/**
+ *
+ * @param {Koa context} ctx
+ */
+async function updatePreferencesDiscord (ctx) {
+  const preferences = ctx.request.body;
+
+  Object.assign(ctx.state.user.integrations.discord.preferences, preferences);
+
+  try {
+    await ctx.state.user.save();
+  } catch (e) {
+    logger.error(
+      `Failed to update Discord preferences for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('Failed to update Discord preferences.');
+  }
+
+  dmStudent(ctx.state.user, 'You updated your preferences!');
+
+  logger.info(`Updated Discord preferences for ${ctx.state.user.rcs_id}.`);
+  ctx.ok({ updatedUser: ctx.state.user });
+}
+
 module.exports = {
   submitSMS,
   verifySMS,
   updatePreferencesSMS,
-  startVerifyDiscord
+  startVerifyDiscord,
+  updatePreferencesDiscord
 };
