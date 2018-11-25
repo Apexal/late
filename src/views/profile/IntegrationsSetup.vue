@@ -14,10 +14,11 @@
 <script>
 import SMSSetup from '@/components/profile/SMSSetup';
 import EmailSetup from '@/components/profile/EmailSetup';
+import DiscordSetup from '@/components/profile/DiscordSetup';
 
 export default {
   name: 'IntegrationsSetup',
-  components: { SMSSetup, EmailSetup },
+  components: { SMSSetup, EmailSetup, DiscordSetup },
   data () {
     return {
       currentTab: 'SMSSetup',
