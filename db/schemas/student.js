@@ -69,9 +69,24 @@ const schema = new Schema(
     admin: { type: Boolean, default: false },
     integrations: {
       sms: {
-        phoneNumber: { type: String, minlength: 12, maxlength: 12 }
+        verified: { type: Boolean, default: false },
+        verificationCode: { type: String, minlength: 1 },
+        phoneNumber: { type: String, minlength: 12, maxlength: 12 },
+        preferences: {
+          enabled: { type: Boolean, default: false },
+          preWorkText: { type: Boolean, default: false },
+          postWorkText: { type: Boolean, default: false },
+          reminders: { type: Boolean, default: false }
+        }
       },
-      discord: Object,
+      discord: {
+        verified: { type: Boolean, default: false },
+        verificationCode: { type: String, minlength: 1 },
+        userID: { type: String },
+        preferences: {
+          enabled: { type: Boolean, default: false }
+        }
+      },
       email: {
         sendWeeklyProgressReports: { type: Boolean, default: true }
       }
