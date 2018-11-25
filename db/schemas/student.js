@@ -82,7 +82,10 @@ const schema = new Schema(
       discord: {
         verified: { type: Boolean, default: false },
         verificationCode: { type: String, minlength: 1 },
-        userID: { type: String }
+        userID: { type: String },
+        preferences: {
+          enabled: { type: Boolean, default: false }
+        }
       },
       email: {
         sendWeeklyProgressReports: { type: Boolean, default: true }
