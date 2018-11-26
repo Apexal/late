@@ -6,7 +6,7 @@
     <summary class="panel-heading is-unselectable is-size-6">Today's Schedule
       <span
         v-if="in_class"
-        class="tag is-info tooltip is-tooltip-right is-pulled-right"
+        class="tag is-info tooltip is-pulled-right"
         :data-tooltip="'Until end of ' + current_course.longname + ' ' + periodType(current_period)"
       >{{ countdown }}</span>
     </summary>
@@ -39,7 +39,7 @@
             :data-tooltip="fromNow(p.start)"
           >{{ course(p).longname }} <span class="has-text-grey">{{ periodType(p) }}</span></span>
           <div
-            class="course-times is-pulled-right has-text-grey tooltip is-tooltip-right"
+            class="course-times is-pulled-right has-text-grey tooltip is-tooltip-left"
             :data-tooltip="duration(p) + ' minutes'"
           >
             <span>{{ timeFormat(p.start) }}</span>
