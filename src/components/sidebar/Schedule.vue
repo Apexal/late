@@ -6,7 +6,7 @@
     <summary class="panel-heading is-unselectable is-size-6">Today's Schedule
       <span
         v-if="in_class"
-        class="tag is-info tooltip is-pulled-right"
+        class="tag is-info tooltip is-tooltip-right is-pulled-right"
         :data-tooltip="'Until end of ' + current_course.longname + ' ' + periodType(current_period)"
       >{{ countdown }}</span>
     </summary>
@@ -28,16 +28,18 @@
         :class="{ 'is-active': p == current_period, 'has-background-grey-lighter': hasPassed(p) }"
       >
         <span
-          class="course-longname is-full-width tooltip is-tooltip-bottom"
-          :data-tooltip="fromNow(p.start)"
+          class="course-longname is-full-width"
         >
           <span
-            class="dot"
+            class="course-dot dot"
             :style="'background-color: ' + course(p).color"
           />
-          {{ course(p).longname }} <span class="has-text-grey">{{ periodType(p) }}</span>
+          <span
+            class="tooltip is-tooltip-bottom"
+            :data-tooltip="fromNow(p.start)"
+          >{{ course(p).longname }} <span class="has-text-grey">{{ periodType(p) }}</span></span>
           <div
-            class="course-times is-pulled-right has-text-grey tooltip"
+            class="course-times is-pulled-right has-text-grey tooltip is-tooltip-right"
             :data-tooltip="duration(p) + ' minutes'"
           >
             <span>{{ timeFormat(p.start) }}</span>
@@ -117,6 +119,10 @@ export default {
   &.is-active {
     font-weight: bold;
   }
+}
+
+.course-dot {
+  margin-right: 5px;
 }
 
 .course-times {
