@@ -1,7 +1,7 @@
 const logger = require('../../logger');
 const SMS = require('../../sms');
 
-const { dmStudent } = require('../../discord');
+const { dmStudent } = require('../../discord').utils;
 
 /**
  * Get a SMS verification code and send it to the user's given phone number.
@@ -143,7 +143,7 @@ async function startVerifyDiscord (ctx) {
   }
 
   logger.info(
-    `Generated Discord verification code for ${ctx.state.use.rcs_id}.`
+    `Generated Discord verification code for ${ctx.state.user.rcs_id}.`
   );
   ctx.ok({ verificationCode: code });
 }

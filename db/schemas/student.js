@@ -84,7 +84,9 @@ const schema = new Schema(
         verificationCode: { type: String, minlength: 1 },
         userID: { type: String },
         preferences: {
-          enabled: { type: Boolean, default: false }
+          enabled: { type: Boolean, default: false },
+          preWorkDM: { type: Boolean, default: false },
+          postWorkDM: { type: Boolean, default: false }
         }
       },
       email: {

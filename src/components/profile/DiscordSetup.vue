@@ -25,7 +25,25 @@
             type="checkbox"
             class="switch"
           >
-          <label for="enabled"><b>Enable Discord DMing</b></label>
+          <label for="enabled"><b>Enable Discord notifications</b></label>
+        </div>
+        <div class="field">
+          <input
+            id="preWorkDM"
+            v-model="preferences.preWorkDM"
+            type="checkbox"
+            class="switch"
+          >
+          <label for="preWorkDM">DM work session reminder</label>
+        </div>
+        <div class="field">
+          <input
+            id="postWorkDM"
+            v-model="preferences.postWorkDM"
+            type="checkbox"
+            class="switch"
+          >
+          <label for="postWorkDM">DM post-work session checkup</label>
         </div>
 
         <hr>
