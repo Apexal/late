@@ -6,6 +6,35 @@
     >
       <h2 class="subtitle">SMS Notifications</h2>
 
+      <label
+        for="phoneNumber"
+        class="label"
+      >Your Phone Number</label>
+      <div class="field has-addons">
+        <div class="control">
+          <a class="button is-static">
+            +1
+          </a>
+        </div>
+        <div class="control">
+          <input
+            id="phoneNumber"
+            class="input"
+            type="tel"
+            :value="phoneNumber"
+            disabled
+          >
+        </div>
+        <div class="control">
+          <button
+            class="button is-warning"
+            @click="resetPhoneNumber"
+          >Change</button>
+        </div>
+      </div>
+
+      <hr>
+
       <form @submit.prevent="savePreferences">
         <div class="field">
           <input
@@ -200,6 +229,9 @@ export default {
       this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Successfully updated your SMS preferences!' });
 
       this.loading = false;
+    },
+    async resetPhoneNumber () {
+      alert('Not yet implemented!');
     }
   }
 };
