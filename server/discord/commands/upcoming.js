@@ -14,17 +14,24 @@ module.exports = {
   async run (client, msg, args) {
     // Get student's upcoming assignments
     const student = await getStudent(msg.author);
+
+    // User hasn't used LATE yet, or has not yet connected to LATE
     if (!student) {
-      msg.reply('You have not connected to LATE yet!');
+      msg.reply(
+        `You have not connected to LATE yet! Goto ${
+          process.env.BASE_URL
+        } to start.`
+      );
       return;
     }
 
+    // Find upcoming assignments (dueDate is after current datetime)
     const upcomingAssignments = (await student.getAssignments(
       new Date()
     )).filter(a => !a.completed);
 
+    // Group by due dates
     const grouped = {};
-
     for (let a of upcomingAssignments) {
       const day = moment(new Date(a.dueDate))
         .startOf('day')
@@ -35,6 +42,7 @@ module.exports = {
       grouped[day].push(a);
     }
 
+    // Create fancy embed message to display info better
     const embed = new Discord.RichEmbed()
       .setTitle('Upcoming Assignments')
       .setAuthor('LATE')
