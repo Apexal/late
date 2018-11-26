@@ -87,8 +87,8 @@ export default {
           right: ''
         },
         config: {
-          // timezone: 'UTC',
-          height: 800,
+          timezone: 'local',
+          height: 700,
           columnHeaderFormat: 'ddd',
           allDaySlot: false,
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
@@ -108,7 +108,7 @@ export default {
 
           select: (start, end) => {
             const eventData = {
-              title: 'Unavailable',
+              title: 'Busy',
               start: start,
               end: end,
               isWorkBlock: true
