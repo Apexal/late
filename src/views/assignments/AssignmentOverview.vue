@@ -18,7 +18,9 @@
       class="section"
     >
       <div class="is-clearfix">
-        <span class="has-text-grey is-pulled-right">{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
+        <span
+          class="has-text-grey is-pulled-right"
+        >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
         <h2 class="subtitle">
           <span
             class="dot course-dot"
@@ -26,12 +28,11 @@
             :style="'background-color: ' + course.color"
           />
           {{ course.longname }}
-          <span class="has-text-grey">{{ isPast ? 'Past ': '' }}Assignment</span>
+          <span
+            class="has-text-grey"
+          >{{ isPast ? 'Past ': '' }}Assignment</span>
         </h2>
-        <h1 class="title">
-          {{ assignment.title }}
-        </h1>
-
+        <h1 class="title">{{ assignment.title }}</h1>
       </div>
       <hr>
       <nav
@@ -47,7 +48,10 @@
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">Work Left</p>
-            <p class="subtitle">{{ assignment.timeRemaining }} <span class="has-text-grey">hrs</span></p>
+            <p class="subtitle">
+              {{ assignment.timeRemaining }}
+              <span class="has-text-grey">hrs</span>
+            </p>
           </div>
         </div>
         <div class="level-item has-text-centered">
@@ -57,7 +61,40 @@
           </div>
         </div>
       </nav>
-      <div class="content">
+
+      <div class="tabs">
+        <ul>
+          <li
+            :class="{ 'is-active': tab === 'description' }"
+            @click="tab = 'description'"
+          >
+            <a>Description</a>
+          </li>
+          <li
+            :class="{ 'is-active': tab === 'schedule' }"
+            @click="tab = 'schedule'"
+          >
+            <a>Work Schedule</a>
+          </li>
+          <li
+            :class="{ 'is-active': tab === 'comments' }"
+            @click="tab = 'comments'"
+          >
+            <a>
+              Comments
+              <span
+                v-if="assignment.comments.length > 0"
+                class="tag is-dark comment-count"
+              >{{ assignment.comments.length }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div
+        v-if="tab === 'description'"
+        class="assignment-description content"
+      >
         <blockquote>
           <VueMarkdown
             v-if="assignment.description.length > 0"
@@ -69,7 +106,55 @@
           <i v-else>No description given.</i>
         </blockquote>
       </div>
+
+      <div
+        v-else-if="tab === 'schedule'"
+        class="assignment-schedule"
+      />
+
+      <div
+        v-else-if="tab === 'comments'"
+        class="assignment-comments"
+      >
+        <form @submit.prevent="addComment">
+          <div class="field">
+            <div class="control">
+              <textarea
+                id="new-comment"
+                v-model="newComment"
+                placeholder="Markdown supported!"
+                cols="30"
+                rows="10"
+                class="input"
+                required
+              />
+            </div>
+          </div>
+          <button
+            :class="{ 'is-loading': commentLoading }"
+            class="button is-success"
+          >Add Comment</button>
+        </form>
+        <hr>
+        <div
+          v-for="(c, index) in assignment.comments"
+          :key="index"
+          class="box"
+        >
+          <small
+            class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
+            :data-tooltip="toFullDateTimeString(c.addedAt)"
+          >{{ fromNow(c.addedAt) }}</small>
+          <VueMarkdown
+            :source="c.body"
+            :html="false"
+            :emoji="true"
+            :anchor-attributes="{target: '_blank'}"
+          />
+        </div>
+      </div>
       <hr>
+
       <div class="buttons">
         <router-link
           to="/assignments"
@@ -117,6 +202,9 @@ export default {
   data () {
     return {
       now: moment(),
+      tab: 'description',
+      newComment: '',
+      commentLoading: false,
       loading: true,
       isUpcoming: false,
       assignment: {},
@@ -181,6 +269,7 @@ export default {
     },
     shortDateTimeString: dueDate => moment(dueDate).format('MM/DD/YY h:mma'),
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    fromNow: date => moment(date).fromNow(),
     async remove () {
       // Confirm user wants to remove assignment
       if (
@@ -207,12 +296,39 @@ export default {
         description: `Successfully removed assignment '${assignmentTitle}'.`
       });
     },
-    fromNow: date => moment(date).fromNow()
+    async addComment () {
+      if (!this.newComment) return;
+
+      this.commentLoading = true;
+      let request;
+      request = await this.$http.post(`/assignments/a/${this.assignment._id}/comments/add`, { comment: this.newComment });
+
+      // Calls API and updates state
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.editedAssignment(request.data.updatedAssignment);
+      }
+
+      this.newComment = '';
+      this.commentLoading = false;
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.comment-count {
+  margin-left: 3px;
+}
+#new-comment {
+  max-width: 900px;
+  min-height: 100px;
+  max-height: 200px;
+}
 .assignment-stats {
   padding: 10px;
 }
