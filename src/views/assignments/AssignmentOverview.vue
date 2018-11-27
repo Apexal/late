@@ -1,72 +1,185 @@
 <template>
   <div class="assignment-overview">
+    <EditAssignmentModal
+      v-if="!isPast"
+      :open="editing"
+      :initial-assignment="assignment"
+      @toggle-modal="editing = !editing"
+      @edit-assignment="editedAssignment"
+    />
     <section
-      v-if="!assignment"
+      v-if="loading"
       class="section"
     >
-      <h1 class="title">Assignment Not Found</h1>
-      <router-link
-        to="/assignments"
-        tag="button"
-        class="button is-primary"
-      >Assignment List</router-link>
+      <h1 class="title has-text-grey">Loading Assignment...</h1>
     </section>
     <section
       v-else
       class="section"
     >
-      <span
-        class="is-pulled-right has-text-grey"
-        :title="toFullDateTimeString(assignment.dueDate)"
+      <div class="is-clearfix">
+        <span class="has-text-grey is-pulled-right">{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
+        <h2 class="subtitle">
+          <span
+            class="dot course-dot"
+            :title="course.longname"
+            :style="'background-color: ' + course.color"
+          />
+          {{ course.longname }}
+          <span class="has-text-grey">{{ isPast ? 'Past ': '' }}Assignment</span>
+        </h2>
+        <h1 class="title">
+          {{ assignment.title }}
+        </h1>
+
+      </div>
+      <hr>
+      <nav
+        v-if="!isPast"
+        class="level is-mobile box assignment-stats"
       >
-        {{ fromNow(assignment.dueDate) }}
-      </span>
-      <h2 class="subtitle">{{ course.longname }}</h2>
-      <h1 class="title">{{ assignment.title }}</h1>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Priority</p>
+            <p class="subtitle">{{ assignment.priority }}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Work Left</p>
+            <p class="subtitle">{{ assignment.timeRemaining }} <span class="has-text-grey">hrs</span></p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Due In</p>
+            <p class="subtitle">{{ timeLeft }}</p>
+          </div>
+        </div>
+      </nav>
       <div class="content">
         <blockquote>
-          <p>{{ assignment.description }}</p>
+          <VueMarkdown
+            v-if="assignment.description.length > 0"
+            :source="assignment.description"
+            :html="false"
+            :emoji="true"
+            :anchor-attributes="{target: '_blank'}"
+          />
+          <i v-else>No description given.</i>
         </blockquote>
       </div>
       <hr>
-      <router-link
-        to="/assignments"
-        class="button is-link"
-      >
-        <span class="icon">
-          <i class="fas fa-angle-left" />
-        </span>
-        All Assignments
-      </router-link>
-      <button
-        class="button is-danger"
-        @click="remove"
-      >
-        Remove</button>
+      <div class="buttons">
+        <router-link
+          to="/assignments"
+          class="button is-link"
+        >
+          <span class="icon">
+            <i class="fas fa-angle-left margin-right" />
+          </span>
+          All Assignments
+        </router-link>
+        <button
+          v-if="!isPast"
+          class="button is-warning"
+          :title="'Last edited ' + lastEdited"
+          @click="editing = !editing"
+        >
+          Edit
+          <span class="icon margin-left">
+            <i class="fas fa-pencil-alt" />
+          </span>
+        </button>
+        <button
+          class="button is-danger"
+          @click="remove"
+        >
+          Remove
+          <span class="icon is-small margin-left">
+            <i class="fas fa-times" />
+          </span>
+        </button>
+      </div>
     </section>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+import VueMarkdown from 'vue-markdown';
+
+import EditAssignmentModal from '@/components/assignments/EditAssignmentModal';
 
 export default {
   name: 'AssignmentOverview',
+  components: { VueMarkdown, EditAssignmentModal },
   data () {
     return {
+      now: moment(),
+      loading: true,
+      isUpcoming: false,
+      assignment: {},
+      editing: false
     };
   },
   computed: {
-    assignment () {
-      return this.$store.getters.getAssignmentById(
-        this.$route.params.assignmentID
-      );
-    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+    },
+    lastEdited () {
+      return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt) ? 'never' : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+    },
+    timeLeft () {
+      const diff = moment.duration(moment(this.assignment.dueDate).diff(this.now));
+      return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
+    },
+    isPast () {
+      return moment().isAfter(moment(this.assignment.dueDate));
     }
   },
+  watch: {
+    '$route': 'getAssignment'
+  },
+  created () {
+    this.getAssignment();
+    setInterval(() => {
+      this.now = moment();
+    }, 1000 * 60);
+  },
   methods: {
+    editedAssignment (newAssignment) {
+      this.assignment = newAssignment;
+    },
+    async getAssignment () {
+      // If its an upcoming assignment, we already have the data on it
+      if (this.$store.getters.getUpcomingAssignmentById(this.$route.params.assignmentID)) {
+        this.assignment = this.$store.getters.getUpcomingAssignmentById(this.$route.params.assignmentID);
+        this.loading = false;
+        this.isUpcoming = true;
+        return;
+      }
+
+      this.loading = true;
+      this.isUpcoming = false;
+
+      let request;
+      try {
+        request = await this.$http.get(`/assignments/a/${this.$route.params.assignmentID}`);
+      } catch (e) {
+        this.loading = false;
+        this.$router.push('/assignments');
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
+
+      this.assignment = request.data.assignment;
+
+      this.loading = false;
+    },
+    shortDateTimeString: dueDate => moment(dueDate).format('MM/DD/YY h:mma'),
     toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     async remove () {
       // Confirm user wants to remove assignment
@@ -82,10 +195,14 @@ export default {
       this.$router.push('/assignments');
 
       // This handles the API call and state update
-      await this.$store.dispatch('REMOVE_ASSIGNMENT', assignmentID);
+      if (this.isUpcoming) {
+        await this.$store.dispatch('REMOVE_UPCOMING_ASSIGNMENT', assignmentID);
+      } else {
+        await this.$http.post(`/assignments/a/${assignmentID}/remove`);
+      }
 
       // Notify user of success
-      this.$store.commit('ADD_NOTIFICATION', {
+      this.$store.dispatch('ADD_NOTIFICATION', {
         type: 'success',
         description: `Successfully removed assignment '${assignmentTitle}'.`
       });
@@ -96,4 +213,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.assignment-stats {
+  padding: 10px;
+}
+
+.margin-right {
+  margin-right: 5px;
+}
+
+.margin-left {
+  margin-left: 2px !important;
+}
 </style>

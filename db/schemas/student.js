@@ -6,71 +6,89 @@ const moment = require('moment');
 
 const CURRENT_TERM = '201809';
 
-const schema = new Schema({
-  rin: {
-    type: String,
-    minlength: 9,
-    trim: true
-    // required: true
-    /* validate: {
+const schema = new Schema(
+  {
+    rin: {
+      type: String,
+      minlength: 9,
+      trim: true
+      // required: true
+      /* validate: {
       validator: function(rin) {
         return rpiValidator.isRIN(rin);
       },
       message: props => `${props.value} is not a valid RIN!`
     } */
-  },
-  name: {
-    first: {
-      type: String,
-      trim: true,
-      minlength: 1,
-      maxlength: 100 /*, required: true */
     },
-    preferred: {
-      type: String,
-      trim: true
+    name: {
+      first: {
+        type: String,
+        trim: true,
+        minlength: 1,
+        maxlength: 100 /*, required: true */
+      },
+      preferred: {
+        type: String,
+        trim: true
+      },
+      last: {
+        type: String,
+        trim: true,
+        minlength: 1,
+        maxlength: 100 /*, required: true */
+      }
     },
-    last: {
+    rcs_id: {
       type: String,
+      lowercase: true,
       trim: true,
-      minlength: 1,
-      maxlength: 100 /*, required: true */
-    }
+      minlength: 3,
+      maxlength: 100,
+      required: true
+    },
+    grad_year: {
+      type: Number,
+      min: 2000,
+      max: 3000
+      /*, required: true */
+    }, // maybe?
+    semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    earliestWorkTime: {
+      type: String,
+      minlength: 5,
+      maxlength: 5,
+      default: '06:00'
+    },
+    latestWorkTime: {
+      type: String,
+      minlength: 5,
+      maxlength: 5,
+      default: '23:00'
+    },
+    unavailability_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    admin: { type: Boolean, default: false },
+    setup: {
+      personal_info: {
+        type: Boolean,
+        default: false
+      }, // what CMS API will give us
+      course_schedule: {
+        type: Boolean,
+        default: false
+      }, // what SIS and YACS will give us
+      unavailability: {
+        type: Boolean,
+        default: false
+      } // when the student cannot study or work
+    },
+    joined_date: {
+      type: Date,
+      required: true
+    },
+    last_login: Date
   },
-  rcs_id: {
-    type: String,
-    lowercase: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 100,
-    required: true
-  },
-  grad_year: {
-    type: Number,
-    min: 2000,
-    max: 3000
-    /*, required: true */
-  }, // maybe?
-  semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
-  work_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
-  admin: { type: Boolean, default: false },
-  setup: {
-    personal_info: {
-      type: Boolean,
-      default: false
-    }, // what CMS API will give us
-    course_schedule: {
-      type: Boolean,
-      default: false
-    }, // what SIS and YACS will give us
-    work_schedule: { type: Boolean, default: false } // when the student can study or work
-  },
-  joined_date: {
-    type: Date,
-    required: true
-  },
-  last_login: Date
-});
+  { timestamps: true }
+);
 
 schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });
@@ -90,59 +108,25 @@ schema.methods.courseFromCRN = function (crn) {
   return this.current_schedule.filter(c => c.crn === crn)[0];
 };
 
-schema.methods.findAllAssignments = function (past = false) {
+schema.methods.getAssignments = function (start, end) {
   let query = {
     _student: this._id
   };
-  if (!past) {
-    query.dueDate = {
-      $gte: moment()
-        .startOf('day')
-        .toDate()
-    };
+
+  if (start) {
+    query.dueDate = query.dueDate || {};
+    query.dueDate['$gte'] = moment(start, 'YYYY-MM-DD', true).toDate();
+  }
+
+  if (end) {
+    query.dueDate = query.dueDate || {};
+    query.dueDate['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate();
   }
 
   return this.model('Assignment')
     .find(query)
     .sort('dueDate')
     .sort('-priority')
-    .sort('completed')
-    .exec();
-};
-
-schema.methods.findAssignmentsDueOn = function (date) {
-  return this.model('Assignment')
-    .find({
-      _student: this._id,
-      dueDate: {
-        $gte: moment(date).startOf('day'),
-        $lte: moment(date).endOf('day')
-      }
-    })
-    .sort('dueDate')
-    .sort('-priority')
-    .sort('completed')
-    .exec();
-};
-
-schema.methods.findAssignmentsDueBy = function (date, past = false) {
-  let query = {
-    _student: this._id,
-    dueDate: {
-      $lte: moment(date).endOf('day')
-    }
-  };
-  if (!past) {
-    query.dueDate.$gte = moment()
-      .startOf('day')
-      .toDate();
-  }
-
-  return this.model('Assignment')
-    .find(query)
-    .sort('dueDate')
-    .sort('-priority')
-    .sort('completed')
     .exec();
 };
 
@@ -160,13 +144,13 @@ schema
   });
 
 schema
-  .virtual('current_work_schedule')
+  .virtual('current_unavailability')
   .get(function () {
-    return this.work_schedules[CURRENT_TERM] || [];
+    return this.unavailability_schedules[CURRENT_TERM] || [];
   })
   .set(function (newSchedule) {
-    this.work_schedules[CURRENT_TERM] = newSchedule;
-    this.markModified('work_schedules');
+    this.unavailability_schedules[CURRENT_TERM] = newSchedule;
+    this.markModified('unavailability_schedules');
   });
 
 schema.virtual('is_setup').get(function () {

@@ -10,7 +10,7 @@
       class="notification"
     ><button
       class="delete"
-      @click="remove(index)"
+      @click="remove(n)"
     />{{ n.description }}</div>
   </div>
 </template>
@@ -27,8 +27,8 @@ export default {
     }
   },
   methods: {
-    remove (index) {
-      this.$store.commit('REMOVE_NOTIFICATION', index);
+    remove (n) {
+      this.$store.commit('REMOVE_NOTIFICATION', n);
     }
   }
 };

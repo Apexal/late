@@ -3,7 +3,13 @@
     <section class="hero is-dark">
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">LATE</h1>
+          <h1 class="title">
+            LATE
+            <span
+              class="tag is-primary"
+              title="LATE is still in active development!"
+            >Beta</span>
+          </h1>
           <h2 class="subtitle">Lazy Automatic Time Evaluator</h2>
         </div>
       </div>
@@ -35,12 +41,13 @@
         <div
           id="top-navbar"
           :class="{'is-active': navbarExpanded}"
-          class="navbar-menu"
+          class="navbar-menu is-unselectable"
         >
           <div class="navbar-start">
             <router-link
               class="navbar-item"
               to="/dashboard"
+              title="View your dashboard."
             >
               <span class="icon">
                 <i class="fas fa-home" />
@@ -49,7 +56,13 @@
             <router-link
               class="navbar-item"
               to="/about"
-            >About</router-link>
+              title="View information about LATE's mission and its developer team."
+            >
+              <span class="icon">
+                <i class="fas fa-info-circle" />
+              </span>
+              About
+            </router-link>
 
             <template v-if="loggedIn">
               <div class="navbar-item has-dropdown is-hoverable">
@@ -64,29 +77,39 @@
                 <div class="navbar-dropdown">
                   <router-link
                     class="navbar-item"
-                    to="/assignments"
+                    to="/assignments/upcoming"
+                    title="View upcoming assignments (due in the future)."
                   >
-                    List
+                    <b>Upcoming</b>
+                  </router-link>
+                  <router-link
+                    class="navbar-item"
+                    to="/assignments/past"
+                    title="Browse all past assignments."
+                  >
+                    Past
+                  </router-link>
+                  <router-link
+                    class="navbar-item"
+                    to="/assignments/calendar"
+                    title="View a calendar of all your assignment due dates."
+                  >
+                    Calendar
                   </router-link>
                   <hr class="navbar-divider">
                   <a
                     class="navbar-item"
+                    title="Add a new assignment."
                     @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                   >
+                    <span class="icon">
+                      <i class="fas fa-plus" />
+                    </span>
                     Add Assignment
                   </a>
                 </div>
               </div>
             </template>
-            <a
-              href="https://github.com/Apexal/late"
-              target="_blank"
-              class="navbar-item"
-            >
-              <span class="icon">
-                <i class="fab fa-github" />
-              </span>
-              Source Code</a>
           </div>
 
           <div class="navbar-end">
@@ -94,18 +117,28 @@
               <router-link
                 class="navbar-item"
                 to="/profile"
+                title="Setup your profile."
               >
+                <span class="icon">
+                  <i class="fas fa-user-circle" />
+                </span>
                 Logged in as <b class="rcs_id">{{ user.display_name }}</b>
               </router-link>
               <a
                 class="navbar-item"
                 href="/auth/logout"
-              >Logout</a>
+              >
+                <span class="icon">
+                  <i class="fas fa-sign-out-alt" />
+                </span>
+                Logout
+              </a>
             </template>
             <a
               v-else
               class="navbar-item"
               href="/auth/login"
+              title="Login to LATE with RPI CAS."
             ><b>Login</b></a>
 
           </div>
@@ -131,7 +164,7 @@ export default {
       return this.$store.state.auth.isAuthenticated;
     },
     assignmentCount () {
-      return this.$store.state.work.assignments.length;
+      return this.$store.getters.incompleteUpcomingAssignments.length;
     }
   }
 };

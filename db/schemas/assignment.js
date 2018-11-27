@@ -7,7 +7,7 @@ const schema = new Schema({
     ref: 'Student',
     required: true
   },
-  title: { type: String, required: true, maxlength: 200 },
+  title: { type: String, required: true, minlength: 3, maxlength: 200 },
   description: { type: String, maxlength: 4000 },
   dueDate: { type: Date, required: true },
   courseCRN: { type: String, required: true }, // CRN
@@ -16,13 +16,14 @@ const schema = new Schema({
   isAssessment: { type: Boolean, required: true },
   priority: { type: Number, min: 0, max: 10 },
   completed: { type: Boolean, default: false },
+  completedAt: { type: Date },
   _blocks: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Block'
     }
   ]
-});
+}, { timestamps: true });
 
 module.exports = {
   name: 'Assignment',

@@ -102,7 +102,7 @@
           </div>
         </div>
       </div>
-
+      <hr>
       <button
         class="button is-primary"
         :class="{'is-loading': loading}"
@@ -113,8 +113,6 @@
 </template>
 
 <script>
-import API from '../../api';
-
 export default {
   name: 'PersonalInfoForm',
   data () {
@@ -140,17 +138,23 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await API.post('/setup/personalinfo', {
-        first_name: this.first_name,
-        last_name: this.last_name,
-        rin: this.rin,
-        grad_year: this.grad_year
-      });
+      let request;
+      try {
+        request = await this.$http.post('/setup/personalinfo', {
+          first_name: this.first_name,
+          last_name: this.last_name,
+          rin: this.rin,
+          grad_year: this.grad_year
+        });
+      } catch (e) {
+        this.loading = false;
+        return this.$store.dispatch('ADD_NOTIFICATION', { type: 'danger', description: e.response.data.message });
+      }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.commit('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
+      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
 
       // Go to next setup
       this.$router.push('/profile/courseschedule');

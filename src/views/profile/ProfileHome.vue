@@ -4,9 +4,9 @@
       For <b>LATE</b> to function, it must know basic info about yourself, your course schedule, your
       work/study schedule, and (optionally) accounts you want to integrate <b>LATE</b> with.
     </p>
-
+    <br>
     <router-link
-      class="button is-primary"
+      class="button is-medium is-primary"
       to="/profile/personalinfo"
     >Start Setup</router-link>
   </div>

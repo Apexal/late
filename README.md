@@ -30,8 +30,10 @@ Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with vers
 - If you want to use a specific branch, switch to it with `$ git checkout branch_name`
 - `$ npm install -g @vue/cli`
 - `$ npm install`
-- `$ npm run build-dev`
 - Create a `.env` file in the root folder with the proper configuration environment variables
-- `$ source .env`
-- `$ npm run dev`
+
+To run the project in development mode, you must run the API server in one terminal and the front end hot-reloading server in another terminal:
+
+- `$ npm run serve` (in one terminal)
+- `$ source .env && npm run dev` (in another terminal)
 - Go to url `http://localhost:3000` in your browser

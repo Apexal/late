@@ -6,29 +6,31 @@ const state = {
   isAuthenticated: false
 };
 const getters = {
-  getWorkBlocksAsEvents: state =>
-    state.user.current_work_schedule.map(p => {
+  getUnavailabilityAsEvents: state => {
+    if (!state.user.current_unavailability) return [];
+    return state.user.current_unavailability.map(p => {
       const sunday = moment().startOf('day');
       while (sunday.day() !== 0) sunday.subtract(1, 'days');
       const sundayStr = sunday.format('YYYY-MM-DD');
 
-      let start = moment(sundayStr + ' ' + p.start, 'YYYY-MM-DD Hmm').add(
-        parseInt(p.day),
-        'days'
-      );
-      let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm').add(
-        parseInt(p.day),
-        'days'
-      );
+      let start = moment
+        .utc(sundayStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true)
+        .add(parseInt(p.day), 'days');
+      let end = moment
+        .utc(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true)
+        .add(parseInt(p.day), 'days');
 
       return {
-        title: 'Work/Study',
-        start,
+        title: 'Unavailable',
+        start: start,
         end,
         isWorkBlock: true
       };
-    }),
+    });
+  },
   getCourseScheduleAsEvents: state => {
+    if (!state.user.current_schedule) return [];
+
     const sunday = moment().startOf('day');
     while (sunday.day() !== 0) sunday.subtract(1, 'days');
 
@@ -37,18 +39,19 @@ const getters = {
     const events = state.user.current_schedule
       .map(c =>
         c.periods.map(p => {
-          let start = moment(sundayStr + ' ' + p.start, 'YYYY-MM-DD Hmm').add(
-            parseInt(p.day),
-            'days'
-          );
-          let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm').add(
+          let start = moment(
+            sundayStr + ' ' + p.start,
+            'YYYY-MM-DD Hmm',
+            true
+          ).add(parseInt(p.day), 'days');
+          let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true).add(
             parseInt(p.day),
             'days'
           );
 
           return {
             title: c.longname,
-            start: start.toDate(),
+            start,
             end,
             color: c.color,
             editable: false
