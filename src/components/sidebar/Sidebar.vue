@@ -3,6 +3,7 @@
     id="sidebar"
     class="menu"
   >
+    <h3 class="has-text-centered is-size-4">Your itinerary</h3>
     <Schedule />
     <PressingAssignments
       :pressing="pressing"
