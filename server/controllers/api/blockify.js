@@ -1,4 +1,31 @@
 
+/**
+ * Returns a mapping which determines whether a particular time
+ * range is available.
+ */
+function availableTime (user) {
+  // TODO: make this term-independent
+  const blockedTimes = user.current_schedule
+    .flatMap(course => course.periods)
+    .concat(user.current_unavailability);
+  // Date bgn, Date end
+  return function isTimeValid (bgn, end) {
+    // a bgn-end interval passes iff the interval contains
+    // no blocked times (i.e. the interval is disjoint to all blocked times).
+    for (const time in blockedTimes) {
+      // determine if the interval bgn-end and time are not disjoint
+      // return false if they are not disjoint.
+      if ((time.start <= bgn && bgn <= time.end) ||
+        (time.start <= end && end <= time.end) ||
+        (bgn <= time.start && time.start <= end) ||
+        (bgn <= time.end && time.end <= end)) {
+        return false;
+      }
+    }
+    return true;
+  };
+}
+
 async function makeBlocks (ctx) {
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
