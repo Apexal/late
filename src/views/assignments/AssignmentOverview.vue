@@ -11,7 +11,9 @@
       v-if="loading"
       class="section"
     >
-      <h1 class="title has-text-grey">Loading Assignment...</h1>
+      <h1 class="title has-text-grey">
+        Loading Assignment...
+      </h1>
     </section>
     <section
       v-else
@@ -20,7 +22,9 @@
       <div class="is-clearfix">
         <span
           class="has-text-grey is-pulled-right"
-        >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
+        >
+          {{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}
+        </span>
         <h2 class="subtitle">
           <span
             class="dot course-dot"
@@ -30,9 +34,13 @@
           {{ course.longname }}
           <span
             class="has-text-grey"
-          >{{ isPast ? 'Past ': '' }}Assignment</span>
+          >
+            {{ isPast ? 'Past ': '' }}Assignment
+          </span>
         </h2>
-        <h1 class="title">{{ assignment.title }}</h1>
+        <h1 class="title">
+          {{ assignment.title }}
+        </h1>
       </div>
       <hr>
       <nav
@@ -41,35 +49,56 @@
       >
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">Priority</p>
-            <p class="subtitle">{{ assignment.priority }}</p>
-          </div>
-        </div>
-        <div class="level-item has-text-centered">
-          <div>
-            <p class="heading">Work Left</p>
+            <p class="heading">
+              Priority
+            </p>
             <p class="subtitle">
-              {{ assignment.timeRemaining }}
-              <span class="has-text-grey">hrs</span>
+              {{ assignment.priority }}
             </p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">Due In</p>
-            <p class="subtitle">{{ timeLeft }}</p>
+            <p class="heading">
+              Work Left
+            </p>
+            <p class="subtitle">
+              {{ assignment.timeRemaining }}
+              <span class="has-text-grey">
+                hrs
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">
+              Due In
+            </p>
+            <p class="subtitle">
+              {{ timeLeft }}
+            </p>
           </div>
         </div>
       </nav>
 
+      <div class="content assignment-description">
+        <blockquote>
+          <VueMarkdown
+            v-if="assignment.description.length > 0"
+            :source="assignment.description"
+            :html="false"
+            :emoji="true"
+            :anchor-attributes="{target: '_blank'}"
+          />
+          <i v-else>
+            No description given.
+          </i>
+        </blockquote>
+      </div>
+
       <div class="tabs">
         <ul>
-          <li
-            :class="{ 'is-active': tab === 'description' }"
-            @click="tab = 'description'"
-          >
-            <a>Description</a>
-          </li>
           <li
             :class="{ 'is-active': tab === 'schedule' }"
             @click="tab = 'schedule'"
@@ -85,33 +114,18 @@
               <span
                 v-if="assignment.comments.length > 0"
                 class="tag is-dark comment-count"
-              >{{ assignment.comments.length }}</span>
+              >
+                {{ assignment.comments.length }}
+              </span>
             </a>
           </li>
         </ul>
       </div>
 
       <div
-        v-if="tab === 'description'"
-        class="assignment-description content"
-      >
-        <blockquote>
-          <VueMarkdown
-            v-if="assignment.description.length > 0"
-            :source="assignment.description"
-            :html="false"
-            :emoji="true"
-            :anchor-attributes="{target: '_blank'}"
-          />
-          <i v-else>No description given.</i>
-        </blockquote>
-      </div>
-
-      <div
-        v-else-if="tab === 'schedule'"
+        v-if="tab === 'schedule'"
         class="assignment-schedule"
       />
-
       <div
         v-else-if="tab === 'comments'"
         class="assignment-comments"
@@ -133,7 +147,9 @@
           <button
             :class="{ 'is-loading': commentLoading }"
             class="button is-success"
-          >Add Comment</button>
+          >
+            Add Comment
+          </button>
         </form>
         <hr>
         <div
@@ -144,7 +160,9 @@
           <small
             class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
             :data-tooltip="toFullDateTimeString(c.addedAt)"
-          >{{ fromNow(c.addedAt) }}</small>
+          >
+            {{ fromNow(c.addedAt) }}
+          </small>
           <VueMarkdown
             :source="c.body"
             :html="false"
@@ -202,7 +220,7 @@ export default {
   data () {
     return {
       now: moment(),
-      tab: 'description',
+      tab: 'comments',
       newComment: '',
       commentLoading: false,
       loading: true,
