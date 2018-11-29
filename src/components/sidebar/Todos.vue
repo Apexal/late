@@ -1,7 +1,10 @@
 <template>
   <details class="todos panel">
     <summary class="panel-heading is-unselectable is-size-6">
-      <span class="tag is-dark is-pulled-right">{{ todos.length }}</span>
+      <span
+        v-if="todos.length > 0"
+        class="tag is-dark is-pulled-right"
+      >{{ todos.length }}</span>
       TODOs
     </summary>
     <form @submit.prevent="addTodo">
@@ -22,18 +25,21 @@
       title="Click to remove."
       @click="removeTodo(t)"
     >
-      {{ t }}
+      <span class="is-full-width">
+        <small class="is-pulled-right has-text-grey">{{ fromNow(t.addedAt) }}</small>
+        {{ t.text }}
+      </span>
     </div>
     <div
       v-if="todos.length === 0"
       class="panel-block has-text-grey-light is-size-7"
-    >
-      No todos saved on this device yet.
-    </div>
+    >No todos saved on this device yet.</div>
   </details>
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   name: 'TODOs',
   data () {
@@ -52,14 +58,17 @@ export default {
     }
   },
   methods: {
+    fromNow: date => moment(date).fromNow(),
     addTodo () {
       if (!this.newTodo) return;
 
-      this.todos.push(this.newTodo);
+      this.todos.push({ text: this.newTodo, addedAt: new Date() });
       this.newTodo = '';
       this.saveTodos();
     },
     removeTodo (todo) {
+      if (!confirm(`Remove '${todo.text}'?`)) return;
+
       this.todos.splice(this.todos.indexOf(todo), 1);
       this.saveTodos();
     },
