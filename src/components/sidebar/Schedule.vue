@@ -3,7 +3,7 @@
     class="schedule panel user-courses"
     open
   >
-    <summary class="panel-heading is-unselectable is-size-6">
+    <summary class="panel-heading is-unselectable is-size-6 is-clearfix">
       Today's Schedule
       <span
         v-if="in_class"
