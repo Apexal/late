@@ -6,6 +6,7 @@
       :initial-assignment="assignment"
       @toggle-modal="editing = !editing"
       @edit-assignment="editedAssignment"
+      @remove-assignment="remove"
     />
     <section
       v-if="loading"
@@ -166,15 +167,6 @@
           Edit
           <span class="icon margin-left">
             <i class="fas fa-pencil-alt" />
-          </span>
-        </button>
-        <button
-          class="button is-danger"
-          @click="remove"
-        >
-          Remove
-          <span class="icon is-small margin-left">
-            <i class="fas fa-times" />
           </span>
         </button>
       </div>
