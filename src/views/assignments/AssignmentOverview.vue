@@ -106,26 +106,6 @@
         v-else-if="tab === 'comments'"
         class="assignment-comments"
       >
-        <form @submit.prevent="addComment">
-          <div class="field">
-            <div class="control">
-              <textarea
-                id="new-comment"
-                v-model="newComment"
-                placeholder="Markdown supported!"
-                cols="30"
-                rows="10"
-                class="input"
-                required
-              />
-            </div>
-          </div>
-          <button
-            :class="{ 'is-loading': commentLoading }"
-            class="button is-success"
-          >Add Comment</button>
-        </form>
-        <hr>
         <div
           v-for="(c, index) in assignment.comments"
           :key="index"
@@ -142,10 +122,32 @@
             :anchor-attributes="{target: '_blank'}"
           />
         </div>
+        <hr>
+        <div class="box is-clearfix">
+          <form @submit.prevent="addComment">
+            <div class="field">
+              <div class="control">
+                <textarea
+                  id="new-comment"
+                  v-model="newComment"
+                  placeholder="Write your comment here. Markdown is supported!"
+                  cols="30"
+                  rows="10"
+                  class="input"
+                  required
+                />
+              </div>
+            </div>
+            <button
+              :class="{ 'is-loading': commentLoading }"
+              class="button is-success is-pulled-right"
+            >Add Comment</button>
+          </form>
+        </div>
       </div>
       <hr>
 
-      <div class="buttons">
+      <div class="buttons has-addons">
         <router-link
           to="/assignments"
           class="button is-link"
