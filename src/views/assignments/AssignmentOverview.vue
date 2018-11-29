@@ -191,7 +191,6 @@ export default {
   components: { VueMarkdown, EditAssignmentModal },
   data () {
     return {
-      now: moment(),
       tab: 'comments',
       newComment: '',
       commentLoading: false,
@@ -202,6 +201,9 @@ export default {
     };
   },
   computed: {
+    now () {
+      return this.$store.state.now;
+    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
     },
@@ -225,9 +227,6 @@ export default {
   },
   created () {
     this.getAssignment();
-    setInterval(() => {
-      this.now = moment();
-    }, 1000 * 60);
   },
   methods: {
     editedAssignment (newAssignment) {
@@ -280,7 +279,9 @@ export default {
         !confirm(
           `Are you sure you want to remove assignment ${this.assignment.title}?`
         )
-      ) { return; }
+      ) {
+        return;
+      }
 
       const assignmentTitle = this.assignment.title;
       const assignmentID = this.assignment._id;
