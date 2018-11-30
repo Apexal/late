@@ -5,7 +5,9 @@
         <label
           class="label"
           for="rcs-id"
-        >RCS ID</label>
+        >
+          RCS ID
+        </label>
         <div class="control">
           <input
             id="rcs-id"
@@ -24,7 +26,9 @@
             <label
               class="label"
               for="first-name"
-            >First Name</label>
+            >
+              First Name
+            </label>
             <div class="control">
               <input
                 id="first-name"
@@ -44,7 +48,9 @@
             <label
               class="label"
               for="last-name"
-            >Last Name</label>
+            >
+              Last Name
+            </label>
             <div class="control">
               <input
                 id="last-name"
@@ -64,7 +70,9 @@
             <label
               class="label"
               for="rin"
-            >RIN</label>
+            >
+              RIN
+            </label>
             <div class="control">
               <input
                 id="rin"
@@ -84,7 +92,9 @@
             <label
               for="grad-year"
               class="label"
-            >Graduation Year</label>
+            >
+              Graduation Year
+            </label>
             <div class="control">
               <input
                 id="grad-year"
@@ -103,11 +113,15 @@
         </div>
       </div>
       <hr>
-      <button
+
+      <router-link
+        to="/profile/courseschedule"
         class="button is-primary"
         :class="{'is-loading': loading}"
         :disabled="saved"
-      >Save and Continue</button>
+      >
+        Save and Continue
+      </router-link>
     </form>
   </div>
 </template>
