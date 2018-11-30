@@ -24,10 +24,14 @@
         >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
         <h2 class="subtitle">
           <span
-            class="dot course-dot"
-            :title="course.longname"
-            :style="'background-color: ' + course.color"
-          />
+            v-if="assignment.completed"
+            class="icon"
+          >
+            <span
+              class="fas fa-check-circle"
+              :style="{ 'color': course.color }"
+            />
+          </span>
           {{ course.longname }}
           <span
             class="has-text-grey"
@@ -36,17 +40,30 @@
         <h1 class="title">{{ assignment.title }}</h1>
       </div>
       <hr>
-      <nav
-        v-if="!isPast"
-        class="level is-mobile box assignment-stats"
-      >
+      <nav class="level is-mobile box assignment-stats">
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">Priority</p>
             <p class="subtitle">{{ assignment.priority }}</p>
           </div>
         </div>
-        <div class="level-item has-text-centered">
+
+        <div
+          v-if="assignment.completed"
+          class="level-item has-text-centered"
+        >
+          <div>
+            <p class="heading">Work Done</p>
+            <p class="subtitle">
+              <span class="has-text-grey">---</span>
+            </p>
+          </div>
+        </div>
+
+        <div
+          v-else
+          class="level-item has-text-centered"
+        >
           <div>
             <p class="heading">Work Left</p>
             <p class="subtitle">
@@ -55,7 +72,23 @@
             </p>
           </div>
         </div>
-        <div class="level-item has-text-centered">
+
+        <div
+          v-if="assignment.completed"
+          class="level-item has-text-centered"
+        >
+          <div>
+            <p class="heading">Completed</p>
+            <p
+              class="subtitle tooltip is-tooltip-bottom"
+              :data-tooltip="fromNow(assignment.completedAt)"
+            >{{ completedAt }}</p>
+          </div>
+        </div>
+        <div
+          v-else
+          class="level-item has-text-centered"
+        >
           <div>
             <p class="heading">Due In</p>
             <p class="subtitle">{{ timeLeft }}</p>
@@ -177,8 +210,10 @@
           :data-tooltip="toggleButtonTitle"
           @click="toggleCompleted"
         >
-          {{ assignment.completed ? 'Completed' : 'Incomplete' }}
-          <span class="icon margin-left">
+          {{ assignment.completed ? 'Mark as Incomplete' : 'Mark as Complete' }}
+          <span
+            class="icon margin-left"
+          >
             <i
               class="fas"
               :class="{ 'fa-check-square' : assignment.completed, 'fa-square': !assignment.completed }"
@@ -217,6 +252,9 @@ export default {
     },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+    },
+    completedAt () {
+      return moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
     },
     lastEdited () {
       return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)
@@ -257,7 +295,9 @@ export default {
             this.assignment.completed ? 'incomplete' : 'complete'
           }?`
         )
-      ) { return; }
+      ) {
+        return;
+      }
       this.toggleLoading = true;
 
       // If upcoming assignment, let store handle it
