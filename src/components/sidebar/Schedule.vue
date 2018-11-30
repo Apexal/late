@@ -8,6 +8,7 @@
       <span
         v-if="in_class"
         class="tag is-info tooltip is-pulled-right"
+        :style="{ 'background-color': current_course.color }"
         :data-tooltip="'Until end of ' + current_course.longname + ' ' + periodType(current_period)"
       >{{ countdown }}</span>
     </summary>
