@@ -6,14 +6,13 @@
       :initial-assignment="assignment"
       @toggle-modal="editing = !editing"
       @edit-assignment="editedAssignment"
+      @remove-assignment="remove"
     />
     <section
       v-if="loading"
       class="section"
     >
-      <h1 class="title has-text-grey">
-        Loading Assignment...
-      </h1>
+      <h1 class="title has-text-grey">Loading Assignment...</h1>
     </section>
     <section
       v-else
@@ -22,9 +21,7 @@
       <div class="is-clearfix">
         <span
           class="has-text-grey is-pulled-right"
-        >
-          {{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}
-        </span>
+        >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
         <h2 class="subtitle">
           <span
             class="dot course-dot"
@@ -34,13 +31,9 @@
           {{ course.longname }}
           <span
             class="has-text-grey"
-          >
-            {{ isPast ? 'Past ': '' }}Assignment
-          </span>
+          >{{ isPast ? 'Past ': '' }}Assignment</span>
         </h2>
-        <h1 class="title">
-          {{ assignment.title }}
-        </h1>
+        <h1 class="title">{{ assignment.title }}</h1>
       </div>
       <hr>
       <nav
@@ -49,35 +42,23 @@
       >
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">
-              Priority
-            </p>
-            <p class="subtitle">
-              {{ assignment.priority }}
-            </p>
+            <p class="heading">Priority</p>
+            <p class="subtitle">{{ assignment.priority }}</p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">
-              Work Left
-            </p>
+            <p class="heading">Work Left</p>
             <p class="subtitle">
               {{ assignment.timeRemaining }}
-              <span class="has-text-grey">
-                hrs
-              </span>
+              <span class="has-text-grey">hrs</span>
             </p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">
-              Due In
-            </p>
-            <p class="subtitle">
-              {{ timeLeft }}
-            </p>
+            <p class="heading">Due In</p>
+            <p class="subtitle">{{ timeLeft }}</p>
           </div>
         </div>
       </nav>
@@ -91,9 +72,7 @@
             :emoji="true"
             :anchor-attributes="{target: '_blank'}"
           />
-          <i v-else>
-            No description given.
-          </i>
+          <i v-else>No description given.</i>
         </blockquote>
       </div>
 
@@ -114,9 +93,7 @@
               <span
                 v-if="assignment.comments.length > 0"
                 class="tag is-dark comment-count"
-              >
-                {{ assignment.comments.length }}
-              </span>
+              >{{ assignment.comments.length }}</span>
             </a>
           </li>
         </ul>
@@ -130,28 +107,6 @@
         v-else-if="tab === 'comments'"
         class="assignment-comments"
       >
-        <form @submit.prevent="addComment">
-          <div class="field">
-            <div class="control">
-              <textarea
-                id="new-comment"
-                v-model="newComment"
-                placeholder="Markdown supported!"
-                cols="30"
-                rows="10"
-                class="input"
-                required
-              />
-            </div>
-          </div>
-          <button
-            :class="{ 'is-loading': commentLoading }"
-            class="button is-success"
-          >
-            Add Comment
-          </button>
-        </form>
-        <hr>
         <div
           v-for="(c, index) in assignment.comments"
           :key="index"
@@ -160,9 +115,7 @@
           <small
             class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
             :data-tooltip="toFullDateTimeString(c.addedAt)"
-          >
-            {{ fromNow(c.addedAt) }}
-          </small>
+          >{{ fromNow(c.addedAt) }}</small>
           <VueMarkdown
             :source="c.body"
             :html="false"
@@ -170,10 +123,32 @@
             :anchor-attributes="{target: '_blank'}"
           />
         </div>
+        <hr>
+        <div class="box is-clearfix">
+          <form @submit.prevent="addComment">
+            <div class="field">
+              <div class="control">
+                <textarea
+                  id="new-comment"
+                  v-model="newComment"
+                  placeholder="Write your comment here. Markdown is supported!"
+                  cols="30"
+                  rows="10"
+                  class="input"
+                  required
+                />
+              </div>
+            </div>
+            <button
+              :class="{ 'is-loading': commentLoading }"
+              class="button is-success is-pulled-right"
+            >Add Comment</button>
+          </form>
+        </div>
       </div>
       <hr>
 
-      <div class="buttons">
+      <div class="buttons has-addons">
         <router-link
           to="/assignments"
           class="button is-link"
@@ -194,15 +169,6 @@
             <i class="fas fa-pencil-alt" />
           </span>
         </button>
-        <button
-          class="button is-danger"
-          @click="remove"
-        >
-          Remove
-          <span class="icon is-small margin-left">
-            <i class="fas fa-times" />
-          </span>
-        </button>
       </div>
     </section>
   </div>
@@ -219,7 +185,6 @@ export default {
   components: { VueMarkdown, EditAssignmentModal },
   data () {
     return {
-      now: moment(),
       tab: 'comments',
       newComment: '',
       commentLoading: false,
@@ -230,14 +195,21 @@ export default {
     };
   },
   computed: {
+    now () {
+      return this.$store.state.now;
+    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
     },
     lastEdited () {
-      return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt) ? 'never' : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+      return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)
+        ? 'never'
+        : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
     },
     timeLeft () {
-      const diff = moment.duration(moment(this.assignment.dueDate).diff(this.now));
+      const diff = moment.duration(
+        moment(this.assignment.dueDate).diff(this.now)
+      );
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
     },
     isPast () {
@@ -245,13 +217,10 @@ export default {
     }
   },
   watch: {
-    '$route': 'getAssignment'
+    $route: 'getAssignment'
   },
   created () {
     this.getAssignment();
-    setInterval(() => {
-      this.now = moment();
-    }, 1000 * 60);
   },
   methods: {
     editedAssignment (newAssignment) {
@@ -259,10 +228,17 @@ export default {
     },
     async getAssignment () {
       // If its an upcoming assignment, we already have the data on it
-      if (this.$store.getters.getUpcomingAssignmentById(this.$route.params.assignmentID)) {
-        this.assignment = this.$store.getters.getUpcomingAssignmentById(this.$route.params.assignmentID);
+      if (
+        this.$store.getters.getUpcomingAssignmentById(
+          this.$route.params.assignmentID
+        )
+      ) {
+        this.assignment = this.$store.getters.getUpcomingAssignmentById(
+          this.$route.params.assignmentID
+        );
         this.loading = false;
         this.isUpcoming = true;
+        document.title = `${this.assignment.title} | LATE`;
         return;
       }
 
@@ -271,7 +247,9 @@ export default {
 
       let request;
       try {
-        request = await this.$http.get(`/assignments/a/${this.$route.params.assignmentID}`);
+        request = await this.$http.get(
+          `/assignments/a/${this.$route.params.assignmentID}`
+        );
       } catch (e) {
         this.loading = false;
         this.$router.push('/assignments');
@@ -282,11 +260,12 @@ export default {
       }
 
       this.assignment = request.data.assignment;
-
+      document.title = `${this.assignment.title} | LATE`;
       this.loading = false;
     },
     shortDateTimeString: dueDate => moment(dueDate).format('MM/DD/YY h:mma'),
-    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    toFullDateTimeString: dueDate =>
+      moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     fromNow: date => moment(date).fromNow(),
     async remove () {
       // Confirm user wants to remove assignment
@@ -294,7 +273,9 @@ export default {
         !confirm(
           `Are you sure you want to remove assignment ${this.assignment.title}?`
         )
-      ) return;
+      ) {
+        return;
+      }
 
       const assignmentTitle = this.assignment.title;
       const assignmentID = this.assignment._id;
@@ -319,7 +300,10 @@ export default {
 
       this.commentLoading = true;
       let request;
-      request = await this.$http.post(`/assignments/a/${this.assignment._id}/comments/add`, { comment: this.newComment });
+      request = await this.$http.post(
+        `/assignments/a/${this.assignment._id}/comments/add`,
+        { comment: this.newComment }
+      );
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
