@@ -172,9 +172,9 @@
           </span>
         </button>
         <button
-          class="button"
-          :class="{'is-success' : assignment.completed, 'is-danger': !assignment.completed }"
-          :title="'Completed ' + assignment.completedAt"
+          class="button tooltip"
+          :class="{'is-success' : assignment.completed, 'is-danger': !assignment.completed, 'is-loading': toggleLoading }"
+          :data-tooltip="toggleButtonTitle"
           @click="toggleCompleted"
         >
           {{ assignment.completed ? 'Completed' : 'Incomplete' }}
@@ -204,6 +204,7 @@ export default {
       tab: 'comments',
       newComment: '',
       commentLoading: false,
+      toggleLoading: false,
       loading: true,
       isUpcoming: false,
       assignment: {},
@@ -230,6 +231,13 @@ export default {
     },
     isPast () {
       return moment().isAfter(moment(this.assignment.dueDate));
+    },
+    toggleButtonTitle () {
+      return this.assignment.completed
+        ? `Completed ${moment(this.assignment.completedAt).format(
+          'MM/DD/YY h:mma'
+        )}`
+        : 'Click to mark as completed.';
     }
   },
   watch: {
@@ -243,7 +251,40 @@ export default {
       this.assignment = newAssignment;
     },
     async toggleCompleted () {
-      alert('Not yet implemented!');
+      if (
+        !confirm(
+          `Are you sure you want to mark this assignment as ${
+            this.assignment.completed ? 'incomplete' : 'complete'
+          }?`
+        )
+      ) { return; }
+      this.toggleLoading = true;
+
+      // If upcoming assignment, let store handle it
+      try {
+        if (
+          this.$store.getters.getUpcomingAssignmentById(this.assignment._id)
+        ) {
+          await this.$store.dispatch(
+            'TOGGLE_UPCOMING_ASSIGNMENT',
+            this.assignment._id
+          );
+          this.getAssignment();
+        } else {
+          const request = await this.$http.post(
+            `/assignments/a/${this.assignment._id}/toggle`
+          );
+
+          this.editedAssignment(request.data.updatedAssignment);
+        }
+      } catch (e) {
+        return this.$store.dispatch('ADD_NOTIFICATION', {
+          type: 'danger',
+          description: e.response.data.message
+        });
+      }
+
+      this.toggleLoading = false;
     },
     async getAssignment () {
       // If its an upcoming assignment, we already have the data on it
