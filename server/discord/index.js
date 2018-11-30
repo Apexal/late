@@ -46,20 +46,7 @@ client.on('message', async msg => {
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 
-const utils = {
-  /**
-   * Send a student a Discord direct message.
-   *
-   * @param {Object} student The student object.
-   * @param {String} message The message.
-   */
-  async dmStudent (student, message) {
-    const author = client.users.get(student.integrations.discord.userID);
-    await author.sendMessage(message);
-  }
-};
-
 module.exports = {
   client,
-  utils
+  utils: require('./utils')
 };

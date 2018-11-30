@@ -162,6 +162,7 @@ schema.methods.getAssignments = function (start, end) {
 schema
   .virtual('current_schedule')
   .get(function () {
+    if (!this.semester_schedules) return [];
     return this.semester_schedules[CURRENT_TERM] || [];
   })
   .set(function (newSchedule) {
@@ -172,6 +173,7 @@ schema
 schema
   .virtual('current_unavailability')
   .get(function () {
+    if (!this.unavailability_schedules) return [];
     return this.unavailability_schedules[CURRENT_TERM] || [];
   })
   .set(function (newSchedule) {

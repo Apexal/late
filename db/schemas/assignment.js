@@ -34,6 +34,43 @@ const schema = new Schema(
   { timestamps: true }
 );
 
+schema.statics.getAllMissedAssignmentsForDay = function (day) {
+  const now = new Date();
+  let query = {
+    _student: '5bd388faa64e550215f688ca', // matraf for testing
+    completed: false,
+    dueDate: {
+      $gte: day,
+      $lt: now
+    }
+  };
+
+  return this.model('Assignment')
+    .find(query)
+    .select(
+      '_student courseCRN title description dueDate priority timeRemaining'
+    )
+    .populate('_student', 'name semester_schedules rcs_id rin integrations')
+    .sort('dueDate')
+    .sort('-priority')
+    .exec();
+};
+
+schema.statics.getAllUpcomingAssignments = function () {
+  let query = {
+    dueDate: {
+      $gte: new Date()
+    }
+  };
+
+  return this.model('Assignment')
+    .find(query)
+    .populate('_student', 'rcs_id rin integrations')
+    .sort('dueDate')
+    .sort('-priority')
+    .exec();
+};
+
 module.exports = {
   name: 'Assignment',
   schema
