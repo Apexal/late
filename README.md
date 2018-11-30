@@ -36,4 +36,4 @@ To run the project in development mode, you must run the API server in one termi
 
 - `$ npm run serve` (in one terminal)
 - `$ source .env && npm run dev` (in another terminal)
-- Go to url `http://localhost:3000` in your browser
+- Go to url `http://localhost:8080` in your browser
