@@ -123,28 +123,30 @@
             :anchor-attributes="{target: '_blank'}"
           />
         </div>
-        <hr>
-        <div class="box is-clearfix">
-          <form @submit.prevent="addComment">
-            <div class="field">
-              <div class="control">
-                <textarea
-                  id="new-comment"
-                  v-model="newComment"
-                  placeholder="Write your comment here. Markdown is supported!"
-                  cols="30"
-                  rows="10"
-                  class="input"
-                  required
-                />
+        <template v-if="!isPast">
+          <hr>
+          <div class="box is-clearfix">
+            <form @submit.prevent="addComment">
+              <div class="field">
+                <div class="control">
+                  <textarea
+                    id="new-comment"
+                    v-model="newComment"
+                    placeholder="Write your comment here. Markdown is supported!"
+                    cols="30"
+                    rows="10"
+                    class="input"
+                    required
+                  />
+                </div>
               </div>
-            </div>
-            <button
-              :class="{ 'is-loading': commentLoading }"
-              class="button is-success is-pulled-right"
-            >Add Comment</button>
-          </form>
-        </div>
+              <button
+                :class="{ 'is-loading': commentLoading }"
+                class="button is-success is-pulled-right"
+              >Add Comment</button>
+            </form>
+          </div>
+        </template>
       </div>
       <hr>
 
