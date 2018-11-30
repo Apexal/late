@@ -9,7 +9,9 @@
     />
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Edit Assignment</p>
+        <p class="modal-card-title">
+          Edit Assignment
+        </p>
       </header>
 
       <section class="modal-card-body">
@@ -24,7 +26,9 @@
                 <label
                   for="course-id"
                   class="label"
-                >Course</label>
+                >
+                  Course
+                </label>
                 <div class="control">
                   <select
                     id="course-id"
@@ -38,7 +42,9 @@
                       :key="c.crn"
                       :value="c.crn"
                       :selected="c.crn === assignment.courseCRN"
-                    >{{ c.longname }}</option>
+                    >
+                      {{ c.longname }}
+                    </option>
                   </select>
                 </div>
               </div>
@@ -49,7 +55,9 @@
                 <label
                   for="title"
                   class="label"
-                >Title</label>
+                >
+                  Title
+                </label>
                 <div class="control">
                   <input
                     id="title"
@@ -68,7 +76,9 @@
                 <label
                   for="description"
                   class="label"
-                >Description</label>
+                >
+                  Description
+                </label>
                 <div class="control">
                   <textarea
                     id="description"
@@ -81,7 +91,6 @@
                 </div>
               </div>
             </div>
-
           </div>
 
           <div class="columns">
@@ -90,7 +99,9 @@
                 <label
                   for="due-date"
                   class="label"
-                >Due Date</label>
+                >
+                  Due Date
+                </label>
                 <div class="control">
                   <input
                     id="due-date"
@@ -107,7 +118,9 @@
                 <label
                   for="time"
                   class="label"
-                >Due Time</label>
+                >
+                  Due Time
+                </label>
                 <div class="control">
                   <input
                     id="time"
@@ -124,7 +137,9 @@
                 <label
                   for="time-estimate"
                   class="label"
-                >Time Estimate (hrs)</label>
+                >
+                  Time Estimate (hrs)
+                </label>
                 <input
                   id="time-estimate"
                   v-model.number="assignment.timeEstimate"
@@ -141,7 +156,9 @@
                 <label
                   for="priority"
                   class="label"
-                >Priority</label>
+                >
+                  Priority
+                </label>
                 <input
                   id="priority"
                   v-model.number="assignment.priority"
@@ -153,6 +170,19 @@
                   step="1"
                   placeholder="0 - 10"
                 >
+                <div
+                  class="level"
+                  style="max-width: 129px"
+                >
+                  <div style="float:left">
+                    low
+                  </div>
+                  <div style="float:right">
+                    high
+                  </div>
+                </div>
+                <div style="clear: both;" />
+
                 <datalist id="priorities">
                   <option value="1" />
                   <option value="2" />
@@ -175,17 +205,19 @@
         <button
           class="button is-warning"
           @click="$emit('toggle-modal')"
-        >Cancel</button>
+        >
+          Cancel
+        </button>
         <button
           form="edit-assignment-form"
           class="button is-success"
           :class="{'is-loading': loading}"
-        >Save</button>
+        >
+          Save
+        </button>
       </footer>
     </div>
   </div>
-
-
 </template>
 
 <script>
