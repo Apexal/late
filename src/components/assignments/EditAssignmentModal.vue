@@ -9,7 +9,9 @@
     />
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Edit Assignment</p>
+        <p class="modal-card-title">
+          Edit Assignment
+        </p>
       </header>
 
       <section class="modal-card-body">
@@ -24,7 +26,9 @@
                 <label
                   for="course-id"
                   class="label"
-                >Course</label>
+                >
+                  Course
+                </label>
                 <div class="control">
                   <select
                     id="course-id"
@@ -38,7 +42,9 @@
                       :key="c.crn"
                       :value="c.crn"
                       :selected="c.crn === assignment.courseCRN"
-                    >{{ c.longname }}</option>
+                    >
+                      {{ c.longname }}
+                    </option>
                   </select>
                 </div>
               </div>
@@ -49,7 +55,9 @@
                 <label
                   for="title"
                   class="label"
-                >Title</label>
+                >
+                  Title
+                </label>
                 <div class="control">
                   <input
                     id="title"
@@ -68,7 +76,9 @@
                 <label
                   for="description"
                   class="label"
-                >Description</label>
+                >
+                  Description
+                </label>
                 <div class="control">
                   <textarea
                     id="description"
@@ -89,7 +99,9 @@
                 <label
                   for="due-date"
                   class="label"
-                >Due Date</label>
+                >
+                  Due Date
+                </label>
                 <div class="control">
                   <input
                     id="due-date"
@@ -106,7 +118,9 @@
                 <label
                   for="time"
                   class="label"
-                >Due Time</label>
+                >
+                  Due Time
+                </label>
                 <div class="control">
                   <input
                     id="time"
@@ -123,7 +137,9 @@
                 <label
                   for="time-estimate"
                   class="label"
-                >Time Estimate (hrs)</label>
+                >
+                  Time Estimate (hrs)
+                </label>
                 <input
                   id="time-estimate"
                   v-model.number="assignment.timeEstimate"
@@ -140,7 +156,9 @@
                 <label
                   for="priority"
                   class="label"
-                >Priority</label>
+                >
+                  Priority
+                </label>
                 <input
                   id="priority"
                   v-model.number="assignment.priority"
@@ -184,12 +202,17 @@
           <button
             class="button is-warning"
             @click="$emit('toggle-modal')"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
           <button
             form="edit-assignment-form"
             class="button is-success"
             :class="{'is-loading': loading}"
-          >Save</button>
+            :disabled="saved"
+          >
+            Save
+          </button>
         </span>
       </footer>
     </div>
@@ -231,10 +254,11 @@ export default {
   computed: {
     courses () {
       return this.$store.state.auth.user.current_schedule;
-    }
+    },
+    saved () { return JSON.stringify(this.convertAssignment(this.initialAssignment)) === JSON.stringify(this.assignment); }
   },
   watch: {
-    initialAssignment (oldA, newA) {
+    initialAssignment (newA, oldA) {
       this.assignment = this.convertAssignment(newA);
     }
   },

@@ -171,6 +171,20 @@
             <i class="fas fa-pencil-alt" />
           </span>
         </button>
+        <button
+          class="button"
+          :class="{'is-success' : assignment.completed, 'is-danger': !assignment.completed }"
+          :title="'Completed ' + assignment.completedAt"
+          @click="toggleCompleted"
+        >
+          {{ assignment.completed ? 'Completed' : 'Incomplete' }}
+          <span class="icon margin-left">
+            <i
+              class="fas"
+              :class="{ 'fa-check-square' : assignment.completed, 'fa-square': !assignment.completed }"
+            />
+          </span>
+        </button>
       </div>
     </section>
   </div>
@@ -227,6 +241,9 @@ export default {
   methods: {
     editedAssignment (newAssignment) {
       this.assignment = newAssignment;
+    },
+    async toggleCompleted () {
+      alert('Not yet implemented!');
     },
     async getAssignment () {
       // If its an upcoming assignment, we already have the data on it
