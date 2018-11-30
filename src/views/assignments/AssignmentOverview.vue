@@ -141,6 +141,10 @@
         class="assignment-comments"
       >
         <div
+          v-if="assignment.comments.length === 0"
+          class="has-text-grey has-text-centered"
+        >{{ isPast ? 'No comments were posted for this assignment.' : 'You have not posted any comments yet.' }}</div>
+        <div
           v-for="(c, index) in assignment.comments"
           :key="index"
           class="box"
