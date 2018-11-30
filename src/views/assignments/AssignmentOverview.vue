@@ -12,7 +12,9 @@
       v-if="loading"
       class="section"
     >
-      <h1 class="title has-text-grey">Loading Assignment...</h1>
+      <h1 class="title has-text-grey">
+        Loading Assignment...
+      </h1>
     </section>
     <section
       v-else
@@ -21,7 +23,9 @@
       <div class="is-clearfix">
         <span
           class="has-text-grey is-pulled-right"
-        >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
+        >
+          {{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}
+        </span>
         <h2 class="subtitle">
           <span
             class="dot course-dot"
@@ -31,9 +35,13 @@
           {{ course.longname }}
           <span
             class="has-text-grey"
-          >{{ isPast ? 'Past ': '' }}Assignment</span>
+          >
+            {{ isPast ? 'Past ': '' }}Assignment
+          </span>
         </h2>
-        <h1 class="title">{{ assignment.title }}</h1>
+        <h1 class="title">
+          {{ assignment.title }}
+        </h1>
       </div>
       <hr>
       <nav
@@ -42,23 +50,35 @@
       >
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">Priority</p>
-            <p class="subtitle">{{ assignment.priority }}</p>
-          </div>
-        </div>
-        <div class="level-item has-text-centered">
-          <div>
-            <p class="heading">Work Left</p>
+            <p class="heading">
+              Priority
+            </p>
             <p class="subtitle">
-              {{ assignment.timeRemaining }}
-              <span class="has-text-grey">hrs</span>
+              {{ assignment.priority }}
             </p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">Due In</p>
-            <p class="subtitle">{{ timeLeft }}</p>
+            <p class="heading">
+              Work Left
+            </p>
+            <p class="subtitle">
+              {{ assignment.timeRemaining }}
+              <span class="has-text-grey">
+                hrs
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">
+              Due In
+            </p>
+            <p class="subtitle">
+              {{ timeLeft }}
+            </p>
           </div>
         </div>
       </nav>
@@ -72,7 +92,9 @@
             :emoji="true"
             :anchor-attributes="{target: '_blank'}"
           />
-          <i v-else>No description given.</i>
+          <i v-else>
+            No description given.
+          </i>
         </blockquote>
       </div>
 
@@ -93,7 +115,9 @@
               <span
                 v-if="assignment.comments.length > 0"
                 class="tag is-dark comment-count"
-              >{{ assignment.comments.length }}</span>
+              >
+                {{ assignment.comments.length }}
+              </span>
             </a>
           </li>
         </ul>
@@ -115,7 +139,9 @@
           <small
             class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
             :data-tooltip="toFullDateTimeString(c.addedAt)"
-          >{{ fromNow(c.addedAt) }}</small>
+          >
+            {{ fromNow(c.addedAt) }}
+          </small>
           <VueMarkdown
             :source="c.body"
             :html="false"
@@ -142,7 +168,9 @@
             <button
               :class="{ 'is-loading': commentLoading }"
               class="button is-success is-pulled-right"
-            >Add Comment</button>
+            >
+              Add Comment
+            </button>
           </form>
         </div>
       </div>
@@ -167,6 +195,20 @@
           Edit
           <span class="icon margin-left">
             <i class="fas fa-pencil-alt" />
+          </span>
+        </button>
+        <button
+          class="button"
+          :class="{'is-success' : assignment.completed, 'is-danger': !assignment.completed }"
+          :title="'Completed ' + assignment.completedAt"
+          @click="toggleCompleted"
+        >
+          {{ assignment.completed ? 'Completed' : 'Incomplete' }}
+          <span class="icon margin-left">
+            <i
+              class="fas"
+              :class="{ 'fa-check-square' : assignment.completed, 'fa-square': !assignment.completed }"
+            />
           </span>
         </button>
       </div>
@@ -225,6 +267,9 @@ export default {
   methods: {
     editedAssignment (newAssignment) {
       this.assignment = newAssignment;
+    },
+    async toggleCompleted () {
+      alert('Not yet implemented!');
     },
     async getAssignment () {
       // If its an upcoming assignment, we already have the data on it
