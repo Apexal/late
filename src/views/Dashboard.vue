@@ -36,6 +36,7 @@ export default {
           selectOverlap: false,
           selectHelper: false,
           nowIndicator: true,
+          timeFormat: 'h(:mm)t',
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
           buttonText: {
             today: 'Today',
@@ -45,6 +46,17 @@ export default {
           },
           dayClick: (date, jsEvent, view) => {
             this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
+            this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+          },
+          eventClick: (calEvent, jsEvent, view) => {
+            this.$store.commit(
+              'SET_ADD_ASSIGNMENT_MODAL_DUE_DATE',
+              calEvent.start
+            );
+            this.$store.commit(
+              'SET_ADD_ASSIGNMENT_MODAL_COURSE_CRN',
+              calEvent.course.crn
+            );
             this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
           }
         }

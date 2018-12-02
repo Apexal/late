@@ -56,7 +56,8 @@ const getters = {
             start,
             end,
             color: c.color,
-            editable: false
+            editable: false,
+            course: c
           };
         })
       )

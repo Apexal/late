@@ -207,16 +207,19 @@ export default {
   data () {
     return {
       loading: false,
-      courseCRN: this.$store.state.addAssignmentModal.courseCRN,
+      courseCRN: this.defaultCourseCRN,
       title: '',
       description: '',
-      dueDate: this.$store.getters.addAssignmentModalDueDateString,
-      time: '08:00', // HH:mm
+      dueDate: this.dueDateString,
+      time: this.dueTimeString, // HH:mm
       timeEstimate: 1.0,
       priority: 5
     };
   },
   computed: {
+    defaultCourseCRN () {
+      return this.$store.state.addAssignmentModal.courseCRN;
+    },
     dueDateString () {
       return this.$store.getters.addAssignmentModalDueDateString;
     },
@@ -234,6 +237,9 @@ export default {
     },
     dueTimeString () {
       this.time = this.dueTimeString;
+    },
+    defaultCourseCRN () {
+      this.courseCRN = this.defaultCourseCRN;
     }
   },
   methods: {
