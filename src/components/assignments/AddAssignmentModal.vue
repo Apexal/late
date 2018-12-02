@@ -210,8 +210,10 @@ export default {
       courseCRN: this.defaultCourseCRN,
       title: '',
       description: '',
-      dueDate: this.dueDateString,
-      time: this.dueTimeString, // HH:mm
+      dueDate: moment()
+        .add(1, 'days')
+        .format('YYYY-MM-DD'),
+      time: '08:00', // HH:mm
       timeEstimate: 1.0,
       priority: 5
     };
@@ -268,7 +270,8 @@ export default {
       // Reset important fields
       this.title = '';
       this.description = '';
-      this.priority = 5;
+      this.timeEstimate = 0;
+      this.priority = 1.0;
 
       this.loading = false;
 
@@ -280,11 +283,7 @@ export default {
         type: 'success',
         description: `Added assignment '${
           request.data.createdAssignment.title
-        }' due ${moment(
-          request.data.createdAssignment.dueDate,
-          'YYYY-MM-DD HH:mm',
-          true
-        ).fromNow()}.`
+        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`
       });
     }
   }

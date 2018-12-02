@@ -15,7 +15,10 @@ const router = new Router({
       path: '/',
       alias: '/dashboard',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: {
+        title: 'Home'
+      }
     },
     {
       path: '/about',
