@@ -202,19 +202,31 @@
       </section>
 
       <footer class="modal-card-foot">
-        <button
-          class="button is-warning"
-          @click="$emit('toggle-modal')"
-        >
-          Cancel
-        </button>
-        <button
-          form="edit-assignment-form"
-          class="button is-success"
-          :class="{'is-loading': loading}"
-        >
-          Save
-        </button>
+        <span class="is-full-width">
+          <button
+            class="button is-danger is-pulled-right"
+            @click="$emit('remove-assignment')"
+          >
+            Remove
+            <span class="icon is-small margin-left">
+              <i class="fas fa-times" />
+            </span>
+          </button>
+          <button
+            class="button is-warning"
+            @click="$emit('toggle-modal')"
+          >
+            Cancel
+          </button>
+          <button
+            form="edit-assignment-form"
+            class="button is-success"
+            :class="{'is-loading': loading}"
+            :disabled="saved"
+          >
+            Save
+          </button>
+        </span>
       </footer>
     </div>
   </div>
@@ -236,7 +248,9 @@ export default {
         courseCRN: '',
         title: '',
         description: '',
-        dueDate: moment().add(1, 'days').format('YYYY-MM-DD'),
+        dueDate: moment()
+          .add(1, 'days')
+          .format('YYYY-MM-DD'),
         time: '08:00', // HH:mm
         timeEstimate: 1,
         priority: 5
@@ -253,10 +267,11 @@ export default {
   computed: {
     courses () {
       return this.$store.state.auth.user.current_schedule;
-    }
+    },
+    saved () { return JSON.stringify(this.convertAssignment(this.initialAssignment)) === JSON.stringify(this.assignment); }
   },
   watch: {
-    initialAssignment (oldA, newA) {
+    initialAssignment (newA, oldA) {
       this.assignment = this.convertAssignment(newA);
     }
   },
@@ -270,14 +285,21 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await this.$http.post(`/assignments/a/${this.assignment._id}/edit`, {
-        title: this.assignment.title,
-        description: this.assignment.description,
-        dueDate: moment(this.assignment.dueDate + ' ' + this.assignment.time, 'YYYY-MM-DD HH:mm', true).toDate(),
-        courseCRN: this.assignment.courseCRN,
-        timeEstimate: this.assignment.timeEstimate,
-        priority: this.assignment.priority
-      });
+      const request = await this.$http.post(
+        `/assignments/a/${this.assignment._id}/edit`,
+        {
+          title: this.assignment.title,
+          description: this.assignment.description,
+          dueDate: moment(
+            this.assignment.dueDate + ' ' + this.assignment.time,
+            'YYYY-MM-DD HH:mm',
+            true
+          ).toDate(),
+          courseCRN: this.assignment.courseCRN,
+          timeEstimate: this.assignment.timeEstimate,
+          priority: this.assignment.priority
+        }
+      );
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
@@ -295,7 +317,12 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: `Edited assignment '${request.data.updatedAssignment.title}' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.` });
+      this.$store.dispatch('ADD_NOTIFICATION', {
+        type: 'success',
+        description: `Edited assignment '${
+          request.data.updatedAssignment.title
+        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`
+      });
     }
   }
 };
@@ -312,5 +339,13 @@ export default {
     height: 200px;
     max-height: 500px;
   }
+}
+
+.margin-right {
+  margin-right: 5px;
+}
+
+.margin-left {
+  margin-left: 2px !important;
 }
 </style>

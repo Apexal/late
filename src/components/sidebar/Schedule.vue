@@ -3,11 +3,14 @@
     class="schedule panel user-courses"
     open
   >
-    <summary class="panel-heading is-unselectable is-size-6">Today's Schedule
+    <summary class="panel-heading is-unselectable is-size-6 is-clearfix">
+      Today's Schedule
       <span
         v-if="in_class"
-        class="tag is-info"
-      >In Class</span>
+        class="tag is-info tooltip is-pulled-right"
+        :style="{ 'background-color': current_course.color }"
+        :data-tooltip="'Until end of ' + current_course.longname + ' ' + periodType(current_period)"
+      >{{ countdown }}</span>
     </summary>
     <template v-if="is_weekend">
       <div class="panel-block">
@@ -24,18 +27,24 @@
         v-for="p in periods"
         :key="p.start"
         class="panel-block period-block is-clearfix is-size-7"
-        :class="{ 'is-active': p == current_period, 'has-background-white-ter': hasPassed(p) }"
+        :class="{ 'is-active': p == current_period, 'has-background-grey-lighter': hasPassed(p) }"
       >
-        <span
-          class="course-longname is-full-width"
-          :title="periodType(p)"
-        >
+        <span class="course-longname is-full-width">
           <span
-            class="dot"
+            class="course-dot dot"
             :style="'background-color: ' + course(p).color"
           />
-          {{ course(p).longname }} {{ periodType(p) }}
-          <div class="course-times is-pulled-right has-text-grey">
+          <span
+            class="tooltip is-tooltip-bottom"
+            :data-tooltip="fromNow(p.start)"
+          >
+            {{ course(p).longname }}
+            <span class="has-text-grey">{{ periodType(p) }}</span>
+          </span>
+          <div
+            class="course-times is-pulled-right has-text-grey tooltip is-tooltip-left"
+            :data-tooltip="duration(p) + ' minutes'"
+          >
             <span>{{ timeFormat(p.start) }}</span>
             <span>{{ timeFormat(p.end) }}</span>
           </div>
@@ -54,10 +63,15 @@ export default {
     return {};
   },
   computed: {
+    now () {
+      return this.$store.state.now;
+    },
     schedule () {
       return this.$store.state.schedule;
     },
-    periods () { return this.schedule.periods || []; },
+    periods () {
+      return this.schedule.periods || [];
+    },
     current_course () {
       return this.schedule.current.course;
     },
@@ -81,15 +95,31 @@ export default {
     },
     dateStr () {
       return moment(this.schedule.date).format('YYYY-MM-DD');
+    },
+    countdown () {
+      const diff = moment.duration(
+        moment(this.current_period.end, 'Hmm', true).diff(this.now)
+      );
+      return `${diff.hours()}h ${diff.minutes()}m left`;
     }
   },
   methods: {
+    fromNow (datetime) {
+      const time = moment(datetime, 'Hmm', true);
+      return `${
+        time.isBefore(this.now) ? 'Started' : 'Starting'
+      } ${time.fromNow()}`;
+    },
     timeFormat: datetime => moment(datetime, 'Hmm', true).format('h:mma'),
     hasPassed: p => moment(p.end, 'Hmm', true).isBefore(moment()),
+    duration: p =>
+      moment(p.end, 'Hmm', true).diff(moment(p.start, 'Hmm', true), 'minutes'),
     course (p) {
       return this.$store.getters.getCourseFromPeriod(p);
     },
-    periodType (p) { return this.$store.getters.periodType(p.type); }
+    periodType (p) {
+      return this.$store.getters.periodType(p.type);
+    }
   }
 };
 </script>
@@ -101,7 +131,12 @@ export default {
   }
 }
 
+.course-dot {
+  margin-right: 5px;
+}
+
 .course-times {
+  line-height: 11px;
   font-size: 12px;
   display: flex;
   flex-direction: column;

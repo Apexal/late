@@ -55,8 +55,8 @@
                 {{ a.title }}
               </router-link>
               <small
-                :title="'in ' + hoursFromNow(a.dueDate) + ' hours'"
-                class="is-pulled-right has-text-grey"
+                :data-tooltip="'in ' + hoursFromNow(a.dueDate) + ' hours'"
+                class="tooltip is-tooltip-left is-pulled-right has-text-grey"
               >{{ toTimeString(a.dueDate) }}</small>
             </span>
           </div>

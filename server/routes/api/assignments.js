@@ -10,5 +10,5 @@ router.get('/a/:assignmentID', Ctrl.getAssignment);
 router.post('/a/:assignmentID/toggle', Ctrl.toggleAssignment);
 router.post('/a/:assignmentID/edit', Ctrl.editAssignment);
 router.post('/a/:assignmentID/remove', Ctrl.removeAssignment);
-
+router.post('/a/:assignmentID/comments/add', Ctrl.addComment);
 module.exports = router.routes();

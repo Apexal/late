@@ -37,10 +37,23 @@ export default {
 </script>
 
 <style lang="scss">
+  //Adjusts padding for footer to display columns closer together
   .footer {
     padding: 2rem 6rem 2rem!important;
+
+    //Bottom padding to set the h1 ("An RCOS Project!") apart from the columns below
     h1 {
       padding-bottom: 1rem;
     }
+
+    //Mobile styling to bring the footer columns closer together when stacked.
+    //I don't believe Bulma provides mediaquery mixins so these are defined using the standard CSS mediaquery format
+    .column {
+      @media screen and (max-width: 1087px) {
+        margin: 10px 0px 0px 0px;
+        padding: 0.2em;
+      }
+    }
   }
+
 </style>

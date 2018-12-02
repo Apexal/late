@@ -55,7 +55,8 @@ export default {
       setups: [
         { label: 'Personal Info', link: '/profile/personalinfo', setup_check: 'personal_info' },
         { label: 'Course Schedule', link: '/profile/courseschedule', setup_check: 'course_schedule' },
-        { label: 'Study/Work Unavailability', link: '/profile/unavailability', setup_check: 'unavailability' }
+        { label: 'Study/Work Unavailability', link: '/profile/unavailability', setup_check: 'unavailability' },
+        { label: 'Integrations', link: '/profile/integrations', setup_check: 'integrations' }
       ]
     };
   },

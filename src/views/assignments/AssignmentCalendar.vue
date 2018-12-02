@@ -39,6 +39,7 @@ export default {
           right: 'today prev,next'
         },
         config: {
+          height: 800,
           events: this.events,
           defaultView: 'month',
           timeFormat: 'h(:mm)t',

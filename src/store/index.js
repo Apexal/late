@@ -21,13 +21,20 @@ export default new Vuex.Store({
   state: {
     addAssignmentModalExpanded: false,
     navbarExpanded: false,
-    sidebarExpanded: true
+    sidebarExpanded: true,
+    now: new Date()
   },
   mutations: {
+    UPDATE_NOW: state => (state.now = new Date()),
     TOGGLE_ADD_ASSIGNMENT_MODAL: state =>
       (state.addAssignmentModalExpanded = !state.addAssignmentModalExpanded),
     TOGGLE_NAVBAR: state => (state.navbarExpanded = !state.navbarExpanded),
     TOGGLE_SIDEBAR: state => (state.sidebarExpanded = !state.sidebarExpanded)
+  },
+  actions: {
+    AUTO_UPDATE_NOW ({ commit }) {
+      setInterval(() => commit('UPDATE_NOW'), 60 * 1000);
+    }
   },
   strict: debug
 });

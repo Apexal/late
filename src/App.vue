@@ -55,11 +55,18 @@ export default {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
-    addAssignmentModalExpanded () { return this.$store.state.addAssignmentModalExpanded; },
-    expanded () { return this.$store.state.sidebarExpanded; }
+    addAssignmentModalExpanded () {
+      return this.$store.state.addAssignmentModalExpanded;
+    },
+    expanded () {
+      return this.$store.state.sidebarExpanded;
+    }
   },
   async created () {
-    if (process.env.NODE_ENV === 'development' && !this.$store.state.auth.user.name) {
+    if (
+      process.env.NODE_ENV === 'development' &&
+      !this.$store.state.auth.user.name
+    ) {
       const rcsID = prompt('Log in as what user? (rcs_id)');
       await this.$http.get('/students/loginas?rcs_id=' + rcsID);
       await this.$store.dispatch('GET_USER');
@@ -67,6 +74,7 @@ export default {
 
     this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
     this.$store.dispatch('AUTO_GET_UPCOMING_ASSIGNMENTS');
+    this.$store.dispatch('AUTO_UPDATE_NOW');
   },
   methods: {}
 };
@@ -74,7 +82,7 @@ export default {
 
 <style lang="scss">
 /* These styles will apply to the whole app. */
-@import '@/assets/bulma.scss';
+@import "@/assets/bulma.scss";
 
 .is-full-width {
   width: 100%;

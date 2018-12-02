@@ -68,7 +68,6 @@ const router = new Router({
       name: 'assignment-overview',
       component: () => import('@/views/assignments/AssignmentOverview.vue'),
       meta: {
-        title: 'View Assignment',
         requiresAuth: true
       }
     },
@@ -107,6 +106,13 @@ const router = new Router({
             title: 'Study/Work Unavailability'
           },
           component: () => import('@/views/profile/UnavailabilitySetup.vue')
+        },
+        {
+          path: 'integrations',
+          meta: {
+            title: 'Integrations'
+          },
+          component: () => import('@/views/profile/IntegrationsSetup.vue')
         }
       ]
     },

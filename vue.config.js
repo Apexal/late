@@ -1,3 +1,6 @@
 module.exports = {
-  lintOnSave: true
+  lintOnSave: true,
+  devServer: {
+    proxy: 'http://localhost:3000'
+  }
 };
