@@ -10,6 +10,6 @@ const schema = new Schema({
 });
 
 module.exports = {
-  name: 'Block',
+  name: 'Term',
   schema
 };
