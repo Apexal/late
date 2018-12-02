@@ -39,7 +39,18 @@ const getters = {
   getCourseFromPeriod: (state, getters, rootState) => period =>
     rootState.auth.user.current_schedule.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
-    )
+    ),
+  getUpcomingAssigmentsAsEvents: (state, getters) =>
+    state.upcomingAssignments.map(a => {
+      return {
+        eventType: 'assignment',
+        title: a.title,
+        start: a.dueDate,
+        allDay: true,
+        color: getters.getCourseFromCRN(a.courseCRN).color,
+        assignment: a
+      };
+    })
 };
 
 const actions = {

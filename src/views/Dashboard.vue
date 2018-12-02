@@ -23,7 +23,9 @@ export default {
   data () {
     return {
       calendar: {
-        events: this.$store.getters.getCourseScheduleAsEvents,
+        events: this.$store.getters.getCourseScheduleAsEvents.concat(
+          this.$store.getters.getUpcomingAssigmentsAsEvents
+        ),
         header: {
           center: 'listDay,agendaWeek,month'
         },
@@ -49,15 +51,22 @@ export default {
             this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
           },
           eventClick: (calEvent, jsEvent, view) => {
-            this.$store.commit(
-              'SET_ADD_ASSIGNMENT_MODAL_DUE_DATE',
-              calEvent.start
-            );
-            this.$store.commit(
-              'SET_ADD_ASSIGNMENT_MODAL_COURSE_CRN',
-              calEvent.course.crn
-            );
-            this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+            if (calEvent.eventType === 'course') {
+              this.$store.commit(
+                'SET_ADD_ASSIGNMENT_MODAL_DUE_DATE',
+                calEvent.start
+              );
+              this.$store.commit(
+                'SET_ADD_ASSIGNMENT_MODAL_COURSE_CRN',
+                calEvent.course.crn
+              );
+              this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+            } else if (calEvent.eventType === 'assignment') {
+              this.$router.push({
+                name: 'assignment-overview',
+                params: { assignmentID: calEvent.assignment._id }
+              });
+            }
           }
         }
       }

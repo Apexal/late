@@ -52,6 +52,7 @@ const getters = {
           );
 
           return {
+            eventType: 'course',
             title: c.longname,
             start,
             end,
