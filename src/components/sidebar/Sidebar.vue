@@ -21,11 +21,6 @@ import Todos from '@/components/sidebar/Todos';
 export default {
   name: 'Sidebar',
   components: { PressingAssignments, Schedule, Todos },
-  data () {
-    return {
-      addAssignmentModalOpen: false
-    };
-  },
   computed: {
     pressing () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);

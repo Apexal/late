@@ -25,7 +25,7 @@ export default {
       calendar: {
         events: this.$store.getters.getCourseScheduleAsEvents,
         header: {
-          center: 'agendaDay,agendaWeek'
+          center: 'listDay,agendaWeek,month'
         },
         config: {
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
@@ -34,11 +34,18 @@ export default {
           defaultView: 'agendaWeek',
           eventOverlap: false,
           selectOverlap: false,
+          selectHelper: false,
           nowIndicator: true,
+          noEventsMessage: 'You\'ve got nothing to do. You can relax!',
           buttonText: {
             today: 'Today',
-            day: 'Today',
-            week: 'This Week'
+            day: 'Daily Agenda',
+            month: 'Month Overview',
+            agendaWeek: 'Weekly Agenda'
+          },
+          dayClick: (date, jsEvent, view) => {
+            this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
+            this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
           }
         }
       }

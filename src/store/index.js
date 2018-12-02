@@ -6,6 +6,7 @@ import auth from './modules/auth';
 import work from './modules/work';
 import schedule from './modules/schedule';
 import notifications from './modules/notifications';
+import addAssignmentModal from './modules/addAssignmentModal';
 
 Vue.use(Vuex);
 
@@ -16,18 +17,16 @@ export default new Vuex.Store({
     auth,
     work,
     schedule,
-    notifications
+    notifications,
+    addAssignmentModal
   },
   state: {
-    addAssignmentModalExpanded: false,
     navbarExpanded: false,
     sidebarExpanded: true,
     now: new Date()
   },
   mutations: {
     UPDATE_NOW: state => (state.now = new Date()),
-    TOGGLE_ADD_ASSIGNMENT_MODAL: state =>
-      (state.addAssignmentModalExpanded = !state.addAssignmentModalExpanded),
     TOGGLE_NAVBAR: state => (state.navbarExpanded = !state.navbarExpanded),
     TOGGLE_SIDEBAR: state => (state.sidebarExpanded = !state.sidebarExpanded)
   },

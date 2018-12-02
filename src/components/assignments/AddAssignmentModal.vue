@@ -9,9 +9,7 @@
     />
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">
-          Add Assignment
-        </p>
+        <p class="modal-card-title">Add Assignment</p>
       </header>
 
       <section class="modal-card-body">
@@ -26,9 +24,7 @@
                 <label
                   for="course-id"
                   class="label"
-                >
-                  Course
-                </label>
+                >Course</label>
                 <div class="control">
                   <select
                     id="course-id"
@@ -40,9 +36,7 @@
                       v-for="c in courses"
                       :key="c.crn"
                       :value="c.crn"
-                    >
-                      {{ c.longname }}
-                    </option>
+                    >{{ c.longname }}</option>
                   </select>
                 </div>
               </div>
@@ -53,9 +47,7 @@
                 <label
                   for="title"
                   class="label"
-                >
-                  What do you have to do?
-                </label>
+                >What do you have to do?</label>
                 <div class="control">
                   <input
                     id="title"
@@ -75,9 +67,7 @@
                 <label
                   for="description"
                   class="label"
-                >
-                  Description
-                </label>
+                >Description</label>
                 <div class="control">
                   <textarea
                     id="description"
@@ -98,9 +88,7 @@
                 <label
                   for="due-date"
                   class="label"
-                >
-                  Due Date
-                </label>
+                >Due Date</label>
                 <div class="control">
                   <input
                     id="due-date"
@@ -118,9 +106,7 @@
                 <label
                   for="time"
                   class="label"
-                >
-                  Due Time
-                </label>
+                >Due Time</label>
                 <div class="control">
                   <input
                     id="time"
@@ -137,9 +123,7 @@
                 <label
                   for="time-estimate"
                   class="label"
-                >
-                  Time Estimate (hrs)
-                </label>
+                >Time Estimate (hrs)</label>
                 <input
                   id="time-estimate"
                   v-model.number="timeEstimate"
@@ -156,9 +140,7 @@
                 <label
                   for="priority"
                   class="label"
-                >
-                  Priority
-                </label>
+                >Priority</label>
                 <input
                   id="priority"
                   v-model.number="priority"
@@ -173,12 +155,8 @@
                   class="level"
                   style="max-width: 129px"
                 >
-                  <div style="float:left">
-                    low
-                  </div>
-                  <div style="float:right">
-                    high
-                  </div>
+                  <div style="float:left">low</div>
+                  <div style="float:right">high</div>
                 </div>
                 <div style="clear: both;" />
 
@@ -204,16 +182,12 @@
         <button
           class="button is-warning"
           @click="$emit('toggle-modal')"
-        >
-          Cancel
-        </button>
+        >Cancel</button>
         <button
           form="add-assignment-form"
           class="button is-success"
           :class="{'is-loading': loading}"
-        >
-          Save
-        </button>
+        >Save</button>
       </footer>
     </div>
   </div>
@@ -233,20 +207,34 @@ export default {
   data () {
     return {
       loading: false,
-      courseCRN: '',
+      courseCRN: this.$store.state.addAssignmentModal.courseCRN,
       title: '',
       description: '',
-      dueDate: moment().add(1, 'days').format('YYYY-MM-DD'),
+      dueDate: this.$store.getters.addAssignmentModalDueDateString,
       time: '08:00', // HH:mm
       timeEstimate: 1.0,
       priority: 5
     };
   },
   computed: {
+    dueDateString () {
+      return this.$store.getters.addAssignmentModalDueDateString;
+    },
+    dueTimeString () {
+      return this.$store.getters.addAssignmentModalDueTimeString;
+    },
     courses () {
       return this.$store.state.auth.user.current_schedule;
     },
     today: () => moment().format('YYYY-MM-DD')
+  },
+  watch: {
+    dueDateString () {
+      this.dueDate = this.dueDateString;
+    },
+    dueTimeString () {
+      this.time = this.dueTimeString;
+    }
   },
   methods: {
     async save () {
@@ -255,7 +243,11 @@ export default {
       const request = await this.$http.post('/assignments/create', {
         title: this.title,
         description: this.description,
-        dueDate: moment(this.dueDate + ' ' + this.time, 'YYYY-MM-DD HH:mm', true).toDate(),
+        dueDate: moment(
+          this.dueDate + ' ' + this.time,
+          'YYYY-MM-DD HH:mm',
+          true
+        ).toDate(),
         courseCRN: this.courseCRN,
         timeEstimate: this.timeEstimate,
         priority: this.priority
@@ -280,7 +272,13 @@ export default {
       // Notify user
       this.$store.dispatch('ADD_NOTIFICATION', {
         type: 'success',
-        description: `Added assignment '${request.data.createdAssignment.title}' due ${moment(request.data.createdAssignment.dueDate, 'YYYY-MM-DD HH:mm', true).fromNow()}.`
+        description: `Added assignment '${
+          request.data.createdAssignment.title
+        }' due ${moment(
+          request.data.createdAssignment.dueDate,
+          'YYYY-MM-DD HH:mm',
+          true
+        ).fromNow()}.`
       });
     }
   }

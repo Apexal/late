@@ -56,7 +56,7 @@ export default {
       return this.$store.state.auth.isAuthenticated;
     },
     addAssignmentModalExpanded () {
-      return this.$store.state.addAssignmentModalExpanded;
+      return this.$store.state.addAssignmentModal.expanded;
     },
     expanded () {
       return this.$store.state.sidebarExpanded;
