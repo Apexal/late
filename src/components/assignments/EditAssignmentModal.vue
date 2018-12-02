@@ -170,6 +170,19 @@
                   step="1"
                   placeholder="0 - 10"
                 >
+                <div
+                  class="level"
+                  style="max-width: 129px"
+                >
+                  <div style="float:left">
+                    low
+                  </div>
+                  <div style="float:right">
+                    high
+                  </div>
+                </div>
+                <div style="clear: both;" />
+
                 <datalist id="priorities">
                   <option value="1" />
                   <option value="2" />
