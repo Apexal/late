@@ -13,7 +13,7 @@
           </span>
         </button>
       </div>
-      <div class="column">
+      <div class="column is-narrow">
         <div class="field is-horizontal">
           <div class="field-body">
             <div class="control">
@@ -30,8 +30,8 @@
           </div>
         </div>
       </div>
-      <div class="column is-narrow">
-        <div class="buttons">
+      <div class="column">
+        <div class="buttons is-centered">
           <button
             class="button is-primary"
             :disabled="isLastWeek"
@@ -39,7 +39,7 @@
           >Last Week</button>
         </div>
       </div>
-      <div class="column">
+      <div class="column is-narrow">
         <div class="field is-horizontal">
           <div class="field-body">
             <div class="control">
