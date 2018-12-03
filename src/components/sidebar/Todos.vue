@@ -64,7 +64,12 @@ export default {
 
       this.todos.push({ text: this.newTodo, addedAt: new Date() });
       this.saveTodos();
-      this.$toasted.show(`Added to-do '${this.newTodo}'.`);
+      this.$toasted.show(`Added to-do '${this.newTodo}'.`, {
+        icon: 'list-ol',
+        action: {
+          text: 'Undo'
+        }
+      });
       this.newTodo = '';
     },
     removeTodo (todo) {
@@ -72,7 +77,12 @@ export default {
 
       this.todos.splice(this.todos.indexOf(todo), 1);
       this.saveTodos();
-      this.$toasted.show(`Removed to-do '${todo.text}'.`);
+      this.$toasted.show(`Removed to-do '${todo.text}'.`, {
+        icon: 'times',
+        action: {
+          text: 'Undo'
+        }
+      });
     },
     saveTodos () {
       const parsed = JSON.stringify(this.todos);

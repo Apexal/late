@@ -313,7 +313,7 @@ export default {
             'TOGGLE_UPCOMING_ASSIGNMENT',
             this.assignment._id
           );
-          this.getAssignment();
+          await this.getAssignment();
         } else {
           const request = await this.$http.post(
             `/assignments/a/${this.assignment._id}/toggle`
@@ -321,6 +321,12 @@ export default {
 
           this.editedAssignment(request.data.updatedAssignment);
         }
+        this.$toasted.show('Toggled assignment.', {
+          icon: this.assignment.completed ? 'check-circle' : 'circle',
+          action: {
+            text: 'Undo'
+          }
+        });
       } catch (e) {
         this.$toasted.error(e.response.data.message);
       }
@@ -392,9 +398,10 @@ export default {
       this.$toasted.success(
         `Successfully removed assignment '${assignmentTitle}'.`,
         {
-          /* action: {
+          icon: 'times',
+          action: {
             text: 'Undo'
-          */
+          }
         }
       );
     },

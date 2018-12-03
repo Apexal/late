@@ -106,6 +106,7 @@ export default {
           assignmentID
         );
         this.$toasted.show(`Toggled assignment '${toggledAssignment.title}'.`, {
+          icon: toggledAssignment.completed ? 'check-circle' : 'circle',
           action: {
             text: 'View',
             push: {

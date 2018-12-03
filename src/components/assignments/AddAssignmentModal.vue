@@ -284,6 +284,7 @@ export default {
           request.data.createdAssignment.title
         }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`,
         {
+          icon: 'plus',
           action: {
             text: 'View',
             push: {

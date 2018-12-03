@@ -299,7 +299,13 @@ export default {
       this.$toasted.info(
         `Edited assignment '${
           request.data.updatedAssignment.title
-        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`
+        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
+        {
+          action: {
+            text: 'Undo'
+          },
+          icon: 'pen'
+        }
       );
     }
   }

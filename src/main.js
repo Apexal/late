@@ -14,6 +14,7 @@ Vue.use(FullCalendar);
 Vue.use(Toasted, {
   router,
   fullWidth: true,
+  iconPack: 'fontawesome',
   fitToScreen: true,
   duration: 5000,
   position: 'bottom-center'
