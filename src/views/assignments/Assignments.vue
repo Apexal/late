@@ -98,6 +98,25 @@ export default {
       return this.$store.state.auth.user.current_schedule;
     }
   },
+  watch: {
+    showCompleted (nowShowing) {
+      if (nowShowing) {
+        this.$toasted.info('Now including completed assignments.', {
+          icon: 'toggle-on',
+          duration: 1000,
+          fullWidth: false,
+          position: 'top-right'
+        });
+      } else {
+        this.$toasted.error('Now excluding completed assignments.', {
+          icon: 'toggle-off',
+          duration: 1000,
+          fullWidth: false,
+          position: 'top-right'
+        });
+      }
+    }
+  },
   methods: {
     async toggleAssignment (assignmentID) {
       try {
@@ -128,8 +147,20 @@ export default {
     toggleFilter (c) {
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
+        this.$toasted.info(`Now including '${c.longname}' assignments.`, {
+          icon: 'plus',
+          position: 'top-right',
+          fullWidth: false,
+          duration: 1000
+        });
       } else {
         this.filter.push(c.crn);
+        this.$toasted.error(`No longer showing '${c.longname}' assignments.`, {
+          icon: 'minus',
+          position: 'top-right',
+          fullWidth: false,
+          duration: 1000
+        });
       }
     }
   }
