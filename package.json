@@ -37,6 +37,7 @@
     "vue-full-calendar": "^2.7.0",
     "vue-markdown": "^2.2.4",
     "vue-router": "^3.0.2",
+    "vue-toasted": "^1.1.26",
     "vuex": "^3.0.1",
     "winston": "^3.1.0"
   },

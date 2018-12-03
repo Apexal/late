@@ -322,10 +322,7 @@ export default {
           this.editedAssignment(request.data.updatedAssignment);
         }
       } catch (e) {
-        return this.$store.dispatch('ADD_NOTIFICATION', {
-          type: 'danger',
-          description: e.response.data.message
-        });
+        this.$toasted.error(e.response.data.message);
       }
 
       this.toggleLoading = false;
@@ -357,10 +354,8 @@ export default {
       } catch (e) {
         this.loading = false;
         this.$router.push('/assignments');
-        return this.$store.dispatch('ADD_NOTIFICATION', {
-          type: 'danger',
-          description: e.response.data.message
-        });
+
+        return this.$toasted.error(e.response.data.message);
       }
 
       this.assignment = request.data.assignment;
@@ -394,10 +389,12 @@ export default {
       }
 
       // Notify user of success
-      this.$store.dispatch('ADD_NOTIFICATION', {
-        type: 'success',
-        description: `Successfully removed assignment '${assignmentTitle}'.`
-      });
+      this.$toasted.success(
+        `Successfully removed assignment '${assignmentTitle}'.`
+        /* action: {
+          text: 'Undo'
+        } */
+      );
     },
     async addComment () {
       if (!this.newComment) return;
