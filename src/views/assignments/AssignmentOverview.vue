@@ -19,6 +19,66 @@
       class="section"
     >
       <div class="is-clearfix">
+        <div class="dropdown is-hoverable is-right is-pulled-right">
+          <div class="dropdown-trigger">
+            <button
+              class="button is-dark"
+              :class="{ 'is-loading': loading || toggleLoading }"
+              aria-haspopup="true"
+              aria-controls="dropdown-menu"
+            >
+              <span>Assignment Actions</span>
+              <span class="icon is-small">
+                <i
+                  class="fas fa-angle-down"
+                  aria-hidden="true"
+                />
+              </span>
+            </button>
+          </div>
+          <div
+            id="dropdown-menu"
+            class="dropdown-menu"
+            role="menu"
+          >
+            <div class="dropdown-content">
+              <a
+                href="#"
+                class="dropdown-item"
+                @click="editing = true"
+              >
+                <span class="icon margin-left">
+                  <i class="fas fa-pencil-alt" />
+                </span>
+                Edit
+              </a>
+              <a
+                href="#"
+                class="dropdown-item"
+                @click="toggleCompleted"
+              >
+                <span class="icon margin-left">
+                  <i
+                    class="fas"
+                    :class="{ 'fa-check-circle' : assignment.completed, 'fa-circle': !assignment.completed }"
+                  />
+                </span>
+                {{ assignment.completed ? 'Mark as Incomplete' : 'Mark as Complete' }}
+              </a>
+              <hr class="dropdown-divider">
+              <router-link
+                to="/assignments"
+                class="dropdown-item"
+              >
+                <span class="icon">
+                  <i class="fas fa-angle-left margin-right" />
+                </span>
+                All Assignments
+              </router-link>
+            </div>
+          </div>
+        </div>
+
         <h2 class="subtitle">
           <span
             v-if="assignment.completed"
@@ -34,51 +94,15 @@
             class="has-text-grey"
           >{{ isPast ? 'Past ': '' }}Assignment</span>
         </h2>
-        <h1 class="title">{{ assignment.title }}</h1>
+        <h1 class="title">
+          {{ assignment.title }}
+          <h2
+            class="subtitle has-text-grey due-title"
+          >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</h2>
+        </h1>
       </div>
 
-      <span
-        class="has-text-grey is-pulled-right"
-      >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
-
-      <div class="assignment-controls buttons has-addons">
-        <router-link
-          to="/assignments"
-          class="button is-link"
-        >
-          <span class="icon">
-            <i class="fas fa-angle-left margin-right" />
-          </span>
-          All Assignments
-        </router-link>
-        <button
-          v-if="!isPast"
-          class="button is-warning"
-          :title="'Last edited ' + lastEdited"
-          @click="editing = !editing"
-        >
-          Edit
-          <span class="icon margin-left">
-            <i class="fas fa-pencil-alt" />
-          </span>
-        </button>
-        <button
-          class="button tooltip"
-          :class="{'is-success' : assignment.completed, 'is-danger': !assignment.completed, 'is-loading': toggleLoading }"
-          :data-tooltip="toggleButtonTitle"
-          @click="toggleCompleted"
-        >
-          {{ assignment.completed ? 'Mark as Incomplete' : 'Mark as Complete' }}
-          <span
-            class="icon margin-left"
-          >
-            <i
-              class="fas"
-              :class="{ 'fa-check-square' : assignment.completed, 'fa-square': !assignment.completed }"
-            />
-          </span>
-        </button>
-      </div>
+      <hr>
 
       <nav class="level is-mobile box assignment-stats">
         <div class="level-item has-text-centered">
@@ -368,7 +392,8 @@ export default {
       document.title = `${this.assignment.title} | LATE`;
       this.loading = false;
     },
-    shortDateTimeString: dueDate => moment(dueDate).format('MM/DD/YY h:mma'),
+    shortDateTimeString: dueDate =>
+      moment(dueDate).format('dddd, MMM Do YYYY [@] h:mma'),
     toFullDateTimeString: dueDate =>
       moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     fromNow: date => moment(date).fromNow(),
@@ -433,6 +458,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.due-title {
+  margin-top: 5px;
+}
 .assignment-controls {
   margin-top: 15px;
 }
