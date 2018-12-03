@@ -9,9 +9,7 @@
           <h2
             style="display: inline-block"
             class="subtitle is-unselectable"
-          >
-            Automatically Set Your Course Schedule
-          </h2>
+          >Automatically Set Your Course Schedule</h2>
         </summary>
 
         <div class="columns">
@@ -19,9 +17,7 @@
             <label
               for="method"
               class="label"
-            >
-              Method
-            </label>
+            >Method</label>
             <div class="control">
               <select
                 id="method"
@@ -29,12 +25,8 @@
                 name="method"
                 class="control"
               >
-                <option value="sis">
-                  SIS
-                </option>
-                <option value="crn">
-                  CRNs
-                </option>
+                <option value="sis">SIS</option>
+                <option value="crn">CRNs</option>
               </select>
             </div>
           </div>
@@ -47,12 +39,10 @@
               <label
                 for="pin"
                 class="label"
-              >
-                SIS PIN
-              </label>
-              <p class="help">
-                Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.
-              </p>
+              >SIS PIN</label>
+              <p
+                class="help"
+              >Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.</p>
               <div class="control">
                 <input
                   id="pin"
@@ -73,12 +63,8 @@
               <label
                 class="label"
                 for="crns"
-              >
-                Directly Enter Your Course CRNs
-              </label>
-              <p class="help">
-                These are found in SIS under 'View Weekly Schedule'.
-              </p>
+              >Directly Enter Your Course CRNs</label>
+              <p class="help">These are found in SIS under 'View Weekly Schedule'.</p>
               <div class="control">
                 <input
                   id="crns"
@@ -98,9 +84,7 @@
           class="button is-small is-warning"
           :class="{'is-loading': loading}"
           :disabled="!canReset"
-        >
-          {{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}
-        </button>
+        >{{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}</button>
       </details>
     </form>
 
@@ -109,13 +93,9 @@
     <p
       v-if="courses.length === 0"
       class="has-text-grey has-text-centered"
-    >
-      Set your courses above.
-    </p>
+    >Set your courses above.</p>
     <template v-else>
-      <h2 class="subtitle">
-        Your Courses
-      </h2>
+      <h2 class="subtitle">Your Courses</h2>
       <div class="columns is-multiline course-list">
         <div
           v-for="c in courses"
@@ -133,9 +113,7 @@
     <router-link
       to="/profile/unavailability"
       class="button is-primary"
-    >
-      Save
-    </router-link>
+    >Save</router-link>
   </div>
 </template>
 
@@ -173,10 +151,7 @@ export default {
 
       await this.$store.dispatch('UPDATE_COURSE', updatedCourse);
 
-      this.$store.dispatch('ADD_NOTIFICATION', {
-        type: 'success',
-        description: 'Updated course info!'
-      });
+      this.$toasted.show(`'${updatedCourse.longname}' has been updated.`);
 
       // this.saved = true;
       this.loading = false;
@@ -192,16 +167,19 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$store.dispatch('ADD_NOTIFICATION', {
-          type: 'danger',
-          description: e.response.data.message
-        });
+        return this.$toasted.error(e.response.data.message);
       }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.dispatch('ADD_NOTIFICATION', {
-        type: 'success',
-        description: 'Got course schedule!'
+
+      // Notify user of success
+      this.$toasted.info('Your course schedule has been compiled.', {
+        action: {
+          text: 'Next Step',
+          push: {
+            name: 'unavailability'
+          }
+        }
       });
 
       // this.saved = true;

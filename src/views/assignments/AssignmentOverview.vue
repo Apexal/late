@@ -390,10 +390,12 @@ export default {
 
       // Notify user of success
       this.$toasted.success(
-        `Successfully removed assignment '${assignmentTitle}'.`
-        /* action: {
-          text: 'Undo'
-        } */
+        `Successfully removed assignment '${assignmentTitle}'.`,
+        {
+          /* action: {
+            text: 'Undo'
+          */
+        }
       );
     },
     async addComment () {

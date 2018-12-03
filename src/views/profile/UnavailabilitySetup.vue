@@ -11,7 +11,9 @@
               for="earliest"
               class="label"
             >Earliest Time Preference</label>
-            <p class="help"><b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.</p>
+            <p class="help">
+              <b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.
+            </p>
             <div class="control">
               <input
                 id="earliest"
@@ -29,7 +31,9 @@
               for="latest"
               class="label"
             >Latest Time Preference</label>
-            <p class="help"><b>LATE</b> will not schedule any work for you after this time unless it absolutely does not fit anywhere else.</p>
+            <p class="help">
+              <b>LATE</b> will not schedule any work for you after this time unless it absolutely does not fit anywhere else.
+            </p>
             <div class="control">
               <input
                 id="latest"
@@ -60,9 +64,7 @@
       class="button is-primary"
       :class="{'is-loading': loading}"
       :disabled="saved"
-    >
-      Save and Continue
-    </button>
+    >Save and Continue</button>
   </div>
 </template>
 
@@ -80,7 +82,9 @@ export default {
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
-        events: this.$store.getters.getCourseScheduleAsEvents.concat(this.$store.getters.getUnavailabilityAsEvents),
+        events: this.$store.getters.getCourseScheduleAsEvents.concat(
+          this.$store.getters.getUnavailabilityAsEvents
+        ),
         header: {
           left: '',
           center: '',
@@ -103,7 +107,9 @@ export default {
           eventClick: (calEvent, jsEvent, view) => {
             if (!calEvent.isWorkBlock) return;
             this.saved = false;
-            this.calendar.events = this.calendar.events.filter(e => !moment(e.start).isSame(moment(calEvent.start)));
+            this.calendar.events = this.calendar.events.filter(
+              e => !moment(e.start).isSame(moment(calEvent.start))
+            );
           },
 
           select: (start, end) => {
@@ -122,13 +128,19 @@ export default {
     };
   },
   watch: {
-    earliest () { this.saved = false; },
-    latest () { this.saved = false; }
+    earliest () {
+      this.saved = false;
+    },
+    latest () {
+      this.saved = false;
+    }
   },
   methods: {
     eventResized (calEvent) {
       this.saved = false;
-      this.calendar.events.find(e => moment(e.start).isSame(moment(calEvent.start))).end = calEvent.end;
+      this.calendar.events.find(e =>
+        moment(e.start).isSame(moment(calEvent.start))
+      ).end = calEvent.end;
     },
     async save () {
       this.loading = true;
@@ -143,13 +155,23 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$store.dispatch('ADD_NOTIFICATION', { type: 'danger', description: e.response.data.message });
+        return this.$toasted.error(e.response.data.message);
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Set study/work unavailability schedule!' });
+      this.$toasted.show(
+        'Your study/work unvailability schedule has been saved.',
+        {
+          action: {
+            text: 'Last Step',
+            push: {
+              name: 'integrations'
+            }
+          }
+        }
+      );
 
       this.loading = false;
       this.saved = true;

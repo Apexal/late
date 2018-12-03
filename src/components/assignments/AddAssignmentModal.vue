@@ -279,14 +279,6 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      /*
-      this.$store.dispatch('ADD_NOTIFICATION', {
-        type: 'success',
-        description: `Added assignment '${
-          request.data.createdAssignment.title
-        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`
-      });
-      */
       let toast = this.$toasted.success(
         `Added assignment '${
           request.data.createdAssignment.title

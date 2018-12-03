@@ -5,9 +5,7 @@
         <label
           class="label"
           for="rcs-id"
-        >
-          RCS ID
-        </label>
+        >RCS ID</label>
         <div class="control">
           <input
             id="rcs-id"
@@ -26,9 +24,7 @@
             <label
               class="label"
               for="first-name"
-            >
-              First Name
-            </label>
+            >First Name</label>
             <div class="control">
               <input
                 id="first-name"
@@ -48,9 +44,7 @@
             <label
               class="label"
               for="last-name"
-            >
-              Last Name
-            </label>
+            >Last Name</label>
             <div class="control">
               <input
                 id="last-name"
@@ -70,9 +64,7 @@
             <label
               class="label"
               for="rin"
-            >
-              RIN
-            </label>
+            >RIN</label>
             <div class="control">
               <input
                 id="rin"
@@ -92,9 +84,7 @@
             <label
               for="grad-year"
               class="label"
-            >
-              Graduation Year
-            </label>
+            >Graduation Year</label>
             <div class="control">
               <input
                 id="grad-year"
@@ -114,14 +104,11 @@
       </div>
       <hr>
 
-      <router-link
-        to="/profile/courseschedule"
+      <button
         class="button is-primary"
         :class="{'is-loading': loading}"
         :disabled="saved"
-      >
-        Save and Continue
-      </router-link>
+      >Save</button>
     </form>
   </div>
 </template>
@@ -162,16 +149,20 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$store.dispatch('ADD_NOTIFICATION', { type: 'danger', description: e.response.data.message });
+        return this.$toasted.error(e.response.data.message);
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
-
-      // Go to next setup
-      this.$router.push('/profile/courseschedule');
+      this.$toasted.info('Saved personal info!', {
+        action: {
+          text: 'Next Step',
+          push: {
+            name: 'course-schedule'
+          }
+        }
+      });
 
       // this.saved = true;
       this.loading = false;

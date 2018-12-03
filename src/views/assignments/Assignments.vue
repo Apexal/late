@@ -35,7 +35,8 @@
               class="dot course-dot"
               :style="{ 'background-color': c.color }"
             />
-            {{ c.longname }}</span>
+            {{ c.longname }}
+          </span>
         </div>
       </div>
       <div class="level-right">
@@ -74,9 +75,7 @@
       class="button is-dark is-outlined is-pulled-right"
       onclick="alert('Not yet implemented!')"
     >Export Assignments</button>
-
   </section>
-
 </template>
 
 <script>
@@ -89,27 +88,36 @@ export default {
     };
   },
   computed: {
-    view () { return this.$route.name; },
-    title () { return this.$route.meta.title; },
-    courses () { return this.$store.state.auth.user.current_schedule; }
+    view () {
+      return this.$route.name;
+    },
+    title () {
+      return this.$route.meta.title;
+    },
+    courses () {
+      return this.$store.state.auth.user.current_schedule;
+    }
   },
   methods: {
     async toggleAssignment (assignmentID) {
       try {
         await this.$store.dispatch('TOGGLE_UPCOMING_ASSIGNMENT', assignmentID);
       } catch (e) {
-        return this.$store.dispatch('ADD_NOTIFICATION', {
-          type: 'danger',
-          description: e.response.data.message
-        });
+        return this.$toasted.error(e.response.data.message);
       }
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
-    isFiltered (c) { return this.filter.includes(c.crn); },
+    isFiltered (c) {
+      return this.filter.includes(c.crn);
+    },
     toggleFilter (c) {
-      if (this.filter.includes(c.crn)) { this.filter.splice(this.filter.indexOf(c.crn), 1); } else { this.filter.push(c.crn); }
+      if (this.filter.includes(c.crn)) {
+        this.filter.splice(this.filter.indexOf(c.crn), 1);
+      } else {
+        this.filter.push(c.crn);
+      }
     }
   }
 };

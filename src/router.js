@@ -91,6 +91,7 @@ const router = new Router({
         },
         {
           path: 'personalinfo',
+          name: 'personal-info',
           meta: {
             title: 'Personal Info'
           },
@@ -98,6 +99,7 @@ const router = new Router({
         },
         {
           path: 'courseschedule',
+          name: 'course-schedule',
           meta: {
             title: 'Course Schedule'
           },
@@ -105,6 +107,7 @@ const router = new Router({
         },
         {
           path: 'unavailability',
+          name: 'unavailability',
           meta: {
             title: 'Study/Work Unavailability'
           },
@@ -112,6 +115,7 @@ const router = new Router({
         },
         {
           path: 'integrations',
+          name: 'integrations',
           meta: {
             title: 'Integrations'
           },

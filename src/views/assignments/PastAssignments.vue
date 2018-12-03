@@ -101,16 +101,17 @@
           v-for="a in filtered"
           :key="a._id"
         >
-          <td :title="toFullDateTimeString(a.dueDate)">{{ toDateShorterString(a.dueDate) }} <span class="has-text-grey">{{ toTimeString(a.dueDate) }}</span></td>
+          <td :title="toFullDateTimeString(a.dueDate)">
+            {{ toDateShorterString(a.dueDate) }}
+            <span class="has-text-grey">{{ toTimeString(a.dueDate) }}</span>
+          </td>
           <td class="is-hidden-mobile">
             <span
               class="dot"
               :title="course(a).longname"
               :style="'background-color: ' + course(a).color"
             />
-            <b
-              class="course-title"
-            >{{ course(a).longname }}</b>
+            <b class="course-title">{{ course(a).longname }}</b>
           </td>
           <td>
             <span
@@ -122,9 +123,7 @@
               class="assignment-link"
               :title="a.description.substring(0, 500)"
               :to="{name: 'assignment-overview', params: { assignmentID: a._id }}"
-            >
-              {{ a.title }}
-            </router-link>
+            >{{ a.title }}</router-link>
           </td>
           <td>
             <span class="icon">
@@ -158,27 +157,51 @@ export default {
   data () {
     return {
       loading: true,
-      startDate: this.$route.query.start || moment().subtract(7, 'days').format('YYYY-MM-DD'),
+      startDate:
+        this.$route.query.start ||
+        moment()
+          .subtract(7, 'days')
+          .format('YYYY-MM-DD'),
       endDate: this.$route.query.end || moment().format('YYYY-MM-DD'),
       currentAssignments: []
     };
   },
   computed: {
-    canGoForward () { return this.endMoment.isBefore(moment().startOf('day')); },
-    startMoment () { return moment(this.startDate, 'YYYY-MM-DD', true); },
-    endMoment () { return moment(this.endDate, 'YYYY-MM-DD', true); },
-    isLastWeek () { return this.endMoment.isSame(moment(), 'day'); },
-    weekOf () { return this.startMoment.format('dddd, MMMM Do YYYY'); },
-    range () { return this.endMoment.diff(moment(this.startDate, 'YYYY-MM-DD', true), 'days'); },
+    canGoForward () {
+      return this.endMoment.isBefore(moment().startOf('day'));
+    },
+    startMoment () {
+      return moment(this.startDate, 'YYYY-MM-DD', true);
+    },
+    endMoment () {
+      return moment(this.endDate, 'YYYY-MM-DD', true);
+    },
+    isLastWeek () {
+      return this.endMoment.isSame(moment(), 'day');
+    },
+    weekOf () {
+      return this.startMoment.format('dddd, MMMM Do YYYY');
+    },
+    range () {
+      return this.endMoment.diff(
+        moment(this.startDate, 'YYYY-MM-DD', true),
+        'days'
+      );
+    },
     today: () => moment().format('YYYY-MM-DD'),
-    yesterday: () => moment().subtract(1, 'days').format('YYYY-MM-DD'),
+    yesterday: () =>
+      moment()
+        .subtract(1, 'days')
+        .format('YYYY-MM-DD'),
     filtered () {
       return this.currentAssignments.filter(a => {
         if (!this.showCompleted && a.completed) return false;
         return !this.filter.includes(this.course(a).crn);
       });
     },
-    pastAssignments () { return this.$store.getters.pastAssignments; }
+    pastAssignments () {
+      return this.$store.getters.pastAssignments;
+    }
   },
   created () {
     this.getAssignments();
@@ -186,13 +209,19 @@ export default {
   methods: {
     gotoLastWeek () {
       this.endDate = this.today;
-      this.startDate = moment().subtract('1', 'week').format('YYYY-MM-DD');
+      this.startDate = moment()
+        .subtract('1', 'week')
+        .format('YYYY-MM-DD');
 
       this.getAssignments();
     },
     shiftDates (amount) {
-      this.startDate = moment(this.startDate, 'YYYY-MM-DD', true).add(amount, 'days').format('YYYY-MM-DD');
-      this.endDate = moment(this.endDate, 'YYYY-MM-DD', true).add(amount, 'days').format('YYYY-MM-DD');
+      this.startDate = moment(this.startDate, 'YYYY-MM-DD', true)
+        .add(amount, 'days')
+        .format('YYYY-MM-DD');
+      this.endDate = moment(this.endDate, 'YYYY-MM-DD', true)
+        .add(amount, 'days')
+        .format('YYYY-MM-DD');
 
       this.getAssignments();
     },
@@ -201,14 +230,13 @@ export default {
       let request;
 
       try {
-        request = await this.$http.get('/assignments/list', { params: { start: this.startDate, end: this.endDate } });
+        request = await this.$http.get('/assignments/list', {
+          params: { start: this.startDate, end: this.endDate }
+        });
       } catch (e) {
         this.loading = false;
         this.currentAssignments = [];
-        return this.$store.dispatch('ADD_NOTIFICATION', {
-          type: 'danger',
-          description: e.response.data.message
-        });
+        return this.$toasted.error(e.response.data.message);
       }
 
       this.currentAssignments = request.data.assignments;
@@ -217,7 +245,8 @@ export default {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
-    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    toFullDateTimeString: dueDate =>
+      moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     toDateShorterString: dueDate => moment(dueDate).format('MM/DD/YY'),
     toTimeString: time => moment(time).format('h:mm a')
   }

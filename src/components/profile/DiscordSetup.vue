@@ -11,7 +11,10 @@
         class="button is-warning"
         @click="startVerify"
       >Link Discord Account</button>
-      <p v-else>Direct message <b>LATE bot</b> <code>.verify {{ verificationCode }}</code> to link your account!</p>
+      <p v-else>Direct message
+        <b>LATE bot</b>
+        <code>.verify {{ verificationCode }}</code> to link your account!
+      </p>
     </div>
     <div
       v-else
@@ -25,7 +28,9 @@
             type="checkbox"
             class="switch"
           >
-          <label for="enabled"><b>Enable Discord notifications</b></label>
+          <label for="enabled">
+            <b>Enable Discord notifications</b>
+          </label>
         </div>
         <div class="field">
           <input
@@ -65,11 +70,16 @@ export default {
       loading: false,
       verifying: false,
       verificationCode: '',
-      preferences: Object.assign({}, this.$store.state.auth.user.integrations.discord.preferences)
+      preferences: Object.assign(
+        {},
+        this.$store.state.auth.user.integrations.discord.preferences
+      )
     };
   },
   computed: {
-    verified () { return this.$store.state.auth.user.integrations.discord.verified; }
+    verified () {
+      return this.$store.state.auth.user.integrations.discord.verified;
+    }
   },
   methods: {
     async startVerify () {
@@ -84,14 +94,17 @@ export default {
 
       let request;
       try {
-        request = await this.$http.post('/integrations/discord/preferences', this.preferences);
+        request = await this.$http.post(
+          '/integrations/discord/preferences',
+          this.preferences
+        );
       } catch (e) {
         this.loading = false;
-        return this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: e.response.data.message });
+        return this.$toasted.error(e.response.data.message);
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Successfully updated your Discord preferences!' });
+      this.$toasted.success('Successfully updated your Discord preferences!');
 
       this.loading = false;
     }
