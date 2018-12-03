@@ -23,6 +23,7 @@ const getters = {
       );
 
       return {
+        id: 'unavailable',
         title: 'Busy',
         start: start,
         end,
@@ -30,7 +31,7 @@ const getters = {
       };
     });
   },
-  getCourseScheduleAsEvents: state => {
+  getCourseScheduleAsEvents: (state, getters) => {
     if (!state.user.current_schedule) return [];
 
     const sunday = moment().startOf('day');
@@ -52,12 +53,14 @@ const getters = {
           );
 
           return {
+            id: 'course',
             eventType: 'course',
-            title: c.longname,
+            title: `${c.longname} ${getters.periodType(p.type)}`,
             start,
             end,
             color: c.color,
             editable: false,
+            period: p,
             course: c
           };
         })

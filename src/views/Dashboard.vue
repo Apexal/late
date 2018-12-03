@@ -3,7 +3,7 @@
     <h1 class="title">Your Dashboard</h1>
     <FullCalendar
       ref="calendar"
-      :events="calendar.events"
+      :events="events"
       :editable="true"
       :selectable="true"
       :header="calendar.header"
@@ -23,13 +23,11 @@ export default {
   data () {
     return {
       calendar: {
-        events: this.$store.getters.getCourseScheduleAsEvents.concat(
-          this.$store.getters.getUpcomingAssigmentsAsEvents
-        ),
         header: {
           center: 'listDay,agendaWeek,month'
         },
         config: {
+          allDayText: 'Incomplete\nAssign.',
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
           maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
           timezone: 'local',
@@ -47,8 +45,8 @@ export default {
             agendaWeek: 'Weekly Agenda'
           },
           dayClick: (date, jsEvent, view) => {
-            this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
-            this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+            // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
+            // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
           },
           eventClick: (calEvent, jsEvent, view) => {
             if (calEvent.eventType === 'course') {
@@ -73,6 +71,25 @@ export default {
     };
   },
   computed: {
+    events () {
+      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
+
+      const incompleteUpcomingAssignments = this.$store.getters.getUpcomingAssigmentsAsEvents.filter(
+        c => !c.assignment.completed
+      );
+
+      const unavailabilitySchedule = this.$store.getters.getUnavailabilityAsEvents.map(
+        e =>
+          Object.assign(e, {
+            backgroundColor: 'black',
+            rendering: 'background'
+          })
+      );
+
+      return courseSchedule
+        .concat(incompleteUpcomingAssignments)
+        .concat(unavailabilitySchedule);
+    },
     assignments () {
       return this.$store.state.work.upcomingAssignments;
     }
