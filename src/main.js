@@ -13,6 +13,7 @@ Vue.use(FullCalendar);
 
 Vue.use(Toasted, {
   router,
+  fitToScreen: true,
   duration: 5000,
   position: 'bottom-center'
 });
