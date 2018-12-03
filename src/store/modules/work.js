@@ -61,6 +61,7 @@ const actions = {
   async TOGGLE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
     commit('UPDATE_UPCOMING_ASSIGNMENT', request.data.updatedAssignment);
+    return request.data.updatedAssignment;
   },
   async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
     const response = await axios.get('/assignments/list', {

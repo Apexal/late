@@ -101,7 +101,19 @@ export default {
   methods: {
     async toggleAssignment (assignmentID) {
       try {
-        await this.$store.dispatch('TOGGLE_UPCOMING_ASSIGNMENT', assignmentID);
+        const toggledAssignment = await this.$store.dispatch(
+          'TOGGLE_UPCOMING_ASSIGNMENT',
+          assignmentID
+        );
+        this.$toasted.show(`Toggled assignment '${toggledAssignment.title}'.`, {
+          action: {
+            text: 'View',
+            push: {
+              name: 'assignment-overview',
+              params: { assignmentID }
+            }
+          }
+        });
       } catch (e) {
         return this.$toasted.error(e.response.data.message);
       }

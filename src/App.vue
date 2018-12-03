@@ -29,7 +29,6 @@
         :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
       >
-        <Notifications />
         <transition
           name="fade"
           mode="out-in"
@@ -46,11 +45,10 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Sidebar from '@/components/sidebar/Sidebar';
 import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
-import Notifications from '@/components/Notifications';
 
 export default {
   name: 'LATE',
-  components: { Header, Sidebar, Footer, AddAssignmentModal, Notifications },
+  components: { Header, Sidebar, Footer, AddAssignmentModal },
   computed: {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;

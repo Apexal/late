@@ -5,7 +5,7 @@
         v-if="todos.length > 0"
         class="tag is-dark is-pulled-right"
       >{{ todos.length }}</span>
-      TODOs
+      To-Do List
     </summary>
     <form @submit.prevent="addTodo">
       <div class="control panel-block">
@@ -13,7 +13,7 @@
           v-model="newTodo"
           class="input is-small"
           type="text"
-          placeholder="Add todo"
+          placeholder="Add to-do"
           required
         >
       </div>
@@ -33,7 +33,7 @@
     <div
       v-if="todos.length === 0"
       class="panel-block has-text-grey-light is-size-7"
-    >No todos saved on this device yet.</div>
+    >No to-dos saved on this device yet.</div>
   </details>
 </template>
 
@@ -63,14 +63,16 @@ export default {
       if (!this.newTodo) return;
 
       this.todos.push({ text: this.newTodo, addedAt: new Date() });
-      this.newTodo = '';
       this.saveTodos();
+      this.$toasted.show(`Added to-do '${this.newTodo}'.`);
+      this.newTodo = '';
     },
     removeTodo (todo) {
       if (!confirm(`Remove '${todo.text}'?`)) return;
 
       this.todos.splice(this.todos.indexOf(todo), 1);
       this.saveTodos();
+      this.$toasted.show(`Removed to-do '${todo.text}'.`);
     },
     saveTodos () {
       const parsed = JSON.stringify(this.todos);

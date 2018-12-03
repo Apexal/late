@@ -5,7 +5,6 @@ import Vuex from 'vuex';
 import auth from './modules/auth';
 import work from './modules/work';
 import schedule from './modules/schedule';
-import notifications from './modules/notifications';
 import addAssignmentModal from './modules/addAssignmentModal';
 
 Vue.use(Vuex);
@@ -17,7 +16,6 @@ export default new Vuex.Store({
     auth,
     work,
     schedule,
-    notifications,
     addAssignmentModal
   },
   state: {
