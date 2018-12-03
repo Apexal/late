@@ -19,9 +19,6 @@
       class="section"
     >
       <div class="is-clearfix">
-        <span
-          class="has-text-grey is-pulled-right"
-        >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
         <h2 class="subtitle">
           <span
             v-if="assignment.completed"
@@ -39,7 +36,50 @@
         </h2>
         <h1 class="title">{{ assignment.title }}</h1>
       </div>
-      <hr>
+
+      <span
+        class="has-text-grey is-pulled-right"
+      >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</span>
+
+      <div class="assignment-controls buttons has-addons">
+        <router-link
+          to="/assignments"
+          class="button is-link"
+        >
+          <span class="icon">
+            <i class="fas fa-angle-left margin-right" />
+          </span>
+          All Assignments
+        </router-link>
+        <button
+          v-if="!isPast"
+          class="button is-warning"
+          :title="'Last edited ' + lastEdited"
+          @click="editing = !editing"
+        >
+          Edit
+          <span class="icon margin-left">
+            <i class="fas fa-pencil-alt" />
+          </span>
+        </button>
+        <button
+          class="button tooltip"
+          :class="{'is-success' : assignment.completed, 'is-danger': !assignment.completed, 'is-loading': toggleLoading }"
+          :data-tooltip="toggleButtonTitle"
+          @click="toggleCompleted"
+        >
+          {{ assignment.completed ? 'Mark as Incomplete' : 'Mark as Complete' }}
+          <span
+            class="icon margin-left"
+          >
+            <i
+              class="fas"
+              :class="{ 'fa-check-square' : assignment.completed, 'fa-square': !assignment.completed }"
+            />
+          </span>
+        </button>
+      </div>
+
       <nav class="level is-mobile box assignment-stats">
         <div class="level-item has-text-centered">
           <div>
@@ -184,46 +224,6 @@
             </form>
           </div>
         </template>
-      </div>
-      <hr>
-
-      <div class="buttons has-addons">
-        <router-link
-          to="/assignments"
-          class="button is-link"
-        >
-          <span class="icon">
-            <i class="fas fa-angle-left margin-right" />
-          </span>
-          All Assignments
-        </router-link>
-        <button
-          v-if="!isPast"
-          class="button is-warning"
-          :title="'Last edited ' + lastEdited"
-          @click="editing = !editing"
-        >
-          Edit
-          <span class="icon margin-left">
-            <i class="fas fa-pencil-alt" />
-          </span>
-        </button>
-        <button
-          class="button tooltip"
-          :class="{'is-success' : assignment.completed, 'is-danger': !assignment.completed, 'is-loading': toggleLoading }"
-          :data-tooltip="toggleButtonTitle"
-          @click="toggleCompleted"
-        >
-          {{ assignment.completed ? 'Mark as Incomplete' : 'Mark as Complete' }}
-          <span
-            class="icon margin-left"
-          >
-            <i
-              class="fas"
-              :class="{ 'fa-check-square' : assignment.completed, 'fa-square': !assignment.completed }"
-            />
-          </span>
-        </button>
       </div>
     </section>
   </div>
@@ -433,6 +433,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.assignment-controls {
+  margin-top: 15px;
+}
 .comment-count {
   margin-left: 3px;
 }
