@@ -15,12 +15,6 @@
       </div>
       <div class="column">
         <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label
-              for="start"
-              class="label"
-            >Start</label>
-          </div>
           <div class="field-body">
             <div class="control">
               <input
@@ -43,20 +37,10 @@
             :disabled="isLastWeek"
             @click="gotoLastWeek"
           >Last Week</button>
-          <button
-            class="button is-link"
-            onclick="alert('Somebody implement me!')"
-          >Goto Week</button>
         </div>
       </div>
       <div class="column">
         <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label
-              for="end"
-              class="label"
-            >End</label>
-          </div>
           <div class="field-body">
             <div class="control">
               <input
@@ -103,7 +87,9 @@
         >
           <td :title="toFullDateTimeString(a.dueDate)">
             {{ toDateShorterString(a.dueDate) }}
-            <span class="has-text-grey">{{ toTimeString(a.dueDate) }}</span>
+            <span
+              class="has-text-grey"
+            >{{ toTimeString(a.dueDate) }}</span>
           </td>
           <td class="is-hidden-mobile">
             <span

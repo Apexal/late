@@ -245,7 +245,11 @@ export default {
       this.loading = false;
     },
     async resetPhoneNumber () {
-      alert('Not yet implemented!');
+      this.$toasted.error('Not yet implemented!', {
+        icon: 'frown',
+        duration: 1000,
+        fullWidth: false
+      });
     }
   }
 };

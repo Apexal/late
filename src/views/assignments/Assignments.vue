@@ -73,7 +73,7 @@
     >Add Assignment</button>
     <button
       class="button is-dark is-outlined is-pulled-right"
-      onclick="alert('Not yet implemented!')"
+      @click="exportAssignments"
     >Export Assignments</button>
   </section>
 </template>
@@ -137,6 +137,13 @@ export default {
       } catch (e) {
         return this.$toasted.error(e.response.data.message);
       }
+    },
+    exportAssignments () {
+      this.$toasted.error('Not yet implemented!', {
+        icon: 'frown',
+        duration: 1000,
+        fullWidth: false
+      });
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);

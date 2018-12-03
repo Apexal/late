@@ -10,7 +10,9 @@
           type="checkbox"
           class="switch"
         >
-        <label for="enabled"><b>Enable weekly email reports</b></label>
+        <label for="enabled">
+          <b>Enable weekly email reports</b>
+        </label>
       </div>
 
       <hr>
@@ -27,12 +29,17 @@ export default {
   name: 'EmailSetup',
   data () {
     return {
-      enabled: this.$store.state.auth.user.integrations.email.sendWeeklyProgressReports // wew
+      enabled: this.$store.state.auth.user.integrations.email
+        .sendWeeklyProgressReports // wew
     };
   },
   methods: {
     async save () {
-      alert('Please implement me!');
+      this.$toasted.error('Not yet implemented!', {
+        icon: 'frown',
+        duration: 1000,
+        fullWidth: false
+      });
     }
   }
 };
