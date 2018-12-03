@@ -3,7 +3,8 @@
     class="panel sidebar-upcoming-assignments"
     open
   >
-    <summary class="panel-heading is-clearfix is-unselectable is-size-6">Pressing Assignments
+    <summary class="panel-heading is-clearfix is-unselectable is-size-6">
+      Pressing Assignments
       <span class="is-pulled-right icon">
         <i
           class="fas fa-plus add-assignment"
@@ -37,11 +38,9 @@
             :title="a.description.substring(0, 500)"
             :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
           >
-            <b
-              class="course-title is-hidden-tablet"
-            >{{ course(a).longname }}</b>
-
-            {{ a.title }}</router-link>
+            <b class="course-title is-hidden-tablet">{{ course(a).longname }}</b>
+            {{ a.title }}
+          </router-link>
           <span
             v-if="a.priority >= 7"
             class="tag priority-tag is-danger"
@@ -59,9 +58,7 @@
         tag="button"
         class="button is-small is-link is-outlined is-fullwidth"
         to="/assignments"
-      >
-        All Assignments
-      </router-link>
+      >All Assignments</router-link>
     </div>
   </details>
 </template>
@@ -79,11 +76,17 @@ export default {
     }
   },
   methods: {
-    fromNow: date => moment(date).fromNow(),
+    now () {
+      return this.$store.state.now;
+    },
+    fromNow (date) {
+      return moment(date).from(this.now);
+    },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
-    toFullDateTimeString: dueDate => moment(dueDate).format('ddd, MMM Do YYYY, h:mma'),
+    toFullDateTimeString: dueDate =>
+      moment(dueDate).format('ddd, MMM Do YYYY, h:mma'),
     getCourseFromCRN (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     }

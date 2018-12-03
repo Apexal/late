@@ -48,6 +48,11 @@ export default {
       todos: []
     };
   },
+  computed: {
+    now () {
+      return this.$store.state.now;
+    }
+  },
   mounted () {
     if (localStorage.getItem('todos')) {
       try {
@@ -58,7 +63,9 @@ export default {
     }
   },
   methods: {
-    fromNow: date => moment(date).fromNow(),
+    fromNow (date) {
+      return moment(date).from(this.now);
+    },
     addTodo () {
       if (!this.newTodo) return;
 

@@ -27,7 +27,7 @@
               aria-haspopup="true"
               aria-controls="dropdown-menu"
             >
-              <span>Assignment Actions</span>
+              <span>Actions</span>
               <span class="icon is-small">
                 <i
                   class="fas fa-angle-down"
@@ -50,7 +50,7 @@
                 <span class="icon margin-left">
                   <i class="fas fa-pencil-alt" />
                 </span>
-                Edit
+                Edit Info
               </a>
               <a
                 href="#"
@@ -60,10 +60,10 @@
                 <span class="icon margin-left">
                   <i
                     class="fas"
-                    :class="{ 'fa-check-circle' : assignment.completed, 'fa-circle': !assignment.completed }"
+                    :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
                   />
                 </span>
-                {{ assignment.completed ? 'Mark as Incomplete' : 'Mark as Complete' }}
+                {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
               </a>
               <hr class="dropdown-divider">
               <router-link
@@ -396,7 +396,9 @@ export default {
       moment(dueDate).format('dddd, MMM Do YYYY [@] h:mma'),
     toFullDateTimeString: dueDate =>
       moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
-    fromNow: date => moment(date).fromNow(),
+    fromNow (date) {
+      return moment(date).from(this.now);
+    },
     async remove () {
       // Confirm user wants to remove assignment
       if (

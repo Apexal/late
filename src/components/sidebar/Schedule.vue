@@ -106,9 +106,9 @@ export default {
   methods: {
     fromNow (datetime) {
       const time = moment(datetime, 'Hmm', true);
-      return `${
-        time.isBefore(this.now) ? 'Started' : 'Starting'
-      } ${time.fromNow()}`;
+      return `${time.isBefore(this.now) ? 'Started' : 'Starting'} ${time.from(
+        this.now
+      )}`;
     },
     timeFormat: datetime => moment(datetime, 'Hmm', true).format('h:mma'),
     hasPassed: p => moment(p.end, 'Hmm', true).isBefore(moment()),
