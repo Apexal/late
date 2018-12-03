@@ -75,10 +75,12 @@ export default {
       required: true
     }
   },
-  methods: {
+  computed: {
     now () {
       return this.$store.state.now;
-    },
+    }
+  },
+  methods: {
     fromNow (date) {
       return moment(date).from(this.now);
     },

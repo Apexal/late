@@ -129,7 +129,9 @@ export default {
     },
     toDateShortString (dueDate) {
       if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
-      if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) { return 'Tomorrow'; }
+      if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) {
+        return 'Tomorrow';
+      }
       return moment(dueDate).format('dddd [the] Do');
     },
     toTimeString (dueDate) {
@@ -138,7 +140,9 @@ export default {
     hoursFromNow (date) {
       return moment(date).diff(this.now, 'hours');
     },
-    daysAway: date => moment(date).diff(moment().startOf('day'), 'days')
+    daysAway (date) {
+      return moment(date).diff(this.now.startOf('day'), 'days');
+    }
   }
 };
 </script>
