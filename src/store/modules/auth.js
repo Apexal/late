@@ -78,7 +78,7 @@ const actions = {
       const user = response.data.user;
       await dispatch('SET_USER', user);
     } catch (e) {
-      console.error('Not logged in!');
+      console.log('Not logged in!');
     }
   },
   async SET_USER ({ dispatch, commit }, user) {

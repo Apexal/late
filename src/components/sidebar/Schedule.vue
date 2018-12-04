@@ -4,22 +4,28 @@
     open
   >
     <summary class="panel-heading is-unselectable is-size-6 is-clearfix">
-      Today's Schedule
+      Today's Classes
       <span
         v-if="in_class"
         class="tag is-info tooltip is-pulled-right"
         :style="{ 'background-color': current_course.color }"
         :data-tooltip="'Until end of ' + current_course.longname + ' ' + periodType(current_period)"
-      >{{ countdown }}</span>
+      >
+        {{ countdown }}
+      </span>
+      <span
+        v-else-if="classes_over"
+        class="tag is-dark tooltip"
+        data-tooltip="Classe are over for today!"
+      >
+        Over
+      </span>
     </summary>
     <template v-if="is_weekend">
       <div class="panel-block">
-        <h2 class="subtitle has-text-grey is-size-6">It's the weekend!</h2>
-      </div>
-    </template>
-    <template v-else-if="classes_over">
-      <div class="panel-block">
-        <h2 class="subtitle has-text-grey is-size-6">Classes are over for today!</h2>
+        <h2 class="subtitle has-text-grey is-size-6">
+          It's the weekend!
+        </h2>
       </div>
     </template>
     <template v-else>
@@ -39,7 +45,9 @@
             :data-tooltip="fromNow(p.start)"
           >
             {{ course(p).longname }}
-            <span class="has-text-grey">{{ periodType(p) }}</span>
+            <span class="has-text-grey">
+              {{ periodType(p) }}
+            </span>
           </span>
           <div
             class="course-times is-pulled-right has-text-grey tooltip is-tooltip-left"
