@@ -12,9 +12,7 @@
       v-if="loading"
       class="section"
     >
-      <h1 class="title has-text-grey">
-        Loading Assignment...
-      </h1>
+      <h1 class="title has-text-grey">Loading Assignment...</h1>
     </section>
     <section
       v-else
@@ -85,7 +83,8 @@
         <div class="assignment-controls buttons has-addons is-pulled-right is-hidden-touch">
           <router-link
             to="/assignments"
-            class="button is-link"
+            class="button is-link tooltip"
+            data-tooltip="Browse all assignments."
           >
             <span class="icon">
               <i class="fas fa-angle-left margin-right" />
@@ -95,7 +94,8 @@
 
           <button
             v-if="!isPast"
-            class="button is-warning"
+            class="button is-warning tooltip"
+            data-tooltip="Change this assignment's info."
             @click="toggleEditing"
           >
             <span class="icon">
@@ -105,8 +105,9 @@
           </button>
 
           <button
-            class="button"
+            class="button tooltip"
             :class="{ 'is-success': !assignment.completed, 'is-danger': assignment.completed }"
+            data-tooltip="Toggle this assignment's completion status."
             @click="toggleCompleted"
           >
             <span class="icon">
@@ -132,17 +133,13 @@
           {{ course.longname }}
           <span
             class="has-text-grey"
-          >
-            {{ isPast ? 'Past ': '' }}Assignment
-          </span>
+          >{{ isPast ? 'Past ': '' }}Assignment</span>
         </h2>
         <h1 class="title">
           {{ assignment.title }}
           <h2
             class="subtitle has-text-grey due-title"
-          >
-            {{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}
-          </h2>
+          >{{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}</h2>
         </h1>
       </div>
 
@@ -151,12 +148,8 @@
       <nav class="level is-mobile box assignment-stats">
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">
-              Priority
-            </p>
-            <p class="subtitle">
-              {{ assignment.priority }}
-            </p>
+            <p class="heading">Priority</p>
+            <p class="subtitle">{{ assignment.priority }}</p>
           </div>
         </div>
 
@@ -165,13 +158,9 @@
           class="level-item has-text-centered"
         >
           <div>
-            <p class="heading">
-              Work Done
-            </p>
+            <p class="heading">Work Done</p>
             <p class="subtitle">
-              <span class="has-text-grey">
-                ---
-              </span>
+              <span class="has-text-grey">---</span>
             </p>
           </div>
         </div>
@@ -181,14 +170,10 @@
           class="level-item has-text-centered"
         >
           <div>
-            <p class="heading">
-              Work Left
-            </p>
+            <p class="heading">Work Left</p>
             <p class="subtitle">
               {{ assignment.timeRemaining }}
-              <span class="has-text-grey">
-                hrs
-              </span>
+              <span class="has-text-grey">hrs</span>
             </p>
           </div>
         </div>
@@ -198,15 +183,11 @@
           class="level-item has-text-centered"
         >
           <div>
-            <p class="heading">
-              Completed
-            </p>
+            <p class="heading">Completed</p>
             <p
               class="subtitle tooltip is-tooltip-bottom"
               :data-tooltip="fromNow(assignment.completedAt)"
-            >
-              {{ completedAt }}
-            </p>
+            >{{ completedAt }}</p>
           </div>
         </div>
         <div
@@ -214,12 +195,8 @@
           class="level-item has-text-centered"
         >
           <div>
-            <p class="heading">
-              Due In
-            </p>
-            <p class="subtitle">
-              {{ timeLeft }}
-            </p>
+            <p class="heading">Due In</p>
+            <p class="subtitle">{{ timeLeft }}</p>
           </div>
         </div>
       </nav>
@@ -233,9 +210,7 @@
             :emoji="true"
             :anchor-attributes="{target: '_blank'}"
           />
-          <i v-else>
-            No description given.
-          </i>
+          <i v-else>No description given.</i>
         </blockquote>
       </div>
 
@@ -256,9 +231,7 @@
               <span
                 v-if="assignment.comments.length > 0"
                 class="tag is-dark comment-count"
-              >
-                {{ assignment.comments.length }}
-              </span>
+              >{{ assignment.comments.length }}</span>
             </a>
           </li>
         </ul>
@@ -268,9 +241,7 @@
         v-if="tab === 'schedule'"
         class="assignment-schedule"
       >
-        <p class="has-text-grey has-text-centered">
-          Coming soon...
-        </p>
+        <p class="has-text-grey has-text-centered">Coming soon...</p>
       </div>
       <div
         v-else-if="tab === 'comments'"
@@ -279,9 +250,7 @@
         <div
           v-if="assignment.comments.length === 0"
           class="has-text-grey has-text-centered"
-        >
-          {{ isPast ? 'No comments were posted for this assignment.' : 'You have not posted any comments yet.' }}
-        </div>
+        >{{ isPast ? 'No comments were posted for this assignment.' : 'You have not posted any comments yet.' }}</div>
         <div
           v-for="(c, index) in assignment.comments"
           :key="index"
@@ -290,9 +259,7 @@
           <small
             class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
             :data-tooltip="toFullDateTimeString(c.addedAt)"
-          >
-            {{ fromNow(c.addedAt) }}
-          </small>
+          >{{ fromNow(c.addedAt) }}</small>
           <VueMarkdown
             :source="c.body"
             :html="false"
@@ -320,9 +287,7 @@
               <button
                 :class="{ 'is-loading': commentLoading }"
                 class="button is-success is-pulled-right"
-              >
-                Add Comment
-              </button>
+              >Add Comment</button>
             </form>
           </div>
         </template>
