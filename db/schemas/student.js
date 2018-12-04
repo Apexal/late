@@ -90,7 +90,11 @@ const schema = new Schema(
         }
       },
       email: {
-        sendWeeklyProgressReports: { type: Boolean, default: true }
+        preferences: {
+          enabled: { type: Boolean, default: true },
+          dailyReports: { type: Boolean, default: false },
+          weeklyReports: { type: Boolean, default: true }
+        }
       }
     },
     setup: {

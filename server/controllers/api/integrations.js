@@ -173,10 +173,34 @@ async function updatePreferencesDiscord (ctx) {
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
+/**
+ * Update email integration preferences passed in the request body.
+ *
+ * @param {Koa context} ctx
+ */
+async function updatePreferencesEmail (ctx) {
+  const preferences = ctx.request.body;
+
+  Object.assign(ctx.state.user.integrations.email.preferences, preferences);
+
+  try {
+    await ctx.state.user.save();
+  } catch (e) {
+    logger.error(
+      `Failed to update email preferences for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('Failed to update email preferences.');
+  }
+
+  logger.info(`Updated email preferences for ${ctx.state.user.rcs_id}.`);
+  ctx.ok({ updatedUser: ctx.state.user });
+}
+
 module.exports = {
   submitSMS,
   verifySMS,
   updatePreferencesSMS,
   startVerifyDiscord,
-  updatePreferencesDiscord
+  updatePreferencesDiscord,
+  updatePreferencesEmail
 };

@@ -10,4 +10,6 @@ router.post('/sms/preferences', Ctrl.updatePreferencesSMS);
 router.get('/discord/startverify', Ctrl.startVerifyDiscord);
 router.post('/discord/preferences', Ctrl.updatePreferencesDiscord);
 
+router.post('/email/preferences', Ctrl.updatePreferencesEmail);
+
 module.exports = router.routes();
