@@ -1,6 +1,8 @@
 const CAS = require('koa2-cas');
 const logger = require('./logger');
 
+const { sendNewUserEmail } = require('./email');
+
 const cas = new CAS({
   cas_url: 'https://cas-auth.rpi.edu/cas',
   service_url: process.env.CAS_SERVICE_URL,
@@ -31,6 +33,7 @@ async function loginStudent (ctx) {
     logger.info(
       `Creating and logging in new student with rcs_id: ${student.rcs_id}`
     );
+    sendNewUserEmail(student.rcs_id);
     ctx.query.redirectTo = '/profile';
   }
 

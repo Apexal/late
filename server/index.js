@@ -49,12 +49,10 @@ app.use(Static('dist/'));
 app.use(async (ctx, next) => {
   ctx.state.env = process.env.NODE_ENV;
 
-  try {
+  if (ctx.session.cas_user) {
     ctx.state.user = await ctx.db.Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
-  } catch (e) {
-    logger.error(e);
   }
 
   await next();
