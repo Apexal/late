@@ -19,21 +19,28 @@ const emailFunctions = {
   },
   async sendMorningReportEmail (student) {
     // Compile periods for the day
-    // const day = moment().day();
-    /* const periods = student.current_schedule
-      .map(course => {
-        course.periods.forEach(p => (p.course = course));
-        return course.periods.filter(p => p.day === day);
-      })
+    const day = moment().day();
+
+    let periods = student.current_schedule
+      .map(course => course.periods.filter(p => p.day === day))
       .flat()
       .sort((a, b) => parseInt(a.start) - parseInt(b.start));
-    */
+
+    periods.forEach(p => {
+      const course = student.current_schedule.find(c => c.periods.includes(p));
+      p.start = moment(p.start, 'Hmm', true).format('h:mma');
+      p.end = moment(p.end, 'Hmm', true).format('h:mma');
+      p.course = {
+        longname: course.longname
+      };
+    });
+
     const assignmentsDueToday = await student.getAssignments(
       moment().startOf('day'),
       moment().endOf('day')
     );
 
-    logger.info(`Sending new user email to ${student.rcs_id}@rpi.edu`);
+    logger.info(`Sending morning report to ${student.rcs_id}@rpi.edu`);
     return sgMail.send({
       to: student.rcs_id + '@rpi.edu',
       from: 'LATE <thefrankmatranga@gmail.com>',
@@ -42,7 +49,7 @@ const emailFunctions = {
       dynamic_template_data: {
         dateString: moment().format('dddd, MMM Do YYYY'),
         student,
-        periods: [],
+        periods,
         assignmentsDueToday
       }
     });
