@@ -4,21 +4,15 @@
       v-if="verified"
       class="sms-preferences"
     >
-      <h2 class="subtitle">
-        SMS Notifications
-      </h2>
+      <h2 class="subtitle">SMS Notifications</h2>
 
       <label
         for="phoneNumber"
         class="label"
-      >
-        Your Phone Number
-      </label>
+      >Your Phone Number</label>
       <div class="field has-addons">
         <div class="control">
-          <a class="button is-static">
-            +1
-          </a>
+          <a class="button is-static">+1</a>
         </div>
         <div class="control">
           <input
@@ -33,9 +27,7 @@
           <button
             class="button is-warning"
             @click="resetPhoneNumber"
-          >
-            Change
-          </button>
+          >Change</button>
         </div>
       </div>
 
@@ -92,9 +84,7 @@
           >
           <label
             for="reminders"
-          >
-            Receive reminders about upcoming assignments close to their due dates
-          </label>
+          >Receive reminders about upcoming assignments close to their due dates</label>
         </div>
 
         <hr>
@@ -102,18 +92,14 @@
         <button
           :class="{ 'is-loading': loading }"
           class="button is-dark"
-        >
-          Save
-        </button>
+        >Save</button>
       </form>
     </div>
     <div
       v-else
       class="box verify-sms"
     >
-      <h2 class="subtitle">
-        Text Message Notifications
-      </h2>
+      <h2 class="subtitle">Text Message Notifications</h2>
       <p class="help">
         <b>LATE</b> can text you to remind you when to study/work, what exactly you should be working on, and will check up on you at the end of the study/work session to check your progress and auto-update your schedule!
       </p>
@@ -123,16 +109,15 @@
       >
         <div class="field has-addons">
           <p class="control">
-            <a class="button is-static">
-              +1
-            </a>
+            <a class="button is-static">+1</a>
           </p>
           <div class="control is-expanded">
             <input
               v-model="phoneNumber"
               class="input"
               type="tel"
-              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              minlength="10"
+              maxlength="12"
               placeholder="xxx-xxx-xxxx"
               required
             >
@@ -141,9 +126,7 @@
             <button
               :class="{ 'is-loading': loading }"
               class="button is-info"
-            >
-              Submit
-            </button>
+            >Submit</button>
           </div>
         </div>
       </form>
@@ -166,9 +149,7 @@
             <button
               :class="{ 'is-loading': loading }"
               class="button is-danger"
-            >
-              Verify
-            </button>
+            >Verify</button>
           </div>
         </div>
       </form>

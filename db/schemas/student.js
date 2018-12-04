@@ -71,7 +71,7 @@ const schema = new Schema(
       sms: {
         verified: { type: Boolean, default: false },
         verificationCode: { type: String, minlength: 1 },
-        phoneNumber: { type: String, minlength: 12, maxlength: 12 },
+        phoneNumber: { type: String, minlength: 10, maxlength: 10 },
         preferences: {
           enabled: { type: Boolean, default: false },
           preWorkText: { type: Boolean, default: false },
