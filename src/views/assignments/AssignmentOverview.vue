@@ -21,7 +21,68 @@
       class="section"
     >
       <div class="is-clearfix">
-        <div class="assignment-controls buttons has-addons is-pulled-right">
+        <div class="dropdown is-hoverable is-right is-pulled-right is-hidden-desktop">
+          <div class="dropdown-trigger">
+            <button
+              class="button is-dark"
+              :class="{ 'is-loading': loading || toggleLoading }"
+              aria-haspopup="true"
+              aria-controls="dropdown-menu"
+            >
+              <span>Actions</span>
+              <span class="icon is-small">
+                <i
+                  class="fas fa-angle-down"
+                  aria-hidden="true"
+                />
+              </span>
+            </button>
+          </div>
+          <div
+            id="dropdown-menu"
+            class="dropdown-menu"
+            role="menu"
+          >
+            <div class="dropdown-content">
+              <a
+                v-if="!isPast"
+                href="#"
+                class="dropdown-item"
+                @click="editing = true"
+              >
+                <span class="icon margin-left">
+                  <i class="fas fa-pencil-alt" />
+                </span>
+                Edit Info
+              </a>
+              <a
+                href="#"
+                class="dropdown-item"
+                @click="toggleCompleted"
+              >
+                <span class="icon margin-left">
+                  <i
+                    class="fas"
+                    :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
+                  />
+                </span>
+                {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
+              </a>
+              <hr class="dropdown-divider">
+              <router-link
+                to="/assignments"
+                class="dropdown-item"
+              >
+                <span class="icon">
+                  <i class="fas fa-angle-left margin-right" />
+                </span>
+                All Assignments
+              </router-link>
+            </div>
+          </div>
+        </div>
+
+        <div class="assignment-controls buttons has-addons is-pulled-right is-hidden-touch">
           <router-link
             to="/assignments"
             class="button is-link"
@@ -206,7 +267,11 @@
       <div
         v-if="tab === 'schedule'"
         class="assignment-schedule"
-      />
+      >
+        <p class="has-text-grey has-text-centered">
+          Coming soon...
+        </p>
+      </div>
       <div
         v-else-if="tab === 'comments'"
         class="assignment-comments"
