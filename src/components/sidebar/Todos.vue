@@ -4,7 +4,9 @@
       <span
         v-if="todos.length > 0"
         class="tag is-dark is-pulled-right"
-      >{{ todos.length }}</span>
+      >
+        {{ todos.length }}
+      </span>
       To-Do List
     </summary>
     <form @submit.prevent="addTodo">
@@ -22,18 +24,25 @@
       v-for="(t, index) in todos"
       :key="index"
       class="panel-block todo is-size-7"
-      title="Click to remove."
+      title="Click to mark completed."
       @click="removeTodo(t)"
     >
       <span class="is-full-width">
-        <small class="is-pulled-right has-text-grey">{{ fromNow(t.addedAt) }}</small>
+        <span class="icon hover-check">
+          <i class="fa fa-check" />
+        </span>
+        <small class="is-pulled-right has-text-grey">
+          {{ fromNow(t.addedAt) }}
+        </small>
         {{ t.text }}
       </span>
     </div>
     <div
       v-if="todos.length === 0"
       class="panel-block has-text-grey-light is-size-7"
-    >No to-dos saved on this device yet.</div>
+    >
+      No to-dos saved on this device yet.
+    </div>
   </details>
 </template>
 
@@ -80,11 +89,11 @@ export default {
       this.newTodo = '';
     },
     removeTodo (todo) {
-      if (!confirm(`Remove '${todo.text}'?`)) return;
+      if (!confirm(`Done with '${todo.text}'?`)) return;
 
       this.todos.splice(this.todos.indexOf(todo), 1);
       this.saveTodos();
-      this.$toasted.show(`Removed to-do '${todo.text}'.`, {
+      this.$toasted.show(`Completed to-do '${todo.text}'.`, {
         icon: 'times',
         action: {
           text: 'Undo'
@@ -101,9 +110,16 @@ export default {
 
 <style lang="scss" scoped>
 .todo {
+  .hover-check {
+    display: none;
+  }
   cursor: pointer;
   &:hover {
     background-color: hsl(0, 0%, 96%);
+
+    .hover-check {
+      display: inline;
+    }
   }
 }
 </style>

@@ -5,24 +5,34 @@
         class="button tooltip"
         to="/assignments/upcoming"
         data-tooltip="Switch to view upcoming assignments."
-      >Upcoming</router-link>
+      >
+        Upcoming
+      </router-link>
       <router-link
         class="button tooltip"
         to="/assignments/past"
         data-tooltip="Switch to view past assignments."
-      >Past</router-link>
+      >
+        Past
+      </router-link>
       <router-link
         class="button tooltip"
         to="/assignments/calendar"
         data-tooltip="Switch to view your assignment calendar."
-      >Calendar</router-link>
+      >
+        Calendar
+      </router-link>
     </div>
-    <h1 class="title">{{ title }}</h1>
+    <h1 class="title">
+      {{ title }}
+    </h1>
 
     <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
-          <span class="subtitle is-6">Filter Courses</span>
+          <span class="subtitle is-6">
+            Filter Courses
+          </span>
           <span
             v-for="c in courses"
             :key="c.listing_id"
@@ -70,11 +80,15 @@
     <button
       class="button is-dark"
       @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-    >Add Assignment</button>
+    >
+      Add Assignment
+    </button>
     <button
       class="button is-dark is-outlined is-pulled-right"
       @click="exportAssignments"
-    >Export Assignments</button>
+    >
+      Export Assignments
+    </button>
   </section>
 </template>
 
@@ -139,7 +153,7 @@ export default {
       }
     },
     exportAssignments () {
-      this.$toasted.error('Not yet implemented!', {
+      this.$toasted.error('Coming soon!', {
         icon: 'frown',
         duration: 1000,
         fullWidth: false

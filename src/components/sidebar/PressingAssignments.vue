@@ -37,19 +37,19 @@
             class="assignment-link"
             :title="a.description.substring(0, 500)"
             :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+            :class="{ 'priority': a.priority >= 7 }"
           >
-            <b class="course-title is-hidden-tablet">{{ course(a).longname }}</b>
+            <b class="course-title is-hidden-tablet">
+              {{ course(a).longname }}
+            </b>
             {{ a.title }}
           </router-link>
-          <span
-            v-if="a.priority >= 7"
-            class="tag priority-tag is-danger"
-            title="You marked this assignment as high priority!"
-          >!</span>
           <small
             class="has-text-grey is-pulled-right tooltip is-tooltip-left"
             :data-tooltip="toFullDateTimeString(a.dueDate)"
-          >{{ fromNow(a.dueDate) }}</small>
+          >
+            {{ fromNow(a.dueDate) }}
+          </small>
         </span>
       </div>
     </transition-group>
@@ -58,7 +58,9 @@
         tag="button"
         class="button is-small is-link is-outlined is-fullwidth"
         to="/assignments"
-      >All Assignments</router-link>
+      >
+        All Assignments
+      </router-link>
     </div>
   </details>
 </template>
@@ -97,6 +99,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.priority {
+  font-weight: 500;
+}
+
 .list-enter-active,
 .list-leave-active {
   transition: all 1s;

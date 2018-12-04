@@ -1,6 +1,8 @@
 <template>
   <div class="email-setup">
-    <h2 class="subtitle">Email Notifications</h2>
+    <h2 class="subtitle">
+      Email Notifications
+    </h2>
 
     <form @submit.prevent="save">
       <div class="field">
@@ -17,7 +19,9 @@
 
       <hr>
 
-      <button class="button is-dark">Save</button>
+      <button class="button is-dark">
+        Save
+      </button>
     </form>
   </div>
 </template>
@@ -35,7 +39,7 @@ export default {
   },
   methods: {
     async save () {
-      this.$toasted.error('Not yet implemented!', {
+      this.$toasted.error('Coming soon!', {
         icon: 'frown',
         duration: 1000,
         fullWidth: false
