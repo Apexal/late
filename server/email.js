@@ -40,6 +40,16 @@ const emailFunctions = {
       moment().endOf('day')
     );
 
+    for (let a in assignmentsDueToday) {
+      assignmentsDueToday[a] = assignmentsDueToday[a].toJSON();
+      assignmentsDueToday[a].course = student.current_schedule.find(
+        c => c.crn === assignmentsDueToday[a].courseCRN
+      );
+      assignmentsDueToday[a].dueString = moment(
+        assignmentsDueToday[a].dueDate
+      ).format('h:mma');
+    }
+
     logger.info(`Sending morning report to ${student.rcs_id}@rpi.edu`);
     return sgMail.send({
       to: student.rcs_id + '@rpi.edu',
