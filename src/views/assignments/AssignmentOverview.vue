@@ -33,6 +33,7 @@
           </router-link>
 
           <button
+            v-if="!isPast"
             class="button is-warning"
             @click="toggleEditing"
           >
