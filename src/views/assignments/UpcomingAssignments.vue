@@ -3,7 +3,9 @@
     <p
       v-if="none"
       class="has-text-centered has-text-grey"
-    >No upcoming assignments left (with filters)!</p>
+    >
+      No upcoming assignments left (with filters)!
+    </p>
     <div
       v-else
       class="columns is-multiline"
@@ -22,8 +24,12 @@
               class="tag is-pulled-right"
               :class="progressClass(date)"
               :title="`You are ${percentDone(date)}% complete with this day's assignments.`"
-            >{{ percentDone(date) }}%</span>
-            <span class="date">{{ toDateShortString(date) }}</span>
+            >
+              {{ percentDone(date) }}%
+            </span>
+            <span class="date">
+              {{ toDateShortString(date) }}
+            </span>
           </p>
           <div
             v-for="a in assignments"
@@ -47,13 +53,17 @@
                 :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
                 :class="{ 'priority': a.priority >= 7 }"
               >
-                <b class="course-title is-hidden-tablet">{{ course(a).longname }}</b>
+                <b class="course-title is-hidden-tablet">
+                  {{ course(a).longname }}
+                </b>
                 {{ a.title }}
               </router-link>
               <small
                 :data-tooltip="'in ' + hoursFromNow(a.dueDate) + ' hours'"
                 class="tooltip is-tooltip-left is-pulled-right has-text-grey"
-              >{{ toTimeString(a.dueDate) }}</small>
+              >
+                {{ toTimeString(a.dueDate) }}
+              </small>
             </span>
           </div>
         </div>
@@ -141,7 +151,7 @@ export default {
       return moment(date).diff(this.now, 'hours');
     },
     daysAway (date) {
-      return moment(date).diff(this.now.startOf('day'), 'days');
+      return moment(date).diff(moment(this.now).startOf('day'), 'days');
     }
   }
 };
