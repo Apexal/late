@@ -10,6 +10,11 @@ const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   linkActiveClass: 'is-active',
+  scrollBehavior (to, from, savedPosition) {
+    return {
+      selector: '#content'
+    };
+  },
   routes: [
     {
       path: '/',

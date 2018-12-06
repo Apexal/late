@@ -26,6 +26,7 @@
         </div>
       </transition>
       <div
+        id="content"
         :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
       >
@@ -36,7 +37,9 @@
           <div class="notification is-notice">
             <b>NOTICE:</b> You will not be able to use
             <b>LATE</b> until you have
-            <router-link to="/profile">set up your account</router-link> or logged in.
+            <router-link to="/profile">
+              set up your account
+            </router-link> or logged in.
           </div>
         </section>
         <transition
