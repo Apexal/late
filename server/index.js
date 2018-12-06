@@ -8,7 +8,9 @@ const Session = require('koa-session');
 const Body = require('koa-bodyparser');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
-const CORS = require('@koa/cors');
+
+// Start the Discord bot
+const discord = require('./discord');
 
 const logger = require('./logger');
 
@@ -16,15 +18,6 @@ const app = new Koa();
 const router = new Router();
 
 const db = require('../db').models;
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(
-    CORS({
-      origin: 'http://localhost:8080',
-      credentials: 'http://localhost:8080'
-    })
-  );
-}
 
 /* MongoDB setup */
 app.context.db = db; // The db is now available on every request

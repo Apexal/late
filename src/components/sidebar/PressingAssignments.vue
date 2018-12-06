@@ -48,8 +48,8 @@
             title="You marked this assignment as high priority!"
           >!</span>
           <small
-            class="is-pulled-right"
-            :title="toFullDateTimeString(a.dueDate)"
+            class="has-text-grey is-pulled-right tooltip is-tooltip-left"
+            :data-tooltip="toFullDateTimeString(a.dueDate)"
           >{{ fromNow(a.dueDate) }}</small>
         </span>
       </div>
@@ -83,7 +83,7 @@ export default {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
-    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    toFullDateTimeString: dueDate => moment(dueDate).format('ddd, MMM Do YYYY, h:mma'),
     getCourseFromCRN (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     }

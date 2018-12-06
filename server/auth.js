@@ -31,6 +31,7 @@ async function loginStudent (ctx) {
     logger.info(
       `Creating and logging in new student with rcs_id: ${student.rcs_id}`
     );
+    ctx.query.redirectTo = '/profile';
   }
 
   student.last_login = new Date();

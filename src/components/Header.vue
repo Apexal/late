@@ -191,6 +191,8 @@ export default {
 }
 
 #top-navbar {
+  //Pushes the left and right navbar menus slightly off the edges of the screen.
+  padding: 0px 1em 0px 1em;
   a.navbar-item {
     span.icon {
       margin-right: 3px;
