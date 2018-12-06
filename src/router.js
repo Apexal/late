@@ -11,9 +11,11 @@ const router = new Router({
   base: process.env.BASE_URL,
   linkActiveClass: 'is-active',
   scrollBehavior (to, from, savedPosition) {
-    return {
-      selector: '#content'
-    };
+    if ((typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)) {
+      return {
+        selector: '#content'
+      };
+    }
   },
   routes: [
     {
