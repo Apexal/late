@@ -19,8 +19,6 @@
           </h2>
         </div>
       </div>
-
-
     </section>
     <div class="hero-foot">
       <nav
@@ -58,7 +56,8 @@
               <span class="icon">
                 <i class="fas fa-home" />
               </span>
-              Dashboard</router-link>
+              Dashboard
+            </router-link>
             <router-link
               class="navbar-item"
               to="/about"
@@ -77,7 +76,9 @@
                     <i class="fas fa-clipboard-list" />
                   </span>
                   Assignments
-                  <span class="tag is-warning assignment-count">{{ assignmentCount }}</span>
+                  <span
+                    class="tag is-warning assignment-count"
+                  >{{ assignmentCount }}</span>
                 </a>
 
                 <div class="navbar-dropdown">
@@ -92,16 +93,12 @@
                     class="navbar-item"
                     to="/assignments/past"
                     title="Browse all past assignments."
-                  >
-                    Past
-                  </router-link>
+                  >Past</router-link>
                   <router-link
                     class="navbar-item"
                     to="/assignments/calendar"
                     title="View a calendar of all your assignment due dates."
-                  >
-                    Calendar
-                  </router-link>
+                  >Calendar</router-link>
                   <hr class="navbar-divider">
                   <a
                     class="navbar-item"
@@ -120,33 +117,40 @@
 
           <div class="navbar-end">
             <template v-if="loggedIn">
-              <router-link
-                class="navbar-item"
-                to="/profile"
-                title="Setup your profile."
-              >
-                <span class="icon">
-                  <i class="fas fa-user-circle" />
-                </span>
-                Logged in as <b class="rcs_id">{{ user.display_name }}</b>
-              </router-link>
-              <a
-                class="navbar-item"
-                href="/auth/logout"
-              >
-                <span class="icon">
-                  <i class="fas fa-sign-out-alt" />
-                </span>
-                Logout
-              </a>
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                  <span class="icon">
+                    <i class="fas fa-user-circle" />
+                  </span>
+                  <b class="rcs_id">{{ user.display_name }}</b>
+                </a>
+
+                <div class="navbar-dropdown is-right">
+                  <router-link
+                    class="navbar-item"
+                    to="/profile"
+                    title="Setup your profile."
+                  >Setup Account</router-link>
+                  <a
+                    class="navbar-item"
+                    href="/auth/logout"
+                  >
+                    <span class="icon">
+                      <i class="fas fa-sign-out-alt" />
+                    </span>
+                    Logout
+                  </a>
+                </div>
+              </div>
             </template>
             <a
               v-else
               class="navbar-item"
               href="/auth/login"
               title="Login to LATE with RPI CAS."
-            ><b>Login</b></a>
-
+            >
+              <b>Login</b>
+            </a>
           </div>
         </div>
       </nav>
@@ -158,11 +162,12 @@
 export default {
   name: 'Header',
   data () {
-    return {
-    };
+    return {};
   },
   computed: {
-    navbarExpanded () { return this.$store.state.navbarExpanded; },
+    navbarExpanded () {
+      return this.$store.state.navbarExpanded;
+    },
     user () {
       return this.$store.state.auth.user;
     },

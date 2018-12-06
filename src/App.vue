@@ -29,6 +29,16 @@
         :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
       >
+        <section
+          v-if="!$route.path.includes('/profile') && !isSetup"
+          class="section no-bottom-padding"
+        >
+          <div class="notification is-warning">
+            <b>WARNING</b> You will not be able to use
+            <b>LATE</b> until you have
+            <router-link to="/profile">setup your account</router-link>.
+          </div>
+        </section>
         <transition
           name="fade"
           mode="out-in"
@@ -58,6 +68,9 @@ export default {
     },
     expanded () {
       return this.$store.state.sidebarExpanded;
+    },
+    isSetup () {
+      return this.$store.state.auth.user.is_setup;
     }
   },
   async created () {
@@ -132,5 +145,9 @@ export default {
   opacity: 0;
   -webkit-transform: translate(-30px, 0);
   transform: translate(-30px, 0);
+}
+
+.no-bottom-padding {
+  padding-bottom: 0;
 }
 </style>

@@ -1,6 +1,8 @@
 <template>
   <div class="unavailability-setup">
-    <h2 class="is-size-4 integration-note">What times are you unavailable?</h2>
+    <h2
+      class="is-size-4 integration-note"
+    >What times outside of class are you not able to study/work?</h2>
     <div class="box">
       <form
         id="time-preferences"
