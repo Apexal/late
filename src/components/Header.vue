@@ -2,20 +2,16 @@
   <header id="header">
     <section class="hero is-dark">
       <div class="hero-body">
-        <div class="container">
+        <div class="container no-margin-left">
           <h1 class="title">
-            <a href="/dashboard">
-              LATE
-            </a>
+            <router-link to="/dashboard">LATE</router-link>
             <span
-              class="tag is-primary"
+              class="tag is-primary beta-tag"
               title="LATE is still in active development!"
-            >Beta</span>
+            >BETA</span>
           </h1>
           <h2 class="subtitle">
-            <a href="/dashboard">
-              Lazy Automatic Time Evaluator
-            </a>
+            <router-link to="/dashboard">Lazy Automatic Time Evaluator</router-link>
           </h2>
         </div>
       </div>
@@ -184,6 +180,19 @@ export default {
 <style lang="scss" scoped>
 .rcs_id {
   margin-left: 5px;
+}
+
+.hero-body {
+  padding-bottom: 24px;
+  padding-top: 24px;
+}
+
+.beta-tag {
+  margin-left: 5px;
+}
+
+.no-margin-left {
+  margin-left: 0;
 }
 
 #top-navbar {
