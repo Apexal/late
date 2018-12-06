@@ -2,18 +2,22 @@
   <header id="header">
     <section class="hero is-dark">
       <div class="hero-body">
-        <div class="container no-margin-left">
-          <h1 class="title">
-            <router-link to="/dashboard">LATE</router-link>
-            <span
-              class="tag is-primary beta-tag"
-              title="LATE is still in active development!"
-            >BETA</span>
-          </h1>
-          <h2 class="subtitle">
-            <router-link to="/dashboard">Lazy Automatic Time Evaluator</router-link>
-          </h2>
-        </div>
+        <h1 class="title">
+          <router-link to="/dashboard">
+            LATE
+          </router-link>
+          <span
+            class="tag is-primary beta-tag"
+            title="LATE is still in active development!"
+          >
+            BETA
+          </span>
+        </h1>
+        <h2 class="subtitle">
+          <router-link to="/dashboard">
+            Lazy Automatic Time Evaluator
+          </router-link>
+        </h2>
       </div>
     </section>
     <div class="hero-foot">
@@ -74,7 +78,9 @@
                   Assignments
                   <span
                     class="tag is-warning assignment-count"
-                  >{{ assignmentCount }}</span>
+                  >
+                    {{ assignmentCount }}
+                  </span>
                 </a>
 
                 <div class="navbar-dropdown">
@@ -89,12 +95,16 @@
                     class="navbar-item"
                     to="/assignments/past"
                     title="Browse all past assignments."
-                  >Past</router-link>
+                  >
+                    Past
+                  </router-link>
                   <router-link
                     class="navbar-item"
                     to="/assignments/calendar"
                     title="View a calendar of all your assignment due dates."
-                  >Calendar</router-link>
+                  >
+                    Calendar
+                  </router-link>
                   <hr class="navbar-divider">
                   <a
                     class="navbar-item"
@@ -118,7 +128,9 @@
                   <span class="icon">
                     <i class="fas fa-user-circle" />
                   </span>
-                  <b class="rcs_id">{{ user.display_name }}</b>
+                  <b class="rcs_id">
+                    {{ user.display_name }}
+                  </b>
                 </a>
 
                 <div class="navbar-dropdown is-right">
@@ -126,7 +138,9 @@
                     class="navbar-item"
                     to="/profile"
                     title="Setup your profile."
-                  >Setup Account</router-link>
+                  >
+                    Setup Account
+                  </router-link>
                   <a
                     class="navbar-item"
                     href="/auth/logout"
