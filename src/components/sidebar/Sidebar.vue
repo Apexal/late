@@ -38,4 +38,21 @@ export default {
 #sidebar {
   padding: 15px;
 }
+
+//Quick QOL panel heading styles
+.panel-heading {
+  cursor: pointer;
+}
+.panel-heading:focus {
+  outline: none;
+}
+.panel-heading:hover {
+  background-color: #f1eeee;
+  transition: 0.1s;
+  -webkit-transition: 0.1s;
+  -moz-transition: 0.1s;
+}
+.panel-block:hover {
+  background-color: #FDFDFD;
+}
 </style>
