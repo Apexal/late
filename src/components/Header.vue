@@ -138,7 +138,7 @@
                     <span class="icon">
                       <i class="fas fa-sign-out-alt" />
                     </span>
-                    Logout
+                    Log out
                   </a>
                 </div>
               </div>
@@ -149,7 +149,7 @@
               href="/auth/login"
               title="Login to LATE with RPI CAS."
             >
-              <b>Login</b>
+              <b>Log in</b>
             </a>
           </div>
         </div>

@@ -23,7 +23,7 @@
           </ul>
         </p>
         <p>
-          <b>LATE</b> is a free, open-source project made by RPI students for RPI students only. It integrates with SIS to be much more than a
+          <b>LATE</b> is a free, open-source project made by RPI students, currently for RPI students only. It integrates with SIS to be much more than a
           personal scheduling assistant.
         </p>
       </div>
