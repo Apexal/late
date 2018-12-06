@@ -35,8 +35,8 @@
         >
           <div class="notification is-notice">
             <b>NOTICE:</b> You will not be able to use
-            <b>LATE</b> until you
-            <router-link to="/profile">set up your account</router-link> or log in.
+            <b>LATE</b> until you have
+            <router-link to="/profile">set up your account</router-link> or logged in.
           </div>
         </section>
         <transition
