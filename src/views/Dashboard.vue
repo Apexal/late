@@ -1,6 +1,8 @@
 <template>
   <section class="section dasboard">
-    <h1 class="title">Your Dashboard</h1>
+    <h1 class="title">
+      Your Dashboard
+    </h1>
     <FullCalendar
       ref="calendar"
       :events="events"
@@ -24,9 +26,10 @@ export default {
     return {
       calendar: {
         header: {
-          center: 'listDay,agendaWeek,month'
+          center: 'listDay,agendaWeek'
         },
         config: {
+          height: 700,
           allDayText: 'Incomplete\nAssign.',
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
           maxTime: this.$store.state.auth.user.latestWorkTime + ':00',

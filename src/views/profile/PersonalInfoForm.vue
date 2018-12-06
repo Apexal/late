@@ -1,12 +1,16 @@
 <template>
   <div class="personal-info-form">
-    <h2 class="is-size-4 integration-note">What would you like LATE to call you?</h2>
+    <h2 class="is-size-4 integration-note">
+      Please give us some basic info about yourself.
+    </h2>
     <form @submit.prevent="save">
       <div class="field">
         <label
           class="label"
           for="rcs-id"
-        >RCS ID</label>
+        >
+          RCS ID
+        </label>
         <div class="control">
           <input
             id="rcs-id"
@@ -25,7 +29,9 @@
             <label
               class="label"
               for="first-name"
-            >First Name</label>
+            >
+              First Name
+            </label>
             <div class="control">
               <input
                 id="first-name"
@@ -45,7 +51,9 @@
             <label
               class="label"
               for="last-name"
-            >Last Name</label>
+            >
+              Last Name
+            </label>
             <div class="control">
               <input
                 id="last-name"
@@ -65,7 +73,9 @@
             <label
               class="label"
               for="rin"
-            >RIN</label>
+            >
+              RIN
+            </label>
             <div class="control">
               <input
                 id="rin"
@@ -85,7 +95,9 @@
             <label
               for="grad-year"
               class="label"
-            >Graduation Year</label>
+            >
+              Graduation Year
+            </label>
             <div class="control">
               <input
                 id="grad-year"
@@ -109,7 +121,9 @@
         class="button is-primary"
         :class="{'is-loading': loading}"
         :disabled="saved"
-      >Save</button>
+      >
+        Save
+      </button>
     </form>
   </div>
 </template>
