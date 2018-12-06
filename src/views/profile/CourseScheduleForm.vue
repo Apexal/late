@@ -1,6 +1,6 @@
 <template>
   <div class="course-schedule-form">
-    <h2 class="is-size-4 integration-note">What are your current semester courses?</h2>
+    <h2 class="is-size-4 integration-note">What is your current semester schedule?</h2>
     <form
       class="box"
       @submit.prevent="save"
