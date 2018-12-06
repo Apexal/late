@@ -2,19 +2,22 @@
   <div class="course box">
     <template v-if="!editing">
       <details>
-        <summary class="is-clearfix is-unselectable">{{ courseData.longname }}
-          <span
-            class="icon edit-course is-pulled-right"
-            @click="editing = true"
-          >
-            <i class="fas fa-pencil-alt" />
-          </span>
+        <summary
+          class="is-clearfix is-unselectable"
+          style="cursor:pointer;"
+        >{{ courseData.longname }}
           <small class="has-text-grey">{{ courseData.periods.length }} periods</small>
           <span
             class="tag is-pulled-right"
             :style="{'background-color': courseData.color, 'color': 'white'}"
             :title="'You are in Section ' + courseData.section_id"
           >Section {{ courseData.section_id }}
+          </span>
+          <span
+            class="icon edit-course is-pulled-right"
+            @click="editing = true"
+          >
+            <i class="fas fa-pencil-alt" />
           </span>
         </summary>
 
@@ -118,7 +121,7 @@ export default {
     time: t => {
       const dt = moment(t, 'Hmm', true);
       if (dt.hours() === 12 && dt.minutes() === 0) {
-        return 'noon';
+        return 'Noon';
       } else if (dt.minutes() === 0) {
         return dt.format('ha');
       }
@@ -157,5 +160,10 @@ export default {
       display: inherit;
     }
   }
+}
+
+//Displays edit button with better margins
+.fa-pencil-alt {
+  margin-left: 6px;
 }
 </style>
