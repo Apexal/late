@@ -8,13 +8,9 @@
             <span
               class="tag is-primary"
               title="LATE is still in active development!"
-            >
-              Beta
-            </span>
+            >Beta</span>
           </h1>
-          <h2 class="subtitle">
-            Lazy Automatic Time Evaluator
-          </h2>
+          <h2 class="subtitle">Lazy Automatic Time Evaluator</h2>
         </div>
       </div>
     </section>
@@ -74,9 +70,9 @@
                     <i class="fas fa-clipboard-list" />
                   </span>
                   Assignments
-                  <span class="tag is-warning assignment-count">
-                    {{ assignmentCount }}
-                  </span>
+                  <span
+                    class="tag is-warning assignment-count"
+                  >{{ assignmentCount }}</span>
                 </a>
 
                 <div class="navbar-dropdown">
@@ -91,16 +87,12 @@
                     class="navbar-item"
                     to="/assignments/past"
                     title="Browse all past assignments."
-                  >
-                    Past
-                  </router-link>
+                  >Past</router-link>
                   <router-link
                     class="navbar-item"
                     to="/assignments/calendar"
                     title="View a calendar of all your assignment due dates."
-                  >
-                    Calendar
-                  </router-link>
+                  >Calendar</router-link>
                   <hr class="navbar-divider">
                   <a
                     class="navbar-item"
@@ -124,6 +116,7 @@
                   <span class="icon">
                     <i class="fas fa-user-circle" />
                   </span>
+                  <b class="rcs_id">{{ user.display_name }}</b>
                 </a>
 
                 <div class="navbar-dropdown is-right">
@@ -131,11 +124,7 @@
                     class="navbar-item"
                     to="/profile"
                     title="Setup your profile."
-                  >
-                    <b class="rcs_id">
-                      {{ user.display_name }}
-                    </b>
-                  </router-link>
+                  >Setup Account</router-link>
                   <a
                     class="navbar-item"
                     href="/auth/logout"
@@ -167,11 +156,12 @@
 export default {
   name: 'Header',
   data () {
-    return {
-    };
+    return {};
   },
   computed: {
-    navbarExpanded () { return this.$store.state.navbarExpanded; },
+    navbarExpanded () {
+      return this.$store.state.navbarExpanded;
+    },
     user () {
       return this.$store.state.auth.user;
     },
