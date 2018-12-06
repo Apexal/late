@@ -32,7 +32,7 @@
       <div
         v-for="p in periods"
         :key="p.start"
-        class="panel-block period-block is-clearfix is-size-6"
+        class="panel-block period-block is-clearfix is-size-7"
         :class="{ 'is-active': p == current_period, 'has-background-grey-lighter': hasPassed(p) }"
       >
         <span class="course-longname is-full-width">
