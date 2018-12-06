@@ -1,5 +1,8 @@
 <template>
   <div class="unavailability-setup">
+    <h2
+      class="is-size-4 integration-note"
+    >What times outside of class are you not able to study/work?</h2>
     <div class="box">
       <form
         id="time-preferences"
@@ -11,7 +14,9 @@
               for="earliest"
               class="label"
             >Earliest Time Preference</label>
-            <p class="help"><b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.</p>
+            <p class="help">
+              <b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.
+            </p>
             <div class="control">
               <input
                 id="earliest"
@@ -29,7 +34,9 @@
               for="latest"
               class="label"
             >Latest Time Preference</label>
-            <p class="help"><b>LATE</b> will not schedule any work for you after this time unless it absolutely does not fit anywhere else.</p>
+            <p class="help">
+              <b>LATE</b> will not schedule any work for you after this time unless it absolutely does not fit anywhere else.
+            </p>
             <div class="control">
               <input
                 id="latest"
@@ -60,9 +67,7 @@
       class="button is-primary"
       :class="{'is-loading': loading}"
       :disabled="saved"
-    >
-      Save and Continue
-    </button>
+    >Save and Continue</button>
   </div>
 </template>
 
@@ -80,15 +85,18 @@ export default {
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
-        events: this.$store.getters.getCourseScheduleAsEvents.concat(this.$store.getters.getUnavailabilityAsEvents),
+        events: this.$store.getters.getCourseScheduleAsEvents.concat(
+          this.$store.getters.getUnavailabilityAsEvents
+        ),
         header: {
           left: '',
           center: '',
           right: ''
         },
         config: {
-          // timezone: 'UTC',
-          columnHeader: false,
+          timezone: 'local',
+          height: 700,
+          columnHeaderFormat: 'ddd',
           allDaySlot: false,
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
           maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
@@ -102,12 +110,14 @@ export default {
           eventClick: (calEvent, jsEvent, view) => {
             if (!calEvent.isWorkBlock) return;
             this.saved = false;
-            this.calendar.events = this.calendar.events.filter(e => !moment(e.start).isSame(moment(calEvent.start)));
+            this.calendar.events = this.calendar.events.filter(
+              e => !moment(e.start).isSame(moment(calEvent.start))
+            );
           },
 
           select: (start, end) => {
             const eventData = {
-              title: 'Unavailable',
+              title: 'Busy',
               start: start,
               end: end,
               isWorkBlock: true
@@ -121,13 +131,19 @@ export default {
     };
   },
   watch: {
-    earliest () { this.saved = false; },
-    latest () { this.saved = false; }
+    earliest () {
+      this.saved = false;
+    },
+    latest () {
+      this.saved = false;
+    }
   },
   methods: {
     eventResized (calEvent) {
       this.saved = false;
-      this.calendar.events.find(e => moment(e.start).isSame(moment(calEvent.start))).end = calEvent.end;
+      this.calendar.events.find(e =>
+        moment(e.start).isSame(moment(calEvent.start))
+      ).end = calEvent.end;
     },
     async save () {
       this.loading = true;
@@ -142,13 +158,23 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$store.dispatch('ADD_NOTIFICATION', { type: 'danger', description: e.response.data.message });
+        return this.$toasted.error(e.response.data.message);
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Set study/work unavailability schedule!' });
+      this.$toasted.show(
+        'Your study/work unvailability schedule has been saved.',
+        {
+          action: {
+            text: 'Last Step',
+            push: {
+              name: 'integrations'
+            }
+          }
+        }
+      );
 
       this.loading = false;
       this.saved = true;
@@ -158,4 +184,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
+}
 </style>

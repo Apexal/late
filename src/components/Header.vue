@@ -2,19 +2,19 @@
   <header id="header">
     <section class="hero is-dark">
       <div class="hero-body">
-        <div class="container">
+        <div class="container no-margin-left">
           <h1 class="title">
-            LATE
+            <router-link to="/dashboard">LATE</router-link>
             <span
-              class="tag is-primary"
+              class="tag is-primary beta-tag"
               title="LATE is still in active development!"
-            >Beta</span>
+            >BETA</span>
           </h1>
-          <h2 class="subtitle">Lazy Automatic Time Evaluator</h2>
+          <h2 class="subtitle">
+            <router-link to="/dashboard">Lazy Automatic Time Evaluator</router-link>
+          </h2>
         </div>
       </div>
-
-
     </section>
     <div class="hero-foot">
       <nav
@@ -52,7 +52,8 @@
               <span class="icon">
                 <i class="fas fa-home" />
               </span>
-              Dashboard</router-link>
+              Dashboard
+            </router-link>
             <router-link
               class="navbar-item"
               to="/about"
@@ -71,7 +72,9 @@
                     <i class="fas fa-clipboard-list" />
                   </span>
                   Assignments
-                  <span class="tag is-warning assignment-count">{{ assignmentCount }}</span>
+                  <span
+                    class="tag is-warning assignment-count"
+                  >{{ assignmentCount }}</span>
                 </a>
 
                 <div class="navbar-dropdown">
@@ -86,16 +89,12 @@
                     class="navbar-item"
                     to="/assignments/past"
                     title="Browse all past assignments."
-                  >
-                    Past
-                  </router-link>
+                  >Past</router-link>
                   <router-link
                     class="navbar-item"
                     to="/assignments/calendar"
                     title="View a calendar of all your assignment due dates."
-                  >
-                    Calendar
-                  </router-link>
+                  >Calendar</router-link>
                   <hr class="navbar-divider">
                   <a
                     class="navbar-item"
@@ -114,33 +113,40 @@
 
           <div class="navbar-end">
             <template v-if="loggedIn">
-              <router-link
-                class="navbar-item"
-                to="/profile"
-                title="Setup your profile."
-              >
-                <span class="icon">
-                  <i class="fas fa-user-circle" />
-                </span>
-                Logged in as <b class="rcs_id">{{ user.display_name }}</b>
-              </router-link>
-              <a
-                class="navbar-item"
-                href="/auth/logout"
-              >
-                <span class="icon">
-                  <i class="fas fa-sign-out-alt" />
-                </span>
-                Logout
-              </a>
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                  <span class="icon">
+                    <i class="fas fa-user-circle" />
+                  </span>
+                  <b class="rcs_id">{{ user.display_name }}</b>
+                </a>
+
+                <div class="navbar-dropdown is-right">
+                  <router-link
+                    class="navbar-item"
+                    to="/profile"
+                    title="Setup your profile."
+                  >Setup Account</router-link>
+                  <a
+                    class="navbar-item"
+                    href="/auth/logout"
+                  >
+                    <span class="icon">
+                      <i class="fas fa-sign-out-alt" />
+                    </span>
+                    Log out
+                  </a>
+                </div>
+              </div>
             </template>
             <a
               v-else
               class="navbar-item"
               href="/auth/login"
               title="Login to LATE with RPI CAS."
-            ><b>Login</b></a>
-
+            >
+              <b>Log in</b>
+            </a>
           </div>
         </div>
       </nav>
@@ -152,11 +158,12 @@
 export default {
   name: 'Header',
   data () {
-    return {
-    };
+    return {};
   },
   computed: {
-    navbarExpanded () { return this.$store.state.navbarExpanded; },
+    navbarExpanded () {
+      return this.$store.state.navbarExpanded;
+    },
     user () {
       return this.$store.state.auth.user;
     },
@@ -175,7 +182,22 @@ export default {
   margin-left: 5px;
 }
 
+.hero-body {
+  padding-bottom: 24px;
+  padding-top: 24px;
+}
+
+.beta-tag {
+  margin-left: 5px;
+}
+
+.no-margin-left {
+  margin-left: 0;
+}
+
 #top-navbar {
+  //Pushes the left and right navbar menus slightly off the edges of the screen.
+  padding: 0px 1em 0px 1em;
   a.navbar-item {
     span.icon {
       margin-right: 3px;
@@ -185,7 +207,12 @@ export default {
   span.tag.assignment-count {
     padding-left: 5px;
     padding-right: 5px;
-    margin-left: 4px;
+    margin-left: 7px;
   }
+}
+
+//Adjusts left margin of title block to a smaller and readable level
+.hero-body .container {
+  margin: 0 0 0 4em;
 }
 </style>

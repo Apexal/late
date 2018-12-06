@@ -68,3 +68,5 @@ package-lock.json
 
 config/
 client/
+
+test.js

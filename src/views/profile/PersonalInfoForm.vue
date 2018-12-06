@@ -1,5 +1,6 @@
 <template>
   <div class="personal-info-form">
+    <h2 class="is-size-4 integration-note">What would you like LATE to call you?</h2>
     <form @submit.prevent="save">
       <div class="field">
         <label
@@ -103,11 +104,12 @@
         </div>
       </div>
       <hr>
+
       <button
         class="button is-primary"
         :class="{'is-loading': loading}"
         :disabled="saved"
-      >Save and Continue</button>
+      >Save</button>
     </form>
   </div>
 </template>
@@ -148,16 +150,20 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$store.dispatch('ADD_NOTIFICATION', { type: 'danger', description: e.response.data.message });
+        return this.$toasted.error(e.response.data.message);
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$store.dispatch('ADD_NOTIFICATION', { type: 'success', description: 'Saved personal info!' });
-
-      // Go to next setup
-      this.$router.push('/profile/courseschedule');
+      this.$toasted.info('Saved personal info!', {
+        action: {
+          text: 'Next Step',
+          push: {
+            name: 'course-schedule'
+          }
+        }
+      });
 
       // this.saved = true;
       this.loading = false;
@@ -167,4 +173,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
+}
 </style>

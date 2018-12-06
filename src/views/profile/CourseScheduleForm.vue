@@ -1,5 +1,6 @@
 <template>
   <div class="course-schedule-form">
+    <h2 class="is-size-4 integration-note">What is your current semester schedule?</h2>
     <form
       class="box"
       @submit.prevent="save"
@@ -40,7 +41,9 @@
                 for="pin"
                 class="label"
               >SIS PIN</label>
-              <p class="help">Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.</p>
+              <p
+                class="help"
+              >Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.</p>
               <div class="control">
                 <input
                   id="pin"
@@ -109,11 +112,9 @@
     </template>
     <hr>
     <router-link
-      to="/profile/workschedule"
+      to="/profile/unavailability"
       class="button is-primary"
-    >
-      Save and Continue
-    </router-link>
+    >Save</router-link>
   </div>
 </template>
 
@@ -151,10 +152,7 @@ export default {
 
       await this.$store.dispatch('UPDATE_COURSE', updatedCourse);
 
-      this.$store.dispatch('ADD_NOTIFICATION', {
-        type: 'success',
-        description: 'Updated course info!'
-      });
+      this.$toasted.show(`'${updatedCourse.longname}' has been updated.`);
 
       // this.saved = true;
       this.loading = false;
@@ -170,16 +168,19 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$store.dispatch('ADD_NOTIFICATION', {
-          type: 'danger',
-          description: e.response.data.message
-        });
+        return this.$toasted.error(e.response.data.message);
       }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$store.dispatch('ADD_NOTIFICATION', {
-        type: 'success',
-        description: 'Got course schedule!'
+
+      // Notify user of success
+      this.$toasted.info('Your course schedule has been compiled.', {
+        action: {
+          text: 'Next Step',
+          push: {
+            name: 'unavailability'
+          }
+        }
       });
 
       // this.saved = true;
@@ -190,4 +191,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
+}
 </style>

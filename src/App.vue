@@ -29,7 +29,16 @@
         :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
       >
-        <Notifications />
+        <section
+          v-if="!$route.path.includes('/profile') && !isSetup"
+          class="section no-bottom-padding"
+        >
+          <div class="notification is-notice">
+            <b>NOTICE:</b> You will not be able to use
+            <b>LATE</b> until you have
+            <router-link to="/profile">set up your account</router-link> or logged in.
+          </div>
+        </section>
         <transition
           name="fade"
           mode="out-in"
@@ -46,20 +55,29 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Sidebar from '@/components/sidebar/Sidebar';
 import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
-import Notifications from '@/components/Notifications';
 
 export default {
   name: 'LATE',
-  components: { Header, Sidebar, Footer, AddAssignmentModal, Notifications },
+  components: { Header, Sidebar, Footer, AddAssignmentModal },
   computed: {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
-    addAssignmentModalExpanded () { return this.$store.state.addAssignmentModalExpanded; },
-    expanded () { return this.$store.state.sidebarExpanded; }
+    addAssignmentModalExpanded () {
+      return this.$store.state.addAssignmentModal.expanded;
+    },
+    expanded () {
+      return this.$store.state.sidebarExpanded;
+    },
+    isSetup () {
+      return this.$store.state.auth.user.is_setup;
+    }
   },
   async created () {
-    if (process.env.NODE_ENV === 'development' && !this.$store.state.auth.user.name) {
+    if (
+      process.env.NODE_ENV === 'development' &&
+      !this.$store.state.auth.user.name
+    ) {
       const rcsID = prompt('Log in as what user? (rcs_id)');
       await this.$http.get('/students/loginas?rcs_id=' + rcsID);
       await this.$store.dispatch('GET_USER');
@@ -67,6 +85,7 @@ export default {
 
     this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
     this.$store.dispatch('AUTO_GET_UPCOMING_ASSIGNMENTS');
+    this.$store.dispatch('AUTO_UPDATE_NOW');
   },
   methods: {}
 };
@@ -74,7 +93,7 @@ export default {
 
 <style lang="scss">
 /* These styles will apply to the whole app. */
-@import '@/assets/bulma.scss';
+@import "@/assets/bulma.scss";
 
 .is-full-width {
   width: 100%;
@@ -83,6 +102,14 @@ export default {
 .toggle-sidebar {
   z-index: 10;
   position: absolute;
+
+  //Styling the toggle button to fit the theme
+  background-color: #f5f5f5!important; //Bulma overrides background-color, color, and border
+  color: black!important;
+  border: 1px solid #dbdbdb!important;
+  margin: 1em;
+  width: 2.5em;
+  height: 1.5em;
 }
 
 .dot {
@@ -118,5 +145,9 @@ export default {
   opacity: 0;
   -webkit-transform: translate(-30px, 0);
   transform: translate(-30px, 0);
+}
+
+.no-bottom-padding {
+  padding-bottom: 0;
 }
 </style>

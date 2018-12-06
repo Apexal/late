@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="assignment-calendar"
-  >
+  <div class="assignment-calendar">
     <FullCalendar
       ref="calendar"
       :editable="false"
@@ -39,6 +37,7 @@ export default {
           right: 'today prev,next'
         },
         config: {
+          height: 800,
           events: this.events,
           defaultView: 'month',
           timeFormat: 'h(:mm)t',
@@ -54,7 +53,7 @@ export default {
     filtered () {
       return this.events
         .filter(e => !this.filter.includes(this.course(e.assignment).crn))
-        .filter(e => this.showCompleted ? true : !e.assignment.completed);
+        .filter(e => (this.showCompleted ? true : !e.assignment.completed));
     }
   },
   watch: {
@@ -70,18 +69,19 @@ export default {
       let request;
 
       try {
-        request = await this.$http.get(`/assignments/list?start=${start.format('YYYY-MM-DD')}&end=${end.format('YYYY-MM-DD')}`);
+        request = await this.$http.get(
+          `/assignments/list?start=${start.format(
+            'YYYY-MM-DD'
+          )}&end=${end.format('YYYY-MM-DD')}`
+        );
       } catch (e) {
         this.events = [];
-        return this.$store.dispatch('ADD_NOTIFICATION', {
-          type: 'danger',
-          description: e.response.data.message
-        });
+        return this.$toasted.error(e.response.data.message);
       }
 
       const assignments = request.data.assignments;
       const events = assignments
-        .filter(a => this.showCompleted ? true : !a.completed)
+        .filter(a => (this.showCompleted ? true : !a.completed))
         .map(a => ({
           title: a.title,
           start: a.dueDate,

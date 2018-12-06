@@ -15,7 +15,10 @@ const router = new Router({
       path: '/',
       alias: '/dashboard',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: {
+        title: 'Home'
+      }
     },
     {
       path: '/about',
@@ -68,7 +71,6 @@ const router = new Router({
       name: 'assignment-overview',
       component: () => import('@/views/assignments/AssignmentOverview.vue'),
       meta: {
-        title: 'View Assignment',
         requiresAuth: true
       }
     },
@@ -89,6 +91,7 @@ const router = new Router({
         },
         {
           path: 'personalinfo',
+          name: 'personal-info',
           meta: {
             title: 'Personal Info'
           },
@@ -96,6 +99,7 @@ const router = new Router({
         },
         {
           path: 'courseschedule',
+          name: 'course-schedule',
           meta: {
             title: 'Course Schedule'
           },
@@ -103,10 +107,19 @@ const router = new Router({
         },
         {
           path: 'unavailability',
+          name: 'unavailability',
           meta: {
             title: 'Study/Work Unavailability'
           },
           component: () => import('@/views/profile/UnavailabilitySetup.vue')
+        },
+        {
+          path: 'integrations',
+          name: 'integrations',
+          meta: {
+            title: 'Integrations'
+          },
+          component: () => import('@/views/profile/IntegrationsSetup.vue')
         }
       ]
     },

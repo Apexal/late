@@ -304,11 +304,37 @@ async function removeAssignment (ctx) {
   });
 }
 
+/* COMMENTS */
+async function addComment (ctx) {
+  const assigmentID = ctx.params.assignmentID;
+  const text = ctx.request.body.comment;
+
+  let assignment;
+  assignment = await ctx.db.Assignment.findOne({
+    _student: ctx.state.user._id,
+    _id: assigmentID
+  });
+
+  if (!assignment) {
+    return ctx.notFound('Could not find assignment to comment on.');
+  }
+
+  assignment.comments.push({
+    addedAt: new Date(),
+    body: text
+  });
+
+  await assignment.save();
+
+  ctx.ok({ updatedAssignment: assignment });
+}
+
 module.exports = {
   getAssignments,
   getAssignment,
   createAssignment,
   toggleAssignment,
   editAssignment,
-  removeAssignment
+  removeAssignment,
+  addComment
 };

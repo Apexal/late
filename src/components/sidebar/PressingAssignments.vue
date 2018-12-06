@@ -3,7 +3,8 @@
     class="panel sidebar-upcoming-assignments"
     open
   >
-    <summary class="panel-heading is-clearfix is-unselectable is-size-6">Pressing Assignments
+    <summary class="panel-heading is-clearfix is-unselectable is-size-6">
+      Pressing Assignments
       <span class="is-pulled-right icon">
         <i
           class="fas fa-plus add-assignment"
@@ -36,21 +37,19 @@
             class="assignment-link"
             :title="a.description.substring(0, 500)"
             :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+            :class="{ 'priority': a.priority >= 7 }"
           >
-            <b
-              class="course-title is-hidden-tablet"
-            >{{ course(a).longname }}</b>
-
-            {{ a.title }}</router-link>
-          <span
-            v-if="a.priority >= 7"
-            class="tag priority-tag is-danger"
-            title="You marked this assignment as high priority!"
-          >!</span>
+            <b class="course-title is-hidden-tablet">
+              {{ course(a).longname }}
+            </b>
+            {{ a.title }}
+          </router-link>
           <small
-            class="is-pulled-right"
-            :title="toFullDateTimeString(a.dueDate)"
-          >{{ fromNow(a.dueDate) }}</small>
+            class="has-text-grey is-pulled-right tooltip is-tooltip-left"
+            :data-tooltip="toFullDateTimeString(a.dueDate)"
+          >
+            {{ fromNow(a.dueDate) }}
+          </small>
         </span>
       </div>
     </transition-group>
@@ -78,12 +77,20 @@ export default {
       required: true
     }
   },
+  computed: {
+    now () {
+      return this.$store.state.now;
+    }
+  },
   methods: {
-    fromNow: date => moment(date).fromNow(),
+    fromNow (date) {
+      return moment(date).from(this.now);
+    },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
-    toFullDateTimeString: dueDate => moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    toFullDateTimeString: dueDate =>
+      moment(dueDate).format('ddd, MMM Do YYYY, h:mma'),
     getCourseFromCRN (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     }
@@ -92,6 +99,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.priority {
+  font-weight: 500;
+}
+
 .list-enter-active,
 .list-leave-active {
   transition: all 1s;

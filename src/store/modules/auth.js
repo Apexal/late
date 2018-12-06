@@ -13,22 +13,25 @@ const getters = {
       while (sunday.day() !== 0) sunday.subtract(1, 'days');
       const sundayStr = sunday.format('YYYY-MM-DD');
 
-      let start = moment
-        .utc(sundayStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true)
-        .add(parseInt(p.day), 'days');
-      let end = moment
-        .utc(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true)
-        .add(parseInt(p.day), 'days');
+      let start = moment(sundayStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true).add(
+        parseInt(p.day),
+        'days'
+      );
+      let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true).add(
+        parseInt(p.day),
+        'days'
+      );
 
       return {
-        title: 'Unavailable',
+        id: 'unavailable',
+        title: 'Busy',
         start: start,
         end,
         isWorkBlock: true
       };
     });
   },
-  getCourseScheduleAsEvents: state => {
+  getCourseScheduleAsEvents: (state, getters) => {
     if (!state.user.current_schedule) return [];
 
     const sunday = moment().startOf('day');
@@ -50,11 +53,15 @@ const getters = {
           );
 
           return {
-            title: c.longname,
+            id: 'course',
+            eventType: 'course',
+            title: `${c.longname} ${getters.periodType(p.type)}`,
             start,
             end,
             color: c.color,
-            editable: false
+            editable: false,
+            period: p,
+            course: c
           };
         })
       )
@@ -71,7 +78,7 @@ const actions = {
       const user = response.data.user;
       await dispatch('SET_USER', user);
     } catch (e) {
-      console.error('Not logged in!');
+      console.log('Not logged in!');
     }
   },
   async SET_USER ({ dispatch, commit }, user) {
