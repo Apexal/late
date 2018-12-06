@@ -3,7 +3,12 @@
     id="sidebar"
     class="menu"
   >
-    <h3 class="has-text-centered is-size-4">Your itinerary</h3>
+    <h3 class="has-text-centered is-size-4 is-hidden-touch">Your itinerary</h3>
+    <!--Adds an empty space in place of "your itinerary" on mobile devices-->
+    <div
+      class="is-hidden-desktop"
+      style="height:36px"
+    />
     <Schedule />
     <PressingAssignments
       :pressing="pressing"

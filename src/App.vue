@@ -89,6 +89,14 @@ export default {
 .toggle-sidebar {
   z-index: 10;
   position: absolute;
+
+  //Styling the toggle button to fit the theme
+  background-color: #f5f5f5!important; //Bulma overrides background-color, color, and border
+  color: black!important;
+  border: 1px solid #dbdbdb!important;
+  margin: 1em;
+  width: 2.5em;
+  height: 1.5em;
 }
 
 .dot {

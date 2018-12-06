@@ -4,13 +4,19 @@
       <div class="hero-body">
         <div class="container">
           <h1 class="title">
-            LATE
+            <a href="/dashboard">
+              LATE
+            </a>
             <span
               class="tag is-primary"
               title="LATE is still in active development!"
             >Beta</span>
           </h1>
-          <h2 class="subtitle">Lazy Automatic Time Evaluator</h2>
+          <h2 class="subtitle">
+            <a href="/dashboard">
+              Lazy Automatic Time Evaluator
+            </a>
+          </h2>
         </div>
       </div>
 
