@@ -27,30 +27,28 @@
         :key="a._id"
         class="assignment panel-block is-size-7"
       >
-        <span class="is-full-width">
+        <router-link
+          class="assignment-link is-full-width"
+          :title="a.description.substring(0, 500)"
+          :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+          :class="{ 'priority': a.priority >= 7 }"
+        >
           <span
             class="dot course-dot"
             :title="course(a).longname"
             :style="'background-color: ' + course(a).color"
           />
-          <router-link
-            class="assignment-link"
-            :title="a.description.substring(0, 500)"
-            :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
-            :class="{ 'priority': a.priority >= 7 }"
-          >
-            <b class="course-title is-hidden-tablet">
-              {{ course(a).longname }}
-            </b>
-            {{ a.title }}
-          </router-link>
+          <b class="course-title is-hidden-tablet">
+            {{ course(a).longname }}
+          </b>
+          {{ a.title }}
           <small
             class="has-text-grey is-pulled-right tooltip is-tooltip-left"
             :data-tooltip="toFullDateTimeString(a.dueDate)"
           >
             {{ fromNow(a.dueDate) }}
           </small>
-        </span>
+        </router-link>
       </div>
     </transition-group>
     <div class="panel-block">
