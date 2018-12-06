@@ -187,7 +187,12 @@ export default {
   span.tag.assignment-count {
     padding-left: 5px;
     padding-right: 5px;
-    margin-left: 4px;
+    margin-left: 7px;
   }
+}
+
+//Adjusts left margin of title block to a smaller and readable level
+.hero-body .container {
+  margin: 0 0 0 4em;
 }
 </style>

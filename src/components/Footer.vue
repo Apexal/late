@@ -41,6 +41,12 @@ export default {
   .footer {
     padding: 2rem 6rem 2rem!important;
 
+    //Centers and clumps footer elements together
+    .columns {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
     //Bottom padding to set the h1 ("An RCOS Project!") apart from the columns below
     h1 {
       padding-bottom: 1rem;
@@ -54,6 +60,21 @@ export default {
         padding: 0.2em;
       }
     }
+
+    /*
+    //Desktop - Sticks footer to bottom of page.
+    //Note: This will break when we enter the mobile view at 768px, but oddly mediaqueries seem to be ineffective. I'll try some other things later but for now this only works on desktop..
+      //Sticks footer on the bottom of the page, even if the page's height < viewport height
+      position: absolute;
+      width: 100%;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+
+      body {
+        position: relative!important; //This allows the footer to be "stuck" to the bottom
+        padding-bottom: 10rem; //10rem is an estimate of the footer's height.
+      }*/
   }
 
 </style>

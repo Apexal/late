@@ -1,5 +1,6 @@
 <template>
   <div class="integrations-setup">
+    <h2 class="is-size-5 integration-note">This step is optional. If you would like LATE to notify you of assignments and worktimes, select an integration below.</h2>
     <div class="tabs is-centered">
       <ul>
         <li :class="{ 'is-active': currentTab === 'SMSSetup' }"><a @click="currentTab = 'SMSSetup'">SMS</a></li>
@@ -29,4 +30,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
+}
 </style>

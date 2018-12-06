@@ -67,4 +67,8 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+/*Makes the marker appear more clickable to the user*/
+.step-marker:hover {
+  cursor: pointer;
+}
 </style>

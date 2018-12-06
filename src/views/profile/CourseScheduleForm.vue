@@ -1,5 +1,6 @@
 <template>
   <div class="course-schedule-form">
+    <h2 class="is-size-4 integration-note">What are your current semester courses?</h2>
     <form
       class="box"
       @submit.prevent="save"
@@ -190,4 +191,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
+}
 </style>

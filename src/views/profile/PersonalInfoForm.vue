@@ -1,5 +1,6 @@
 <template>
   <div class="personal-info-form">
+    <h2 class="is-size-4 integration-note">What would you like LATE to call you?</h2>
     <form @submit.prevent="save">
       <div class="field">
         <label
@@ -172,4 +173,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
+}
 </style>

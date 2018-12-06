@@ -1,5 +1,6 @@
 <template>
   <div class="unavailability-setup">
+    <h2 class="is-size-4 integration-note">What times are you unavailable?</h2>
     <div class="box">
       <form
         id="time-preferences"
@@ -181,4 +182,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
+}
 </style>
