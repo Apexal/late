@@ -22,17 +22,16 @@
       name="list"
       tag="div"
     >
-      <div
+      <router-link
         v-for="a in pressing"
         :key="a._id"
-        class="assignment panel-block is-size-7"
+        tag="div"
+        class="assignment assignment-link panel-block is-size-7"
+        :title="a.description.substring(0, 500)"
+        :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+        :class="{ 'priority': a.priority >= 7 }"
       >
-        <router-link
-          class="assignment-link is-full-width"
-          :title="a.description.substring(0, 500)"
-          :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
-          :class="{ 'priority': a.priority >= 7 }"
-        >
+        <span class="is-full-width">
           <span
             class="dot course-dot"
             :title="course(a).longname"
@@ -48,8 +47,8 @@
           >
             {{ fromNow(a.dueDate) }}
           </small>
-        </router-link>
-      </div>
+        </span>
+      </router-link>
     </transition-group>
     <div class="panel-block">
       <router-link
