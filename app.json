@@ -2,7 +2,7 @@
   "name": "RPI LATE",
   "description": "Lazy Automatic Time Evaluator",
   "repository": "https://github.com/Apexal/late",
-  "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
+  "logo": "https://cdn.jsdelivr.net/gh/heroku/node-js-getting-started/public/node.svg",
   "keywords": ["node", "koa", "time-management"],
   "image": "heroku/nodejs"
 }
