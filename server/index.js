@@ -10,7 +10,7 @@ const Respond = require('koa-respond');
 const Send = require('koa-send');
 
 // Start the Discord bot
-const discord = require('./discord');
+const discord = require('./integrations/discord');
 
 const logger = require('./logger');
 

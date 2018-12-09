@@ -8,5 +8,5 @@ const host = process.env.HOST;
 app.listen(port, host);
 
 logger.info(
-  `Server running on host ${host} on port ${port}\nGo to http://localhost:${port} to view.`
+  `API server running on host ${host} on port ${port}\nGo to http://localhost:${port} to view.`
 );
