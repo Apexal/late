@@ -31,14 +31,13 @@
         style="flex: 1;"
       >
         <section
-          v-if="!$route.path.includes('/profile') && !isSetup"
+          v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
           class="section no-bottom-padding"
         >
-          <div class="notification is-notice">
+          <div class="notification is-warning">
             <b>NOTICE:</b> You will not be able to use
             <b>LATE</b> until you have
-            <router-link to="/profile">
-              set up your account or logged in.</router-link>
+            <router-link to="/profile">set up your account.</router-link>
           </div>
         </section>
         <transition
@@ -111,9 +110,9 @@ export default {
   position: absolute;
 
   //Styling the toggle button to fit the theme
-  background-color: #f5f5f5!important; //Bulma overrides background-color, color, and border
-  color: black!important;
-  border: 1px solid #dbdbdb!important;
+  background-color: #f5f5f5 !important; //Bulma overrides background-color, color, and border
+  color: black !important;
+  border: 1px solid #dbdbdb !important;
   margin: 1em;
   width: 2.5em;
   height: 1.5em;
