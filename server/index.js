@@ -12,7 +12,7 @@ const Send = require('koa-send');
 // Start the Discord bot
 const discord = require('./integrations/discord');
 
-const logger = require('./logger');
+const logger = require('./modules/logger');
 
 const app = new Koa();
 const router = new Router();

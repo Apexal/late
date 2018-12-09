@@ -17,12 +17,9 @@ const logger = winston.createLogger({
       filename: 'logs/error.log',
       level: 'error'
     }),
-    new winston.transports.File({ filename: 'logs/combined.log' })
+    new winston.transports.File({ filename: 'logs/combined.log' }),
+    new winston.transports.Console()
   ]
 });
-
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console());
-}
 
 module.exports = logger;

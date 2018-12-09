@@ -1,6 +1,6 @@
 const app = require('./server');
 
-const logger = require('./server/logger');
+const logger = require('./server/modules/logger');
 
 // Grab server configuration from environment variables
 const port = process.env.PORT;

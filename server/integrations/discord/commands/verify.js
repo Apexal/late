@@ -1,5 +1,5 @@
 const db = require('../../../../db').models;
-const logger = require('../../../logger');
+const logger = require('../../../modules/logger');
 
 module.exports = {
   name: 'verify',

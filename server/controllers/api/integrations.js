@@ -1,4 +1,4 @@
-const logger = require('../../logger');
+const logger = require('../../modules/logger');
 const SMS = require('../../integrations/sms');
 
 const { dmStudent } = require('../../integrations/discord').utils;

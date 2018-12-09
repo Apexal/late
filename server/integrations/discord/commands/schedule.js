@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-const logger = require('../../../logger');
+const logger = require('../../../modules/logger');
 
 const moment = require('moment');
 

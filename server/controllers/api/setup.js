@@ -1,8 +1,8 @@
 const moment = require('moment');
 
-const logger = require('../../logger');
-const { scrapeSISForCRNS } = require('../../scraping');
-const { getSectionInfoFromCRN } = require('../../yacs_api');
+const logger = require('../../modules/logger');
+const { scrapeSISForCRNS } = require('../../modules/scraping');
+const { getSectionInfoFromCRN } = require('../../modules/yacs_api');
 
 /**
  * Given personal info in the request body:
