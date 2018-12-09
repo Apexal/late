@@ -96,7 +96,7 @@
                     to="/assignments/past"
                     title="Browse all past assignments."
                   >
-                    Past
+                    Previous
                   </router-link>
                   <router-link
                     class="navbar-item"
@@ -137,9 +137,14 @@
                   <router-link
                     class="navbar-item"
                     to="/profile"
-                    title="Setup your profile."
+                    title="Edit your profile."
                   >
-                    Setup Account
+                    <i
+                      data-v-203ae283=""
+                      class="fas fa-pencil-alt"
+                      style="margin-right: 10px"
+                    />
+                    Edit Account
                   </router-link>
                   <a
                     class="navbar-item"

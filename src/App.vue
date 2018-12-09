@@ -38,8 +38,7 @@
             <b>NOTICE:</b> You will not be able to use
             <b>LATE</b> until you have
             <router-link to="/profile">
-              set up your account
-            </router-link> or logged in.
+              set up your account or logged in.</router-link>
           </div>
         </section>
         <transition
@@ -97,6 +96,11 @@ export default {
 <style lang="scss">
 /* These styles will apply to the whole app. */
 @import "@/assets/bulma.scss";
+
+//Removes annoying outline around elements when clicked.
+*:focus {
+  outline: none;
+}
 
 .is-full-width {
   width: 100%;

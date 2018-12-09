@@ -8,7 +8,7 @@
       <details :open="crns.length === 0">
         <summary>
           <h2
-            style="display: inline-block"
+            style="display: inline-block; cursor: pointer;"
             class="subtitle is-unselectable"
           >Automatically Set Your Course Schedule</h2>
         </summary>
