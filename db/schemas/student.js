@@ -8,6 +8,7 @@ const CURRENT_TERM = '201809';
 
 const schema = new Schema(
   {
+    accountLocked: { type: Boolean, default: false },
     rin: {
       type: String,
       minlength: 9,
