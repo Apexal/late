@@ -7,17 +7,17 @@
     </h2>
     <div class="tabs is-centered">
       <ul>
-        <li :class="{ 'is-active': currentTab === 'SMSSetup' }">
+        <li :class="{ 'is-active': currentTab === 'SetupIntegrationsSMS' }">
           <a @click="setIntegration('sms')">
             SMS
           </a>
         </li>
-        <li :class="{ 'is-active': currentTab === 'EmailSetup' }">
+        <li :class="{ 'is-active': currentTab === 'SetupIntegrationsEmail' }">
           <a @click="setIntegration('email')">
             Email
           </a>
         </li>
-        <li :class="{ 'is-active': currentTab === 'DiscordSetup' }">
+        <li :class="{ 'is-active': currentTab === 'SetupIntegrationsDiscord' }">
           <a @click="setIntegration('discord')">
             Discord
           </a>
@@ -29,21 +29,21 @@
 </template>
 
 <script>
-import SMSSetup from '@/components/profile/SMSSetup';
-import EmailSetup from '@/components/profile/EmailSetup';
-import DiscordSetup from '@/components/profile/DiscordSetup';
+import SetupIntegrationsSMS from '@/components/profile/SetupIntegrationsSMS';
+import SetupIntegrationsEmail from '@/components/profile/SetupIntegrationsEmail';
+import SetupIntegrationsDiscord from '@/components/profile/SetupIntegrationsDiscord';
 
 export default {
   name: 'IntegrationsSetup',
-  components: { SMSSetup, EmailSetup, DiscordSetup },
+  components: { SetupIntegrationsSMS, SetupIntegrationsEmail, SetupIntegrationsDiscord },
   data () {
     return {
-      currentTab: 'SMSSetup',
+      currentTab: 'SetupIntegrationsSMS',
       discordVerificationCode: Math.random()
         .toString(36)
         .replace(/[^a-z]+/g, '')
         .substr(0, 8),
-      map: { 'sms': 'SMSSetup', 'email': 'EmailSetup', 'discord': 'DiscordSetup' }
+      map: { 'sms': 'SetupIntegrationsSMS', 'email': 'SetupIntegrationsEmail', 'discord': 'SetupIntegrationsDiscord' }
     };
   },
   created () {

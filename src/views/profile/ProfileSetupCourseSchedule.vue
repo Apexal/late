@@ -125,7 +125,7 @@
           :key="c.crn"
           class="column is-half"
         >
-          <Course
+          <ProfileCourse
             :course="c"
             @update-course="updatedCourse"
           />
@@ -143,11 +143,11 @@
 </template>
 
 <script>
-import Course from '@/components/profile/Course';
+import ProfileCourse from '@/components/profile/ProfileCourse';
 
 export default {
   name: 'ProfileSetupCourseSchedule',
-  components: { Course },
+  components: { ProfileCourse },
   data () {
     return {
       saved: false,

@@ -1,6 +1,8 @@
 <template>
   <div class="email-setup">
-    <h2 class="subtitle">Email Notifications</h2>
+    <h2 class="subtitle">
+      Email Notifications
+    </h2>
 
     <form @submit.prevent="save">
       <div class="field">
@@ -46,7 +48,9 @@
       <button
         :class="{ 'is-loading': loading }"
         class="button is-dark"
-      >Save</button>
+      >
+        Save
+      </button>
     </form>
   </div>
 </template>
@@ -55,7 +59,7 @@
 import 'bulma-switch';
 
 export default {
-  name: 'EmailSetup',
+  name: 'SetupIntegrationsEmail',
   data () {
     return {
       loading: false,
