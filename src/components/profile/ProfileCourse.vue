@@ -5,13 +5,17 @@
         <summary
           class="is-clearfix is-unselectable"
           style="cursor:pointer;"
-        >{{ courseData.longname }}
-          <small class="has-text-grey">{{ courseData.periods.length }} periods</small>
+        >
+          {{ courseData.longname }}
+          <small class="has-text-grey">
+            {{ courseData.periods.length }} periods
+          </small>
           <span
             class="tag is-pulled-right"
             :style="{'background-color': courseData.color, 'color': 'white'}"
             :title="'You are in Section ' + courseData.section_id"
-          >Section {{ courseData.section_id }}
+          >
+            Section {{ courseData.section_id }}
           </span>
           <span
             class="icon edit-course is-pulled-right"
@@ -37,7 +41,11 @@
                 :key="p.day + p.start"
               >
                 <td>{{ day(p.day) }}</td>
-                <td>{{ time(p.start) }}<span class="has-text-grey-light">-</span>{{ time(p.end) }}</td>
+                <td>
+                  {{ time(p.start) }}<span class="has-text-grey-light">
+                    -
+                  </span>{{ time(p.end) }}
+                </td>
                 <td>{{ p.location }}</td>
                 <td>{{ type(p.type) }}</td>
               </tr>
@@ -71,11 +79,15 @@
           type="button"
           class="button is-warning"
           @click="cancel"
-        >Cancel</button>
+        >
+          Cancel
+        </button>
         <button
           :disabled="saved"
           class="button is-primary"
-        >Save</button>
+        >
+          Save
+        </button>
       </form>
     </template>
   </div>
@@ -85,12 +97,12 @@
 import moment from 'moment';
 
 export default {
-  name: 'Course',
+  name: 'ProfileCourse',
   props: {
     course: {
       type: Object,
       required: true,
-      default: () => {}
+      default: () => { }
     }
   },
   data () {

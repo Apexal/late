@@ -143,7 +143,7 @@ export default {
           action: {
             text: 'View',
             push: {
-              name: 'assignment-overview',
+              name: 'assignments-overview',
               params: { assignmentID }
             }
           }

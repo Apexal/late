@@ -91,7 +91,7 @@ async function createAssignment (ctx) {
     courseCRN: body.courseCRN,
     timeEstimate: body.timeEstimate,
     timeRemaining: body.timeEstimate,
-    isAssessment: false,
+    isExam: false,
     priority: parseInt(body.priority, 10)
   });
 

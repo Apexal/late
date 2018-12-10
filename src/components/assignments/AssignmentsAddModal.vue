@@ -1,7 +1,7 @@
 <template>
   <div
     :class="{'is-active': open}"
-    class="edit-assignment-modal modal"
+    class="add-assignment-modal modal"
   >
     <div
       class="modal-background"
@@ -9,12 +9,14 @@
     />
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Edit Assignment</p>
+        <p class="modal-card-title">
+          Add Assignment
+        </p>
       </header>
 
       <section class="modal-card-body">
         <form
-          id="edit-assignment-form"
+          id="add-assignment-form"
           class="form"
           @submit.prevent="save"
         >
@@ -24,21 +26,23 @@
                 <label
                   for="course-id"
                   class="label"
-                >Course</label>
+                >
+                  Course
+                </label>
                 <div class="control">
                   <select
                     id="course-id"
-                    v-model="assignment.courseCRN"
-                    :placeholder="assignment.courseCRN"
-                    name="course_crn"
+                    v-model="courseCRN"
                     class="input"
+                    required
                   >
                     <option
                       v-for="c in courses"
                       :key="c.crn"
                       :value="c.crn"
-                      :selected="c.crn === assignment.courseCRN"
-                    >{{ c.longname }}</option>
+                    >
+                      {{ c.longname }}
+                    </option>
                   </select>
                 </div>
               </div>
@@ -49,15 +53,18 @@
                 <label
                   for="title"
                   class="label"
-                >Title</label>
+                >
+                  What do you have to do?
+                </label>
                 <div class="control">
                   <input
                     id="title"
-                    v-model="assignment.title"
-                    name="title"
+                    v-model.trim="title"
                     type="text"
                     class="input"
                     maxlength="200"
+                    placeholder="Short descriptive title"
+                    required
                   >
                 </div>
               </div>
@@ -68,15 +75,17 @@
                 <label
                   for="description"
                   class="label"
-                >Description</label>
+                >
+                  Description
+                </label>
                 <div class="control">
                   <textarea
                     id="description"
-                    v-model="assignment.description"
-                    name="description"
+                    v-model.trim="description"
                     cols="30"
                     rows="10"
                     class="input"
+                    placeholder="Long description of the assignment here! You can use Markdown!"
                   />
                 </div>
               </div>
@@ -89,13 +98,16 @@
                 <label
                   for="due-date"
                   class="label"
-                >Due Date</label>
+                >
+                  Due Date
+                </label>
                 <div class="control">
                   <input
                     id="due-date"
-                    v-model="assignment.dueDate"
+                    v-model="dueDate"
+                    :min="today"
+                    max="2030-01-01"
                     type="date"
-                    name="due_date"
                   >
                 </div>
               </div>
@@ -106,11 +118,13 @@
                 <label
                   for="time"
                   class="label"
-                >Due Time</label>
+                >
+                  Due Time
+                </label>
                 <div class="control">
                   <input
                     id="time"
-                    v-model="assignment.time"
+                    v-model="time"
                     type="time"
                     name="time"
                   >
@@ -123,13 +137,15 @@
                 <label
                   for="time-estimate"
                   class="label"
-                >Time Estimate (hrs)</label>
+                >
+                  Time Estimate (hrs)
+                </label>
                 <input
                   id="time-estimate"
-                  v-model.number="assignment.timeEstimate"
+                  v-model.number="timeEstimate"
                   type="number"
-                  name="time-estimate"
                   min="0.5"
+                  max="100"
                   step="0.5"
                 >
               </div>
@@ -140,15 +156,16 @@
                 <label
                   for="priority"
                   class="label"
-                >Priority</label>
+                >
+                  Priority
+                </label>
                 <input
                   id="priority"
-                  v-model.number="assignment.priority"
+                  v-model.number="priority"
                   list="priorities"
                   type="range"
                   min="1"
                   max="10"
-                  name="priority"
                   step="1"
                   placeholder="0 - 10"
                 >
@@ -156,8 +173,12 @@
                   class="level"
                   style="max-width: 129px"
                 >
-                  <div style="float:left">low</div>
-                  <div style="float:right">high</div>
+                  <div style="float:left">
+                    low
+                  </div>
+                  <div style="float:right">
+                    high
+                  </div>
                 </div>
                 <div style="clear: both;" />
 
@@ -180,27 +201,19 @@
       </section>
 
       <footer class="modal-card-foot">
-        <span class="is-full-width">
-          <button
-            class="button is-danger is-pulled-right"
-            @click="$emit('remove-assignment')"
-          >
-            Remove
-            <span class="icon is-small margin-left">
-              <i class="fas fa-times" />
-            </span>
-          </button>
-          <button
-            class="button is-warning"
-            @click="$emit('toggle-modal')"
-          >Cancel</button>
-          <button
-            form="edit-assignment-form"
-            class="button is-success"
-            :class="{'is-loading': loading}"
-            :disabled="saved"
-          >Save</button>
-        </span>
+        <button
+          class="button is-warning"
+          @click="$emit('toggle-modal')"
+        >
+          Cancel
+        </button>
+        <button
+          form="add-assignment-form"
+          class="button is-success"
+          :class="{'is-loading': loading}"
+        >
+          Save
+        </button>
       </footer>
     </div>
   </div>
@@ -210,85 +223,81 @@
 import moment from 'moment';
 
 export default {
-  name: 'EditAssignmentModal',
+  name: 'AssignmentsAddModal',
   props: {
     open: {
       type: Boolean,
-      required: true
-    },
-    initialAssignment: {
-      type: Object,
-      default: () => ({
-        courseCRN: '',
-        title: '',
-        description: '',
-        dueDate: moment()
-          .add(1, 'days')
-          .format('YYYY-MM-DD'),
-        time: '08:00', // HH:mm
-        timeEstimate: 1,
-        priority: 5
-      }),
       required: true
     }
   },
   data () {
     return {
       loading: false,
-      assignment: this.convertAssignment(this.initialAssignment)
+      courseCRN: this.defaultCourseCRN,
+      title: '',
+      description: '',
+      dueDate: moment()
+        .add(1, 'days')
+        .format('YYYY-MM-DD'),
+      time: '08:00', // HH:mm
+      timeEstimate: 1.0,
+      priority: 5
     };
   },
   computed: {
+    defaultCourseCRN () {
+      return this.$store.state.addAssignmentModal.courseCRN;
+    },
+    dueDateString () {
+      return this.$store.getters.addAssignmentModalDueDateString;
+    },
+    dueTimeString () {
+      return this.$store.getters.addAssignmentModalDueTimeString;
+    },
     courses () {
       return this.$store.state.auth.user.current_schedule;
     },
-    saved () {
-      return (
-        JSON.stringify(this.convertAssignment(this.initialAssignment)) ===
-        JSON.stringify(this.assignment)
-      );
-    }
+    today: () => moment().format('YYYY-MM-DD')
   },
   watch: {
-    initialAssignment (newA, oldA) {
-      this.assignment = this.convertAssignment(newA);
+    dueDateString () {
+      this.dueDate = this.dueDateString;
+    },
+    dueTimeString () {
+      this.time = this.dueTimeString;
+    },
+    defaultCourseCRN () {
+      this.courseCRN = this.defaultCourseCRN;
     }
   },
   methods: {
-    convertAssignment (assignment) {
-      const data = Object.assign({}, assignment);
-      data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD');
-      data.time = moment(assignment.dueDate).format('HH:mm');
-      return data;
-    },
     async save () {
       this.loading = true;
-
-      const request = await this.$http.post(
-        `/assignments/a/${this.assignment._id}/edit`,
-        {
-          title: this.assignment.title,
-          description: this.assignment.description,
-          dueDate: moment(
-            this.assignment.dueDate + ' ' + this.assignment.time,
-            'YYYY-MM-DD HH:mm',
-            true
-          ).toDate(),
-          courseCRN: this.assignment.courseCRN,
-          timeEstimate: this.assignment.timeEstimate,
-          priority: this.assignment.priority
-        }
-      );
+      // TODO: error handle
+      const request = await this.$http.post('/assignments/create', {
+        title: this.title,
+        description: this.description,
+        dueDate: moment(
+          this.dueDate + ' ' + this.time,
+          'YYYY-MM-DD HH:mm',
+          true
+        ).toDate(),
+        courseCRN: this.courseCRN,
+        timeEstimate: this.timeEstimate,
+        priority: this.priority
+      });
 
       // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.$emit('edit-assignment', this.assignment);
-      }
+      await this.$store.dispatch(
+        'ADD_UPCOMING_ASSIGNMENT',
+        request.data.createdAssignment
+      );
+
+      // Reset important fields
+      this.title = '';
+      this.description = '';
+      this.timeEstimate = 0;
+      this.priority = 1.0;
 
       this.loading = false;
 
@@ -296,15 +305,19 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$toasted.info(
-        `Edited assignment '${
-          request.data.updatedAssignment.title
-        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
+      this.$toasted.success(
+        `Added assignment '${
+          request.data.createdAssignment.title
+        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`,
         {
+          icon: 'plus',
           action: {
-            text: 'Undo'
-          },
-          icon: 'pen'
+            text: 'View',
+            push: {
+              name: 'assignments-overview',
+              params: { assignmentID: request.data.createdAssignment._id }
+            }
+          }
         }
       );
     }
@@ -313,7 +326,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.edit-assignment-modal {
+.add-assignment-modal {
   #description {
     width: 100%;
     min-width: 100%;
@@ -323,13 +336,5 @@ export default {
     height: 200px;
     max-height: 500px;
   }
-}
-
-.margin-right {
-  margin-right: 5px;
-}
-
-.margin-left {
-  margin-left: 2px !important;
 }
 </style>

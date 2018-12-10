@@ -1,7 +1,7 @@
 <template>
   <div class="personal-info-form">
     <h2 class="is-size-4 integration-note">
-      Please give us some basic info about yourself.
+      Please provide some basic info on yourself.
     </h2>
     <form @submit.prevent="save">
       <div class="field">
@@ -130,7 +130,7 @@
 
 <script>
 export default {
-  name: 'PersonalInfoForm',
+  name: 'ProfileSetupPersonalInfoForm',
   data () {
     return {
       saved: false,
@@ -174,7 +174,7 @@ export default {
         action: {
           text: 'Next Step',
           push: {
-            name: 'course-schedule'
+            name: 'setup-course-schedule'
           }
         }
       });

@@ -50,7 +50,7 @@
 import moment from 'moment';
 
 export default {
-  name: 'TODOs',
+  name: 'SidebarTodoList',
   data () {
     return {
       newTodo: '',

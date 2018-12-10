@@ -23,6 +23,11 @@ async function loginStudent (ctx) {
   );
 
   if (student) {
+    if (student.accountLocked) {
+      logger.info(`${student.rcs_id} tried to login to locked account`);
+      return ctx.forbidden('Your account has been locked by administrators.');
+    }
+
     logger.info(`Logging in ${student.rcs_id}`);
   } else {
     // TODO: CMS api to get personal info here

@@ -90,9 +90,7 @@
             class="switch"
             :disabled="!preferences.enabled"
           >
-          <label
-            for="reminders"
-          >
+          <label for="reminders">
             Receive reminders about upcoming assignments close to their due dates
           </label>
         </div>
@@ -179,7 +177,7 @@
 
 <script>
 export default {
-  name: 'SMSSetup',
+  name: 'SetupIntegrationsSMS',
   data () {
     return {
       loading: false,

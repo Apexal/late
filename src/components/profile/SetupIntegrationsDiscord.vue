@@ -1,6 +1,8 @@
 <template>
   <div class="discord-setup">
-    <h2 class="subtitle">Discord Notifications</h2>
+    <h2 class="subtitle">
+      Discord Notifications
+    </h2>
 
     <div
       v-if="!verified"
@@ -10,10 +12,13 @@
         v-if="!verifying"
         class="button is-warning"
         @click="startVerify"
-      >Link Discord Account</button>
-      <p v-else>Direct message
-        <b>LATE bot</b>
-        <code>.verify {{ verificationCode }}</code> to link your account!
+      >
+        Link Discord Account
+      </button>
+      <p v-else>
+        Direct message
+               <b>LATE bot</b>
+               <code>.verify {{ verificationCode }}</code> to link your account!
       </p>
     </div>
     <div
@@ -39,7 +44,9 @@
             type="checkbox"
             class="switch"
           >
-          <label for="preWorkDM">DM work session reminder</label>
+          <label for="preWorkDM">
+            DM work session reminder
+          </label>
         </div>
         <div class="field">
           <input
@@ -48,7 +55,9 @@
             type="checkbox"
             class="switch"
           >
-          <label for="postWorkDM">DM post-work session checkup</label>
+          <label for="postWorkDM">
+            DM post-work session checkup
+          </label>
         </div>
 
         <hr>
@@ -56,7 +65,9 @@
         <button
           :class="{ 'is-loading': loading }"
           class="button is-dark"
-        >Save</button>
+        >
+          Save
+        </button>
       </form>
     </div>
   </div>
@@ -64,7 +75,7 @@
 
 <script>
 export default {
-  name: 'DiscordSetup',
+  name: 'SetupIntegrationsDiscord',
   data () {
     return {
       loading: false,

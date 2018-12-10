@@ -15,12 +15,11 @@
 </template>
 
 <script>
-import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
 export default {
-  name: 'Dashboard',
+  name: 'TheDashboard',
   components: { FullCalendar },
   data () {
     return {
@@ -47,10 +46,11 @@ export default {
             month: 'Month Overview',
             agendaWeek: 'Weekly Agenda'
           },
-          dayClick: (date, jsEvent, view) => {
+          /* dayClick: (date, jsEvent, view) => {
             // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
             // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
           },
+          */
           eventClick: (calEvent, jsEvent, view) => {
             if (calEvent.eventType === 'course') {
               this.$store.commit(
@@ -64,7 +64,7 @@ export default {
               this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
             } else if (calEvent.eventType === 'assignment') {
               this.$router.push({
-                name: 'assignment-overview',
+                name: 'assignments-overview',
                 params: { assignmentID: calEvent.assignment._id }
               });
             }

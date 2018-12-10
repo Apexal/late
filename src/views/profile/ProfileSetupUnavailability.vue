@@ -1,8 +1,8 @@
 <template>
-  <div class="unavailability-setup">
-    <h2
-      class="is-size-4 integration-note"
-    >What times outside of class are you not able to study/work?</h2>
+  <div class="setup-unavailability">
+    <h2 class="is-size-4 integration-note">
+      What times outside of class are you not able to study/work?
+    </h2>
     <div class="box">
       <form
         id="time-preferences"
@@ -13,7 +13,9 @@
             <label
               for="earliest"
               class="label"
-            >Earliest Time Preference</label>
+            >
+              Earliest Time Preference
+            </label>
             <p class="help">
               <b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.
             </p>
@@ -33,7 +35,9 @@
             <label
               for="latest"
               class="label"
-            >Latest Time Preference</label>
+            >
+              Latest Time Preference
+            </label>
             <p class="help">
               <b>LATE</b> will not schedule any work for you after this time unless it absolutely does not fit anywhere else.
             </p>
@@ -50,8 +54,12 @@
         </div>
       </form>
     </div>
-    <h2 class="subtit">Drag to set your study/work unavailability</h2>
-    <p class="help">Click on blocks to remove them. You can also drag, drop, and resive them.</p>
+    <h2 class="subtit">
+      Drag to set your study/work unavailability
+    </h2>
+    <p class="help">
+      Click on blocks to remove them. You can also drag, drop, and resive them.
+    </p>
     <FullCalendar
       ref="calendar"
       :events="calendar.events"
@@ -67,7 +75,9 @@
       class="button is-primary"
       :class="{'is-loading': loading}"
       :disabled="saved"
-    >Save and Continue</button>
+    >
+      Save and Continue
+    </button>
   </div>
 </template>
 
@@ -76,7 +86,7 @@ import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 export default {
-  name: 'UnavailabilitySetup',
+  name: 'ProfileSetupUnavailability',
   components: { FullCalendar },
   data () {
     return {
@@ -170,7 +180,7 @@ export default {
           action: {
             text: 'Last Step',
             push: {
-              name: 'integrations'
+              name: 'setup-integrations'
             }
           }
         }
