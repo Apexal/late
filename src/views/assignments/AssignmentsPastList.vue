@@ -1,6 +1,8 @@
 <template>
   <div class="past-assignments">
-    <h2 class="subtitle">Week of {{ weekOf }}</h2>
+    <h2 class="subtitle">
+      Week of {{ weekOf }}
+    </h2>
     <div class="columns">
       <div class="column is-narrow">
         <button
@@ -36,7 +38,9 @@
             class="button is-primary"
             :disabled="isLastWeek"
             @click="gotoLastWeek"
-          >Last Week</button>
+          >
+            Last Week
+          </button>
         </div>
       </div>
       <div class="column is-narrow">
@@ -75,7 +79,9 @@
       <thead>
         <tr>
           <th>Due</th>
-          <th class="is-hidden-mobile">Course</th>
+          <th class="is-hidden-mobile">
+            Course
+          </th>
           <th>Assignment</th>
           <th>Completed</th>
         </tr>
@@ -87,9 +93,9 @@
         >
           <td :title="toFullDateTimeString(a.dueDate)">
             {{ toDateShorterString(a.dueDate) }}
-            <span
-              class="has-text-grey"
-            >{{ toTimeString(a.dueDate) }}</span>
+            <span class="has-text-grey">
+              {{ toTimeString(a.dueDate) }}
+            </span>
           </td>
           <td class="is-hidden-mobile">
             <span
@@ -97,7 +103,9 @@
               :title="course(a).longname"
               :style="'background-color: ' + course(a).color"
             />
-            <b class="course-title">{{ course(a).longname }}</b>
+            <b class="course-title">
+              {{ course(a).longname }}
+            </b>
           </td>
           <td>
             <span
@@ -108,8 +116,10 @@
             <router-link
               class="assignment-link"
               :title="a.description.substring(0, 500)"
-              :to="{name: 'assignment-overview', params: { assignmentID: a._id }}"
-            >{{ a.title }}</router-link>
+              :to="{name: 'assignments-overview', params: { assignmentID: a._id }}"
+            >
+              {{ a.title }}
+            </router-link>
           </td>
           <td>
             <span class="icon">
@@ -129,7 +139,7 @@
 import moment from 'moment';
 
 export default {
-  name: 'PastAssignments',
+  name: 'AssignmentsPastList',
   props: {
     showCompleted: {
       type: Boolean,

@@ -64,7 +64,7 @@ export default {
               this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
             } else if (calEvent.eventType === 'assignment') {
               this.$router.push({
-                name: 'assignment-overview',
+                name: 'assignments-overview',
                 params: { assignmentID: calEvent.assignment._id }
               });
             }

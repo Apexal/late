@@ -11,7 +11,10 @@ const router = new Router({
   base: process.env.BASE_URL,
   linkActiveClass: 'is-active',
   scrollBehavior (to, from, savedPosition) {
-    if ((typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)) {
+    if (
+      typeof window.orientation !== 'undefined' ||
+      navigator.userAgent.indexOf('IEMobile') !== -1
+    ) {
       return {
         selector: '#content'
       };
@@ -49,19 +52,19 @@ const router = new Router({
         },
         {
           path: 'calendar',
-          name: 'assignment-calendar',
+          name: 'assignments-calendar',
           meta: {
             title: 'Assignment Calendar'
           },
-          component: () => import('@/views/assignments/AssignmentCalendar.vue')
+          component: () => import('@/views/assignments/AssignmentsCalendar.vue')
         },
         {
           path: 'upcoming',
-          name: 'upcoming-assignments',
+          name: 'assignments-upcoming',
           meta: {
             title: 'Upcoming Assignments'
           },
-          component: () => import('@/views/assignments/UpcomingAssignments.vue')
+          component: () => import('@/views/assignments/AssignmentsUpcoming.vue')
         },
         {
           path: 'past',
@@ -69,14 +72,14 @@ const router = new Router({
           meta: {
             title: 'Past Assignments'
           },
-          component: () => import('@/views/assignments/PastAssignments.vue')
+          component: () => import('@/views/assignments/AssignmentsPastList.vue')
         }
       ]
     },
     {
       path: '/assignments/:assignmentID',
-      name: 'assignment-overview',
-      component: () => import('@/views/assignments/AssignmentOverview.vue'),
+      name: 'assignments-overview',
+      component: () => import('@/views/assignments/AssignmentsOverview.vue'),
       meta: {
         requiresAuth: true
       }

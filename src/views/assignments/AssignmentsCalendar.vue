@@ -15,7 +15,7 @@ import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
 export default {
-  name: 'AssignmentCalendar',
+  name: 'AssignmentsCalendar',
   components: { FullCalendar },
   props: {
     showCompleted: {

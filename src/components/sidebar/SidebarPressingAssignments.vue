@@ -1,6 +1,6 @@
 <template>
   <details
-    class="panel sidebar-upcoming-assignments"
+    class="panel sidebar-pressing-assignments"
     open
   >
     <summary class="panel-heading is-clearfix is-unselectable is-size-6">
@@ -28,7 +28,7 @@
         tag="div"
         class="assignment assignment-link panel-block is-size-7"
         :title="a.description.substring(0, 500)"
-        :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+        :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
         :class="{ 'priority': a.priority >= 7 }"
       >
         <span class="is-full-width">

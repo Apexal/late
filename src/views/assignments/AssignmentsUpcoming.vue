@@ -1,5 +1,5 @@
 <template>
-  <div class="upcoming-assignments">
+  <div class="assignments-upcoming">
     <p
       v-if="none"
       class="has-text-centered has-text-grey"
@@ -50,7 +50,7 @@
               <router-link
                 class="assignment-link"
                 :title="a.description.substring(0, 500)"
-                :to="{ name: 'assignment-overview', params: { assignmentID: a._id }}"
+                :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
                 :class="{ 'priority': a.priority >= 7 }"
               >
                 <b class="course-title is-hidden-tablet">
@@ -76,7 +76,7 @@
 import moment from 'moment';
 
 export default {
-  name: 'UpcomingAssignments',
+  name: 'AssignmentsUpcoming',
   props: {
     showCompleted: {
       type: Boolean,
