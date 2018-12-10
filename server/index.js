@@ -44,11 +44,12 @@ app.use(Logger());
 /* Serve static files (CSS, JS, audio, etc.) */
 app.use(Static('dist/'));
 
+const Student = require('./api/students/students.model');
 app.use(async (ctx, next) => {
   ctx.state.env = process.env.NODE_ENV;
 
   if (ctx.session.cas_user) {
-    ctx.state.user = await ctx.db.Student.findOne()
+    ctx.state.user = await Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
   }

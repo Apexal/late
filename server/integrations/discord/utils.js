@@ -1,5 +1,4 @@
-const db = require('../../../db').models;
-
+const Student = require('../../api/students/students.model');
 const client = require('./index').client;
 
 module.exports = {
@@ -9,7 +8,7 @@ module.exports = {
    * @param {Discurd user object} discordUser
    */
   async getStudent (discordUser) {
-    return db.Student.findOne({
+    return Student.findOne({
       'integrations.discord.userID': discordUser.id
     });
   }

@@ -1,4 +1,4 @@
-const db = require('../../../../db').models;
+const Student = require('../../../api/students/students.model');
 const logger = require('../../../modules/logger');
 
 module.exports = {
@@ -15,7 +15,7 @@ module.exports = {
     }
 
     const code = args[0];
-    const student = await db.Student.findOne({
+    const student = await Student.findOne({
       'integrations.discord.verificationCode': code
     });
 
