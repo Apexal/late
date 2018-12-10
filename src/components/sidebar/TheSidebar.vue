@@ -11,23 +11,23 @@
       class="is-hidden-desktop"
       style="height:36px"
     />
-    <Schedule />
-    <PressingAssignments
+    <SidebarSchedule />
+    <SidebarPressingAssignments
       :pressing="pressing"
       @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     />
-    <Todos />
+    <SidebarTodoList />
   </aside>
 </template>
 
 <script>
-import Schedule from '@/components/sidebar/Schedule';
-import PressingAssignments from '@/components/sidebar/PressingAssignments';
-import Todos from '@/components/sidebar/Todos';
+import SidebarSchedule from '@/components/sidebar/SidebarSchedule';
+import SidebarPressingAssignments from '@/components/sidebar/SidebarPressingAssignments';
+import SidebarTodoList from '@/components/sidebar/SidebarTodoList';
 
 export default {
-  name: 'Sidebar',
-  components: { PressingAssignments, Schedule, Todos },
+  name: 'TheSidebar',
+  components: { SidebarPressingAssignments, SidebarSchedule, SidebarTodoList },
   computed: {
     pressing () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);

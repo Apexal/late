@@ -5,21 +5,21 @@
   >
     <summary class="panel-heading is-unselectable is-size-6 is-clearfix">
       Today's Classes
-      <span
-        v-if="in_class"
-        class="tag is-info tooltip is-pulled-right"
-        :style="{ 'background-color': current_course.color }"
-        :data-tooltip="'Until end of ' + current_course.longname + ' ' + periodType(current_period)"
-      >
-        {{ countdown }}
-      </span>
-      <span
-        v-else-if="classes_over"
-        class="tag is-dark tooltip"
-        data-tooltip="Classe are over for today!"
-      >
-        Over
-      </span>
+              <span
+                v-if="in_class"
+                class="tag is-info tooltip is-pulled-right"
+                :style="{ 'background-color': current_course.color }"
+                :data-tooltip="'Until end of ' + current_course.longname + ' ' + periodType(current_period)"
+              >
+                {{ countdown }}
+              </span>
+              <span
+                v-else-if="classes_over"
+                class="tag is-dark tooltip"
+                data-tooltip="Classe are over for today!"
+              >
+                Over
+              </span>
     </summary>
     <template v-if="is_weekend">
       <div class="panel-block">
@@ -66,7 +66,7 @@
 import moment from 'moment';
 
 export default {
-  name: 'Schedule',
+  name: 'SidebarSchedule',
   data () {
     return {};
   },
@@ -140,7 +140,7 @@ export default {
 }
 
 .course-times span {
-    line-height: 1.3em; //Makes course timing more readable
+  line-height: 1.3em; //Makes course timing more readable
 }
 
 .course-dot {

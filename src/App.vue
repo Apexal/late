@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header />
+    <TheHeader />
     <AddAssignmentModal
       :open="addAssignmentModalExpanded"
       @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
@@ -22,7 +22,7 @@
           v-if="loggedIn && expanded"
           class="column is-3 child-view"
         >
-          <Sidebar />
+          <TheSidebar />
         </div>
       </transition>
       <div
@@ -37,7 +37,9 @@
           <div class="notification is-warning">
             <b>NOTICE:</b> You will not be able to use
             <b>LATE</b> until you have
-            <router-link to="/profile">set up your account.</router-link>
+            <router-link to="/profile">
+              set up your account.
+            </router-link>
           </div>
         </section>
         <transition
@@ -48,18 +50,18 @@
         </transition>
       </div>
     </div>
-    <Footer />
+    <TheFooter />
   </div>
 </template>
 <script>
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Sidebar from '@/components/sidebar/Sidebar';
+import TheHeader from '@/components/TheHeader';
+import TheFooter from '@/components/TheFooter';
+import TheSidebar from '@/components/sidebar/TheSidebar';
 import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
 
 export default {
   name: 'LATE',
-  components: { Header, Sidebar, Footer, AddAssignmentModal },
+  components: { TheHeader, TheSidebar, TheFooter, AddAssignmentModal },
   computed: {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;

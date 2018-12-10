@@ -66,7 +66,7 @@
 import moment from 'moment';
 
 export default {
-  name: 'PressingAssignments',
+  name: 'SidebarPressingAssignments',
   props: {
     pressing: {
       type: Array,
