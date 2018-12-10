@@ -10,17 +10,17 @@ const list = [
     isBreak: false
   },
   {
-    name: 'Winter Break',
-    code: '201812',
-    start: moment('2018-12-23', 'YYYY-MM-DD', true),
-    end: moment('2019-01-08', 'YYYY-MM-DD', true),
-    isBreak: true
-  },
-  {
     name: 'Spring 2019',
-    code: '',
+    code: '201901',
     start: moment('2019-01-09', 'YYYY-MM-DD', true),
     end: moment('2019-05-04', 'YYYY-MM-DD', true),
+    isBreak: false
+  },
+  {
+    name: 'Summer 2019',
+    code: '201905',
+    start: moment('2019-05-05', 'YYYY-MM-DD', true),
+    end: moment('2019-09-04', 'YYYY-MM-DD', true), // not confirmed
     isBreak: false
   }
 ];
