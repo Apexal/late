@@ -101,35 +101,39 @@ const router = new Router({
         },
         {
           path: 'personalinfo',
-          name: 'personal-info',
+          name: 'setup-personal-info',
           meta: {
             title: 'Personal Info'
           },
-          component: () => import('@/views/profile/PersonalInfoForm.vue')
+          component: () =>
+            import('@/views/profile/ProfileSetupPersonalInfo.vue')
         },
         {
           path: 'courseschedule',
-          name: 'course-schedule',
+          name: 'setup-course-schedule',
           meta: {
             title: 'Course Schedule'
           },
-          component: () => import('@/views/profile/CourseScheduleForm.vue')
+          component: () =>
+            import('@/views/profile/ProfileSetupCourseSchedule.vue')
         },
         {
           path: 'unavailability',
-          name: 'unavailability',
+          name: 'setup-unavailability',
           meta: {
             title: 'Study/Work Unavailability'
           },
-          component: () => import('@/views/profile/UnavailabilitySetup.vue')
+          component: () =>
+            import('@/views/profile/ProfileSetupUnavailability.vue')
         },
         {
           path: 'integrations',
-          name: 'integrations',
+          name: 'setup-integrations',
           meta: {
             title: 'Integrations'
           },
-          component: () => import('@/views/profile/IntegrationsSetup.vue')
+          component: () =>
+            import('@/views/profile/ProfileSetupIntegrations.vue')
         }
       ]
     },

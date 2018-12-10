@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
@@ -47,10 +46,11 @@ export default {
             month: 'Month Overview',
             agendaWeek: 'Weekly Agenda'
           },
-          dayClick: (date, jsEvent, view) => {
+          /* dayClick: (date, jsEvent, view) => {
             // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
             // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
           },
+          */
           eventClick: (calEvent, jsEvent, view) => {
             if (calEvent.eventType === 'course') {
               this.$store.commit(

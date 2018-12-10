@@ -305,7 +305,7 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      let toast = this.$toasted.success(
+      this.$toasted.success(
         `Added assignment '${
           request.data.createdAssignment.title
         }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`,
