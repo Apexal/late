@@ -1,5 +1,8 @@
+const { loginStudent, cas } = require('./modules/auth.js');
+
 module.exports = router => {
   // router.use(path, router);
+
   router.use(
     '/api',
     async function (ctx, next) {
@@ -13,5 +16,17 @@ module.exports = router => {
     },
     require('./api')
   );
-  router.use('/auth', require('./auth'));
+
+  // CAS Auth routes
+  router.get(
+    '/auth/login',
+    async (ctx, next) => {
+      // In case just /login without redirectTo in the query
+      ctx.query.redirectTo = ctx.query.redirectTo || '/';
+      await next();
+    },
+    cas.bounce,
+    loginStudent
+  );
+  router.get('/auth/logout', cas.logout);
 };

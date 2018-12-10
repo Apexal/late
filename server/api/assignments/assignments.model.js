@@ -39,7 +39,4 @@ schema.virtual('passed').get(function () {
   return moment(this.dueDate).isBefore(new Date());
 });
 
-module.exports = {
-  name: 'Assignment',
-  schema
-};
+module.exports = mongoose.model('Assignment', schema);

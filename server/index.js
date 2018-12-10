@@ -10,17 +10,15 @@ const Respond = require('koa-respond');
 const Send = require('koa-send');
 
 // Start the Discord bot
-const discord = require('./integrations/discord');
+require('./integrations/discord');
 
 const logger = require('./modules/logger');
 
 const app = new Koa();
 const router = new Router();
 
-const db = require('../db').models;
-
-/* MongoDB setup */
-app.context.db = db; // The db is now available on every request
+// Connect to MongoDB
+require('./db');
 
 /* Body Parser Setup */
 app.use(Body());
