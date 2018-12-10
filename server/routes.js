@@ -1,4 +1,4 @@
-const { loginStudent, cas } = require('./modules/auth.js');
+const { loginStudent, cas } = require('./modules/auth');
 
 module.exports = router => {
   // router.use(path, router);
