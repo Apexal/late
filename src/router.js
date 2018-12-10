@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from '@/views/Home.vue';
 
 import store from '@/store';
 
@@ -25,7 +24,7 @@ const router = new Router({
       path: '/',
       alias: '/dashboard',
       name: 'home',
-      component: Home,
+      component: () => import('@/views/TheHomePage.vue'),
       meta: {
         title: 'Home'
       }
@@ -36,7 +35,7 @@ const router = new Router({
       meta: {
         title: 'About'
       },
-      component: () => import('@/views/About.vue')
+      component: () => import('@/views/TheAboutPage.vue')
     },
     {
       path: '/assignments',
@@ -143,7 +142,7 @@ const router = new Router({
       meta: {
         title: 'Not Found'
       },
-      component: () => import('@/views/NotFound.vue')
+      component: () => import('@/views/TheNotFoundPage.vue')
     }
   ]
 });

@@ -1,6 +1,6 @@
 <template>
   <div class="assignments-overview">
-    <EditAssignmentModal
+    <AssignmentsModalEdit
       v-if="!isPast"
       :open="editing"
       :initial-assignment="assignment"
@@ -334,11 +334,11 @@
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 
-import EditAssignmentModal from '@/components/assignments/EditAssignmentModal';
+import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
 
 export default {
   name: 'AssignmentsOverview',
-  components: { VueMarkdown, EditAssignmentModal },
+  components: { VueMarkdown, AssignmentsModalEdit },
   data () {
     return {
       tab: 'comments',

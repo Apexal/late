@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <TheHeader />
-    <AddAssignmentModal
+    <AssignmentsAddModal
       :open="addAssignmentModalExpanded"
       @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     />
@@ -57,11 +57,11 @@
 import TheHeader from '@/components/TheHeader';
 import TheFooter from '@/components/TheFooter';
 import TheSidebar from '@/components/sidebar/TheSidebar';
-import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
+import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
 
 export default {
   name: 'LATE',
-  components: { TheHeader, TheSidebar, TheFooter, AddAssignmentModal },
+  components: { TheHeader, TheSidebar, TheFooter, AssignmentsAddModal },
   computed: {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;

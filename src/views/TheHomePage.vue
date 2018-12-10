@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Dashboard v-if="loggedIn" />
+    <TheDashboard v-if="loggedIn" />
     <section
       v-else
       class="section"
@@ -46,11 +46,11 @@
 </template>
 
 <script>
-import Dashboard from '@/views/Dashboard';
+import TheDashboard from '@/views/TheDashboard';
 
 export default {
-  name: 'Home',
-  components: { Dashboard },
+  name: 'TheHomePage',
+  components: { TheDashboard },
   computed: {
     loggedIn () { return this.$store.state.auth.isAuthenticated; }
   }
