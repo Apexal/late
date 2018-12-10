@@ -1,4 +1,4 @@
-const logger = require('../../logger');
+const logger = require('../../modules/logger');
 
 /**
  * Only available in development mode. Login as a user given their ID.

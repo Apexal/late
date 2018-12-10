@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
 const moment = require('moment');
 
-const db = require('../../../db').models;
-const logger = require('../../logger');
+const logger = require('../../../modules/logger');
 const { getStudent } = require('../utils');
 
 module.exports = {

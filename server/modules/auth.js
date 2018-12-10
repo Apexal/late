@@ -1,7 +1,7 @@
 const CAS = require('koa2-cas');
 const logger = require('./logger');
 
-const { sendNewUserEmail } = require('./email');
+const { sendNewUserEmail } = require('../integrations/email');
 
 const cas = new CAS({
   cas_url: 'https://cas-auth.rpi.edu/cas',

@@ -1,5 +1,5 @@
 const moment = require('moment');
-const logger = require('../../logger');
+const logger = require('../../modules/logger');
 
 /**
  * Returns a list of all assignments with optional dueOn or dueBy filters.

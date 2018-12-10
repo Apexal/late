@@ -1,7 +1,7 @@
-const logger = require('../../logger');
-const SMS = require('../../sms');
+const logger = require('../../modules/logger');
+const SMS = require('../../integrations/sms');
 
-const { dmStudent } = require('../../discord').utils;
+const { dmStudent } = require('../../integrations/discord').utils;
 
 /**
  * Get a SMS verification code and send it to the user's given phone number.

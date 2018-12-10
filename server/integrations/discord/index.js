@@ -3,7 +3,7 @@ const client = new Discord.Client();
 
 const path = require('path');
 const fs = require('fs');
-const logger = require('../logger');
+const logger = require('../../modules/logger');
 
 /* LOAD COMMANDS (taken from Apexal/rpi-bot) */
 client.commands = new Discord.Collection();

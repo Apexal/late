@@ -1,4 +1,4 @@
-const auth = require('../auth.js');
+const auth = require('../modules/auth.js');
 const cas = auth.cas;
 
 const Router = require('koa-router');
