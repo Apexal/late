@@ -85,10 +85,6 @@ const actions = {
     const assignments = response.data.assignments;
     commit('SET_UPCOMING_ASSIGNMENTS', assignments);
   },
-  async ADD_UPCOMING_ASSIGNMENT ({ dispatch, commit }, assignment) {
-    commit('ADD_UPCOMING_ASSIGNMENT', assignment);
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
-  },
   async REMOVE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.delete(`/assignments/a/${assignmentID}`);
@@ -122,6 +118,9 @@ const mutations = {
   },
   SET_UPCOMING_EXAMS: (state, exams) => {
     state.upcomingExams = exams;
+  },
+  ADD_UPCOMING_EXAM: (state, exam) => {
+    state.upcomingExams.push(exam);
   }
 };
 

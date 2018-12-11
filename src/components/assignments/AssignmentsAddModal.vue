@@ -287,8 +287,8 @@ export default {
         priority: this.priority
       });
 
-      // Calls API and updates state
-      await this.$store.dispatch(
+      // Update global state
+      this.$store.commit(
         'ADD_UPCOMING_ASSIGNMENT',
         request.data.createdAssignment
       );
@@ -296,8 +296,8 @@ export default {
       // Reset important fields
       this.title = '';
       this.description = '';
-      this.timeEstimate = 0;
-      this.priority = 1.0;
+      this.timeEstimate = 1;
+      this.priority = 5.0;
 
       this.loading = false;
 

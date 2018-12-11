@@ -223,7 +223,43 @@ export default {
   },
   methods: {
     async save () {
-      alert('Add exams');
+      this.loading = true;
+
+      const request = await this.$http.post('/exams', {
+        title: this.title,
+        description: this.description,
+        date: moment(
+          this.date + ' ' + this.time,
+          'YYYY-MM-DD HH:mm',
+          true
+        ).toDate(),
+        courseCRN: this.courseCRN,
+        timeEstimate: this.timeEstimate
+      });
+
+      this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
+
+      this.title = '';
+      this.description = '';
+      this.timeEstimate = 1;
+
+      this.loading = false;
+
+      this.$emit('toggle-modal');
+
+      const options = {
+        action: {
+          text: 'View',
+          push: {
+            name: 'exams-overview',
+            params: { examID: request.data.createdExam._id }
+          }
+        }
+      };
+
+      this.$toasted.success(`Added exam '${
+        request.data.createdExam.title
+      }' due ${moment(request.data.createdExam.date).fromNow()}.`, options);
     }
   }
 };
