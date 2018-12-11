@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const router = new Router();
 
-const Ctrl = require('../../controllers/api/setup');
+const Ctrl = require('./setup.controller');
 
 router.post('/personalinfo', Ctrl.setPersonalInfo);
 router.post('/courseschedule', Ctrl.setCourseSchedule);

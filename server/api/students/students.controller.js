@@ -1,5 +1,7 @@
 const logger = require('../../modules/logger');
 
+const Student = require('./students.model');
+
 /**
  * Only available in development mode. Login as a user given their ID.
  *
@@ -14,7 +16,7 @@ async function loginAs (ctx) {
   ctx.session.cas_user = rcsID;
   logger.info(`Logging in as ${rcsID}`);
 
-  ctx.state.user = await ctx.db.Student.findOne()
+  ctx.state.user = await Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
 

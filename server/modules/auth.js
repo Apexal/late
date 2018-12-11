@@ -1,6 +1,8 @@
 const CAS = require('koa2-cas');
 const logger = require('./logger');
 
+const Student = require('../api/students/students.model');
+
 const { sendNewUserEmail } = require('../integrations/email');
 
 const cas = new CAS({
@@ -18,7 +20,7 @@ const cas = new CAS({
 async function loginStudent (ctx) {
   if (!ctx.session.cas_user) await cas.bounce();
 
-  let student = await ctx.db.Student.findOne().byUsername(
+  let student = await Student.findOne().byUsername(
     ctx.session.cas_user.toLowerCase()
   );
 
@@ -31,7 +33,7 @@ async function loginStudent (ctx) {
     logger.info(`Logging in ${student.rcs_id}`);
   } else {
     // TODO: CMS api to get personal info here
-    student = ctx.db.Student({
+    student = Student({
       rcs_id: ctx.session.cas_user,
       joined_date: new Date()
     });

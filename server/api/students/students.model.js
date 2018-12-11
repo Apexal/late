@@ -225,7 +225,4 @@ schema.virtual('grade_name').get(function () {
   }
 });
 
-module.exports = {
-  name: 'Student',
-  schema
-};
+module.exports = mongoose.model('Student', schema);

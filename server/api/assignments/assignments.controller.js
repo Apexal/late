@@ -1,6 +1,8 @@
 const moment = require('moment');
 const logger = require('../../modules/logger');
 
+const Assignment = require('./assignments.model');
+
 /**
  * Returns a list of all assignments with optional dueOn or dueBy filters.
  * start and end are optional URL query options in YYYY-MM-DD format.
@@ -41,7 +43,7 @@ async function getAssignment (ctx) {
 
   let assignment;
   try {
-    assignment = await ctx.db.Assignment.findOne({
+    assignment = await Assignment.findOne({
       _id: assignmentID,
       _student: ctx.state.user._id
     });
@@ -83,7 +85,7 @@ async function createAssignment (ctx) {
   const due = moment(body.dueDate);
 
   // TODO: validate these
-  const newAssignment = new ctx.db.Assignment({
+  const newAssignment = new Assignment({
     _student: ctx.state.user._id,
     title: body.title,
     description: body.description,
@@ -167,7 +169,7 @@ async function editAssignment (ctx) {
 
   let assignment;
   try {
-    assignment = await ctx.db.Assignment.findOne({
+    assignment = await Assignment.findOne({
       _id: assignmentID,
       _student: ctx.state.user._id
     });
@@ -220,7 +222,7 @@ async function toggleAssignment (ctx) {
 
   let assignment;
   try {
-    assignment = await ctx.db.Assignment.findOne({
+    assignment = await Assignment.findOne({
       _id: assignmentID,
       _student: ctx.state.user._id
     });
@@ -271,7 +273,7 @@ async function removeAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
   let removedAssignment;
   try {
-    removedAssignment = await ctx.db.Assignment.findOne({
+    removedAssignment = await Assignment.findOne({
       _id: assignmentID,
       _student: ctx.state.user._id
     });
@@ -310,7 +312,7 @@ async function addComment (ctx) {
   const text = ctx.request.body.comment;
 
   let assignment;
-  assignment = await ctx.db.Assignment.findOne({
+  assignment = await Assignment.findOne({
     _student: ctx.state.user._id,
     _id: assigmentID
   });
