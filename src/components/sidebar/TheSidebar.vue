@@ -13,9 +13,10 @@
     />
     <SidebarSchedule />
     <SidebarPressingAssignments
-      :pressing="pressing"
+      :pressing="pressingAssignments"
       @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     />
+    <SidebarUpcomingExamsList :upcoming="upcomingExams" />
     <SidebarTodoList />
   </aside>
 </template>
@@ -23,15 +24,17 @@
 <script>
 import SidebarSchedule from '@/components/sidebar/SidebarSchedule';
 import SidebarPressingAssignments from '@/components/sidebar/SidebarPressingAssignments';
+import SidebarUpcomingExamsList from '@/components/sidebar/SidebarUpcomingExamsList';
 import SidebarTodoList from '@/components/sidebar/SidebarTodoList';
 
 export default {
   name: 'TheSidebar',
-  components: { SidebarPressingAssignments, SidebarSchedule, SidebarTodoList },
+  components: { SidebarPressingAssignments, SidebarSchedule, SidebarTodoList, SidebarUpcomingExamsList },
   computed: {
-    pressing () {
+    pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
-    }
+    },
+    upcomingExams () { return this.$store.state.work.upcomingExams; }
   }
 };
 </script>

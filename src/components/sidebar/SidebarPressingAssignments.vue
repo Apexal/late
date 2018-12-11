@@ -87,10 +87,7 @@ export default {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
     toFullDateTimeString: dueDate =>
-      moment(dueDate).format('ddd, MMM Do YYYY, h:mma'),
-    getCourseFromCRN (crn) {
-      return this.$store.getters.getCourseFromCRN(crn);
-    }
+      moment(dueDate).format('ddd, MMM Do YYYY, h:mma')
   }
 };
 </script>

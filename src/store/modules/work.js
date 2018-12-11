@@ -2,7 +2,8 @@ import axios from '@/api';
 import moment from 'moment';
 
 const state = {
-  upcomingAssignments: []
+  upcomingAssignments: [],
+  upcomingExams: []
 };
 
 const getters = {
@@ -52,9 +53,13 @@ const getters = {
 };
 
 const actions = {
-  async AUTO_GET_UPCOMING_ASSIGNMENTS ({ dispatch }) {
+  async AUTO_GET_UPCOMING_WORK ({ dispatch }) {
     await dispatch('GET_UPCOMING_ASSIGNMENTS');
-    setTimeout(() => dispatch('GET_UPCOMING_ASSIGNMENTS'), 1000 * 60 * 60);
+    await dispatch('GET_UPCOMING_EXAMS');
+    setTimeout(() => {
+      dispatch('GET_UPCOMING_ASSIGNMENTS');
+      dispatch('GET_UPCOMING_EXAMS');
+    }, 1000 * 60 * 60);
   },
   async TOGGLE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
@@ -75,6 +80,13 @@ const actions = {
   async REMOVE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.delete(`/assignments/a/${assignmentID}`);
+  },
+  async GET_UPCOMING_EXAMS ({ commit }) {
+    const response = await axios.get('/exams', {
+      params: { start: moment().format('YYYY-MM-DD') }
+    });
+    const exams = response.data.exams;
+    commit('SET_UPCOMING_EXAMS', exams);
   }
 };
 
@@ -95,6 +107,9 @@ const mutations = {
     state.upcomingAssignments = state.upcomingAssignments.filter(
       a => a._id !== assignmentID
     );
+  },
+  SET_UPCOMING_EXAMS: (state, exams) => {
+    state.upcomingExams = exams;
   }
 };
 
