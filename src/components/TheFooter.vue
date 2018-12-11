@@ -3,48 +3,58 @@
     <h1 class="is-size-5 has-text-centered">
       An RCOS project!
     </h1>
-    <div class="content has-text-centered columns">
+    <div class="content level has-text-centered columns">
       <p class="column">
-        Learn more
         <router-link to="/about">
+          <span class="icon">
+            <i class="fas fa-info-circle" />
+          </span>
           about us
-        </router-link>.
+        </router-link>
       </p>
       <p class="column">
-        Source code licensed
         <a
           href="https://opensource.org/licenses/mit-license.php"
           target="_blank"
         >
+          <i class="fab fa-osi" />
           MIT
-        </a>.
+        </a>
       </p>
       <p class="column">
         <span
           data-v-61dd7a3d
           class="icon"
+        />
+        <a
+          href="https://github.com/Apexal/late/"
+          target="_blank"
         >
           <i
             data-v-61dd7a3d
             class="fab fa-github"
           />
-        </span>
-        Contribute on
-        <a
-          href="https://github.com/Apexal/late/"
-          target="_blank"
-        >
-          Github
-        </a>.
+          Contribute
+        </a>
       </p>
-      <p class="column">
-        View on
+      <p
+        class="column"
+        style="margin-bottom: 1em;"
+      >
+        <span
+          data-v-61dd7a3d
+          class="icon"
+        />
         <a
           href="https://rcos.io/projects/apexal/late/profile"
           target="_blank"
         >
-          Observatory
-        </a>.
+          <i
+            data-v-61dd7a3d
+            class="fab fa-github"
+          />
+          rcos.io
+        </a>
       </p>
     </div>
   </footer>
@@ -63,7 +73,7 @@ export default {
 
   //Centers and clumps footer elements together
   .columns {
-    max-width: 1000px;
+    max-width: 600px;
     margin: 0 auto;
   }
 

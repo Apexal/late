@@ -58,16 +58,6 @@
               </span>
               Dashboard
             </router-link>
-            <router-link
-              class="navbar-item"
-              to="/about"
-              title="View information about LATE's mission and its developer team."
-            >
-              <span class="icon">
-                <i class="fas fa-info-circle" />
-              </span>
-              About
-            </router-link>
 
             <template v-if="loggedIn">
               <div class="navbar-item has-dropdown is-hoverable">
@@ -128,9 +118,6 @@
                   <span class="icon">
                     <i class="fas fa-user-circle" />
                   </span>
-                  <b class="rcs_id">
-                    {{ user.display_name }}
-                  </b>
                 </a>
 
                 <div class="navbar-dropdown is-right">
