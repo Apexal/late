@@ -97,12 +97,24 @@
 
         <hr>
 
-        <button
-          :class="{ 'is-loading': loading }"
-          class="button is-dark"
-        >
-          Save
-        </button>
+        <div>
+          <button
+            style="margin-right: 5px;"
+            :class="{ 'is-loading': loading }"
+            class="button is-dark"
+          >
+            Save
+          </button>
+          <router-link
+            style="padding:4px;"
+            class="button is-primary"
+            :class="{'is-loading': loading}"
+            to="/dashboard"
+            @click="finish"
+          >
+            Finish
+          </router-link>
+        </div>
       </form>
     </div>
     <div
