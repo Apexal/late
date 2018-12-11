@@ -299,7 +299,7 @@
             :anchor-attributes="{target: '_blank'}"
           />
         </div>
-        <template v-if="!isPast">
+        <template>
           <hr>
           <div class="box is-clearfix">
             <form @submit.prevent="addComment">
