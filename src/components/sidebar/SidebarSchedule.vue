@@ -28,7 +28,10 @@
         </h2>
       </div>
     </template>
-    <template v-else>
+    <div
+      v-else
+      class="periods"
+    >
       <div
         v-for="p in periods"
         :key="p.start"
@@ -58,7 +61,7 @@
           </div>
         </span>
       </div>
-    </template>
+    </div>
   </details>
 </template>
 
@@ -133,6 +136,11 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.periods {
+  max-height: 40px;
+  overflow: auto;
+}
+
 .period-block {
   &.is-active {
     font-weight: bold;
