@@ -77,6 +77,7 @@
                   </span>
                   Assignments
                   <span
+                    v-if="assignmentCount > 0"
                     class="tag is-warning assignment-count"
                   >
                     {{ assignmentCount }}
@@ -115,6 +116,55 @@
                       <i class="fas fa-plus" />
                     </span>
                     Add Assignment
+                  </a>
+                </div>
+              </div>
+
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                  <span class="icon">
+                    <i class="fas fa-file-alt" />
+                  </span>
+                  Exams
+                  <span
+                    v-if="examCount > 0"
+                    class="tag is-danger assignment-count"
+                  >
+                    {{ examCount }}
+                  </span>
+                </a>
+
+                <div class="navbar-dropdown">
+                  <router-link
+                    class="navbar-item"
+                    to="/exams/upcoming"
+                    title="View upcoming exams."
+                  >
+                    <b>Upcoming</b>
+                  </router-link>
+                  <router-link
+                    class="navbar-item"
+                    to="/exams/past"
+                    title="Browse all past exams."
+                  >
+                    Previous
+                  </router-link>
+                  <router-link
+                    class="navbar-item"
+                    to="/exams/calendar"
+                    title="View a calendar of all your exams."
+                  >
+                    Calendar
+                  </router-link>
+                  <hr class="navbar-divider">
+                  <a
+                    class="navbar-item"
+                    title="Add a new exam."
+                  >
+                    <span class="icon">
+                      <i class="fas fa-plus" />
+                    </span>
+                    Add Exam
                   </a>
                 </div>
               </div>
@@ -191,6 +241,9 @@ export default {
     },
     assignmentCount () {
       return this.$store.getters.incompleteUpcomingAssignments.length;
+    },
+    examCount () {
+      return this.$store.state.work.upcomingExams.length;
     }
   }
 };
