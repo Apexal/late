@@ -89,9 +89,12 @@ export default {
           })
       );
 
+      const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
+
       return courseSchedule
         .concat(incompleteUpcomingAssignments)
-        .concat(unavailabilitySchedule);
+        .concat(unavailabilitySchedule)
+        .concat(upcomingExams);
     },
     assignments () {
       return this.$store.state.work.upcomingAssignments;

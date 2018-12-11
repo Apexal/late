@@ -49,6 +49,18 @@ const getters = {
         color: getters.getCourseFromCRN(a.courseCRN).color,
         assignment: a
       };
+    }),
+  getUpcomingExamsAsEvents: (state, getters) =>
+    state.upcomingExams.map(ex => {
+      return {
+        eventType: 'exam',
+        title: ex.title,
+        start: ex.date,
+        allDay: true,
+        color: getters.getCourseFromCRN(ex.courseCRN).color,
+        exam: ex,
+        borderColor: 'black'
+      };
     })
 };
 
