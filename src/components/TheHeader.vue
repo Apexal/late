@@ -128,7 +128,7 @@
                   Exams
                   <span
                     v-if="examCount > 0"
-                    class="tag is-danger assignment-count"
+                    class="tag is-danger exam-count"
                   >
                     {{ examCount }}
                   </span>
@@ -270,13 +270,14 @@ export default {
 #top-navbar {
   //Pushes the left and right navbar menus slightly off the edges of the screen.
   padding: 0px 1em 0px 1em;
-  a.navbar-item {
+  .navbar-item {
     span.icon {
       margin-right: 3px;
     }
   }
 
-  span.tag.assignment-count {
+  span.tag.assignment-count,
+  span.tag.exam-count {
     padding-left: 5px;
     padding-right: 5px;
     margin-left: 7px;
