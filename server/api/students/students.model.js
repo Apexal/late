@@ -161,6 +161,28 @@ schema.methods.getAssignments = function (start, end) {
     .exec();
 };
 
+schema.methods.getExams = function (start, end) {
+  let query = {
+    _student: this._id
+  };
+
+  if (start) {
+    query.date = query.date || {};
+    query.date['$gte'] = moment(start, 'YYYY-MM-DD', true).toDate();
+  }
+
+  if (end) {
+    query.date = query.date || {};
+    query.date['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate();
+  }
+
+  return this.model('Exam')
+    .find(query)
+    .sort('date')
+    .sort('-timeRemaining')
+    .exec();
+};
+
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
