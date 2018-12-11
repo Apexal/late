@@ -34,6 +34,6 @@ Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with vers
 
 To run the project in development mode, you must run the API server in one terminal and the front end hot-reloading server in another terminal:
 
-- `$ npm run serve` (in one terminal)
-- `$ source .env && npm run dev` (in another terminal)
+- `$ source .env && npm run dev` (in one terminal)
+- `$ npm run serve` (in another terminal)
 - Go to url `http://localhost:8080` in your browser

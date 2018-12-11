@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from '@/views/Home.vue';
 
 import store from '@/store';
 
@@ -10,12 +9,22 @@ const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   linkActiveClass: 'is-active',
+  scrollBehavior (to, from, savedPosition) {
+    if (
+      typeof window.orientation !== 'undefined' ||
+      navigator.userAgent.indexOf('IEMobile') !== -1
+    ) {
+      return {
+        selector: '#content'
+      };
+    }
+  },
   routes: [
     {
       path: '/',
       alias: '/dashboard',
       name: 'home',
-      component: Home,
+      component: () => import('@/views/TheHomePage.vue'),
       meta: {
         title: 'Home'
       }
@@ -26,7 +35,7 @@ const router = new Router({
       meta: {
         title: 'About'
       },
-      component: () => import('@/views/About.vue')
+      component: () => import('@/views/TheAboutPage.vue')
     },
     {
       path: '/assignments',
@@ -42,19 +51,19 @@ const router = new Router({
         },
         {
           path: 'calendar',
-          name: 'assignment-calendar',
+          name: 'assignments-calendar',
           meta: {
             title: 'Assignment Calendar'
           },
-          component: () => import('@/views/assignments/AssignmentCalendar.vue')
+          component: () => import('@/views/assignments/AssignmentsCalendar.vue')
         },
         {
           path: 'upcoming',
-          name: 'upcoming-assignments',
+          name: 'assignments-upcoming',
           meta: {
             title: 'Upcoming Assignments'
           },
-          component: () => import('@/views/assignments/UpcomingAssignments.vue')
+          component: () => import('@/views/assignments/AssignmentsUpcoming.vue')
         },
         {
           path: 'past',
@@ -62,14 +71,14 @@ const router = new Router({
           meta: {
             title: 'Past Assignments'
           },
-          component: () => import('@/views/assignments/PastAssignments.vue')
+          component: () => import('@/views/assignments/AssignmentsPastList.vue')
         }
       ]
     },
     {
       path: '/assignments/:assignmentID',
-      name: 'assignment-overview',
-      component: () => import('@/views/assignments/AssignmentOverview.vue'),
+      name: 'assignments-overview',
+      component: () => import('@/views/assignments/AssignmentsOverview.vue'),
       meta: {
         requiresAuth: true
       }
@@ -91,35 +100,39 @@ const router = new Router({
         },
         {
           path: 'personalinfo',
-          name: 'personal-info',
+          name: 'setup-personal-info',
           meta: {
             title: 'Personal Info'
           },
-          component: () => import('@/views/profile/PersonalInfoForm.vue')
+          component: () =>
+            import('@/views/profile/ProfileSetupPersonalInfo.vue')
         },
         {
           path: 'courseschedule',
-          name: 'course-schedule',
+          name: 'setup-course-schedule',
           meta: {
             title: 'Course Schedule'
           },
-          component: () => import('@/views/profile/CourseScheduleForm.vue')
+          component: () =>
+            import('@/views/profile/ProfileSetupCourseSchedule.vue')
         },
         {
           path: 'unavailability',
-          name: 'unavailability',
+          name: 'setup-unavailability',
           meta: {
             title: 'Study/Work Unavailability'
           },
-          component: () => import('@/views/profile/UnavailabilitySetup.vue')
+          component: () =>
+            import('@/views/profile/ProfileSetupUnavailability.vue')
         },
         {
           path: 'integrations',
-          name: 'integrations',
+          name: 'setup-integrations',
           meta: {
             title: 'Integrations'
           },
-          component: () => import('@/views/profile/IntegrationsSetup.vue')
+          component: () =>
+            import('@/views/profile/ProfileSetupIntegrations.vue')
         }
       ]
     },
@@ -129,7 +142,7 @@ const router = new Router({
       meta: {
         title: 'Not Found'
       },
-      component: () => import('@/views/NotFound.vue')
+      component: () => import('@/views/TheNotFoundPage.vue')
     }
   ]
 });

@@ -82,8 +82,21 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-/*Makes the marker appear more clickable to the user*/
+//Makes the marker appear more clickable to the user
 .step-marker {
   cursor: pointer;
 }
+//Makes the hovered step icon appear more dynamic
+.step-marker:hover {
+  background-color: #5b9ba0!important;
+}
+
+//Makes the current step bold
+.steps .step-item .step-details .step-title {
+  font-weight: inherit;
+}
+.steps .is-active .step-details {
+    font-weight: 600!important;
+}
+
 </style>

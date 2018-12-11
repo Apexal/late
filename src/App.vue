@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Header />
-    <AddAssignmentModal
+    <TheHeader />
+    <AssignmentsAddModal
       :open="addAssignmentModalExpanded"
       @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     />
@@ -22,21 +22,24 @@
           v-if="loggedIn && expanded"
           class="column is-3 child-view"
         >
-          <Sidebar />
+          <TheSidebar />
         </div>
       </transition>
       <div
+        id="content"
         :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
       >
         <section
-          v-if="!$route.path.includes('/profile') && !isSetup"
+          v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
           class="section no-bottom-padding"
         >
-          <div class="notification is-notice">
+          <div class="notification is-warning">
             <b>NOTICE:</b> You will not be able to use
             <b>LATE</b> until you have
-            <router-link to="/profile">set up your account</router-link> or logged in.
+            <router-link to="/profile">
+              set up your account.
+            </router-link>
           </div>
         </section>
         <transition
@@ -47,18 +50,18 @@
         </transition>
       </div>
     </div>
-    <Footer />
+    <TheFooter />
   </div>
 </template>
 <script>
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Sidebar from '@/components/sidebar/Sidebar';
-import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
+import TheHeader from '@/components/TheHeader';
+import TheFooter from '@/components/TheFooter';
+import TheSidebar from '@/components/sidebar/TheSidebar';
+import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
 
 export default {
   name: 'LATE',
-  components: { Header, Sidebar, Footer, AddAssignmentModal },
+  components: { TheHeader, TheSidebar, TheFooter, AssignmentsAddModal },
   computed: {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
@@ -95,6 +98,11 @@ export default {
 /* These styles will apply to the whole app. */
 @import "@/assets/bulma.scss";
 
+//Removes annoying outline around elements when clicked.
+*:focus {
+  outline: none;
+}
+
 .is-full-width {
   width: 100%;
 }
@@ -104,9 +112,9 @@ export default {
   position: absolute;
 
   //Styling the toggle button to fit the theme
-  background-color: #f5f5f5!important; //Bulma overrides background-color, color, and border
-  color: black!important;
-  border: 1px solid #dbdbdb!important;
+  background-color: #f5f5f5 !important; //Bulma overrides background-color, color, and border
+  color: black !important;
+  border: 1px solid #dbdbdb !important;
   margin: 1em;
   width: 2.5em;
   height: 1.5em;
