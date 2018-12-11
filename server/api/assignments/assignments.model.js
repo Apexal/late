@@ -15,7 +15,6 @@ const schema = new Schema(
     courseCRN: { type: String, required: true }, // CRN
     timeEstimate: { type: Number, required: true, min: 0, max: 696969420 },
     timeRemaining: { type: Number, required: true },
-    isExam: { type: Boolean, required: true },
     priority: { type: Number, min: 0, max: 10 },
     comments: [
       {

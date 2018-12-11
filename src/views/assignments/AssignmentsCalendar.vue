@@ -70,9 +70,7 @@ export default {
 
       try {
         request = await this.$http.get(
-          `/assignments/list?start=${start.format(
-            'YYYY-MM-DD'
-          )}&end=${end.format('YYYY-MM-DD')}`
+          '/assignments', { params: { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') } }
         );
       } catch (e) {
         this.events = [];

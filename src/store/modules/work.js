@@ -62,7 +62,7 @@ const actions = {
     return request.data.updatedAssignment;
   },
   async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
-    const response = await axios.get('/assignments/list', {
+    const response = await axios.get('/assignments', {
       params: { start: moment().format('YYYY-MM-DD') }
     });
     const assignments = response.data.assignments;
