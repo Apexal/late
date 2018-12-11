@@ -8,7 +8,7 @@
       <span class="is-pulled-right icon">
         <i
           class="fas fa-plus add-exam"
-          @click="$emit('toggle-exam-modal')"
+          @click="$emit('toggle-modal')"
         />
       </span>
     </summary>

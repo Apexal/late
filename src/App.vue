@@ -5,6 +5,10 @@
       :open="addAssignmentModalExpanded"
       @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     />
+    <ExamsModalAdd
+      :open="addExamModalExpanded"
+      @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+    />
     <span
       v-if="loggedIn"
       class="icon button is-black toggle-sidebar"
@@ -58,16 +62,20 @@ import TheHeader from '@/components/TheHeader';
 import TheFooter from '@/components/TheFooter';
 import TheSidebar from '@/components/sidebar/TheSidebar';
 import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
+import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
 
 export default {
   name: 'LATE',
-  components: { TheHeader, TheSidebar, TheFooter, AssignmentsAddModal },
+  components: { TheHeader, TheSidebar, TheFooter, AssignmentsAddModal, ExamsModalAdd },
   computed: {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
+    },
+    addExamModalExpanded () {
+      return this.$store.state.addExamModal.expanded;
     },
     expanded () {
       return this.$store.state.sidebarExpanded;

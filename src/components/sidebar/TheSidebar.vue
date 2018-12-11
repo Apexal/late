@@ -16,7 +16,10 @@
       :pressing="pressingAssignments"
       @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     />
-    <SidebarUpcomingExamsList :upcoming="upcomingExams" />
+    <SidebarUpcomingExamsList
+      :upcoming="upcomingExams"
+      @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+    />
     <SidebarTodoList />
   </aside>
 </template>
