@@ -7,7 +7,7 @@ const Assignment = require('./assignments.model');
  * Returns a list of all assignments with optional dueOn or dueBy filters.
  * start and end are optional URL query options in YYYY-MM-DD format.
  *
- * GET /assignments/list
+ * GET /assignments
  * @param {Koa context} ctx
  */
 async function getAssignments (ctx) {
@@ -93,7 +93,6 @@ async function createAssignment (ctx) {
     courseCRN: body.courseCRN,
     timeEstimate: body.timeEstimate,
     timeRemaining: body.timeEstimate,
-    isExam: false,
     priority: parseInt(body.priority, 10)
   });
 
