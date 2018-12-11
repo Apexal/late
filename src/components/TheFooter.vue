@@ -7,8 +7,8 @@
       <p class="column">
         Learn more
         <router-link to="/about">
-          about us
-        </router-link>.
+          about us.
+        </router-link>
       </p>
       <p class="column">
         Source code licensed
@@ -16,8 +16,8 @@
           href="https://opensource.org/licenses/mit-license.php"
           target="_blank"
         >
-          MIT
-        </a>.
+          MIT.
+        </a>
       </p>
       <p class="column">
         <span
@@ -34,8 +34,8 @@
           href="https://github.com/Apexal/late/"
           target="_blank"
         >
-          Github
-        </a>.
+          Github.
+        </a>
       </p>
       <p class="column">
         View on
@@ -43,8 +43,8 @@
           href="https://rcos.io/projects/apexal/late/profile"
           target="_blank"
         >
-          Observatory
-        </a>.
+          Observatory.
+        </a>
       </p>
     </div>
   </footer>
