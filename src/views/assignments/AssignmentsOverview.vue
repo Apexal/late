@@ -373,7 +373,7 @@ export default {
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
     },
     isPast () {
-      return moment().isAfter(moment(this.assignment.dueDate));
+      return this.assignment.passed;
     },
     toggleButtonTitle () {
       return this.assignment.completed

@@ -27,6 +27,36 @@ async function getExams (ctx) {
   });
 }
 
+async function getExam (ctx) {
+  const examID = ctx.params.examID;
+
+  let exam;
+  try {
+    exam = await Exam.findOne({
+      _id: examID,
+      _student: ctx.state.user._id
+    });
+  } catch (e) {
+    logger.error(
+      `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.internalServerError('Failed to get exam.');
+  }
+
+  if (!exam) {
+    logger.error(
+      `Failed to find exam with ID ${examID} for ${ctx.state.user.rcs_id}.`
+    );
+    return ctx.notFound('Could not find exam.');
+  }
+
+  logger.info(`Sending exam ${examID} to ${ctx.state.user.rcs_id}`);
+
+  ctx.ok({
+    exam
+  });
+}
+
 /**
  * Add a new exam.
  *
@@ -62,5 +92,6 @@ async function createExam (ctx) {
 
 module.exports = {
   getExams,
+  getExam,
   createExam
 };

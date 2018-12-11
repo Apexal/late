@@ -84,6 +84,14 @@ const router = new Router({
       }
     },
     {
+      path: '/exams/:examID',
+      name: 'exams-overview',
+      component: () => import('@/views/exams/ExamsOverview.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/profile',
       component: () => import('@/views/profile/Profile.vue'),
       meta: {

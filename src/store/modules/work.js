@@ -61,7 +61,10 @@ const getters = {
         exam: ex,
         borderColor: 'black'
       };
-    })
+    }),
+  getUpcomingExamById: state => examID => {
+    return state.upcomingExams.find(ex => ex._id === examID);
+  }
 };
 
 const actions = {
