@@ -498,7 +498,7 @@ export default {
       if (this.isUpcoming) {
         await this.$store.dispatch('REMOVE_UPCOMING_ASSIGNMENT', assignmentID);
       } else {
-        await this.$http.post(`/assignments/a/${assignmentID}/remove`);
+        await this.$http.delete(`/assignments/a/${assignmentID}`);
       }
 
       // Notify user of success
@@ -518,7 +518,7 @@ export default {
       this.commentLoading = true;
       let request;
       request = await this.$http.post(
-        `/assignments/a/${this.assignment._id}/comments/add`,
+        `/assignments/a/${this.assignment._id}/comments`,
         { comment: this.newComment }
       );
 

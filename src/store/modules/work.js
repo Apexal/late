@@ -74,7 +74,7 @@ const actions = {
   },
   async REMOVE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
-    const request = await axios.post(`/assignments/a/${assignmentID}/remove`);
+    const request = await axios.delete(`/assignments/a/${assignmentID}`);
   }
 };
 

@@ -290,8 +290,8 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await this.$http.post(
-        `/assignments/a/${this.assignment._id}/edit`,
+      const request = await this.$http.patch(
+        `/assignments/a/${this.assignment._id}`,
         {
           title: this.assignment.title,
           description: this.assignment.description,

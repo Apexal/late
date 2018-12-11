@@ -274,7 +274,7 @@ export default {
     async save () {
       this.loading = true;
       // TODO: error handle
-      const request = await this.$http.post('/assignments/create', {
+      const request = await this.$http.post('/assignments', {
         title: this.title,
         description: this.description,
         dueDate: moment(
