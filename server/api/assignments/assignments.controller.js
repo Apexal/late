@@ -77,7 +77,7 @@ async function getAssignment (ctx) {
  * Request body:
  *  - title, description, dueDate, course_crn, time_estimate, priority
  *
- * POST /assignments/create
+ * POST /assignments
  * @param {Koa context} ctx
  */
 async function createAssignment (ctx) {
@@ -140,7 +140,7 @@ async function createAssignment (ctx) {
  * Request body:
  * - updates: object of updates to the assignment in the form of the assignment schema, e.g. { title: 'New Title', description: 'New desc.' }
  *
- * POST /assignments/a/:assignmentID/edit
+ * PATCH /assignments/a/:assignmentID
  * @param {Koa context} ctx
  */
 async function editAssignment (ctx) {

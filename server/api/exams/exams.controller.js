@@ -27,6 +27,40 @@ async function getExams (ctx) {
   });
 }
 
+/**
+ * Add a new exam.
+ *
+ * @param {Koa context} ctx
+ */
+async function createExam (ctx) {
+  const body = ctx.request.body;
+  const date = moment(body.date);
+
+  const newExam = new Exam({
+    _student: ctx.state.user._id,
+    title: body.title,
+    description: body.description,
+    date: date.toDate(),
+    courseCRN: body.courseCRN,
+    timeEstimate: body.timeEstimate,
+    timeRemaining: body.timeEstimate,
+    comments: []
+  });
+
+  try {
+    await newExam.save();
+  } catch (e) {
+    logger.error(`Failed to add exam for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.badRequest(`Failed to add exam ${body.title}`);
+  }
+
+  logger.info(`Added exam ${newExam._id} for ${ctx.state.user._id}`);
+  ctx.created({
+    createdExam: newExam
+  });
+}
+
 module.exports = {
-  getExams
+  getExams,
+  createExam
 };
