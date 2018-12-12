@@ -21,106 +21,12 @@
       class="section"
     >
       <div class="is-clearfix">
-        <div class="dropdown is-hoverable is-right is-pulled-right is-hidden-desktop">
-          <div class="dropdown-trigger">
-            <button
-              class="button is-dark"
-              :class="{ 'is-loading': loading || toggleLoading }"
-              aria-haspopup="true"
-              aria-controls="dropdown-menu"
-            >
-              <span>Actions</span>
-              <span class="icon is-small">
-                <i
-                  class="fas fa-angle-down"
-                  aria-hidden="true"
-                />
-              </span>
-            </button>
-          </div>
-          <div
-            id="dropdown-menu"
-            class="dropdown-menu"
-            role="menu"
-          >
-            <div class="dropdown-content">
-              <a
-                v-if="!isPast"
-                href="#"
-                class="dropdown-item"
-                @click="editing = true"
-              >
-                <span class="icon margin-left">
-                  <i class="fas fa-pencil-alt" />
-                </span>
-                Edit Info
-              </a>
-              <a
-                href="#"
-                class="dropdown-item"
-                @click="toggleCompleted"
-              >
-                <span class="icon margin-left">
-                  <i
-                    class="fas"
-                    :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
-                  />
-                </span>
-                {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
-              </a>
-              <hr class="dropdown-divider">
-              <router-link
-                to="/assignments"
-                class="dropdown-item"
-              >
-                <span class="icon">
-                  <i class="fas fa-angle-left margin-right" />
-                </span>
-                All Assignments
-              </router-link>
-            </div>
-          </div>
-        </div>
-
-        <div class="assignment-controls buttons has-addons is-pulled-right is-hidden-touch">
-          <router-link
-            to="/assignments"
-            class="button is-link tooltip"
-            data-tooltip="Browse all assignments."
-          >
-            <span class="icon">
-              <i class="fas fa-angle-left margin-right" />
-            </span>
-            Browse
-          </router-link>
-
-          <button
-            v-if="!isPast"
-            class="button is-warning tooltip"
-            data-tooltip="Change this assignment's info."
-            @click="toggleEditing"
-          >
-            <span class="icon">
-              <i class="fas fa-pencil-alt" />
-            </span>
-            Edit Info
-          </button>
-
-          <button
-            class="button tooltip"
-            :class="{ 'is-success': !assignment.completed, 'is-danger': assignment.completed }"
-            data-tooltip="Toggle this assignment's completion status."
-            @click="toggleCompleted"
-          >
-            <span class="icon">
-              <i
-                class="fas"
-                :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
-              />
-            </span>
-            {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
-          </button>
-        </div>
+        <AssignmentOverviewActionButtons
+          :assignment="assignment"
+          :loading="loading || toggleLoading"
+          @toggle-editing="toggleEditing"
+          @toggle-completed="toggleCompleted"
+        />
 
         <h2 class="subtitle">
           <span
@@ -336,9 +242,11 @@ import VueMarkdown from 'vue-markdown';
 
 import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
 
+import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
+
 export default {
   name: 'AssignmentsOverview',
-  components: { VueMarkdown, AssignmentsModalEdit },
+  components: { VueMarkdown, AssignmentsModalEdit, AssignmentOverviewActionButtons },
   data () {
     return {
       tab: 'comments',
@@ -543,11 +451,7 @@ export default {
 .due-title {
   margin-top: 5px;
 }
-.assignment-controls {
-  span.icon {
-    margin-right: 0px !important;
-  }
-}
+
 .comment-count {
   margin-left: 3px;
 }
