@@ -110,7 +110,11 @@ const schema = new Schema(
       unavailability: {
         type: Boolean,
         default: false
-      } // when the student cannot study or work
+      }, // when the student cannot study or work
+      integrations: {
+        type: Boolean,
+        default: false
+      } // when the student has setup (or chosen not to setup) integrations
     },
     joined_date: {
       type: Date,

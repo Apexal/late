@@ -88,6 +88,8 @@ async function verifySMS (ctx) {
   ctx.state.user.integrations.sms.verificationCode = undefined;
   ctx.state.user.integrations.sms.verified = true;
 
+  ctx.state.user.setup.integrations = true;
+
   try {
     await ctx.state.user.save();
   } catch (e) {
@@ -109,6 +111,7 @@ async function updatePreferencesSMS (ctx) {
   const preferences = ctx.request.body;
 
   Object.assign(ctx.state.user.integrations.sms.preferences, preferences);
+  ctx.state.user.setup.integrations = true;
 
   try {
     await ctx.state.user.save();
@@ -158,6 +161,8 @@ async function updatePreferencesDiscord (ctx) {
 
   Object.assign(ctx.state.user.integrations.discord.preferences, preferences);
 
+  ctx.state.user.setup.integrations = true;
+
   try {
     await ctx.state.user.save();
   } catch (e) {
@@ -182,6 +187,8 @@ async function updatePreferencesEmail (ctx) {
   const preferences = ctx.request.body;
 
   Object.assign(ctx.state.user.integrations.email.preferences, preferences);
+
+  ctx.state.user.setup.integrations = true;
 
   try {
     await ctx.state.user.save();
