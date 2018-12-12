@@ -115,6 +115,18 @@ async function updatePreferencesSMS (ctx) {
 
   try {
     await ctx.state.user.save();
+
+    const lines = [];
+    lines.push('You updated your SMS preferences for LATE:');
+    if (!preferences.enabled) {
+      lines.push('❌ no SMS notifications');
+    } else {
+      lines.push((preferences.preWorkText ? '✔️' : '❌') + ' pre-work session reminders');
+      lines.push((preferences.postWorkText ? '✔️' : '❌') + ' post-work session reminders');
+      lines.push((preferences.reminders ? '✔️' : '❌') + ' assignment due date reminders');
+    }
+
+    SMS.sendText(ctx.state.user.integrations.sms.phoneNumber, lines.join('\n'));
   } catch (e) {
     logger.error(
       `Failed to update SMS preferences for ${ctx.state.user.rcs_id}: ${e}`
