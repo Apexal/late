@@ -17,6 +17,7 @@
     "cheerio": "^1.0.0-rc.2",
     "config": "^2.0.2",
     "discord.js": "^11.4.2",
+    "dotenv": "^6.2.0",
     "koa": "^2.6.2",
     "koa-body": "^4.0.4",
     "koa-bodyparser": "^4.2.1",

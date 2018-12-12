@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const app = require('./server');
 
 const logger = require('./server/modules/logger');
