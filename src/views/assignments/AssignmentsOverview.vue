@@ -144,94 +144,13 @@
         </blockquote>
       </div>
 
-      <div class="tabs">
-        <ul>
-          <li
-            :class="{ 'is-active': tab === 'schedule' }"
-            @click="tab = 'schedule'"
-          >
-            <a>Work Schedule</a>
-          </li>
-          <li
-            :class="{ 'is-active': tab === 'comments' }"
-            @click="tab = 'comments'"
-          >
-            <a>
-              Comments
-              <span
-                v-if="assignment.comments.length > 0"
-                class="tag is-dark comment-count"
-              >
-                {{ assignment.comments.length }}
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div
-        v-if="tab === 'schedule'"
-        class="assignment-schedule"
-      >
-        <p class="has-text-grey has-text-centered">
-          Coming soon...
-        </p>
-      </div>
-      <div
-        v-else-if="tab === 'comments'"
-        class="assignment-comments"
-      >
-        <div
-          v-if="assignment.comments.length === 0"
-          class="has-text-grey has-text-centered"
-        >
-          {{ isPast ? 'No comments were posted for this assignment.' : 'You have not posted any comments yet.' }}
-        </div>
-        <div
-          v-for="(c, index) in assignment.comments"
-          :key="index"
-          class="box"
-        >
-          <small
-            class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
-            :data-tooltip="toFullDateTimeString(c.addedAt)"
-          >
-            {{ fromNow(c.addedAt) }}
-          </small>
-          <VueMarkdown
-            :source="c.body"
-            :html="false"
-            :emoji="true"
-            :anchor-attributes="{target: '_blank'}"
-          />
-        </div>
-        <template>
-          <hr>
-          <div class="box is-clearfix">
-            <form @submit.prevent="addComment">
-              <div class="field">
-                <div class="control">
-                  <textarea
-                    id="new-comment"
-                    v-model="newComment"
-                    placeholder="Write your comment here. Markdown is supported!"
-                    cols="30"
-                    rows="10"
-                    class="input"
-                    required
-                  />
-                </div>
-              </div>
-              <button
-                :class="{ 'is-loading': commentLoading }"
-                class="button is-success is-pulled-right"
-              >
-                Add Comment
-              </button>
-            </form>
-          </div>
-        </template>
-      </div>
+      <AssignmentOverviewTabs
+        :tab="tab"
+        :assignment="assignment"
+        :loading="loading || commentLoading"
+        @set-tab="tabChanged"
+        @add-comment="addComment"
+      />
     </section>
   </div>
 </template>
@@ -240,17 +159,17 @@
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 
+// Page components
 import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
-
 import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
+import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
 
 export default {
   name: 'AssignmentsOverview',
-  components: { VueMarkdown, AssignmentsModalEdit, AssignmentOverviewActionButtons },
+  components: { VueMarkdown, AssignmentsModalEdit, AssignmentOverviewActionButtons, AssignmentOverviewTabs },
   data () {
     return {
       tab: 'comments',
-      newComment: '',
       commentLoading: false,
       toggleLoading: false,
       loading: true,
@@ -298,6 +217,9 @@ export default {
     this.getAssignment();
   },
   methods: {
+    tabChanged (newTab) {
+      this.tab = newTab;
+    },
     toggleEditing () {
       this.editing = !this.editing;
     },
@@ -420,14 +342,14 @@ export default {
         }
       );
     },
-    async addComment () {
-      if (!this.newComment) return;
+    async addComment (newComment) {
+      if (!newComment) return;
 
       this.commentLoading = true;
       let request;
       request = await this.$http.post(
         `/assignments/a/${this.assignment._id}/comments`,
-        { comment: this.newComment }
+        { comment: newComment }
       );
 
       // Calls API and updates state
@@ -440,7 +362,6 @@ export default {
         this.editedAssignment(request.data.updatedAssignment);
       }
 
-      this.newComment = '';
       this.commentLoading = false;
     }
   }
@@ -452,14 +373,6 @@ export default {
   margin-top: 5px;
 }
 
-.comment-count {
-  margin-left: 3px;
-}
-#new-comment {
-  max-width: 900px;
-  min-height: 100px;
-  max-height: 200px;
-}
 .assignment-stats {
   padding: 10px;
 }
