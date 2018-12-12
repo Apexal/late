@@ -1,9 +1,13 @@
 <template>
   <div id="app">
-    <Header />
-    <AddAssignmentModal
+    <TheHeader />
+    <AssignmentsAddModal
       :open="addAssignmentModalExpanded"
       @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+    />
+    <ExamsModalAdd
+      :open="addExamModalExpanded"
+      @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
     />
     <span
       v-if="loggedIn"
@@ -22,14 +26,26 @@
           v-if="loggedIn && expanded"
           class="column is-3 child-view"
         >
-          <Sidebar />
+          <TheSidebar />
         </div>
       </transition>
       <div
+        id="content"
         :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
         style="flex: 1;"
       >
-        <Notifications />
+        <section
+          v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
+          class="section no-bottom-padding"
+        >
+          <div class="notification is-warning">
+            <b>NOTICE:</b> You will not be able to use
+            <b>LATE</b> until you have
+            <router-link to="/profile">
+              set up your account.
+            </router-link>
+          </div>
+        </section>
         <transition
           name="fade"
           mode="out-in"
@@ -38,28 +54,34 @@
         </transition>
       </div>
     </div>
-    <Footer />
+    <TheFooter />
   </div>
 </template>
 <script>
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Sidebar from '@/components/sidebar/Sidebar';
-import AddAssignmentModal from '@/components/assignments/AddAssignmentModal';
-import Notifications from '@/components/Notifications';
+import TheHeader from '@/components/TheHeader';
+import TheFooter from '@/components/TheFooter';
+import TheSidebar from '@/components/sidebar/TheSidebar';
+import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
+import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
 
 export default {
   name: 'LATE',
-  components: { Header, Sidebar, Footer, AddAssignmentModal, Notifications },
+  components: { TheHeader, TheSidebar, TheFooter, AssignmentsAddModal, ExamsModalAdd },
   computed: {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
     addAssignmentModalExpanded () {
-      return this.$store.state.addAssignmentModalExpanded;
+      return this.$store.state.addAssignmentModal.expanded;
+    },
+    addExamModalExpanded () {
+      return this.$store.state.addExamModal.expanded;
     },
     expanded () {
       return this.$store.state.sidebarExpanded;
+    },
+    isSetup () {
+      return this.$store.state.auth.user.is_setup;
     }
   },
   async created () {
@@ -73,7 +95,7 @@ export default {
     }
 
     this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
-    this.$store.dispatch('AUTO_GET_UPCOMING_ASSIGNMENTS');
+    this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
     this.$store.dispatch('AUTO_UPDATE_NOW');
   },
   methods: {}
@@ -84,6 +106,11 @@ export default {
 /* These styles will apply to the whole app. */
 @import "@/assets/bulma.scss";
 
+//Removes annoying outline around elements when clicked.
+*:focus {
+  outline: none;
+}
+
 .is-full-width {
   width: 100%;
 }
@@ -91,6 +118,14 @@ export default {
 .toggle-sidebar {
   z-index: 10;
   position: absolute;
+
+  //Styling the toggle button to fit the theme
+  background-color: #f5f5f5 !important; //Bulma overrides background-color, color, and border
+  color: black !important;
+  border: 1px solid #dbdbdb !important;
+  margin: 1em;
+  width: 2.5em;
+  height: 1.5em;
 }
 
 .dot {
@@ -126,5 +161,9 @@ export default {
   opacity: 0;
   -webkit-transform: translate(-30px, 0);
   transform: translate(-30px, 0);
+}
+
+.no-bottom-padding {
+  padding-bottom: 0;
 }
 </style>

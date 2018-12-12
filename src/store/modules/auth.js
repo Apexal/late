@@ -23,6 +23,7 @@ const getters = {
       );
 
       return {
+        id: 'unavailable',
         title: 'Busy',
         start: start,
         end,
@@ -30,7 +31,7 @@ const getters = {
       };
     });
   },
-  getCourseScheduleAsEvents: state => {
+  getCourseScheduleAsEvents: (state, getters) => {
     if (!state.user.current_schedule) return [];
 
     const sunday = moment().startOf('day');
@@ -52,11 +53,15 @@ const getters = {
           );
 
           return {
-            title: c.longname,
+            id: 'course',
+            eventType: 'course',
+            title: `${c.longname} ${getters.periodType(p.type)}`,
             start,
             end,
             color: c.color,
-            editable: false
+            editable: false,
+            period: p,
+            course: c
           };
         })
       )
@@ -73,7 +78,7 @@ const actions = {
       const user = response.data.user;
       await dispatch('SET_USER', user);
     } catch (e) {
-      console.error('Not logged in!');
+      console.log('Not logged in!');
     }
   },
   async SET_USER ({ dispatch, commit }, user) {
