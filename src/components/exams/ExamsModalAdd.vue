@@ -24,14 +24,14 @@
             <div class="column is-half">
               <div class="field">
                 <label
-                  for="course-id"
+                  for="add-exam-course-id"
                   class="label"
                 >
                   Course
                 </label>
                 <div class="control">
                   <select
-                    id="course-id"
+                    id="add-exam-course-id"
                     v-model="courseCRN"
                     class="input"
                     required
@@ -51,14 +51,14 @@
             <div class="column is-half">
               <div class="field">
                 <label
-                  for="title"
+                  for="add-exam-title"
                   class="label"
                 >
-                  What do you have to do?
+                  Exam Title
                 </label>
                 <div class="control">
                   <input
-                    id="title"
+                    id="add-exam-title"
                     v-model.trim="title"
                     type="text"
                     class="input"
@@ -73,14 +73,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="description"
+                  for="add-exam-description"
                   class="label"
                 >
                   Description
                 </label>
                 <div class="control">
                   <textarea
-                    id="description"
+                    id="add-exam-description"
                     v-model.trim="description"
                     cols="30"
                     rows="10"
@@ -96,14 +96,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="date"
+                  for="add-exam-date"
                   class="label"
                 >
                   Exam Date
                 </label>
                 <div class="control">
                   <input
-                    id="date"
+                    id="add-exam-date"
                     v-model="date"
                     :min="today"
                     max="2030-01-01"
@@ -116,14 +116,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="time"
+                  for="add-exam-time"
                   class="label"
                 >
                   Exam Time
                 </label>
                 <div class="control">
                   <input
-                    id="time"
+                    id="add-exam-time"
                     v-model="time"
                     type="time"
                     name="time"
@@ -135,13 +135,13 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="time-estimate"
+                  for="add-exam-time-estimate"
                   class="label"
                 >
                   Time Estimate (hrs)
                 </label>
                 <input
-                  id="time-estimate"
+                  id="add-exam-time-estimate"
                   v-model.number="timeEstimate"
                   type="number"
                   min="0.5"
@@ -266,4 +266,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.add-exam-modal {
+  #add-exam-description {
+    width: 100%;
+    min-width: 100%;
+    max-width: 500px;
+
+    min-height: 100px;
+    height: 200px;
+    max-height: 500px;
+  }
+
+
+}
+
+.margin-right {
+  margin-right: 5px;
+}
+
+.margin-left {
+  margin-left: 2px !important;
+}
 </style>

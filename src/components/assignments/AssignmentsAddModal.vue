@@ -24,14 +24,14 @@
             <div class="column is-half">
               <div class="field">
                 <label
-                  for="course-id"
+                  for="add-assignment-course-id"
                   class="label"
                 >
                   Course
                 </label>
                 <div class="control">
                   <select
-                    id="course-id"
+                    id="add-assignment-course-id"
                     v-model="courseCRN"
                     class="input"
                     required
@@ -51,14 +51,14 @@
             <div class="column is-half">
               <div class="field">
                 <label
-                  for="title"
+                  for="add-assignment-title"
                   class="label"
                 >
                   What do you have to do?
                 </label>
                 <div class="control">
                   <input
-                    id="title"
+                    id="add-assignment-title"
                     v-model.trim="title"
                     type="text"
                     class="input"
@@ -73,14 +73,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="description"
+                  for="add-assignment-description"
                   class="label"
                 >
                   Description
                 </label>
                 <div class="control">
                   <textarea
-                    id="description"
+                    id="add-assignment-description"
                     v-model.trim="description"
                     cols="30"
                     rows="10"
@@ -96,14 +96,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="due-date"
+                  for="add-assignment-due-date"
                   class="label"
                 >
                   Due Date
                 </label>
                 <div class="control">
                   <input
-                    id="due-date"
+                    id="add-assignment-due-date"
                     v-model="dueDate"
                     :min="today"
                     max="2030-01-01"
@@ -116,14 +116,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="time"
+                  for="add-assignment-time"
                   class="label"
                 >
                   Due Time
                 </label>
                 <div class="control">
                   <input
-                    id="time"
+                    id="add-assignment-time"
                     v-model="time"
                     type="time"
                     name="time"
@@ -135,13 +135,13 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="time-estimate"
+                  for="add-assignment-time-estimate"
                   class="label"
                 >
                   Time Estimate (hrs)
                 </label>
                 <input
-                  id="time-estimate"
+                  id="add-assignment-time-estimate"
                   v-model.number="timeEstimate"
                   type="number"
                   min="0.5"
@@ -154,15 +154,15 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="priority"
+                  for="add-assignment-priority"
                   class="label"
                 >
                   Priority
                 </label>
                 <input
-                  id="priority"
+                  id="add-assignment-priority"
                   v-model.number="priority"
-                  list="priorities"
+                  list="add-assignment-priorities"
                   type="range"
                   min="1"
                   max="10"
@@ -182,7 +182,7 @@
                 </div>
                 <div style="clear: both;" />
 
-                <datalist id="priorities">
+                <datalist id="add-assignment-priorities">
                   <option value="1" />
                   <option value="2" />
                   <option value="3" />

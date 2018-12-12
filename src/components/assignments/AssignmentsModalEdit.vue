@@ -24,14 +24,14 @@
             <div class="column is-half">
               <div class="field">
                 <label
-                  for="course-id"
+                  for="edit-assignment-course-id"
                   class="label"
                 >
                   Course
                 </label>
                 <div class="control">
                   <select
-                    id="course-id"
+                    id="edit-assignment-course-id"
                     v-model="assignment.courseCRN"
                     :placeholder="assignment.courseCRN"
                     name="course_crn"
@@ -53,14 +53,14 @@
             <div class="column is-half">
               <div class="field">
                 <label
-                  for="title"
+                  for="edit-assignment-title"
                   class="label"
                 >
                   Title
                 </label>
                 <div class="control">
                   <input
-                    id="title"
+                    id="edit-assignment-title"
                     v-model="assignment.title"
                     name="title"
                     type="text"
@@ -74,14 +74,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="description"
+                  for="edit-assignment-description"
                   class="label"
                 >
                   Description
                 </label>
                 <div class="control">
                   <textarea
-                    id="description"
+                    id="edit-assignment-description"
                     v-model="assignment.description"
                     name="description"
                     cols="30"
@@ -97,14 +97,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="due-date"
+                  for="edit-assignment-due-date"
                   class="label"
                 >
                   Due Date
                 </label>
                 <div class="control">
                   <input
-                    id="due-date"
+                    id="edit-assignment-due-date"
                     v-model="assignment.dueDate"
                     type="date"
                     name="due_date"
@@ -116,14 +116,14 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="time"
+                  for="edit-assignment-time"
                   class="label"
                 >
                   Due Time
                 </label>
                 <div class="control">
                   <input
-                    id="time"
+                    id="edit-assignment-time"
                     v-model="assignment.time"
                     type="time"
                     name="time"
@@ -135,13 +135,13 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="time-estimate"
+                  for="edit-assignment-time-estimate"
                   class="label"
                 >
                   Time Estimate (hrs)
                 </label>
                 <input
-                  id="time-estimate"
+                  id="edit-assignment-time-estimate"
                   v-model.number="assignment.timeEstimate"
                   type="number"
                   name="time-estimate"
@@ -154,19 +154,19 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="priority"
+                  for="edit-assignment-priority"
                   class="label"
                 >
                   Priority
                 </label>
                 <input
-                  id="priority"
+                  id="edit-assignment-priority"
                   v-model.number="assignment.priority"
                   list="priorities"
                   type="range"
                   min="1"
                   max="10"
-                  name="priority"
+                  name="edit-assignment-priority"
                   step="1"
                   placeholder="0 - 10"
                 >
@@ -183,7 +183,7 @@
                 </div>
                 <div style="clear: both;" />
 
-                <datalist id="priorities">
+                <datalist id="edit-assignment-priorities">
                   <option value="1" />
                   <option value="2" />
                   <option value="3" />
@@ -340,7 +340,7 @@ export default {
 
 <style lang="scss" scoped>
 .edit-assignment-modal {
-  #description {
+  #edit-assignment-description {
     width: 100%;
     min-width: 100%;
     max-width: 500px;
@@ -348,6 +348,10 @@ export default {
     min-height: 100px;
     height: 200px;
     max-height: 500px;
+  }
+
+  #edit-assignment-time-estimate {
+    width: 150px;
   }
 }
 
