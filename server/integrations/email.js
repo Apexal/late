@@ -4,6 +4,8 @@ const moment = require('moment');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+require('../api/assignments/assignments.model');
+
 const emailFunctions = {
   async sendNewUserEmail (rcsID) {
     logger.info(`Sending new user email to ${rcsID}@rpi.edu`);
