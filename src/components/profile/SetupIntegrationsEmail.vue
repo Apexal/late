@@ -48,6 +48,7 @@
       <button
         :class="{ 'is-loading': loading }"
         class="button is-dark"
+        :disabled="saved"
       >
         Save
       </button>
@@ -68,6 +69,11 @@ export default {
         this.$store.state.auth.user.integrations.email.preferences
       )
     };
+  },
+  computed: {
+    saved () {
+      return JSON.stringify(this.preferences) === JSON.stringify(this.$store.state.auth.user.integrations.email.preferences);
+    }
   },
   methods: {
     async save () {
