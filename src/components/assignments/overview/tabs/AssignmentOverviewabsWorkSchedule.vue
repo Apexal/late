@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
@@ -33,7 +35,7 @@ export default {
         },
         config: {
           validRange: {
-            start: this.assignment.createdAt,
+            start: moment().startOf('day'),
             end: this.assignment.dueDate
           },
           height: 500,
@@ -85,12 +87,13 @@ export default {
             rendering: 'background'
           })
       );
-      return this.events.concat(unavailabilitySchedule);
+      const workBlockSchedule = this.$store.getters.getWorkBlocksAsEvents;
+
+      return this.events.concat(unavailabilitySchedule).concat(workBlockSchedule);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
 </style>
