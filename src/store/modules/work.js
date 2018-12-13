@@ -64,6 +64,24 @@ const getters = {
     }),
   getUpcomingExamById: state => examID => {
     return state.upcomingExams.find(ex => ex._id === examID);
+  },
+  getWorkBlocksAsEvents: (state, getters) => {
+    const blockIntoEvent = (type, assessment, b) => ({
+      eventType: 'work',
+      title: assessment.title,
+      color: getters.getCourseFromCRN(assessment.courseCRN).color,
+      start: b.startTime,
+      end: b.endTime,
+      [type]: assessment
+    });
+    const assignmentWorkBlocks = state.upcomingAssignments.map(a =>
+      a._blocks.map(b => blockIntoEvent('assignment', a, b))
+    );
+    const examWorkBlocks = state.upcomingExams.map(ex =>
+      ex._blocks.map(b => blockIntoEvent('exam', ex, b))
+    );
+
+    return assignmentWorkBlocks.concat(examWorkBlocks).flat();
   }
 };
 
