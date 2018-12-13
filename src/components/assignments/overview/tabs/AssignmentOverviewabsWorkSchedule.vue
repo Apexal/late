@@ -36,7 +36,7 @@ export default {
         config: {
           validRange: {
             start: moment().startOf('day'),
-            end: this.assignment.dueDate
+            end: moment(this.assignment.dueDate).endOf('day')
           },
           height: 500,
           allDay: false,
@@ -80,16 +80,32 @@ export default {
   },
   computed: {
     totalEvents () {
+      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents.map(
+        e =>
+          Object.assign({}, e, {
+            rendering: 'background'
+          })
+      );
+
       const unavailabilitySchedule = this.$store.getters.getUnavailabilityAsEvents.map(
         e =>
-          Object.assign(e, {
+          Object.assign({}, e, {
             backgroundColor: 'black',
             rendering: 'background'
           })
       );
-      const workBlockSchedule = this.$store.getters.getWorkBlocksAsEvents;
 
-      return this.events.concat(unavailabilitySchedule).concat(workBlockSchedule);
+      // Render work blocks for other assignments in the background
+      const workBlockSchedule = this.$store.getters.getWorkBlocksAsEvents.map(
+        e => {
+          if (e.assignment._id !== this.assignment._id) {
+            return Object.assign({}, e, { backgroundColor: 'black', rendering: 'background' });
+          }
+          return e;
+        }
+      );
+
+      return this.events.concat(courseSchedule).concat(unavailabilitySchedule).concat(workBlockSchedule);
     }
   }
 };

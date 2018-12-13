@@ -104,7 +104,7 @@ export default {
       const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
 
       const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(
-        e => Object.assign(e, { backgroundColor: 'black' })
+        e => Object.assign({}, e, { backgroundColor: 'black' })
       );
 
       return courseSchedule

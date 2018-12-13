@@ -46,6 +46,7 @@ const getters = {
         title: a.title,
         start: a.dueDate,
         allDay: true,
+        editable: false,
         color: getters.getCourseFromCRN(a.courseCRN).color,
         assignment: a
       };
@@ -57,6 +58,7 @@ const getters = {
         title: ex.title,
         start: ex.date,
         allDay: true,
+        editable: false,
         color: getters.getCourseFromCRN(ex.courseCRN).color,
         exam: ex,
         borderColor: 'black'
@@ -73,6 +75,10 @@ const getters = {
       color: getters.getCourseFromCRN(assessment.courseCRN).color,
       start: b.startTime,
       end: b.endTime,
+      constraint: {
+        start: assessment.createdAt,
+        end: type === 'assignment' ? assessment.dueDate : assessment.date
+      },
       [type]: assessment
     });
     const assignmentWorkBlocks = state.upcomingAssignments.map(a =>

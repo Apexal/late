@@ -25,6 +25,7 @@ const getters = {
       return {
         id: 'unavailable',
         title: 'Busy',
+        editable: false,
         start: start,
         end,
         isWorkBlock: true
