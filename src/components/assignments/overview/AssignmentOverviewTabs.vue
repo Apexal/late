@@ -37,10 +37,11 @@
 <script>
 // Tabs
 import AssignmentOverviewTabsComments from '@/components/assignments/overview/tabs/AssignmentOverviewTabsComments';
+import AssignmentOverviewabsWorkSchedule from '@/components/assignments/overview/tabs/AssignmentOverviewabsWorkSchedule';
 
 export default {
   name: 'AssignmentOverviewTabs',
-  components: { AssignmentOverviewTabsComments },
+  components: { AssignmentOverviewTabsComments, AssignmentOverviewabsWorkSchedule },
   props: {
     tab: {
       type: String,
@@ -58,7 +59,8 @@ export default {
   computed: {
     componentName () {
       return {
-        'comments': 'AssignmentOverviewTabsComments'
+        'comments': 'AssignmentOverviewTabsComments',
+        'schedule': 'AssignmentOverviewabsWorkSchedule'
       }[this.tab];
     }
   },
