@@ -67,6 +67,18 @@ export default {
                 name: 'assignments-overview',
                 params: { assignmentID: calEvent.assignment._id }
               });
+            } else if (calEvent.eventType === 'work-block') {
+              if (calEvent.assessmentType === 'assignment') {
+                this.$router.push({
+                  name: 'assignments-overview',
+                  params: { assignmentID: calEvent.assignment._id }
+                });
+              } else if (calEvent.assessmentType === 'exam') {
+                this.$router.push({
+                  name: 'exams-overview',
+                  params: { examID: calEvent.exam._id }
+                });
+              }
             }
           }
         }
@@ -91,10 +103,15 @@ export default {
 
       const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
 
+      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(
+        e => Object.assign(e, { backgroundColor: 'black' })
+      );
+
       return courseSchedule
         .concat(incompleteUpcomingAssignments)
         .concat(unavailabilitySchedule)
-        .concat(upcomingExams);
+        .concat(upcomingExams)
+        .concat(workBlocks);
     },
     assignments () {
       return this.$store.state.work.upcomingAssignments;
