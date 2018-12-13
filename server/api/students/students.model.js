@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const moment = require('moment');
 
+require('../blocks/blocks.model');
+
 // const rpiValidator = require('rpi-validator');
 
 const CURRENT_TERM = '201809';
@@ -160,6 +162,7 @@ schema.methods.getAssignments = function (start, end) {
 
   return this.model('Assignment')
     .find(query)
+    .populate('_blocks')
     .sort('dueDate')
     .sort('-priority')
     .exec();

@@ -18,7 +18,4 @@ const schema = new Schema(
   { timestamps: true }
 );
 
-module.exports = {
-  name: 'Block',
-  schema
-};
+module.exports = mongoose.model('Block', schema);

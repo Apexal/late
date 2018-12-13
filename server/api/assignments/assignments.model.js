@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const moment = require('moment');
 
+require('../blocks/blocks.model');
+
 const schema = new Schema(
   {
     _student: {
@@ -51,6 +53,7 @@ schema.statics.getAllMissedAssignmentsForDay = function (day) {
       '_student courseCRN title description dueDate priority timeRemaining'
     )
     .populate('_student', 'name semester_schedules rcs_id rin integrations')
+    .populate('_blocks')
     .sort('dueDate')
     .sort('-priority')
     .exec();
@@ -66,6 +69,7 @@ schema.statics.getAllUpcomingAssignments = function () {
   return this.model('Assignment')
     .find(query)
     .populate('_student', 'rcs_id rin integrations')
+    .populate('_blocks')
     .sort('dueDate')
     .sort('-priority')
     .exec();

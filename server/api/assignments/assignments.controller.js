@@ -46,7 +46,7 @@ async function getAssignment (ctx) {
     assignment = await Assignment.findOne({
       _id: assignmentID,
       _student: ctx.state.user._id
-    });
+    }).populate('_blocks');
   } catch (e) {
     logger.error(
       `Error getting assignment ${assignmentID} for ${
@@ -171,7 +171,7 @@ async function editAssignment (ctx) {
     assignment = await Assignment.findOne({
       _id: assignmentID,
       _student: ctx.state.user._id
-    });
+    }).populate('_blocks');
   } catch (e) {
     logger.error(
       `Error finding assignment ${assignmentID} for ${
@@ -224,7 +224,7 @@ async function toggleAssignment (ctx) {
     assignment = await Assignment.findOne({
       _id: assignmentID,
       _student: ctx.state.user._id
-    });
+    }).populate('_blocks');
   } catch (e) {
     logger.error(
       `Failed to update completion status of assignment ${assignmentID} for ${
@@ -275,7 +275,7 @@ async function removeAssignment (ctx) {
     removedAssignment = await Assignment.findOne({
       _id: assignmentID,
       _student: ctx.state.user._id
-    });
+    }).populate('_blocks');
   } catch (e) {
     logger.error(
       `Failed to remove assignment ${assignmentID} for ${
