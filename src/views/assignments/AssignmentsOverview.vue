@@ -346,7 +346,7 @@ export default {
     },
     async addWorkBlock ({ start, end }) {
       let request;
-      request = await this.$http.post(`/assignments/a/${this.assignment._id}/blocks`, { startTime: start, endTime: end });
+      request = await this.$http.post(`/assignments/a/${this.assignment._id}/blocks`, { startTime: start, endTime: end, assessmentType: 'assignment' });
 
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.commit(
@@ -356,6 +356,8 @@ export default {
       } else {
         this.editedAssignment(request.data.updatedAssignment);
       }
+
+      // this.$toasted.show('Added work block to your schedule!');
     },
     async removeWorkBlock (blockID) {
       let request;
@@ -371,6 +373,8 @@ export default {
       } else {
         this.editedAssignment(updatedAssignment);
       }
+
+      // this.$toasted.warning('Removed work block to your schedule!');
     },
     async addComment (newComment) {
       if (!newComment) return;

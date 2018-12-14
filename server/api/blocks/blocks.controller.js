@@ -1,10 +1,11 @@
 const Block = require('./blocks.model');
 const Assignment = require('../assignments/assignments.model');
+const Exam = require('../exams/exams.model');
 
 const logger = require('../../modules/logger');
 
 async function addWorkBlock (ctx) {
-  const { startTime, endTime } = ctx.request.body;
+  const { startTime, endTime, assessmentType } = ctx.request.body;
 
   logger.info(`Adding work block for ${ctx.state.user.rcs_id}`);
 
@@ -16,18 +17,24 @@ async function addWorkBlock (ctx) {
 
   await newBlock.save();
 
+  let assessment;
   // Get assessment
-  const assignment = await Assignment.findOne({
-    _student: ctx.state.user._id,
-    _id: ctx.params.assignmentID
-  }).populate('_blocks');
+  assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
+    .findOne({
+      _student: ctx.state.user._id,
+      _id:
+        ctx.params[assessmentType === 'assignment' ? 'assignmentID' : 'examID']
+    })
+    .populate('_blocks');
 
-  assignment._blocks.push(newBlock);
+  assessment._blocks.push(newBlock);
 
-  await assignment.save();
+  await assessment.save();
 
   return ctx.ok({
-    updatedAssignment: assignment
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    ['updated' +
+    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
   });
 }
 
