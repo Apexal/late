@@ -83,6 +83,8 @@ export default {
 
             // TODO: customize, top right
             this.$toasted.show('Added work block to your schedule!');
+
+            this.$emit('add-work-block', eventData);
           }
         }
       }

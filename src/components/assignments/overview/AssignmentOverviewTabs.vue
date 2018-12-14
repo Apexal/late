@@ -30,6 +30,7 @@
       :assignment="assignment"
       :loading="loading"
       @add-comment="addComment"
+      @add-work-block="addWorkBlock"
     />
   </div>
 </template>
@@ -67,13 +68,15 @@ export default {
   methods: {
     addComment (newComment) {
       this.$emit('add-comment', newComment);
+    },
+    addWorkBlock (eventData) {
+      this.$emit('add-work-block', eventData);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
 .comment-count {
   margin-left: 3px;
 }

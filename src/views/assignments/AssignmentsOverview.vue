@@ -150,6 +150,7 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @add-comment="addComment"
+        @add-work-block="addWorkBlock"
       />
     </section>
   </div>
@@ -341,6 +342,9 @@ export default {
           }
         }
       );
+    },
+    async addWorkBlock (eventData) {
+      await this.$store.dispatch('ADD_WORK_BLOCK', { assessmentID: this.assignment._id, eventData });
     },
     async addComment (newComment) {
       if (!newComment) return;

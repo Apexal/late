@@ -74,6 +74,7 @@ const getters = {
       assessmentType: type,
       title: assessment.title,
       backgroundColor: 'black',
+      editable: false,
       color: getters.getCourseFromCRN(assessment.courseCRN).color,
       start: b.startTime,
       end: b.endTime,
@@ -125,6 +126,9 @@ const actions = {
     });
     const exams = response.data.exams;
     commit('SET_UPCOMING_EXAMS', exams);
+  },
+  async ADD_WORK_BLOCK ({ commit }, { assessmentID, eventData }) {
+    alert(assessmentID + ': ' + eventData);
   }
 };
 
