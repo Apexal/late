@@ -169,7 +169,7 @@ export default {
   components: { VueMarkdown, AssignmentsModalEdit, AssignmentOverviewActionButtons, AssignmentOverviewTabs },
   data () {
     return {
-      tab: 'comments',
+      tab: 'schedule',
       commentLoading: false,
       toggleLoading: false,
       loading: true,
