@@ -113,7 +113,7 @@ export default {
       return this.$store.getters.getWorkBlocksAsEvents.map(
         e => {
           if (e.assignment._id !== this.assignment._id) {
-            return Object.assign({}, e, { backgroundColor: 'black', rendering: 'background' });
+            return Object.assign({}, e, { rendering: 'background' });
           }
           return e;
         }
@@ -123,6 +123,11 @@ export default {
       // Render work blocks for other assignments in the background
 
       return this.workBlocks.concat(this.courseScheduleEvents).concat(this.unavailabilitySchedule);
+    }
+  },
+  watch: {
+    workBlockEvents () {
+      this.workBlocks = this.workBlockEvents.slice(0);
     }
   },
   created () {
