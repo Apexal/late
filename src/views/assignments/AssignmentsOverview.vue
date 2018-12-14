@@ -151,6 +151,7 @@
         @set-tab="tabChanged"
         @add-comment="addComment"
         @add-work-block="addWorkBlock"
+        @remove-work-block="removeWorkBlock"
       />
     </section>
   </div>
@@ -354,6 +355,21 @@ export default {
         );
       } else {
         this.editedAssignment(request.data.updatedAssignment);
+      }
+    },
+    async removeWorkBlock (blockID) {
+      let request;
+      request = await this.$http.delete(`/assignments/a/${this.assignment._id}/blocks/${blockID}`);
+
+      // Update state by removing work block from this assignment
+      const updatedAssignment = Object.assign({}, this.assignment, { _blocks: this.assignment._blocks.filter(b => b._id !== blockID) });
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          updatedAssignment
+        );
+      } else {
+        this.editedAssignment(updatedAssignment);
       }
     },
     async addComment (newComment) {

@@ -60,6 +60,9 @@ export default {
             this.workBlocks = this.workBlocks.filter(
               e => !moment(e.start).isSame(moment(calEvent.start))
             );
+
+            this.$emit('remove-work-block', calEvent.block._id);
+
             this.saved = false;
           },
           select: (start, end) => {
