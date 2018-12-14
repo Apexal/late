@@ -46,7 +46,6 @@ export default {
           timezone: 'local',
           defaultView: 'agendaWeek',
           eventOverlap: false,
-          selectOverlap: false,
           selectHelper: false,
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
