@@ -344,7 +344,17 @@ export default {
       );
     },
     async addWorkBlock (eventData) {
-      await this.$store.dispatch('ADD_WORK_BLOCK', { assessmentID: this.assignment._id, eventData });
+      let request;
+      request = await this.$http.post(`/assignments/a/${this.assignment._id}/blocks`, { startTime: eventData.start, endTime: eventData.end });
+
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.editedAssignment(request.data.updatedAssignment);
+      }
     },
     async addComment (newComment) {
       if (!newComment) return;

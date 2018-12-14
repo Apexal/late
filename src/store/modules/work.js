@@ -126,9 +126,6 @@ const actions = {
     });
     const exams = response.data.exams;
     commit('SET_UPCOMING_EXAMS', exams);
-  },
-  async ADD_WORK_BLOCK ({ commit }, { assessmentID, eventData }) {
-    alert(assessmentID + ': ' + eventData);
   }
 };
 
