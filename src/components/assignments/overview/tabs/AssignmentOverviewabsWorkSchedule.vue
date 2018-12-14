@@ -28,7 +28,8 @@ export default {
   },
   data () {
     return {
-      events: [],
+      workBlocks: [],
+      saved: true,
       calendar: {
         header: {
           center: 'agendaWeek'
@@ -53,50 +54,63 @@ export default {
           buttonText: {
             agendaWeek: 'Weekly Agenda'
           },
-          /* dayClick: (date, jsEvent, view) => {
-              // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
-              // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
-            },
-            */
           eventClick: (calEvent, jsEvent, view) => {
-
+            // if (calEvent.eventType !== 'work-block') return;
+            /* Remove work block */
+            this.workBlocks = this.workBlocks.filter(
+              e => !moment(e.start).isSame(moment(calEvent.start))
+            );
+            this.saved = false;
           },
           select: (start, end) => {
             const assignmentTitle = this.assignment.title;
-            if (!confirm(`You want to work on ${assignmentTitle} at this time?`)) { return; }
+            const dateStr = moment(start).format('dddd');
+            const startStr = moment(start).format('h:mm a');
+            const endStr = moment(end).format('h:mm a');
+            if (!confirm(`You want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
             const eventData = {
+              eventType: 'work-block',
               title: assignmentTitle,
               start: start,
+              backgroundColor: 'black',
+              borderColor: this.course.color,
               end: end,
               isWorkBlock: true
             };
-            this.events.push(eventData);
+            this.workBlocks.push(eventData);
             this.$refs.calendar.fireMethod('unselect');
             this.saved = false;
+
+            // TODO: customize, top right
+            this.$toasted.show('Added work block to your schedule!');
           }
         }
       }
     };
   },
   computed: {
-    totalEvents () {
-      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents.map(
+    course () {
+      return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+    },
+    courseScheduleEvents () {
+      return this.$store.getters.getCourseScheduleAsEvents.map(
         e =>
           Object.assign({}, e, {
             rendering: 'background'
           })
       );
-
-      const unavailabilitySchedule = this.$store.getters.getUnavailabilityAsEvents.map(
+    },
+    unavailabilitySchedule () {
+      return this.$store.getters.getUnavailabilityAsEvents.map(
         e =>
           Object.assign({}, e, {
             backgroundColor: 'black',
             rendering: 'background'
           })
       );
-
-      // Render work blocks for other assignments in the background
-      const workBlockSchedule = this.$store.getters.getWorkBlocksAsEvents.map(
+    },
+    workBlockEvents () {
+      return this.$store.getters.getWorkBlocksAsEvents.map(
         e => {
           if (e.assignment._id !== this.assignment._id) {
             return Object.assign({}, e, { backgroundColor: 'black', rendering: 'background' });
@@ -104,9 +118,15 @@ export default {
           return e;
         }
       );
+    },
+    totalEvents () {
+      // Render work blocks for other assignments in the background
 
-      return this.events.concat(courseSchedule).concat(unavailabilitySchedule).concat(workBlockSchedule);
+      return this.workBlocks.concat(this.courseScheduleEvents).concat(this.unavailabilitySchedule);
     }
+  },
+  created () {
+    this.workBlocks = this.workBlockEvents.slice(0);
   }
 };
 </script>

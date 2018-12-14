@@ -69,9 +69,11 @@ const getters = {
   },
   getWorkBlocksAsEvents: (state, getters) => {
     const blockIntoEvent = (type, assessment, b) => ({
+      block: b,
       eventType: 'work-block',
       assessmentType: type,
       title: assessment.title,
+      backgroundColor: 'black',
       color: getters.getCourseFromCRN(assessment.courseCRN).color,
       start: b.startTime,
       end: b.endTime,
