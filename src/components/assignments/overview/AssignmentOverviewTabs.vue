@@ -70,8 +70,8 @@ export default {
     addComment (newComment) {
       this.$emit('add-comment', newComment);
     },
-    addWorkBlock (eventData) {
-      this.$emit('add-work-block', eventData);
+    addWorkBlock (payload) {
+      this.$emit('add-work-block', payload);
     },
     removeWorkBlock (blockID) {
       this.$emit('remove-work-block', blockID);

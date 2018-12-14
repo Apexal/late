@@ -67,28 +67,28 @@ const getters = {
   getUpcomingExamById: state => examID => {
     return state.upcomingExams.find(ex => ex._id === examID);
   },
+  mapWorkBlockToEvent: (state, getters) => (type, assessment, b) => ({
+    block: b,
+    eventType: 'work-block',
+    assessmentType: type,
+    title: assessment.title,
+    backgroundColor: 'black',
+    editable: false,
+    color: getters.getCourseFromCRN(assessment.courseCRN).color,
+    start: b.startTime,
+    end: b.endTime,
+    constraint: {
+      start: assessment.createdAt,
+      end: type === 'assignment' ? assessment.dueDate : assessment.date
+    },
+    [type]: assessment
+  }),
   getWorkBlocksAsEvents: (state, getters) => {
-    const blockIntoEvent = (type, assessment, b) => ({
-      block: b,
-      eventType: 'work-block',
-      assessmentType: type,
-      title: assessment.title,
-      backgroundColor: 'black',
-      editable: false,
-      color: getters.getCourseFromCRN(assessment.courseCRN).color,
-      start: b.startTime,
-      end: b.endTime,
-      constraint: {
-        start: assessment.createdAt,
-        end: type === 'assignment' ? assessment.dueDate : assessment.date
-      },
-      [type]: assessment
-    });
     const assignmentWorkBlocks = state.upcomingAssignments.map(a =>
-      a._blocks.map(b => blockIntoEvent('assignment', a, b))
+      a._blocks.map(b => getters.mapWorkBlockToEvent('assignment', a, b))
     );
     const examWorkBlocks = state.upcomingExams.map(ex =>
-      ex._blocks.map(b => blockIntoEvent('exam', ex, b))
+      ex._blocks.map(b => getters.mapWorkBlockToEvent('exam', ex, b))
     );
 
     return assignmentWorkBlocks.concat(examWorkBlocks).flat();

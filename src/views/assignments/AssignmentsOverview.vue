@@ -344,9 +344,9 @@ export default {
         }
       );
     },
-    async addWorkBlock (eventData) {
+    async addWorkBlock ({ start, end }) {
       let request;
-      request = await this.$http.post(`/assignments/a/${this.assignment._id}/blocks`, { startTime: eventData.start, endTime: eventData.end });
+      request = await this.$http.post(`/assignments/a/${this.assignment._id}/blocks`, { startTime: start, endTime: end });
 
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.commit(

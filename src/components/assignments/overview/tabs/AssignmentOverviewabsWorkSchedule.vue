@@ -35,7 +35,7 @@ export default {
           center: 'agendaWeek'
         },
         config: {
-          validRange: {
+          visibleRange: {
             start: moment().startOf('day'),
             end: moment(this.assignment.dueDate).endOf('day')
           },
@@ -71,23 +71,14 @@ export default {
             const startStr = moment(start).format('h:mm a');
             const endStr = moment(end).format('h:mm a');
             if (!confirm(`You want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
-            const eventData = {
-              eventType: 'work-block',
-              title: assignmentTitle,
-              start: start,
-              backgroundColor: 'black',
-              borderColor: this.course.color,
-              end: end,
-              isWorkBlock: true
-            };
-            this.workBlocks.push(eventData);
+
             this.$refs.calendar.fireMethod('unselect');
             this.saved = false;
 
             // TODO: customize, top right
-            this.$toasted.show('Added work block to your schedule!');
 
-            this.$emit('add-work-block', eventData);
+            this.$emit('add-work-block', { start, end });
+            this.$toasted.show('Added work block to your schedule!');
           }
         }
       }
