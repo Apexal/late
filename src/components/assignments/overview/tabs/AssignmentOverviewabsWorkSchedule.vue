@@ -59,6 +59,19 @@ export default {
           },
           eventClick: (calEvent, jsEvent, view) => {
             if (calEvent.eventType !== 'work-block') return;
+
+            // Cannot remove past blocks
+            if (moment(calEvent.end).isBefore(moment())) {
+              return this.$toasted.error('Cannot remove past work block!');
+            }
+
+            const assignmentTitle = this.assignment.title;
+            const dateStr = moment(calEvent.start).format('dddd');
+            const startStr = moment(calEvent.start).format('h:mm a');
+            const endStr = moment(calEvent.end).format('h:mm a');
+
+            if (!confirm(`You no longer want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
+
             /* Remove work block */
             this.workBlocks = this.workBlocks.filter(
               e => !moment(e.start).isSame(moment(calEvent.start))
@@ -81,7 +94,6 @@ export default {
             // TODO: customize, top right
 
             this.$emit('add-work-block', { start, end });
-            this.$toasted.show('Added work block to your schedule!');
           }
         }
       }
