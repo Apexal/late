@@ -35,8 +35,8 @@ export default {
           center: 'agendaWeek'
         },
         config: {
-          visibleRange: {
-            start: moment().startOf('day'),
+          validRange: {
+            start: moment(this.assignment.createdAt).startOf('day'),
             end: moment(this.assignment.dueDate).endOf('day')
           },
           height: 500,
@@ -54,8 +54,12 @@ export default {
           buttonText: {
             agendaWeek: 'Weekly Agenda'
           },
+          selectConstraint: {
+            start: new Date(),
+            end: this.assignment.dueDate
+          },
           eventClick: (calEvent, jsEvent, view) => {
-            // if (calEvent.eventType !== 'work-block') return;
+            if (calEvent.eventType !== 'work-block') return;
             /* Remove work block */
             this.workBlocks = this.workBlocks.filter(
               e => !moment(e.start).isSame(moment(calEvent.start))
@@ -85,6 +89,15 @@ export default {
     };
   },
   computed: {
+    dueDateEvent () {
+      return {
+        eventType: 'due-date',
+        title: 'Assignment Due',
+        start: this.assignment.dueDate,
+        color: this.course.color,
+        end: moment(this.assignment.dueDate).add(20, 'minute')
+      };
+    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
     },
@@ -118,7 +131,7 @@ export default {
     totalEvents () {
       // Render work blocks for other assignments in the background
 
-      return this.workBlocks.concat(this.courseScheduleEvents).concat(this.unavailabilitySchedule);
+      return this.workBlocks.concat(this.courseScheduleEvents).concat(this.unavailabilitySchedule).concat([this.dueDateEvent]);
     }
   },
   watch: {
