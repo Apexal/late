@@ -18,6 +18,8 @@
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
+import moment from 'moment';
+
 export default {
   name: 'TheDashboard',
   components: { FullCalendar },
@@ -28,6 +30,10 @@ export default {
           center: 'listDay,agendaWeek'
         },
         config: {
+          validRange: {
+            start: moment().startOf('week'),
+            end: this.$store.getters.term.end
+          },
           height: 700,
           allDayText: 'Incomplete\nAssign.',
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',

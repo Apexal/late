@@ -25,7 +25,7 @@ const list = [
   }
 ];
 
-module.exports = {
+export default {
   current: () => list.find(t => moment().isBetween(t.start, t.end)) || null,
   list
 };

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.8.7",
+  "version": "0.8.9",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
@@ -70,7 +70,7 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development node index.js",
     "test": "npm run lint",
-    "serve": "vue-cli-service serve",
+    "serve": "cross-env PORT=8080 vue-cli-service serve",
     "build": "vue-cli-service build",
     "build-dev": "vue-cli-service build --mode development",
     "lint": "vue-cli-service lint"

@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+import terms from '@/terms';
+
 const state = {
   date: null,
   current: {
@@ -14,6 +16,7 @@ const state = {
 };
 
 const getters = {
+  term: state => terms.current(),
   in_class: state => !!state.current.period,
   classes_over: state => {
     if (state.periods.length === 0) return true;
