@@ -29,15 +29,19 @@ export default {
   data () {
     return {
       workBlocks: [],
-      saved: true,
-      calendar: {
+      saved: true
+    };
+  },
+  computed: {
+    calendar () {
+      return {
         header: {
           center: 'agendaWeek'
         },
         config: {
           validRange: {
-            start: moment(this.assignment.createdAt).startOf('day'),
-            end: moment(this.assignment.dueDate).endOf('day')
+            start: this.start,
+            end: this.end
           },
           height: 500,
           allDay: false,
@@ -57,49 +61,17 @@ export default {
             start: new Date(),
             end: this.assignment.dueDate
           },
-          eventClick: (calEvent, jsEvent, view) => {
-            if (calEvent.eventType !== 'work-block') return;
-
-            // Cannot remove past blocks
-            if (moment(calEvent.end).isBefore(moment())) {
-              return this.$toasted.error('Cannot remove past work block!');
-            }
-
-            const assignmentTitle = this.assignment.title;
-            const dateStr = moment(calEvent.start).format('dddd');
-            const startStr = moment(calEvent.start).format('h:mm a');
-            const endStr = moment(calEvent.end).format('h:mm a');
-
-            if (!confirm(`You no longer want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
-
-            /* Remove work block */
-            this.workBlocks = this.workBlocks.filter(
-              e => !moment(e.start).isSame(moment(calEvent.start))
-            );
-
-            this.$emit('remove-work-block', calEvent.block._id);
-
-            this.saved = false;
-          },
-          select: (start, end) => {
-            const assignmentTitle = this.assignment.title;
-            const dateStr = moment(start).format('dddd');
-            const startStr = moment(start).format('h:mm a');
-            const endStr = moment(end).format('h:mm a');
-            if (!confirm(`You want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
-
-            this.$refs.calendar.fireMethod('unselect');
-            this.saved = false;
-
-            // TODO: customize, top right
-
-            this.$emit('add-work-block', { start, end });
-          }
+          eventClick: this.eventClick,
+          select: this.select
         }
-      }
-    };
-  },
-  computed: {
+      };
+    },
+    start () {
+      return moment(this.assignment.createdAt).startOf('day');
+    },
+    end () {
+      return moment(this.assignment.dueDate).endOf('day');
+    },
     dueDateEvent () {
       return {
         eventType: 'due-date',
@@ -146,12 +118,56 @@ export default {
     }
   },
   watch: {
+    end () {
+      alert('w');
+      this.$refs.calendar.fireMethod('changeView', 'agendaWeek');
+    },
     workBlockEvents () {
       this.workBlocks = this.workBlockEvents.slice(0);
     }
   },
   created () {
     this.workBlocks = this.workBlockEvents.slice(0);
+  },
+  methods: {
+    select (start, end) {
+      const assignmentTitle = this.assignment.title;
+      const dateStr = moment(start).format('dddd');
+      const startStr = moment(start).format('h:mm a');
+      const endStr = moment(end).format('h:mm a');
+      if (!confirm(`You want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
+
+      this.$refs.calendar.fireMethod('unselect');
+      this.saved = false;
+
+      // TODO: customize, top right
+
+      this.$emit('add-work-block', { start, end });
+    },
+    eventClick (calEvent, jsEvent, view) {
+      if (calEvent.eventType !== 'work-block') return;
+
+      // Cannot remove past blocks
+      if (moment(calEvent.end).isBefore(moment())) {
+        return this.$toasted.error('Cannot remove past work block!');
+      }
+
+      const assignmentTitle = this.assignment.title;
+      const dateStr = moment(calEvent.start).format('dddd');
+      const startStr = moment(calEvent.start).format('h:mm a');
+      const endStr = moment(calEvent.end).format('h:mm a');
+
+      if (!confirm(`You no longer want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
+
+      /* Remove work block */
+      this.workBlocks = this.workBlocks.filter(
+        e => !moment(e.start).isSame(moment(calEvent.start))
+      );
+
+      this.$emit('remove-work-block', calEvent.block._id);
+
+      this.saved = false;
+    }
   }
 };
 </script>

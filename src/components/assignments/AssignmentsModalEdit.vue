@@ -312,9 +312,8 @@ export default {
           'UPDATE_UPCOMING_ASSIGNMENT',
           request.data.updatedAssignment
         );
-      } else {
-        this.$emit('edit-assignment', this.assignment);
       }
+      this.$emit('edit-assignment', this.assignment);
 
       this.loading = false;
 
