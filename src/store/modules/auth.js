@@ -9,49 +9,30 @@ const getters = {
   getUnavailabilityAsEvents: state => {
     if (!state.user.current_unavailability) return [];
     return state.user.current_unavailability.map(p => {
-      const sunday = moment().startOf('day');
-      while (sunday.day() !== 0) sunday.subtract(1, 'days');
-      const sundayStr = sunday.format('YYYY-MM-DD');
-
-      let start = moment(sundayStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true).add(
-        parseInt(p.day),
-        'days'
-      );
-      let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true).add(
-        parseInt(p.day),
-        'days'
-      );
+      let start = moment(p.start, 'Hmm', true).format('HH:mm');
+      let end = moment(p.end, 'Hmm', true).format('HH:mm');
 
       return {
         id: 'unavailable',
         title: 'Busy',
         editable: false,
-        start: start,
+        eventType: 'unavailability',
+        start,
         end,
+        dow: [p.day],
         isWorkBlock: true
       };
     });
   },
   getCourseScheduleAsEvents: (state, getters) => {
     if (!state.user.current_schedule) return [];
-
-    const sunday = moment().startOf('day');
-    while (sunday.day() !== 0) sunday.subtract(1, 'days');
-
-    const sundayStr = sunday.format('YYYY-MM-DD');
     // Turn periods into this week's schedule...
     const events = state.user.current_schedule
       .map(c =>
         c.periods.map(p => {
-          let start = moment(
-            sundayStr + ' ' + p.start,
-            'YYYY-MM-DD Hmm',
-            true
-          ).add(parseInt(p.day), 'days');
-          let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true).add(
-            parseInt(p.day),
-            'days'
-          );
+          let start = moment(p.start, 'Hmm', true).format('HH:mm');
+
+          let end = moment(p.end, 'Hmm', true).format('HH:mm');
 
           return {
             id: 'course',
@@ -59,6 +40,7 @@ const getters = {
             title: `${c.longname} ${getters.periodType(p.type)}`,
             start,
             end,
+            dow: [p.day],
             color: c.color,
             editable: false,
             period: p,
