@@ -78,7 +78,7 @@ const getters = {
     start: b.startTime,
     end: b.endTime,
     constraint: {
-      start: assessment.createdAt,
+      start: new Date(),
       end: type === 'assignment' ? assessment.dueDate : assessment.date
     },
     [type]: assessment

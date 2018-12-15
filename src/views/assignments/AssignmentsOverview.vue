@@ -357,7 +357,7 @@ export default {
         this.editedAssignment(request.data.updatedAssignment);
       }
 
-      // this.$toasted.show('Added work block to your schedule!');
+      this.$toasted.show('Added work block to your schedule!');
     },
     async removeWorkBlock (blockID) {
       let request;
@@ -374,7 +374,7 @@ export default {
         this.editedAssignment(updatedAssignment);
       }
 
-      // this.$toasted.warning('Removed work block to your schedule!');
+      this.$toasted.error('Removed work block from your schedule!');
     },
     async addComment (newComment) {
       if (!newComment) return;
