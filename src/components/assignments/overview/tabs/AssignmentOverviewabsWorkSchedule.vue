@@ -33,6 +33,9 @@ export default {
     };
   },
   computed: {
+    term () {
+      return this.$store.getters.term;
+    },
     calendar () {
       return {
         header: {
@@ -54,6 +57,11 @@ export default {
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
           noEventsMessage: 'No work periods set yet.',
+          eventRender: (event, el) => {
+            if (event.eventType === 'course') {
+              if (moment(event.start).isAfter(this.term.classesEnd)) return false;
+            }
+          },
           buttonText: {
             agendaWeek: 'Weekly Agenda'
           },
