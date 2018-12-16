@@ -46,6 +46,11 @@ export default {
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
+          eventRender: (event, el) => {
+            if (event.eventType === 'course') {
+              if (moment(event.start).isAfter(this.term.classesEnd)) return false;
+            }
+          },
           buttonText: {
             today: 'Today',
             day: 'Daily Agenda',
@@ -92,6 +97,9 @@ export default {
     };
   },
   computed: {
+    term () {
+      return this.$store.getters.term;
+    },
     events () {
       const courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
 
