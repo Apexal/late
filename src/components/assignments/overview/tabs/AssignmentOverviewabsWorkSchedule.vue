@@ -126,10 +126,7 @@ export default {
     }
   },
   watch: {
-    end () {
-      alert('w');
-      this.$refs.calendar.fireMethod('changeView', 'agendaWeek');
-    },
+    /* end () {}, */
     workBlockEvents () {
       this.workBlocks = this.workBlockEvents.slice(0);
     }
