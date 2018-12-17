@@ -1,5 +1,7 @@
 const { loginStudent, cas } = require('./modules/auth');
 
+const google = require('./modules/google');
+
 module.exports = router => {
   // router.use(path, router);
 
@@ -29,4 +31,20 @@ module.exports = router => {
     loginStudent
   );
   router.get('/auth/logout', cas.logout);
+
+  router.get('/auth/google', ctx => {
+    const googleAuth = google.createConnection();
+    ctx.redirect(google.createUrl(googleAuth));
+  });
+
+  router.get('/google/auth/callback', async ctx => {
+    const googleAuth = google.createConnection();
+
+    const { code } = ctx.query;
+    const { tokens } = await googleAuth.getToken(code);
+
+    ctx.session.googleAuthToken = tokens;
+
+    ctx.ok(tokens);
+  });
 };
