@@ -42,16 +42,9 @@ module.exports = router => {
 
     const { code } = ctx.query;
     const { tokens } = await googleAuth.getToken(code);
-    googleAuth.setCredentials(tokens);
 
-    const calendar = google.apis.calendar({ version: 'v3', auth: googleAuth });
-    const res = await calendar.events.list({
-      calendarId: 'primary',
-      timeMin: (new Date()).toISOString(),
-      maxResults: 10,
-      singleEvents: true,
-      orderBy: 'startTime'
-    });
-    ctx.ok(res.data.items);
+    ctx.session.googleAuthToken = tokens;
+
+    ctx.ok(tokens);
   });
 };

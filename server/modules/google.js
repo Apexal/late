@@ -11,6 +11,7 @@ function createConnection () {
 
 function createUrl (auth) {
   return auth.generateAuthUrl({
+    access_type: 'offline',
     scope: scopes
   });
 }
