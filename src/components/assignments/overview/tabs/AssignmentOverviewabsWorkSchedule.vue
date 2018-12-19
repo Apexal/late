@@ -84,6 +84,7 @@ export default {
       return {
         eventType: 'due-date',
         title: 'Assignment Due',
+        editable: false,
         start: this.assignment.dueDate,
         color: this.course.color,
         end: moment(this.assignment.dueDate).add(20, 'minute')
