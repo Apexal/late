@@ -71,6 +71,7 @@ export default {
           },
           eventClick: this.eventClick,
           eventDrop: this.eventDrop,
+          eventResize: this.eventResize,
           select: this.select
         }
       };
@@ -177,6 +178,9 @@ export default {
     },
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
       // Update work block on server
+      this.$emit('edit-work-block', { blockID: calEvent.blockID, start: calEvent.start, end: calEvent.end });
+    },
+    eventResize (calEvent, delta, revertFunc) {
       this.$emit('edit-work-block', { blockID: calEvent.blockID, start: calEvent.start, end: calEvent.end });
     }
   }
