@@ -38,6 +38,37 @@ async function addWorkBlock (ctx) {
   });
 }
 
+async function editWorkBlock (ctx) {
+  const { startTime, endTime, assessmentType } = ctx.request.body;
+  const blockID = ctx.params.blockID;
+
+  const editedBlock = await Block.findOne({
+    _student: ctx.state.user._id,
+    _id: blockID
+  });
+
+  editedBlock.set({ startTime, endTime });
+  await editedBlock.save();
+
+  let assessment;
+  // Get assessment
+  assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
+    .findOne({
+      _student: ctx.state.user._id,
+      _id:
+        ctx.params[assessmentType === 'assignment' ? 'assignmentID' : 'examID']
+    })
+    .populate('_blocks');
+
+  logger.info(`Edit work block for ${ctx.state.user.rcs_id}`);
+
+  return ctx.ok({
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    ['updated' +
+      (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
+  });
+}
+
 async function removeWorkBlock (ctx) {
   const blockID = ctx.params.blockID;
 
@@ -56,5 +87,6 @@ async function removeWorkBlock (ctx) {
 
 module.exports = {
   addWorkBlock,
+  editWorkBlock,
   removeWorkBlock
 };

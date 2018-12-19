@@ -52,7 +52,7 @@ export default {
           maxTime: this.$store.state.auth.user.latestWorkTime,
           timezone: 'local',
           defaultView: 'agendaWeek',
-          eventOverlap: false,
+          eventOverlap: true,
           selectHelper: false,
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
@@ -70,6 +70,7 @@ export default {
             end: this.assignment.dueDate
           },
           eventClick: this.eventClick,
+          eventDrop: this.eventDrop,
           select: this.select
         }
       };
@@ -170,9 +171,13 @@ export default {
         e => !moment(e.start).isSame(moment(calEvent.start))
       );
 
-      this.$emit('remove-work-block', calEvent.block._id);
+      this.$emit('remove-work-block', calEvent.blockID);
 
       this.saved = false;
+    },
+    eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
+      // Update work block on server
+      this.$emit('edit-work-block', { blockID: calEvent.blockID, start: calEvent.start, end: calEvent.end });
     }
   }
 };
