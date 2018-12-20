@@ -39,9 +39,16 @@ export default {
     calendar () {
       return {
         header: {
-          center: 'agendaWeek'
+          center: 'agendaFiveDay'
         },
         config: {
+          views: {
+            agendaFiveDay: {
+              type: 'agenda',
+              duration: { days: 5 },
+              buttonText: 'Week'
+            }
+          },
           validRange: {
             start: this.start,
             end: this.end
@@ -51,7 +58,7 @@ export default {
           minTime: this.$store.state.auth.user.earliestWorkTime,
           maxTime: this.$store.state.auth.user.latestWorkTime,
           timezone: 'local',
-          defaultView: 'agendaWeek',
+          defaultView: 'agendaFiveDay',
           eventOverlap: true,
           selectHelper: false,
           nowIndicator: true,
