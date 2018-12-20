@@ -24,15 +24,33 @@
       <h2 class="subtitle has-text-grey due-title">
         {{ isPast ? 'Was on' : 'On' }} {{ shortDateTimeString(exam.date) }}
       </h2>
+
+
+      <div class="content exam-description">
+        <blockquote>
+          <VueMarkdown
+            v-if="exam.description.length > 0"
+            :source="exam.description"
+            :html="false"
+            :emoji="true"
+            :anchor-attributes="{target: '_blank'}"
+          />
+          <i v-else>
+            No description given.
+          </i>
+        </blockquote>
+      </div>
     </section>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+import VueMarkdown from 'vue-markdown';
 
 export default {
   name: 'ExamsOverview',
+  components: { VueMarkdown },
   data () {
     return {
       loading: true,
