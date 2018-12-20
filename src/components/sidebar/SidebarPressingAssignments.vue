@@ -5,12 +5,23 @@
   >
     <summary class="panel-heading is-clearfix is-unselectable is-size-6">
       Pressing Assignments
-      <span class="is-pulled-right icon">
-        <i
-          class="fas fa-plus add-assignment"
-          @click.prevent="$emit('toggle-modal')"
-        />
-      </span>
+               <router-link
+                 title="Browse all assignments"
+                 tag="span"
+                 class="assignments-upcoming-link is-pulled-right icon"
+                 :to="{ name: 'assignments-upcoming' }"
+               >
+                 <i class="fa fa-list-ul" />
+               </router-link>
+               <span
+                 class="is-pulled-right icon"
+                 title="Add an assignment"
+               >
+                 <i
+                   class="fas fa-plus add-assignment"
+                   @click.prevent="$emit('toggle-modal')"
+                 />
+               </span>
     </summary>
     <div
       v-if="pressing.length == 0"
@@ -50,15 +61,6 @@
         </span>
       </router-link>
     </transition-group>
-    <div class="panel-block">
-      <router-link
-        tag="button"
-        class="button is-small is-link is-outlined is-fullwidth"
-        to="/assignments"
-      >
-        All Assignments
-      </router-link>
-    </div>
   </details>
 </template>
 
@@ -120,7 +122,14 @@ export default {
   }
 }
 
-.add-assignment {
-  cursor: pointer;
+.add-assignment, .assignments-upcoming-link {
+  &:hover {
+    color: grey;
+  }
+
+  &.router-link-exact-active {
+    font-size: 110%;
+    color: black;
+  }
 }
 </style>
