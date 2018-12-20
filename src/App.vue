@@ -10,7 +10,7 @@
       @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
     />
     <span
-      v-if="loggedIn"
+      v-if="loggedIn && !expanded"
       class="icon button is-black toggle-sidebar"
       title="Toggle sidebar."
       @click="$store.commit('TOGGLE_SIDEBAR')"
@@ -120,10 +120,8 @@ export default {
   position: absolute;
 
   //Styling the toggle button to fit the theme
-  background-color: #f5f5f5 !important; //Bulma overrides background-color, color, and border
-  color: black !important;
-  border: 1px solid #dbdbdb !important;
   margin: 1em;
+  margin-top:0.5em;
   width: 2.5em;
   height: 1.5em;
 }

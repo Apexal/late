@@ -5,6 +5,13 @@
   >
     <div class="panel">
       <p class="panel-heading is-clearfix has-background-black-ter has-text-white">
+        <span
+          class="icon button is-black local-toggle-sidebar is-pulled-right"
+          title="Toggle sidebar."
+          @click="$store.commit('TOGGLE_SIDEBAR')"
+        >
+          <i class="fas fa-arrow-left" />
+        </span>
         Your Itinerary
       </p>
 
@@ -103,7 +110,6 @@ export default {
 <style lang='scss'>
 #sidebar {
   padding: 15px;
-  margin-top: 30px;
   // QOL panel heading styles
   .panel-heading {
     cursor: pointer;
@@ -125,6 +131,11 @@ export default {
     margin-left: 3px;
     font-size: 70%;
     padding: 5px;
+  }
+  .local-toggle-sidebar {
+
+    width: 2.5em;
+    height: 1.5em;
   }
 }
 </style>
