@@ -1,28 +1,7 @@
 <template>
-  <details
-    class="panel sidebar-upcoming-exams"
-    open
+  <div
+    class="sidebar-upcoming-exams"
   >
-    <summary class="panel-heading is-clearfix is-unselectable is-size-6">
-      Upcoming Exams
-               <router-link
-                 title="Browse all exams"
-                 tag="span"
-                 class="exams-upcoming-link is-pulled-right icon"
-                 :to="{ name: 'exams-upcoming' }"
-               >
-                 <i class="fa fa-list-ul" />
-               </router-link>
-               <span
-                 title="Add an exam"
-                 class="is-pulled-right icon"
-               >
-                 <i
-                   class="fas fa-plus add-exam"
-                   @click.prevent="$emit('toggle-modal')"
-                 />
-               </span>
-    </summary>
     <div
       v-if="upcoming.length == 0"
       class="panel-block has-text-grey is-size-7"
@@ -60,7 +39,27 @@
         </span>
       </router-link>
     </transition-group>
-  </details>
+    <div class="controls panel-block has-background-white-ter">
+      <span class="is-full-width">
+        <button
+          class="button is-link is-small"
+          @click.prevent="$emit('toggle-modal')"
+        >
+          <span class="icon">
+            <i class="fa fa-plus" />
+          </span>
+          Add Exam
+        </button>
+        <router-link
+          tag="button"
+          class="button is-link is-small is-outlined is-pulled-right"
+          to="/exams"
+        >
+          All Exams
+        </router-link>
+      </span>
+    </div>
+  </div>
 </template>
 
 
@@ -90,15 +89,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.add-exam, .exams-upcoming-link {
-  &:hover {
-    color: grey;
-  }
-
-  &.router-link-exact-active {
-    font-size: 110%;
-    color: black;
+.controls {
+  .icon {
+    margin-right: 0 !important;
   }
 }
 </style>

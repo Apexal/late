@@ -109,15 +109,4 @@ export default {
     margin-left: 5px;
   }
 }
-
-.add-assignment, .assignments-upcoming-link {
-  &:hover {
-    color: grey;
-  }
-
-  &.router-link-exact-active {
-    font-size: 110%;
-    color: black;
-  }
-}
 </style>
