@@ -1,18 +1,9 @@
 <template>
-  <details class="todos panel">
-    <summary class="panel-heading is-unselectable is-size-6">
-      <span
-        v-if="todos.length > 0"
-        class="tag is-dark is-pulled-right"
-      >
-        {{ todos.length }}
-      </span>
-      To-Do List
-    </summary>
+  <div class="todos">
     <form @submit.prevent="addTodo">
       <div class="control panel-block">
         <input
-          v-model="newTodo"
+          v-model.trim="newTodo"
           class="input is-small"
           type="text"
           placeholder="Add to-do"
@@ -43,7 +34,7 @@
     >
       No to-dos saved on this device yet.
     </div>
-  </details>
+  </div>
 </template>
 
 <script>
