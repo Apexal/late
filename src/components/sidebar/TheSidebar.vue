@@ -3,24 +3,33 @@
     id="sidebar"
     class="menu"
   >
-    <h3 class="has-text-centered is-size-4 is-hidden-touch">
-      Your itinerary
-    </h3>
-    <!--Adds an empty space in place of "your itinerary" on mobile devices-->
-    <div
-      class="is-hidden-desktop"
-      style="height:36px"
-    />
-    <SidebarSchedule />
-    <SidebarPressingAssignments
-      :pressing="pressingAssignments"
-      @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-    />
-    <SidebarUpcomingExamsList
-      :upcoming="upcomingExams"
-      @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
-    />
-    <SidebarTodoList />
+    <div class="panel">
+      <p class="panel-heading">
+        Your Itinerary
+      </p>
+
+      <p class="panel-tabs">
+        <a
+          v-for="(t, name) in tabs"
+          :key="name"
+          class="tooltip"
+          :class="{'is-active': tab === name}"
+          :data-tooltip="t.name"
+          @click="tab = name"
+        >
+          <i :class="t.icon" />
+          <span v-if="tab === name">
+            {{ t.name }}
+          </span>
+        </a>
+      </p>
+      <Component
+        :is="current_component"
+        :upcoming="upcomingExams"
+        :pressing="pressingAssignments"
+        @toggle-modal="toggleModal"
+      />
+    </div>
   </aside>
 </template>
 
@@ -33,11 +42,37 @@ import SidebarTodoList from '@/components/sidebar/SidebarTodoList';
 export default {
   name: 'TheSidebar',
   components: { SidebarPressingAssignments, SidebarSchedule, SidebarTodoList, SidebarUpcomingExamsList },
+  data () {
+    return {
+      tab: 'schedule',
+      tabs: {
+        'schedule': { component: SidebarSchedule, name: 'Daily Agenda', icon: 'far fa-clock' },
+        'assignments': { component: SidebarPressingAssignments, name: 'Pressing Assignments', icon: 'fas fa-clipboard-list' },
+        'exams': { component: SidebarUpcomingExamsList, name: 'Upcoming Exams', icon: 'fas fa-file-alt' },
+        'todos': { component: SidebarTodoList, name: 'To Do\'s', icon: 'fas fa-check' }
+      }
+    };
+  },
   computed: {
+    current_component () {
+      return this.tabs[this.tab].component;
+    },
     pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
     },
     upcomingExams () { return this.$store.getters.pendingUpcomingExams; }
+  },
+  methods: {
+    toggleModal () {
+      switch (this.tab) {
+      case 'assignments':
+        this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+        break;
+      case 'exams':
+        this.$store.commit('TOGGLE_ADD_EXAM_MODAL');
+        break;
+      }
+    }
   }
 };
 </script>
@@ -45,7 +80,7 @@ export default {
 <style lang='scss'>
 #sidebar {
   padding: 15px;
-
+  margin-top: 30px;
   // QOL panel heading styles
   .panel-heading {
     cursor: pointer;

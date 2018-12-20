@@ -1,9 +1,6 @@
 <template>
-  <details
-    class="schedule panel user-courses"
-    open
-  >
-    <summary class="panel-heading is-unselectable is-size-6 is-clearfix">
+  <div class="sidebar-schedule">
+    <p class="panel-block is-unselectable is-size-6 is-clearfix">
       Today's Classes
               <span
                 v-if="in_class"
@@ -20,7 +17,7 @@
               >
                 Over
               </span>
-    </summary>
+    </p>
     <template v-if="is_weekend">
       <div class="panel-block">
         <h2 class="subtitle has-text-grey is-size-6">
@@ -28,9 +25,8 @@
         </h2>
       </div>
     </template>
-    <div
+    <template
       v-else
-      class="periods"
     >
       <div
         v-for="p in periods"
@@ -61,8 +57,8 @@
           </div>
         </span>
       </div>
-    </div>
-  </details>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -136,10 +132,6 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.periods {
-  max-height: 40px;
-  overflow: auto;
-}
 
 .period-block {
   &.is-active {
