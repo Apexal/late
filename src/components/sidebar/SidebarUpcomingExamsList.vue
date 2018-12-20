@@ -4,7 +4,7 @@
   >
     <div
       v-if="upcoming.length == 0"
-      class="panel-block has-text-grey is-size-7"
+      class="panel-block has-text-grey"
     >
       <span>No upcoming exams!</span>
     </div>
@@ -16,7 +16,7 @@
         v-for="ex in upcoming"
         :key="ex._id"
         tag="div"
-        class="exam exam-link panel-block is-size-7"
+        class="exam exam-link panel-block"
         :title="ex.description.substring(0, 500)"
         :to="{ name: 'exams-overview', params: { examID: ex._id }}"
       >

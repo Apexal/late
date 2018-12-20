@@ -14,7 +14,7 @@
     <div
       v-for="(t, index) in todos"
       :key="index"
-      class="panel-block todo is-size-7"
+      class="panel-block todo"
       title="Click to mark completed."
       @click="removeTodo(t)"
     >
@@ -30,7 +30,7 @@
     </div>
     <div
       v-if="todos.length === 0"
-      class="panel-block has-text-grey-light is-size-7"
+      class="panel-block has-text-grey-light"
     >
       No to-dos saved on this device yet.
     </div>

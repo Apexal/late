@@ -4,7 +4,7 @@
   >
     <div
       v-if="pressing.length == 0"
-      class="panel-block has-text-grey is-size-7"
+      class="panel-block has-text-grey"
     >
       <span>No pressing assignments!</span>
     </div>
@@ -16,7 +16,7 @@
         v-for="a in pressing"
         :key="a._id"
         tag="div"
-        class="assignment assignment-link panel-block is-size-7"
+        class="assignment assignment-link panel-block"
         :title="a.description.substring(0, 500)"
         :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
         :class="{ 'priority': a.priority >= 7 }"

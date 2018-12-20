@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar-schedule">
-    <p class="panel-block is-unselectable is-size-6 is-clearfix">
+    <p class="panel-block is-unselectable is-clearfix">
       Today's Classes
               <span
                 v-if="in_class"
@@ -20,7 +20,7 @@
     </p>
     <template v-if="is_weekend">
       <div class="panel-block">
-        <h2 class="subtitle has-text-grey is-size-6">
+        <h2 class="subtitle has-text-grey">
           It's the weekend!
         </h2>
       </div>
@@ -31,7 +31,7 @@
       <div
         v-for="p in periods"
         :key="p.start"
-        class="panel-block period-block is-clearfix is-size-7"
+        class="panel-block period-block is-clearfix"
         :class="{ 'is-active': p == current_period, 'has-background-grey-lighter': hasPassed(p) }"
       >
         <span class="course-longname is-full-width">
