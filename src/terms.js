@@ -10,6 +10,14 @@ const list = [
     end: moment('2018-12-22', 'YYYY-MM-DD', true),
     isBreak: false
   },
+  /*
+  {
+    name: 'Winter Break',
+    code: '',
+    start: moment('2018-12-23', 'YYYY-MM-DD', true),
+    end: moment('2019-01-08', 'YYYY-MM-DD', true),
+    isBreak: true
+  }, */
   {
     name: 'Spring 2019',
     code: '201901',

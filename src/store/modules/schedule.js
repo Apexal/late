@@ -19,17 +19,7 @@ const getters = {
   term: state => terms.current(),
   in_class: state => !!state.current.period,
   classes_over: state => {
-    if (state.periods.length === 0) return true;
-
-    // Get last end time
-    const now = moment();
-    const lastEnd = moment(
-      now.format('YYYY-MM-DD') +
-        ' ' +
-        state.periods[state.periods.length - 1].end,
-      'YYYY-MM-DD Hmm'
-    );
-    return now > lastEnd;
+    return moment().isAfter(terms.current().classesEnd);
   },
   periodType: () => type =>
     ({
