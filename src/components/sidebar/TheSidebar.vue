@@ -31,6 +31,7 @@
         :upcoming="upcomingExams"
         :pressing="pressingAssignments"
         @toggle-modal="toggleModal"
+        @update-count="updatedCount"
       />
     </div>
   </aside>
@@ -53,6 +54,9 @@ export default {
         'assignments': { component: SidebarPressingAssignments, name: 'Pressing Assignments', icon: 'fas fa-clipboard-list' },
         'exams': { component: SidebarUpcomingExamsList, name: 'Upcoming Exams', icon: 'fas fa-file-alt' },
         'todos': { component: SidebarTodoList, name: 'To Do\'s', icon: 'fas fa-check' }
+      },
+      externalCounts: {
+        'todos': 0
       }
     };
   },
@@ -60,7 +64,8 @@ export default {
     counts () {
       return {
         'assignments': this.pressingAssignments.length,
-        'exams': this.upcomingExams.length
+        'exams': this.upcomingExams.length,
+        'todos': this.externalCounts.todos
       };
     },
     current_tab () {
@@ -72,6 +77,9 @@ export default {
     upcomingExams () { return this.$store.getters.pendingUpcomingExams; }
   },
   methods: {
+    updatedCount ({ tab, count }) {
+      this.externalCounts[tab] = count;
+    },
     toggleModal () {
       switch (this.tab) {
       case 'assignments':

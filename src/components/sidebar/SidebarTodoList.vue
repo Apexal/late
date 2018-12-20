@@ -57,6 +57,7 @@ export default {
     if (localStorage.getItem('todos')) {
       try {
         this.todos = JSON.parse(localStorage.getItem('todos'));
+        this.$emit('update-count', { tab: 'todos', count: this.todos.length });
       } catch (e) {
         localStorage.removeItem('todos');
       }
@@ -94,6 +95,7 @@ export default {
     saveTodos () {
       const parsed = JSON.stringify(this.todos);
       localStorage.setItem('todos', parsed);
+      this.$emit('update-count', { tab: 'todos', count: this.todos.length });
     }
   }
 };
