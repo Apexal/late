@@ -19,6 +19,12 @@
         >
           <i :class="t.icon" />
           <span
+            v-if="tab === name"
+            class="is-hidden-touch"
+          >
+            {{ t.name }}
+          </span>
+          <span
             v-if="counts[name]"
             class="tab-count tag is-small is-danger"
           >
