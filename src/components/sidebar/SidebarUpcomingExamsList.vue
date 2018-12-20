@@ -1,20 +1,10 @@
 <template>
-  <details
-    class="panel sidebar-upcoming-exams"
-    open
+  <div
+    class="sidebar-upcoming-exams"
   >
-    <summary class="panel-heading is-clearfix is-unselectable is-size-6">
-      Upcoming Exams
-      <span class="is-pulled-right icon">
-        <i
-          class="fas fa-plus add-exam"
-          @click.prevent="$emit('toggle-modal')"
-        />
-      </span>
-    </summary>
     <div
       v-if="upcoming.length == 0"
-      class="panel-block has-text-grey is-size-7"
+      class="panel-block has-text-grey"
     >
       <span>No upcoming exams!</span>
     </div>
@@ -26,7 +16,7 @@
         v-for="ex in upcoming"
         :key="ex._id"
         tag="div"
-        class="exam exam-link panel-block is-size-7"
+        class="exam exam-link panel-block"
         :title="ex.description.substring(0, 500)"
         :to="{ name: 'exams-overview', params: { examID: ex._id }}"
       >
@@ -49,16 +39,27 @@
         </span>
       </router-link>
     </transition-group>
-    <div class="panel-block">
-      <router-link
-        tag="button"
-        class="button is-small is-link is-outlined is-fullwidth"
-        to="/exams"
-      >
-        All Exams
-      </router-link>
+    <div class="controls panel-block has-background-white-ter">
+      <span class="is-full-width">
+        <button
+          class="button is-link is-small"
+          @click.prevent="$emit('toggle-modal')"
+        >
+          <span class="icon">
+            <i class="fa fa-plus" />
+          </span>
+          Add Exam
+        </button>
+        <router-link
+          tag="button"
+          class="button is-link is-small is-outlined is-pulled-right"
+          to="/exams"
+        >
+          Browse
+        </router-link>
+      </span>
     </div>
-  </details>
+  </div>
 </template>
 
 
@@ -88,4 +89,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.controls {
+  .icon {
+    margin-right: 0 !important;
+  }
+}
 </style>

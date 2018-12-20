@@ -27,19 +27,27 @@ export default {
     return {
       calendar: {
         header: {
-          center: 'listDay,agendaWeek'
+          center: 'listDay,agendaFiveDay'
         },
         config: {
+          views: {
+            agendaFiveDay: {
+              type: 'agenda',
+              duration: { days: 5 },
+              buttonText: 'Week'
+            }
+          },
           validRange: {
             start: moment().startOf('week'),
             end: this.$store.getters.term.end
           },
           height: 700,
+          dayCount: 5,
           allDayText: 'Incomplete\nAssign.',
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
           maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
           timezone: 'local',
-          defaultView: 'agendaWeek',
+          defaultView: 'agendaFiveDay',
           eventOverlap: false,
           selectOverlap: false,
           selectHelper: false,

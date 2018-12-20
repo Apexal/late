@@ -151,6 +151,7 @@
         @set-tab="tabChanged"
         @add-comment="addComment"
         @add-work-block="addWorkBlock"
+        @edit-work-block="editWorkBlock"
         @remove-work-block="removeWorkBlock"
       />
     </section>
@@ -356,8 +357,25 @@ export default {
       } else {
         this.editedAssignment(request.data.updatedAssignment);
       }
+      const dayStr = moment(start).format('dddd [the] do');
+      const startStr = moment(start).format('h:mma');
+      const endStr = moment(end).format('h:mma');
+      this.$toasted.show(`Scheduled to work on this assignment on from ${dayStr} ${startStr} to ${endStr}!`);
+    },
+    async editWorkBlock ({ blockID, start, end }) {
+      let request;
+      request = await this.$http.patch(`/assignments/a/${this.assignment._id}/blocks/${blockID}`, { startTime: start, endTime: end, assessmentType: 'assignment' });
 
-      this.$toasted.show('Added work block to your schedule!');
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.editedAssignment(request.data.updatedAssignment);
+      }
+
+      this.$toasted.show('Rescheduled work block!');
     },
     async removeWorkBlock (blockID) {
       let request;

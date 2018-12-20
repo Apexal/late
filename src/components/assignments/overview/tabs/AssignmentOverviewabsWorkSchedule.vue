@@ -39,9 +39,16 @@ export default {
     calendar () {
       return {
         header: {
-          center: 'agendaWeek'
+          center: 'agendaFiveDay'
         },
         config: {
+          views: {
+            agendaFiveDay: {
+              type: 'agenda',
+              duration: { days: 5 },
+              buttonText: 'Week'
+            }
+          },
           validRange: {
             start: this.start,
             end: this.end
@@ -51,8 +58,8 @@ export default {
           minTime: this.$store.state.auth.user.earliestWorkTime,
           maxTime: this.$store.state.auth.user.latestWorkTime,
           timezone: 'local',
-          defaultView: 'agendaWeek',
-          eventOverlap: false,
+          defaultView: 'agendaFiveDay',
+          eventOverlap: true,
           selectHelper: false,
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
@@ -70,6 +77,8 @@ export default {
             end: this.assignment.dueDate
           },
           eventClick: this.eventClick,
+          eventDrop: this.eventDrop,
+          eventResize: this.eventResize,
           select: this.select
         }
       };
@@ -84,6 +93,7 @@ export default {
       return {
         eventType: 'due-date',
         title: 'Assignment Due',
+        editable: false,
         start: this.assignment.dueDate,
         color: this.course.color,
         end: moment(this.assignment.dueDate).add(20, 'minute')
@@ -126,10 +136,7 @@ export default {
     }
   },
   watch: {
-    end () {
-      alert('w');
-      this.$refs.calendar.fireMethod('changeView', 'agendaWeek');
-    },
+    /* end () {}, */
     workBlockEvents () {
       this.workBlocks = this.workBlockEvents.slice(0);
     }
@@ -172,9 +179,16 @@ export default {
         e => !moment(e.start).isSame(moment(calEvent.start))
       );
 
-      this.$emit('remove-work-block', calEvent.block._id);
+      this.$emit('remove-work-block', calEvent.blockID);
 
       this.saved = false;
+    },
+    eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
+      // Update work block on server
+      this.$emit('edit-work-block', { blockID: calEvent.blockID, start: calEvent.start, end: calEvent.end });
+    },
+    eventResize (calEvent, delta, revertFunc) {
+      this.$emit('edit-work-block', { blockID: calEvent.blockID, start: calEvent.start, end: calEvent.end });
     }
   }
 };

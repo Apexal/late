@@ -1,20 +1,10 @@
 <template>
-  <details
-    class="panel sidebar-pressing-assignments"
-    open
+  <div
+    class="sidebar-pressing-assignments"
   >
-    <summary class="panel-heading is-clearfix is-unselectable is-size-6">
-      Pressing Assignments
-      <span class="is-pulled-right icon">
-        <i
-          class="fas fa-plus add-assignment"
-          @click.prevent="$emit('toggle-modal')"
-        />
-      </span>
-    </summary>
     <div
       v-if="pressing.length == 0"
-      class="panel-block has-text-grey is-size-7"
+      class="panel-block has-text-grey"
     >
       <span>No pressing assignments!</span>
     </div>
@@ -26,7 +16,7 @@
         v-for="a in pressing"
         :key="a._id"
         tag="div"
-        class="assignment assignment-link panel-block is-size-7"
+        class="assignment assignment-link panel-block"
         :title="a.description.substring(0, 500)"
         :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
         :class="{ 'priority': a.priority >= 7 }"
@@ -50,16 +40,27 @@
         </span>
       </router-link>
     </transition-group>
-    <div class="panel-block">
-      <router-link
-        tag="button"
-        class="button is-small is-link is-outlined is-fullwidth"
-        to="/assignments"
-      >
-        All Assignments
-      </router-link>
+    <div class="controls panel-block has-background-white-ter">
+      <span class="is-full-width">
+        <button
+          class="button is-link is-small"
+          @click.prevent="$emit('toggle-modal')"
+        >
+          <span class="icon">
+            <i class="fa fa-plus" />
+          </span>
+          Add Assignment
+        </button>
+        <router-link
+          tag="button"
+          class="button is-link is-small is-outlined is-pulled-right"
+          to="/assignments"
+        >
+          Browse
+        </router-link>
+      </span>
     </div>
-  </details>
+  </div>
 </template>
 
 <script>
@@ -120,7 +121,9 @@ export default {
   }
 }
 
-.add-assignment {
-  cursor: pointer;
+.controls {
+  .icon {
+    margin-right: 0 !important;
+  }
 }
 </style>
