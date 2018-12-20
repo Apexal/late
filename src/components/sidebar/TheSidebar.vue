@@ -4,7 +4,7 @@
     class="menu"
   >
     <div class="panel">
-      <p class="panel-heading">
+      <p class="panel-heading is-clearfix">
         Your Itinerary
       </p>
 
@@ -18,13 +18,16 @@
           @click="tab = name"
         >
           <i :class="t.icon" />
-          <span v-if="tab === name">
-            {{ t.name }}
+          <span
+            v-if="counts[name]"
+            class="tab-count tag is-small is-danger"
+          >
+            {{ counts[name] }}
           </span>
         </a>
       </p>
       <Component
-        :is="current_component"
+        :is="current_tab.component"
         :upcoming="upcomingExams"
         :pressing="pressingAssignments"
         @toggle-modal="toggleModal"
@@ -54,8 +57,14 @@ export default {
     };
   },
   computed: {
-    current_component () {
-      return this.tabs[this.tab].component;
+    counts () {
+      return {
+        'assignments': this.pressingAssignments.length,
+        'exams': this.upcomingExams.length
+      };
+    },
+    current_tab () {
+      return this.tabs[this.tab];
     },
     pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
@@ -96,6 +105,12 @@ export default {
     &:hover {
       background-color: rgb(250, 250, 250);
     }
+  }
+
+  .tab-count {
+    margin-left: 3px;
+    font-size: 70%;
+    padding: 5px;
   }
 }
 </style>
