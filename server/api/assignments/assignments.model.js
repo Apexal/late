@@ -36,6 +36,9 @@ const schema = new Schema(
   { timestamps: true }
 );
 
+schema.set('toObject', { getters: true, virtuals: true });
+schema.set('toJSON', { getters: true, virtuals: true });
+
 schema.statics.getAllMissedAssignmentsForDay = function (day) {
   const now = new Date();
   let query = {
