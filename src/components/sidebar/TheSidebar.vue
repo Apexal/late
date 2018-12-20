@@ -4,7 +4,7 @@
     class="menu"
   >
     <div class="panel">
-      <p class="panel-heading is-clearfix">
+      <p class="panel-heading is-clearfix has-background-black-ter has-text-white">
         Your Itinerary
       </p>
 
