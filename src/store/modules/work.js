@@ -64,16 +64,18 @@ const getters = {
         borderColor: 'black'
       };
     }),
+  pendingUpcomingExams: state =>
+    state.upcomingExams.filter(ex => !ex.passed),
   getUpcomingExamById: state => examID => {
     return state.upcomingExams.find(ex => ex._id === examID);
   },
   mapWorkBlockToEvent: (state, getters) => (type, assessment, b) => ({
-    block: b,
+    blockID: b._id,
     eventType: 'work-block',
     assessmentType: type,
     title: assessment.title,
     backgroundColor: 'black',
-    editable: false,
+    editable: moment(b.startTime).isAfter(moment()),
     color: getters.getCourseFromCRN(assessment.courseCRN).color,
     start: b.startTime,
     end: b.endTime,

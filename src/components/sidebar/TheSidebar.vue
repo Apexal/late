@@ -37,7 +37,7 @@ export default {
     pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
     },
-    upcomingExams () { return this.$store.state.work.upcomingExams; }
+    upcomingExams () { return this.$store.getters.pendingUpcomingExams; }
   }
 };
 </script>

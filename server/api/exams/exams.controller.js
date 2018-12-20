@@ -12,9 +12,9 @@ const Exam = require('./exams.model');
  */
 async function getExams (ctx) {
   let exams;
-
+  let { start, end } = ctx.query;
   try {
-    exams = await ctx.state.user.getExams(ctx.query.start, ctx.query.end);
+    exams = await ctx.state.user.getExams(start, end);
   } catch (e) {
     logger.error(`Failed to send exams to ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.internalServerError('There was an error loading your exams.');

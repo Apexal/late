@@ -32,6 +32,9 @@ const schema = new Schema(
   { timestamps: true }
 );
 
+schema.set('toObject', { getters: true, virtuals: true });
+schema.set('toJSON', { getters: true, virtuals: true });
+
 schema.virtual('passed').get(function () {
   return moment(this.date).isBefore(new Date());
 });

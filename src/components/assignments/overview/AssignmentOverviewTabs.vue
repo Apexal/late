@@ -31,6 +31,7 @@
       :loading="loading"
       @add-comment="addComment"
       @add-work-block="addWorkBlock"
+      @edit-work-block="editWorkBlock"
       @remove-work-block="removeWorkBlock"
     />
   </div>
@@ -72,6 +73,9 @@ export default {
     },
     addWorkBlock (payload) {
       this.$emit('add-work-block', payload);
+    },
+    editWorkBlock (payload) {
+      this.$emit('edit-work-block', payload);
     },
     removeWorkBlock (blockID) {
       this.$emit('remove-work-block', blockID);
