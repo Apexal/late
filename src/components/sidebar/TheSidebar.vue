@@ -26,12 +26,6 @@
         >
           <i :class="t.icon" />
           <span
-            v-if="tab === name"
-            class="is-hidden-touch"
-          >
-            {{ t.name }}
-          </span>
-          <span
             v-if="counts[name]"
             class="tab-count tag is-small is-danger"
           >
@@ -133,7 +127,6 @@ export default {
     padding: 5px;
   }
   .local-toggle-sidebar {
-
     width: 2.5em;
     height: 1.5em;
   }
