@@ -64,6 +64,8 @@ const getters = {
         borderColor: 'black'
       };
     }),
+  pendingUpcomingExams: state =>
+    state.upcomingExams.filter(ex => !ex.passed),
   getUpcomingExamById: state => examID => {
     return state.upcomingExams.find(ex => ex._id === examID);
   },
