@@ -55,7 +55,7 @@
           class="button is-link is-small is-outlined is-pulled-right"
           to="/exams"
         >
-          All Exams
+          Browse
         </router-link>
       </span>
     </div>

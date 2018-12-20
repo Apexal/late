@@ -40,14 +40,25 @@
         </span>
       </router-link>
     </transition-group>
-    <div class="panel-block">
-      <router-link
-        tag="button"
-        class="button is-small is-link is-outlined is-fullwidth"
-        to="/assignments"
-      >
-        All Assignments
-      </router-link>
+    <div class="controls panel-block has-background-white-ter">
+      <span class="is-full-width">
+        <button
+          class="button is-link is-small"
+          @click.prevent="$emit('toggle-modal')"
+        >
+          <span class="icon">
+            <i class="fa fa-plus" />
+          </span>
+          Add Assignment
+        </button>
+        <router-link
+          tag="button"
+          class="button is-link is-small is-outlined is-pulled-right"
+          to="/assignments"
+        >
+          Browse
+        </router-link>
+      </span>
     </div>
   </div>
 </template>
@@ -107,6 +118,12 @@ export default {
 
   .course-title {
     margin-left: 5px;
+  }
+}
+
+.controls {
+  .icon {
+    margin-right: 0 !important;
   }
 }
 </style>
