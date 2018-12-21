@@ -106,7 +106,7 @@
                     id="add-assignment-due-date"
                     v-model="dueDate"
                     :min="today"
-                    max="2030-01-01"
+                    :max="maxDate"
                     type="date"
                   >
                 </div>
@@ -245,6 +245,12 @@ export default {
     };
   },
   computed: {
+    currentTerm () {
+      return this.$store.getters.term;
+    },
+    maxDate () {
+      return moment(this.currentTerm.end).format('YYYY-MM-DD');
+    },
     defaultCourseCRN () {
       return this.$store.state.addAssignmentModal.courseCRN;
     },

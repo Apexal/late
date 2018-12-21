@@ -17,6 +17,7 @@ const state = {
 
 const getters = {
   term: state => terms.current(),
+  onBreak: state => !terms.current(),
   in_class: state => !!state.current.period,
   classes_over: state => {
     return moment().isAfter(terms.current().classesEnd);
