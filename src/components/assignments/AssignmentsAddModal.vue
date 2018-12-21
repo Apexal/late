@@ -333,7 +333,7 @@ export default {
 
 <style lang="scss" scoped>
 .add-assignment-modal {
-  #description {
+  #add-assignment-description {
     width: 100%;
     min-width: 100%;
     max-width: 500px;
@@ -341,6 +341,10 @@ export default {
     min-height: 100px;
     height: 200px;
     max-height: 500px;
+  }
+
+  #add-assignment-time-estimate {
+    width: 150px;
   }
 }
 </style>

@@ -106,6 +106,8 @@
                   <input
                     id="edit-assignment-due-date"
                     v-model="assignment.dueDate"
+                    :min="today"
+                    :max="maxDate"
                     type="date"
                     name="due_date"
                   >
@@ -265,6 +267,12 @@ export default {
     };
   },
   computed: {
+    currentTerm () {
+      return this.$store.getters.term;
+    },
+    maxDate () {
+      return moment(this.currentTerm.end).format('YYYY-MM-DD');
+    },
     courses () {
       return this.$store.state.auth.user.current_schedule;
     },
@@ -273,7 +281,8 @@ export default {
         JSON.stringify(this.convertAssignment(this.initialAssignment)) ===
         JSON.stringify(this.assignment)
       );
-    }
+    },
+    today: () => moment().format('YYYY-MM-DD')
   },
   watch: {
     initialAssignment (newA, oldA) {
