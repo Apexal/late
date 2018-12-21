@@ -9,6 +9,7 @@ const Assignment = require('./assignments.model');
  *
  * GET /assignments
  * @param {Koa context} ctx
+ * @returns The array of assignments
  */
 async function getAssignments (ctx) {
   let assignments;
@@ -22,7 +23,9 @@ async function getAssignments (ctx) {
     logger.error(
       `Failed to send assignments to ${ctx.state.user.rcs_id}: ${e}`
     );
-    return ctx.internalServerError('Could not get assignments.');
+    return ctx.internalServerError(
+      'There was an error getting your assignments.'
+    );
   }
 
   logger.info(`Sending assignments to ${ctx.state.user.rcs_id}`);
@@ -37,6 +40,7 @@ async function getAssignments (ctx) {
  *
  * GET /assignments/a/:assignmentID
  * @param {Koa context} ctx
+ * @returns The assignment
  */
 async function getAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
@@ -53,7 +57,9 @@ async function getAssignment (ctx) {
         ctx.state.user.rcs_id
       }: ${e}`
     );
-    return ctx.internalServerError('Failed to get assignment.');
+    return ctx.internalServerError(
+      'There was an error getting the assignment.'
+    );
   }
 
   if (!assignment) {
@@ -79,6 +85,7 @@ async function getAssignment (ctx) {
  *
  * POST /assignments
  * @param {Koa context} ctx
+ * @returns The created assignment
  */
 async function createAssignment (ctx) {
   const body = ctx.request.body;
@@ -142,6 +149,7 @@ async function createAssignment (ctx) {
  *
  * PATCH /assignments/a/:assignmentID
  * @param {Koa context} ctx
+ * @returns The updated assignment
  */
 async function editAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
@@ -178,7 +186,9 @@ async function editAssignment (ctx) {
         ctx.state.user.rcs_id
       }: ${e}`
     );
-    return ctx.internalServerError('Failed to find assignment.');
+    return ctx.internalServerError(
+      'There was an error getting the assignment.'
+    );
   }
 
   if (!assignment) {
@@ -188,7 +198,8 @@ async function editAssignment (ctx) {
     return ctx.notFound('Could not find assignment.');
   }
 
-  Object.assign(assignment, updates); // So cool!
+  // Update assignment
+  assignment.set(updates);
 
   try {
     await assignment.save();
@@ -198,7 +209,7 @@ async function editAssignment (ctx) {
         ctx.state.user.rcs_id
       }: ${e}`
     );
-    return ctx.badRequest('Failed to update assignment.');
+    return ctx.badRequest('There was an error updating the assignment.');
   }
 
   logger.info(
@@ -215,6 +226,7 @@ async function editAssignment (ctx) {
  *
  * POST /assignments/a/:assignmentID/toggle
  * @param {Koa context} ctx
+ * @returns The updated assignment
  */
 async function toggleAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
@@ -231,23 +243,29 @@ async function toggleAssignment (ctx) {
         ctx.state.user.rcs_id
       }: ${e}`
     );
-    return ctx.internalServerError('Failed to toggle the assignment.');
+    return ctx.internalServerError(
+      'There was an error getting the assignment.'
+    );
   }
 
   if (!assignment) {
-    logger.error(`Failed to find assignment with ID ${assignmentID}.`);
+    logger.error(
+      `Failed to find assignment with ID ${assignmentID} for ${
+        ctx.state.user.rcs_id
+      }.`
+    );
     return ctx.notFound('Could not find the assignment.');
   }
 
+  // Toggle completed status
   assignment.completed = !assignment.completed;
-
   assignment.completedAt = assignment.completed ? moment().toDate() : null;
 
   try {
     await assignment.save();
   } catch (e) {
     logger.error(`Failed to toggle assignment with ID ${assignmentID}.`);
-    return ctx.badRequest('Failed to toggle assignment.');
+    return ctx.badRequest('There was an error toggling the assignment.');
   }
 
   logger.info(
@@ -267,6 +285,7 @@ async function toggleAssignment (ctx) {
  *
  * POST /assignments/a/:assignmentID/remove
  * @param {Koa context} ctx
+ * @returns The removed assignment.
  */
 async function removeAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
@@ -282,7 +301,7 @@ async function removeAssignment (ctx) {
         ctx.state.user.rcs_id
       }: ${e}`
     );
-    return ctx.internalServerError('Failed to find assignment.');
+    return ctx.internalServerError('Could not find the assignment.');
   }
 
   if (!removedAssignment) {
@@ -292,9 +311,14 @@ async function removeAssignment (ctx) {
     return ctx.notFound('Could not find assignment.');
   }
 
+  // Remove assignment
   try {
     removedAssignment.remove();
-  } catch (e) {}
+  } catch (e) {
+    return ctx.internalServerError(
+      'There was an error removing the assignment.'
+    );
+  }
 
   logger.info(
     `Removed assignment ${removedAssignment._id} for ${ctx.state.user.rcs_id}`
@@ -306,26 +330,53 @@ async function removeAssignment (ctx) {
 }
 
 /* COMMENTS */
+/**
+ * Add a comment to an assignment. The request body should contain the following:
+ * - comment: the text of the comment
+ *
+ * @param {Koa context} ctx
+ * @returns The updated assignment
+ */
 async function addComment (ctx) {
-  const assigmentID = ctx.params.assignmentID;
+  const assignmentID = ctx.params.assignmentID;
   const text = ctx.request.body.comment;
 
   let assignment;
-  assignment = await Assignment.findOne({
-    _student: ctx.state.user._id,
-    _id: assigmentID
-  });
+  try {
+    assignment = await Assignment.findOne({
+      _student: ctx.state.user._id,
+      _id: assignmentID
+    });
+  } catch (e) {
+    logger.error(`Failed to get assignment for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.internalServerError(
+      'There was an error getting the assignment to comment on.'
+    );
+  }
 
   if (!assignment) {
+    logger.error(
+      `Failed to find assignment with ID ${assignmentID} for ${
+        ctx.state.user.rcs_id
+      }`
+    );
     return ctx.notFound('Could not find assignment to comment on.');
   }
 
+  // Add comment
   assignment.comments.push({
     addedAt: new Date(),
     body: text
   });
 
-  await assignment.save();
+  try {
+    await assignment.save();
+  } catch (e) {
+    logger.error(
+      `Failed to save assignment for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('There was an error adding the comment.');
+  }
 
   ctx.ok({ updatedAssignment: assignment });
 }
