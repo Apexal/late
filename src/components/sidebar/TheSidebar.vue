@@ -138,6 +138,14 @@ export default {
   z-index: 5;
   padding: 15px;
 
+  .panel-tabs {
+    display: flex;
+    a {
+      text-align: center;
+      flex: 1;
+    }
+  }
+
   .panel-block {
     transition: 0.3s;
     &:hover {
