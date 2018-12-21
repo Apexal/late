@@ -4,7 +4,7 @@
     class="menu"
   >
     <div class="panel">
-      <p class="panel-heading is-clearfix has-background-black-ter has-text-white">
+      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         <span
           class="icon button is-black local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar."
@@ -15,7 +15,7 @@
         Your Itinerary
       </p>
 
-      <p class="panel-tabs">
+      <p class="panel-tabs is-unselectable">
         <a
           v-for="(t, name) in tabs"
           :key="name"
@@ -42,13 +42,18 @@
           </span>
         </a>
       </p>
-      <Component
-        :is="current_tab.component"
-        :upcoming="upcomingExams"
-        :pressing="pressingAssignments"
-        @toggle-modal="toggleModal"
-        @update-count="updatedCount"
-      />
+      <transition
+        name="fade"
+        mode="out-in"
+      >
+        <Component
+          :is="current_tab.component"
+          :upcoming="upcomingExams"
+          :pressing="pressingAssignments"
+          @toggle-modal="toggleModal"
+          @update-count="updatedCount"
+        />
+      </transition>
     </div>
   </aside>
 </template>
@@ -132,15 +137,6 @@ export default {
 #sidebar {
   z-index: 5;
   padding: 15px;
-  // QOL panel heading styles
-  .panel-heading {
-    cursor: pointer;
-    background-color: #f1eeee;
-
-    &:focus {
-      outline: none;
-    }
-  }
 
   .panel-block {
     transition: 0.3s;
