@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const moment = require('moment');
 
-require('../blocks/blocks.model');
+const Block = require('../blocks/blocks.model');
 
 const schema = new Schema(
   {
@@ -78,12 +78,19 @@ schema.statics.getAllUpcomingAssignments = function () {
     .exec();
 };
 
-module.exports = {
-  name: 'Assignment',
-  schema
-};
 schema.virtual('passed').get(function () {
   return moment(this.dueDate).isBefore(new Date());
+});
+
+schema.pre('save', async function () {
+  // Delete any work blocks that are passed the assignment date now
+  if (!this.isNew) {
+    await Block.deleteMany({
+      _student: this._student,
+      _id: { $in: this._blocks },
+      endTime: { $gte: this.dueDate }
+    });
+  }
 });
 
 module.exports = mongoose.model('Assignment', schema);
