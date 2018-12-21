@@ -25,8 +25,17 @@
           @click="tab = name"
         >
           <i :class="t.icon" />
+
           <span
-            v-if="counts[name]"
+            v-if="name === 'schedule' && in_class"
+            class="tag is-info tooltip is-pulled-right tab-count"
+            :style="{ 'background-color': schedule.current.course.color }"
+            :data-tooltip="'Until end of ' + schedule.current.course.longname + ' ' + periodType(schedule.current.period)"
+          >
+            {{ countdown }}
+          </span>
+          <span
+            v-else-if="counts[name]"
             class="tab-count tag is-small is-danger"
           >
             {{ counts[name] }}
@@ -45,6 +54,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 import SidebarSchedule from '@/components/sidebar/SidebarSchedule';
 import SidebarPressingAssignments from '@/components/sidebar/SidebarPressingAssignments';
 import SidebarUpcomingExamsList from '@/components/sidebar/SidebarUpcomingExamsList';
@@ -81,7 +92,20 @@ export default {
     pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
     },
-    upcomingExams () { return this.$store.getters.pendingUpcomingExams; }
+    upcomingExams () { return this.$store.getters.pendingUpcomingExams; },
+    schedule () {
+      return this.$store.state.schedule;
+    },
+    in_class () {
+      return this.$store.getters.in_class;
+    },
+    countdown () {
+      const currentPeriod = this.$store.state.schedule.current.period;
+      const diff = moment.duration(
+        moment(currentPeriod.end, 'Hmm', true).diff(this.now)
+      );
+      return `${diff.hours()}h ${diff.minutes()}m left`;
+    }
   },
   methods: {
     updatedCount ({ tab, count }) {
@@ -96,6 +120,9 @@ export default {
         this.$store.commit('TOGGLE_ADD_EXAM_MODAL');
         break;
       }
+    },
+    periodType (p) {
+      return this.$store.getters.periodType(p.type);
     }
   }
 };
@@ -103,6 +130,7 @@ export default {
 
 <style lang='scss'>
 #sidebar {
+  z-index: 5;
   padding: 15px;
   // QOL panel heading styles
   .panel-heading {
