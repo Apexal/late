@@ -106,7 +106,7 @@
                     id="add-exam-date"
                     v-model="date"
                     :min="today"
-                    max="2030-01-01"
+                    :max="maxDate"
                     type="date"
                   >
                 </div>
@@ -196,6 +196,12 @@ export default {
     };
   },
   computed: {
+    currentTerm () {
+      return this.$store.getters.term;
+    },
+    maxDate () {
+      return moment(this.currentTerm.end).format('YYYY-MM-DD');
+    },
     defaultCourseCRN () {
       return this.$store.state.addExamModal.courseCRN;
     },
@@ -276,8 +282,6 @@ export default {
     height: 200px;
     max-height: 500px;
   }
-
-
 }
 
 .margin-right {
