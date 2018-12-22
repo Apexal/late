@@ -121,7 +121,7 @@ export default {
 
   //Styling the toggle button to fit the theme
   margin: 1em;
-  margin-top:0.5em;
+  margin-top: 0.5em;
   width: 2.5em;
   height: 1.5em;
 }

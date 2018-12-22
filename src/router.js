@@ -156,6 +156,9 @@ const router = new Router({
 });
 
 router.beforeEach(async (to, from, next) => {
+  if (store.state.schedule.terms.length === 0) {
+    await store.dispatch('GET_TERMS');
+  }
   if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR');
 
   if (!store.state.auth.user.name) await store.dispatch('GET_USER');

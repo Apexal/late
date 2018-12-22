@@ -1,9 +1,9 @@
+import axios from '@/api';
 import moment from 'moment';
-
-import terms from '@/terms';
 
 const state = {
   date: null,
+  terms: [],
   current: {
     course: {},
     period: {}
@@ -16,11 +16,12 @@ const state = {
 };
 
 const getters = {
-  term: state => terms.current(),
-  onBreak: state => !terms.current(),
-  in_class: state => !!state.current.period,
-  classes_over: state => {
-    return moment().isAfter(terms.current().classesEnd);
+  currentTerm: state =>
+    state.terms.find(t => moment().isBetween(t.start, t.end)) || {},
+  onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
+  inClass: state => !!state.current.period,
+  classesOver: (state, getters) => {
+    return moment().isAfter(getters.currentTerm.classesEnd);
   },
   periodType: () => type =>
     ({
@@ -33,6 +34,10 @@ const getters = {
 };
 
 const actions = {
+  async GET_TERMS ({ commit }) {
+    const response = await axios.get('/terms');
+    commit('SET_TERMS', response.data.terms);
+  },
   AUTO_UPDATE_SCHEDULE ({ dispatch }) {
     setInterval(() => {
       dispatch('UPDATE_SCHEDULE');
@@ -75,6 +80,9 @@ const actions = {
 };
 
 const mutations = {
+  SET_TERMS: (state, terms) => {
+    state.terms = terms;
+  },
   UPDATE_SCHEDULE: (state, payload) => {
     state.date = payload.datetime.toDate();
     state.periods = payload.periods;

@@ -197,7 +197,7 @@ export default {
   },
   computed: {
     currentTerm () {
-      return this.$store.getters.term;
+      return this.$store.getters.currentTerm;
     },
     maxDate () {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
@@ -263,9 +263,9 @@ export default {
         }
       };
 
-      this.$toasted.success(`Added exam '${
-        request.data.createdExam.title
-      }' due ${moment(request.data.createdExam.date).fromNow()}.`, options);
+      const message = `Added exam '${request.data.createdExam.title}' due ${moment(request.data.createdExam.date).fromNow()}.`;
+
+      this.$toasted.success(message, options);
     }
   }
 };

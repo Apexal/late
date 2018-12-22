@@ -246,7 +246,7 @@ export default {
   },
   computed: {
     currentTerm () {
-      return this.$store.getters.term;
+      return this.$store.getters.currentTerm;
     },
     maxDate () {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');

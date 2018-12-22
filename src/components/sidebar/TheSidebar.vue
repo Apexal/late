@@ -27,7 +27,7 @@
           <i :class="t.icon" />
 
           <span
-            v-if="name === 'schedule' && in_class"
+            v-if="name === 'schedule' && inClass"
             class="tag is-info tooltip is-pulled-right tab-count"
             :style="{ 'background-color': schedule.current.course.color }"
             :data-tooltip="'Until end of ' + schedule.current.course.longname + ' ' + periodType(schedule.current.period)"
@@ -101,8 +101,8 @@ export default {
     schedule () {
       return this.$store.state.schedule;
     },
-    in_class () {
-      return this.$store.getters.in_class;
+    inClass () {
+      return this.$store.getters.inClass;
     },
     countdown () {
       const currentPeriod = this.$store.state.schedule.current.period;

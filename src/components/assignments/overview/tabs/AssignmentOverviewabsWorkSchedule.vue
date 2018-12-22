@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     term () {
-      return this.$store.getters.term;
+      return this.$store.getters.currentTerm;
     },
     calendar () {
       return {

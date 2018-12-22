@@ -268,7 +268,7 @@ export default {
   },
   computed: {
     currentTerm () {
-      return this.$store.getters.term;
+      return this.$store.getters.currentTerm;
     },
     maxDate () {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
@@ -331,9 +331,7 @@ export default {
 
       // Notify user
       this.$toasted.info(
-        `Edited assignment '${
-          request.data.updatedAssignment.title
-        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
+        `Edited assignment '${request.data.updatedAssignment.title}' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
         {
           action: {
             text: 'Undo'

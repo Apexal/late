@@ -71,11 +71,11 @@ export default {
     next_period () {
       return this.schedule.next.period;
     },
-    in_class () {
-      return this.$store.getters.in_class;
+    inClass () {
+      return this.$store.getters.inClass;
     },
-    classes_over () {
-      return this.$store.getters.classes_over;
+    classesOver () {
+      return this.$store.getters.classesOver;
     },
     is_weekend () {
       return moment().day() === 6 || moment().day() === 0;

@@ -39,7 +39,7 @@ export default {
           },
           validRange: {
             start: moment().startOf('week'),
-            end: this.$store.getters.term.end
+            end: this.$store.getters.currentTerm.end
           },
           height: 700,
           dayCount: 5,
@@ -106,7 +106,7 @@ export default {
   },
   computed: {
     term () {
-      return this.$store.getters.term;
+      return this.$store.getters.currentTerm;
     },
     events () {
       const courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
