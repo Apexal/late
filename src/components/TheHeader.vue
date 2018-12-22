@@ -70,7 +70,10 @@
             </router-link>
 
             <template v-if="loggedIn">
-              <div class="navbar-item has-dropdown is-hoverable">
+              <div
+                v-if="!onBreak"
+                class="navbar-item has-dropdown is-hoverable"
+              >
                 <a class="navbar-link">
                   <span class="icon">
                     <i class="fas fa-clipboard-list" />
@@ -120,7 +123,10 @@
                 </div>
               </div>
 
-              <div class="navbar-item has-dropdown is-hoverable">
+              <div
+                v-if="!onBreak"
+                class="navbar-item has-dropdown is-hoverable"
+              >
                 <a class="navbar-link">
                   <span class="icon">
                     <i class="fas fa-file-alt" />
@@ -230,6 +236,9 @@ export default {
     return {};
   },
   computed: {
+    onBreak () {
+      return this.$store.getters.onBreak;
+    },
     navbarExpanded () {
       return this.$store.state.navbarExpanded;
     },
