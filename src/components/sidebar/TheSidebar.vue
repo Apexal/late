@@ -12,7 +12,7 @@
         >
           <i class="fas fa-arrow-left" />
         </span>
-        Your Itinerary
+        {{ onBreak ? 'On Break' : currentTerm.name }}
       </p>
 
       <p class="panel-tabs is-unselectable">
@@ -84,6 +84,12 @@ export default {
     };
   },
   computed: {
+    onBreak () {
+      return this.$store.getters.onBreak;
+    },
+    currentTerm () {
+      return this.$store.getters.currentTerm;
+    },
     counts () {
       return {
         'assignments': this.pressingAssignments.length,

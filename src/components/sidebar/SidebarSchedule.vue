@@ -2,7 +2,7 @@
   <div class="sidebar-schedule">
     <template v-if="onBreak">
       <div class="panel-block has-text-grey">
-        Enjoy your break!
+        {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
       </div>
     </template>
     <template v-else-if="is_weekend">
@@ -55,8 +55,17 @@ export default {
     return {};
   },
   computed: {
+    currentTerm () {
+      return this.$store.getters.currentTerm;
+    },
+    nextTerm () {
+      return this.$store.getters.nextTerm;
+    },
     onBreak () {
       return this.$store.getters.onBreak;
+    },
+    daysUntilNextTerm () {
+      return moment(this.nextTerm.start).diff(this.now, 'days');
     },
     now () {
       return this.$store.state.now;

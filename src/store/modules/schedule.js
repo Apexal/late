@@ -18,6 +18,10 @@ const state = {
 const getters = {
   currentTerm: state =>
     state.terms.find(t => moment().isBetween(t.start, t.end)) || {},
+  nextTerm: (state, getters) => {
+    let tms = state.terms.slice(0);
+    return tms.find(t => moment(t.start).isAfter(moment()));
+  },
   onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
   inClass: state => !!state.current.period,
   classesOver: (state, getters) => {
@@ -82,6 +86,15 @@ const actions = {
 const mutations = {
   SET_TERMS: (state, terms) => {
     state.terms = terms;
+    state.terms.sort((t1, t2) => {
+      if (t1.code < t2.code) {
+        return -1;
+      }
+      if (t1.code > t2.code) {
+        return 1;
+      }
+      return 0;
+    });
   },
   UPDATE_SCHEDULE: (state, payload) => {
     state.date = payload.datetime.toDate();
