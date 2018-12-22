@@ -1,10 +1,8 @@
 <template>
   <div class="sidebar-schedule">
     <template v-if="onBreak">
-      <div class="panel-block">
-        <h2 class="subtitle has-text-grey">
-          Enjoy your break!
-        </h2>
+      <div class="panel-block has-text-grey">
+        Enjoy your break!
       </div>
     </template>
     <template v-else-if="is_weekend">

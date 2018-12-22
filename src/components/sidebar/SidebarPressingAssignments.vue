@@ -1,10 +1,8 @@
 <template>
   <div class="sidebar-pressing-assignments">
     <template v-if="onBreak">
-      <div class="panel-block">
-        <h2 class="subtitle has-text-grey">
-          There's no work over break!
-        </h2>
+      <div class="panel-block has-text-grey">
+        There's no work over break!
       </div>
     </template>
     <template v-else>
