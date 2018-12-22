@@ -1,6 +1,13 @@
 <template>
   <div class="sidebar-schedule">
-    <template v-if="is_weekend">
+    <template v-if="onBreak">
+      <div class="panel-block">
+        <h2 class="subtitle has-text-grey">
+          Enjoy your break!
+        </h2>
+      </div>
+    </template>
+    <template v-else-if="is_weekend">
       <div class="panel-block">
         <h2 class="subtitle has-text-grey">
           It's the weekend!
@@ -50,6 +57,9 @@ export default {
     return {};
   },
   computed: {
+    onBreak () {
+      return this.$store.getters.onBreak;
+    },
     now () {
       return this.$store.state.now;
     },
