@@ -1,65 +1,72 @@
 <template>
-  <div
-    class="sidebar-pressing-assignments"
-  >
-    <div
-      v-if="pressing.length == 0"
-      class="panel-block has-text-grey"
-    >
-      <span>No pressing assignments!</span>
-    </div>
-    <transition-group
-      name="list"
-      tag="div"
-    >
-      <router-link
-        v-for="a in pressing"
-        :key="a._id"
-        tag="div"
-        class="assignment assignment-link panel-block"
-        :title="a.description.substring(0, 500)"
-        :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-        :class="{ 'priority': a.priority >= 7 }"
+  <div class="sidebar-pressing-assignments">
+    <template v-if="onBreak">
+      <div class="panel-block">
+        <h2 class="subtitle has-text-grey">
+          There's no work over break!
+        </h2>
+      </div>
+    </template>
+    <template v-else>
+      <div
+        v-if="pressing.length == 0"
+        class="panel-block has-text-grey"
       >
-        <span class="is-full-width">
-          <span
-            class="dot course-dot"
-            :title="course(a).longname"
-            :style="'background-color: ' + course(a).color"
-          />
-          <b class="course-title is-hidden-tablet">
-            {{ course(a).longname }}
-          </b>
-          {{ a.title }}
-          <small
-            class="has-text-grey is-pulled-right tooltip is-tooltip-left"
-            :data-tooltip="toFullDateTimeString(a.dueDate)"
-          >
-            {{ fromNow(a.dueDate) }}
-          </small>
-        </span>
-      </router-link>
-    </transition-group>
-    <div class="controls panel-block has-background-white-ter">
-      <span class="is-full-width">
-        <button
-          class="button is-link is-small"
-          @click.prevent="$emit('toggle-modal')"
-        >
-          <span class="icon">
-            <i class="fa fa-plus" />
-          </span>
-          Add Assignment
-        </button>
+        <span>No pressing assignments!</span>
+      </div>
+      <transition-group
+        name="list"
+        tag="div"
+      >
         <router-link
-          tag="button"
-          class="button is-link is-small is-outlined is-pulled-right"
-          to="/assignments"
+          v-for="a in pressing"
+          :key="a._id"
+          tag="div"
+          class="assignment assignment-link panel-block"
+          :title="a.description.substring(0, 500)"
+          :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
+          :class="{ 'priority': a.priority >= 7 }"
         >
-          Browse
+          <span class="is-full-width">
+            <span
+              class="dot course-dot"
+              :title="course(a).longname"
+              :style="'background-color: ' + course(a).color"
+            />
+            <b class="course-title is-hidden-tablet">
+              {{ course(a).longname }}
+            </b>
+            {{ a.title }}
+            <small
+              class="has-text-grey is-pulled-right tooltip is-tooltip-left"
+              :data-tooltip="toFullDateTimeString(a.dueDate)"
+            >
+              {{ fromNow(a.dueDate) }}
+            </small>
+          </span>
         </router-link>
-      </span>
-    </div>
+      </transition-group>
+      <div class="controls panel-block has-background-white-ter">
+        <span class="is-full-width">
+          <button
+            class="button is-link is-small"
+            @click.prevent="$emit('toggle-modal')"
+          >
+            <span class="icon">
+              <i class="fa fa-plus" />
+            </span>
+            Add Assignment
+          </button>
+          <router-link
+            tag="button"
+            class="button is-link is-small is-outlined is-pulled-right"
+            to="/assignments"
+          >
+            Browse
+          </router-link>
+        </span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -76,6 +83,9 @@ export default {
     }
   },
   computed: {
+    onBreak () {
+      return this.$store.getters.onBreak;
+    },
     now () {
       return this.$store.state.now;
     }
