@@ -16,8 +16,9 @@ const state = {
 };
 
 const getters = {
-  currentTerm: state =>
-    state.terms.find(t => moment().isBetween(t.start, t.end)) || {},
+  currentTerm: (state, getters, rootState) =>
+    state.terms.find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
+    {},
   current_schedule: (state, getters, rootState) => {
     if (rootState.auth.isAuthenticated && getters.currentTerm) {
       return rootState.auth.user.semester_schedules[getters.currentTerm.code];
@@ -25,7 +26,7 @@ const getters = {
       return [];
     }
   },
-  nextTerm: (state, getters) => {
+  nextTerm: state => {
     let tms = state.terms.slice(0);
     return tms.find(t => moment(t.start).isAfter(moment()));
   },

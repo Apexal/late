@@ -37,6 +37,10 @@ export default {
           right: 'today prev,next'
         },
         config: {
+          validRange: {
+            start: this.$store.getters.currentTerm.start,
+            end: this.$store.getters.currentTerm.end
+          },
           height: 800,
           events: this.events,
           defaultView: 'month',

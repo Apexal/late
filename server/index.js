@@ -9,6 +9,8 @@ const Body = require('koa-bodyparser');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
 
+const moment = require('moment');
+
 // Start the Discord bot
 require('./integrations/discord');
 
@@ -54,9 +56,13 @@ app.use(async (ctx, next) => {
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
 
-    if (!ctx.session.terms) {
-      ctx.session.terms = await Term.find().exec();
-    }
+    // If first request, get terms
+    if (!ctx.session.terms) ctx.session.terms = await Term.find().exec();
+
+    // Calculate current term on each request in case it changes (very unlikely but possible)
+    ctx.session.currentTerm = ctx.session.terms.find(t =>
+      moment().isBetween(t.start, t.end)
+    );
   }
 
   await next();
