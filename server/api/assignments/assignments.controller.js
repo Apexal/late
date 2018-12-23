@@ -91,7 +91,18 @@ async function createAssignment (ctx) {
   const body = ctx.request.body;
   const due = moment(body.dueDate);
 
-  // TODO: validate these
+  // Limit to this semester
+  if (due.isAfter(ctx.session.currentTerm.end)) {
+    logger.error(
+      `${
+        ctx.state.user.rcs_id
+      } tried to add assignment outside of current semester.`
+    );
+    return ctx.badRequest(
+      'You cannot add an assignment due outisde of this semester.'
+    );
+  }
+
   const newAssignment = new Assignment({
     _student: ctx.state.user._id,
     title: body.title,
@@ -114,7 +125,6 @@ async function createAssignment (ctx) {
       course: 'course_id',
       timeEstimate: 'time_estimate',
       timeRemaining: 'time_estimate',
-      isAssesment: '',
       priority: 'priority'
     };
     const errors = [];
@@ -196,6 +206,18 @@ async function editAssignment (ctx) {
       `Could not find assignment ${assignmentID} for ${ctx.state.user.rcs_id}.`
     );
     return ctx.notFound('Could not find assignment.');
+  }
+
+  // Limit to this semester
+  if (moment(updates.dueDate).isAfter(ctx.session.currentTerm.end)) {
+    logger.error(
+      `${
+        ctx.state.user.rcs_id
+      } tried to set assignment outside of current semester.`
+    );
+    return ctx.badRequest(
+      'You cannot set an assignment due outisde of this semester.'
+    );
   }
 
   // Update assignment

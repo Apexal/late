@@ -31,7 +31,7 @@ const getters = {
     return tms.find(t => moment(t.start).isAfter(moment()));
   },
   onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
-  inClass: state => Object.keys(state.current.period).length !== 0,
+  inClass: state => !state.current.period,
   classesOver: (state, getters) => {
     return moment().isAfter(getters.currentTerm.classesEnd);
   },
@@ -84,7 +84,7 @@ const actions = {
       datetime: now,
       current: {
         course: currentCourse,
-        period: currentPeriod
+        period: currentPeriod || false
       },
       periods: dayPeriods
     });

@@ -57,11 +57,11 @@ app.use(async (ctx, next) => {
       .exec();
 
     // If first request, get terms
-    if (!ctx.session.terms) ctx.session.terms = await Term.find().exec();
+    /* if (!ctx.session.terms) */ ctx.session.terms = await Term.find().exec();
 
     // Calculate current term on each request in case it changes (very unlikely but possible)
     ctx.session.currentTerm = ctx.session.terms.find(t =>
-      moment().isBetween(t.start, t.end)
+      moment().isBetween(moment(t.start), moment(t.end))
     );
   }
 
