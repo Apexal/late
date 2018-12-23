@@ -84,6 +84,7 @@ async function setCourseSchedule (ctx) {
     ctx.state.user.semester_schedules[
       ctx.session.currentTerm.code
     ] = courseSchedule;
+    ctx.state.user.markModified('semester_schedules');
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
@@ -111,6 +112,7 @@ async function setCourses (ctx) {
     ctx.state.user.semester_schedules[
       ctx.session.currentTerm.code
     ] = updatedCourses;
+    ctx.state.user.markModified('semester_schedules');
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
@@ -118,6 +120,8 @@ async function setCourses (ctx) {
     );
     return ctx.badRequest('Failed to update your courses.');
   }
+
+  logger.info(`Updated courses for ${ctx.state.user.rcs_id}`);
 
   ctx.ok({ updatedUser: ctx.state.user });
 }
@@ -147,6 +151,7 @@ async function setUnavailability (ctx) {
 
   try {
     ctx.state.user.current_unavailability = unavailabilityPeriods;
+    ctx.state.user.markModified('unavailability_schedules');
     await ctx.state.user.save();
   } catch (e) {
     logger.error(

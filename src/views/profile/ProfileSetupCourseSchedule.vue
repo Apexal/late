@@ -53,7 +53,9 @@
               >
                 SIS PIN
               </label>
-              <p class="help">
+              <p
+                class="help"
+              >
                 Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.
               </p>
               <div class="control">
@@ -154,9 +156,7 @@ export default {
       loading: false,
       method: 'sis',
       pin: '',
-      crns: this.$store.getters.current_schedule
-        .map(c => c.crn)
-        .join(',')
+      crns: this.$store.getters.current_schedule.map(c => c.crn).join(',')
     };
   },
   computed: {
