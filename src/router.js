@@ -158,8 +158,6 @@ const router = new Router({
 router.beforeEach(async (to, from, next) => {
   if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR');
 
-  // if (!store.state.auth.user.name) await store.dispatch('GET_USER');
-
   if (to.meta.title) document.title = to.meta.title + ' | LATE';
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in

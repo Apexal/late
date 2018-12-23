@@ -45,6 +45,7 @@ app.use(Logger());
 app.use(Static('dist/'));
 
 const Student = require('./api/students/students.model');
+const Term = require('./api/terms/terms.model');
 app.use(async (ctx, next) => {
   ctx.state.env = process.env.NODE_ENV;
 
@@ -52,6 +53,10 @@ app.use(async (ctx, next) => {
     ctx.state.user = await Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
+
+    if (!ctx.session.terms) {
+      ctx.session.terms = await Term.find().exec();
+    }
   }
 
   await next();

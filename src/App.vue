@@ -70,9 +70,7 @@ import TheSidebar from '@/components/sidebar/TheSidebar';
 import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
 import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
 
-// Import component
 import Loading from 'vue-loading-overlay';
-// Import stylesheet
 import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
@@ -107,7 +105,6 @@ export default {
     ) {
       const rcsID = prompt('Log in as what user? (rcs_id)');
       await this.$http.get('/students/loginas?rcs_id=' + rcsID);
-      await this.$store.dispatch('GET_USER');
     }
 
     await this.$store.dispatch('GET_USER');

@@ -67,7 +67,6 @@ const actions = {
   async SET_USER ({ dispatch, commit }, user) {
     commit('SET_USER', user);
     await dispatch('UPDATE_SCHEDULE');
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
   },
   async UPDATE_COURSE ({ state, commit }, updatedCourse) {
     commit('UPDATE_COURSE', updatedCourse);
