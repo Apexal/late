@@ -3,14 +3,21 @@
     <h1 class="title">
       Your Dashboard
     </h1>
-    <FullCalendar
-      ref="calendar"
-      :events="events"
-      :editable="true"
-      :selectable="true"
-      :header="calendar.header"
-      :config="calendar.config"
-    />
+    <template v-if="onBreak">
+      <h2 class="subtitle">
+        On Break
+      </h2>
+    </template>
+    <template v-else>
+      <FullCalendar
+        ref="calendar"
+        :events="events"
+        :editable="true"
+        :selectable="true"
+        :header="calendar.header"
+        :config="calendar.config"
+      />
+    </template>
   </section>
 </template>
 
@@ -105,6 +112,9 @@ export default {
     };
   },
   computed: {
+    onBreak () {
+      return this.$store.getters.onBreak;
+    },
     term () {
       return this.$store.getters.currentTerm;
     },

@@ -24,10 +24,10 @@ const getters = {
       };
     });
   },
-  getCourseScheduleAsEvents: (state, getters) => {
-    if (!state.user.current_schedule) return [];
+  getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
+    if (!rootGetters.current_schedule) return [];
     // Turn periods into this week's schedule...
-    const events = state.user.current_schedule
+    const events = rootGetters.current_schedule
       .map(c =>
         c.periods.map(p => {
           let start = moment(p.start, 'Hmm', true).format('HH:mm');
@@ -68,12 +68,15 @@ const actions = {
     commit('SET_USER', user);
     await dispatch('UPDATE_SCHEDULE');
   },
-  async UPDATE_COURSE ({ state, commit }, updatedCourse) {
-    commit('UPDATE_COURSE', updatedCourse);
+  async UPDATE_COURSE ({ state, commit, rootGetters }, updatedCourse) {
+    commit('UPDATE_COURSE', {
+      currentTermCode: rootGetters.currentTerm.code,
+      updatedCourse
+    });
 
     // call API
     const request = await axios.post('/setup/courses', {
-      courses: state.user.current_schedule
+      courses: rootGetters.current_schedule
     });
 
     commit('SET_USER', request.data.updatedUser);
@@ -85,9 +88,11 @@ const mutations = {
     state.user = user;
     state.isAuthenticated = true;
   },
-  UPDATE_COURSE: (state, updatedCourse) => {
+  UPDATE_COURSE: (state, { currentTermCode, updatedCourse }) => {
     Object.assign(
-      state.user.current_schedule.find(c => c.crn === updatedCourse.crn),
+      state.user.semester_schedules[currentTermCode].find(
+        c => c.crn === updatedCourse.crn
+      ),
       updatedCourse
     );
   },

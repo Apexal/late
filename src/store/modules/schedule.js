@@ -18,6 +18,13 @@ const state = {
 const getters = {
   currentTerm: state =>
     state.terms.find(t => moment().isBetween(t.start, t.end)) || {},
+  current_schedule: (state, getters, rootState) => {
+    if (rootState.auth.isAuthenticated && getters.currentTerm) {
+      return rootState.auth.user.semester_schedules[getters.currentTerm.code];
+    } else {
+      return [];
+    }
+  },
   nextTerm: (state, getters) => {
     let tms = state.terms.slice(0);
     return tms.find(t => moment(t.start).isAfter(moment()));
@@ -47,9 +54,9 @@ const actions = {
       dispatch('UPDATE_SCHEDULE');
     }, 1000 * 60);
   },
-  UPDATE_SCHEDULE ({ commit, rootState }) {
+  UPDATE_SCHEDULE ({ commit, getters, rootState }) {
     // Reset all state values
-    const semesterSchedule = rootState.auth.user.current_schedule;
+    const semesterSchedule = getters.current_schedule;
 
     const now = moment(); // moment('1430', 'Hmm');
     const dateStr = now.format('YYYY-MM-DD');

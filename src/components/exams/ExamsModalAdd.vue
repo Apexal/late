@@ -212,7 +212,7 @@ export default {
       return this.$store.getters.addExamModalTimeString;
     },
     courses () {
-      return this.$store.state.auth.user.current_schedule;
+      return this.$store.getters.current_schedule;
     },
     today: () => moment().format('YYYY-MM-DD')
   },

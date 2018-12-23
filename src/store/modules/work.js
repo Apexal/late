@@ -33,10 +33,10 @@ const getters = {
   },
   incompleteUpcomingAssignments: state =>
     state.upcomingAssignments.filter(a => !a.completed),
-  getCourseFromCRN: (state, getters, rootState) => crn =>
-    rootState.auth.user.current_schedule.find(c => c.crn === crn),
-  getCourseFromPeriod: (state, getters, rootState) => period =>
-    rootState.auth.user.current_schedule.find(c =>
+  getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>
+    rootGetters.current_schedule.find(c => c.crn === crn),
+  getCourseFromPeriod: (state, getters, rootState, rootGetters) => period =>
+    rootGetters.current_schedule.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
   getUpcomingAssigmentsAsEvents: (state, getters) =>
@@ -64,8 +64,7 @@ const getters = {
         borderColor: 'black'
       };
     }),
-  pendingUpcomingExams: state =>
-    state.upcomingExams.filter(ex => !ex.passed),
+  pendingUpcomingExams: state => state.upcomingExams.filter(ex => !ex.passed),
   getUpcomingExamById: state => examID => {
     return state.upcomingExams.find(ex => ex._id === examID);
   },

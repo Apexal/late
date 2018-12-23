@@ -274,7 +274,7 @@ export default {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
     },
     courses () {
-      return this.$store.state.auth.user.current_schedule;
+      return this.$store.getters.current_schedule;
     },
     saved () {
       return (
