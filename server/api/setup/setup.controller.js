@@ -135,9 +135,9 @@ async function setUnavailability (ctx) {
 
   // Remove dates, split times
   const unavailabilityPeriods = events.map(e => ({
-    day: moment(e.start).day(),
-    start: moment(e.start).format('Hmm'),
-    end: moment(e.end).format('Hmm')
+    dow: e.dow,
+    start: e.start,
+    end: e.end
   }));
 
   ctx.state.user.earliestWorkTime = body.earliest;

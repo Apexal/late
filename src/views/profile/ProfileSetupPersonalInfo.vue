@@ -117,14 +117,13 @@
       </div>
       <hr>
 
-      <router-link
-        to="/profile/courseschedule"
+      <button
         class="button is-primary"
         :class="{'is-loading': loading}"
         :disabled="saved"
       >
         Save and Continue
-      </router-link>
+      </button>
     </form>
   </div>
 </template>
@@ -171,14 +170,9 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.info('Saved personal info!', {
-        action: {
-          text: 'Next Step',
-          push: {
-            name: 'setup-course-schedule'
-          }
-        }
-      });
+      this.$toasted.info('Saved personal info!');
+
+      this.$router.push({ name: 'setup-course-schedule' });
 
       // this.saved = true;
       this.loading = false;

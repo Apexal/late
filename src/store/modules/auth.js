@@ -9,18 +9,14 @@ const getters = {
   getUnavailabilityAsEvents: state => {
     if (!state.user.current_unavailability) return [];
     return state.user.current_unavailability.map(p => {
-      let start = moment(p.start, 'Hmm', true).format('HH:mm');
-      let end = moment(p.end, 'Hmm', true).format('HH:mm');
-
       return {
         id: 'unavailable',
         title: 'Busy',
         editable: false,
         eventType: 'unavailability',
-        start,
-        end,
-        dow: [p.day],
-        isWorkBlock: true
+        start: p.start,
+        end: p.end,
+        dow: p.dow
       };
     });
   },

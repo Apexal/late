@@ -1,6 +1,8 @@
 <template>
   <div class="setup-unavailability">
-    <h2 class="is-size-4 integration-note">
+    <h2
+      class="is-size-4 integration-note"
+    >
       What times outside of class are you not able to study/work?
     </h2>
     <div class="box">
@@ -62,7 +64,7 @@
     </p>
     <FullCalendar
       ref="calendar"
-      :events="calendar.events"
+      :events="allEvents"
       :editable="true"
       :selectable="true"
       :header="calendar.header"
@@ -70,14 +72,14 @@
       @event-resize="eventResized"
     />
     <hr>
-    <router-link
-      to="/profile/integrations"
+    <button
+      form="time-preferences"
       class="button is-primary"
       :class="{'is-loading': loading}"
       :disabled="saved"
     >
       Save and Continue
-    </router-link>
+    </button>
   </div>
 </template>
 
@@ -85,6 +87,7 @@
 import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
+
 export default {
   name: 'ProfileSetupUnavailability',
   components: { FullCalendar },
@@ -95,9 +98,7 @@ export default {
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
-        events: this.$store.getters.getCourseScheduleAsEvents.concat(
-          this.$store.getters.getUnavailabilityAsEvents
-        ),
+        events: [],
         header: {
           left: '',
           center: '',
@@ -118,7 +119,7 @@ export default {
           eventColor: 'black',
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
-            if (!calEvent.isWorkBlock) return;
+            if (!calEvent.eventType === 'unavailability') return;
             this.saved = false;
             this.calendar.events = this.calendar.events.filter(
               e => !moment(e.start).isSame(moment(calEvent.start))
@@ -127,10 +128,12 @@ export default {
 
           select: (start, end) => {
             const eventData = {
+              id: 'unavailable',
+              eventType: 'unavailability',
               title: 'Busy',
-              start: start,
-              end: end,
-              isWorkBlock: true
+              start: start.format('HH:mm'),
+              end: end.format('HH:mm'),
+              dow: [start.day()]
             };
             this.calendar.events.push(eventData);
             this.$refs.calendar.fireMethod('unselect');
@@ -140,6 +143,13 @@ export default {
       }
     };
   },
+  computed: {
+    allEvents () {
+      return this.$store.getters.getCourseScheduleAsEvents.concat(
+        this.calendar.events
+      );
+    }
+  },
   watch: {
     earliest () {
       this.saved = false;
@@ -148,23 +158,26 @@ export default {
       this.saved = false;
     }
   },
+  created () {
+    this.calendar.events = this.$store.getters.getUnavailabilityAsEvents.slice();
+  },
   methods: {
     eventResized (calEvent) {
       this.saved = false;
       this.calendar.events.find(e =>
         moment(e.start).isSame(moment(calEvent.start))
-      ).end = calEvent.end;
+      ).end =
+        calEvent.end;
     },
     async save () {
       this.loading = true;
-      const events = this.calendar.events.filter(e => e.isWorkBlock);
 
       let request;
       try {
         request = await this.$http.post('/setup/unavailability', {
           earliest: this.earliest,
           latest: this.latest,
-          events
+          events: this.calendar.events
         });
       } catch (e) {
         this.loading = false;
@@ -175,16 +188,10 @@ export default {
 
       // Notify user of success
       this.$toasted.show(
-        'Your study/work unvailability schedule has been saved.',
-        {
-          action: {
-            text: 'Last Step',
-            push: {
-              name: 'setup-integrations'
-            }
-          }
-        }
+        'Your study/work unvailability schedule has been saved.'
       );
+
+      this.$router.push({ name: 'setup-integrations' });
 
       this.loading = false;
       this.saved = true;
