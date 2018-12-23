@@ -92,7 +92,9 @@ async function createAssignment (ctx) {
   const due = moment(body.dueDate);
 
   // Limit to this semester
-  if (due.isAfter(ctx.session.currentTerm.end)) {
+  if (
+    !due.isBetween(ctx.session.currentTerm.start, ctx.session.currentTerm.end)
+  ) {
     logger.error(
       `${
         ctx.state.user.rcs_id
@@ -209,7 +211,12 @@ async function editAssignment (ctx) {
   }
 
   // Limit to this semester
-  if (moment(updates.dueDate).isAfter(ctx.session.currentTerm.end)) {
+  if (
+    !moment(updates.dueDate).isBetween(
+      ctx.session.currentTerm.start,
+      ctx.session.currentTerm.end
+    )
+  ) {
     logger.error(
       `${
         ctx.state.user.rcs_id
