@@ -70,14 +70,14 @@
       @event-resize="eventResized"
     />
     <hr>
-    <button
-      form="time-preferences"
+    <router-link
+      to="/profile/integrations"
       class="button is-primary"
       :class="{'is-loading': loading}"
       :disabled="saved"
     >
       Save and Continue
-    </button>
+    </router-link>
   </div>
 </template>
 

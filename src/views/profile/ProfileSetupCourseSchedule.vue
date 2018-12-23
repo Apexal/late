@@ -132,12 +132,12 @@
         </div>
       </div>
     </template>
-    <hr>
     <router-link
       to="/profile/unavailability"
       class="button is-primary"
+      :class="{'is-loading': loading}"
     >
-      Save
+      Save and Continue
     </router-link>
   </div>
 </template>

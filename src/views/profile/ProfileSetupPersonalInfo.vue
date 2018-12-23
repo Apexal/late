@@ -117,13 +117,14 @@
       </div>
       <hr>
 
-      <button
+      <router-link
+        to="/profile/courseschedule"
         class="button is-primary"
         :class="{'is-loading': loading}"
         :disabled="saved"
       >
-        Save
-      </button>
+        Save and Continue
+      </router-link>
     </form>
   </div>
 </template>
