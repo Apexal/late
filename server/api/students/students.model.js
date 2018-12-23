@@ -193,6 +193,7 @@ schema.methods.getExams = function (start, end) {
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
+/*
 schema
   .virtual('current_schedule')
   .get(function () {
@@ -203,6 +204,7 @@ schema
     this.semester_schedules[CURRENT_TERM] = newSchedule;
     this.markModified('semester_schedules');
   });
+*/
 
 schema
   .virtual('current_unavailability')

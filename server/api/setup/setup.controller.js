@@ -80,7 +80,10 @@ async function setCourseSchedule (ctx) {
   ctx.state.user.setup.course_schedule = true;
 
   try {
-    ctx.state.user.current_schedule = courseSchedule;
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    ctx.state.user.semester_schedules[
+      ctx.session.currentTerm.code
+    ] = courseSchedule;
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
@@ -104,7 +107,10 @@ async function setCourses (ctx) {
   const updatedCourses = body.courses;
 
   try {
-    ctx.state.user.current_schedule = updatedCourses;
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    ctx.state.user.semester_schedules[
+      ctx.session.currentTerm.code
+    ] = updatedCourses;
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
