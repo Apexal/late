@@ -6,9 +6,9 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema(
   {
-    _assignment: {
+    _student: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Assignment',
+      ref: 'Student',
       required: true
     },
     startTime: { type: Date, required: true },
@@ -18,7 +18,4 @@ const schema = new Schema(
   { timestamps: true }
 );
 
-module.exports = {
-  name: 'Block',
-  schema
-};
+module.exports = mongoose.model('Block', schema);

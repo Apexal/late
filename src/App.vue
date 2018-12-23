@@ -1,55 +1,65 @@
 <template>
   <div id="app">
     <TheHeader />
-    <AssignmentsAddModal
-      :open="addAssignmentModalExpanded"
-      @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+    <Loading
+      :active.sync="loading"
+      :is-full-page="true"
     />
-    <span
-      v-if="loggedIn"
-      class="icon button is-black toggle-sidebar"
-      title="Toggle sidebar."
-      @click="$store.commit('TOGGLE_SIDEBAR')"
-    >
-      <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
-    </span>
-    <div
-      class="columns"
-      style="margin-right: initial;"
-    >
-      <transition name="fade">
-        <div
-          v-if="loggedIn && expanded"
-          class="column is-3 child-view"
-        >
-          <TheSidebar />
-        </div>
-      </transition>
-      <div
-        id="content"
-        :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
-        style="flex: 1;"
+    <template v-if="!loading">
+      <AssignmentsAddModal
+        :open="addAssignmentModalExpanded"
+        @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+      />
+      <ExamsModalAdd
+        :open="addExamModalExpanded"
+        @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+      />
+      <span
+        v-if="loggedIn && !expanded"
+        class="icon button is-black toggle-sidebar"
+        title="Toggle sidebar."
+        @click="$store.commit('TOGGLE_SIDEBAR')"
       >
-        <section
-          v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
-          class="section no-bottom-padding"
-        >
-          <div class="notification is-warning">
-            <b>NOTICE:</b> You will not be able to use
-            <b>LATE</b> until you have
-            <router-link to="/profile">
-              set up your account.
-            </router-link>
+        <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
+      </span>
+      <div
+        class="columns"
+        style="margin-right: initial;"
+      >
+        <transition name="fade">
+          <div
+            v-if="loggedIn && expanded"
+            class="column is-3 child-view"
+          >
+            <TheSidebar />
           </div>
-        </section>
-        <transition
-          name="fade"
-          mode="out-in"
-        >
-          <router-view />
         </transition>
+        <div
+          id="content"
+          :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
+          style="flex: 1;"
+        >
+          <section
+            v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
+            class="section no-bottom-padding"
+          >
+            <div class="notification is-warning">
+              <b>NOTICE:</b> You will not be able to use
+              <b>LATE</b> until you have
+              <router-link to="/profile">
+                set up your account.
+              </router-link>
+            </div>
+          </section>
+          <transition
+            name="fade"
+            mode="out-in"
+          >
+            <router-view />
+          </transition>
+        </div>
       </div>
-    </div>
+    </template>
     <TheFooter />
   </div>
 </template>
@@ -58,16 +68,28 @@ import TheHeader from '@/components/TheHeader';
 import TheFooter from '@/components/TheFooter';
 import TheSidebar from '@/components/sidebar/TheSidebar';
 import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
+import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
+
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   name: 'LATE',
-  components: { TheHeader, TheSidebar, TheFooter, AssignmentsAddModal },
+  components: { Loading, TheHeader, TheSidebar, TheFooter, AssignmentsAddModal, ExamsModalAdd },
+  data () {
+    return {
+      loading: true
+    };
+  },
   computed: {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
+    },
+    addExamModalExpanded () {
+      return this.$store.state.addExamModal.expanded;
     },
     expanded () {
       return this.$store.state.sidebarExpanded;
@@ -83,12 +105,17 @@ export default {
     ) {
       const rcsID = prompt('Log in as what user? (rcs_id)');
       await this.$http.get('/students/loginas?rcs_id=' + rcsID);
-      await this.$store.dispatch('GET_USER');
     }
 
-    this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
-    this.$store.dispatch('AUTO_GET_UPCOMING_ASSIGNMENTS');
-    this.$store.dispatch('AUTO_UPDATE_NOW');
+    await this.$store.dispatch('GET_USER');
+    if (this.$store.state.auth.isAuthenticated) {
+      await this.$store.dispatch('GET_TERMS');
+      this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
+      this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
+      this.$store.dispatch('AUTO_UPDATE_NOW');
+    }
+
+    this.loading = false;
   },
   methods: {}
 };
@@ -112,10 +139,8 @@ export default {
   position: absolute;
 
   //Styling the toggle button to fit the theme
-  background-color: #f5f5f5 !important; //Bulma overrides background-color, color, and border
-  color: black !important;
-  border: 1px solid #dbdbdb !important;
   margin: 1em;
+  margin-top: 0.5em;
   width: 2.5em;
   height: 1.5em;
 }

@@ -2,7 +2,8 @@ import axios from '@/api';
 import moment from 'moment';
 
 const state = {
-  upcomingAssignments: []
+  upcomingAssignments: [],
+  upcomingExams: []
 };
 
 const getters = {
@@ -32,10 +33,10 @@ const getters = {
   },
   incompleteUpcomingAssignments: state =>
     state.upcomingAssignments.filter(a => !a.completed),
-  getCourseFromCRN: (state, getters, rootState) => crn =>
-    rootState.auth.user.current_schedule.find(c => c.crn === crn),
-  getCourseFromPeriod: (state, getters, rootState) => period =>
-    rootState.auth.user.current_schedule.find(c =>
+  getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>
+    rootGetters.current_schedule.find(c => c.crn === crn),
+  getCourseFromPeriod: (state, getters, rootState, rootGetters) => period =>
+    rootGetters.current_schedule.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
   getUpcomingAssigmentsAsEvents: (state, getters) =>
@@ -45,16 +46,64 @@ const getters = {
         title: a.title,
         start: a.dueDate,
         allDay: true,
+        editable: false,
         color: getters.getCourseFromCRN(a.courseCRN).color,
         assignment: a
       };
-    })
+    }),
+  getUpcomingExamsAsEvents: (state, getters) =>
+    state.upcomingExams.map(ex => {
+      return {
+        eventType: 'exam',
+        title: ex.title,
+        start: ex.date,
+        allDay: true,
+        editable: false,
+        color: getters.getCourseFromCRN(ex.courseCRN).color,
+        exam: ex,
+        borderColor: 'black'
+      };
+    }),
+  pendingUpcomingExams: state => state.upcomingExams.filter(ex => !ex.passed),
+  getUpcomingExamById: state => examID => {
+    return state.upcomingExams.find(ex => ex._id === examID);
+  },
+  mapWorkBlockToEvent: (state, getters) => (type, assessment, b) => ({
+    blockID: b._id,
+    eventType: 'work-block',
+    assessmentType: type,
+    title: assessment.title,
+    backgroundColor: 'black',
+    editable: moment(b.startTime).isAfter(moment()),
+    color: getters.getCourseFromCRN(assessment.courseCRN).color,
+    start: b.startTime,
+    end: b.endTime,
+    constraint: {
+      start: new Date(),
+      end: type === 'assignment' ? assessment.dueDate : assessment.date
+    },
+    [type]: assessment
+  }),
+  getWorkBlocksAsEvents: (state, getters) => {
+    const assignmentWorkBlocks = state.upcomingAssignments.map(a =>
+      a._blocks.map(b => getters.mapWorkBlockToEvent('assignment', a, b))
+    );
+    const examWorkBlocks = state.upcomingExams.map(ex =>
+      ex._blocks.map(b => getters.mapWorkBlockToEvent('exam', ex, b))
+    );
+
+    return assignmentWorkBlocks.concat(examWorkBlocks).flat();
+  }
 };
 
 const actions = {
-  async AUTO_GET_UPCOMING_ASSIGNMENTS ({ dispatch }) {
+  async AUTO_GET_UPCOMING_WORK ({ dispatch }) {
     await dispatch('GET_UPCOMING_ASSIGNMENTS');
-    setTimeout(() => dispatch('GET_UPCOMING_ASSIGNMENTS'), 1000 * 60 * 60);
+    await dispatch('GET_UPCOMING_EXAMS');
+    setTimeout(() => {
+      dispatch('GET_UPCOMING_ASSIGNMENTS');
+      dispatch('GET_UPCOMING_EXAMS');
+    }, 1000 * 60 * 60);
   },
   async TOGGLE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
@@ -62,19 +111,22 @@ const actions = {
     return request.data.updatedAssignment;
   },
   async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
-    const response = await axios.get('/assignments/list', {
+    const response = await axios.get('/assignments', {
       params: { start: moment().format('YYYY-MM-DD') }
     });
     const assignments = response.data.assignments;
     commit('SET_UPCOMING_ASSIGNMENTS', assignments);
   },
-  async ADD_UPCOMING_ASSIGNMENT ({ dispatch, commit }, assignment) {
-    commit('ADD_UPCOMING_ASSIGNMENT', assignment);
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
-  },
   async REMOVE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
-    const request = await axios.post(`/assignments/a/${assignmentID}/remove`);
+    const request = await axios.delete(`/assignments/a/${assignmentID}`);
+  },
+  async GET_UPCOMING_EXAMS ({ commit }) {
+    const response = await axios.get('/exams', {
+      params: { start: moment().format('YYYY-MM-DD') }
+    });
+    const exams = response.data.exams;
+    commit('SET_UPCOMING_EXAMS', exams);
   }
 };
 
@@ -95,6 +147,12 @@ const mutations = {
     state.upcomingAssignments = state.upcomingAssignments.filter(
       a => a._id !== assignmentID
     );
+  },
+  SET_UPCOMING_EXAMS: (state, exams) => {
+    state.upcomingExams = exams;
+  },
+  ADD_UPCOMING_EXAM: (state, exam) => {
+    state.upcomingExams.push(exam);
   }
 };
 

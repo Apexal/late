@@ -1,29 +1,13 @@
 <template>
-  <details
-    class="schedule panel user-courses"
-    open
-  >
-    <summary class="panel-heading is-unselectable is-size-6 is-clearfix">
-      Today's Classes
-              <span
-                v-if="in_class"
-                class="tag is-info tooltip is-pulled-right"
-                :style="{ 'background-color': current_course.color }"
-                :data-tooltip="'Until end of ' + current_course.longname + ' ' + periodType(current_period)"
-              >
-                {{ countdown }}
-              </span>
-              <span
-                v-else-if="classes_over"
-                class="tag is-dark tooltip"
-                data-tooltip="Classe are over for today!"
-              >
-                Over
-              </span>
-    </summary>
-    <template v-if="is_weekend">
+  <div class="sidebar-schedule">
+    <template v-if="onBreak">
+      <div class="panel-block has-text-grey">
+        {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
+      </div>
+    </template>
+    <template v-else-if="is_weekend">
       <div class="panel-block">
-        <h2 class="subtitle has-text-grey is-size-6">
+        <h2 class="subtitle has-text-grey">
           It's the weekend!
         </h2>
       </div>
@@ -32,7 +16,7 @@
       <div
         v-for="p in periods"
         :key="p.start"
-        class="panel-block period-block is-clearfix is-size-7"
+        class="panel-block period-block is-clearfix"
         :class="{ 'is-active': p == current_period, 'has-background-grey-lighter': hasPassed(p) }"
       >
         <span class="course-longname is-full-width">
@@ -59,7 +43,7 @@
         </span>
       </div>
     </template>
-  </details>
+  </div>
 </template>
 
 <script>
@@ -71,6 +55,18 @@ export default {
     return {};
   },
   computed: {
+    currentTerm () {
+      return this.$store.getters.currentTerm;
+    },
+    nextTerm () {
+      return this.$store.getters.nextTerm;
+    },
+    onBreak () {
+      return this.$store.getters.onBreak;
+    },
+    daysUntilNextTerm () {
+      return moment(this.nextTerm.start).diff(this.now, 'days');
+    },
     now () {
       return this.$store.state.now;
     },
@@ -92,23 +88,17 @@ export default {
     next_period () {
       return this.schedule.next.period;
     },
-    in_class () {
-      return this.$store.getters.in_class;
+    inClass () {
+      return this.$store.getters.inClass;
     },
-    classes_over () {
-      return this.$store.getters.classes_over;
+    classesOver () {
+      return this.$store.getters.classesOver;
     },
     is_weekend () {
       return moment().day() === 6 || moment().day() === 0;
     },
     dateStr () {
       return moment(this.schedule.date).format('YYYY-MM-DD');
-    },
-    countdown () {
-      const diff = moment.duration(
-        moment(this.current_period.end, 'Hmm', true).diff(this.now)
-      );
-      return `${diff.hours()}h ${diff.minutes()}m left`;
     }
   },
   methods: {

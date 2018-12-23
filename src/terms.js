@@ -6,6 +6,7 @@ const list = [
     name: 'Fall 2018',
     code: '201809',
     start: moment('2018-08-30', 'YYYY-MM-DD', true),
+    classesEnd: moment('2018-12-12', 'YYYY-MM-DD', true),
     end: moment('2018-12-22', 'YYYY-MM-DD', true),
     isBreak: false
   },
@@ -25,7 +26,7 @@ const list = [
   }
 ];
 
-module.exports = {
+export default {
   current: () => list.find(t => moment().isBetween(t.start, t.end)) || null,
   list
 };

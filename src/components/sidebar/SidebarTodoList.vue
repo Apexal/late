@@ -1,18 +1,9 @@
 <template>
-  <details class="todos panel">
-    <summary class="panel-heading is-unselectable is-size-6">
-      <span
-        v-if="todos.length > 0"
-        class="tag is-dark is-pulled-right"
-      >
-        {{ todos.length }}
-      </span>
-      To-Do List
-    </summary>
+  <div class="todos">
     <form @submit.prevent="addTodo">
       <div class="control panel-block">
         <input
-          v-model="newTodo"
+          v-model.trim="newTodo"
           class="input is-small"
           type="text"
           placeholder="Add to-do"
@@ -23,7 +14,7 @@
     <div
       v-for="(t, index) in todos"
       :key="index"
-      class="panel-block todo is-size-7"
+      class="panel-block todo"
       title="Click to mark completed."
       @click="removeTodo(t)"
     >
@@ -39,11 +30,11 @@
     </div>
     <div
       v-if="todos.length === 0"
-      class="panel-block has-text-grey-light is-size-7"
+      class="panel-block has-text-grey-light"
     >
       No to-dos saved on this device yet.
     </div>
-  </details>
+  </div>
 </template>
 
 <script>
@@ -66,6 +57,7 @@ export default {
     if (localStorage.getItem('todos')) {
       try {
         this.todos = JSON.parse(localStorage.getItem('todos'));
+        this.$emit('update-count', { tab: 'todos', count: this.todos.length });
       } catch (e) {
         localStorage.removeItem('todos');
       }
@@ -103,6 +95,7 @@ export default {
     saveTodos () {
       const parsed = JSON.stringify(this.todos);
       localStorage.setItem('todos', parsed);
+      this.$emit('update-count', { tab: 'todos', count: this.todos.length });
     }
   }
 };

@@ -1,10 +1,12 @@
+import axios from '@/api';
 import moment from 'moment';
 
 const state = {
   date: null,
+  terms: [],
   current: {
     course: {},
-    period: {}
+    period: false
   },
   next: {
     course: {},
@@ -14,19 +16,24 @@ const state = {
 };
 
 const getters = {
-  in_class: state => !!state.current.period,
-  classes_over: state => {
-    if (state.periods.length === 0) return true;
-
-    // Get last end time
-    const now = moment();
-    const lastEnd = moment(
-      now.format('YYYY-MM-DD') +
-        ' ' +
-        state.periods[state.periods.length - 1].end,
-      'YYYY-MM-DD Hmm'
-    );
-    return now > lastEnd;
+  currentTerm: (state, getters, rootState) =>
+    state.terms.find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
+    {},
+  current_schedule: (state, getters, rootState) => {
+    if (rootState.auth.isAuthenticated && getters.currentTerm) {
+      return rootState.auth.user.semester_schedules[getters.currentTerm.code];
+    } else {
+      return [];
+    }
+  },
+  nextTerm: state => {
+    let tms = state.terms.slice(0);
+    return tms.find(t => moment(t.start).isAfter(moment()));
+  },
+  onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
+  inClass: state => state.current.period !== false,
+  classesOver: (state, getters) => {
+    return moment().isAfter(getters.currentTerm.classesEnd);
   },
   periodType: () => type =>
     ({
@@ -39,14 +46,18 @@ const getters = {
 };
 
 const actions = {
+  async GET_TERMS ({ commit }) {
+    const response = await axios.get('/terms');
+    commit('SET_TERMS', response.data.terms);
+  },
   AUTO_UPDATE_SCHEDULE ({ dispatch }) {
     setInterval(() => {
       dispatch('UPDATE_SCHEDULE');
     }, 1000 * 60);
   },
-  UPDATE_SCHEDULE ({ commit, rootState }) {
+  UPDATE_SCHEDULE ({ commit, getters, rootState }) {
     // Reset all state values
-    const semesterSchedule = rootState.auth.user.current_schedule;
+    const semesterSchedule = getters.current_schedule;
 
     const now = moment(); // moment('1430', 'Hmm');
     const dateStr = now.format('YYYY-MM-DD');
@@ -73,7 +84,7 @@ const actions = {
       datetime: now,
       current: {
         course: currentCourse,
-        period: currentPeriod
+        period: currentPeriod || false
       },
       periods: dayPeriods
     });
@@ -81,6 +92,18 @@ const actions = {
 };
 
 const mutations = {
+  SET_TERMS: (state, terms) => {
+    state.terms = terms;
+    state.terms.sort((t1, t2) => {
+      if (t1.code < t2.code) {
+        return -1;
+      }
+      if (t1.code > t2.code) {
+        return 1;
+      }
+      return 0;
+    });
+  },
   UPDATE_SCHEDULE: (state, payload) => {
     state.date = payload.datetime.toDate();
     state.periods = payload.periods;

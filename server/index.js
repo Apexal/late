@@ -9,6 +9,8 @@ const Body = require('koa-bodyparser');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
 
+const moment = require('moment');
+
 // Start the Discord bot
 require('./integrations/discord');
 
@@ -45,6 +47,7 @@ app.use(Logger());
 app.use(Static('dist/'));
 
 const Student = require('./api/students/students.model');
+const Term = require('./api/terms/terms.model');
 app.use(async (ctx, next) => {
   ctx.state.env = process.env.NODE_ENV;
 
@@ -52,6 +55,14 @@ app.use(async (ctx, next) => {
     ctx.state.user = await Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
+
+    // If first request, get terms
+    /* if (!ctx.session.terms) */ ctx.session.terms = await Term.find().exec();
+
+    // Calculate current term on each request in case it changes (very unlikely but possible)
+    ctx.session.currentTerm = ctx.session.terms.find(t =>
+      moment().isBetween(moment(t.start), moment(t.end))
+    );
   }
 
   await next();

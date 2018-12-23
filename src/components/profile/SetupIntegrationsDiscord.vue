@@ -100,6 +100,9 @@ export default {
   computed: {
     verified () {
       return this.$store.state.auth.user.integrations.discord.verified;
+    },
+    saved () {
+      return JSON.stringify(this.preferences) === JSON.stringify(this.$store.state.auth.user.integrations.discord.preferences);
     }
   },
   methods: {

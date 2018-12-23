@@ -88,6 +88,8 @@ async function verifySMS (ctx) {
   ctx.state.user.integrations.sms.verificationCode = undefined;
   ctx.state.user.integrations.sms.verified = true;
 
+  ctx.state.user.setup.integrations = true;
+
   try {
     await ctx.state.user.save();
   } catch (e) {
@@ -109,9 +111,22 @@ async function updatePreferencesSMS (ctx) {
   const preferences = ctx.request.body;
 
   Object.assign(ctx.state.user.integrations.sms.preferences, preferences);
+  ctx.state.user.setup.integrations = true;
 
   try {
     await ctx.state.user.save();
+
+    const lines = [];
+    lines.push('You updated your SMS preferences for LATE:');
+    if (!preferences.enabled) {
+      lines.push('❌ no SMS notifications');
+    } else {
+      lines.push((preferences.preWorkText ? '✔️' : '❌') + ' pre-work session reminders');
+      lines.push((preferences.postWorkText ? '✔️' : '❌') + ' post-work session reminders');
+      lines.push((preferences.reminders ? '✔️' : '❌') + ' assignment due date reminders');
+    }
+
+    SMS.sendText(ctx.state.user.integrations.sms.phoneNumber, lines.join('\n'));
   } catch (e) {
     logger.error(
       `Failed to update SMS preferences for ${ctx.state.user.rcs_id}: ${e}`
@@ -158,6 +173,8 @@ async function updatePreferencesDiscord (ctx) {
 
   Object.assign(ctx.state.user.integrations.discord.preferences, preferences);
 
+  ctx.state.user.setup.integrations = true;
+
   try {
     await ctx.state.user.save();
   } catch (e) {
@@ -182,6 +199,8 @@ async function updatePreferencesEmail (ctx) {
   const preferences = ctx.request.body;
 
   Object.assign(ctx.state.user.integrations.email.preferences, preferences);
+
+  ctx.state.user.setup.integrations = true;
 
   try {
     await ctx.state.user.save();

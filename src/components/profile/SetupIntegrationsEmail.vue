@@ -45,6 +45,7 @@
 
       <hr>
 
+
       <div>
         <button
           style="margin-right: 5px;"
@@ -79,6 +80,11 @@ export default {
         this.$store.state.auth.user.integrations.email.preferences
       )
     };
+  },
+  computed: {
+    saved () {
+      return JSON.stringify(this.preferences) === JSON.stringify(this.$store.state.auth.user.integrations.email.preferences);
+    }
   },
   methods: {
     async save () {

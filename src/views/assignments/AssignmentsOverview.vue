@@ -21,106 +21,12 @@
       class="section"
     >
       <div class="is-clearfix">
-        <div class="dropdown is-hoverable is-right is-pulled-right is-hidden-desktop">
-          <div class="dropdown-trigger">
-            <button
-              class="button is-dark"
-              :class="{ 'is-loading': loading || toggleLoading }"
-              aria-haspopup="true"
-              aria-controls="dropdown-menu"
-            >
-              <span>Actions</span>
-              <span class="icon is-small">
-                <i
-                  class="fas fa-angle-down"
-                  aria-hidden="true"
-                />
-              </span>
-            </button>
-          </div>
-          <div
-            id="dropdown-menu"
-            class="dropdown-menu"
-            role="menu"
-          >
-            <div class="dropdown-content">
-              <a
-                v-if="!isPast"
-                href="#"
-                class="dropdown-item"
-                @click="editing = true"
-              >
-                <span class="icon margin-left">
-                  <i class="fas fa-pencil-alt" />
-                </span>
-                Edit Info
-              </a>
-              <a
-                href="#"
-                class="dropdown-item"
-                @click="toggleCompleted"
-              >
-                <span class="icon margin-left">
-                  <i
-                    class="fas"
-                    :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
-                  />
-                </span>
-                {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
-              </a>
-              <hr class="dropdown-divider">
-              <router-link
-                to="/assignments"
-                class="dropdown-item"
-              >
-                <span class="icon">
-                  <i class="fas fa-angle-left margin-right" />
-                </span>
-                All Assignments
-              </router-link>
-            </div>
-          </div>
-        </div>
-
-        <div class="assignment-controls buttons has-addons is-pulled-right is-hidden-touch">
-          <router-link
-            to="/assignments"
-            class="button is-link tooltip"
-            data-tooltip="Browse all assignments."
-          >
-            <span class="icon">
-              <i class="fas fa-angle-left margin-right" />
-            </span>
-            Browse
-          </router-link>
-
-          <button
-            v-if="!isPast"
-            class="button is-warning tooltip"
-            data-tooltip="Change this assignment's info."
-            @click="toggleEditing"
-          >
-            <span class="icon">
-              <i class="fas fa-pencil-alt" />
-            </span>
-            Edit Info
-          </button>
-
-          <button
-            class="button tooltip"
-            :class="{ 'is-success': !assignment.completed, 'is-danger': assignment.completed }"
-            data-tooltip="Toggle this assignment's completion status."
-            @click="toggleCompleted"
-          >
-            <span class="icon">
-              <i
-                class="fas"
-                :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
-              />
-            </span>
-            {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
-          </button>
-        </div>
+        <AssignmentOverviewActionButtons
+          :assignment="assignment"
+          :loading="loading || toggleLoading"
+          @toggle-editing="toggleEditing"
+          @toggle-completed="toggleCompleted"
+        />
 
         <h2 class="subtitle">
           <span
@@ -238,94 +144,16 @@
         </blockquote>
       </div>
 
-      <div class="tabs">
-        <ul>
-          <li
-            :class="{ 'is-active': tab === 'schedule' }"
-            @click="tab = 'schedule'"
-          >
-            <a>Work Schedule</a>
-          </li>
-          <li
-            :class="{ 'is-active': tab === 'comments' }"
-            @click="tab = 'comments'"
-          >
-            <a>
-              Comments
-              <span
-                v-if="assignment.comments.length > 0"
-                class="tag is-dark comment-count"
-              >
-                {{ assignment.comments.length }}
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div
-        v-if="tab === 'schedule'"
-        class="assignment-schedule"
-      >
-        <p class="has-text-grey has-text-centered">
-          Coming soon...
-        </p>
-      </div>
-      <div
-        v-else-if="tab === 'comments'"
-        class="assignment-comments"
-      >
-        <div
-          v-if="assignment.comments.length === 0"
-          class="has-text-grey has-text-centered"
-        >
-          {{ isPast ? 'No comments were posted for this assignment.' : 'You have not posted any comments yet.' }}
-        </div>
-        <div
-          v-for="(c, index) in assignment.comments"
-          :key="index"
-          class="box"
-        >
-          <small
-            class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
-            :data-tooltip="toFullDateTimeString(c.addedAt)"
-          >
-            {{ fromNow(c.addedAt) }}
-          </small>
-          <VueMarkdown
-            :source="c.body"
-            :html="false"
-            :emoji="true"
-            :anchor-attributes="{target: '_blank'}"
-          />
-        </div>
-        <template v-if="!isPast">
-          <hr>
-          <div class="box is-clearfix">
-            <form @submit.prevent="addComment">
-              <div class="field">
-                <div class="control">
-                  <textarea
-                    id="new-comment"
-                    v-model="newComment"
-                    placeholder="Write your comment here. Markdown is supported!"
-                    cols="30"
-                    rows="10"
-                    class="input"
-                    required
-                  />
-                </div>
-              </div>
-              <button
-                :class="{ 'is-loading': commentLoading }"
-                class="button is-success is-pulled-right"
-              >
-                Add Comment
-              </button>
-            </form>
-          </div>
-        </template>
-      </div>
+      <AssignmentOverviewTabs
+        :tab="tab"
+        :assignment="assignment"
+        :loading="loading || commentLoading"
+        @set-tab="tabChanged"
+        @add-comment="addComment"
+        @add-work-block="addWorkBlock"
+        @edit-work-block="editWorkBlock"
+        @remove-work-block="removeWorkBlock"
+      />
     </section>
   </div>
 </template>
@@ -334,15 +162,17 @@
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 
+// Page components
 import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
+import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
+import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
 
 export default {
   name: 'AssignmentsOverview',
-  components: { VueMarkdown, AssignmentsModalEdit },
+  components: { VueMarkdown, AssignmentsModalEdit, AssignmentOverviewActionButtons, AssignmentOverviewTabs },
   data () {
     return {
-      tab: 'comments',
-      newComment: '',
+      tab: 'schedule',
       commentLoading: false,
       toggleLoading: false,
       loading: true,
@@ -373,7 +203,7 @@ export default {
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
     },
     isPast () {
-      return moment().isAfter(moment(this.assignment.dueDate));
+      return this.assignment.passed;
     },
     toggleButtonTitle () {
       return this.assignment.completed
@@ -390,6 +220,9 @@ export default {
     this.getAssignment();
   },
   methods: {
+    tabChanged (newTab) {
+      this.tab = newTab;
+    },
     toggleEditing () {
       this.editing = !this.editing;
     },
@@ -498,7 +331,7 @@ export default {
       if (this.isUpcoming) {
         await this.$store.dispatch('REMOVE_UPCOMING_ASSIGNMENT', assignmentID);
       } else {
-        await this.$http.post(`/assignments/a/${assignmentID}/remove`);
+        await this.$http.delete(`/assignments/a/${assignmentID}`);
       }
 
       // Notify user of success
@@ -512,14 +345,63 @@ export default {
         }
       );
     },
-    async addComment () {
-      if (!this.newComment) return;
+    async addWorkBlock ({ start, end }) {
+      let request;
+      request = await this.$http.post(`/assignments/a/${this.assignment._id}/blocks`, { startTime: start, endTime: end, assessmentType: 'assignment' });
+
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.editedAssignment(request.data.updatedAssignment);
+      }
+      const dayStr = moment(start).format('dddd [the] do');
+      const startStr = moment(start).format('h:mma');
+      const endStr = moment(end).format('h:mma');
+      this.$toasted.show(`Scheduled to work on this assignment on from ${dayStr} ${startStr} to ${endStr}!`);
+    },
+    async editWorkBlock ({ blockID, start, end }) {
+      let request;
+      request = await this.$http.patch(`/assignments/a/${this.assignment._id}/blocks/${blockID}`, { startTime: start, endTime: end, assessmentType: 'assignment' });
+
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.editedAssignment(request.data.updatedAssignment);
+      }
+
+      this.$toasted.show('Rescheduled work block!');
+    },
+    async removeWorkBlock (blockID) {
+      let request;
+      request = await this.$http.delete(`/assignments/a/${this.assignment._id}/blocks/${blockID}`);
+
+      // Update state by removing work block from this assignment
+      const updatedAssignment = Object.assign({}, this.assignment, { _blocks: this.assignment._blocks.filter(b => b._id !== blockID) });
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          updatedAssignment
+        );
+      } else {
+        this.editedAssignment(updatedAssignment);
+      }
+
+      this.$toasted.error('Removed work block from your schedule!');
+    },
+    async addComment (newComment) {
+      if (!newComment) return;
 
       this.commentLoading = true;
       let request;
       request = await this.$http.post(
-        `/assignments/a/${this.assignment._id}/comments/add`,
-        { comment: this.newComment }
+        `/assignments/a/${this.assignment._id}/comments`,
+        { comment: newComment }
       );
 
       // Calls API and updates state
@@ -532,7 +414,6 @@ export default {
         this.editedAssignment(request.data.updatedAssignment);
       }
 
-      this.newComment = '';
       this.commentLoading = false;
     }
   }
@@ -543,19 +424,7 @@ export default {
 .due-title {
   margin-top: 5px;
 }
-.assignment-controls {
-  span.icon {
-    margin-right: 0px !important;
-  }
-}
-.comment-count {
-  margin-left: 3px;
-}
-#new-comment {
-  max-width: 900px;
-  min-height: 100px;
-  max-height: 200px;
-}
+
 .assignment-stats {
   padding: 10px;
 }

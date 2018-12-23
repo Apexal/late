@@ -17,7 +17,7 @@ const mutations = {
   TOGGLE_ADD_ASSIGNMENT_MODAL: state => (state.expanded = !state.expanded)
 };
 
-module.exports = {
+export default {
   state,
   getters,
   mutations

@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const moment = require('moment');
 
+require('../blocks/blocks.model');
+
 // const rpiValidator = require('rpi-validator');
 
 const CURRENT_TERM = '201809';
@@ -110,7 +112,11 @@ const schema = new Schema(
       unavailability: {
         type: Boolean,
         default: false
-      } // when the student cannot study or work
+      }, // when the student cannot study or work
+      integrations: {
+        type: Boolean,
+        default: false
+      } // when the student has setup (or chosen not to setup) integrations
     },
     joined_date: {
       type: Date,
@@ -135,8 +141,8 @@ schema.query.byUsername = function (rcsID) {
 
 /* METHODS */
 
-schema.methods.courseFromCRN = function (crn) {
-  return this.current_schedule.filter(c => c.crn === crn)[0];
+schema.methods.courseFromCRN = function (schedule, crn) {
+  return schedule.filter(c => c.crn === crn)[0];
 };
 
 schema.methods.getAssignments = function (start, end) {
@@ -156,27 +162,54 @@ schema.methods.getAssignments = function (start, end) {
 
   return this.model('Assignment')
     .find(query)
+    .populate('_blocks')
     .sort('dueDate')
     .sort('-priority')
+    .exec();
+};
+
+schema.methods.getExams = function (start, end) {
+  let query = {
+    _student: this._id
+  };
+
+  if (start) {
+    query.date = query.date || {};
+    query.date['$gte'] = moment(start, 'YYYY-MM-DD', true).toDate();
+  }
+
+  if (end) {
+    query.date = query.date || {};
+    query.date['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate();
+  }
+
+  return this.model('Exam')
+    .find(query)
+    .sort('date')
+    .sort('-timeRemaining')
     .exec();
 };
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
+/*
 schema
   .virtual('current_schedule')
   .get(function () {
+    if (!this.semester_schedules) return [];
     return this.semester_schedules[CURRENT_TERM] || [];
   })
   .set(function (newSchedule) {
     this.semester_schedules[CURRENT_TERM] = newSchedule;
     this.markModified('semester_schedules');
   });
+*/
 
 schema
   .virtual('current_unavailability')
   .get(function () {
+    if (!this.unavailability_schedules) return [];
     return this.unavailability_schedules[CURRENT_TERM] || [];
   })
   .set(function (newSchedule) {

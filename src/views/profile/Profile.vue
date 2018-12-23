@@ -1,7 +1,9 @@
 <template>
   <div id="profile">
     <section class="section">
-      <h1 class="title">Your Profile</h1>
+      <h1 class="title">
+        Your Profile
+      </h1>
 
       <div class="steps">
         <router-link
@@ -26,7 +28,9 @@
           </div>
 
           <div class="step-details">
-            <p class="step-title">{{ s.label }}</p>
+            <p class="step-title">
+              {{ s.label }}
+            </p>
           </div>
         </router-link>
       </div>

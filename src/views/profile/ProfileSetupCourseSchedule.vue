@@ -154,7 +154,7 @@ export default {
       loading: false,
       method: 'sis',
       pin: '',
-      crns: this.$store.state.auth.user.current_schedule
+      crns: this.$store.getters.current_schedule
         .map(c => c.crn)
         .join(',')
     };
@@ -167,7 +167,7 @@ export default {
       return this.$store.state.auth.user;
     },
     courses () {
-      return this.user.current_schedule;
+      return this.$store.getters.current_schedule;
     }
   },
   methods: {

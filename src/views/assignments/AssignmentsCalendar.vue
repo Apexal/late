@@ -37,6 +37,10 @@ export default {
           right: 'today prev,next'
         },
         config: {
+          validRange: {
+            start: this.$store.getters.currentTerm.start,
+            end: this.$store.getters.currentTerm.end
+          },
           height: 800,
           events: this.events,
           defaultView: 'month',
@@ -70,9 +74,7 @@ export default {
 
       try {
         request = await this.$http.get(
-          `/assignments/list?start=${start.format(
-            'YYYY-MM-DD'
-          )}&end=${end.format('YYYY-MM-DD')}`
+          '/assignments', { params: { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') } }
         );
       } catch (e) {
         this.events = [];

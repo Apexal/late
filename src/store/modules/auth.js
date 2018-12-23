@@ -9,48 +9,30 @@ const getters = {
   getUnavailabilityAsEvents: state => {
     if (!state.user.current_unavailability) return [];
     return state.user.current_unavailability.map(p => {
-      const sunday = moment().startOf('day');
-      while (sunday.day() !== 0) sunday.subtract(1, 'days');
-      const sundayStr = sunday.format('YYYY-MM-DD');
-
-      let start = moment(sundayStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true).add(
-        parseInt(p.day),
-        'days'
-      );
-      let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true).add(
-        parseInt(p.day),
-        'days'
-      );
+      let start = moment(p.start, 'Hmm', true).format('HH:mm');
+      let end = moment(p.end, 'Hmm', true).format('HH:mm');
 
       return {
         id: 'unavailable',
         title: 'Busy',
-        start: start,
+        editable: false,
+        eventType: 'unavailability',
+        start,
         end,
+        dow: [p.day],
         isWorkBlock: true
       };
     });
   },
-  getCourseScheduleAsEvents: (state, getters) => {
-    if (!state.user.current_schedule) return [];
-
-    const sunday = moment().startOf('day');
-    while (sunday.day() !== 0) sunday.subtract(1, 'days');
-
-    const sundayStr = sunday.format('YYYY-MM-DD');
+  getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
+    if (!rootGetters.current_schedule) return [];
     // Turn periods into this week's schedule...
-    const events = state.user.current_schedule
+    const events = rootGetters.current_schedule
       .map(c =>
         c.periods.map(p => {
-          let start = moment(
-            sundayStr + ' ' + p.start,
-            'YYYY-MM-DD Hmm',
-            true
-          ).add(parseInt(p.day), 'days');
-          let end = moment(sundayStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true).add(
-            parseInt(p.day),
-            'days'
-          );
+          let start = moment(p.start, 'Hmm', true).format('HH:mm');
+
+          let end = moment(p.end, 'Hmm', true).format('HH:mm');
 
           return {
             id: 'course',
@@ -58,6 +40,7 @@ const getters = {
             title: `${c.longname} ${getters.periodType(p.type)}`,
             start,
             end,
+            dow: [p.day],
             color: c.color,
             editable: false,
             period: p,
@@ -84,14 +67,16 @@ const actions = {
   async SET_USER ({ dispatch, commit }, user) {
     commit('SET_USER', user);
     await dispatch('UPDATE_SCHEDULE');
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
   },
-  async UPDATE_COURSE ({ state, commit }, updatedCourse) {
-    commit('UPDATE_COURSE', updatedCourse);
+  async UPDATE_COURSE ({ state, commit, rootGetters }, updatedCourse) {
+    commit('UPDATE_COURSE', {
+      currentTermCode: rootGetters.currentTerm.code,
+      updatedCourse
+    });
 
     // call API
     const request = await axios.post('/setup/courses', {
-      courses: state.user.current_schedule
+      courses: rootGetters.current_schedule
     });
 
     commit('SET_USER', request.data.updatedUser);
@@ -103,9 +88,11 @@ const mutations = {
     state.user = user;
     state.isAuthenticated = true;
   },
-  UPDATE_COURSE: (state, updatedCourse) => {
+  UPDATE_COURSE: (state, { currentTermCode, updatedCourse }) => {
     Object.assign(
-      state.user.current_schedule.find(c => c.crn === updatedCourse.crn),
+      state.user.semester_schedules[currentTermCode].find(
+        c => c.crn === updatedCourse.crn
+      ),
       updatedCourse
     );
   },

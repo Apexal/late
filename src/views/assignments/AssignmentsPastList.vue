@@ -226,7 +226,7 @@ export default {
       let request;
 
       try {
-        request = await this.$http.get('/assignments/list', {
+        request = await this.$http.get('/assignments', {
           params: { start: this.startDate, end: this.endDate }
         });
       } catch (e) {

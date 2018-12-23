@@ -8,7 +8,9 @@
     <router-link
       class="button is-medium is-primary"
       to="/profile/personalinfo"
-    >Start Setup</router-link>
+    >
+      Start Setup
+    </router-link>
   </div>
 </template>
 

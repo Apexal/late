@@ -1,65 +1,71 @@
 <template>
-  <details
-    class="panel sidebar-pressing-assignments"
-    open
-  >
-    <summary class="panel-heading is-clearfix is-unselectable is-size-6">
-      Pressing Assignments
-      <span class="is-pulled-right icon">
-        <i
-          class="fas fa-plus add-assignment"
-          @click="$emit('toggle-modal')"
-        />
-      </span>
-    </summary>
-    <div
-      v-if="pressing.length == 0"
-      class="panel-block has-text-grey is-size-7"
-    >
-      <span>No pressing assignments!</span>
-    </div>
-    <transition-group
-      name="list"
-      tag="div"
-    >
-      <router-link
-        v-for="a in pressing"
-        :key="a._id"
+  <div class="sidebar-pressing-assignments">
+    <template v-if="onBreak">
+      <div class="panel-block has-text-grey">
+        There's no work over break!
+      </div>
+    </template>
+    <template v-else>
+      <div
+        v-if="pressing.length == 0"
+        class="panel-block has-text-grey"
+      >
+        <span>No pressing assignments!</span>
+      </div>
+      <transition-group
+        name="list"
         tag="div"
-        class="assignment assignment-link panel-block is-size-7"
-        :title="a.description.substring(0, 500)"
-        :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-        :class="{ 'priority': a.priority >= 7 }"
       >
+        <router-link
+          v-for="a in pressing"
+          :key="a._id"
+          tag="div"
+          class="assignment assignment-link panel-block"
+          :title="a.description.substring(0, 500)"
+          :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
+          :class="{ 'priority': a.priority >= 7 }"
+        >
+          <span class="is-full-width">
+            <span
+              class="dot course-dot"
+              :title="course(a).longname"
+              :style="'background-color: ' + course(a).color"
+            />
+            <b class="course-title is-hidden-tablet">
+              {{ course(a).longname }}
+            </b>
+            {{ a.title }}
+            <small
+              class="has-text-grey is-pulled-right tooltip is-tooltip-left"
+              :data-tooltip="toFullDateTimeString(a.dueDate)"
+            >
+              {{ fromNow(a.dueDate) }}
+            </small>
+          </span>
+        </router-link>
+      </transition-group>
+      <div class="controls panel-block has-background-white-ter">
         <span class="is-full-width">
-          <span
-            class="dot course-dot"
-            :title="course(a).longname"
-            :style="'background-color: ' + course(a).color"
-          />
-          <b class="course-title is-hidden-tablet">
-            {{ course(a).longname }}
-          </b>
-          {{ a.title }}
-          <small
-            class="has-text-grey is-pulled-right tooltip is-tooltip-left"
-            :data-tooltip="toFullDateTimeString(a.dueDate)"
+          <button
+            class="button is-link is-small"
+            @click.prevent="$emit('toggle-modal')"
           >
-            {{ fromNow(a.dueDate) }}
-          </small>
+            <span class="icon">
+              <i class="fa fa-plus" />
+            </span>
+            Add Assignment
+          </button>
+          <router-link
+            tag="button"
+            class="button is-link is-small is-outlined is-pulled-right"
+            to="/assignments"
+          >
+            Browse
+          </router-link>
         </span>
-      </router-link>
-    </transition-group>
-    <div class="panel-block">
-      <router-link
-        tag="button"
-        class="button is-small is-link is-outlined is-fullwidth"
-        to="/assignments"
-      >
-        All Assignments
-      </router-link>
-    </div>
-  </details>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -75,6 +81,9 @@ export default {
     }
   },
   computed: {
+    onBreak () {
+      return this.$store.getters.onBreak;
+    },
     now () {
       return this.$store.state.now;
     }
@@ -87,10 +96,7 @@ export default {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
     toFullDateTimeString: dueDate =>
-      moment(dueDate).format('ddd, MMM Do YYYY, h:mma'),
-    getCourseFromCRN (crn) {
-      return this.$store.getters.getCourseFromCRN(crn);
-    }
+      moment(dueDate).format('ddd, MMM Do YYYY, h:mma')
   }
 };
 </script>
@@ -123,7 +129,9 @@ export default {
   }
 }
 
-.add-assignment {
-  cursor: pointer;
+.controls {
+  .icon {
+    margin-right: 0 !important;
+  }
 }
 </style>

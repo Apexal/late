@@ -109,7 +109,7 @@ export default {
       return this.$route.meta.title;
     },
     courses () {
-      return this.$store.state.auth.user.current_schedule;
+      return this.$store.getters.current_schedule;
     }
   },
   watch: {
