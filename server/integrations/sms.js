@@ -8,10 +8,6 @@ const client = new Twilio(accountSid, authToken);
 
 const sanitizePhoneNumber = number => '+1' + number.replace('-', '');
 
-function courseFromCRN (student, crn) {
-  return student.current_schedule.filter(c => c.crn === crn)[0];
-}
-
 async function sendText (to, body) {
   return client.messages.create({
     from: phoneNumber,
@@ -30,7 +26,7 @@ const utils = {
     lines.push(`[${missed.length} Missed Assignments]`);
 
     for (let a of missed) {
-      const course = courseFromCRN(student, a.courseCRN);
+      const course = student.courseFromCRN(a.courseCRN);
 
       lines.push(
         `${moment(a.dueDate).format('h:mma')} - ${course.longname} - ${a.title}`

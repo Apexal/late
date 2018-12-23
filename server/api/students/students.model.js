@@ -141,8 +141,8 @@ schema.query.byUsername = function (rcsID) {
 
 /* METHODS */
 
-schema.methods.courseFromCRN = function (crn) {
-  return this.current_schedule.filter(c => c.crn === crn)[0];
+schema.methods.courseFromCRN = function (schedule, crn) {
+  return schedule.filter(c => c.crn === crn)[0];
 };
 
 schema.methods.getAssignments = function (start, end) {
