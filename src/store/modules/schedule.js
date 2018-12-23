@@ -6,7 +6,7 @@ const state = {
   terms: [],
   current: {
     course: {},
-    period: {}
+    period: false
   },
   next: {
     course: {},
@@ -31,7 +31,7 @@ const getters = {
     return tms.find(t => moment(t.start).isAfter(moment()));
   },
   onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
-  inClass: state => !state.current.period,
+  inClass: state => state.current.period !== false,
   classesOver: (state, getters) => {
     return moment().isAfter(getters.currentTerm.classesEnd);
   },
