@@ -2,7 +2,6 @@
   <div id="app">
     <TheHeader />
     <Loading
-      v-if="!loading"
       :active.sync="loading"
       :is-full-page="true"
     />
