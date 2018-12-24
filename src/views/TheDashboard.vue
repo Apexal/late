@@ -127,7 +127,7 @@ export default {
 
       const unavailabilitySchedule = this.$store.getters.getUnavailabilityAsEvents.map(
         e =>
-          Object.assign(e, {
+          Object.assign({}, e, {
             backgroundColor: 'black',
             rendering: 'background'
           })
