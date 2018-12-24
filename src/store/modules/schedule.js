@@ -73,6 +73,17 @@ const actions = {
     const dateStr = now.format('YYYY-MM-DD');
     const day = now.day();
 
+    if (getters.onBreak) {
+      return commit('UPDATE_SCHEDULE', {
+        datetime: now,
+        current: {
+          course: false,
+          period: false
+        },
+        periods: []
+      });
+    }
+
     // Find periods for current day
     let dayPeriods = semesterSchedule
       .map(course => course.periods.filter(p => p.day === day))

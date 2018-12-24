@@ -166,7 +166,7 @@ export default {
       loading: false,
       method: 'sis',
       pin: '',
-      crns: this.$store.getters.current_schedule.map(c => c.crn).join(',')
+      crns: ''
     };
   },
   computed: {
@@ -187,6 +187,11 @@ export default {
     }
   },
   methods: {
+    created () {
+      this.crns = this.$store.getters.current_schedule
+        .map(c => c.crn)
+        .join(',');
+    },
     async updatedCourse (updatedCourse) {
       this.loading = true;
 
