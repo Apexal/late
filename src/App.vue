@@ -5,6 +5,12 @@
       :active.sync="loading"
       :is-full-page="true"
     />
+    <template v-if="loggedIn">
+      <CourseModal
+        :open="courseModalOpen"
+        :course="courseModalData"
+      />
+    </template>
     <template v-if="!loading">
       <AssignmentsAddModal
         :open="addAssignmentModalExpanded"
@@ -69,21 +75,39 @@ import TheFooter from '@/components/TheFooter';
 import TheSidebar from '@/components/sidebar/TheSidebar';
 import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
 import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
+import CourseModal from '@/components/courses/CourseModal';
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   name: 'LATE',
-  components: { Loading, TheHeader, TheSidebar, TheFooter, AssignmentsAddModal, ExamsModalAdd },
+  components: {
+    Loading,
+    CourseModal,
+    TheHeader,
+    TheSidebar,
+    TheFooter,
+    AssignmentsAddModal,
+    ExamsModalAdd
+  },
   data () {
     return {
       loading: true
     };
   },
   computed: {
+    courseModalData () {
+      return this.$store.state.courseModal.current;
+    },
+    courseModalOpen () {
+      return this.$store.state.courseModal.open;
+    },
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
+    },
+    courses () {
+      return this.$store.getters.current_schedule;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;

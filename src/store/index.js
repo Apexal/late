@@ -7,6 +7,7 @@ import work from './modules/work';
 import schedule from './modules/schedule';
 import addAssignmentModal from './modules/addAssignmentModal';
 import addExamModal from './modules/addExamModal';
+import courseModal from './modules/courseModal';
 
 Vue.use(Vuex);
 
@@ -18,7 +19,8 @@ export default new Vuex.Store({
     work,
     schedule,
     addAssignmentModal,
-    addExamModal
+    addExamModal,
+    courseModal
   },
   state: {
     navbarExpanded: false,
