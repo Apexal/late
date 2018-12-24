@@ -120,9 +120,14 @@ export default {
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
             if (!calEvent.eventType === 'unavailability') return;
+
             this.saved = false;
             this.calendar.events = this.calendar.events.filter(
-              e => !moment(e.start).isSame(moment(calEvent.start))
+              e =>
+                !(
+                  e.dow[0] === calEvent.start.day() &&
+                  calEvent.start.format('HH:mm') === e.start
+                )
             );
           },
 
