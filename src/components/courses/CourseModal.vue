@@ -12,6 +12,8 @@
         <h2 class="subtitle">
           {{ course.longname }}
         </h2>
+        <hr>
+        <b>Links</b>
         <ul>
           <li
             v-for="l in course.links"

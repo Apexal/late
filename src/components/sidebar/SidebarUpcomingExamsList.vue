@@ -29,6 +29,7 @@
               class="dot course-dot"
               :title="course(ex).longname"
               :style="'background-color: ' + course(ex).color"
+              @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(ex))"
             />
             <b class="course-title is-hidden-tablet">
               {{ course(ex).longname }}
@@ -92,8 +93,7 @@ export default {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
-    toFullDateTimeString: date =>
-      moment(date).format('ddd, MMM Do YYYY, h:mma')
+    toFullDateTimeString: date => moment(date).format('ddd, MMM Do YYYY, h:mma')
   }
 };
 </script>

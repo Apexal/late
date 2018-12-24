@@ -1,7 +1,9 @@
 <template>
   <div class="sidebar-schedule">
     <template v-if="onBreak">
-      <div class="panel-block has-text-grey">
+      <div
+        class="panel-block has-text-grey"
+      >
         {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
       </div>
     </template>
@@ -23,6 +25,7 @@
           <span
             class="course-dot dot"
             :style="'background-color: ' + course(p).color"
+            @click="$store.commit('OPEN_COURSE_MODAL', course(p))"
           />
           <span
             class="tooltip is-tooltip-bottom"
@@ -102,6 +105,9 @@ export default {
     }
   },
   methods: {
+    openCourseModal (course) {
+      this.$store.commit('OPEN_COURSE_MODAL', course);
+    },
     fromNow (datetime) {
       const time = moment(datetime, 'Hmm', true);
       return `${time.isBefore(this.now) ? 'Started' : 'Starting'} ${time.from(

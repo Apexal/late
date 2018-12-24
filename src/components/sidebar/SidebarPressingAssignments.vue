@@ -30,6 +30,7 @@
               class="dot course-dot"
               :title="course(a).longname"
               :style="'background-color: ' + course(a).color"
+              @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(a))"
             />
             <b class="course-title is-hidden-tablet">
               {{ course(a).longname }}
