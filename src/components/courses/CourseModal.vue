@@ -9,12 +9,24 @@
     />
     <div class="modal-content">
       <div class="box">
+        <div
+          class="tag section-tag is-pulled-right"
+          :style="{ 'background-color': course.color }"
+        >
+          Section {{ course.section_id }}
+        </div>
         <h2 class="subtitle">
           {{ course.longname }}
+          <router-link
+            title="Edit course info and links."
+            :to="{ name: 'setup-course-schedule' }"
+            class="icon margin-left"
+          >
+            <i class="fas fa-pencil-alt" />
+          </router-link>
         </h2>
         <hr>
-        <b>Links</b>
-        <ul>
+        <ul v-if="course.links">
           <li
             v-for="l in course.links"
             :key="l"
@@ -27,6 +39,12 @@
             </a>
           </li>
         </ul>
+        <span
+          v-else
+          class="has-text-centered has-text-grey"
+        >
+          No links added.
+        </span>
       </div>
     </div>
   </div>
@@ -46,4 +64,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.section-tag {
+  color: white;
+}
 </style>
