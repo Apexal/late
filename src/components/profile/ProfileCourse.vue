@@ -1,13 +1,15 @@
 <template>
   <div class="course box">
     <template v-if="!editing">
-      <details>
+      <details :open="open">
         <summary
           class="is-clearfix is-unselectable"
           style="cursor:pointer;"
         >
           {{ courseData.longname }}
-          <small class="has-text-grey">
+          <small
+            class="has-text-grey"
+          >
             {{ courseData.periods.length }} periods
           </small>
           <span
@@ -42,15 +44,31 @@
               >
                 <td>{{ day(p.day) }}</td>
                 <td>
-                  {{ time(p.start) }}<span class="has-text-grey-light">
+                  {{ time(p.start) }}
+                  <span class="has-text-grey-light">
                     -
-                  </span>{{ time(p.end) }}
+                  </span>
+                  {{ time(p.end) }}
                 </td>
                 <td>{{ p.location }}</td>
                 <td>{{ type(p.type) }}</td>
               </tr>
             </tbody>
           </table>
+
+          <ul class="course-links">
+            <li
+              v-for="l in courseData.links"
+              :key="l"
+            >
+              <a
+                :href="l"
+                target="_blank"
+              >
+                {{ l }}
+              </a>
+            </li>
+          </ul>
         </div>
       </details>
     </template>
@@ -75,6 +93,10 @@
           type="color"
           class="input course-color-input"
         >
+        <InputTag
+          v-model="courseData.links"
+          placeholder="Put links to courses here! Hit Enter after each link."
+        />
         <button
           type="button"
           class="button is-warning"
@@ -95,18 +117,21 @@
 
 <script>
 import moment from 'moment';
+import InputTag from 'vue-input-tag';
 
 export default {
   name: 'ProfileCourse',
+  components: { InputTag },
   props: {
     course: {
       type: Object,
       required: true,
-      default: () => { }
+      default: () => {}
     }
   },
   data () {
     return {
+      open: false,
       courseData: Object.assign({}, this.course),
       editing: false
     };
@@ -117,7 +142,9 @@ export default {
         .concat()
         .sort((a, b) => parseInt(a.day) - parseInt(b.day));
     },
-    saved () { return JSON.stringify(this.course) === JSON.stringify(this.courseData); }
+    saved () {
+      return JSON.stringify(this.course) === JSON.stringify(this.courseData);
+    }
   },
   methods: {
     day: num =>
@@ -147,11 +174,15 @@ export default {
       this.editing = false;
     },
     async save () {
-      if (this.courseData.longname.length === 0 || this.courseData.section_id.length === 0) {
+      if (
+        this.courseData.longname.length === 0 ||
+        this.courseData.section_id.length === 0
+      ) {
         return;
       }
       this.$emit('update-course', this.courseData);
       this.editing = false;
+      this.open = true;
     }
   }
 };
@@ -170,6 +201,12 @@ export default {
   &:hover {
     .edit-course {
       display: inherit;
+    }
+  }
+
+  .course-links {
+    li {
+      list-style-type: none;
     }
   }
 }
