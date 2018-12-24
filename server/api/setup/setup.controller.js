@@ -150,7 +150,10 @@ async function setUnavailability (ctx) {
   ctx.state.user.setup.unavailability = true;
 
   try {
-    ctx.state.user.current_unavailability = unavailabilityPeriods;
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    ctx.state.user.unavailability_schedules[
+      ctx.session.currentTerm.code
+    ] = unavailabilityPeriods;
     ctx.state.user.markModified('unavailability_schedules');
     await ctx.state.user.save();
   } catch (e) {

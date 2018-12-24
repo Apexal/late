@@ -6,8 +6,6 @@ require('../blocks/blocks.model');
 
 // const rpiValidator = require('rpi-validator');
 
-const CURRENT_TERM = '201809';
-
 const schema = new Schema(
   {
     accountLocked: { type: Boolean, default: false },
@@ -55,7 +53,7 @@ const schema = new Schema(
       max: 3000
       /*, required: true */
     }, // maybe?
-    semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    semester_schedules: { type: Object, default: {} },
     earliestWorkTime: {
       type: String,
       minlength: 5,
@@ -68,7 +66,7 @@ const schema = new Schema(
       maxlength: 5,
       default: '23:00'
     },
-    unavailability_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    unavailability_schedules: { type: Object, default: {} },
     admin: { type: Boolean, default: false },
     integrations: {
       sms: {
@@ -195,18 +193,6 @@ schema.methods.getExams = function (start, end) {
 
 /*
 schema
-  .virtual('current_schedule')
-  .get(function () {
-    if (!this.semester_schedules) return [];
-    return this.semester_schedules[CURRENT_TERM] || [];
-  })
-  .set(function (newSchedule) {
-    this.semester_schedules[CURRENT_TERM] = newSchedule;
-    this.markModified('semester_schedules');
-  });
-*/
-
-schema
   .virtual('current_unavailability')
   .get(function () {
     if (!this.unavailability_schedules) return [];
@@ -216,6 +202,7 @@ schema
     this.unavailability_schedules[CURRENT_TERM] = newSchedule;
     this.markModified('unavailability_schedules');
   });
+*/
 
 schema.virtual('is_setup').get(function () {
   for (let check in this.setup) if (!this.setup[check]) return false;

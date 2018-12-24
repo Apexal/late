@@ -26,6 +26,16 @@ const getters = {
       return [];
     }
   },
+  current_unavailability: (state, getters, rootState) => {
+    if (rootState.auth.isAuthenticated && getters.currentTerm) {
+      // eslint-disable-next-line standard/computed-property-even-spacing
+      return rootState.auth.user.unavailability_schedules[
+        getters.currentTerm.code
+      ];
+    } else {
+      return [];
+    }
+  },
   nextTerm: state => {
     let tms = state.terms.slice(0);
     return tms.find(t => moment(t.start).isAfter(moment()));

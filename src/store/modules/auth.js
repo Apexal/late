@@ -6,9 +6,9 @@ const state = {
   isAuthenticated: false
 };
 const getters = {
-  getUnavailabilityAsEvents: state => {
-    if (!state.user.current_unavailability) return [];
-    return state.user.current_unavailability.map(p => {
+  getUnavailabilityAsEvents: (state, getters, rootState, rootGetters) => {
+    if (!rootGetters.current_unavailability) return [];
+    return rootGetters.current_unavailability.map(p => {
       return {
         id: 'unavailable',
         title: 'Busy',
