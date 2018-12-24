@@ -90,7 +90,9 @@
             class="switch"
             :disabled="!preferences.enabled"
           >
-          <label for="reminders">
+          <label
+            for="reminders"
+          >
             Receive reminders about upcoming assignments close to their due dates
           </label>
         </div>
@@ -109,7 +111,6 @@
             class="button is-primary"
             :class="{'is-loading': loading}"
             to="/dashboard"
-            @click="finish"
           >
             Finish
           </router-link>
@@ -207,7 +208,10 @@ export default {
       return this.$store.state.auth.user.integrations.sms.verified;
     },
     saved () {
-      return JSON.stringify(this.preferences) === JSON.stringify(this.$store.state.auth.user.integrations.sms.preferences);
+      return (
+        JSON.stringify(this.preferences) ===
+        JSON.stringify(this.$store.state.auth.user.integrations.sms.preferences)
+      );
     }
   },
   methods: {
