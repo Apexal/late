@@ -118,9 +118,7 @@ export default {
 
 .assignment {
   cursor: pointer;
-  .priority-tag {
-    margin-left: 5px;
-  }
+
   .assignment-link {
     color: inherit;
   }

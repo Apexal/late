@@ -99,6 +99,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.exam {
+  cursor: pointer;
+
+  .exam-link {
+    color: inherit;
+  }
+
+  .course-title {
+    margin-left: 5px;
+  }
+}
+
 .controls {
   .icon {
     margin-right: 0 !important;
