@@ -68,18 +68,39 @@ import SidebarTodoList from '@/components/sidebar/SidebarTodoList';
 
 export default {
   name: 'TheSidebar',
-  components: { SidebarPressingAssignments, SidebarSchedule, SidebarTodoList, SidebarUpcomingExamsList },
+  components: {
+    SidebarPressingAssignments,
+    SidebarSchedule,
+    SidebarTodoList,
+    SidebarUpcomingExamsList
+  },
   data () {
     return {
       tab: 'schedule',
       tabs: {
-        'schedule': { component: SidebarSchedule, name: 'Daily Agenda', icon: 'far fa-clock' },
-        'assignments': { component: SidebarPressingAssignments, name: 'Pressing Assignments', icon: 'fas fa-clipboard-list' },
-        'exams': { component: SidebarUpcomingExamsList, name: 'Upcoming Exams', icon: 'fas fa-file-alt' },
-        'todos': { component: SidebarTodoList, name: 'To Do\'s', icon: 'fas fa-check' }
+        schedule: {
+          component: SidebarSchedule,
+          name: 'Daily Agenda',
+          icon: 'far fa-clock'
+        },
+        assignments: {
+          component: SidebarPressingAssignments,
+          name: 'Pressing Assignments',
+          icon: 'fas fa-clipboard-list'
+        },
+        exams: {
+          component: SidebarUpcomingExamsList,
+          name: 'Upcoming Exams',
+          icon: 'fas fa-file-alt'
+        },
+        todos: {
+          component: SidebarTodoList,
+          name: 'To Do\'s',
+          icon: 'fas fa-check'
+        }
       },
       externalCounts: {
-        'todos': 0
+        todos: 0
       }
     };
   },
@@ -92,9 +113,9 @@ export default {
     },
     counts () {
       return {
-        'assignments': this.pressingAssignments.length,
-        'exams': this.upcomingExams.length,
-        'todos': this.externalCounts.todos
+        assignments: this.pressingAssignments.length,
+        exams: this.upcomingExams.length,
+        todos: this.externalCounts.todos
       };
     },
     current_tab () {
@@ -103,7 +124,9 @@ export default {
     pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
     },
-    upcomingExams () { return this.$store.getters.pendingUpcomingExams; },
+    upcomingExams () {
+      return this.$store.getters.pendingUpcomingExams;
+    },
     schedule () {
       return this.$store.state.schedule;
     },

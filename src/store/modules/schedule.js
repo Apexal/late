@@ -61,6 +61,7 @@ const actions = {
     commit('SET_TERMS', response.data.terms);
   },
   AUTO_UPDATE_SCHEDULE ({ dispatch }) {
+    dispatch('UPDATE_SCHEDULE');
     setInterval(() => {
       dispatch('UPDATE_SCHEDULE');
     }, 1000 * 60);
