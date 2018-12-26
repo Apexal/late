@@ -26,7 +26,10 @@
           </router-link>
         </h2>
         <hr>
-        <ul v-if="course.links">
+        <ul
+          v-if="course.links"
+          class="course-links"
+        >
           <li
             v-for="l in course.links"
             :key="l"
@@ -66,5 +69,9 @@ export default {
 <style lang="scss" scoped>
 .section-tag {
   color: white;
+}
+
+.course-links {
+  overflow: auto;
 }
 </style>

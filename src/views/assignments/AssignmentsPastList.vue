@@ -93,7 +93,9 @@
         >
           <td :title="toFullDateTimeString(a.dueDate)">
             {{ toDateShorterString(a.dueDate) }}
-            <span class="has-text-grey">
+            <span
+              class="has-text-grey"
+            >
               {{ toTimeString(a.dueDate) }}
             </span>
           </td>
@@ -102,6 +104,7 @@
               class="dot"
               :title="course(a).longname"
               :style="'background-color: ' + course(a).color"
+              @click="$store.commit('OPEN_COURSE_MODAL', course(a))"
             />
             <b class="course-title">
               {{ course(a).longname }}
@@ -112,6 +115,7 @@
               class="dot is-hidden-tablet"
               :title="course(a).longname"
               :style="'background-color: ' + course(a).color"
+              @click="$store.commit('OPEN_COURSE_MODAL', course(a))"
             />
             <router-link
               class="assignment-link"
