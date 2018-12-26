@@ -1,13 +1,13 @@
 const smsUtils = require('./sms').utils;
 const discordUtils = require('./discord').utils;
 const moment = require('moment');
-const logger = require('./logger');
+const logger = require('../modules/logger');
 
-const Assignment = require('./api/assignments/assignments.model');
-const Term = require('./api/terms/terms.model');
+const Assignment = require('../api/assignments/assignments.model');
+const Term = require('../api/terms/terms.model');
 
 async function nightlyReport (integration = 'sms') {
-  const terms = Term.find().sort({ start: -1 });
+  const terms = await Term.find().sort({ start: -1 });
   // Get all missed assignments
   // Missed means (!a.completed && a.dueDate > moment().startOf('day) && a.dueDate < new Date())
   const missedAssignments = await Assignment.getAllMissedAssignmentsForDay(
@@ -25,7 +25,7 @@ async function nightlyReport (integration = 'sms') {
     const missed = missedAssignments.filter(a => a._student === student);
 
     if (integration === 'sms') {
-      smsUtils.generateNightlyReport(student, missed);
+      smsUtils.generateNightlyReport(terms, student, missed);
       logger.info('[Sent text]');
     } else if (integration === 'discord') {
       discordUtils.sendNightlyReportMessage(terms, student, missed);
@@ -33,5 +33,3 @@ async function nightlyReport (integration = 'sms') {
     }
   }
 }
-
-nightlyReport('sms');

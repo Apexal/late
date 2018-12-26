@@ -18,7 +18,8 @@ async function sendText (to, body) {
 
 /* UTILS */
 const utils = {
-  async generateNightlyReport (student, missed) {
+  async generateNightlyReport (terms, student, missed) {
+    const currentTerm = terms.find(t => t.isCurrent);
     const lines = [];
     lines.push(
       'Good evening from LATE! Here is your nightly progress report:\n'
@@ -26,7 +27,7 @@ const utils = {
     lines.push(`[${missed.length} Missed Assignments]`);
 
     for (let a of missed) {
-      const course = student.courseFromCRN(a.courseCRN);
+      const course = student.courseFromCRN(currentTerm.code, a.courseCRN);
 
       lines.push(
         `${moment(a.dueDate).format('h:mma')} - ${course.longname} - ${a.title}`
