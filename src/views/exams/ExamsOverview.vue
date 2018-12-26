@@ -12,19 +12,26 @@
       v-else
       class="section"
     >
-      <h2 class="subtitle">
-        {{ course.longname }}
-        <span class="has-text-grey">
-          {{ isPast ? 'Past ': '' }}Exam
-        </span>
-      </h2>
-      <h1 class="title">
-        {{ exam.title }}
-      </h1>
-      <h2 class="subtitle has-text-grey due-title">
-        {{ isPast ? 'Was on' : 'On' }} {{ shortDateTimeString(exam.date) }}
-      </h2>
-
+      <div class="is-clearfix">
+        <ExamOverviewActionButtons
+          :exam="exam"
+          :loading="loading"
+          @toggle-editing="toggleEditing"
+        />
+        <h2 class="subtitle">
+          {{ course.longname }}
+          <span class="has-text-grey">
+            {{ isPast ? 'Past ': '' }}Exam
+          </span>
+        </h2>
+        <h1 class="title">
+          {{ exam.title }}
+        </h1>
+        <h2 class="subtitle has-text-grey due-title">
+          {{ isPast ? 'Was on' : 'On' }}
+          <b>{{ shortDateTimeString(exam.date) }}</b>
+        </h2>
+      </div>
 
       <div class="content exam-description">
         <blockquote>
@@ -48,13 +55,17 @@
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 
+import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
+
 export default {
   name: 'ExamsOverview',
-  components: { VueMarkdown },
+  components: { VueMarkdown, ExamOverviewActionButtons },
   data () {
     return {
       loading: true,
-      exam: {}
+      isUpcoming: false,
+      exam: {},
+      editing: false
     };
   },
   computed: {
@@ -75,13 +86,15 @@ export default {
     this.getExam();
   },
   methods: {
+    toggleEditing () {
+      this.editing = !this.editing;
+    },
+    editedExam (newExam) {
+      this.exam = newExam;
+    },
     async getExam () {
       // If its an upcoming exam, we already have the data on it
-      if (
-        this.$store.getters.getUpcomingExamById(
-          this.$route.params.examID
-        )
-      ) {
+      if (this.$store.getters.getUpcomingExamById(this.$route.params.examID)) {
         this.exam = this.$store.getters.getUpcomingExamById(
           this.$route.params.examID
         );
@@ -96,9 +109,7 @@ export default {
 
       let request;
       try {
-        request = await this.$http.get(
-          `/exams/e/${this.$route.params.examID}`
-        );
+        request = await this.$http.get(`/exams/e/${this.$route.params.examID}`);
       } catch (e) {
         this.loading = false;
         this.$router.push('/exams');
