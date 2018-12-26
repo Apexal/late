@@ -100,7 +100,7 @@ export default {
         }
       },
       externalCounts: {
-        todos: 0
+        todos: JSON.parse(localStorage.getItem('todos')).length
       }
     };
   },
