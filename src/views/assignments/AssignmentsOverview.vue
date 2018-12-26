@@ -30,22 +30,28 @@
 
         <h2 class="subtitle">
           <span
-            v-if="assignment.completed"
-            class="icon"
+            class="icon course-circle"
+            title="Click to open course modal."
+            @click="$store.commit('OPEN_COURSE_MODAL', course)"
           >
             <span
               class="fas fa-check-circle"
+              :class="assignment.completed ? 'fa-check-circle' : 'fa-circle'"
               :style="{ 'color': course.color }"
             />
           </span>
           {{ course.longname }}
-          <span class="has-text-grey">
+          <span
+            class="has-text-grey"
+          >
             {{ isPast ? 'Past ': '' }}Assignment
           </span>
         </h2>
         <h1 class="title">
           {{ assignment.title }}
-          <h2 class="subtitle has-text-grey due-title">
+          <h2
+            class="subtitle has-text-grey due-title"
+          >
             {{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}
           </h2>
         </h1>
@@ -169,7 +175,12 @@ import AssignmentOverviewTabs from '@/components/assignments/overview/Assignment
 
 export default {
   name: 'AssignmentsOverview',
-  components: { VueMarkdown, AssignmentsModalEdit, AssignmentOverviewActionButtons, AssignmentOverviewTabs },
+  components: {
+    VueMarkdown,
+    AssignmentsModalEdit,
+    AssignmentOverviewActionButtons,
+    AssignmentOverviewTabs
+  },
   data () {
     return {
       tab: 'schedule',
@@ -347,7 +358,10 @@ export default {
     },
     async addWorkBlock ({ start, end }) {
       let request;
-      request = await this.$http.post(`/assignments/a/${this.assignment._id}/blocks`, { startTime: start, endTime: end, assessmentType: 'assignment' });
+      request = await this.$http.post(
+        `/assignments/a/${this.assignment._id}/blocks`,
+        { startTime: start, endTime: end, assessmentType: 'assignment' }
+      );
 
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.commit(
@@ -360,11 +374,16 @@ export default {
       const dayStr = moment(start).format('dddd [the] do');
       const startStr = moment(start).format('h:mma');
       const endStr = moment(end).format('h:mma');
-      this.$toasted.show(`Scheduled to work on this assignment on from ${dayStr} ${startStr} to ${endStr}!`);
+      this.$toasted.show(
+        `Scheduled to work on this assignment on from ${dayStr} ${startStr} to ${endStr}!`
+      );
     },
     async editWorkBlock ({ blockID, start, end }) {
       let request;
-      request = await this.$http.patch(`/assignments/a/${this.assignment._id}/blocks/${blockID}`, { startTime: start, endTime: end, assessmentType: 'assignment' });
+      request = await this.$http.patch(
+        `/assignments/a/${this.assignment._id}/blocks/${blockID}`,
+        { startTime: start, endTime: end, assessmentType: 'assignment' }
+      );
 
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.commit(
@@ -379,15 +398,16 @@ export default {
     },
     async removeWorkBlock (blockID) {
       let request;
-      request = await this.$http.delete(`/assignments/a/${this.assignment._id}/blocks/${blockID}`);
+      request = await this.$http.delete(
+        `/assignments/a/${this.assignment._id}/blocks/${blockID}`
+      );
 
       // Update state by removing work block from this assignment
-      const updatedAssignment = Object.assign({}, this.assignment, { _blocks: this.assignment._blocks.filter(b => b._id !== blockID) });
+      const updatedAssignment = Object.assign({}, this.assignment, {
+        _blocks: this.assignment._blocks.filter(b => b._id !== blockID)
+      });
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          updatedAssignment
-        );
+        this.$store.commit('UPDATE_UPCOMING_ASSIGNMENT', updatedAssignment);
       } else {
         this.editedAssignment(updatedAssignment);
       }
@@ -421,6 +441,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.course-circle {
+  cursor: pointer;
+}
+
 .due-title {
   margin-top: 5px;
 }
