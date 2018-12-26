@@ -12,7 +12,7 @@ module.exports = {
     'View your class schedule for today.': ''
   },
   dmEnabled: true,
-  async run (client, msg, args) {
+  async run (client, terms, msg, args) {
     // Get student
     const student = await getStudent(msg.author);
 
@@ -24,11 +24,11 @@ module.exports = {
         } to start.`
       );
     }
-
     // Get schedule
     // Find periods for current day
+    const currentTerm = terms.find(t => t.isCurrent);
     const day = moment().day();
-    let dayPeriods = student.current_schedule
+    let dayPeriods = student.semester_schedules[currentTerm.code]
       .map(course => {
         course.periods.forEach(p => (p.course = course));
         return course.periods.filter(p => p.day === day);
@@ -47,6 +47,8 @@ module.exports = {
 
       embed.addField(p.course.longname, `${start} - ${end} | ${p.location}`);
     }
+    embed.setFooter(`As of ${moment().format('MM/DD/YY h:mm a')}`);
+
     msg.author.send(embed);
   }
 };

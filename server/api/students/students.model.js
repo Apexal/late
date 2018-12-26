@@ -137,10 +137,16 @@ schema.query.byUsername = function (rcsID) {
   });
 };
 
+schema.query.byDiscordID = function (discordID) {
+  return this.where({
+    'integrations.discord.userID': discordID
+  });
+};
+
 /* METHODS */
 
-schema.methods.courseFromCRN = function (schedule, crn) {
-  return schedule.filter(c => c.crn === crn)[0];
+schema.methods.courseFromCRN = function (currentTermCode, crn) {
+  return this.semester_schedules[currentTermCode].find(c => c.crn === crn);
 };
 
 schema.methods.getAssignments = function (start, end) {
@@ -190,19 +196,6 @@ schema.methods.getExams = function (start, end) {
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
-
-/*
-schema
-  .virtual('current_unavailability')
-  .get(function () {
-    if (!this.unavailability_schedules) return [];
-    return this.unavailability_schedules[CURRENT_TERM] || [];
-  })
-  .set(function (newSchedule) {
-    this.unavailability_schedules[CURRENT_TERM] = newSchedule;
-    this.markModified('unavailability_schedules');
-  });
-*/
 
 schema.virtual('is_setup').get(function () {
   for (let check in this.setup) if (!this.setup[check]) return false;

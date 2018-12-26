@@ -8,7 +8,7 @@ module.exports = {
       '<code>'
   },
   dmEnabled: true,
-  async run (client, msg, args) {
+  async run (client, terms, msg, args) {
     // Find student based on given code
     if (args.length === 0) {
       throw new Error('You must give a verification code!');
