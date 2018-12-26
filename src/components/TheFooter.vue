@@ -3,57 +3,49 @@
     <h1 class="is-size-5 has-text-centered">
       An RCOS project!
     </h1>
-    <div class="content level has-text-centered columns">
+    <div class="content has-text-centered columns">
       <p class="column">
+        <span class="icon">
+          <i class="fas fa-question-circle" />
+        </span>Learn more
         <router-link to="/about">
-          <span class="icon">
-            <i class="fas fa-info-circle" />
-          </span>
-          about us
+          about us.
         </router-link>
       </p>
       <p class="column">
+        <span class="icon">
+          <i class="fab fa-osi" />
+        </span>
+        Source code licensed
         <a
           href="https://opensource.org/licenses/mit-license.php"
           target="_blank"
         >
-          <i class="fab fa-osi" />
-          MIT
+          MIT.
         </a>
       </p>
       <p class="column">
-        <span
-          data-v-61dd7a3d
-          class="icon"
-        />
+        <span class="icon">
+          <i class="fab fa-github" />
+        </span>
+        Contribute on
         <a
           href="https://github.com/Apexal/late/"
           target="_blank"
         >
-          <i
-            data-v-61dd7a3d
-            class="fab fa-github"
-          />
-          Contribute
+          Github.
         </a>
       </p>
-      <p
-        class="column"
-        style="margin-bottom: 1em;"
-      >
-        <span
-          data-v-61dd7a3d
-          class="icon"
-        />
+      <p class="column">
+        <span class="icon">
+          <i class="far fa-eye" />
+        </span>
+        View on
         <a
           href="https://rcos.io/projects/apexal/late/profile"
           target="_blank"
         >
-          <i
-            data-v-61dd7a3d
-            class="fab fa-github"
-          />
-          rcos.io
+          Observatory.
         </a>
       </p>
     </div>
@@ -73,7 +65,7 @@ export default {
 
   //Centers and clumps footer elements together
   .columns {
-    max-width: 600px;
+    max-width: 1000px;
     margin: 0 auto;
   }
 
