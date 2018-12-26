@@ -49,10 +49,9 @@
         </h2>
         <h1 class="title">
           {{ assignment.title }}
-          <h2
-            class="subtitle has-text-grey due-title"
-          >
-            {{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}
+          <h2 class="subtitle has-text-grey due-title">
+            {{ isPast ? 'Was due' : 'Due' }}
+            <b>{{ shortDateTimeString(assignment.dueDate) }}</b>
           </h2>
         </h1>
       </div>
@@ -296,6 +295,8 @@ export default {
         document.title = `${this.assignment.title} | LATE`;
         return;
       }
+
+      this.tab = 'comments';
 
       this.loading = true;
       this.isUpcoming = false;
