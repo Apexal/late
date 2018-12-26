@@ -1,3 +1,6 @@
+require('dotenv').config();
+require('../db');
+
 const smsUtils = require('./sms').utils;
 const discordUtils = require('./discord').utils;
 const moment = require('moment');
@@ -5,6 +8,47 @@ const logger = require('../modules/logger');
 
 const Assignment = require('../api/assignments/assignments.model');
 const Term = require('../api/terms/terms.model');
+const Block = require('../api/blocks/blocks.model');
+
+async function upcomingWorkBlockReminders (integration = 'sms') {
+  const terms = await Term.find().sort({ start: -1 });
+  const currentTerm = terms.find(t => t.isCurrent);
+
+  if (integration !== 'sms') {
+    throw new Error(
+      'Upcoming work block reminders currently only support SMS!'
+    );
+  }
+
+  // Globally find all work blocks starting within 15 minutes
+  const nowPlus30min = moment().add('30', 'minutes');
+  const upcomingWorkBlocks = await Block.find({
+    startTime: {
+      $gt: new Date(),
+      $lte: nowPlus30min
+    },
+    notified: false
+  }).populate('_student', 'rcs_id name semester_schedules integrations.sms');
+
+  for (let block of upcomingWorkBlocks) {
+    // Get assignment for this block
+    const assignment = await Assignment.findOne({
+      _student: block._student,
+      _blocks: block._id
+    });
+
+    logger.info(
+      `Reminding user ${block._student.rcs_id} about ${assignment.title}`
+    );
+    // Text student
+    await smsUtils.generateWorkBlockReminder(
+      terms,
+      block._student,
+      assignment,
+      block
+    );
+  }
+}
 
 async function nightlyReport (integration = 'sms') {
   const terms = await Term.find().sort({ start: -1 });
@@ -33,3 +77,8 @@ async function nightlyReport (integration = 'sms') {
     }
   }
 }
+
+module.exports = {
+  upcomingWorkBlockReminders,
+  nightlyReport
+};

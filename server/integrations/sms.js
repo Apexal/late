@@ -18,6 +18,21 @@ async function sendText (to, body) {
 
 /* UTILS */
 const utils = {
+  async generateWorkBlockReminder (terms, student, assignment, block) {
+    const lines = [];
+    const startStr = moment(block.startTime).format('h:mma');
+    const endStr = moment(block.endTime).format('h:mma');
+
+    lines.push(
+      `Get ready to work on ${assignment.title} from ${startStr} to ${endStr}.`
+    );
+
+    const message = lines.join('\n');
+    await sendText(student.integrations.sms.phoneNumber, message);
+
+    block.notified = true;
+    await block.save();
+  },
   async generateNightlyReport (terms, student, missed) {
     const currentTerm = terms.find(t => t.isCurrent);
     const lines = [];

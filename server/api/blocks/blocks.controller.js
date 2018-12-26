@@ -22,7 +22,10 @@ async function addWorkBlock (ctx) {
   const newBlock = new Block({
     _student: ctx.state.user._id,
     startTime,
-    endTime
+    endTime,
+    completed: false,
+    locked: false,
+    notified: false
   });
 
   try {
