@@ -23,7 +23,7 @@
           class="assignment assignment-link panel-block"
           :title="a.description.substring(0, 500)"
           :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-          :class="{ 'priority': a.priority >= 7 }"
+          :class="{ 'priority': a.priority > 3 }"
         >
           <span class="is-full-width">
             <span

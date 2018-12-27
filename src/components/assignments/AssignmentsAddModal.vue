@@ -165,9 +165,9 @@
                   list="add-assignment-priorities"
                   type="range"
                   min="1"
-                  max="10"
+                  max="5"
                   step="1"
-                  placeholder="0 - 10"
+                  placeholder="1 - 5"
                 >
                 <div
                   class="level"
@@ -188,11 +188,6 @@
                   <option value="3" />
                   <option value="4" />
                   <option value="5" />
-                  <option value="6" />
-                  <option value="7" />
-                  <option value="8" />
-                  <option value="9" />
-                  <option value="10" />
                 </datalist>
               </div>
             </div>
@@ -241,7 +236,7 @@ export default {
         .format('YYYY-MM-DD'),
       time: '08:00', // HH:mm
       timeEstimate: 1.0,
-      priority: 5
+      priority: 3
     };
   },
   computed: {
@@ -313,7 +308,7 @@ export default {
       this.title = '';
       this.description = '';
       this.timeEstimate = 1;
-      this.priority = 5.0;
+      this.priority = 3;
 
       this.loading = false;
 
