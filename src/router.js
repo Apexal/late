@@ -84,6 +84,45 @@ const router = new Router({
       }
     },
     {
+      path: '/exams',
+      component: () => import('@/views/exams/Exams.vue'),
+      meta: {
+        title: 'Exams',
+        requiresAuth: true
+      }
+      /*
+      children: [
+        {
+          path: '',
+          redirect: 'upcoming'
+        },
+        {
+          path: 'upcoming',
+          name: 'exams-upcoming',
+          meta: {
+            title: 'Upcoming Exams'
+          },
+          component: () => import('@/views/exams/ExamsUpcoming.vue')
+        }
+        {
+          path: 'calendar',
+          name: 'exams-calendar',
+          meta: {
+            title: 'Exam Calendar'
+          },
+          component: () => import('@/views/exams/ExamsCalendar.vue')
+        },
+        {
+          path: 'past',
+          name: 'past-exams',
+          meta: {
+            title: 'Past Exams'
+          },
+          component: () => import('@/views/exams/ExamsPastList.vue')
+        }
+      ] */
+    },
+    {
       path: '/exams/:examID',
       name: 'exams-overview',
       component: () => import('@/views/exams/ExamsOverview.vue'),
