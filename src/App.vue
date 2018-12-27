@@ -125,13 +125,12 @@ export default {
   async created () {
     if (
       process.env.NODE_ENV === 'development' &&
-      !this.$store.state.auth.user.name
+      !this.$store.state.auth.isAuthenticated
     ) {
       const rcsID = prompt('Log in as what user? (rcs_id)');
       await this.$http.get('/students/loginas?rcs_id=' + rcsID);
     }
 
-    await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
       this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
