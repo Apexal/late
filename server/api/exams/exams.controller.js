@@ -90,6 +90,7 @@ async function createExam (ctx) {
     description: body.description,
     date: date.toDate(),
     courseCRN: body.courseCRN,
+    priority: body.priority,
     timeEstimate: body.timeEstimate,
     timeRemaining: body.timeEstimate,
     comments: []

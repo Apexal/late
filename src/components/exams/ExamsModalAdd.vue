@@ -150,6 +150,45 @@
                 >
               </div>
             </div>
+
+            <div class="column">
+              <div class="field">
+                <label
+                  for="add-exam-priority"
+                  class="label"
+                >
+                  Priority
+                </label>
+                <input
+                  id="add-exam-priority"
+                  v-model.number="priority"
+                  list="add-exam-priorities"
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="1"
+                  placeholder="1 - 3"
+                >
+                <div
+                  class="level"
+                  style="max-width: 129px"
+                >
+                  <div style="float:left">
+                    low
+                  </div>
+                  <div style="float:right">
+                    high
+                  </div>
+                </div>
+                <div style="clear: both;" />
+
+                <datalist id="add-exam-priorities">
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </datalist>
+              </div>
+            </div>
           </div>
         </form>
       </section>
@@ -190,6 +229,7 @@ export default {
       courseCRN: this.defaultCourseCRN,
       title: '',
       description: '',
+      priority: 2,
       date: moment()
         .add(7, 'days')
         .format('YYYY-MM-DD'),
@@ -244,6 +284,7 @@ export default {
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),
+          priority: this.priority,
           courseCRN: this.courseCRN,
           timeEstimate: this.timeEstimate
         });
@@ -260,6 +301,7 @@ export default {
       this.title = '';
       this.description = '';
       this.timeEstimate = 1;
+      this.priority = 2;
 
       this.loading = false;
 
