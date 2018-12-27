@@ -22,7 +22,7 @@
       />
       <span
         v-if="loggedIn && !expanded"
-        class="icon button is-black toggle-sidebar"
+        class="icon button is-dark toggle-sidebar"
         title="Toggle sidebar."
         @click="$store.commit('TOGGLE_SIDEBAR')"
       >
