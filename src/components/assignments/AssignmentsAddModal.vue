@@ -280,18 +280,28 @@ export default {
     async save () {
       this.loading = true;
       // TODO: error handle
-      const request = await this.$http.post('/assignments', {
-        title: this.title,
-        description: this.description,
-        dueDate: moment(
-          this.dueDate + ' ' + this.time,
-          'YYYY-MM-DD HH:mm',
-          true
-        ).toDate(),
-        courseCRN: this.courseCRN,
-        timeEstimate: this.timeEstimate,
-        priority: this.priority
-      });
+      let request;
+
+      try {
+        request = await this.$http.post('/assignments', {
+          title: this.title,
+          description: this.description,
+          dueDate: moment(
+            this.dueDate + ' ' + this.time,
+            'YYYY-MM-DD HH:mm',
+            true
+          ).toDate(),
+          courseCRN: this.courseCRN,
+          timeEstimate: this.timeEstimate,
+          priority: this.priority
+        });
+      } catch (e) {
+        this.$toasted.error(
+          'There was an error adding the assignment. Please try again later.'
+        );
+        this.loading = false;
+        return;
+      }
 
       // Update global state
       this.$store.commit(

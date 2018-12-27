@@ -190,7 +190,9 @@ export default {
       courseCRN: this.defaultCourseCRN,
       title: '',
       description: '',
-      date: moment().add(7, 'days').format('YYYY-MM-DD'),
+      date: moment()
+        .add(7, 'days')
+        .format('YYYY-MM-DD'),
       time: '18:00',
       timeEstimate: 5.0
     };
@@ -231,17 +233,27 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await this.$http.post('/exams', {
-        title: this.title,
-        description: this.description,
-        date: moment(
-          this.date + ' ' + this.time,
-          'YYYY-MM-DD HH:mm',
-          true
-        ).toDate(),
-        courseCRN: this.courseCRN,
-        timeEstimate: this.timeEstimate
-      });
+      let request;
+
+      try {
+        request = await this.$http.post('/exams', {
+          title: this.title,
+          description: this.description,
+          date: moment(
+            this.date + ' ' + this.time,
+            'YYYY-MM-DD HH:mm',
+            true
+          ).toDate(),
+          courseCRN: this.courseCRN,
+          timeEstimate: this.timeEstimate
+        });
+      } catch (e) {
+        this.$toasted.error(
+          'There was an error adding the exam. Please try again later.'
+        );
+        this.loading = false;
+        return;
+      }
 
       this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
 
@@ -263,7 +275,9 @@ export default {
         }
       };
 
-      const message = `Added exam '${request.data.createdExam.title}' due ${moment(request.data.createdExam.date).fromNow()}.`;
+      const message = `Added exam '${
+        request.data.createdExam.title
+      }' due ${moment(request.data.createdExam.date).fromNow()}.`;
 
       this.$toasted.success(message, options);
     }
