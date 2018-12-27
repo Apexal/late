@@ -133,9 +133,9 @@ export default {
 
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
-      this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
-      this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
-      this.$store.dispatch('AUTO_UPDATE_NOW');
+      await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
+      await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
+      await this.$store.dispatch('AUTO_UPDATE_NOW');
     }
 
     this.loading = false;
