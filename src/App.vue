@@ -123,7 +123,6 @@ export default {
     }
   },
   async created () {
-    alert('App.vue created');
     if (
       process.env.NODE_ENV === 'development' &&
       !this.$store.state.auth.isAuthenticated
@@ -134,7 +133,6 @@ export default {
 
     await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
-      alert('App getting info');
       await this.$store.dispatch('GET_TERMS');
       await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
       await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');

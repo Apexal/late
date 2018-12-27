@@ -20,17 +20,27 @@
             tag="h2"
             :to="{ name: 'exams-overview', params: { examID: ex._id }}"
             class="exam-title subtitle"
+            title="Click to open overview."
           >
             <b>{{ course(ex).longname }}</b>
             {{ ex.title }}
             <span
-              v-if="ex.priority >= 2"
+              v-if="ex.priority === 3"
               class="is-pulled-right tag is-danger"
             >
               High Priority
             </span>
+            <span
+              v-else-if="ex.priority === 1"
+              class="is-pulled-right tag is-dark"
+            >
+              Low Priority
+            </span>
           </router-link>
-          <span class="has-text-grey">
+          <span
+            class="has-text-grey tooltip is-tooltip-right"
+            :data-tooltip="fromNow(ex.date)"
+          >
             {{ shortDateStr(ex.date) }}
           </span>
           <div class="content">
@@ -79,8 +89,13 @@ export default {
     shortDateStr (date) {
       return moment(date).format('dddd [the] Do [@] h:mma');
     },
+    fromNow (date) {
+      return moment(date).from(this.now);
+    },
     shortDescription (desc) {
-      return desc.substring(0, 350) + '...';
+      if (desc.length > 350) return desc.substring(0, 350) + '...';
+      else if (desc.length === 0) return 'No description given...';
+      else return desc;
     }
   }
 };
