@@ -27,6 +27,11 @@ async function getExams (ctx) {
   });
 }
 
+/**
+ * Get an exam by its ID.
+ *
+ * @param {Koa context} ctx
+ */
 async function getExam (ctx) {
   const examID = ctx.params.examID;
 
@@ -65,6 +70,19 @@ async function getExam (ctx) {
 async function createExam (ctx) {
   const body = ctx.request.body;
   const date = moment(body.date);
+
+  // Limit to this semester
+  if (
+    !moment(date).isBetween(
+      ctx.session.currentTerm.start,
+      ctx.session.currentTerm.end
+    )
+  ) {
+    logger.error(
+      `${ctx.state.user.rcs_id} tried to add exam outside of current semester.`
+    );
+    return ctx.badRequest('You cannot add an exam outisde of this semester.');
+  }
 
   const newExam = new Exam({
     _student: ctx.state.user._id,
