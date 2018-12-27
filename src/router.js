@@ -89,8 +89,7 @@ const router = new Router({
       meta: {
         title: 'Exams',
         requiresAuth: true
-      }
-      /*
+      },
       children: [
         {
           path: '',
@@ -104,6 +103,7 @@ const router = new Router({
           },
           component: () => import('@/views/exams/ExamsUpcoming.vue')
         }
+        /*
         {
           path: 'calendar',
           name: 'exams-calendar',
@@ -120,7 +120,8 @@ const router = new Router({
           },
           component: () => import('@/views/exams/ExamsPastList.vue')
         }
-      ] */
+         */
+      ]
     },
     {
       path: '/exams/:examID',

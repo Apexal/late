@@ -13,15 +13,40 @@
       <div
         v-for="ex in filtered"
         :key="ex._id"
-        class="box upcoming-exam"
+        class="column is-half"
       >
-        {{ ex }}
+        <div class="box upcoming-exam">
+          <router-link
+            tag="h2"
+            :to="{ name: 'exams-overview', params: { examID: ex._id }}"
+            class="exam-title subtitle"
+          >
+            <b>{{ course(ex).longname }}</b>
+            {{ ex.title }}
+            <span
+              v-if="ex.priority >= 2"
+              class="is-pulled-right tag is-danger"
+            >
+              High Priority
+            </span>
+          </router-link>
+          <span class="has-text-grey">
+            {{ shortDateStr(ex.date) }}
+          </span>
+          <div class="content">
+            <blockquote>
+              <p>{{ shortDescription(ex.description) }}</p>
+            </blockquote>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   name: 'ExamsUpcoming',
   components: {},
@@ -47,9 +72,23 @@ export default {
       return this.$store.state.work.upcomingExams;
     }
   },
-  methods: {}
+  methods: {
+    course (ex) {
+      return this.$store.getters.getCourseFromCRN(ex.courseCRN);
+    },
+    shortDateStr (date) {
+      return moment(date).format('dddd [the] Do [@] h:mma');
+    },
+    shortDescription (desc) {
+      return desc.substring(0, 350) + '...';
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+.exam-title {
+  margin-bottom: 0;
+  cursor: pointer;
+}
 </style>
