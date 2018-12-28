@@ -1,5 +1,13 @@
 <template>
   <div class="exams-overview">
+    <ExamsModalEdit
+      v-if="!isPast"
+      :open="editing"
+      :initial-exam="exam"
+      @toggle-modal="editing = !editing"
+      @edit-exam="editedExam"
+      @remove-exam="remove"
+    />
     <section
       v-if="loading"
       class="section"
@@ -54,12 +62,13 @@
 <script>
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
+import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
 
 import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
 
 export default {
   name: 'ExamsOverview',
-  components: { VueMarkdown, ExamOverviewActionButtons },
+  components: { VueMarkdown, ExamsModalEdit, ExamOverviewActionButtons },
   data () {
     return {
       loading: true,
@@ -120,6 +129,9 @@ export default {
       this.exam = request.data.exam;
       document.title = `${this.exam.title} | LATE`;
       this.loading = false;
+    },
+    async remove () {
+      alert('Delete this exam!');
     },
     shortDateTimeString: dueDate =>
       moment(dueDate).format('dddd, MMM Do YYYY [@] h:mma'),
