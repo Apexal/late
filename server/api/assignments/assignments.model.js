@@ -93,4 +93,12 @@ schema.pre('save', async function () {
   }
 });
 
+schema.pre('remove', async function () {
+  // Delete any work blocks for this assignment
+  await Block.deleteMany({
+    _student: this._student,
+    _id: { $in: this._blocks }
+  });
+});
+
 module.exports = mongoose.model('Assignment', schema);
