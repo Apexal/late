@@ -8,6 +8,13 @@ const Term = require('../api/terms/terms.model');
 const Student = require('../api/students/students.model');
 const Block = require('../api/blocks/blocks.model');
 
+function duration (timeStr1, timeStr2) {
+  return moment(timeStr2, 'HH:mm', true).diff(
+    moment(timeStr1, 'HH:mm', true),
+    'minutes'
+  );
+}
+
 /**
  * Get a list of open work blocks: the inverse of the user's course and unvailability schedule
  * for a given time span.
@@ -22,7 +29,9 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
     .flat()
     .map(p => ({
       start: moment(p.start, 'Hmm', true).format('HH:mm'),
-      end: moment(p.end, 'Hmm', true).format('HH:mm'),
+      end: moment(p.end, 'Hmm', true)
+        .add(10, 'minutes') // We add ten minutes because classes end 10 to the hour
+        .format('HH:mm'),
       day: p.day
     }));
 
@@ -30,8 +39,8 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
   const unavailabilitySchedule = student.unavailability_schedules[
     currentTerm.code
   ].map(p => ({
-    start: p.start, // moment(p.start, 'HH:mm', true).format('HHmm'),
-    end: p.end, // moment(p.end, 'HH:mm', true).format('HHmm'),
+    start: p.start,
+    end: p.end,
     day: p.dow[0]
   }));
 
@@ -60,7 +69,8 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
         openSchedule.push({
           day,
           start: prevEnd,
-          end: period.start
+          end: period.start,
+          duration: duration(prevEnd, period.start)
         });
       }
       prevEnd = period.end;
@@ -71,7 +81,8 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
       openSchedule.push({
         day,
         start: prevEnd,
-        end: endTime
+        end: endTime,
+        duration: duration(prevEnd, endTime)
       });
     }
   }
