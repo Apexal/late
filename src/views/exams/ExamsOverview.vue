@@ -147,7 +147,32 @@ export default {
       this.loading = false;
     },
     async remove () {
-      alert('Delete this exam!');
+      // Confirm user wants to remove exam
+      if (
+        !confirm(`Are you sure you want to remove exam ${this.exam.title}?`)
+      ) {
+        return;
+      }
+
+      const examTitle = this.exam.title;
+      const examID = this.exam._id;
+
+      this.$router.push('/exams');
+
+      // This handles the API call and state update
+      if (this.isUpcoming) {
+        await this.$store.dispatch('REMOVE_UPCOMING_EXAM', examID);
+      } else {
+        await this.$http.delete(`/exams/e/${examID}`);
+      }
+
+      // Notify user of success
+      this.$toasted.success(`Successfully removed exam '${examTitle}'.`, {
+        icon: 'times',
+        action: {
+          text: 'Undo'
+        }
+      });
     },
     shortDateTimeString: date =>
       moment(date).format('dddd, MMM Do YYYY [@] h:mma'),

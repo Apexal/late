@@ -128,6 +128,10 @@ const actions = {
     commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.delete(`/assignments/a/${assignmentID}`);
   },
+  async REMOVE_UPCOMING_EXAM ({ commit }, examID) {
+    commit('REMOVE_UPCOMING_EXAM', examID); // It shows up as removed before it actually is ;)
+    const request = await axios.delete(`/exams/e/${examID}`);
+  },
   async GET_UPCOMING_EXAMS ({ commit }) {
     const response = await axios.get('/exams', {
       params: { start: moment().format('YYYY-MM-DD') }

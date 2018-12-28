@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const moment = require('moment');
 
+const Block = require('../blocks/blocks.model');
+
 const schema = new Schema(
   {
     _student: {
@@ -37,6 +39,17 @@ schema.set('toJSON', { getters: true, virtuals: true });
 
 schema.virtual('passed').get(function () {
   return moment(this.date).isBefore(new Date());
+});
+
+schema.pre('save', async function () {
+  // Delete any work blocks that are passed the exam date now
+  if (!this.isNew) {
+    await Block.deleteMany({
+      _student: this._student,
+      _id: { $in: this._blocks },
+      endTime: { $gte: this.date }
+    });
+  }
 });
 
 module.exports = mongoose.model('Exam', schema);

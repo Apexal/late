@@ -195,19 +195,30 @@
       </section>
 
       <footer class="modal-card-foot">
-        <button
-          class="button is-warning"
-          @click="$emit('toggle-modal')"
-        >
-          Cancel
-        </button>
-        <button
-          form="edit-exam-form"
-          class="button is-success"
-          :class="{'is-loading': loading}"
-        >
-          Save
-        </button>
+        <span class="is-full-width">
+          <button
+            class="button is-danger is-pulled-right"
+            @click="$emit('remove-exam')"
+          >
+            Remove
+            <span class="icon is-small margin-left">
+              <i class="fas fa-times" />
+            </span>
+          </button>
+          <button
+            class="button is-warning"
+            @click="$emit('toggle-modal')"
+          >
+            Cancel
+          </button>
+          <button
+            form="edit-exam-form"
+            class="button is-success"
+            :class="{'is-loading': loading}"
+          >
+            Save
+          </button>
+        </span>
       </footer>
     </div>
   </div>
@@ -320,4 +331,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.edit-exam-modal {
+  #edit-exam-description {
+    width: 100%;
+    min-width: 100%;
+    max-width: 500px;
+
+    min-height: 100px;
+    height: 200px;
+    max-height: 500px;
+  }
+}
+
+.margin-right {
+  margin-right: 5px;
+}
+
+.margin-left {
+  margin-left: 2px !important;
+}
 </style>

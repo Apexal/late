@@ -184,9 +184,52 @@ async function editExam (ctx) {
   });
 }
 
+/**
+ * Given an exam ID, remove the exam only if it belongs to the logged in user.
+ * The exam ID should be in the params of the request.
+ *
+ * POST /exams/e/:examID/remove
+ * @param {Koa context} ctx
+ * @returns The removed exam.
+ */
+async function removeExam (ctx) {
+  const examID = ctx.params.examID;
+  let removedExam;
+  try {
+    removedExam = await Exam.findOne({
+      _id: examID,
+      _student: ctx.state.user._id
+    }).populate('_blocks');
+  } catch (e) {
+    logger.error(
+      `Failed to remove exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.internalServerError('Could not find the exam.');
+  }
+
+  if (!removedExam) {
+    logger.error(`Could not find exam ${examID} for ${ctx.state.user.rcs_id}.`);
+    return ctx.notFound('Could not find exam.');
+  }
+
+  // Remove exam
+  try {
+    removedExam.remove();
+  } catch (e) {
+    return ctx.internalServerError('There was an error removing the exam.');
+  }
+
+  logger.info(`Removed exam ${removedExam._id} for ${ctx.state.user.rcs_id}`);
+
+  ctx.ok({
+    removedExam
+  });
+}
+
 module.exports = {
   getExams,
   getExam,
   createExam,
-  editExam
+  editExam,
+  removeExam
 };
