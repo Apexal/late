@@ -46,7 +46,11 @@ export default new Vuex.Store({
             title: `Work on ${e.assessment.title}`,
             course: getters.getCourseFromCRN(e.assessment.courseCRN),
             start: moment(e.start),
-            end: moment(e.end)
+            end: moment(e.end),
+            link: {
+              name: `${e.assessmentType}s-overview`,
+              params: { [`${e.assessmentType}ID`]: e.assessment._id }
+            }
           }))
         );
 

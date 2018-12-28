@@ -8,15 +8,37 @@
     </div>
 
     <div
-      v-else-if="isWeekend"
-      class="panel-block"
+      v-else
+      class="agenda"
     >
-      <h2 class="subtitle has-text-grey">
-        It's the weekend!
-      </h2>
+      <div
+        v-for="event in todaysAgenda"
+        :key="event.title"
+        class="panel-block event is-size-7"
+        :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event) }"
+      >
+        <span class="is-full-width">
+          <span
+            class="course-dot dot"
+            :style="'background-color: ' + event.course.color"
+            @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
+          />
+          <span
+            class="event-title"
+            @click="eventClicked(event)"
+          >
+            {{ event.title }}
+          </span>
+          <div
+            class="event-times is-pulled-right has-text-grey tooltip is-tooltip-left"
+            :data-tooltip="duration(event) + ' minutes'"
+          >
+            <span>{{ timeFormat(event.start) }}</span>
+            <span>{{ timeFormat(event.end) }}</span>
+          </div>
+        </span>
+      </div>
     </div>
-
-    <div class="agenda" />
   </div>
 </template>
 
@@ -64,35 +86,54 @@ export default {
     openCourseModal (course) {
       this.$store.commit('OPEN_COURSE_MODAL', course);
     },
+    eventClicked (event) {
+      if (event.link) this.$router.push(event.link);
+    },
     fromNow (datetime) {
       const time = moment(datetime, 'Hmm', true);
       return `${time.isBefore(this.now) ? 'Started' : 'Starting'} ${time.from(
         this.now
       )}`;
-    }
+    },
+    hasPassed (datetime) {
+      return datetime.isBefore(this.now);
+    },
+    isCurrentEvent (event) {
+      return moment(this.now).isBetween(event.start, event.end);
+    },
+    duration: p => p.end.diff(p.start, 'minutes'),
+    timeFormat: datetime => datetime.format('h:mma')
   }
 };
 </script>
 
 <style lang='scss' scoped>
-.event-block {
-  &.is-active {
+.event {
+  cursor: pointer;
+  &.has-background-success {
     font-weight: bold;
+    color: white;
+    .event-times span {
+      color: white;
+    }
   }
-}
 
-.event-times span {
-  line-height: 1.3em; //Makes course timing more readable
-}
+  &.passed {
+    text-decoration: line-through;
+  }
 
-.course-dot {
-  margin-right: 5px;
-}
+  .course-dot {
+    margin-right: 5px;
+  }
 
-.event-times {
-  line-height: 11px;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
+  .event-times {
+    line-height: 11px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    span {
+      line-height: 1.3em; //Makes course timing more readable
+    }
+  }
 }
 </style>
