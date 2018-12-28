@@ -160,6 +160,15 @@ const mutations = {
   },
   ADD_UPCOMING_EXAM: (state, exam) => {
     state.upcomingExams.push(exam);
+  },
+  UPDATE_UPCOMING_EXAM: (state, updatedExam) => {
+    Object.assign(
+      state.upcomingExams.find(ex => ex._id === updatedExam._id),
+      updatedExam
+    );
+  },
+  REMOVE_UPCOMING_EXAM: (state, examID) => {
+    state.upcomingExams = state.upcomingExams.filter(ex => ex._id !== examID);
   }
 };
 
