@@ -41,6 +41,10 @@
         </h2>
       </div>
 
+      <hr>
+
+      <ExamOverviewStats :exam="exam" />
+
       <div class="content exam-description">
         <blockquote>
           <VueMarkdown
@@ -64,11 +68,17 @@ import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
 
+import ExamOverviewStats from '@/components/exams/overview/ExamOverviewStats';
 import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
 
 export default {
   name: 'ExamsOverview',
-  components: { VueMarkdown, ExamsModalEdit, ExamOverviewActionButtons },
+  components: {
+    VueMarkdown,
+    ExamsModalEdit,
+    ExamOverviewStats,
+    ExamOverviewActionButtons
+  },
   data () {
     return {
       loading: true,
@@ -133,10 +143,10 @@ export default {
     async remove () {
       alert('Delete this exam!');
     },
-    shortDateTimeString: dueDate =>
-      moment(dueDate).format('dddd, MMM Do YYYY [@] h:mma'),
-    toFullDateTimeString: dueDate =>
-      moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    shortDateTimeString: date =>
+      moment(date).format('dddd, MMM Do YYYY [@] h:mma'),
+    toFullDateTimeString: date =>
+      moment(date).format('dddd, MMMM Do YYYY, h:mma'),
     fromNow (date) {
       return moment(date).from(this.now);
     }
@@ -145,4 +155,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.exam-stats {
+  padding: 10px;
+}
 </style>
