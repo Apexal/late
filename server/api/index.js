@@ -8,5 +8,6 @@ router.use('/setup', require('./setup'));
 router.use('/integrations', require('./integrations'));
 router.use('/students', require('./students'));
 router.use('/terms', require('./terms'));
+// router.use('/blockify', require('./blockify'));
 
 module.exports = router.routes();
