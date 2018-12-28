@@ -11,13 +11,13 @@
       v-else
       class="agenda"
     >
-      <div v-if="todaysAgenda.length === 0">
+      <div v-if="filteredTodaysAgenda.length === 0">
         <div class="panel-block has-text-grey">
           No courses or scheduled work today!
         </div>
       </div>
       <div
-        v-for="event in todaysAgenda"
+        v-for="event in filteredTodaysAgenda"
         :key="event.title"
         class="panel-block event is-size-7"
         :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event) }"
@@ -29,7 +29,8 @@
             @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
           />
           <span
-            class="event-title"
+            class="event-title tooltip"
+            :data-tooltip="event.eventType === 'period' ? 'Class' : 'Work/Study'"
             @click="eventClicked(event)"
           >
             {{ event.title }}
@@ -43,19 +44,42 @@
           </div>
         </span>
       </div>
+      <div class="controls panel-block has-background-white-ter">
+        <span class="is-full-width">
+          <div class="field">
+            <input
+              id="agenda-show-passed"
+              v-model="showPassed"
+              type="checkbox"
+              class="switch"
+            >
+            <label for="agenda-show-passed">
+              <b>Show Passed</b>
+            </label>
+          </div>
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+import 'bulma-switch';
 
 export default {
   name: 'SidebarSchedule',
   data () {
-    return {};
+    return {
+      showPassed: true
+    };
   },
   computed: {
+    filteredTodaysAgenda () {
+      return this.showPassed
+        ? this.todaysAgenda
+        : this.todaysAgenda.filter(e => !this.hasPassed(e.end));
+    },
     todaysAgenda () {
       return this.$store.getters.todaysAgenda;
     },
@@ -93,8 +117,21 @@ export default {
   watch: {
     currentEvent (newCurrentEvent) {
       this.$emit('update-current-event', newCurrentEvent);
+    },
+    showPassed (sP) {
+      localStorage.setItem('agendaShowPassed', sP);
     }
   },
+  mounted () {
+    if (localStorage.getItem('agendaShowPassed')) {
+      try {
+        this.showPassed = JSON.parse(localStorage.getItem('agendaShowPassed'));
+      } catch (e) {
+        localStorage.removeItem('agendaShowPassed');
+      }
+    }
+  },
+
   created () {
     this.$emit('update-current-event', this.currentEvent);
   },
