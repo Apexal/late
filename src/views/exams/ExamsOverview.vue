@@ -26,12 +26,18 @@
           :loading="loading"
           @toggle-editing="toggleEditing"
         />
-        <h2 class="subtitle">
-          {{ course.longname }}
-          <span class="has-text-grey">
-            {{ isPast ? 'Past ': '' }}Exam
-          </span>
-        </h2>
+
+        <span
+          class="tag is-medium course-tag"
+          :style="{ 'background-color': course.color }"
+          @click="$store.commit('OPEN_COURSE_MODAL', course)"
+        >
+          <b class="course-longname">
+            {{ course.longname }}
+          </b>
+          {{ exam.passed ? 'Past ': '' }}Exam
+        </span>
+
         <h1 class="title">
           {{ exam.title }}
         </h1>
@@ -155,6 +161,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.course-tag {
+  cursor: pointer;
+  color: white;
+
+  .course-longname {
+    margin-right: 5px;
+  }
+
+  margin-bottom: 10px;
+}
+
 .exam-stats {
   padding: 10px;
 }
