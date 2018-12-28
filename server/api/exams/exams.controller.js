@@ -109,8 +109,84 @@ async function createExam (ctx) {
   });
 }
 
+async function editExam (ctx) {
+  const examID = ctx.params.examID;
+  const updates = ctx.request.body;
+
+  const allowedProperties = [
+    'title',
+    'description',
+    'date',
+    'courseCRN',
+    'timeEstimate',
+    'priority'
+  ];
+
+  // Ensure no unallowed properties are passed to update
+  if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
+    logger.error(
+      `Failed to update exam for ${
+        ctx.state.user.rcs_id
+      } because of invalid update properties.`
+    );
+    return ctx.badRequest('Passed unallowed properties.');
+  }
+
+  let exam;
+  try {
+    exam = await Exam.findOne({
+      _id: examID,
+      _student: ctx.state.user._id
+    }).populate('_blocks');
+  } catch (e) {
+    logger.error(
+      `Error finding exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.internalServerError('There was an error getting the exam.');
+  }
+
+  if (!exam) {
+    ctx.error(`Could not find exam ${examID} for ${ctx.state.user.rcs_id}.`);
+    return ctx.notFound('Could not find exam.');
+  }
+
+  // Limit to this semester
+  if (
+    !moment(updates.date).isBetween(
+      ctx.session.currentTerm.start,
+      ctx.session.currentTerm.end
+    )
+  ) {
+    logger.error(
+      `${ctx.state.user.rcs_id} tried to set exam outside of current semester.`
+    );
+    return ctx.badRequest(
+      'You cannot set an exam due outisde of this semester.'
+    );
+  }
+
+  // Update exam
+  exam.set(updates);
+
+  try {
+    await exam.save();
+  } catch (e) {
+    logger.error(
+      `Failed to update exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('There was an error updating the exam.');
+  }
+
+  logger.info(`Updated exam ${exam._id} for ${ctx.state.user.rcs_id}.`);
+
+  ctx.ok({
+    updatedExam: exam
+  });
+}
+
 module.exports = {
   getExams,
   getExam,
-  createExam
+  createExam,
+  editExam
 };

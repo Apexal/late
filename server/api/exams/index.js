@@ -7,5 +7,6 @@ router.get('/', Ctrl.getExams);
 router.post('/', Ctrl.createExam);
 
 router.get('/e/:examID', Ctrl.getExam);
+router.patch('/e/:examID', Ctrl.editExam);
 
 module.exports = router.routes();
