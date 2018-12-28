@@ -218,7 +218,7 @@
 import moment from 'moment';
 
 export default {
-  name: 'AssignmentsAddModal',
+  name: 'AssignmentsModalAdd',
   props: {
     open: {
       type: Boolean,

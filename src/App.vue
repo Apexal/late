@@ -12,7 +12,7 @@
       />
     </template>
     <template v-if="!loading">
-      <AssignmentsAddModal
+      <AssignmentsModalAdd
         :open="addAssignmentModalExpanded"
         @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
       />
@@ -73,7 +73,7 @@
 import TheHeader from '@/components/TheHeader';
 import TheFooter from '@/components/TheFooter';
 import TheSidebar from '@/components/sidebar/TheSidebar';
-import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
+import AssignmentsModalAdd from '@/components/assignments/AssignmentsModalAdd';
 import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
 import CourseModal from '@/components/courses/CourseModal';
 
@@ -88,7 +88,7 @@ export default {
     TheHeader,
     TheSidebar,
     TheFooter,
-    AssignmentsAddModal,
+    AssignmentsModalAdd,
     ExamsModalAdd
   },
   data () {
