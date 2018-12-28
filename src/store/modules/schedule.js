@@ -74,7 +74,7 @@ const actions = {
     const dateStr = now.format('YYYY-MM-DD');
     const day = now.day();
 
-    if (getters.onBreak /* || getters.classesOver */) {
+    if (getters.onBreak || getters.classesOver) {
       return commit('UPDATE_SCHEDULE', {
         datetime: now,
         current: {

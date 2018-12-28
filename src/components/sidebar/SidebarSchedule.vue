@@ -11,6 +11,11 @@
       v-else
       class="agenda"
     >
+      <div v-if="todaysAgenda.length === 0">
+        <div class="panel-block has-text-grey">
+          No courses or scheduled work today!
+        </div>
+      </div>
       <div
         v-for="event in todaysAgenda"
         :key="event.title"
