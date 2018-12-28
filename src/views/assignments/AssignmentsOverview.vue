@@ -28,25 +28,17 @@
           @toggle-completed="toggleCompleted"
         />
 
-        <h2 class="subtitle">
-          <span
-            class="icon course-circle"
-            title="Click to open course modal."
-            @click="$store.commit('OPEN_COURSE_MODAL', course)"
-          >
-            <span
-              class="fas fa-check-circle"
-              :class="assignment.completed ? 'fa-check-circle' : 'fa-circle'"
-              :style="{ 'color': course.color }"
-            />
-          </span>
-          {{ course.longname }}
-          <span
-            class="has-text-grey"
-          >
-            {{ isPast ? 'Past ': '' }}Assignment
-          </span>
-        </h2>
+        <span
+          class="tag is-medium course-tag"
+          :style="{ 'background-color': course.color }"
+          @click="$store.commit('OPEN_COURSE_MODAL', course)"
+        >
+          <b class="course-longname">
+            {{ course.longname }}
+          </b>
+          {{ isPast ? 'Past ': '' }}Assignment
+        </span>
+
         <h1 class="title">
           {{ assignment.title }}
           <h2 class="subtitle has-text-grey due-title">
@@ -442,6 +434,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.course-tag {
+  cursor: pointer;
+  color: white;
+
+  .course-longname {
+    margin-right: 5px;
+  }
+
+  margin-bottom: 10px;
+}
 .course-circle {
   cursor: pointer;
 }
