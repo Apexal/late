@@ -27,10 +27,10 @@
           <i :class="t.icon" />
 
           <span
-            v-if="name === 'schedule' && inClass"
-            class="tag is-info tooltip is-pulled-right tab-count"
-            :style="{ 'background-color': schedule.current.course.color }"
-            :data-tooltip="'Until end of ' + schedule.current.course.longname + ' ' + periodType(schedule.current.period)"
+            v-if="name === 'schedule' && currentEvent"
+            class="tag is-info is-pulled-right tab-count"
+            :style="{ 'background-color': currentEvent.course.color }"
+            :title="'Until end of ' + currentEvent.title"
           >
             {{ countdown }}
           </span>
@@ -52,6 +52,7 @@
           :pressing="pressingAssignments"
           @toggle-modal="toggleModal"
           @update-count="updatedCount"
+          @update-current-event="currentEvent = arguments[0]"
         />
       </transition>
     </div>
@@ -77,6 +78,7 @@ export default {
   data () {
     return {
       tab: 'schedule',
+      currentEvent: false,
       tabs: {
         schedule: {
           component: SidebarSchedule,
@@ -134,9 +136,10 @@ export default {
       return this.$store.getters.inClass;
     },
     countdown () {
-      const currentPeriod = this.$store.state.schedule.current.period;
+      if (!this.currentEvent);
+
       const diff = moment.duration(
-        moment(currentPeriod.end, 'Hmm', true).diff(this.now)
+        moment(this.currentEvent.end).diff(this.now)
       );
       return `${diff.hours()}h ${diff.minutes()}m left`;
     }

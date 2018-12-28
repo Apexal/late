@@ -85,7 +85,18 @@ export default {
     },
     dateStr () {
       return moment(this.schedule.date).format('YYYY-MM-DD');
+    },
+    currentEvent () {
+      return this.todaysAgenda.find(this.isCurrentEvent);
     }
+  },
+  watch: {
+    currentEvent (newCurrentEvent) {
+      this.$emit('update-current-event', newCurrentEvent);
+    }
+  },
+  created () {
+    this.$emit('update-current-event', this.currentEvent);
   },
   methods: {
     openCourseModal (course) {
