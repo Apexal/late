@@ -1,51 +1,22 @@
 <template>
   <div class="sidebar-schedule">
-    <template v-if="onBreak">
-      <div
-        class="panel-block has-text-grey"
-      >
-        {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
-      </div>
-    </template>
-    <template v-else-if="is_weekend">
-      <div class="panel-block">
-        <h2 class="subtitle has-text-grey">
-          It's the weekend!
-        </h2>
-      </div>
-    </template>
-    <template v-else>
-      <div
-        v-for="p in periods"
-        :key="p.start"
-        class="panel-block period-block is-clearfix"
-        :class="{ 'is-active': p == current_period, 'has-background-grey-lighter': hasPassed(p) }"
-      >
-        <span class="course-longname is-full-width">
-          <span
-            class="course-dot dot"
-            :style="'background-color: ' + course(p).color"
-            @click="$store.commit('OPEN_COURSE_MODAL', course(p))"
-          />
-          <span
-            class="tooltip is-tooltip-bottom"
-            :data-tooltip="fromNow(p.start)"
-          >
-            {{ course(p).longname }}
-            <span class="has-text-grey">
-              {{ periodType(p) }}
-            </span>
-          </span>
-          <div
-            class="course-times is-pulled-right has-text-grey tooltip is-tooltip-left"
-            :data-tooltip="duration(p) + ' minutes'"
-          >
-            <span>{{ timeFormat(p.start) }}</span>
-            <span>{{ timeFormat(p.end) }}</span>
-          </div>
-        </span>
-      </div>
-    </template>
+    <div
+      v-if="onBreak"
+      class="panel-block has-text-grey"
+    >
+      {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
+    </div>
+
+    <div
+      v-else-if="isWeekend"
+      class="panel-block"
+    >
+      <h2 class="subtitle has-text-grey">
+        It's the weekend!
+      </h2>
+    </div>
+
+    <div class="agenda" />
   </div>
 </template>
 
@@ -58,6 +29,9 @@ export default {
     return {};
   },
   computed: {
+    todaysAgenda () {
+      return this.$store.getters.todaysAgenda;
+    },
     currentTerm () {
       return this.$store.getters.currentTerm;
     },
@@ -76,28 +50,10 @@ export default {
     schedule () {
       return this.$store.state.schedule;
     },
-    periods () {
-      return this.schedule.periods || [];
-    },
-    current_course () {
-      return this.schedule.current.course;
-    },
-    current_period () {
-      return this.schedule.current.period;
-    },
-    next_course () {
-      return this.schedule.next.course;
-    },
-    next_period () {
-      return this.schedule.next.period;
-    },
-    inClass () {
-      return this.$store.getters.inClass;
-    },
     classesOver () {
       return this.$store.getters.classesOver;
     },
-    is_weekend () {
+    isWeekend () {
       return moment().day() === 6 || moment().day() === 0;
     },
     dateStr () {
@@ -113,29 +69,19 @@ export default {
       return `${time.isBefore(this.now) ? 'Started' : 'Starting'} ${time.from(
         this.now
       )}`;
-    },
-    timeFormat: datetime => moment(datetime, 'Hmm', true).format('h:mma'),
-    hasPassed: p => moment(p.end, 'Hmm', true).isBefore(moment()),
-    duration: p =>
-      moment(p.end, 'Hmm', true).diff(moment(p.start, 'Hmm', true), 'minutes'),
-    course (p) {
-      return this.$store.getters.getCourseFromPeriod(p);
-    },
-    periodType (p) {
-      return this.$store.getters.periodType(p.type);
     }
   }
 };
 </script>
 
 <style lang='scss' scoped>
-.period-block {
+.event-block {
   &.is-active {
     font-weight: bold;
   }
 }
 
-.course-times span {
+.event-times span {
   line-height: 1.3em; //Makes course timing more readable
 }
 
@@ -143,7 +89,7 @@ export default {
   margin-right: 5px;
 }
 
-.course-times {
+.event-times {
   line-height: 11px;
   font-size: 12px;
   display: flex;

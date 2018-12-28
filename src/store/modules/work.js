@@ -82,8 +82,15 @@ const getters = {
       start: new Date(),
       end: type === 'assignment' ? assessment.dueDate : assessment.date
     },
+    assessment,
     [type]: assessment
   }),
+  getWorkBlocks: (state, getters) => {
+    return state.upcomingAssignments
+      .map(a => a._blocks)
+      .concat(state.upcomingExams.map(ex => ex._blocks))
+      .flat();
+  },
   getWorkBlocksAsEvents: (state, getters) => {
     const assignmentWorkBlocks = state.upcomingAssignments.map(a =>
       a._blocks.map(b => getters.mapWorkBlockToEvent('assignment', a, b))

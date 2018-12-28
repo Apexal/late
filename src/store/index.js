@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import moment from 'moment';
 
 /* MODULES */
 import auth from './modules/auth';
@@ -26,6 +27,37 @@ export default new Vuex.Store({
     navbarExpanded: false,
     sidebarExpanded: true,
     now: new Date()
+  },
+  getters: {
+    todaysAgenda: (state, getters) => {
+      let events = state.schedule.periods
+        .map(p => ({
+          eventType: 'period',
+          title: `${
+            getters.getCourseFromPeriod(p).longname
+          } ${getters.periodType(p.type)}`,
+          course: getters.getCourseFromPeriod(p),
+          start: moment(p.start, 'Hmm', true),
+          end: moment(p.end, 'Hmm', true)
+        }))
+        .concat(
+          getters.getWorkBlocksAsEvents.map(e => ({
+            eventType: 'work-block',
+            title: `Work on ${e.assessment.title}`,
+            course: getters.getCourseFromCRN(e.assessment.courseCRN),
+            start: moment(e.start),
+            end: moment(e.end)
+          }))
+        );
+
+      // Add work blocks for today
+
+      return events.sort((a, b) => {
+        if (a.start > b.start) return 1;
+        else if (a.start < b.start) return -1;
+        else return 0;
+      });
+    }
   },
   mutations: {
     UPDATE_NOW: state => (state.now = new Date()),
