@@ -41,17 +41,19 @@ export default new Vuex.Store({
           end: moment(p.end, 'Hmm', true)
         }))
         .concat(
-          getters.getWorkBlocksAsEvents.map(e => ({
-            eventType: 'work-block',
-            title: `Work on ${e.assessment.title}`,
-            course: getters.getCourseFromCRN(e.assessment.courseCRN),
-            start: moment(e.start),
-            end: moment(e.end),
-            link: {
-              name: `${e.assessmentType}s-overview`,
-              params: { [`${e.assessmentType}ID`]: e.assessment._id }
-            }
-          }))
+          getters.getWorkBlocksAsEvents
+            .filter(e => moment(e.start).isSame(state.now, 'day'))
+            .map(e => ({
+              eventType: 'work-block',
+              title: `Work on ${e.assessment.title}`,
+              course: getters.getCourseFromCRN(e.assessment.courseCRN),
+              start: moment(e.start),
+              end: moment(e.end),
+              link: {
+                name: `${e.assessmentType}s-overview`,
+                params: { [`${e.assessmentType}ID`]: e.assessment._id }
+              }
+            }))
         );
 
       // Add work blocks for today
