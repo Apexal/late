@@ -1,6 +1,9 @@
 const moment = require('moment');
 const logger = require('../../modules/logger');
 
+const { compileWeeklyOpenSchedule } = require('../../modules/auto_allocate');
+
+const Block = require('../blocks/blocks.model');
 const Assignment = require('./assignments.model');
 
 /**
@@ -115,6 +118,48 @@ async function createAssignment (ctx) {
     timeRemaining: body.timeEstimate,
     priority: parseInt(body.priority, 10)
   });
+
+  // AUTO WORK-BLOCK ALLOCATION
+  const openSchedule = compileWeeklyOpenSchedule(
+    ctx.session.currentTerm,
+    ctx.state.user
+  );
+
+  // Create work blocks of max size 60 minutes (TODO: Make customizable)
+
+  // Loop through days from now until assignment due date
+  const daysUntilDue = due.diff(new Date(), 'days');
+  const today = moment().day();
+
+  console.log(daysUntilDue);
+
+  let minutesLeft = body.timeEstimate * 60;
+  for (let d = 0; d < Math.abs(10); d++) {
+    if (minutesLeft === 0) break;
+
+    const day = (d + today) % 7; // Get day of the week
+    const openBlocksThatDay = openSchedule.filter(p => p.day === day);
+
+    // Loop through open blocks
+    for (let p of openBlocksThatDay) {
+      const duration = Math.min(p.duration, 60); // Limit to 60 minutes
+      const startTime = moment(p.start, 'HH:mm', true).add(d, 'days');
+      const endTime = moment(startTime).add(duration, 'minutes');
+
+      const newBlock = new Block({
+        _student: ctx.state.user._id,
+        startTime,
+        endTime
+      });
+      newBlock.save();
+
+      newAssignment._blocks.push(newBlock);
+      minutesLeft -= duration;
+      if (minutesLeft === 0) break;
+    }
+  }
+
+  // --------------------------
 
   try {
     await newAssignment.save();

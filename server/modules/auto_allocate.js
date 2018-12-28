@@ -1,7 +1,8 @@
-/* TESTING */
+/*
+// FOR TESTING
 require('dotenv').config();
 require('../db');
-// --------------
+*/
 
 const moment = require('moment');
 const Term = require('../api/terms/terms.model');
@@ -94,6 +95,7 @@ module.exports = {
   compileWeeklyOpenSchedule
 };
 
+/*
 (async function () {
   const student = await Student.findOne().byUsername('matraf');
   const currentTerm = (await Term.find()).find(t => t.isCurrent);
@@ -101,3 +103,4 @@ module.exports = {
   const openSchedule = compileWeeklyOpenSchedule(currentTerm, student);
   console.log(openSchedule);
 })();
+*/
