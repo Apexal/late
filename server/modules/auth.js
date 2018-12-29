@@ -27,6 +27,7 @@ async function loginStudent (ctx) {
   if (student) {
     if (student.accountLocked) {
       logger.info(`${student.rcs_id} tried to login to locked account`);
+      ctx.session = null;
       return ctx.forbidden('Your account has been locked by administrators.');
     }
 
