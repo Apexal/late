@@ -20,6 +20,8 @@ const getters = {
     state.terms.find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
     {},
   current_schedule: (state, getters, rootState) => {
+    if (!rootState.auth.user.setup.course_schedule) return [];
+
     if (rootState.auth.isAuthenticated && getters.currentTerm) {
       return rootState.auth.user.semester_schedules[getters.currentTerm.code];
     } else {
@@ -27,6 +29,8 @@ const getters = {
     }
   },
   current_unavailability: (state, getters, rootState) => {
+    if (!rootState.auth.user.setup.unavailability) return [];
+
     if (rootState.auth.isAuthenticated && getters.currentTerm) {
       // eslint-disable-next-line standard/computed-property-even-spacing
       return rootState.auth.user.unavailability_schedules[
