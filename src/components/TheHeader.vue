@@ -175,6 +175,7 @@
                   <span class="icon">
                     <i class="fas fa-user-circle" />
                   </span>
+                  {{ user.display_name }}
                 </a>
 
                 <div class="navbar-dropdown is-right">

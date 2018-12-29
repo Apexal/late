@@ -1,6 +1,15 @@
 import axios from '@/api';
 import moment from 'moment';
 
+const removedCourse = {
+  listing_id: '000',
+  section_id: '000',
+  longname: 'Removed Course',
+  crn: '00000',
+  periods: [],
+  color: 'grey'
+};
+
 const state = {
   upcomingAssignments: [],
   upcomingExams: []
@@ -34,7 +43,7 @@ const getters = {
   incompleteUpcomingAssignments: state =>
     state.upcomingAssignments.filter(a => !a.completed),
   getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>
-    rootGetters.current_schedule.find(c => c.crn === crn),
+    rootGetters.current_schedule.find(c => c.crn === crn) || removedCourse,
   getCourseFromPeriod: (state, getters, rootState, rootGetters) => period =>
     rootGetters.current_schedule.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
