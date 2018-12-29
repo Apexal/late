@@ -123,6 +123,13 @@ export default {
     }
   },
   async created () {
+    if (this.$route.query.accountLocked) {
+      this.loading = false;
+      return this.$toasted.error(
+        'Your account has been locked by administrators.'
+      );
+    }
+
     if (
       process.env.NODE_ENV === 'development' &&
       !this.$store.state.auth.isAuthenticated
