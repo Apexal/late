@@ -56,7 +56,11 @@ async function setCourseSchedule (ctx) {
   logger.info(`Setting schedule info for ${ctx.state.user.rcs_id}`);
 
   const CRNs = body.pin
-    ? await scrapeSISForCRNS(ctx.state.user.rin, body.pin, '201809')
+    ? await scrapeSISForCRNS(
+      ctx.state.user.rin,
+      body.pin,
+      ctx.session.currentTerm.code
+    )
     : body.crns.split(',').map(crn => crn.trim());
 
   let courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
