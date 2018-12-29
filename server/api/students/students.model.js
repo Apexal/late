@@ -99,17 +99,21 @@ const schema = new Schema(
       }
     },
     setup: {
+      perSemester: {
+        type: Object,
+        default: {}
+      },
       personal_info: {
         type: Boolean,
         default: false
       }, // what CMS API will give us
       course_schedule: {
-        type: Boolean,
-        default: false
+        type: Array,
+        default: [] // semester codes like ['201809', '201901']
       }, // what SIS and YACS will give us
       unavailability: {
-        type: Boolean,
-        default: false
+        type: Array,
+        default: [] // semester codes like ['201809', '201901']
       }, // when the student cannot study or work
       integrations: {
         type: Boolean,
@@ -197,15 +201,6 @@ schema.methods.getExams = function (start, end) {
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
-schema.virtual('is_setup').get(function () {
-  for (let check in this.setup) if (!this.setup[check]) return false;
-  return true;
-});
-
-schema.virtual('next_to_setup').get(function () {
-  for (let check in this.setup) if (!this.setup[check]) return check;
-});
-
 schema.virtual('full_name').get(function () {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
 });
@@ -236,6 +231,11 @@ schema.virtual('grade_name').get(function () {
   default:
     return 'Unknown Grade';
   }
+});
+
+schema.pre('save', function () {
+  this.setup.course_schedule = [...new Set(this.setup.course_schedule)];
+  this.setup.unavailability = [...new Set(this.setup.unavailability)];
 });
 
 module.exports = mongoose.model('Student', schema);

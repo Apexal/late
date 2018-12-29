@@ -119,7 +119,7 @@ export default {
       return this.$store.state.sidebarExpanded;
     },
     isSetup () {
-      return this.$store.state.auth.user.is_setup;
+      return this.$store.getters.isUserSetup;
     }
   },
   async created () {

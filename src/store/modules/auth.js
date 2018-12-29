@@ -6,6 +6,32 @@ const state = {
   isAuthenticated: false
 };
 const getters = {
+  userSetup: (state, getters, rootState, rootGetters) => {
+    if (!state.isAuthenticated) {
+      return {
+        personal_info: false,
+        course_schedule: false,
+        unavailability: false,
+        integrations: false
+      };
+    }
+    return {
+      personal_info: state.user.setup.personal_info,
+      course_schedule: state.user.setup.course_schedule.includes(
+        rootGetters.currentTerm.code
+      ),
+      unavailability: state.user.setup.unavailability.includes(
+        rootGetters.currentTerm.code
+      ),
+      integrations: state.user.setup.integrations
+    };
+  },
+  isUserSetup: (state, getters) => {
+    for (let check in getters.userSetup) {
+      if (!getters.userSetup[check]) return false;
+    }
+    return true;
+  },
   getUnavailabilityAsEvents: (state, getters, rootState, rootGetters) => {
     if (!rootGetters.current_unavailability) return [];
     return rootGetters.current_unavailability.map(p => {

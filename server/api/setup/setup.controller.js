@@ -81,7 +81,8 @@ async function setCourseSchedule (ctx) {
         .toString(16)
         .substr(-6);
   }
-  ctx.state.user.setup.course_schedule = true;
+
+  ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code);
 
   try {
     // eslint-disable-next-line standard/computed-property-even-spacing
@@ -151,7 +152,7 @@ async function setUnavailability (ctx) {
   ctx.state.user.earliestWorkTime = body.earliest;
   ctx.state.user.latestWorkTime = body.latest;
 
-  ctx.state.user.setup.unavailability = true;
+  ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code);
 
   try {
     // eslint-disable-next-line standard/computed-property-even-spacing
