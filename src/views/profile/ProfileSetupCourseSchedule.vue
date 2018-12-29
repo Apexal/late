@@ -186,12 +186,10 @@ export default {
       return this.$store.getters.current_schedule;
     }
   },
+  created () {
+    this.crns = this.$store.getters.current_schedule.map(c => c.crn).join(',');
+  },
   methods: {
-    created () {
-      this.crns = this.$store.getters.current_schedule
-        .map(c => c.crn)
-        .join(',');
-    },
     async updatedCourse (updatedCourse) {
       this.loading = true;
 
