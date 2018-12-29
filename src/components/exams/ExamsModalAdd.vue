@@ -99,7 +99,7 @@
                   for="add-exam-date"
                   class="label"
                 >
-                  Exam Date
+                  When
                 </label>
                 <div class="control">
                   <input
@@ -110,17 +110,6 @@
                     type="date"
                   >
                 </div>
-              </div>
-            </div>
-
-            <div class="column">
-              <div class="field">
-                <label
-                  for="add-exam-time"
-                  class="label"
-                >
-                  Exam Time
-                </label>
                 <div class="control">
                   <input
                     id="add-exam-time"

@@ -99,7 +99,7 @@
                   for="add-assignment-due-date"
                   class="label"
                 >
-                  Due Date
+                  Due
                 </label>
                 <div class="control">
                   <input
@@ -110,17 +110,6 @@
                     type="date"
                   >
                 </div>
-              </div>
-            </div>
-
-            <div class="column">
-              <div class="field">
-                <label
-                  for="add-assignment-time"
-                  class="label"
-                >
-                  Due Time
-                </label>
                 <div class="control">
                   <input
                     id="add-assignment-time"
