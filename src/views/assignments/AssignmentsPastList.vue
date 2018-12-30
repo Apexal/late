@@ -198,9 +198,6 @@ export default {
         if (!this.showCompleted && a.completed) return false;
         return !this.filter.includes(this.course(a).crn);
       });
-    },
-    pastAssignments () {
-      return this.$store.getters.pastAssignments;
     }
   },
   created () {
