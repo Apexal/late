@@ -1,8 +1,38 @@
 <template>
   <div class="past-exams">
-    <h2 class="subtitle">
-      Month of {{ monthOf }}
-    </h2>
+    <div class="columns">
+      <div class="column is-narrow">
+        <button
+          class="button"
+          :disabled="!canGoPrev"
+          :class="{ 'is-loading': loading }"
+          @click="prevMonth"
+        >
+          <span class="icon">
+            <i class="fas fa-chevron-left" />
+          </span>
+        </button>
+      </div>
+
+      <div class="column">
+        <h2 class="subtitle has-text-centered">
+          Month of {{ monthOf }}
+        </h2>
+      </div>
+
+      <div class="column is-narrow">
+        <button
+          class="button"
+          :disabled="!canGoNext"
+          :class="{ 'is-loading': loading }"
+          @click="nextMonth"
+        >
+          <span class="icon">
+            <i class="fas fa-chevron-right" />
+          </span>
+        </button>
+      </div>
+    </div>
 
     <table class="exam-table table is-full-width">
       <thead>
@@ -47,6 +77,12 @@
         </tr>
       </tbody>
     </table>
+    <p
+      v-if="filtered.length === 0"
+      class="has-text-grey has-text-centered"
+    >
+      No tests this month recorded!
+    </p>
   </div>
 </template>
 
@@ -64,11 +100,16 @@ export default {
   data () {
     return {
       loading: true,
-      startDate: moment().startOf('month'),
+      startDate: moment()
+        .startOf('month')
+        .toDate(),
       currentExams: []
     };
   },
   computed: {
+    currentTerm () {
+      return this.$store.getters.currentTerm;
+    },
     now () {
       return this.$store.state.now;
     },
@@ -77,6 +118,16 @@ export default {
     },
     endMoment () {
       return moment(this.startDate).endOf('month');
+    },
+    canGoPrev () {
+      return moment(this.startMoment)
+        .subtract(1, 'month')
+        .isSameOrAfter(this.currentTerm.start, 'month');
+    },
+    canGoNext () {
+      return moment(this.startMoment)
+        .add(1, 'month')
+        .isSameOrBefore(this.currentTerm.end, 'month');
     },
     monthOf () {
       return this.startMoment.format('MMMM YYYY');
@@ -87,12 +138,27 @@ export default {
       });
     }
   },
+  watch: {
+    startDate () {
+      this.getExams();
+    }
+  },
   created () {
     this.getExams();
   },
   methods: {
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN);
+    },
+    prevMonth () {
+      this.startDate = moment(this.startDate)
+        .subtract(1, 'month')
+        .toDate();
+    },
+    nextMonth () {
+      this.startDate = moment(this.startDate)
+        .add(1, 'month')
+        .toDate();
     },
     async getExams () {
       this.loading = true;
