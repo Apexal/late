@@ -364,12 +364,13 @@ export default {
       } else {
         this.editedAssignment(request.data.updatedAssignment);
       }
-      const dayStr = moment(start).format('dddd [the] do');
-      const startStr = moment(start).format('h:mma');
-      const endStr = moment(end).format('h:mma');
-      this.$toasted.show(
-        `Scheduled to work on this assignment on from ${dayStr} ${startStr} to ${endStr}!`
-      );
+
+      this.$toasted.success('Added work block to your schedule!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     },
     async editWorkBlock ({ blockID, start, end }) {
       let request;
@@ -387,7 +388,12 @@ export default {
         this.editedAssignment(request.data.updatedAssignment);
       }
 
-      this.$toasted.show('Rescheduled work block!');
+      this.$toasted.show('Rescheduled work block!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     },
     async removeWorkBlock (blockID) {
       let request;
@@ -405,7 +411,12 @@ export default {
         this.editedAssignment(updatedAssignment);
       }
 
-      this.$toasted.error('Removed work block from your schedule!');
+      this.$toasted.error('Removed work block from your schedule!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     },
     async addComment (newComment) {
       if (!newComment) return;

@@ -27,6 +27,8 @@
 
     <Component
       :is="componentName"
+      :assessment-type="'assignment'"
+      :assessment="assignment"
       :assignment="assignment"
       :loading="loading"
       @add-comment="addComment"
@@ -40,11 +42,15 @@
 <script>
 // Tabs
 import AssignmentOverviewTabsComments from '@/components/assignments/overview/tabs/AssignmentOverviewTabsComments';
-import AssignmentOverviewabsWorkSchedule from '@/components/assignments/overview/tabs/AssignmentOverviewabsWorkSchedule';
+// import AssignmentOverviewabsWorkSchedule from '@/components/assignments/overview/tabs/AssignmentOverviewTabsWorkSchedule';
+import AssessmentOverviewWorkSchedule from '@/components/AssessmentOverviewWorkSchedule';
 
 export default {
   name: 'AssignmentOverviewTabs',
-  components: { AssignmentOverviewTabsComments, AssignmentOverviewabsWorkSchedule },
+  components: {
+    AssignmentOverviewTabsComments,
+    AssessmentOverviewWorkSchedule
+  },
   props: {
     tab: {
       type: String,
@@ -62,8 +68,8 @@ export default {
   computed: {
     componentName () {
       return {
-        'comments': 'AssignmentOverviewTabsComments',
-        'schedule': 'AssignmentOverviewabsWorkSchedule'
+        comments: 'AssignmentOverviewTabsComments',
+        schedule: 'AssessmentOverviewWorkSchedule'
       }[this.tab];
     }
   },
