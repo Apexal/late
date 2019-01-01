@@ -18,7 +18,7 @@
       </div>
       <div
         v-for="event in filteredTodaysAgenda"
-        :key="event.title"
+        :key="event.start.toString()"
         class="panel-block event is-size-7"
         :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event) }"
       >
