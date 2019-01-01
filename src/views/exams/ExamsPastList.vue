@@ -56,7 +56,7 @@
             {{ toDateShorterString(ex.date) }}
           </td>
           <td
-            class="exam-course"
+            class="exam-course is-hidden-mobile"
             @click="$store.commit('OPEN_COURSE_MODAL', course(ex))"
           >
             <span
@@ -72,6 +72,12 @@
             :title="ex.description.substring(0, 500)"
             :to="{ name: 'exams-overview', params: { examID: ex._id }}"
           >
+            <span
+              class="dot is-hidden-tablet"
+              :title="course(ex).longname"
+              :style="'background-color: ' + course(ex).color"
+              @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(ex))"
+            />
             {{ ex.title }}
           </router-link>
         </tr>
