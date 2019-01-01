@@ -65,6 +65,17 @@
           </i>
         </blockquote>
       </div>
+
+      <ExamOverviewTabs
+        :tab="tab"
+        :exam="exam"
+        :loading="loading || commentLoading"
+        @set-tab="tabChanged"
+        @add-comment="addComment"
+        @add-work-block="addWorkBlock"
+        @edit-work-block="editWorkBlock"
+        @remove-work-block="removeWorkBlock"
+      />
     </section>
   </div>
 </template>
@@ -76,6 +87,7 @@ import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
 
 import ExamOverviewStats from '@/components/exams/overview/ExamOverviewStats';
 import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
+import ExamtOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
 
 export default {
   name: 'ExamsOverview',
@@ -83,10 +95,13 @@ export default {
     VueMarkdown,
     ExamsModalEdit,
     ExamOverviewStats,
-    ExamOverviewActionButtons
+    ExamOverviewActionButtons,
+    ExamtOverviewTabs
   },
   data () {
     return {
+      tab: 'schedule',
+      commentLoading: false,
       loading: true,
       isUpcoming: false,
       exam: {},
@@ -111,6 +126,9 @@ export default {
     this.getExam();
   },
   methods: {
+    tabChanged (newTab) {
+      this.tab = newTab;
+    },
     toggleEditing () {
       this.editing = !this.editing;
     },
