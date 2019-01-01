@@ -138,7 +138,8 @@ export default {
       await this.$http.get('/students/loginas?rcs_id=' + rcsID);
     }
 
-    // await this.$store.dispatch('GET_USER');
+    // Seems like we need the following line no matter what :/
+    await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
       await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
