@@ -40,7 +40,7 @@ async function getExam (ctx) {
     exam = await Exam.findOne({
       _id: examID,
       _student: ctx.state.user._id
-    });
+    }).populate('_blocks');
   } catch (e) {
     logger.error(
       `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`

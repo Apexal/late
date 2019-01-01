@@ -9,7 +9,6 @@ const logger = require('../../modules/logger');
  * assignment returned. The request body should contain the following:
  * - startTime
  * - endTime
- * - assessmentType
  *
  * @param {Koa context} ctx
  * @returns The updated assignment with the new block added
@@ -17,7 +16,8 @@ const logger = require('../../modules/logger');
  * POST /
  */
 async function addWorkBlock (ctx) {
-  const { startTime, endTime, assessmentType } = ctx.request.body;
+  const { assessmentType, assessmentID } = ctx.params;
+  const { startTime, endTime } = ctx.request.body;
 
   const newBlock = new Block({
     _student: ctx.state.user._id,
@@ -41,21 +41,17 @@ async function addWorkBlock (ctx) {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
         _student: ctx.state.user._id,
-        _id:
-          // eslint-disable-next-line
-          ctx.params[
-            assessmentType === 'assignment' ? 'assignmentID' : 'examID'
-          ]
+        _id: assessmentID
       })
       .populate('_blocks');
   } catch (e) {
     logger.error(
-      `Failed to get assignment to add new work block for ${
+      `Failed to get ${assessmentType} to add new work block for ${
         ctx.state.user.rcs_id
       }: ${e}`
     );
     return ctx.internalServerError(
-      'There was an error getting the assignment.'
+      `There was an error getting the ${assessmentType}.`
     );
   }
 
@@ -65,7 +61,7 @@ async function addWorkBlock (ctx) {
     await assessment.save();
   } catch (e) {
     logger.error(
-      `Failed to save assessment with new work block for ${
+      `Failed to save ${assessmentType} with new work block for ${
         ctx.state.user.rcs_id
       }: ${e}`
     );
@@ -94,8 +90,8 @@ async function addWorkBlock (ctx) {
  * PATCH /:blockID
  */
 async function editWorkBlock (ctx) {
-  const { startTime, endTime, assessmentType } = ctx.request.body;
-  const blockID = ctx.params.blockID;
+  const { assessmentType, assessmentID, blockID } = ctx.params;
+  const { startTime, endTime } = ctx.request.body;
 
   const editedBlock = await Block.findOne({
     _student: ctx.state.user._id,
@@ -119,16 +115,12 @@ async function editWorkBlock (ctx) {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
         _student: ctx.state.user._id,
-        _id:
-          // eslint-disable-next-line
-          ctx.params[
-            assessmentType === 'assignment' ? 'assignmentID' : 'examID'
-          ]
+        _id: assessmentID
       })
       .populate('_blocks');
   } catch (e) {
     logger.error(
-      `Failed to get assessment for work block edit for ${
+      `Failed to get ${assessmentType} for work block edit for ${
         ctx.state.user.rcs_id
       }: ${e}`
     );

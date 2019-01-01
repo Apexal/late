@@ -352,8 +352,8 @@ export default {
     async addWorkBlock ({ start, end }) {
       let request;
       request = await this.$http.post(
-        `/assignments/a/${this.assignment._id}/blocks`,
-        { startTime: start, endTime: end, assessmentType: 'assignment' }
+        `/blocks/assignment/${this.assignment._id}`,
+        { startTime: start, endTime: end }
       );
 
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
@@ -375,7 +375,7 @@ export default {
     async editWorkBlock ({ blockID, start, end }) {
       let request;
       request = await this.$http.patch(
-        `/assignments/a/${this.assignment._id}/blocks/${blockID}`,
+        `/blocks/assignment/${this.assignment._id}/${blockID}`,
         { startTime: start, endTime: end, assessmentType: 'assignment' }
       );
 
@@ -398,7 +398,7 @@ export default {
     async removeWorkBlock (blockID) {
       let request;
       request = await this.$http.delete(
-        `/assignments/a/${this.assignment._id}/blocks/${blockID}`
+        `/blocks/assignment/${this.assignment._id}/${blockID}`
       );
 
       // Update state by removing work block from this assignment

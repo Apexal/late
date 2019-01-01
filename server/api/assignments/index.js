@@ -14,6 +14,4 @@ router.post('/a/:assignmentID/toggle', Ctrl.toggleAssignment);
 /* Assignment Comments */
 router.post('/a/:assignmentID/comments', Ctrl.addComment);
 
-router.use('/a/:assignmentID/blocks', require('../blocks'));
-
 module.exports = router.routes();

@@ -136,7 +136,7 @@ export default {
     },
     async addWorkBlock ({ start, end }) {
       let request;
-      request = await this.$http.post(`/exams/e/${this.exam._id}/blocks`, {
+      request = await this.$http.post(`/blocks/exam/${this.exam._id}`, {
         startTime: start,
         endTime: end,
         assessmentType: 'exam'
@@ -158,7 +158,7 @@ export default {
     async editWorkBlock ({ blockID, start, end }) {
       let request;
       request = await this.$http.patch(
-        `/exams/e/${this.exam._id}/blocks/${blockID}`,
+        `/blocks/exam/${this.exam._id}/${blockID}`,
         { startTime: start, endTime: end, assessmentType: 'exam' }
       );
 
@@ -178,7 +178,7 @@ export default {
     async removeWorkBlock (blockID) {
       let request;
       request = await this.$http.delete(
-        `/exams/e/${this.exam._id}/blocks/${blockID}`
+        `/blocks/exam/${this.exam._id}/${blockID}`
       );
 
       // Update state by removing work block from this exam

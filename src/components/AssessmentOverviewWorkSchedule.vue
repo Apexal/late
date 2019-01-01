@@ -37,6 +37,10 @@ export default {
     };
   },
   computed: {
+    assessmentDate () {
+      if (this.assessmentType === 'exam') return this.assessment.date;
+      else return this.assessment.dueDate;
+    },
     term () {
       return this.$store.getters.currentTerm;
     },
@@ -80,7 +84,7 @@ export default {
           },
           selectConstraint: {
             start: new Date(),
-            end: this.assessment.dueDate
+            end: this.assessmentDate
           },
           eventClick: this.eventClick,
           eventDrop: this.eventDrop,
@@ -93,16 +97,16 @@ export default {
       return moment(this.assessment.createdAt).startOf('day');
     },
     end () {
-      return moment(this.assessment.dueDate).endOf('day');
+      return moment(this.assessmentDate).endOf('day');
     },
     dueDateEvent () {
       return {
         eventType: 'due-date',
         title: 'Assessment Due',
         editable: false,
-        start: this.assessment.dueDate,
+        start: this.assessmentDate,
         color: this.course.color,
-        end: moment(this.assessment.dueDate).add(20, 'minute')
+        end: moment(this.assessmentDate).add(20, 'minute')
       };
     },
     course () {
