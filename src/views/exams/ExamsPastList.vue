@@ -4,7 +4,7 @@
       Month of {{ monthOf }}
     </h2>
 
-    <table class="table is-full-width">
+    <table class="exam-table table is-full-width">
       <thead>
         <tr>
           <th>When</th>
@@ -19,9 +19,31 @@
           v-for="ex in filtered"
           :key="ex._id"
         >
-          <td>{{ toDateShorterString(ex.date) }}</td>
-          <td>{{ course(ex.courseCRN).longname }}</td>
-          <td>{{ ex.title }}</td>
+          <td
+            class="tooltip"
+            :data-tooltip="fromNow(ex.date)"
+          >
+            {{ toDateShorterString(ex.date) }}
+          </td>
+          <td
+            class="exam-course"
+            @click="$store.commit('OPEN_COURSE_MODAL', course(ex))"
+          >
+            <span
+              class="dot"
+              :title="course(ex).longname"
+              :style="'background-color: ' + course(ex).color"
+            />
+            {{ course(ex).longname }}
+          </td>
+          <router-link
+            tag="td"
+            class="exam-link"
+            :title="ex.description.substring(0, 500)"
+            :to="{ name: 'exams-overview', params: { examID: ex._id }}"
+          >
+            {{ ex.title }}
+          </router-link>
         </tr>
       </tbody>
     </table>
@@ -42,21 +64,19 @@ export default {
   data () {
     return {
       loading: true,
-      startDate:
-        this.$route.query.start ||
-        moment()
-          .startOf('month')
-          .format('YYYY-MM-DD'),
-      endDate: this.$route.query.end || moment().format('YYYY-MM-DD'),
-      currentAssignments: []
+      startDate: moment().startOf('month'),
+      currentExams: []
     };
   },
   computed: {
+    now () {
+      return this.$store.state.now;
+    },
     startMoment () {
-      return moment(this.startDate, 'YYYY-MM-DD', true);
+      return moment(this.startDate);
     },
     endMoment () {
-      return moment(this.endDate, 'YYYY-MM-DD', true);
+      return moment(this.startDate).endOf('month');
     },
     monthOf () {
       return this.startMoment.format('MMMM YYYY');
@@ -80,7 +100,10 @@ export default {
 
       try {
         request = await this.$http.get('/exams', {
-          params: { start: this.startDate, end: this.endDate }
+          params: {
+            start: this.startMoment.format('YYYY-MM-DD'),
+            end: this.endMoment.format('YYYY-MM-DD')
+          }
         });
       } catch (e) {
         this.loading = false;
@@ -91,10 +114,21 @@ export default {
       this.currentExams = request.data.exams;
       this.loading = false;
     },
+    fromNow (date) {
+      return moment(date).from(this.now);
+    },
     toDateShorterString: date => moment(date).format('dddd [the] Do')
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.exam-course {
+  font-weight: 600;
+  cursor: pointer;
+}
+.exam-link {
+  color: inherit;
+  cursor: pointer;
+}
 </style>
