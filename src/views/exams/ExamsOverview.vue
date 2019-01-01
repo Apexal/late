@@ -66,7 +66,7 @@
         </blockquote>
       </div>
 
-      <ExamOverviewTabs
+      <!--<ExamOverviewTabs
         :tab="tab"
         :exam="exam"
         :loading="loading || commentLoading"
@@ -75,7 +75,7 @@
         @add-work-block="addWorkBlock"
         @edit-work-block="editWorkBlock"
         @remove-work-block="removeWorkBlock"
-      />
+      />-->
     </section>
   </div>
 </template>
@@ -87,7 +87,7 @@ import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
 
 import ExamOverviewStats from '@/components/exams/overview/ExamOverviewStats';
 import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
-import ExamtOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
+// import ExamtOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
 
 export default {
   name: 'ExamsOverview',
@@ -95,8 +95,8 @@ export default {
     VueMarkdown,
     ExamsModalEdit,
     ExamOverviewStats,
-    ExamOverviewActionButtons,
-    ExamtOverviewTabs
+    ExamOverviewActionButtons
+    // ExamtOverviewTabs
   },
   data () {
     return {

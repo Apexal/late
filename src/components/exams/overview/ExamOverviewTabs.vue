@@ -40,7 +40,7 @@
 <script>
 // Tabs
 import ExamOverviewTabsComments from '@/components/exams/overview/tabs/ExamOverviewTabsComments';
-import ExamOverviewabsWorkSchedule from '@/components/exams/overview/tabs/ExamOverviewabsWorkSchedule';
+import ExamOverviewabsWorkSchedule from '@/components/exams/overview/tabs/ExamOverviewTabsWorkSchedule';
 
 export default {
   name: 'ExamOverviewTabs',
