@@ -146,7 +146,7 @@ async function editWorkBlock (ctx) {
  * DELETE /:blockID
  */
 async function removeWorkBlock (ctx) {
-  const blockID = ctx.params.blockID;
+  const { assessmentType, assessmentID, blockID } = ctx.params;
 
   const removedBlock = await Block.findOne({
     _student: ctx.state.user._id,
@@ -154,10 +154,37 @@ async function removeWorkBlock (ctx) {
   });
   removedBlock.remove();
 
+  let assessment;
+  // Get assessment
+  try {
+    assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
+      .findOne({
+        _student: ctx.state.user._id,
+        _id: assessmentID
+      })
+      .populate('_blocks');
+
+    assessment._blocks = assessment._blocks.filter(
+      b => b._id !== removedBlock._id
+    );
+    await assessment.save();
+  } catch (e) {
+    logger.error(
+      `Failed to get ${assessmentType} for work block remove for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    );
+    return ctx.internalServerError(
+      'There was an error removing the work block.'
+    );
+  }
+
   logger.info(`Removed work block for ${ctx.state.user.rcs_id}`);
 
-  ctx.ok({
-    removedBlock
+  return ctx.ok({
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    ['updated' +
+    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
   });
 }
 

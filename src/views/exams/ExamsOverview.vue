@@ -181,14 +181,10 @@ export default {
         `/blocks/exam/${this.exam._id}/${blockID}`
       );
 
-      // Update state by removing work block from this exam
-      const updatedExam = Object.assign({}, this.exam, {
-        _blocks: this.exam._blocks.filter(b => b._id !== blockID)
-      });
       if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', updatedExam);
+        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
       } else {
-        this.editedExam(updatedExam);
+        this.editedExam(request.data.updatedExam);
       }
 
       this.$toasted.error('Removed work block from your schedule!', {

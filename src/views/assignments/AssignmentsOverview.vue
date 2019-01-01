@@ -401,14 +401,13 @@ export default {
         `/blocks/assignment/${this.assignment._id}/${blockID}`
       );
 
-      // Update state by removing work block from this assignment
-      const updatedAssignment = Object.assign({}, this.assignment, {
-        _blocks: this.assignment._blocks.filter(b => b._id !== blockID)
-      });
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit('UPDATE_UPCOMING_ASSIGNMENT', updatedAssignment);
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
       } else {
-        this.editedAssignment(updatedAssignment);
+        this.editedAssignment(request.data.updatedAssignment);
       }
 
       this.$toasted.error('Removed work block from your schedule!', {
