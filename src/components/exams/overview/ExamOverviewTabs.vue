@@ -27,24 +27,27 @@
 
     <Component
       :is="componentName"
-      :exam="exam"
+      :assessment-type="'exam'"
+      :assessment="exam"
       :loading="loading"
-      @add-comment="this.$emit('add-comment', arguments[0])"
-      @add-work-block="this.$emit('add-work-block', arguments[0])"
-      @edit-work-block="editWorkBlock"
-      @remove-work-block="removeWorkBlock"
+      @add-comment="$emit('add-comment', arguments[0])"
+      @add-work-block="$emit('add-work-block', arguments[0])"
+      @edit-work-block="$emit('edit-work-block', arguments[0])"
+      @remove-work-block="$emit('remove-work-block', arguments[0])"
     />
   </div>
 </template>
 
 <script>
 // Tabs
-import ExamOverviewTabsComments from '@/components/exams/overview/tabs/ExamOverviewTabsComments';
-import ExamOverviewabsWorkSchedule from '@/components/exams/overview/tabs/ExamOverviewTabsWorkSchedule';
+// import ExamOverviewTabsComments from '@/components/exams/overview/tabs/ExamOverviewTabsComments';
+import AssessmentOverviewWorkSchedule from '@/components/AssessmentOverviewWorkSchedule';
 
 export default {
   name: 'ExamOverviewTabs',
-  components: { ExamOverviewTabsComments, ExamOverviewabsWorkSchedule },
+  components: {
+    /* ExamOverviewTabsComments, */ AssessmentOverviewWorkSchedule
+  },
   props: {
     tab: {
       type: String,
@@ -62,17 +65,9 @@ export default {
   computed: {
     componentName () {
       return {
-        comments: 'ExamOverviewTabsComments',
-        schedule: 'ExamOverviewabsWorkSchedule'
+        // comments: 'ExamOverviewTabsComments',
+        schedule: 'AssessmentOverviewWorkSchedule'
       }[this.tab];
-    }
-  },
-  methods: {
-    editWorkBlock (payload) {
-      this.$emit('edit-work-block', payload);
-    },
-    removeWorkBlock (blockID) {
-      this.$emit('remove-work-block', blockID);
     }
   }
 };

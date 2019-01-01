@@ -31,10 +31,10 @@
       :assessment="assignment"
       :assignment="assignment"
       :loading="loading"
-      @add-comment="addComment"
-      @add-work-block="addWorkBlock"
-      @edit-work-block="editWorkBlock"
-      @remove-work-block="removeWorkBlock"
+      @add-comment="$emit('add-comment', arguments[0])"
+      @add-work-block="$emit('add-work-block', arguments[0])"
+      @edit-work-block="$emit('edit-work-block', arguments[0])"
+      @remove-work-block="$emit('remove-work-block', arguments[0])"
     />
   </div>
 </template>
@@ -71,20 +71,6 @@ export default {
         comments: 'AssignmentOverviewTabsComments',
         schedule: 'AssessmentOverviewWorkSchedule'
       }[this.tab];
-    }
-  },
-  methods: {
-    addComment (newComment) {
-      this.$emit('add-comment', newComment);
-    },
-    addWorkBlock (payload) {
-      this.$emit('add-work-block', payload);
-    },
-    editWorkBlock (payload) {
-      this.$emit('edit-work-block', payload);
-    },
-    removeWorkBlock (blockID) {
-      this.$emit('remove-work-block', blockID);
     }
   }
 };
