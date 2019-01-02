@@ -3,6 +3,34 @@ const logger = require('../../modules/logger');
 
 const Exam = require('./exams.model');
 
+async function getExamMiddleware (ctx, next) {
+  const examID = ctx.params.examID;
+
+  let exam;
+  try {
+    exam = await Exam.findOne({
+      _id: examID,
+      _student: ctx.state.user._id
+    }).populate('_blocks');
+  } catch (e) {
+    logger.error(
+      `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.internalServerError('Failed to get exam.');
+  }
+
+  if (!exam) {
+    logger.error(
+      `Failed to find exam with ID ${examID} for ${ctx.state.user.rcs_id}.`
+    );
+    return ctx.notFound('Could not find exam.');
+  }
+
+  ctx.state.exam = exam;
+
+  await next();
+}
+
 /**
  * Returns a list of all exams with optional filters.
  * start and end are optional URL query options in YYYY-MM-DD format.
@@ -35,30 +63,10 @@ async function getExams (ctx) {
 async function getExam (ctx) {
   const examID = ctx.params.examID;
 
-  let exam;
-  try {
-    exam = await Exam.findOne({
-      _id: examID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(
-      `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.internalServerError('Failed to get exam.');
-  }
-
-  if (!exam) {
-    logger.error(
-      `Failed to find exam with ID ${examID} for ${ctx.state.user.rcs_id}.`
-    );
-    return ctx.notFound('Could not find exam.');
-  }
-
   logger.info(`Sending exam ${examID} to ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
-    exam
+    exam: ctx.state.exam
   });
 }
 
@@ -132,24 +140,6 @@ async function editExam (ctx) {
     return ctx.badRequest('Passed unallowed properties.');
   }
 
-  let exam;
-  try {
-    exam = await Exam.findOne({
-      _id: examID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(
-      `Error finding exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.internalServerError('There was an error getting the exam.');
-  }
-
-  if (!exam) {
-    ctx.error(`Could not find exam ${examID} for ${ctx.state.user.rcs_id}.`);
-    return ctx.notFound('Could not find exam.');
-  }
-
   // Limit to this semester
   if (
     !moment(updates.date).isBetween(
@@ -166,10 +156,10 @@ async function editExam (ctx) {
   }
 
   // Update exam
-  exam.set(updates);
+  ctx.state.exam.set(updates);
 
   try {
-    await exam.save();
+    await ctx.state.exam.save();
   } catch (e) {
     logger.error(
       `Failed to update exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
@@ -177,10 +167,12 @@ async function editExam (ctx) {
     return ctx.badRequest('There was an error updating the exam.');
   }
 
-  logger.info(`Updated exam ${exam._id} for ${ctx.state.user.rcs_id}.`);
+  logger.info(
+    `Updated exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}.`
+  );
 
   ctx.ok({
-    updatedExam: exam
+    updatedExam: ctx.state.exam
   });
 }
 
@@ -194,39 +186,25 @@ async function editExam (ctx) {
  */
 async function removeExam (ctx) {
   const examID = ctx.params.examID;
-  let removedExam;
-  try {
-    removedExam = await Exam.findOne({
-      _id: examID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(
-      `Failed to remove exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.internalServerError('Could not find the exam.');
-  }
-
-  if (!removedExam) {
-    logger.error(`Could not find exam ${examID} for ${ctx.state.user.rcs_id}.`);
-    return ctx.notFound('Could not find exam.');
-  }
 
   // Remove exam
   try {
-    removedExam.remove();
+    ctx.state.exam.remove();
   } catch (e) {
     return ctx.internalServerError('There was an error removing the exam.');
   }
 
-  logger.info(`Removed exam ${removedExam._id} for ${ctx.state.user.rcs_id}`);
+  logger.info(
+    `Removed exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}`
+  );
 
   ctx.ok({
-    removedExam
+    removedExam: ctx.state.exam
   });
 }
 
 module.exports = {
+  getExamMiddleware,
   getExams,
   getExam,
   createExam,
