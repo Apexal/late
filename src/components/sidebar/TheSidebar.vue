@@ -36,7 +36,8 @@
           </span>
           <span
             v-else-if="counts[name]"
-            class="tab-count tag is-small is-danger"
+            class="tab-count tag is-small"
+            :class="'is-' + t.tagColor"
           >
             {{ counts[name] }}
           </span>
@@ -83,22 +84,26 @@ export default {
         schedule: {
           component: SidebarSchedule,
           name: 'Daily Agenda',
-          icon: 'far fa-clock'
+          icon: 'far fa-clock',
+          tagColor: 'info'
         },
         assignments: {
           component: SidebarPressingAssignments,
           name: 'Pressing Assignments',
-          icon: 'fas fa-clipboard-list'
+          icon: 'fas fa-clipboard-list',
+          tagColor: 'warning'
         },
         exams: {
           component: SidebarUpcomingExamsList,
           name: 'Upcoming Exams',
-          icon: 'fas fa-file-alt'
+          icon: 'fas fa-file-alt',
+          tagColor: 'danger'
         },
         todos: {
           component: SidebarTodoList,
           name: 'To Do\'s',
-          icon: 'fas fa-check'
+          icon: 'fas fa-check',
+          tagColor: 'info'
         }
       },
       externalCounts: {
@@ -115,6 +120,7 @@ export default {
     },
     counts () {
       return {
+        schedule: this.$store.getters.todaysAgenda.length,
         assignments: this.pressingAssignments.length,
         exams: this.upcomingExams.length,
         todos: this.externalCounts.todos
