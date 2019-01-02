@@ -203,11 +203,16 @@ export default {
         this.loading = false;
         this.isUpcoming = true;
         document.title = `${this.exam.title} | LATE`;
+
+        if (this.passed) this.tab = 'comments';
+
         return;
       }
 
       this.loading = true;
       this.isUpcoming = false;
+
+      this.tab = 'comments';
 
       let request;
       try {
