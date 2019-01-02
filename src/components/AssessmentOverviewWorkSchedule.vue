@@ -14,8 +14,8 @@
 <script>
 import moment from 'moment';
 
-import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
+import { FullCalendar } from 'vue-full-calendar';
 
 export default {
   name: 'AsessmentOverviewTabsWorkSchedule',
@@ -152,6 +152,16 @@ export default {
     /* end () {}, */
     workBlockEvents () {
       this.workBlocks = this.workBlockEvents.slice(0);
+    },
+    editable (newVal) {
+      this.$refs.calendar.fireMethod('option', 'selectable', newVal);
+      this.$refs.calendar.fireMethod('option', 'editable', newVal);
+    },
+    end (newEnd) {
+      this.$refs.calendar.fireMethod('option', 'validRange', {
+        start: this.start,
+        end: newEnd
+      });
     }
   },
   created () {
