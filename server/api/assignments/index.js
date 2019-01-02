@@ -6,10 +6,26 @@ const Ctrl = require('./assignments.controller');
 router.get('/', Ctrl.getAssignments);
 router.post('/', Ctrl.createAssignment);
 
-router.get('/a/:assignmentID', Ctrl.getAssignment);
-router.patch('/a/:assignmentID', Ctrl.editAssignment);
-router.delete('/a/:assignmentID', Ctrl.removeAssignment);
-router.post('/a/:assignmentID/toggle', Ctrl.toggleAssignment);
+router.get(
+  '/a/:assignmentID',
+  Ctrl.getAssignmentMiddleware,
+  Ctrl.getAssignment
+);
+router.patch(
+  '/a/:assignmentID',
+  Ctrl.getAssignmentMiddleware,
+  Ctrl.editAssignment
+);
+router.post(
+  '/a/:assignmentID/toggle',
+  Ctrl.getAssignmentMiddleware,
+  Ctrl.toggleAssignment
+);
+router.delete(
+  '/a/:assignmentID',
+  Ctrl.getAssignmentMiddleware,
+  Ctrl.removeAssignment
+);
 
 /* Assignment Comments */
 router.post('/a/:assignmentID/comments', Ctrl.addComment);
