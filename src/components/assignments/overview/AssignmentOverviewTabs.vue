@@ -6,7 +6,15 @@
           :class="{ 'is-active': tab === 'schedule' }"
           @click="$emit('set-tab', 'schedule')"
         >
-          <a>Work Schedule</a>
+          <a>
+            <span
+              v-if="workScheduleLocked"
+              class="icon tooltip is-tooltip-right"
+              data-tooltip="This can no longer be edited."
+            >
+              <i class="fa fa-lock" />
+            </span>Work Schedule
+          </a>
         </li>
         <li
           :class="{ 'is-active': tab === 'comments' }"
@@ -66,6 +74,9 @@ export default {
     }
   },
   computed: {
+    workScheduleLocked () {
+      return this.assignment.completed || this.assignment.passed;
+    },
     componentName () {
       return {
         comments: 'AssignmentOverviewTabsComments',

@@ -3,8 +3,8 @@
     <FullCalendar
       ref="calendar"
       :events="totalEvents"
-      :editable="true"
-      :selectable="true"
+      :editable="editable"
+      :selectable="editable"
       :header="calendar.header"
       :config="calendar.config"
     />
@@ -37,6 +37,10 @@ export default {
     };
   },
   computed: {
+    editable () {
+      if (this.assessmentType === 'exam') return !this.assessment.passed;
+      return !this.assessment.completed && !this.assessment.passed;
+    },
     assessmentDate () {
       if (this.assessmentType === 'exam') return this.assessment.date;
       else return this.assessment.dueDate;

@@ -285,6 +285,8 @@ export default {
         this.loading = false;
         this.isUpcoming = true;
         document.title = `${this.assignment.title} | LATE`;
+        if (this.assignment.completed) this.tab = 'comments';
+
         return;
       }
 
