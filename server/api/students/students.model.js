@@ -193,6 +193,7 @@ schema.methods.getExams = function (start, end) {
 
   return this.model('Exam')
     .find(query)
+    .populate('_blocks')
     .sort('date')
     .sort('-timeRemaining')
     .exec();

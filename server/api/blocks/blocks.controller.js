@@ -167,6 +167,7 @@ async function removeWorkBlock (ctx) {
     assessment._blocks = assessment._blocks.filter(
       b => b._id !== removedBlock._id
     );
+
     await assessment.save();
   } catch (e) {
     logger.error(
