@@ -19,9 +19,6 @@
       @click="removeTodo(t)"
     >
       <span class="is-full-width">
-        <span class="icon hover-check">
-          <i class="fa fa-check" />
-        </span>
         <small class="todo-time is-pulled-right has-text-grey is-size-7">
           {{ fromNow(t.addedAt) }}
         </small>
@@ -103,7 +100,6 @@ export default {
 
 <style lang="scss" scoped>
 .todo {
-  padding-left: 5px;
   cursor: pointer;
 
   .todo-time {
@@ -119,9 +115,7 @@ export default {
   &:hover {
     background-color: hsl(0, 0%, 96%);
 
-    .hover-check {
-      visibility: visible;
-    }
+    text-decoration: line-through;
   }
 }
 </style>
