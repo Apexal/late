@@ -40,13 +40,14 @@
 
 <script>
 // Tabs
-// import ExamOverviewTabsComments from '@/components/exams/overview/tabs/ExamOverviewTabsComments';
 import AssessmentOverviewWorkSchedule from '@/components/AssessmentOverviewWorkSchedule';
+import AssessmentOverviewComments from '@/components/AssessmentOverviewComments';
 
 export default {
   name: 'ExamOverviewTabs',
   components: {
-    /* ExamOverviewTabsComments, */ AssessmentOverviewWorkSchedule
+    AssessmentOverviewComments,
+    AssessmentOverviewWorkSchedule
   },
   props: {
     tab: {
@@ -65,7 +66,7 @@ export default {
   computed: {
     componentName () {
       return {
-        // comments: 'ExamOverviewTabsComments',
+        comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule'
       }[this.tab];
     }
