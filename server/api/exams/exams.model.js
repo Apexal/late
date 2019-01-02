@@ -49,6 +49,8 @@ schema.pre('save', async function () {
       _id: { $in: this._blocks },
       endTime: { $gte: this.date }
     });
+
+    this._blocks = this._blocks.filter(b => b.endTime < this.date);
   }
 });
 

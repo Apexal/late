@@ -88,8 +88,16 @@ schema.pre('save', async function () {
     await Block.deleteMany({
       _student: this._student,
       _id: { $in: this._blocks },
-      endTime: { $gte: this.dueDate }
+      $or: [
+        { endTime: { $gte: this.dueDate } },
+        { endTime: { $gte: this.completedAt } }
+      ]
     });
+
+    this._blocks = this._blocks.filter(b => b.endTime < this.dueDate);
+    if (this.completed) {
+      this._blocks = this._blocks.filter(b => b.endTime < this.completedAt);
+    }
   }
 });
 
