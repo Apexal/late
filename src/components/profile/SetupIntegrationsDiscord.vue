@@ -102,7 +102,12 @@ export default {
       return this.$store.state.auth.user.integrations.discord.verified;
     },
     saved () {
-      return JSON.stringify(this.preferences) === JSON.stringify(this.$store.state.auth.user.integrations.discord.preferences);
+      return (
+        JSON.stringify(this.preferences) ===
+        JSON.stringify(
+          this.$store.state.auth.user.integrations.discord.preferences
+        )
+      );
     }
   },
   methods: {

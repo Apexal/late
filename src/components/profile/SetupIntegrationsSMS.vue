@@ -4,12 +4,8 @@
       v-if="verified"
       class="sms-preferences"
     >
-      <h2 class="subtitle">
-        SMS Notifications
-      </h2>
-
       <label
-        for="phoneNumber"
+        for="phone-number"
         class="label"
       >
         Your Phone Number
@@ -22,115 +18,40 @@
         </div>
         <div class="control">
           <input
-            id="phoneNumber"
+            id="phone-number"
             class="input"
             type="tel"
             :value="phoneNumber"
             disabled
           >
         </div>
+        <!--<div class="control">
+          <button class="button is-warning" @click="resetPhoneNumber">Change</button>
+        </div>-->
         <div class="control">
           <button
-            class="button is-warning"
-            @click="resetPhoneNumber"
+            class="button is-danger"
+            @click="disable"
           >
-            Change
+            Disable
           </button>
         </div>
       </div>
-
-      <hr>
-
-      <form @submit.prevent="savePreferences">
-        <div class="field">
-          <input
-            id="enabled"
-            v-model="preferences.enabled"
-            type="checkbox"
-            class="switch"
-          >
-          <label for="enabled">
-            <b>Enable SMS integration</b>
-          </label>
-        </div>
-
-        <div class="field">
-          <input
-            id="preWorkText"
-            v-model="preferences.preWorkText"
-            type="checkbox"
-            class="switch"
-            :disabled="!preferences.enabled"
-          >
-          <label for="preWorkText">
-            Receive text
-            <b>before</b> study/work blocks
-          </label>
-        </div>
-
-        <div class="field">
-          <input
-            id="postWorkText"
-            v-model="preferences.postWorkText"
-            type="checkbox"
-            class="switch"
-            :disabled="!preferences.enabled"
-          >
-          <label for="postWorkText">
-            Receive text
-            <b>after</b> study/work blocks
-          </label>
-        </div>
-
-        <div class="field">
-          <input
-            id="reminders"
-            v-model="preferences.reminders"
-            type="checkbox"
-            class="switch"
-            :disabled="!preferences.enabled"
-          >
-          <label
-            for="reminders"
-          >
-            Receive reminders about upcoming assignments close to their due dates
-          </label>
-        </div>
-
-        <hr>
-        <div>
-          <button
-            style="margin-right: 5px;"
-            :class="{ 'is-loading': loading }"
-            class="button is-dark"
-          >
-            Save
-          </button>
-          <router-link
-            style="padding:4px;"
-            class="button is-primary"
-            :class="{'is-loading': loading}"
-            to="/dashboard"
-          >
-            Finish
-          </router-link>
-        </div>
-      </form>
     </div>
     <div
       v-else
-      class="box verify-sms"
+      class="verify-sms"
     >
-      <h2 class="subtitle">
-        Text Message Notifications
-      </h2>
-      <p class="help">
-        <b>LATE</b> can text you to remind you when to study/work, what exactly you should be working on, and will check up on you at the end of the study/work session to check your progress and auto-update your schedule!
-      </p>
       <form
         v-if="!awaitingVerification"
         @submit.prevent="submitPhoneNumber"
       >
+        <label
+          for="new-phone-number"
+          class="label"
+        >
+          Your Phone Number
+        </label>
         <div class="field has-addons">
           <p class="control">
             <a class="button is-static">
@@ -139,6 +60,7 @@
           </p>
           <div class="control is-expanded">
             <input
+              id="new-phone-number"
               v-model="phoneNumber"
               class="input"
               type="tel"
@@ -163,9 +85,16 @@
         v-if="awaitingVerification"
         @submit.prevent="verify"
       >
+        <label
+          for="verification-code"
+          class="label"
+        >
+          Verification Code
+        </label>
         <div class="field has-addons">
           <div class="control is-expanded">
             <input
+              id="verification-code"
               v-model="verificationCode"
               class="input"
               type="text"
@@ -196,11 +125,7 @@ export default {
       phoneNumber:
         this.$store.state.auth.user.integrations.sms.phoneNumber || '',
       verificationCode: '',
-      awaitingVerification: false,
-      preferences: Object.assign(
-        {},
-        this.$store.state.auth.user.integrations.sms.preferences
-      )
+      awaitingVerification: false
     };
   },
   computed: {
@@ -208,10 +133,7 @@ export default {
       return this.$store.state.auth.user.integrations.sms.verified;
     },
     saved () {
-      return (
-        JSON.stringify(this.preferences) ===
-        JSON.stringify(this.$store.state.auth.user.integrations.sms.preferences)
-      );
+      return false;
     }
   },
   methods: {
@@ -262,22 +184,21 @@ export default {
 
       this.loading = false;
     },
-    async savePreferences () {
+    async disable () {
+      if (!confirm('Are you sure you want to disable SMS integration?')) return;
+
       this.loading = true;
 
       let request;
       try {
-        request = await this.$http.post(
-          '/integrations/sms/preferences',
-          this.preferences
-        );
+        request = await this.$http.delete('/integrations/sms');
       } catch (e) {
         this.loading = false;
         return this.$toasted.error(e.response.data.message);
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$toasted.success('Successfully updated your SMS preferences!');
+      this.$toasted.success('Successfully disabled SMS integration!');
 
       this.loading = false;
     },

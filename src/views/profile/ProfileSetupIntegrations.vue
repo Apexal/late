@@ -1,41 +1,49 @@
 <template>
   <div class="integrations-setup">
-    <h2 class="is-size-5 integration-note">
-      <span class="has-text-grey">
-        (optional)
-      </span> If you would like LATE to notify you of assignments and worktimes, setup one or more integrations below.
-    </h2>
-    <div class="tabs is-centered">
-      <ul>
-        <li :class="{ 'is-active': currentTab === 'SetupIntegrationsSMS' }">
-          <a @click="setIntegration('sms')">
-            SMS
-          </a>
-        </li>
-        <li :class="{ 'is-active': currentTab === 'SetupIntegrationsEmail' }">
-          <a @click="setIntegration('email')">
-            Email
-          </a>
-        </li>
-        <li :class="{ 'is-active': currentTab === 'SetupIntegrationsDiscord' }">
-          <a @click="setIntegration('discord')">
-            Discord
-          </a>
-        </li>
-      </ul>
+    <div class="columns">
+      <div class="column">
+        <SetupIntegrationsPreferences />
+      </div>
+      <div class="column">
+        <div class="tabs">
+          <ul>
+            <li :class="{ 'is-active': currentTab === 'SetupIntegrationsSMS' }">
+              <a @click="setIntegration('sms')">
+                SMS
+              </a>
+            </li>
+            <li :class="{ 'is-active': currentTab === 'SetupIntegrationsEmail' }">
+              <a @click="setIntegration('email')">
+                Email
+              </a>
+            </li>
+            <li :class="{ 'is-active': currentTab === 'SetupIntegrationsDiscord' }">
+              <a @click="setIntegration('discord')">
+                Discord
+              </a>
+            </li>
+          </ul>
+        </div>
+        <Component :is="currentTab" />
+      </div>
     </div>
-    <Component :is="currentTab" />
   </div>
 </template>
 
 <script>
+import SetupIntegrationsPreferences from '@/components/profile/SetupIntegrationsPreferences';
 import SetupIntegrationsSMS from '@/components/profile/SetupIntegrationsSMS';
 import SetupIntegrationsEmail from '@/components/profile/SetupIntegrationsEmail';
 import SetupIntegrationsDiscord from '@/components/profile/SetupIntegrationsDiscord';
 
 export default {
   name: 'IntegrationsSetup',
-  components: { SetupIntegrationsSMS, SetupIntegrationsEmail, SetupIntegrationsDiscord },
+  components: {
+    SetupIntegrationsPreferences,
+    SetupIntegrationsSMS,
+    SetupIntegrationsEmail,
+    SetupIntegrationsDiscord
+  },
   data () {
     return {
       currentTab: 'SetupIntegrationsSMS',
@@ -43,7 +51,11 @@ export default {
         .toString(36)
         .replace(/[^a-z]+/g, '')
         .substr(0, 8),
-      map: { 'sms': 'SetupIntegrationsSMS', 'email': 'SetupIntegrationsEmail', 'discord': 'SetupIntegrationsDiscord' }
+      map: {
+        sms: 'SetupIntegrationsSMS',
+        email: 'SetupIntegrationsEmail',
+        discord: 'SetupIntegrationsDiscord'
+      }
     };
   },
   created () {

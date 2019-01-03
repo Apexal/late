@@ -5,11 +5,11 @@ const Ctrl = require('./integrations.controller');
 
 router.post('/sms/submit', Ctrl.submitSMS);
 router.post('/sms/verify', Ctrl.verifySMS);
-router.post('/sms/preferences', Ctrl.updatePreferencesSMS);
+router.delete('/sms', Ctrl.disableSMS);
 
 router.get('/discord/startverify', Ctrl.startVerifyDiscord);
-router.post('/discord/preferences', Ctrl.updatePreferencesDiscord);
+router.delete('/discord', Ctrl.disableDiscord);
 
-router.post('/email/preferences', Ctrl.updatePreferencesEmail);
+router.post('/preferences', Ctrl.saveNotificationPreferences);
 
 module.exports = router.routes();

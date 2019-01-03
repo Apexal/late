@@ -68,34 +68,38 @@ const schema = new Schema(
     },
     unavailability_schedules: { type: Object, default: {} },
     admin: { type: Boolean, default: false },
+    notificationPreferences: {
+      preWorkBlockReminders: {
+        type: String,
+        enum: ['', 'sms', 'discord'],
+        default: ''
+      },
+      postWorkBlockReminders: {
+        type: String,
+        enum: ['', 'sms', 'discord'],
+        default: ''
+      },
+      morningReports: {
+        type: String,
+        enum: ['', 'email', 'discord'],
+        default: ''
+      },
+      addAssignmentReminders: {
+        type: String,
+        enum: ['', 'sms', 'discord'],
+        default: ''
+      }
+    },
     integrations: {
       sms: {
         verified: { type: Boolean, default: false },
         verificationCode: { type: String, minlength: 1 },
-        phoneNumber: { type: String, minlength: 10, maxlength: 10 },
-        preferences: {
-          enabled: { type: Boolean, default: false },
-          preWorkText: { type: Boolean, default: false },
-          postWorkText: { type: Boolean, default: false },
-          reminders: { type: Boolean, default: false }
-        }
+        phoneNumber: { type: String, minlength: 10, maxlength: 10 }
       },
       discord: {
         verified: { type: Boolean, default: false },
         verificationCode: { type: String, minlength: 1 },
-        userID: { type: String },
-        preferences: {
-          enabled: { type: Boolean, default: false },
-          preWorkDM: { type: Boolean, default: false },
-          postWorkDM: { type: Boolean, default: false }
-        }
-      },
-      email: {
-        preferences: {
-          enabled: { type: Boolean, default: true },
-          dailyReports: { type: Boolean, default: false },
-          weeklyReports: { type: Boolean, default: true }
-        }
+        userID: { type: String }
       }
     },
     setup: {
