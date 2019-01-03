@@ -1,8 +1,5 @@
 <template>
   <div class="integrations-preferences">
-    <h2 class="title">
-      Notification Preferences
-    </h2>
     <form @submit.prevent="save">
       <div
         v-for="(notification, key) in notifications"

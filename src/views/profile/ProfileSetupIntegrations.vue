@@ -1,5 +1,8 @@
 <template>
   <div class="integrations-setup">
+    <h2 class="title">
+      Notification Preferences
+    </h2>
     <div class="columns">
       <div class="column">
         <SetupIntegrationsPreferences />
