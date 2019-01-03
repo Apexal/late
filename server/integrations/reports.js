@@ -11,15 +11,9 @@ const Exam = require('../api/exams/exams.model');
 const Term = require('../api/terms/terms.model');
 const Block = require('../api/blocks/blocks.model');
 
-async function upcomingWorkBlockReminders (integration = 'sms') {
+async function upcomingWorkBlockReminders () {
   const terms = await Term.find().sort({ start: -1 });
   const currentTerm = terms.find(t => t.isCurrent);
-
-  if (integration !== 'sms') {
-    throw new Error(
-      'Upcoming work block reminders currently only support SMS!'
-    );
-  }
 
   // Globally find all work blocks starting within 15 minutes
   const nowPlus30min = moment().add('30', 'minutes');
@@ -29,9 +23,15 @@ async function upcomingWorkBlockReminders (integration = 'sms') {
       $lte: nowPlus30min
     },
     notified: false
-  }).populate('_student', 'rcs_id name semester_schedules integrations.sms');
+  }).populate(
+    '_student',
+    'rcs_id name semester_schedules integrations notificationPreferences'
+  );
 
   for (let block of upcomingWorkBlocks) {
+    // Check if user even wants these notifications
+    if (!block._student.notificationPreferences.preWorkBlockReminders) continue;
+
     // Get assignment for this block
     let assessmentType = 'assignment';
 
@@ -52,13 +52,18 @@ async function upcomingWorkBlockReminders (integration = 'sms') {
     );
 
     // Text student
-    await smsUtils.generateWorkBlockReminder(
-      terms,
-      block._student,
-      assessmentType,
-      assessment,
-      block
-    );
+    const integration =
+      block._student.notificationPreferences.preWorkBlockReminders;
+
+    if (integration === 'sms') {
+      await smsUtils.generateWorkBlockReminder(
+        terms,
+        block._student,
+        assessmentType,
+        assessment,
+        block
+      );
+    }
   }
 }
 
