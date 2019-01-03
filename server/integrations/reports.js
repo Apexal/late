@@ -7,6 +7,7 @@ const moment = require('moment');
 const logger = require('../modules/logger');
 
 const Assignment = require('../api/assignments/assignments.model');
+const Exam = require('../api/exams/exams.model');
 const Term = require('../api/terms/terms.model');
 const Block = require('../api/blocks/blocks.model');
 
@@ -32,19 +33,30 @@ async function upcomingWorkBlockReminders (integration = 'sms') {
 
   for (let block of upcomingWorkBlocks) {
     // Get assignment for this block
-    const assignment = await Assignment.findOne({
+    let assessmentType = 'assignment';
+
+    let assessment = await Assignment.findOne({
       _student: block._student,
       _blocks: block._id
     });
 
+    if (!assessment) {
+      assessmentType = 'exam';
+      assessment = await Exam.findOne({
+        _student: block._student,
+        _blocks: block._id
+      });
+    }
     logger.info(
-      `Reminding user ${block._student.rcs_id} about ${assignment.title}`
+      `Reminding user ${block._student.rcs_id} about ${assessment.title}`
     );
+
     // Text student
     await smsUtils.generateWorkBlockReminder(
       terms,
       block._student,
-      assignment,
+      assessmentType,
+      assessment,
       block
     );
   }
