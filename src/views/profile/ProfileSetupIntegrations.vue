@@ -13,16 +13,31 @@
             <li :class="{ 'is-active': currentTab === 'SetupIntegrationsSMS' }">
               <a @click="setIntegration('sms')">
                 SMS
+                <span class="icon">
+                  <i
+                    class="fa integration-indicator"
+                    :class="integrations.sms.verified ? 'fa-check' : 'fa-times'"
+                  />
+                </span>
               </a>
             </li>
             <li :class="{ 'is-active': currentTab === 'SetupIntegrationsEmail' }">
               <a @click="setIntegration('email')">
                 Email
+                <span class="icon">
+                  <i class="fa fa-check integration-indicator" />
+                </span>
               </a>
             </li>
             <li :class="{ 'is-active': currentTab === 'SetupIntegrationsDiscord' }">
               <a @click="setIntegration('discord')">
                 Discord
+                <span class="icon">
+                  <i
+                    class="fa integration-indicator"
+                    :class="integrations.discord.verified ? 'fa-check' : 'fa-times'"
+                  />
+                </span>
               </a>
             </li>
           </ul>
@@ -61,6 +76,11 @@ export default {
       }
     };
   },
+  computed: {
+    integrations () {
+      return this.$store.state.auth.user.integrations;
+    }
+  },
   created () {
     if (this.$route.hash) {
       this.currentTab = this.map[this.$route.hash.substring(1)] || 'SMSSetup';
@@ -79,5 +99,14 @@ export default {
 .integration-note {
   text-align: center;
   margin: 1.5em 0em 1em 0em;
+}
+
+.integration-indicator {
+  &.fa-check {
+    color: green;
+  }
+  &.fa-times {
+    color: red;
+  }
 }
 </style>
