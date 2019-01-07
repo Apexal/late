@@ -84,6 +84,46 @@ const router = new Router({
       }
     },
     {
+      path: '/exams',
+      component: () => import('@/views/exams/Exams.vue'),
+      meta: {
+        title: 'Exams',
+        requiresAuth: true
+      },
+      children: [
+        {
+          path: '',
+          redirect: 'upcoming'
+        },
+        {
+          path: 'upcoming',
+          name: 'exams-upcoming',
+          meta: {
+            title: 'Upcoming Exams'
+          },
+          component: () => import('@/views/exams/ExamsUpcoming.vue')
+        },
+        /*
+        {
+          path: 'calendar',
+          name: 'exams-calendar',
+          meta: {
+            title: 'Exam Calendar'
+          },
+          component: () => import('@/views/exams/ExamsCalendar.vue')
+        },
+        */
+        {
+          path: 'past',
+          name: 'past-exams',
+          meta: {
+            title: 'Past Exams'
+          },
+          component: () => import('@/views/exams/ExamsPastList.vue')
+        }
+      ]
+    },
+    {
       path: '/exams/:examID',
       name: 'exams-overview',
       component: () => import('@/views/exams/ExamsOverview.vue'),
@@ -157,7 +197,9 @@ const router = new Router({
 
 router.beforeEach(async (to, from, next) => {
   if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR');
+  if (store.state.courseModal.open) store.commit('CLOSE_COURSE_MODAL');
 
+  if (!store.state.auth.isAuthenticated) await store.dispatch('GET_USER');
   if (to.meta.title) document.title = to.meta.title + ' | LATE';
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in

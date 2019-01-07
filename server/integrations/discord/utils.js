@@ -1,6 +1,12 @@
 const Student = require('../../api/students/students.model');
+const Term = require('../../api/terms/terms.model');
+
 const client = require('./index').client;
 const moment = require('moment');
+
+async function courseFromCRN (schedules, crn) {
+  return schedules.find(c => c.crn === crn);
+}
 
 module.exports = {
   /**
@@ -19,17 +25,15 @@ module.exports = {
    * @param {Discurd user object} discordUser
    */
   async getStudent (discordUser) {
-    return Student.findOne({
-      'integrations.discord.userID': discordUser.id
-    });
+    return Student.findOne().byDiscordID(discordUser.id);
   },
-  sendNightlyReportMessage (student, missed) {
+  async sendNightlyReportMessage (terms, student, missed) {
     const lines = [];
     lines.push('**:\n');
     lines.push(`[${missed.length} Missed Assignments]`);
 
     for (let a of missed) {
-      const course = student.courseFromCRN(a.courseCRN);
+      const course = courseFromCRN(student.semester_schedules, a.courseCRN);
 
       lines.push(
         `${moment(a.dueDate).format('h:mma')} - ${course.longname} - ${a.title}`

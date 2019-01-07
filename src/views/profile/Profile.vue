@@ -12,12 +12,12 @@
           :to="{ path: s.link }"
           tag="div"
           class="step-item"
-          :class="{ 'is-completed': user.setup[s.setup_check] }"
+          :class="{ 'is-completed': userSetup[s.setup_check] }"
         >
           <div class="step-marker">
             <span class="icon">
               <i
-                v-if="user.setup[s.setup_check]"
+                v-if="userSetup[s.setup_check]"
                 class="fas fa-check"
               />
               <i
@@ -80,6 +80,9 @@ export default {
   computed: {
     user () {
       return this.$store.state.auth.user;
+    },
+    userSetup () {
+      return this.$store.getters.userSetup;
     }
   }
 };

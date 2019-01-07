@@ -1,7 +1,43 @@
 const moment = require('moment');
 const logger = require('../../modules/logger');
 
+const { compileWeeklyOpenSchedule } = require('../../modules/auto_allocate');
+
+const Block = require('../blocks/blocks.model');
 const Assignment = require('./assignments.model');
+
+async function getAssignmentMiddleware (ctx, next) {
+  const assignmentID = ctx.params.assignmentID;
+
+  let assignment;
+  try {
+    assignment = await Assignment.findOne({
+      _id: assignmentID,
+      _student: ctx.state.user._id
+    }).populate('_blocks');
+  } catch (e) {
+    logger.error(
+      `Error getting assignment ${assignmentID} for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    );
+    return ctx.internalServerError(
+      'There was an error getting the assignment.'
+    );
+  }
+
+  if (!assignment) {
+    logger.error(
+      `Failed to find assignment with ID ${assignmentID} for ${
+        ctx.state.user.rcs_id
+      }.`
+    );
+    return ctx.notFound('Could not find assignment.');
+  }
+
+  ctx.state.assignment = assignment;
+  await next();
+}
 
 /**
  * Returns a list of all assignments with optional dueOn or dueBy filters.
@@ -44,37 +80,10 @@ async function getAssignments (ctx) {
  */
 async function getAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
-
-  let assignment;
-  try {
-    assignment = await Assignment.findOne({
-      _id: assignmentID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(
-      `Error getting assignment ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
-    );
-    return ctx.internalServerError(
-      'There was an error getting the assignment.'
-    );
-  }
-
-  if (!assignment) {
-    logger.error(
-      `Failed to find assignment with ID ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }.`
-    );
-    return ctx.notFound('Could not find assignment.');
-  }
-
   logger.info(`Sending assignment ${assignmentID} to ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
-    assignment
+    assignment: ctx.state.assignment
   });
 }
 
@@ -115,6 +124,47 @@ async function createAssignment (ctx) {
     timeRemaining: body.timeEstimate,
     priority: parseInt(body.priority, 10)
   });
+
+  // AUTO WORK-BLOCK ALLOCATION
+  // const openSchedule = compileWeeklyOpenSchedule(
+  //   ctx.session.currentTerm,
+  //   ctx.state.user
+  // );
+
+  // // Create work blocks of max size 60 minutes (TODO: Make customizable)
+
+  // // Loop through days from now until assignment due date
+  // const daysUntilDue = due.diff(new Date(), 'days');
+  // const today = moment().day();
+
+  // console.log(daysUntilDue);
+
+  // let minutesLeft = body.timeEstimate * 60;
+  // for (let d = 0; d < Math.abs(10); d++) {
+  //   if (minutesLeft === 0) break;
+
+  //   const day = (d + today) % 7; // Get day of the week
+  //   const openBlocksThatDay = openSchedule.filter(p => p.day === day);
+
+  //   // Loop through open blocks
+  //   for (let p of openBlocksThatDay) {
+  //     const duration = Math.min(p.duration, 60); // Limit to 60 minutes
+  //     const startTime = moment(p.start, 'HH:mm', true).add(d, 'days');
+  //     const endTime = moment(startTime).add(duration, 'minutes');
+
+  //     const newBlock = new Block({
+  //       _student: ctx.state.user._id,
+  //       startTime,
+  //       endTime
+  //     });
+  //     newBlock.save();
+
+  //     newAssignment._blocks.push(newBlock);
+  //     minutesLeft -= duration;
+  //     if (minutesLeft === 0) break;
+  //   }
+  // }
+  // --------------------------
 
   try {
     await newAssignment.save();
@@ -186,30 +236,6 @@ async function editAssignment (ctx) {
     return ctx.badRequest('Passed unallowed properties.');
   }
 
-  let assignment;
-  try {
-    assignment = await Assignment.findOne({
-      _id: assignmentID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(
-      `Error finding assignment ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
-    );
-    return ctx.internalServerError(
-      'There was an error getting the assignment.'
-    );
-  }
-
-  if (!assignment) {
-    ctx.error(
-      `Could not find assignment ${assignmentID} for ${ctx.state.user.rcs_id}.`
-    );
-    return ctx.notFound('Could not find assignment.');
-  }
-
   // Limit to this semester
   if (
     !moment(updates.dueDate).isBetween(
@@ -228,10 +254,10 @@ async function editAssignment (ctx) {
   }
 
   // Update assignment
-  assignment.set(updates);
+  ctx.state.assignment.set(updates);
 
   try {
-    await assignment.save();
+    await ctx.state.assignment.save();
   } catch (e) {
     logger.error(
       `Failed to update assignment ${assignmentID} for ${
@@ -242,11 +268,13 @@ async function editAssignment (ctx) {
   }
 
   logger.info(
-    `Updated assignment ${assignment._id} for ${ctx.state.user.rcs_id}.`
+    `Updated assignment ${ctx.state.assignment._id} for ${
+      ctx.state.user.rcs_id
+    }.`
   );
 
   ctx.ok({
-    updatedAssignment: assignment
+    updatedAssignment: ctx.state.assignment
   });
 }
 
@@ -260,51 +288,27 @@ async function editAssignment (ctx) {
 async function toggleAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
-  let assignment;
-  try {
-    assignment = await Assignment.findOne({
-      _id: assignmentID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(
-      `Failed to update completion status of assignment ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
-    );
-    return ctx.internalServerError(
-      'There was an error getting the assignment.'
-    );
-  }
-
-  if (!assignment) {
-    logger.error(
-      `Failed to find assignment with ID ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }.`
-    );
-    return ctx.notFound('Could not find the assignment.');
-  }
-
   // Toggle completed status
-  assignment.completed = !assignment.completed;
-  assignment.completedAt = assignment.completed ? moment().toDate() : null;
+  ctx.state.assignment.completed = !ctx.state.assignment.completed;
+  ctx.state.assignment.completedAt = ctx.state.assignment.completed
+    ? moment().toDate()
+    : null;
 
   try {
-    await assignment.save();
+    await ctx.state.assignment.save();
   } catch (e) {
     logger.error(`Failed to toggle assignment with ID ${assignmentID}.`);
     return ctx.badRequest('There was an error toggling the assignment.');
   }
 
   logger.info(
-    `Set assigment ${assignment._id} completion status to ${
-      assignment.completed
+    `Set assigment ${ctx.state.assignment._id} completion status to ${
+      ctx.state.assignment.completed
     } for ${ctx.state.user.rcs_id}.`
   );
 
   ctx.ok({
-    updatedAssignment: assignment
+    updatedAssignment: ctx.state.assignment
   });
 }
 
@@ -318,43 +322,25 @@ async function toggleAssignment (ctx) {
  */
 async function removeAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
-  let removedAssignment;
-  try {
-    removedAssignment = await Assignment.findOne({
-      _id: assignmentID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(
-      `Failed to remove assignment ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
-    );
-    return ctx.internalServerError('Could not find the assignment.');
-  }
-
-  if (!removedAssignment) {
-    logger.error(
-      `Could not find assignment ${assignmentID} for ${ctx.state.user.rcs_id}.`
-    );
-    return ctx.notFound('Could not find assignment.');
-  }
 
   // Remove assignment
   try {
-    removedAssignment.remove();
+    ctx.state.assignment.remove();
   } catch (e) {
+    logger.error(`Failed to remove assignment with ID ${assignmentID}: ${e}`);
     return ctx.internalServerError(
       'There was an error removing the assignment.'
     );
   }
 
   logger.info(
-    `Removed assignment ${removedAssignment._id} for ${ctx.state.user.rcs_id}`
+    `Removed assignment ${ctx.state.assignment._id} for ${
+      ctx.state.user.rcs_id
+    }`
   );
 
   ctx.ok({
-    removedAssignment
+    removedAssignment: ctx.state.assignment
   });
 }
 
@@ -375,7 +361,7 @@ async function addComment (ctx) {
     assignment = await Assignment.findOne({
       _student: ctx.state.user._id,
       _id: assignmentID
-    });
+    }).populate('_blocks');
   } catch (e) {
     logger.error(`Failed to get assignment for ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.internalServerError(
@@ -411,6 +397,7 @@ async function addComment (ctx) {
 }
 
 module.exports = {
+  getAssignmentMiddleware,
   getAssignments,
   getAssignment,
   createAssignment,

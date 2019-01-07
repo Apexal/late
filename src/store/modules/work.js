@@ -1,6 +1,15 @@
 import axios from '@/api';
 import moment from 'moment';
 
+const removedCourse = {
+  listing_id: '000',
+  section_id: '000',
+  longname: 'Removed Course',
+  crn: '00000',
+  periods: [],
+  color: 'grey'
+};
+
 const state = {
   upcomingAssignments: [],
   upcomingExams: []
@@ -34,7 +43,7 @@ const getters = {
   incompleteUpcomingAssignments: state =>
     state.upcomingAssignments.filter(a => !a.completed),
   getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>
-    rootGetters.current_schedule.find(c => c.crn === crn),
+    rootGetters.current_schedule.find(c => c.crn === crn) || removedCourse,
   getCourseFromPeriod: (state, getters, rootState, rootGetters) => period =>
     rootGetters.current_schedule.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
@@ -82,8 +91,15 @@ const getters = {
       start: new Date(),
       end: type === 'assignment' ? assessment.dueDate : assessment.date
     },
+    assessment,
     [type]: assessment
   }),
+  getWorkBlocks: (state, getters) => {
+    return state.upcomingAssignments
+      .map(a => a._blocks)
+      .concat(state.upcomingExams.map(ex => ex._blocks))
+      .flat();
+  },
   getWorkBlocksAsEvents: (state, getters) => {
     const assignmentWorkBlocks = state.upcomingAssignments.map(a =>
       a._blocks.map(b => getters.mapWorkBlockToEvent('assignment', a, b))
@@ -121,6 +137,10 @@ const actions = {
     commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.delete(`/assignments/a/${assignmentID}`);
   },
+  async REMOVE_UPCOMING_EXAM ({ commit }, examID) {
+    commit('REMOVE_UPCOMING_EXAM', examID); // It shows up as removed before it actually is ;)
+    const request = await axios.delete(`/exams/e/${examID}`);
+  },
   async GET_UPCOMING_EXAMS ({ commit }) {
     const response = await axios.get('/exams', {
       params: { start: moment().format('YYYY-MM-DD') }
@@ -153,6 +173,15 @@ const mutations = {
   },
   ADD_UPCOMING_EXAM: (state, exam) => {
     state.upcomingExams.push(exam);
+  },
+  UPDATE_UPCOMING_EXAM: (state, updatedExam) => {
+    Object.assign(
+      state.upcomingExams.find(ex => ex._id === updatedExam._id),
+      updatedExam
+    );
+  },
+  REMOVE_UPCOMING_EXAM: (state, examID) => {
+    state.upcomingExams = state.upcomingExams.filter(ex => ex._id !== examID);
   }
 };
 

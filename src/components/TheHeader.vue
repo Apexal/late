@@ -156,6 +156,7 @@
                   <a
                     class="navbar-item"
                     title="Add a new exam."
+                    @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
                   >
                     <span class="icon">
                       <i class="fas fa-plus" />
@@ -174,6 +175,7 @@
                   <span class="icon">
                     <i class="fas fa-user-circle" />
                   </span>
+                  {{ user.display_name }}
                 </a>
 
                 <div class="navbar-dropdown is-right">
@@ -183,7 +185,7 @@
                     title="Edit your profile."
                   >
                     <i
-                      data-v-203ae283=""
+                      data-v-203ae283
                       class="fas fa-pencil-alt"
                       style="margin-right: 10px"
                     />

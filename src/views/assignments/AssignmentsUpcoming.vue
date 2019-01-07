@@ -51,7 +51,7 @@
                 class="assignment-link"
                 :title="a.description.substring(0, 500)"
                 :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-                :class="{ 'priority': a.priority >= 7 }"
+                :class="{ 'priority': a.priority > 3 }"
               >
                 <b class="course-title is-hidden-tablet">
                   {{ course(a).longname }}

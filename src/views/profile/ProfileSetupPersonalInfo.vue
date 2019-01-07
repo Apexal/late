@@ -117,32 +117,30 @@
       </div>
       <hr>
 
-      <router-link
-        to="/profile/courseschedule"
+      <button
         class="button is-primary"
         :class="{'is-loading': loading}"
         :disabled="saved"
       >
         Save and Continue
-      </router-link>
+      </button>
     </form>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ProfileSetupPersonalInfoForm',
+  name: 'ProfileSetupPersonalInfo',
   data () {
     return {
       saved: false,
       loading: false,
-      first_name: this.$store.state.auth.user.name.first,
-      last_name: this.$store.state.auth.user.name.last,
-      rin: this.$store.state.auth.user.rin,
-      grad_year: this.$store.state.auth.user.grad_year
+      first_name: '',
+      last_name: '',
+      rin: '',
+      grad_year: ''
     };
   },
-
   computed: {
     isAuthenticated () {
       return this.$store.state.auth.isAuthenticated;
@@ -150,6 +148,17 @@ export default {
     user () {
       return this.$store.state.auth.user;
     }
+  },
+  created () {
+    this.first_name = this.$store.state.auth.user.name
+      ? this.$store.state.auth.user.name.first
+      : '';
+    this.last_name = this.$store.state.auth.user.name
+      ? this.$store.state.auth.user.name.last
+      : '';
+
+    this.rin = this.$store.state.auth.user.rin || '';
+    this.grad_year = this.$store.state.auth.user.grad_year || '';
   },
   methods: {
     async save () {
@@ -171,14 +180,9 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.info('Saved personal info!', {
-        action: {
-          text: 'Next Step',
-          push: {
-            name: 'setup-course-schedule'
-          }
-        }
-      });
+      this.$toasted.info('Saved personal info!');
+
+      this.$router.push({ name: 'setup-course-schedule' });
 
       // this.saved = true;
       this.loading = false;

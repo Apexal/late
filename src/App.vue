@@ -5,8 +5,14 @@
       :active.sync="loading"
       :is-full-page="true"
     />
+    <template v-if="loggedIn">
+      <CourseModal
+        :open="courseModalOpen"
+        :course="courseModalData"
+      />
+    </template>
     <template v-if="!loading">
-      <AssignmentsAddModal
+      <AssignmentsModalAdd
         :open="addAssignmentModalExpanded"
         @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
       />
@@ -16,7 +22,7 @@
       />
       <span
         v-if="loggedIn && !expanded"
-        class="icon button is-black toggle-sidebar"
+        class="icon button is-dark toggle-sidebar"
         title="Toggle sidebar."
         @click="$store.commit('TOGGLE_SIDEBAR')"
       >
@@ -67,23 +73,41 @@
 import TheHeader from '@/components/TheHeader';
 import TheFooter from '@/components/TheFooter';
 import TheSidebar from '@/components/sidebar/TheSidebar';
-import AssignmentsAddModal from '@/components/assignments/AssignmentsAddModal';
+import AssignmentsModalAdd from '@/components/assignments/AssignmentsModalAdd';
 import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
+import CourseModal from '@/components/courses/CourseModal';
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   name: 'LATE',
-  components: { Loading, TheHeader, TheSidebar, TheFooter, AssignmentsAddModal, ExamsModalAdd },
+  components: {
+    Loading,
+    CourseModal,
+    TheHeader,
+    TheSidebar,
+    TheFooter,
+    AssignmentsModalAdd,
+    ExamsModalAdd
+  },
   data () {
     return {
       loading: true
     };
   },
   computed: {
+    courseModalData () {
+      return this.$store.state.courseModal.current;
+    },
+    courseModalOpen () {
+      return this.$store.state.courseModal.open;
+    },
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
+    },
+    courses () {
+      return this.$store.getters.current_schedule;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
@@ -95,24 +119,32 @@ export default {
       return this.$store.state.sidebarExpanded;
     },
     isSetup () {
-      return this.$store.state.auth.user.is_setup;
+      return this.$store.getters.isUserSetup;
     }
   },
   async created () {
+    if (this.$route.query.accountLocked) {
+      this.loading = false;
+      return this.$toasted.error(
+        'Your account has been locked by administrators.'
+      );
+    }
+
     if (
       process.env.NODE_ENV === 'development' &&
-      !this.$store.state.auth.user.name
+      !this.$store.state.auth.isAuthenticated
     ) {
       const rcsID = prompt('Log in as what user? (rcs_id)');
       await this.$http.get('/students/loginas?rcs_id=' + rcsID);
     }
 
+    // Seems like we need the following line no matter what :/
     await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
-      this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
-      this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
-      this.$store.dispatch('AUTO_UPDATE_NOW');
+      await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
+      await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
+      await this.$store.dispatch('AUTO_UPDATE_NOW');
     }
 
     this.loading = false;

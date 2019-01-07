@@ -1,7 +1,7 @@
 <template>
   <div
     :class="{'is-active': open}"
-    class="add-exam-modal modal"
+    class="add-assignment-modal modal"
   >
     <div
       class="modal-background"
@@ -10,13 +10,13 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
-          Add Exam
+          Add Assignment
         </p>
       </header>
 
       <section class="modal-card-body">
         <form
-          id="add-exam-form"
+          id="add-assignment-form"
           class="form"
           @submit.prevent="save"
         >
@@ -24,14 +24,14 @@
             <div class="column is-half">
               <div class="field">
                 <label
-                  for="add-exam-course-id"
+                  for="add-assignment-course-id"
                   class="label"
                 >
                   Course
                 </label>
                 <div class="control">
                   <select
-                    id="add-exam-course-id"
+                    id="add-assignment-course-id"
                     v-model="courseCRN"
                     class="input"
                     required
@@ -51,14 +51,14 @@
             <div class="column is-half">
               <div class="field">
                 <label
-                  for="add-exam-title"
+                  for="add-assignment-title"
                   class="label"
                 >
-                  Exam Title
+                  What do you have to do?
                 </label>
                 <div class="control">
                   <input
-                    id="add-exam-title"
+                    id="add-assignment-title"
                     v-model.trim="title"
                     type="text"
                     class="input"
@@ -73,19 +73,19 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="add-exam-description"
+                  for="add-assignment-description"
                   class="label"
                 >
                   Description
                 </label>
                 <div class="control">
                   <textarea
-                    id="add-exam-description"
+                    id="add-assignment-description"
                     v-model.trim="description"
                     cols="30"
                     rows="10"
                     class="input"
-                    placeholder="Long description of the exam here! You can use Markdown!"
+                    placeholder="Long description of the assignment here! You can use Markdown!"
                   />
                 </div>
               </div>
@@ -96,15 +96,15 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="add-exam-date"
+                  for="add-assignment-due-date"
                   class="label"
                 >
-                  When
+                  Due
                 </label>
                 <div class="control">
                   <input
-                    id="add-exam-date"
-                    v-model="date"
+                    id="add-assignment-due-date"
+                    v-model="dueDate"
                     :min="today"
                     :max="maxDate"
                     type="date"
@@ -112,7 +112,7 @@
                 </div>
                 <div class="control">
                   <input
-                    id="add-exam-time"
+                    id="add-assignment-time"
                     v-model="time"
                     type="time"
                     name="time"
@@ -124,13 +124,13 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="add-exam-time-estimate"
+                  for="add-assignment-time-estimate"
                   class="label"
                 >
                   Time Estimate (hrs)
                 </label>
                 <input
-                  id="add-exam-time-estimate"
+                  id="add-assignment-time-estimate"
                   v-model.number="timeEstimate"
                   type="number"
                   min="0.5"
@@ -143,20 +143,20 @@
             <div class="column">
               <div class="field">
                 <label
-                  for="add-exam-priority"
+                  for="add-assignment-priority"
                   class="label"
                 >
                   Priority
                 </label>
                 <input
-                  id="add-exam-priority"
+                  id="add-assignment-priority"
                   v-model.number="priority"
-                  list="add-exam-priorities"
+                  list="add-assignment-priorities"
                   type="range"
                   min="1"
-                  max="3"
+                  max="5"
                   step="1"
-                  placeholder="1 - 3"
+                  placeholder="1 - 5"
                 >
                 <div
                   class="level"
@@ -171,10 +171,12 @@
                 </div>
                 <div style="clear: both;" />
 
-                <datalist id="add-exam-priorities">
+                <datalist id="add-assignment-priorities">
                   <option value="1" />
                   <option value="2" />
                   <option value="3" />
+                  <option value="4" />
+                  <option value="5" />
                 </datalist>
               </div>
             </div>
@@ -190,7 +192,7 @@
           Cancel
         </button>
         <button
-          form="add-exam-form"
+          form="add-assignment-form"
           class="button is-success"
           :class="{'is-loading': loading}"
         >
@@ -205,7 +207,7 @@
 import moment from 'moment';
 
 export default {
-  name: 'ExamsModalAdd',
+  name: 'AssignmentsModalAdd',
   props: {
     open: {
       type: Boolean,
@@ -218,12 +220,12 @@ export default {
       courseCRN: this.defaultCourseCRN,
       title: '',
       description: '',
-      priority: 2,
-      date: moment()
-        .add(7, 'days')
+      dueDate: moment()
+        .add(1, 'days')
         .format('YYYY-MM-DD'),
-      time: '18:00',
-      timeEstimate: 5.0
+      time: '08:00', // HH:mm
+      timeEstimate: 1.0,
+      priority: 3
     };
   },
   computed: {
@@ -234,13 +236,13 @@ export default {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
     },
     defaultCourseCRN () {
-      return this.$store.state.addExamModal.courseCRN;
+      return this.$store.state.addAssignmentModal.courseCRN;
     },
-    dateString () {
-      return this.$store.getters.addExamModalDateString;
+    dueDateString () {
+      return this.$store.getters.addAssignmentModalDueDateString;
     },
-    timeString () {
-      return this.$store.getters.addExamModalTimeString;
+    dueTimeString () {
+      return this.$store.getters.addAssignmentModalDueTimeString;
     },
     courses () {
       return this.$store.getters.current_schedule;
@@ -248,11 +250,11 @@ export default {
     today: () => moment().format('YYYY-MM-DD')
   },
   watch: {
-    dateString () {
-      this.date = this.dateString;
+    dueDateString () {
+      this.dueDate = this.dueDateString;
     },
-    timeString () {
-      this.time = this.timeString;
+    dueTimeString () {
+      this.time = this.dueTimeString;
     },
     defaultCourseCRN () {
       this.courseCRN = this.defaultCourseCRN;
@@ -261,64 +263,71 @@ export default {
   methods: {
     async save () {
       this.loading = true;
-
+      // TODO: error handle
       let request;
 
       try {
-        request = await this.$http.post('/exams', {
+        request = await this.$http.post('/assignments', {
           title: this.title,
           description: this.description,
-          date: moment(
-            this.date + ' ' + this.time,
+          dueDate: moment(
+            this.dueDate + ' ' + this.time,
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),
-          priority: this.priority,
           courseCRN: this.courseCRN,
-          timeEstimate: this.timeEstimate
+          timeEstimate: this.timeEstimate,
+          priority: this.priority
         });
       } catch (e) {
         this.$toasted.error(
-          'There was an error adding the exam. Please try again later.'
+          'There was an error adding the assignment. Please try again later.'
         );
         this.loading = false;
         return;
       }
 
-      this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
+      // Update global state
+      this.$store.commit(
+        'ADD_UPCOMING_ASSIGNMENT',
+        request.data.createdAssignment
+      );
 
+      // Reset important fields
       this.title = '';
       this.description = '';
       this.timeEstimate = 1;
-      this.priority = 2;
+      this.priority = 3;
 
       this.loading = false;
 
+      // Close modal
       this.$emit('toggle-modal');
 
-      const options = {
-        action: {
-          text: 'View',
-          push: {
-            name: 'exams-overview',
-            params: { examID: request.data.createdExam._id }
+      // Notify user
+      this.$toasted.success(
+        `Added assignment '${
+          request.data.createdAssignment.title
+        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`,
+        {
+          icon: 'plus',
+          action: {
+            text: 'View',
+            push: {
+              name: 'assignments-overview',
+              params: { assignmentID: request.data.createdAssignment._id }
+            }
           }
         }
-      };
-
-      const message = `Added exam '${
-        request.data.createdExam.title
-      }' due ${moment(request.data.createdExam.date).fromNow()}.`;
-
-      this.$toasted.success(message, options);
+      );
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.add-exam-modal {
-  #add-exam-description {
+.add-assignment-modal {
+  #add-assignment-description {
     width: 100%;
     min-width: 100%;
     max-width: 500px;
@@ -327,13 +336,9 @@ export default {
     height: 200px;
     max-height: 500px;
   }
-}
 
-.margin-right {
-  margin-right: 5px;
-}
-
-.margin-left {
-  margin-left: 2px !important;
+  #add-assignment-time-estimate {
+    width: 150px;
+  }
 }
 </style>

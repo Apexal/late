@@ -93,6 +93,11 @@ export default {
                 name: 'assignments-overview',
                 params: { assignmentID: calEvent.assignment._id }
               });
+            } else if (calEvent.eventType === 'exam') {
+              this.$router.push({
+                name: 'exams-overview',
+                params: { examID: calEvent.exam._id }
+              });
             } else if (calEvent.eventType === 'work-block') {
               if (calEvent.assessmentType === 'assignment') {
                 this.$router.push({
@@ -127,7 +132,7 @@ export default {
 
       const unavailabilitySchedule = this.$store.getters.getUnavailabilityAsEvents.map(
         e =>
-          Object.assign(e, {
+          Object.assign({}, e, {
             backgroundColor: 'black',
             rendering: 'background'
           })

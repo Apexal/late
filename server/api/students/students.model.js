@@ -6,8 +6,6 @@ require('../blocks/blocks.model');
 
 // const rpiValidator = require('rpi-validator');
 
-const CURRENT_TERM = '201809';
-
 const schema = new Schema(
   {
     accountLocked: { type: Boolean, default: false },
@@ -55,7 +53,7 @@ const schema = new Schema(
       max: 3000
       /*, required: true */
     }, // maybe?
-    semester_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    semester_schedules: { type: Object, default: {} },
     earliestWorkTime: {
       type: String,
       minlength: 5,
@@ -68,50 +66,58 @@ const schema = new Schema(
       maxlength: 5,
       default: '23:00'
     },
-    unavailability_schedules: { type: Object, default: { [CURRENT_TERM]: [] } },
+    unavailability_schedules: { type: Object, default: {} },
     admin: { type: Boolean, default: false },
+    notificationPreferences: {
+      preWorkBlockReminders: {
+        type: String,
+        enum: ['', 'sms', 'discord'],
+        default: ''
+      },
+      postWorkBlockReminders: {
+        type: String,
+        enum: ['', 'sms', 'discord'],
+        default: ''
+      },
+      morningReports: {
+        type: String,
+        enum: ['', 'email', 'discord'],
+        default: ''
+      },
+      addAssignmentReminders: {
+        type: String,
+        enum: ['', 'sms', 'discord'],
+        default: ''
+      }
+    },
     integrations: {
       sms: {
         verified: { type: Boolean, default: false },
         verificationCode: { type: String, minlength: 1 },
-        phoneNumber: { type: String, minlength: 10, maxlength: 10 },
-        preferences: {
-          enabled: { type: Boolean, default: false },
-          preWorkText: { type: Boolean, default: false },
-          postWorkText: { type: Boolean, default: false },
-          reminders: { type: Boolean, default: false }
-        }
+        phoneNumber: { type: String, minlength: 10, maxlength: 10 }
       },
       discord: {
         verified: { type: Boolean, default: false },
         verificationCode: { type: String, minlength: 1 },
-        userID: { type: String },
-        preferences: {
-          enabled: { type: Boolean, default: false },
-          preWorkDM: { type: Boolean, default: false },
-          postWorkDM: { type: Boolean, default: false }
-        }
-      },
-      email: {
-        preferences: {
-          enabled: { type: Boolean, default: true },
-          dailyReports: { type: Boolean, default: false },
-          weeklyReports: { type: Boolean, default: true }
-        }
+        userID: { type: String }
       }
     },
     setup: {
+      perSemester: {
+        type: Object,
+        default: {}
+      },
       personal_info: {
         type: Boolean,
         default: false
       }, // what CMS API will give us
       course_schedule: {
-        type: Boolean,
-        default: false
+        type: Array,
+        default: [] // semester codes like ['201809', '201901']
       }, // what SIS and YACS will give us
       unavailability: {
-        type: Boolean,
-        default: false
+        type: Array,
+        default: [] // semester codes like ['201809', '201901']
       }, // when the student cannot study or work
       integrations: {
         type: Boolean,
@@ -139,10 +145,16 @@ schema.query.byUsername = function (rcsID) {
   });
 };
 
+schema.query.byDiscordID = function (discordID) {
+  return this.where({
+    'integrations.discord.userID': discordID
+  });
+};
+
 /* METHODS */
 
-schema.methods.courseFromCRN = function (schedule, crn) {
-  return schedule.filter(c => c.crn === crn)[0];
+schema.methods.courseFromCRN = function (currentTermCode, crn) {
+  return this.semester_schedules[currentTermCode].find(c => c.crn === crn);
 };
 
 schema.methods.getAssignments = function (start, end) {
@@ -185,6 +197,7 @@ schema.methods.getExams = function (start, end) {
 
   return this.model('Exam')
     .find(query)
+    .populate('_blocks')
     .sort('date')
     .sort('-timeRemaining')
     .exec();
@@ -192,39 +205,6 @@ schema.methods.getExams = function (start, end) {
 
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
-
-/*
-schema
-  .virtual('current_schedule')
-  .get(function () {
-    if (!this.semester_schedules) return [];
-    return this.semester_schedules[CURRENT_TERM] || [];
-  })
-  .set(function (newSchedule) {
-    this.semester_schedules[CURRENT_TERM] = newSchedule;
-    this.markModified('semester_schedules');
-  });
-*/
-
-schema
-  .virtual('current_unavailability')
-  .get(function () {
-    if (!this.unavailability_schedules) return [];
-    return this.unavailability_schedules[CURRENT_TERM] || [];
-  })
-  .set(function (newSchedule) {
-    this.unavailability_schedules[CURRENT_TERM] = newSchedule;
-    this.markModified('unavailability_schedules');
-  });
-
-schema.virtual('is_setup').get(function () {
-  for (let check in this.setup) if (!this.setup[check]) return false;
-  return true;
-});
-
-schema.virtual('next_to_setup').get(function () {
-  for (let check in this.setup) if (!this.setup[check]) return check;
-});
 
 schema.virtual('full_name').get(function () {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
@@ -256,6 +236,11 @@ schema.virtual('grade_name').get(function () {
   default:
     return 'Unknown Grade';
   }
+});
+
+schema.pre('save', function () {
+  this.setup.course_schedule = [...new Set(this.setup.course_schedule)];
+  this.setup.unavailability = [...new Set(this.setup.unavailability)];
 });
 
 module.exports = mongoose.model('Student', schema);

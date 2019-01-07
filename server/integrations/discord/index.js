@@ -5,6 +5,8 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('../../modules/logger');
 
+const Term = require('../../api/terms/terms.model');
+
 /* LOAD COMMANDS (taken from Apexal/rpi-bot) */
 client.commands = new Discord.Collection();
 const commandFiles = fs
@@ -33,12 +35,15 @@ client.on('message', async msg => {
     if (client.commands.has(commandName)) {
       const command = client.commands.get(commandName);
 
-      // logger.log(`[Discord] Executing command \`${msg.content}\`.`);
+      logger.info(`[Discord] Executing command \`${msg.content}\`.`);
+
+      const terms = await Term.find().sort({ start: -1 });
 
       try {
-        await command.run(client, msg, args);
+        await command.run(client, terms, msg, args);
       } catch (e) {
-        msg.reply(`**Command Failed:** ${e.message}`);
+        logger.error(`[Discord] ${e}`);
+        msg.reply(`**Command Failed:** ${e}`);
       }
     }
   }

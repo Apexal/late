@@ -6,21 +6,43 @@ const state = {
   isAuthenticated: false
 };
 const getters = {
-  getUnavailabilityAsEvents: state => {
-    if (!state.user.current_unavailability) return [];
-    return state.user.current_unavailability.map(p => {
-      let start = moment(p.start, 'Hmm', true).format('HH:mm');
-      let end = moment(p.end, 'Hmm', true).format('HH:mm');
-
+  userSetup: (state, getters, rootState, rootGetters) => {
+    if (!state.isAuthenticated) {
+      return {
+        personal_info: false,
+        course_schedule: false,
+        unavailability: false,
+        integrations: false
+      };
+    }
+    return {
+      personal_info: state.user.setup.personal_info,
+      course_schedule: state.user.setup.course_schedule.includes(
+        rootGetters.currentTerm.code
+      ),
+      unavailability: state.user.setup.unavailability.includes(
+        rootGetters.currentTerm.code
+      ),
+      integrations: state.user.setup.integrations
+    };
+  },
+  isUserSetup: (state, getters) => {
+    for (let check in getters.userSetup) {
+      if (!getters.userSetup[check]) return false;
+    }
+    return true;
+  },
+  getUnavailabilityAsEvents: (state, getters, rootState, rootGetters) => {
+    if (!rootGetters.current_unavailability) return [];
+    return rootGetters.current_unavailability.map(p => {
       return {
         id: 'unavailable',
         title: 'Busy',
         editable: false,
         eventType: 'unavailability',
-        start,
-        end,
-        dow: [p.day],
-        isWorkBlock: true
+        start: p.start,
+        end: p.end,
+        dow: p.dow
       };
     });
   },
@@ -66,7 +88,6 @@ const actions = {
   },
   async SET_USER ({ dispatch, commit }, user) {
     commit('SET_USER', user);
-    await dispatch('UPDATE_SCHEDULE');
   },
   async UPDATE_COURSE ({ state, commit, rootGetters }, updatedCourse) {
     commit('UPDATE_COURSE', {

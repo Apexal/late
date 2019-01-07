@@ -56,7 +56,11 @@ async function setCourseSchedule (ctx) {
   logger.info(`Setting schedule info for ${ctx.state.user.rcs_id}`);
 
   const CRNs = body.pin
-    ? await scrapeSISForCRNS(ctx.state.user.rin, body.pin, '201809')
+    ? await scrapeSISForCRNS(
+      ctx.state.user.rin,
+      body.pin,
+      ctx.session.currentTerm.code
+    )
     : body.crns.split(',').map(crn => crn.trim());
 
   let courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
@@ -77,13 +81,15 @@ async function setCourseSchedule (ctx) {
         .toString(16)
         .substr(-6);
   }
-  ctx.state.user.setup.course_schedule = true;
+
+  ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code);
 
   try {
     // eslint-disable-next-line standard/computed-property-even-spacing
     ctx.state.user.semester_schedules[
       ctx.session.currentTerm.code
     ] = courseSchedule;
+    ctx.state.user.markModified('semester_schedules');
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
@@ -111,6 +117,7 @@ async function setCourses (ctx) {
     ctx.state.user.semester_schedules[
       ctx.session.currentTerm.code
     ] = updatedCourses;
+    ctx.state.user.markModified('semester_schedules');
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
@@ -118,6 +125,8 @@ async function setCourses (ctx) {
     );
     return ctx.badRequest('Failed to update your courses.');
   }
+
+  logger.info(`Updated courses for ${ctx.state.user.rcs_id}`);
 
   ctx.ok({ updatedUser: ctx.state.user });
 }
@@ -135,18 +144,22 @@ async function setUnavailability (ctx) {
 
   // Remove dates, split times
   const unavailabilityPeriods = events.map(e => ({
-    day: moment(e.start).day(),
-    start: moment(e.start).format('Hmm'),
-    end: moment(e.end).format('Hmm')
+    dow: e.dow,
+    start: e.start,
+    end: e.end
   }));
 
   ctx.state.user.earliestWorkTime = body.earliest;
   ctx.state.user.latestWorkTime = body.latest;
 
-  ctx.state.user.setup.unavailability = true;
+  ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code);
 
   try {
-    ctx.state.user.current_unavailability = unavailabilityPeriods;
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    ctx.state.user.unavailability_schedules[
+      ctx.session.currentTerm.code
+    ] = unavailabilityPeriods;
+    ctx.state.user.markModified('unavailability_schedules');
     await ctx.state.user.save();
   } catch (e) {
     logger.error(

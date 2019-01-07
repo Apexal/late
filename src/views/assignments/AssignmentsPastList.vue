@@ -93,11 +93,16 @@
         >
           <td :title="toFullDateTimeString(a.dueDate)">
             {{ toDateShorterString(a.dueDate) }}
-            <span class="has-text-grey">
+            <span
+              class="has-text-grey"
+            >
               {{ toTimeString(a.dueDate) }}
             </span>
           </td>
-          <td class="is-hidden-mobile">
+          <td
+            class="is-hidden-mobile"
+            @click="$store.commit('OPEN_COURSE_MODAL', course(a))"
+          >
             <span
               class="dot"
               :title="course(a).longname"
@@ -112,6 +117,7 @@
               class="dot is-hidden-tablet"
               :title="course(a).longname"
               :style="'background-color: ' + course(a).color"
+              @click="$store.commit('OPEN_COURSE_MODAL', course(a))"
             />
             <router-link
               class="assignment-link"
@@ -194,9 +200,6 @@ export default {
         if (!this.showCompleted && a.completed) return false;
         return !this.filter.includes(this.course(a).crn);
       });
-    },
-    pastAssignments () {
-      return this.$store.getters.pastAssignments;
     }
   },
   created () {

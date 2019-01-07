@@ -10,7 +10,7 @@ module.exports = {
     'View your upcoming assignments.': ''
   },
   dmEnabled: true,
-  async run (client, msg, args) {
+  async run (client, terms, msg, args) {
     // Get student's upcoming assignments
     const student = await getStudent(msg.author);
 
@@ -25,9 +25,9 @@ module.exports = {
     }
 
     // Find upcoming assignments (dueDate is after current datetime)
-    const upcomingAssignments = (await student.getAssignments(
-      new Date()
-    )).filter(a => !a.completed);
+    const ass = await student.getAssignments(new Date());
+    console.log(ass);
+    const upcomingAssignments = ass.filter(a => !a.completed);
 
     // Group by due dates
     const grouped = {};
@@ -51,14 +51,15 @@ module.exports = {
         } incomplete upcoming assignments. Visit LATE to manage them.`
       )
       .setURL(process.env.BASE_URL + '/assignments/upcoming')
-      .setFooter(`Updated ${moment().format('MM/DD/YY h:mm a')}`);
+      .setFooter(`As of ${moment().format('MM/DD/YY h:mm a')}`);
 
+    const currentTerm = terms.find(t => t.isCurrent);
     for (let date in grouped) {
       embed.addField(
         '[ ' + moment(new Date(date)).format('dddd [the] Do') + ' ]',
         grouped[date]
           .map(a => {
-            const course = student.courseFromCRN(a.courseCRN);
+            const course = student.courseFromCRN(currentTerm.code, a.courseCRN);
             return `${course.longname}: *${a.title}* (${moment(
               a.dueDate
             ).format('h:mma')})`;

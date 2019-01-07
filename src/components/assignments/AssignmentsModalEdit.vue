@@ -112,17 +112,6 @@
                     name="due_date"
                   >
                 </div>
-              </div>
-            </div>
-
-            <div class="column">
-              <div class="field">
-                <label
-                  for="edit-assignment-time"
-                  class="label"
-                >
-                  Due Time
-                </label>
                 <div class="control">
                   <input
                     id="edit-assignment-time"
@@ -331,7 +320,9 @@ export default {
 
       // Notify user
       this.$toasted.info(
-        `Edited assignment '${request.data.updatedAssignment.title}' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
+        `Edited assignment '${
+          request.data.updatedAssignment.title
+        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
         {
           action: {
             text: 'Undo'

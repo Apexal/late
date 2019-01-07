@@ -1,13 +1,13 @@
 <template>
-  <div class="assignment-comments">
+  <div class="assessment-comments">
     <div
-      v-if="assignment.comments.length === 0"
+      v-if="assessment.comments.length === 0"
       class="has-text-grey has-text-centered"
     >
-      {{ assignment.passed ? 'No comments were posted for this assignment.' : 'You have not posted any comments yet.' }}
+      {{ assessment.passed ? 'No comments were posted for this ' + assessmentType + '.' : 'You have not posted any comments yet.' }}
     </div>
     <div
-      v-for="(c, index) in assignment.comments"
+      v-for="(c, index) in assessment.comments"
       :key="index"
       class="box"
     >
@@ -59,10 +59,14 @@ import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 
 export default {
-  name: 'AssignmentOverviewTabsComments',
+  name: 'AssessmentOverviewComments',
   components: { VueMarkdown },
   props: {
-    assignment: {
+    assessmentType: {
+      type: String,
+      required: true
+    },
+    assessment: {
       type: Object,
       required: true
     },
@@ -77,10 +81,10 @@ export default {
     };
   },
   methods: {
-    shortDateTimeString: dueDate =>
-      moment(dueDate).format('dddd, MMM Do YYYY [@] h:mma'),
-    toFullDateTimeString: dueDate =>
-      moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
+    shortDateTimeString: date =>
+      moment(date).format('dddd, MMM Do YYYY [@] h:mma'),
+    toFullDateTimeString: date =>
+      moment(date).format('dddd, MMMM Do YYYY, h:mma'),
     fromNow (date) {
       return moment(date).from(this.now);
     }
@@ -89,7 +93,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 #new-comment {
   max-width: 900px;
   min-height: 100px;

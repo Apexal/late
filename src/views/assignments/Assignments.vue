@@ -159,9 +159,6 @@ export default {
         fullWidth: false
       });
     },
-    course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
-    },
     isFiltered (c) {
       return this.filter.includes(c.crn);
     },

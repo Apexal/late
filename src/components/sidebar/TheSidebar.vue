@@ -6,7 +6,7 @@
     <div class="panel">
       <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         <span
-          class="icon button is-black local-toggle-sidebar is-pulled-right"
+          class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar."
           @click="$store.commit('TOGGLE_SIDEBAR')"
         >
@@ -27,16 +27,17 @@
           <i :class="t.icon" />
 
           <span
-            v-if="name === 'schedule' && inClass"
-            class="tag is-info tooltip is-pulled-right tab-count"
-            :style="{ 'background-color': schedule.current.course.color }"
-            :data-tooltip="'Until end of ' + schedule.current.course.longname + ' ' + periodType(schedule.current.period)"
+            v-if="name === 'schedule' && currentEvent"
+            class="tag is-info is-pulled-right tab-count"
+            :style="{ 'background-color': currentEvent.course.color }"
+            :title="'Until end of ' + currentEvent.title"
           >
             {{ countdown }}
           </span>
           <span
             v-else-if="counts[name]"
-            class="tab-count tag is-small is-danger"
+            class="tab-count tag is-small"
+            :class="'is-' + t.tagColor"
           >
             {{ counts[name] }}
           </span>
@@ -52,6 +53,7 @@
           :pressing="pressingAssignments"
           @toggle-modal="toggleModal"
           @update-count="updatedCount"
+          @update-current-event="currentEvent = arguments[0]"
         />
       </transition>
     </div>
@@ -68,18 +70,44 @@ import SidebarTodoList from '@/components/sidebar/SidebarTodoList';
 
 export default {
   name: 'TheSidebar',
-  components: { SidebarPressingAssignments, SidebarSchedule, SidebarTodoList, SidebarUpcomingExamsList },
+  components: {
+    SidebarPressingAssignments,
+    SidebarSchedule,
+    SidebarTodoList,
+    SidebarUpcomingExamsList
+  },
   data () {
     return {
       tab: 'schedule',
+      currentEvent: false,
       tabs: {
-        'schedule': { component: SidebarSchedule, name: 'Daily Agenda', icon: 'far fa-clock' },
-        'assignments': { component: SidebarPressingAssignments, name: 'Pressing Assignments', icon: 'fas fa-clipboard-list' },
-        'exams': { component: SidebarUpcomingExamsList, name: 'Upcoming Exams', icon: 'fas fa-file-alt' },
-        'todos': { component: SidebarTodoList, name: 'To Do\'s', icon: 'fas fa-check' }
+        schedule: {
+          component: SidebarSchedule,
+          name: 'Daily Agenda',
+          icon: 'far fa-clock',
+          tagColor: 'info'
+        },
+        assignments: {
+          component: SidebarPressingAssignments,
+          name: 'Pressing Assignments',
+          icon: 'fas fa-clipboard-list',
+          tagColor: 'warning'
+        },
+        exams: {
+          component: SidebarUpcomingExamsList,
+          name: 'Upcoming Exams',
+          icon: 'fas fa-file-alt',
+          tagColor: 'danger'
+        },
+        todos: {
+          component: SidebarTodoList,
+          name: 'To Do\'s',
+          icon: 'fas fa-check',
+          tagColor: 'info'
+        }
       },
       externalCounts: {
-        'todos': 0
+        todos: JSON.parse(localStorage.getItem('todos')).length
       }
     };
   },
@@ -92,9 +120,10 @@ export default {
     },
     counts () {
       return {
-        'assignments': this.pressingAssignments.length,
-        'exams': this.upcomingExams.length,
-        'todos': this.externalCounts.todos
+        schedule: this.$store.getters.todaysAgenda.length,
+        assignments: this.pressingAssignments.length,
+        exams: this.upcomingExams.length,
+        todos: this.externalCounts.todos
       };
     },
     current_tab () {
@@ -103,7 +132,9 @@ export default {
     pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
     },
-    upcomingExams () { return this.$store.getters.pendingUpcomingExams; },
+    upcomingExams () {
+      return this.$store.getters.pendingUpcomingExams;
+    },
     schedule () {
       return this.$store.state.schedule;
     },
@@ -111,9 +142,10 @@ export default {
       return this.$store.getters.inClass;
     },
     countdown () {
-      const currentPeriod = this.$store.state.schedule.current.period;
+      if (!this.currentEvent);
+
       const diff = moment.duration(
-        moment(currentPeriod.end, 'Hmm', true).diff(this.now)
+        moment(this.currentEvent.end).diff(this.now)
       );
       return `${diff.hours()}h ${diff.minutes()}m left`;
     }

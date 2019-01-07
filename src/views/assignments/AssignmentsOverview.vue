@@ -28,25 +28,22 @@
           @toggle-completed="toggleCompleted"
         />
 
-        <h2 class="subtitle">
-          <span
-            v-if="assignment.completed"
-            class="icon"
-          >
-            <span
-              class="fas fa-check-circle"
-              :style="{ 'color': course.color }"
-            />
-          </span>
-          {{ course.longname }}
-          <span class="has-text-grey">
-            {{ isPast ? 'Past ': '' }}Assignment
-          </span>
-        </h2>
+        <span
+          class="tag is-medium course-tag"
+          :style="{ 'background-color': course.color }"
+          @click="$store.commit('OPEN_COURSE_MODAL', course)"
+        >
+          <b class="course-longname">
+            {{ course.longname }}
+          </b>
+          {{ isPast ? 'Past ': '' }}Assignment
+        </span>
+
         <h1 class="title">
           {{ assignment.title }}
           <h2 class="subtitle has-text-grey due-title">
-            {{ isPast ? 'Was due' : 'Due' }} {{ shortDateTimeString(assignment.dueDate) }}
+            {{ isPast ? 'Was due' : 'Due' }}
+            <b>{{ shortDateTimeString(assignment.dueDate) }}</b>
           </h2>
         </h1>
       </div>
@@ -169,7 +166,12 @@ import AssignmentOverviewTabs from '@/components/assignments/overview/Assignment
 
 export default {
   name: 'AssignmentsOverview',
-  components: { VueMarkdown, AssignmentsModalEdit, AssignmentOverviewActionButtons, AssignmentOverviewTabs },
+  components: {
+    VueMarkdown,
+    AssignmentsModalEdit,
+    AssignmentOverviewActionButtons,
+    AssignmentOverviewTabs
+  },
   data () {
     return {
       tab: 'schedule',
@@ -283,8 +285,12 @@ export default {
         this.loading = false;
         this.isUpcoming = true;
         document.title = `${this.assignment.title} | LATE`;
+        if (this.assignment.completed) this.tab = 'comments';
+
         return;
       }
+
+      this.tab = 'comments';
 
       this.loading = true;
       this.isUpcoming = false;
@@ -347,7 +353,10 @@ export default {
     },
     async addWorkBlock ({ start, end }) {
       let request;
-      request = await this.$http.post(`/assignments/a/${this.assignment._id}/blocks`, { startTime: start, endTime: end, assessmentType: 'assignment' });
+      request = await this.$http.post(
+        `/blocks/assignment/${this.assignment._id}`,
+        { startTime: start, endTime: end }
+      );
 
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.commit(
@@ -357,14 +366,20 @@ export default {
       } else {
         this.editedAssignment(request.data.updatedAssignment);
       }
-      const dayStr = moment(start).format('dddd [the] do');
-      const startStr = moment(start).format('h:mma');
-      const endStr = moment(end).format('h:mma');
-      this.$toasted.show(`Scheduled to work on this assignment on from ${dayStr} ${startStr} to ${endStr}!`);
+
+      this.$toasted.success('Added work block to your schedule!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     },
     async editWorkBlock ({ blockID, start, end }) {
       let request;
-      request = await this.$http.patch(`/assignments/a/${this.assignment._id}/blocks/${blockID}`, { startTime: start, endTime: end, assessmentType: 'assignment' });
+      request = await this.$http.patch(
+        `/blocks/assignment/${this.assignment._id}/${blockID}`,
+        { startTime: start, endTime: end, assessmentType: 'assignment' }
+      );
 
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.commit(
@@ -375,24 +390,34 @@ export default {
         this.editedAssignment(request.data.updatedAssignment);
       }
 
-      this.$toasted.show('Rescheduled work block!');
+      this.$toasted.show('Rescheduled work block!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     },
     async removeWorkBlock (blockID) {
       let request;
-      request = await this.$http.delete(`/assignments/a/${this.assignment._id}/blocks/${blockID}`);
+      request = await this.$http.delete(
+        `/blocks/assignment/${this.assignment._id}/${blockID}`
+      );
 
-      // Update state by removing work block from this assignment
-      const updatedAssignment = Object.assign({}, this.assignment, { _blocks: this.assignment._blocks.filter(b => b._id !== blockID) });
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.commit(
           'UPDATE_UPCOMING_ASSIGNMENT',
-          updatedAssignment
+          request.data.updatedAssignment
         );
       } else {
-        this.editedAssignment(updatedAssignment);
+        this.editedAssignment(request.data.updatedAssignment);
       }
 
-      this.$toasted.error('Removed work block from your schedule!');
+      this.$toasted.error('Removed work block from your schedule!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     },
     async addComment (newComment) {
       if (!newComment) return;
@@ -421,6 +446,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.course-tag {
+  cursor: pointer;
+  color: white;
+
+  .course-longname {
+    margin-right: 5px;
+  }
+
+  margin-bottom: 10px;
+}
+.course-circle {
+  cursor: pointer;
+}
+
 .due-title {
   margin-top: 5px;
 }

@@ -23,13 +23,14 @@
           class="assignment assignment-link panel-block"
           :title="a.description.substring(0, 500)"
           :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-          :class="{ 'priority': a.priority >= 7 }"
+          :class="{ 'priority': a.priority > 3 }"
         >
           <span class="is-full-width">
             <span
               class="dot course-dot"
               :title="course(a).longname"
               :style="'background-color: ' + course(a).color"
+              @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(a))"
             />
             <b class="course-title is-hidden-tablet">
               {{ course(a).longname }}
@@ -117,9 +118,7 @@ export default {
 
 .assignment {
   cursor: pointer;
-  .priority-tag {
-    margin-left: 5px;
-  }
+
   .assignment-link {
     color: inherit;
   }

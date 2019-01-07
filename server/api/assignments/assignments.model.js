@@ -17,7 +17,7 @@ const schema = new Schema(
     courseCRN: { type: String, required: true }, // CRN
     timeEstimate: { type: Number, required: true, min: 0, max: 696969420 },
     timeRemaining: { type: Number, required: true },
-    priority: { type: Number, min: 0, max: 10 },
+    priority: { type: Number, min: 1, max: 5, default: 3 },
     comments: [
       {
         addedAt: { type: Date, required: true },
@@ -88,9 +88,25 @@ schema.pre('save', async function () {
     await Block.deleteMany({
       _student: this._student,
       _id: { $in: this._blocks },
-      endTime: { $gte: this.dueDate }
+      $or: [
+        { endTime: { $gte: this.dueDate } },
+        { endTime: { $gte: this.completedAt } }
+      ]
     });
+
+    this._blocks = this._blocks.filter(b => b.endTime < this.dueDate);
+    if (this.completed) {
+      this._blocks = this._blocks.filter(b => b.endTime < this.completedAt);
+    }
   }
+});
+
+schema.pre('remove', async function () {
+  // Delete any work blocks for this assignment
+  await Block.deleteMany({
+    _student: this._student,
+    _id: { $in: this._blocks }
+  });
 });
 
 module.exports = mongoose.model('Assignment', schema);

@@ -18,7 +18,31 @@ async function sendText (to, body) {
 
 /* UTILS */
 const utils = {
-  async generateNightlyReport (student, missed) {
+  async generateWorkBlockReminder (
+    terms,
+    student,
+    assessmentType,
+    assessment,
+    block
+  ) {
+    const lines = [];
+    const startStr = moment(block.startTime).format('h:mma');
+    const endStr = moment(block.endTime).format('h:mma');
+
+    lines.push(
+      `Get ready to ${assessmentType === 'exam' ? 'study for' : 'work on'} ${
+        assessment.title
+      } from ${startStr} to ${endStr}.`
+    );
+
+    const message = lines.join('\n');
+    await sendText(student.integrations.sms.phoneNumber, message);
+
+    block.notified = true;
+    await block.save();
+  },
+  async generateNightlyReport (terms, student, missed) {
+    const currentTerm = terms.find(t => t.isCurrent);
     const lines = [];
     lines.push(
       'Good evening from LATE! Here is your nightly progress report:\n'
@@ -26,7 +50,7 @@ const utils = {
     lines.push(`[${missed.length} Missed Assignments]`);
 
     for (let a of missed) {
-      const course = student.courseFromCRN(a.courseCRN);
+      const course = student.courseFromCRN(currentTerm.code, a.courseCRN);
 
       lines.push(
         `${moment(a.dueDate).format('h:mma')} - ${course.longname} - ${a.title}`

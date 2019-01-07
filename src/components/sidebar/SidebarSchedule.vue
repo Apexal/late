@@ -1,60 +1,88 @@
 <template>
   <div class="sidebar-schedule">
-    <template v-if="onBreak">
-      <div class="panel-block has-text-grey">
-        {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
+    <div
+      v-if="onBreak"
+      class="panel-block has-text-grey"
+    >
+      {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
+    </div>
+
+    <div
+      v-else
+      class="agenda"
+    >
+      <div v-if="filteredTodaysAgenda.length === 0">
+        <div class="panel-block has-text-grey">
+          No courses or scheduled work today!
+        </div>
       </div>
-    </template>
-    <template v-else-if="is_weekend">
-      <div class="panel-block">
-        <h2 class="subtitle has-text-grey">
-          It's the weekend!
-        </h2>
-      </div>
-    </template>
-    <template v-else>
       <div
-        v-for="p in periods"
-        :key="p.start"
-        class="panel-block period-block is-clearfix"
-        :class="{ 'is-active': p == current_period, 'has-background-grey-lighter': hasPassed(p) }"
+        v-for="event in filteredTodaysAgenda"
+        :key="event.start.toString()"
+        class="panel-block event is-size-7"
+        :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event) }"
       >
-        <span class="course-longname is-full-width">
+        <span class="is-full-width">
           <span
             class="course-dot dot"
-            :style="'background-color: ' + course(p).color"
+            :style="'background-color: ' + event.course.color"
+            @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
           />
           <span
-            class="tooltip is-tooltip-bottom"
-            :data-tooltip="fromNow(p.start)"
+            class="event-title tooltip"
+            :data-tooltip="event.eventType === 'period' ? 'Class' : 'Work/Study'"
+            @click="eventClicked(event)"
           >
-            {{ course(p).longname }}
-            <span class="has-text-grey">
-              {{ periodType(p) }}
-            </span>
+            {{ event.title }}
           </span>
           <div
-            class="course-times is-pulled-right has-text-grey tooltip is-tooltip-left"
-            :data-tooltip="duration(p) + ' minutes'"
+            class="event-times is-pulled-right has-text-grey tooltip is-tooltip-left"
+            :data-tooltip="duration(event) + ' minutes'"
           >
-            <span>{{ timeFormat(p.start) }}</span>
-            <span>{{ timeFormat(p.end) }}</span>
+            <span>{{ timeFormat(event.start) }}</span>
+            <span>{{ timeFormat(event.end) }}</span>
           </div>
         </span>
       </div>
-    </template>
+      <div class="controls panel-block has-background-white-ter">
+        <span class="is-full-width">
+          <div class="field">
+            <input
+              id="agenda-show-passed"
+              v-model="showPassed"
+              type="checkbox"
+              class="switch"
+            >
+            <label for="agenda-show-passed">
+              <b>Show Passed</b>
+            </label>
+          </div>
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+import 'bulma-switch';
 
 export default {
   name: 'SidebarSchedule',
   data () {
-    return {};
+    return {
+      showPassed: true
+    };
   },
   computed: {
+    filteredTodaysAgenda () {
+      return this.showPassed
+        ? this.todaysAgenda
+        : this.todaysAgenda.filter(e => !this.hasPassed(e.end));
+    },
+    todaysAgenda () {
+      return this.$store.getters.todaysAgenda;
+    },
     currentTerm () {
       return this.$store.getters.currentTerm;
     },
@@ -73,74 +101,92 @@ export default {
     schedule () {
       return this.$store.state.schedule;
     },
-    periods () {
-      return this.schedule.periods || [];
-    },
-    current_course () {
-      return this.schedule.current.course;
-    },
-    current_period () {
-      return this.schedule.current.period;
-    },
-    next_course () {
-      return this.schedule.next.course;
-    },
-    next_period () {
-      return this.schedule.next.period;
-    },
-    inClass () {
-      return this.$store.getters.inClass;
-    },
     classesOver () {
       return this.$store.getters.classesOver;
     },
-    is_weekend () {
+    isWeekend () {
       return moment().day() === 6 || moment().day() === 0;
     },
     dateStr () {
       return moment(this.schedule.date).format('YYYY-MM-DD');
+    },
+    currentEvent () {
+      return this.todaysAgenda.find(this.isCurrentEvent);
     }
   },
+  watch: {
+    currentEvent (newCurrentEvent) {
+      this.$emit('update-current-event', newCurrentEvent);
+    },
+    showPassed (sP) {
+      localStorage.setItem('agendaShowPassed', sP);
+    }
+  },
+  mounted () {
+    if (localStorage.getItem('agendaShowPassed')) {
+      try {
+        this.showPassed = JSON.parse(localStorage.getItem('agendaShowPassed'));
+      } catch (e) {
+        localStorage.removeItem('agendaShowPassed');
+      }
+    }
+  },
+
+  created () {
+    this.$emit('update-current-event', this.currentEvent);
+  },
   methods: {
+    openCourseModal (course) {
+      this.$store.commit('OPEN_COURSE_MODAL', course);
+    },
+    eventClicked (event) {
+      if (event.link) this.$router.push(event.link);
+    },
     fromNow (datetime) {
       const time = moment(datetime, 'Hmm', true);
       return `${time.isBefore(this.now) ? 'Started' : 'Starting'} ${time.from(
         this.now
       )}`;
     },
-    timeFormat: datetime => moment(datetime, 'Hmm', true).format('h:mma'),
-    hasPassed: p => moment(p.end, 'Hmm', true).isBefore(moment()),
-    duration: p =>
-      moment(p.end, 'Hmm', true).diff(moment(p.start, 'Hmm', true), 'minutes'),
-    course (p) {
-      return this.$store.getters.getCourseFromPeriod(p);
+    hasPassed (datetime) {
+      return datetime.isBefore(this.now);
     },
-    periodType (p) {
-      return this.$store.getters.periodType(p.type);
-    }
+    isCurrentEvent (event) {
+      return moment(this.now).isBetween(event.start, event.end);
+    },
+    duration: p => p.end.diff(p.start, 'minutes'),
+    timeFormat: datetime => datetime.format('h:mma')
   }
 };
 </script>
 
 <style lang='scss' scoped>
-.period-block {
-  &.is-active {
+.event {
+  cursor: pointer;
+  &.has-background-success {
     font-weight: bold;
+    color: white;
+    .event-times span {
+      color: white;
+    }
   }
-}
 
-.course-times span {
-  line-height: 1.3em; //Makes course timing more readable
-}
+  &.passed {
+    text-decoration: line-through;
+  }
 
-.course-dot {
-  margin-right: 5px;
-}
+  .course-dot {
+    margin-right: 5px;
+  }
 
-.course-times {
-  line-height: 11px;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
+  .event-times {
+    line-height: 11px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    span {
+      line-height: 1.3em; //Makes course timing more readable
+    }
+  }
 }
 </style>

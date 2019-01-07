@@ -1,8 +1,6 @@
 const logger = require('../../modules/logger');
 const SMS = require('../../integrations/sms');
 
-const { dmStudent } = require('../../integrations/discord').utils;
-
 /**
  * Get a SMS verification code and send it to the user's given phone number.
  *
@@ -103,38 +101,24 @@ async function verifySMS (ctx) {
 }
 
 /**
- * Update SMS integration preferences passed in the request body.
+ * Delete the SMS integration from the user.
  *
  * @param {Koa context} ctx
  */
-async function updatePreferencesSMS (ctx) {
-  const preferences = ctx.request.body;
-
-  Object.assign(ctx.state.user.integrations.sms.preferences, preferences);
+async function disableSMS (ctx) {
+  ctx.state.user.integrations.sms = {
+    verified: false
+  };
   ctx.state.user.setup.integrations = true;
 
   try {
     await ctx.state.user.save();
-
-    const lines = [];
-    lines.push('You updated your SMS preferences for LATE:');
-    if (!preferences.enabled) {
-      lines.push('❌ no SMS notifications');
-    } else {
-      lines.push((preferences.preWorkText ? '✔️' : '❌') + ' pre-work session reminders');
-      lines.push((preferences.postWorkText ? '✔️' : '❌') + ' post-work session reminders');
-      lines.push((preferences.reminders ? '✔️' : '❌') + ' assignment due date reminders');
-    }
-
-    SMS.sendText(ctx.state.user.integrations.sms.phoneNumber, lines.join('\n'));
   } catch (e) {
-    logger.error(
-      `Failed to update SMS preferences for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('Failed to update SMS preferences.');
+    logger.error(`Failed to disable SMS for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.badRequest('Failed to disable SMS integration.');
   }
 
-  logger.info(`Updated SMS preferences for ${ctx.state.user.rcs_id}.`);
+  logger.info(`Disabled SMS integration for ${ctx.state.user.rcs_id}.`);
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
@@ -168,58 +152,59 @@ async function startVerifyDiscord (ctx) {
  *
  * @param {Koa context} ctx
  */
-async function updatePreferencesDiscord (ctx) {
-  const preferences = ctx.request.body;
-
-  Object.assign(ctx.state.user.integrations.discord.preferences, preferences);
-
+async function disableDiscord (ctx) {
+  ctx.state.user.integrations.discord = {
+    verified: false
+  };
   ctx.state.user.setup.integrations = true;
 
   try {
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
-      `Failed to update Discord preferences for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to disable Discord for ${ctx.state.user.rcs_id}: ${e}`
     );
-    return ctx.badRequest('Failed to update Discord preferences.');
+    return ctx.badRequest('Failed to disable Discord integration.');
   }
 
-  dmStudent(ctx.state.user, 'You updated your preferences!');
-
-  logger.info(`Updated Discord preferences for ${ctx.state.user.rcs_id}.`);
+  logger.info(`Disabled Discord integration for ${ctx.state.user.rcs_id}.`);
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
 /**
- * Update email integration preferences passed in the request body.
+ * Update user's notification preferences as passed in the request body.
  *
  * @param {Koa context} ctx
+ *
+ * POST /preferences
  */
-async function updatePreferencesEmail (ctx) {
+async function saveNotificationPreferences (ctx) {
   const preferences = ctx.request.body;
-
-  Object.assign(ctx.state.user.integrations.email.preferences, preferences);
-
-  ctx.state.user.setup.integrations = true;
+  ctx.state.user.notificationPreferences = preferences;
 
   try {
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
-      `Failed to update email preferences for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to update notification preferences for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
     );
-    return ctx.badRequest('Failed to update email preferences.');
+    return ctx.badRequest(
+      'There was an error updating your notification preferences.'
+    );
   }
 
-  logger.info(`Updated email preferences for ${ctx.state.user.rcs_id}.`);
+  logger.info(`Updated notification preferences for ${ctx.state.user.rcs_id}.`);
+
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
 module.exports = {
   submitSMS,
   verifySMS,
-  updatePreferencesSMS,
+  disableSMS,
   startVerifyDiscord,
-  updatePreferencesDiscord,
-  updatePreferencesEmail
+  disableDiscord,
+  saveNotificationPreferences
 };

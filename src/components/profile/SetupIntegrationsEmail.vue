@@ -1,69 +1,22 @@
 <template>
   <div class="email-setup">
-    <h2 class="subtitle">
-      Email Notifications
-    </h2>
-
-    <form @submit.prevent="save">
-      <div class="field">
+    <label
+      for="email"
+      class="label"
+    >
+      Your School Email
+    </label>
+    <div class="field">
+      <div class="control">
         <input
-          id="enabled"
-          v-model="preferences.enabled"
-          type="checkbox"
-          class="switch"
+          id="email"
+          class="input"
+          type="email"
+          :value="email"
+          disabled
         >
-        <label for="enabled">
-          <b>Enable email reports</b>
-        </label>
       </div>
-      <div class="field">
-        <input
-          id="daily-reports"
-          v-model="preferences.dailyReports"
-          type="checkbox"
-          class="switch"
-          :disabled="!preferences.enabled"
-        >
-        <label for="daily-reports">
-          Receive
-          <b>daily</b> morning reports about upcoming assignments and your work schedule
-        </label>
-      </div>
-      <div class="field">
-        <input
-          id="weekly-reports"
-          v-model="preferences.weeklyReports"
-          type="checkbox"
-          class="switch"
-          :disabled="!preferences.enabled"
-        >
-        <label for="weekly-reports">
-          Receive
-          <b>weekly</b> reports on overall progress for the previous week
-        </label>
-      </div>
-
-      <hr>
-
-
-      <div>
-        <button
-          style="margin-right: 5px;"
-          :class="{ 'is-loading': loading }"
-          class="button is-dark"
-        >
-          Save
-        </button>
-        <router-link
-          style="padding:4px;"
-          class="button is-primary"
-          :class="{'is-loading': loading}"
-          to="/dashboard"
-        >
-          Finish
-        </router-link>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -82,8 +35,16 @@ export default {
     };
   },
   computed: {
+    email () {
+      return this.$store.state.auth.user.rcs_id + '@rpi.edu';
+    },
     saved () {
-      return JSON.stringify(this.preferences) === JSON.stringify(this.$store.state.auth.user.integrations.email.preferences);
+      return (
+        JSON.stringify(this.preferences) ===
+        JSON.stringify(
+          this.$store.state.auth.user.integrations.email.preferences
+        )
+      );
     }
   },
   methods: {

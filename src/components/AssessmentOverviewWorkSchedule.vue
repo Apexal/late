@@ -1,10 +1,10 @@
 <template>
-  <div class="assignment-work-schedule">
+  <div class="assessment-work-schedule">
     <FullCalendar
       ref="calendar"
       :events="totalEvents"
-      :editable="true"
-      :selectable="true"
+      :editable="editable"
+      :selectable="editable"
       :header="calendar.header"
       :config="calendar.config"
     />
@@ -14,14 +14,18 @@
 <script>
 import moment from 'moment';
 
-import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
+import { FullCalendar } from 'vue-full-calendar';
 
 export default {
-  name: 'AssignmentOverviewabsWorkSchedule',
+  name: 'AsessmentOverviewTabsWorkSchedule',
   components: { FullCalendar },
   props: {
-    assignment: {
+    assessmentType: {
+      type: String,
+      required: true
+    },
+    assessment: {
       type: Object,
       required: true
     }
@@ -33,6 +37,14 @@ export default {
     };
   },
   computed: {
+    editable () {
+      if (this.assessmentType === 'exam') return !this.assessment.passed;
+      return !this.assessment.completed && !this.assessment.passed;
+    },
+    assessmentDate () {
+      if (this.assessmentType === 'exam') return this.assessment.date;
+      else return this.assessment.dueDate;
+    },
     term () {
       return this.$store.getters.currentTerm;
     },
@@ -66,7 +78,9 @@ export default {
           noEventsMessage: 'No work periods set yet.',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
-              if (moment(event.start).isAfter(this.term.classesEnd)) return false;
+              if (moment(event.start).isAfter(this.term.classesEnd)) {
+                return false;
+              }
             }
           },
           buttonText: {
@@ -74,7 +88,7 @@ export default {
           },
           selectConstraint: {
             start: new Date(),
-            end: this.assignment.dueDate
+            end: this.assessmentDate
           },
           eventClick: this.eventClick,
           eventDrop: this.eventDrop,
@@ -84,61 +98,70 @@ export default {
       };
     },
     start () {
-      return moment(this.assignment.createdAt).startOf('day');
+      return moment(this.assessment.createdAt).startOf('day');
     },
     end () {
-      return moment(this.assignment.dueDate).endOf('day');
+      return moment(this.assessmentDate).endOf('day');
     },
     dueDateEvent () {
       return {
         eventType: 'due-date',
-        title: 'Assignment Due',
+        title: 'Assessment Due',
         editable: false,
-        start: this.assignment.dueDate,
+        start: this.assessmentDate,
         color: this.course.color,
-        end: moment(this.assignment.dueDate).add(20, 'minute')
+        end: moment(this.assessmentDate).add(20, 'minute')
       };
     },
     course () {
-      return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
+      return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
     },
     courseScheduleEvents () {
-      return this.$store.getters.getCourseScheduleAsEvents.map(
-        e =>
-          Object.assign({}, e, {
-            rendering: 'background'
-          })
+      return this.$store.getters.getCourseScheduleAsEvents.map(e =>
+        Object.assign({}, e, {
+          rendering: 'background'
+        })
       );
     },
     unavailabilitySchedule () {
-      return this.$store.getters.getUnavailabilityAsEvents.map(
-        e =>
-          Object.assign({}, e, {
-            backgroundColor: 'black',
-            rendering: 'background'
-          })
+      return this.$store.getters.getUnavailabilityAsEvents.map(e =>
+        Object.assign({}, e, {
+          backgroundColor: 'black',
+          rendering: 'background'
+        })
       );
     },
     workBlockEvents () {
-      return this.$store.getters.getWorkBlocksAsEvents.map(
-        e => {
-          if (e.assignment._id !== this.assignment._id) {
-            return Object.assign({}, e, { rendering: 'background' });
-          }
-          return e;
+      return this.$store.getters.getWorkBlocksAsEvents.map(e => {
+        if (e.assessment._id !== this.assessment._id) {
+          return Object.assign({}, e, { rendering: 'background' });
         }
-      );
+        return e;
+      });
     },
     totalEvents () {
-      // Render work blocks for other assignments in the background
+      // Render work blocks for other assessments in the background
 
-      return this.workBlocks.concat(this.courseScheduleEvents).concat(this.unavailabilitySchedule).concat([this.dueDateEvent]);
+      return this.workBlocks
+        .concat(this.courseScheduleEvents)
+        .concat(this.unavailabilitySchedule)
+        .concat([this.dueDateEvent]);
     }
   },
   watch: {
     /* end () {}, */
     workBlockEvents () {
       this.workBlocks = this.workBlockEvents.slice(0);
+    },
+    editable (newVal) {
+      this.$refs.calendar.fireMethod('option', 'selectable', newVal);
+      this.$refs.calendar.fireMethod('option', 'editable', newVal);
+    },
+    end (newEnd) {
+      this.$refs.calendar.fireMethod('option', 'validRange', {
+        start: this.start,
+        end: newEnd
+      });
     }
   },
   created () {
@@ -146,11 +169,19 @@ export default {
   },
   methods: {
     select (start, end) {
-      const assignmentTitle = this.assignment.title;
+      const assessmentTitle = this.assessment.title;
       const dateStr = moment(start).format('dddd');
       const startStr = moment(start).format('h:mm a');
       const endStr = moment(end).format('h:mm a');
-      if (!confirm(`You want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
+      if (
+        !confirm(
+          `You want to ${
+            this.assessmentType === 'assignment' ? 'work on' : 'study for'
+          } ${assessmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`
+        )
+      ) {
+        return;
+      }
 
       this.$refs.calendar.fireMethod('unselect');
       this.saved = false;
@@ -167,12 +198,20 @@ export default {
         return this.$toasted.error('Cannot remove past work block!');
       }
 
-      const assignmentTitle = this.assignment.title;
+      const assessmentTitle = this.assessment.title;
       const dateStr = moment(calEvent.start).format('dddd');
       const startStr = moment(calEvent.start).format('h:mm a');
       const endStr = moment(calEvent.end).format('h:mm a');
 
-      if (!confirm(`You no longer want to work on ${assignmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`)) { return; }
+      if (
+        !confirm(
+          `You no longer want to ${
+            this.assessmentType === 'assignment' ? 'work on' : 'study for'
+          } ${assessmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`
+        )
+      ) {
+        return;
+      }
 
       /* Remove work block */
       this.workBlocks = this.workBlocks.filter(
@@ -185,10 +224,18 @@ export default {
     },
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
       // Update work block on server
-      this.$emit('edit-work-block', { blockID: calEvent.blockID, start: calEvent.start, end: calEvent.end });
+      this.$emit('edit-work-block', {
+        blockID: calEvent.blockID,
+        start: calEvent.start,
+        end: calEvent.end
+      });
     },
     eventResize (calEvent, delta, revertFunc) {
-      this.$emit('edit-work-block', { blockID: calEvent.blockID, start: calEvent.start, end: calEvent.end });
+      this.$emit('edit-work-block', {
+        blockID: calEvent.blockID,
+        start: calEvent.start,
+        end: calEvent.end
+      });
     }
   }
 };

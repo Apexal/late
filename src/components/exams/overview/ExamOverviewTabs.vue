@@ -1,5 +1,5 @@
 <template>
-  <div class="assignment-overview-tabs">
+  <div class="exam-overview-tabs">
     <div class="tabs">
       <ul>
         <li
@@ -23,10 +23,10 @@
           <a>
             Comments
             <span
-              v-if="assignment.comments.length > 0"
+              v-if="exam.comments.length > 0"
               class="tag is-dark comment-count"
             >
-              {{ assignment.comments.length }}
+              {{ exam.comments.length }}
             </span>
           </a>
         </li>
@@ -35,8 +35,8 @@
 
     <Component
       :is="componentName"
-      :assessment-type="'assignment'"
-      :assessment="assignment"
+      :assessment-type="'exam'"
+      :assessment="exam"
       :loading="loading"
       @add-comment="$emit('add-comment', arguments[0])"
       @add-work-block="$emit('add-work-block', arguments[0])"
@@ -48,11 +48,11 @@
 
 <script>
 // Tabs
-import AssessmentOverviewComments from '@/components/AssessmentOverviewComments';
 import AssessmentOverviewWorkSchedule from '@/components/AssessmentOverviewWorkSchedule';
+import AssessmentOverviewComments from '@/components/AssessmentOverviewComments';
 
 export default {
-  name: 'AssignmentOverviewTabs',
+  name: 'ExamOverviewTabs',
   components: {
     AssessmentOverviewComments,
     AssessmentOverviewWorkSchedule
@@ -62,7 +62,7 @@ export default {
       type: String,
       required: true
     },
-    assignment: {
+    exam: {
       type: Object,
       required: true
     },
@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     workScheduleLocked () {
-      return this.assignment.completed || this.assignment.passed;
+      return this.exam.passed;
     },
     componentName () {
       return {

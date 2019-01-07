@@ -20,8 +20,22 @@ const getters = {
     state.terms.find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
     {},
   current_schedule: (state, getters, rootState) => {
+    if (!getters.userSetup.course_schedule) return [];
+
     if (rootState.auth.isAuthenticated && getters.currentTerm) {
       return rootState.auth.user.semester_schedules[getters.currentTerm.code];
+    } else {
+      return [];
+    }
+  },
+  current_unavailability: (state, getters, rootState) => {
+    if (!getters.userSetup.unavailability) return [];
+
+    if (rootState.auth.isAuthenticated && getters.currentTerm) {
+      // eslint-disable-next-line standard/computed-property-even-spacing
+      return rootState.auth.user.unavailability_schedules[
+        getters.currentTerm.code
+      ];
     } else {
       return [];
     }
@@ -51,6 +65,7 @@ const actions = {
     commit('SET_TERMS', response.data.terms);
   },
   AUTO_UPDATE_SCHEDULE ({ dispatch }) {
+    dispatch('UPDATE_SCHEDULE');
     setInterval(() => {
       dispatch('UPDATE_SCHEDULE');
     }, 1000 * 60);
@@ -62,6 +77,17 @@ const actions = {
     const now = moment(); // moment('1430', 'Hmm');
     const dateStr = now.format('YYYY-MM-DD');
     const day = now.day();
+
+    if (getters.onBreak || getters.classesOver) {
+      return commit('UPDATE_SCHEDULE', {
+        datetime: now,
+        current: {
+          course: false,
+          period: false
+        },
+        periods: []
+      });
+    }
 
     // Find periods for current day
     let dayPeriods = semesterSchedule

@@ -9,7 +9,6 @@ const logger = require('../../modules/logger');
  * assignment returned. The request body should contain the following:
  * - startTime
  * - endTime
- * - assessmentType
  *
  * @param {Koa context} ctx
  * @returns The updated assignment with the new block added
@@ -17,12 +16,16 @@ const logger = require('../../modules/logger');
  * POST /
  */
 async function addWorkBlock (ctx) {
-  const { startTime, endTime, assessmentType } = ctx.request.body;
+  const { assessmentType, assessmentID } = ctx.params;
+  const { startTime, endTime } = ctx.request.body;
 
   const newBlock = new Block({
     _student: ctx.state.user._id,
     startTime,
-    endTime
+    endTime,
+    completed: false,
+    locked: false,
+    notified: false
   });
 
   try {
@@ -38,21 +41,17 @@ async function addWorkBlock (ctx) {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
         _student: ctx.state.user._id,
-        _id:
-          // eslint-disable-next-line
-          ctx.params[
-            assessmentType === 'assignment' ? 'assignmentID' : 'examID'
-          ]
+        _id: assessmentID
       })
       .populate('_blocks');
   } catch (e) {
     logger.error(
-      `Failed to get assignment to add new work block for ${
+      `Failed to get ${assessmentType} to add new work block for ${
         ctx.state.user.rcs_id
       }: ${e}`
     );
     return ctx.internalServerError(
-      'There was an error getting the assignment.'
+      `There was an error getting the ${assessmentType}.`
     );
   }
 
@@ -62,7 +61,7 @@ async function addWorkBlock (ctx) {
     await assessment.save();
   } catch (e) {
     logger.error(
-      `Failed to save assessment with new work block for ${
+      `Failed to save ${assessmentType} with new work block for ${
         ctx.state.user.rcs_id
       }: ${e}`
     );
@@ -91,8 +90,8 @@ async function addWorkBlock (ctx) {
  * PATCH /:blockID
  */
 async function editWorkBlock (ctx) {
-  const { startTime, endTime, assessmentType } = ctx.request.body;
-  const blockID = ctx.params.blockID;
+  const { assessmentType, assessmentID, blockID } = ctx.params;
+  const { startTime, endTime } = ctx.request.body;
 
   const editedBlock = await Block.findOne({
     _student: ctx.state.user._id,
@@ -116,16 +115,12 @@ async function editWorkBlock (ctx) {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
         _student: ctx.state.user._id,
-        _id:
-          // eslint-disable-next-line
-          ctx.params[
-            assessmentType === 'assignment' ? 'assignmentID' : 'examID'
-          ]
+        _id: assessmentID
       })
       .populate('_blocks');
   } catch (e) {
     logger.error(
-      `Failed to get assessment for work block edit for ${
+      `Failed to get ${assessmentType} for work block edit for ${
         ctx.state.user.rcs_id
       }: ${e}`
     );
@@ -151,7 +146,7 @@ async function editWorkBlock (ctx) {
  * DELETE /:blockID
  */
 async function removeWorkBlock (ctx) {
-  const blockID = ctx.params.blockID;
+  const { assessmentType, assessmentID, blockID } = ctx.params;
 
   const removedBlock = await Block.findOne({
     _student: ctx.state.user._id,
@@ -159,10 +154,38 @@ async function removeWorkBlock (ctx) {
   });
   removedBlock.remove();
 
+  let assessment;
+  // Get assessment
+  try {
+    assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
+      .findOne({
+        _student: ctx.state.user._id,
+        _id: assessmentID
+      })
+      .populate('_blocks');
+
+    assessment._blocks = assessment._blocks.filter(
+      b => b._id !== removedBlock._id
+    );
+
+    await assessment.save();
+  } catch (e) {
+    logger.error(
+      `Failed to get ${assessmentType} for work block remove for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    );
+    return ctx.internalServerError(
+      'There was an error removing the work block.'
+    );
+  }
+
   logger.info(`Removed work block for ${ctx.state.user.rcs_id}`);
 
-  ctx.ok({
-    removedBlock
+  return ctx.ok({
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    ['updated' +
+    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
   });
 }
 
