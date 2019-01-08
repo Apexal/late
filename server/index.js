@@ -5,7 +5,7 @@ const Logger = require('koa-logger');
 const Static = require('koa-static');
 const Helmet = require('koa-helmet');
 const Session = require('koa-session');
-const Body = require('koa-bodyparser');
+const Body = require('koa-body');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
 
@@ -23,7 +23,7 @@ const router = new Router();
 require('./db');
 
 /* Body Parser Setup */
-app.use(Body());
+app.use(Body({ multipart: true }));
 
 /* Adds useful ctx functions for API responses */
 app.use(Respond());

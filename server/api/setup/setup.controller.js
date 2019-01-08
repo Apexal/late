@@ -1,8 +1,9 @@
 const moment = require('moment');
-
+const ical = require('node-ical');
 const logger = require('../../modules/logger');
 const { scrapeSISForCRNS } = require('../../modules/scraping');
 const { getSectionInfoFromCRN } = require('../../modules/yacs_api');
+const { convertICalIntoCourseSchedule } = require('../../modules/ical');
 
 /**
  * Given personal info in the request body:
@@ -55,19 +56,37 @@ async function setCourseSchedule (ctx) {
 
   logger.info(`Setting schedule info for ${ctx.state.user.rcs_id}`);
 
-  const CRNs = body.pin
-    ? await scrapeSISForCRNS(
+  // Determine method
+  const method = ctx.request.query.method;
+
+  let courseSchedule = [];
+  if (method === 'sis') {
+    const CRNs = await scrapeSISForCRNS(
       ctx.state.user.rin,
       body.pin,
       ctx.session.currentTerm.code
-    )
-    : body.crns.split(',').map(crn => crn.trim());
-
-  let courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+    );
+    courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+    // TODO: get all info from SIS and don't use YACS API
+  } else if (method === 'crn') {
+    const CRNs = body.crns.split(',').map(crn => crn.trim());
+    courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
+  } else if (method === 'ical') {
+    const file = ctx.request.files['ical-file'];
+    if (!file) {
+      return ctx.badRequest('You did not upload an .ical file!');
+    }
+    const cal = await ical.parseFile(file.path);
+    courseSchedule = convertICalIntoCourseSchedule(cal);
+  } else {
+    logger.error();
+    return ctx.badRequest('Invalid method.');
+  }
 
   // Remove courses that YACS could not find
   courseSchedule = courseSchedule.filter(course => !!course);
 
+  // "Other" course
   courseSchedule.push({
     longname: 'Other',
     crn: '00000',
