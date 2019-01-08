@@ -39,6 +39,7 @@ async function getSectionInfoFromCRN (crn) {
   const section = {
     section_id: data.attributes.shortname,
     listing_id: listing.id,
+    original_longname: listing.attributes.longname,
     longname: listing.attributes.longname,
     crn,
     periods: data.attributes.periods
