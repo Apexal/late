@@ -107,7 +107,7 @@ export default {
         }
       },
       externalCounts: {
-        todos: JSON.parse(localStorage.getItem('todos')).length
+        todos: 0
       }
     };
   },
@@ -148,6 +148,16 @@ export default {
         moment(this.currentEvent.end).diff(this.now)
       );
       return `${diff.hours()}h ${diff.minutes()}m left`;
+    }
+  },
+  mounted () {
+    if (localStorage.getItem('todos')) {
+      try {
+        const todos = JSON.parse(localStorage.getItem('todos'));
+        this.updatedCount({ tab: 'todos', count: todos.length });
+      } catch (e) {
+        localStorage.removeItem('todos');
+      }
     }
   },
   methods: {

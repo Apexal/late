@@ -139,7 +139,6 @@ export default {
       }
     }
   },
-
   created () {
     this.$emit('update-current-event', this.currentEvent);
   },
