@@ -6,7 +6,12 @@
     >
       {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
     </div>
-
+    <div
+      v-else-if="!setup"
+      class="panel-block has-text-grey"
+    >
+      You have not set your course schedule yet!
+    </div>
     <div
       v-else
       class="agenda"
@@ -75,6 +80,9 @@ export default {
     };
   },
   computed: {
+    setup () {
+      return this.$store.getters.userSetup.course_schedule;
+    },
     filteredTodaysAgenda () {
       return this.showPassed
         ? this.todaysAgenda
