@@ -21,6 +21,9 @@ const schema = new Schema(
   { timestamps: true }
 );
 
+schema.set('toObject', { getters: true, virtuals: true });
+schema.set('toJSON', { getters: true, virtuals: true });
+
 schema.virtual('duration').get(function () {
   return moment(this.endTime).diff(this.startTime, 'minutes');
 });
