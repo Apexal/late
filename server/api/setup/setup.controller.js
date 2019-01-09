@@ -1,7 +1,7 @@
 const moment = require('moment');
 const ical = require('node-ical');
 const logger = require('../../modules/logger');
-const { scrapeSISForCRNS } = require('../../modules/scraping');
+const { scrapeSISForCourseSchedule } = require('../../modules/scraping');
 const { getSectionInfoFromCRN } = require('../../modules/yacs_api');
 const { convertICalIntoCourseSchedule } = require('../../modules/ical');
 
@@ -61,13 +61,11 @@ async function setCourseSchedule (ctx) {
 
   let courseSchedule = [];
   if (method === 'sis') {
-    const CRNs = await scrapeSISForCRNS(
+    courseSchedule = await scrapeSISForCourseSchedule(
       ctx.state.user.rin,
       body.pin,
       ctx.session.currentTerm.code
     );
-    courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
-    // TODO: get all info from SIS and don't use YACS API
   } else if (method === 'crn') {
     const CRNs = body.crns.split(',').map(crn => crn.trim());
     courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));

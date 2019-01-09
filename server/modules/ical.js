@@ -8,11 +8,11 @@ const section = {
   periods: [
     {
       day: Number,
-      end: "HHmm",
+      end: "Hmm",
       type: "LEC" | "STU" | "TES",
-      start: "HHmm",
+      start: "Hmm",
       location: String
-  },
+    }
   ]
 };
 
@@ -43,9 +43,9 @@ function convertICalIntoCourseSchedule (cal) {
     const day = event.start.getDay();
     const period = {
       day,
-      end: moment(event.end).format('HHmm'),
+      end: moment(event.end).format('Hmm'),
       type: 'LEC',
-      start: moment(event.start).format('HHmm'),
+      start: moment(event.start).format('Hmm'),
       location: '???'
     };
 
