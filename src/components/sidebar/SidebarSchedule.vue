@@ -35,10 +35,16 @@
           />
           <span
             class="event-title tooltip"
-            :data-tooltip="event.eventType === 'period' ? 'Class' : 'Work/Study'"
+            :data-tooltip="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
             @click="eventClicked(event)"
           >
             {{ event.title }}
+            <span
+              v-if="event.eventType === 'period'"
+              class="has-text-grey is-hidden-touch event-location"
+            >
+              {{ event.period.location }}
+            </span>
           </span>
           <div
             class="event-times is-pulled-right has-text-grey tooltip is-tooltip-left"
