@@ -14,6 +14,12 @@
             >
               <i class="fa fa-lock" />
             </span>Work Schedule
+            <span
+              class="tag is-danger tooltip is-tooltip-right"
+              data-tooltip="You haven't scheduled enough time to work on this!"
+            >
+              !
+            </span>
           </a>
         </li>
         <li
@@ -72,6 +78,15 @@ export default {
     }
   },
   computed: {
+    scheduledMinutes () {
+      return this.assignment._blocks.reduce((acc, block) => acc + block.duration, 0);
+    },
+    totalEstimatedMinutes () {
+      return this.assignment.timeEstimate * 60;
+    },
+    fullyScheduled () {
+      return this.scheduledMinutes >= this.totalEstimatedMinutes;
+    },
     workScheduleLocked () {
       return this.assignment.completed || this.assignment.passed;
     },
@@ -87,6 +102,10 @@ export default {
 
 <style lang="scss" scoped>
 .comment-count {
+  margin-left: 3px;
+}
+
+.tag {
   margin-left: 3px;
 }
 </style>
