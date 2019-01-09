@@ -1,5 +1,30 @@
 <template>
   <div class="assessment-work-schedule">
+    <div
+      v-if="!fullyScheduled"
+      class="box"
+    >
+      <div
+        class="columns tooltip"
+        :data-tooltip="scheduledPercent + '% scheduled'"
+      >
+        <div
+          class="column is-narrow"
+        >
+          You've scheduled <b>{{ scheduledMinutes }}</b> out of
+          <b>{{ totalEstimatedMinutes }}</b> minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
+        </div>
+        <div class="column">
+          <progress
+            class="progress"
+            :value="scheduledMinutes"
+            :max="totalEstimatedMinutes"
+          >
+            {{ scheduledPercent }}%
+          </progress>
+        </div>
+      </div>
+    </div>
     <FullCalendar
       ref="calendar"
       :events="totalEvents"
@@ -37,6 +62,18 @@ export default {
     };
   },
   computed: {
+    scheduledMinutes () {
+      return this.assessment._blocks.reduce((acc, block) => acc + block.duration, 0);
+    },
+    totalEstimatedMinutes () {
+      return this.assessment.timeEstimate * 60;
+    },
+    scheduledPercent () {
+      return Math.round((this.scheduledMinutes / this.totalEstimatedMinutes) * 100);
+    },
+    fullyScheduled () {
+      return this.scheduledMinutes >= this.totalEstimatedMinutes;
+    },
     editable () {
       if (this.assessmentType === 'exam') return !this.assessment.passed;
       return !this.assessment.completed && !this.assessment.passed;
