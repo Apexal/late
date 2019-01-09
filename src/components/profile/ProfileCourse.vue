@@ -77,7 +77,7 @@
         <input
           v-model.trim="courseData.longname"
           type="text"
-          placeholder="Course Title"
+          :placeholder="courseData.original_longname"
           class="input course-longname-input"
           required
         >
