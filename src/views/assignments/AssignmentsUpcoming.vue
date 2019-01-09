@@ -4,7 +4,9 @@
       v-if="none"
       class="has-text-centered has-text-grey"
     >
-      No upcoming assignments left (with filters)!
+      No upcoming assignments<i v-if="filter.length > 0 || !showCompleted">
+        with filters
+      </i>!
     </p>
     <div
       v-else

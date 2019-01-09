@@ -138,6 +138,14 @@
         </tr>
       </tbody>
     </table>
+    <p
+      v-if="filtered.length === 0"
+      class="has-text-centered has-text-grey"
+    >
+      There were no assignments this month<i v-if="filter.length > 0 || !showCompleted">
+        with filters
+      </i>.
+    </p>
   </div>
 </template>
 
