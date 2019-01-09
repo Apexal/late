@@ -15,7 +15,9 @@ async function upcomingWorkBlockReminders () {
   const terms = await Term.find().sort({ start: -1 });
   const currentTerm = terms.find(t => t.isCurrent);
 
-  // Globally find all work blocks starting within 15 minutes
+  logger.info('Searching for upcoming work blocks to send notifications');
+
+  // Globally find all work blocks starting within 30 minutes
   const nowPlus30min = moment().add('30', 'minutes');
   const upcomingWorkBlocks = await Block.find({
     startTime: {
@@ -47,13 +49,14 @@ async function upcomingWorkBlockReminders () {
         _blocks: block._id
       });
     }
-    logger.info(
-      `Reminding user ${block._student.rcs_id} about ${assessment.title}`
-    );
 
     // Text student
     const integration =
-      block._student.notificationPreferences.preWorkBlockReminders;
+    block._student.notificationPreferences.preWorkBlockReminders;
+
+    logger.info(
+      `Reminding user ${block._student.rcs_id} about ${assessment.title} through ${integration}`
+    );
 
     if (integration === 'sms') {
       await smsUtils.generateWorkBlockReminder(
@@ -65,6 +68,8 @@ async function upcomingWorkBlockReminders () {
       );
     }
   }
+
+  logger.info('Done sending pre-work block notifications.');
 }
 
 async function nightlyReport (integration = 'sms') {
