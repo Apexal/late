@@ -89,14 +89,14 @@ schema.pre('save', async function () {
       _student: this._student,
       _id: { $in: this._blocks },
       $or: [
-        { endTime: { $gte: this.dueDate } },
-        { endTime: { $gte: this.completedAt } }
+        { endTime: { $gt: this.dueDate } },
+        { endTime: { $gt: this.completedAt } }
       ]
     });
 
-    this._blocks = this._blocks.filter(b => b.endTime < this.dueDate);
+    this._blocks = this._blocks.filter(b => b.endTime <= this.dueDate);
     if (this.completed) {
-      this._blocks = this._blocks.filter(b => b.endTime < this.completedAt);
+      this._blocks = this._blocks.filter(b => b.endTime <= this.completedAt);
     }
   }
 });
