@@ -40,16 +40,17 @@
                   v-model="method"
                   name="method"
                   class="control"
+                  disabled
                 >
                   <option value="sis">
                     SIS
                   </option>
-                  <option value="crn">
+                  <!--<option value="crn">
                     CRNs
                   </option>
                   <option value="ical">
                     iCal
-                  </option>
+                  </option>-->
                 </select>
               </div>
             </div>
