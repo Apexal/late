@@ -38,7 +38,7 @@
               :href="l"
               target="_blank"
             >
-              {{ l }}
+              {{ linkDisplay(l) }}
             </a>
           </li>
         </ul>
@@ -62,6 +62,13 @@ export default {
       required: true
     },
     course: { type: Object, required: true }
+  },
+  methods: {
+    linkDisplay (href) {
+      href = href.replace('https://', '').replace('http://', '').replace('www.', '');
+      if (href.length > 30) href = href.substr(0, 30) + '...';
+      return href;
+    }
   }
 };
 </script>
