@@ -15,6 +15,7 @@
               <i class="fa fa-lock" />
             </span>Work Schedule
             <span
+              v-if="!assignment.completed && !fullyScheduled"
               class="tag is-danger tooltip is-tooltip-right"
               data-tooltip="You haven't scheduled enough time to work on this!"
             >

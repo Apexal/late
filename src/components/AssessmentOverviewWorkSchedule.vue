@@ -1,7 +1,14 @@
 <template>
   <div class="assessment-work-schedule">
     <div
-      v-if="!fullyScheduled"
+      v-if="locked"
+      class="notification is-warning"
+    >
+      <i class="fa fa-lock" />
+      This {{ assessmentType }} is done so your work schedule can no longer be changed.
+    </div>
+    <div
+      v-else-if="!fullyScheduled"
       class="box"
     >
       <div
@@ -62,6 +69,11 @@ export default {
     };
   },
   computed: {
+    locked () {
+      if (this.assessmentType === 'assignment') return this.assessment.completed || this.assessment.passed;
+      else if (this.assessmentType === 'exam') return this.passed;
+      return false;
+    },
     scheduledMinutes () {
       return this.assessment._blocks.reduce((acc, block) => acc + block.duration, 0);
     },

@@ -14,6 +14,13 @@
             >
               <i class="fa fa-lock" />
             </span>Work Schedule
+            <span
+              v-if="!exam.passed && !fullyScheduled"
+              class="tag is-danger tooltip is-tooltip-right"
+              data-tooltip="You haven't scheduled enough time to study for this!"
+            >
+              !
+            </span>
           </a>
         </li>
         <li
@@ -72,6 +79,15 @@ export default {
     }
   },
   computed: {
+    scheduledMinutes () {
+      return this.exam._blocks.reduce((acc, block) => acc + block.duration, 0);
+    },
+    totalEstimatedMinutes () {
+      return this.exam.timeEstimate * 60;
+    },
+    fullyScheduled () {
+      return this.scheduledMinutes >= this.totalEstimatedMinutes;
+    },
     workScheduleLocked () {
       return this.exam.passed;
     },
@@ -87,6 +103,9 @@ export default {
 
 <style lang="scss" scoped>
 .comment-count {
+  margin-left: 3px;
+}
+.tag {
   margin-left: 3px;
 }
 </style>
