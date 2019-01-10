@@ -82,6 +82,10 @@ schema.virtual('passed').get(function () {
   return moment(this.dueDate).isBefore(new Date());
 });
 
+schema.virtual('scheduledTimeRemaing').get(function () {
+  return this._blocks.filter(b => !b.completed).reduce((acc, block) => acc + block.duration, 0);
+});
+
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the assignment date now
   if (!this.isNew) {
