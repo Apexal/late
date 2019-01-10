@@ -49,7 +49,7 @@
       >
         <Component
           :is="current_tab.component"
-          :upcoming="upcomingExams"
+          :upcoming="upcomingExamsOneMonth"
           :pressing="pressingAssignments"
           @toggle-modal="toggleModal"
           @update-count="updatedCount"
@@ -131,6 +131,10 @@ export default {
     },
     pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
+    },
+    upcomingExamsOneMonth () {
+      const monthFromNow = moment().add(1, 'month');
+      return this.upcomingExams.filter(ex => moment(ex.date).isSameOrBefore(monthFromNow));
     },
     upcomingExams () {
       return this.$store.getters.pendingUpcomingExams;
