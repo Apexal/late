@@ -87,7 +87,7 @@ export default {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN);
     },
     shortDateStr (date) {
-      return moment(date).format('dddd [the] Do [@] h:mma');
+      return moment(date).format('ddd, MMM Do [@] h:mma');
     },
     fromNow (date) {
       return moment(date).from(this.now);

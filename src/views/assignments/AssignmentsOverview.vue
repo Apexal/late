@@ -63,33 +63,17 @@
         </div>
 
         <div
-          v-if="assignment.completed"
+          v-if="!assignment.completed"
           class="level-item has-text-centered"
         >
           <div>
             <p class="heading">
-              Work Done
+              Scheduled Work Left
             </p>
             <p class="subtitle">
+              {{ assignment.scheduledTimeRemaing }}
               <span class="has-text-grey">
-                ---
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <div
-          v-else
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p class="heading">
-              Work Left
-            </p>
-            <p class="subtitle">
-              {{ assignment.timeRemaining }}
-              <span class="has-text-grey">
-                hrs
+                min
               </span>
             </p>
           </div>

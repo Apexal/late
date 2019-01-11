@@ -10,7 +10,7 @@
         v-if="upcoming.length == 0"
         class="panel-block has-text-grey"
       >
-        <span>No upcoming exams!</span>
+        <span>No upcoming exams within the next month!</span>
       </div>
       <transition-group
         name="list"

@@ -14,7 +14,6 @@ const schema = new Schema(
     },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
-    completed: { type: Boolean, default: false },
     locked: { type: Boolean, default: false },
     notified: { type: Boolean, default: false }
   },
@@ -23,6 +22,10 @@ const schema = new Schema(
 
 schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });
+
+schema.virtual('passed').get(function () {
+  return moment(this.endTime).isBefore(new Date());
+});
 
 schema.virtual('duration').get(function () {
   return moment(this.endTime).diff(this.startTime, 'minutes');

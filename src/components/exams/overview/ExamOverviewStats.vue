@@ -11,31 +11,18 @@
       </div>
     </div>
 
-    <div class="level-item has-text-centered">
-      <div>
-        <p class="heading">
-          Studying Done
-        </p>
-        <p class="subtitle">
-          <span class="has-text-grey">
-            ---
-          </span>
-        </p>
-      </div>
-    </div>
-
     <div
       v-if="!exam.passed"
       class="level-item has-text-centered"
     >
       <div>
         <p class="heading">
-          Studying Left
+          Scheduled Studying Left
         </p>
         <p class="subtitle">
-          {{ exam.timeRemaining }}
+          {{ exam.scheduledTimeRemaing }}
           <span class="has-text-grey">
-            hrs
+            min
           </span>
         </p>
       </div>
