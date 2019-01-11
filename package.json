@@ -19,6 +19,7 @@
     "discord.js": "^11.4.2",
     "dotenv": "^6.2.0",
     "googleapis": "^36.0.0",
+    "jquery": "^3.3.1",
     "koa": "^2.6.2",
     "koa-body": "^4.0.6",
     "koa-helmet": "^4.0.0",
