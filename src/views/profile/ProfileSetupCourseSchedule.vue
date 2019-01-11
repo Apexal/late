@@ -135,11 +135,11 @@
           </div>
 
           <button
-            class="button is-small is-warning"
+            class="button is-small is-primary"
             :class="{'is-loading': loading}"
             :disabled="!canReset"
           >
-            {{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}
+            {{ user.setup.personal_info ? 'Import Schedule' : 'Save' }}
           </button>
         </details>
       </form>
