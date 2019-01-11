@@ -48,6 +48,25 @@
         >
           No links added.
         </span>
+
+        <hr>
+
+        <div class="buttons">
+          <button
+            class="button is-info"
+            @click="addAssessment('assignment')"
+          >
+            <i class="fa fa-clipboard-list" />
+            Add Assignment
+          </button>
+          <button
+            class="button is-info"
+            @click="addAssessment('exam')"
+          >
+            <i class="fa fa-file-alt" />
+            Add Exam
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -68,6 +87,14 @@ export default {
       href = href.replace('https://', '').replace('http://', '').replace('www.', '');
       if (href.length > 30) href = href.substr(0, 30) + '...';
       return href;
+    },
+    addAssessment (assessmentType) {
+      this.$store.commit('CLOSE_COURSE_MODAL');
+      this.$store.commit(
+        'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_COURSE_CRN',
+        this.course.crn
+      );
+      this.$store.commit('TOGGLE_ADD_' + assessmentType.toUpperCase() + '_MODAL');
     }
   }
 };
@@ -80,5 +107,13 @@ export default {
 
 .course-links {
   overflow: auto;
+}
+
+.buttons {
+  button {
+    i.fa {
+      margin-right: 3px;
+    }
+  }
 }
 </style>
