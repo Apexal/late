@@ -225,6 +225,7 @@ export default {
 
 .course-edit {
   p { margin-top: 5px; }
+  //Button readability and interactivity
   button { margin-top: 10px; margin-right: 10px; }
 }
 </style>
