@@ -82,6 +82,10 @@ schema.virtual('passed').get(function () {
   return moment(this.dueDate).isBefore(new Date());
 });
 
+schema.virtual('scheduledTimeRemaing').get(function () {
+  return this._blocks.filter(b => !b.completed).reduce((acc, block) => acc + block.duration, 0);
+});
+
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the assignment date now
   if (!this.isNew) {
@@ -89,14 +93,14 @@ schema.pre('save', async function () {
       _student: this._student,
       _id: { $in: this._blocks },
       $or: [
-        { endTime: { $gte: this.dueDate } },
-        { endTime: { $gte: this.completedAt } }
+        { endTime: { $gt: this.dueDate } },
+        { endTime: { $gt: this.completedAt } }
       ]
     });
 
-    this._blocks = this._blocks.filter(b => b.endTime < this.dueDate);
+    this._blocks = this._blocks.filter(b => b.endTime <= this.dueDate);
     if (this.completed) {
-      this._blocks = this._blocks.filter(b => b.endTime < this.completedAt);
+      this._blocks = this._blocks.filter(b => b.endTime <= this.completedAt);
     }
   }
 });

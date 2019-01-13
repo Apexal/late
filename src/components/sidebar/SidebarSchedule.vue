@@ -6,7 +6,12 @@
     >
       {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
     </div>
-
+    <div
+      v-else-if="!setup"
+      class="panel-block has-text-grey"
+    >
+      You have not set your course schedule yet!
+    </div>
     <div
       v-else
       class="agenda"
@@ -29,8 +34,8 @@
             @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
           />
           <span
-            class="event-title tooltip"
-            :data-tooltip="event.eventType === 'period' ? 'Class' : 'Work/Study'"
+            class="event-title tooltip is-tooltip-right"
+            :data-tooltip="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
             @click="eventClicked(event)"
           >
             {{ event.title }}
@@ -44,7 +49,7 @@
           </div>
         </span>
       </div>
-      <div class="controls panel-block has-background-white-ter">
+      <div class="controls panel-block">
         <span class="is-full-width">
           <div class="field">
             <input
@@ -53,9 +58,7 @@
               type="checkbox"
               class="switch"
             >
-            <label for="agenda-show-passed">
-              <b>Show Passed</b>
-            </label>
+            <label for="agenda-show-passed">Show Passed</label>
           </div>
         </span>
       </div>
@@ -75,6 +78,9 @@ export default {
     };
   },
   computed: {
+    setup () {
+      return this.$store.getters.userSetup.course_schedule;
+    },
     filteredTodaysAgenda () {
       return this.showPassed
         ? this.todaysAgenda
@@ -131,7 +137,6 @@ export default {
       }
     }
   },
-
   created () {
     this.$emit('update-current-event', this.currentEvent);
   },
@@ -172,7 +177,8 @@ export default {
   }
 
   &.passed {
-    text-decoration: line-through;
+    background-color: #eaeaea;
+    color: #929292;
   }
 
   .course-dot {
@@ -188,5 +194,9 @@ export default {
       line-height: 1.3em; //Makes course timing more readable
     }
   }
+}
+
+.agenda-show-passed {
+  font-weight: 100;
 }
 </style>

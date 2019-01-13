@@ -30,6 +30,8 @@ export default new Vuex.Store({
   },
   getters: {
     todaysAgenda: (state, getters) => {
+      if (!getters.userSetup.course_schedule) return [];
+
       let events = state.schedule.periods
         .map(p => ({
           eventType: 'period',
@@ -37,6 +39,7 @@ export default new Vuex.Store({
             getters.getCourseFromPeriod(p).longname
           } ${getters.periodType(p.type)}`,
           course: getters.getCourseFromPeriod(p),
+          period: p,
           start: moment(p.start, 'Hmm', true),
           end: moment(p.end, 'Hmm', true)
         }))

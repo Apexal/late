@@ -37,6 +37,10 @@ const schema = new Schema(
 schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });
 
+schema.virtual('scheduledTimeRemaing').get(function () {
+  return this._blocks.filter(b => !b.completed).reduce((acc, block) => acc + block.duration, 0);
+});
+
 schema.virtual('passed').get(function () {
   return moment(this.date).isBefore(new Date());
 });

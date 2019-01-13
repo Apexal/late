@@ -70,3 +70,5 @@ config/
 client/
 
 test.js
+
+*.ics

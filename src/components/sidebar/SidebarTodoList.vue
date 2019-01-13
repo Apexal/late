@@ -54,7 +54,6 @@ export default {
     if (localStorage.getItem('todos')) {
       try {
         this.todos = JSON.parse(localStorage.getItem('todos'));
-        this.$emit('update-count', { tab: 'todos', count: this.todos.length });
       } catch (e) {
         localStorage.removeItem('todos');
       }

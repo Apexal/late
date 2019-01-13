@@ -105,20 +105,20 @@ export default {
     notifications () {
       return {
         preWorkBlockReminders: {
-          name: 'Pre Work Block Reminders',
-          description: 'Desc here'
+          name: 'Remind Before Work Blocks',
+          description: 'Enables notifications before each scheduled work block.'
         },
         postWorkBlockReminders: {
-          name: 'Post Work Block Reminders',
-          description: 'Desc here'
+          name: 'Remind After Work Blocks',
+          description: 'Enables notifications after completing a scheduled work block.'
         },
         morningReports: {
           name: 'Daily Morning Reports',
-          description: 'Desc here'
+          description: 'Enables work summary notifications every morning.'
         },
         addAssignmentReminders: {
-          name: 'Add Assignment Reminders',
-          description: 'Desc here'
+          name: 'Assignment Reminders',
+          description: 'Enables notifications about incomplete assignments'
         }
       };
     }
