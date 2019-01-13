@@ -44,6 +44,7 @@
             <span
               class="dot course-dot"
               :style="{ 'background-color': c.color }"
+              @click.prevent="$store.commit('OPEN_COURSE_MODAL', c)"
             />
             {{ c.longname }}
           </span>
