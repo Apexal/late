@@ -58,9 +58,7 @@
               type="checkbox"
               class="switch"
             >
-            <label for="agenda-show-passed">
-              <p>Show Passed</p>
-            </label>
+            <label for="agenda-show-passed">Show Passed</label>
           </div>
         </span>
       </div>
