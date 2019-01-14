@@ -53,11 +53,9 @@ const getters = {
       .map(c =>
         c.periods.map(p => {
           let start = moment(p.start, 'Hmm', true).format('HH:mm');
-
           let end = moment(p.end, 'Hmm', true).format('HH:mm');
 
           return {
-            id: 'course',
             eventType: 'course',
             title: `${c.longname} ${getters.periodType(p.type)}`,
             start,

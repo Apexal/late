@@ -37,9 +37,6 @@ const utils = {
 
     const message = lines.join('\n');
     await sendText(student.integrations.sms.phoneNumber, message);
-
-    block.notified = true;
-    await block.save();
   },
   async generateNightlyReport (terms, student, missed) {
     const currentTerm = terms.find(t => t.isCurrent);

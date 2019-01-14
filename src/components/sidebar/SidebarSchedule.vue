@@ -49,7 +49,7 @@
           </div>
         </span>
       </div>
-      <div class="controls panel-block has-background-white-ter">
+      <div class="controls panel-block">
         <span class="is-full-width">
           <div class="field">
             <input
@@ -58,9 +58,7 @@
               type="checkbox"
               class="switch"
             >
-            <label for="agenda-show-passed">
-              <b>Show Passed</b>
-            </label>
+            <label for="agenda-show-passed">Show Passed</label>
           </div>
         </span>
       </div>
@@ -179,7 +177,8 @@ export default {
   }
 
   &.passed {
-    text-decoration: line-through;
+    background-color: #eaeaea;
+    color: #929292;
   }
 
   .course-dot {
@@ -195,5 +194,9 @@ export default {
       line-height: 1.3em; //Makes course timing more readable
     }
   }
+}
+
+.agenda-show-passed {
+  font-weight: 100;
 }
 </style>

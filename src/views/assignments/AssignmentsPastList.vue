@@ -34,13 +34,30 @@
       </div>
       <div class="column">
         <div class="buttons is-centered">
-          <button
-            class="button is-primary"
-            :disabled="isLastWeek"
-            @click="gotoLastWeek"
-          >
-            Last Week
-          </button>
+          <div class="field is-horizontal">
+            <div class="field-body">
+              <div
+                class="control"
+                style="margin-right:1em;"
+              >
+                <input
+                  id="assignmentFilter"
+                  v-model="assignmentFilter"
+                  class="input"
+                  type="text"
+                  placeholder="Filter Assignments"
+                >
+              </div>
+            </div>
+
+            <button
+              class="button is-primary"
+              :disabled="isLastWeek"
+              @click="gotoLastWeek"
+            >
+              Last Week
+            </button>
+          </div>
         </div>
       </div>
       <div class="column is-narrow">
@@ -166,6 +183,7 @@ export default {
   },
   data () {
     return {
+      assignmentFilter: '',
       loading: true,
       startDate:
         this.$route.query.start ||
@@ -206,6 +224,9 @@ export default {
     filtered () {
       return this.currentAssignments.filter(a => {
         if (!this.showCompleted && a.completed) return false;
+        if (this.assignmentFilter.length > 0) {
+          return !this.filter.includes(this.course(a).crn) && a.title.toLowerCase().includes(this.assignmentFilter.toLowerCase());
+        }
         return !this.filter.includes(this.course(a).crn);
       });
     }

@@ -15,11 +15,11 @@
         class="columns tooltip"
         :data-tooltip="scheduledPercent + '% scheduled'"
       >
-        <div
-          class="column is-narrow"
-        >
-          You've scheduled <b>{{ scheduledMinutes }}</b> out of
-          <b>{{ totalEstimatedMinutes }}</b> minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
+        <div class="column is-narrow">
+          You've scheduled
+          <b>{{ scheduledMinutes }}</b> out of
+          <b>{{ totalEstimatedMinutes }}</b>
+          minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
         </div>
         <div class="column">
           <progress
@@ -70,18 +70,24 @@ export default {
   },
   computed: {
     locked () {
-      if (this.assessmentType === 'assignment') return this.assessment.completed || this.assessment.passed;
-      else if (this.assessmentType === 'exam') return this.passed;
+      if (this.assessmentType === 'assignment') {
+        return this.assessment.completed || this.assessment.passed;
+      } else if (this.assessmentType === 'exam') return this.passed;
       return false;
     },
     scheduledMinutes () {
-      return this.assessment._blocks.reduce((acc, block) => acc + block.duration, 0);
+      return this.assessment._blocks.reduce(
+        (acc, block) => acc + block.duration,
+        0
+      );
     },
     totalEstimatedMinutes () {
       return this.assessment.timeEstimate * 60;
     },
     scheduledPercent () {
-      return Math.round((this.scheduledMinutes / this.totalEstimatedMinutes) * 100);
+      return Math.round(
+        (this.scheduledMinutes / this.totalEstimatedMinutes) * 100
+      );
     },
     fullyScheduled () {
       return this.scheduledMinutes >= this.totalEstimatedMinutes;
@@ -166,10 +172,12 @@ export default {
       return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
     },
     courseScheduleEvents () {
+      // Show course schedule events in they are the same course as the assessment
       return this.$store.getters.getCourseScheduleAsEvents.map(e =>
-        Object.assign({}, e, {
-          rendering: 'background'
-        })
+        Object.assign(
+          { rendering: e.course.crn === this.course.crn ? '' : 'background' },
+          e
+        )
       );
     },
     unavailabilitySchedule () {
@@ -183,7 +191,9 @@ export default {
     workBlockEvents () {
       return this.$store.getters.getWorkBlocksAsEvents.map(e => {
         if (e.assessment._id !== this.assessment._id) {
-          return Object.assign({}, e, { rendering: 'background' });
+          return Object.assign({}, e, {
+            rendering: 'background'
+          });
         }
         return e;
       });

@@ -27,24 +27,12 @@ export default {
   name: 'SetupIntegrationsEmail',
   data () {
     return {
-      loading: false,
-      preferences: Object.assign(
-        {},
-        this.$store.state.auth.user.integrations.email.preferences
-      )
+      loading: false
     };
   },
   computed: {
     email () {
       return this.$store.state.auth.user.rcs_id + '@rpi.edu';
-    },
-    saved () {
-      return (
-        JSON.stringify(this.preferences) ===
-        JSON.stringify(
-          this.$store.state.auth.user.integrations.email.preferences
-        )
-      );
     }
   },
   methods: {
