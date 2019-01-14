@@ -191,7 +191,9 @@ export default {
     workBlockEvents () {
       return this.$store.getters.getWorkBlocksAsEvents.map(e => {
         if (e.assessment._id !== this.assessment._id) {
-          return Object.assign({}, e, { rendering: 'background' });
+          return Object.assign({}, e, {
+            rendering: 'background'
+          });
         }
         return e;
       });

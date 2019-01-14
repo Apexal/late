@@ -82,9 +82,10 @@ const getters = {
     eventType: 'work-block',
     assessmentType: type,
     title: assessment.title,
-    backgroundColor: 'black',
+    className: 'work-block-event',
     editable: moment(b.startTime).isAfter(moment()),
-    color: getters.getCourseFromCRN(assessment.courseCRN).color,
+    color: 'black',
+    borderColor: getters.getCourseFromCRN(assessment.courseCRN).color,
     start: b.startTime,
     end: b.endTime,
     constraint: {

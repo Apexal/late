@@ -63,7 +63,9 @@ export default {
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
-              if (moment(event.start).isAfter(this.term.classesEnd)) return false;
+              if (moment(event.start).isAfter(this.term.classesEnd)) {
+                return false;
+              }
             }
           },
           buttonText: {
@@ -83,10 +85,7 @@ export default {
                 'SET_ADD_ASSIGNMENT_MODAL_DUE_DATE',
                 calEvent.start
               );
-              this.$store.commit(
-                'OPEN_COURSE_MODAL',
-                calEvent.course
-              );
+              this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
             } else if (calEvent.eventType === 'assignment') {
               this.$router.push({
                 name: 'assignments-overview',
@@ -139,8 +138,8 @@ export default {
 
       const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
 
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(
-        e => Object.assign({}, e, { backgroundColor: 'black' })
+      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
+        Object.assign({}, e)
       );
 
       return courseSchedule
@@ -156,5 +155,8 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
+.work-block-event {
+  border-width: 3px !important;
+}
 </style>
