@@ -48,13 +48,16 @@ async function upcomingWorkBlockReminders () {
         _blocks: block._id
       });
     }
-    logger.info(
-      `Reminding user ${block._student.rcs_id} about ${assessment.title}`
-    );
 
     // Text student
     const integration =
       block._student.notificationPreferences.preWorkBlockReminders;
+
+    logger.info(
+      `Reminding user ${block._student.rcs_id} about ${
+        assessment.title
+      } through ${integration}`
+    );
 
     if (integration === 'sms') {
       await smsUtils.generateWorkBlockReminder(

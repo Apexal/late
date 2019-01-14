@@ -35,7 +35,7 @@
           </span>
           <span
             v-for="c in courses"
-            :key="c.listing_id"
+            :key="c.original_longname"
             class="tag is-white course-tag level-item is-unselectable"
             :title="`Click to toggle filtering out ${c.longname} assignments.`"
             :class="{ 'has-text-grey-light filtered': isFiltered(c) }"
@@ -44,6 +44,7 @@
             <span
               class="dot course-dot"
               :style="{ 'background-color': c.color }"
+              @click.prevent="$store.commit('OPEN_COURSE_MODAL', c)"
             />
             {{ c.longname }}
           </span>

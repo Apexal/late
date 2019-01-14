@@ -49,7 +49,7 @@
       >
         <Component
           :is="current_tab.component"
-          :upcoming="upcomingExams"
+          :upcoming="upcomingExamsOneMonth"
           :pressing="pressingAssignments"
           @toggle-modal="toggleModal"
           @update-count="updatedCount"
@@ -107,7 +107,7 @@ export default {
         }
       },
       externalCounts: {
-        todos: JSON.parse(localStorage.getItem('todos')).length
+        todos: 0
       }
     };
   },
@@ -132,6 +132,10 @@ export default {
     pressingAssignments () {
       return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
     },
+    upcomingExamsOneMonth () {
+      const monthFromNow = moment().add(1, 'month');
+      return this.upcomingExams.filter(ex => moment(ex.date).isSameOrBefore(monthFromNow));
+    },
     upcomingExams () {
       return this.$store.getters.pendingUpcomingExams;
     },
@@ -148,6 +152,16 @@ export default {
         moment(this.currentEvent.end).diff(this.now)
       );
       return `${diff.hours()}h ${diff.minutes()}m left`;
+    }
+  },
+  mounted () {
+    if (localStorage.getItem('todos')) {
+      try {
+        const todos = JSON.parse(localStorage.getItem('todos'));
+        this.updatedCount({ tab: 'todos', count: todos.length });
+      } catch (e) {
+        localStorage.removeItem('todos');
+      }
     }
   },
   methods: {

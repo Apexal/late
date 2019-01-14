@@ -84,10 +84,9 @@ export default {
                 calEvent.start
               );
               this.$store.commit(
-                'SET_ADD_ASSIGNMENT_MODAL_COURSE_CRN',
-                calEvent.course.crn
+                'OPEN_COURSE_MODAL',
+                calEvent.course
               );
-              this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
             } else if (calEvent.eventType === 'assignment') {
               this.$router.push({
                 name: 'assignments-overview',

@@ -73,14 +73,19 @@
       </details>
     </template>
     <template v-else>
-      <form @submit.prevent="save">
+      <form
+        class="course-edit"
+        @submit.prevent="save"
+      >
+        <p>Course Title: </p>
         <input
           v-model.trim="courseData.longname"
           type="text"
-          placeholder="Course Title"
+          :placeholder="courseData.original_longname"
           class="input course-longname-input"
           required
         >
+        <p>Section: </p>
         <input
           v-model.trim="courseData.section_id"
           type="text"
@@ -88,11 +93,13 @@
           class="input course-section-input"
           required
         >
+        <p>Course Color: </p>
         <input
           v-model="courseData.color"
           type="color"
           class="input course-color-input"
         >
+        <p>Course Links: </p>
         <InputTag
           v-model="courseData.links"
           placeholder="Put links to courses here! Hit Enter after each link."
@@ -214,5 +221,11 @@ export default {
 //Displays edit button with better margins
 .fa-pencil-alt {
   margin-left: 6px;
+}
+
+.course-edit {
+  p { margin-top: 5px; }
+  //Button readability and interactivity
+  button { margin-top: 10px; margin-right: 10px; }
 }
 </style>

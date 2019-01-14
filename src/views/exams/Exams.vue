@@ -36,7 +36,7 @@
             </span>
             <span
               v-for="c in courses"
-              :key="c.listing_id"
+              :key="c.original_longname"
               class="tag is-white course-tag level-item is-unselectable"
               :title="`Click to toggle filtering out ${c.longname} exam.`"
               :class="{ 'has-text-grey-light filtered': isFiltered(c) }"

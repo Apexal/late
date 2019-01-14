@@ -40,19 +40,23 @@
                   v-model="method"
                   name="method"
                   class="control"
+                  disabled
                 >
                   <option value="sis">
                     SIS
                   </option>
-                  <option value="crn">
+                  <!--<option value="crn">
                     CRNs
                   </option>
+                  <option value="ical">
+                    iCal
+                  </option>-->
                 </select>
               </div>
             </div>
 
             <div
-              v-if="method == 'sis'"
+              v-if="method === 'sis'"
               class="sis-method column"
             >
               <div class="field">
@@ -80,7 +84,7 @@
               </div>
             </div>
             <div
-              v-else-if="method == 'crn'"
+              v-else-if="method === 'crn'"
               class="crn-method column"
             >
               <div class="field">
@@ -106,14 +110,36 @@
                 </div>
               </div>
             </div>
+            <div
+              v-else-if="method === 'ical'"
+              class="ical-method column"
+            >
+              <div class="field">
+                <label
+                  for="ical-file"
+                  class="label"
+                >
+                  iCal File from YACS
+                </label>
+                <div class="control">
+                  <input
+                    id="ical-file"
+                    type="file"
+                    class="input"
+                    accept=".ics"
+                    @change="iCalFileChange($event.target.files[0])"
+                  >
+                </div>
+              </div>
+            </div>
           </div>
 
           <button
-            class="button is-small is-warning"
+            class="button is-small is-primary"
             :class="{'is-loading': loading}"
             :disabled="!canReset"
           >
-            {{ user.setup.personal_info ? 'Reset Schedule' : 'Save' }}
+            {{ user.setup.personal_info ? 'Import Schedule' : 'Save' }}
           </button>
         </details>
       </form>
@@ -166,7 +192,8 @@ export default {
       loading: false,
       method: 'sis',
       pin: '',
-      crns: ''
+      crns: '',
+      iCalFile: null
     };
   },
   computed: {
@@ -190,6 +217,9 @@ export default {
     this.crns = this.$store.getters.current_schedule.map(c => c.crn).join(',');
   },
   methods: {
+    async iCalFileChange (file) {
+      this.iCalFile = file;
+    },
     async updatedCourse (updatedCourse) {
       this.loading = true;
 
@@ -203,15 +233,29 @@ export default {
     async save () {
       this.loading = true;
 
+      let data = {};
+      if (this.method === 'sis') {
+        data.pin = this.pin;
+      } else if (this.method === 'crn') {
+        data.crns = this.crns;
+      } else if (this.method === 'ical') {
+        data = new FormData();
+        data.append('ical-file', this.iCalFile, this.iCalFile.name);
+      } else {
+        this.$toasted.error('Unknown method...');
+        this.loading = false;
+        return;
+      }
+
       let request;
       try {
-        request = await this.$http.post('/setup/courseschedule', {
-          pin: this.pin,
-          crns: this.crns
+        request = await this.$http.post('/setup/courseschedule', data, {
+          params: { method: this.method }
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        this.$toasted.error(e.response.data.message);
+        return;
       }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
