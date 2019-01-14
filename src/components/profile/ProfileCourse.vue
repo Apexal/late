@@ -153,6 +153,11 @@ export default {
       return JSON.stringify(this.course) === JSON.stringify(this.courseData);
     }
   },
+  watch: {
+    course (newCourse) {
+      this.courseData = Object.assign({}, this.course);
+    }
+  },
   methods: {
     day: num =>
       [
