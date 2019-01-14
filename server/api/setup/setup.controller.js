@@ -87,16 +87,32 @@ async function setCourseSchedule (ctx) {
   // "Other" course
   courseSchedule.push({
     longname: 'Other',
+    summary: 'OTHER',
+    section_id: '00',
     crn: '00000',
-    periods: []
+    periods: [],
+    links: []
   });
 
-  for (let c in courseSchedule) {
-    courseSchedule[c].color =
-      '#' +
-      Math.random()
-        .toString(16)
-        .substr(-6);
+  // If reimporting, update old list but keep longnames and colors
+  const oldSchedule = ctx.state.user.semester_schedules[ctx.session.currentTerm.code];
+  if (oldSchedule && ctx.state.user.setup.course_schedule.includes(ctx.session.currentTerm.code)) {
+    // Already previously imported
+    for (let i in courseSchedule) {
+      const course = courseSchedule[i];
+      // Look for match in old schedule
+      const oldMatch = oldSchedule.find(c => c.summary === course.summary);
+      if (oldMatch) Object.assign(course, { longname: oldMatch.longname, color: oldMatch.color, links: oldMatch.links || [] });
+    }
+  }
+
+  for (let i in courseSchedule) {
+    if (!courseSchedule[i].color) {
+      courseSchedule[i].color = '#' +
+        Math.random()
+          .toString(16)
+          .substr(-6);
+    }
   }
 
   ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code);
