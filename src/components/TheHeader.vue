@@ -1,5 +1,8 @@
 <template>
-  <header id="header">
+  <header
+    id="header"
+    ref="header"
+  >
     <section class="hero is-dark">
       <div class="hero-body">
         <h1 class="title">
@@ -20,13 +23,24 @@
         </h2>
       </div>
     </section>
-    <div class="hero-foot">
+    <div
+      ref="navbar"
+      class="hero-foot"
+    >
       <nav
         class="navbar is-dark"
         role="navigation"
         aria-label="main navigation"
       >
         <div class="navbar-brand">
+          <a
+            id="logo"
+            class="navbar-item"
+            href="#"
+          >
+            LATE
+          </a>
+
           <a
             :class="{'is-active': navbarExpanded}"
             role="button"
@@ -243,6 +257,18 @@ export default {
     examCount () {
       return this.$store.state.work.upcomingExams.length;
     }
+  },
+  mounted () {
+    const header = this.$refs.header;
+    const offset = this.$refs.navbar.offsetTop;
+
+    window.onscroll = () => {
+      if (window.pageYOffset >= offset) {
+        header.classList.add('sticky');
+      } else {
+        header.classList.remove('sticky');
+      }
+    };
   }
 };
 </script>
@@ -285,5 +311,24 @@ export default {
 //Adjusts left margin of title block to a smaller and readable level
 .hero-body .container {
   margin: 0 0 0 4em;
+}
+
+header.sticky {
+  .hero-foot {
+    z-index: 5;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+  margin-bottom: 50px;
+  #logo {
+    display: block;
+  }
+}
+
+#logo {
+  display: none;
+  font-size: 1.6rem;
+  font-weight: 600;
 }
 </style>
