@@ -50,7 +50,7 @@ export default {
           },
           height: 700,
           dayCount: 5,
-          allDayText: 'Incomplete\nAssign.',
+          allDayText: 'Due',
           minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
           maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
           timezone: 'local',
