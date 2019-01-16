@@ -9,23 +9,41 @@
     />
     <div class="modal-content">
       <div class="box">
+        <router-link
+          title="Edit course info and links."
+          :to="{ name: 'setup-course-schedule' }"
+          class="icon margin-left is-pulled-right"
+        >
+          <i class="fas fa-pencil-alt" />
+        </router-link>
         <div
           class="tag section-tag is-pulled-right"
           :style="{ 'background-color': course.color }"
         >
           Section {{ course.section_id }}
         </div>
-        <h2 class="subtitle">
+        <h2 class="subtitle course-longname">
           {{ course.longname }}
-          <router-link
-            title="Edit course info and links."
-            :to="{ name: 'setup-course-schedule' }"
-            class="icon margin-left"
-          >
-            <i class="fas fa-pencil-alt" />
-          </router-link>
+          <br>
+          <small class="has-text-grey course-summary">
+            {{ course.summary }}
+          </small>
         </h2>
-        <hr>
+
+        <hr class="small-margin">
+
+        <router-link
+          v-for="assessment in upcomingAssessments"
+          :key="assessment._id"
+          class="tag"
+          :style="{ backgroundColor: course.color, color: 'white' }"
+          :to="`/${assessment.assessmentType}s/${assessment._id}`"
+        >
+          {{ assessment.title }}
+        </router-link>
+
+        <hr class="small-margin">
+
         <ul
           v-if="course.links && course.links.length > 0"
           class="course-links"
@@ -49,7 +67,7 @@
           No links added.
         </span>
 
-        <hr>
+        <hr class="small-margin">
 
         <div class="buttons">
           <button
@@ -81,6 +99,14 @@ export default {
       required: true
     },
     course: { type: Object, required: true }
+  },
+  computed: {
+    upcomingAssessments () {
+      const assignments = this.$store.state.work.upcomingAssignments.filter(a => a.courseCRN === this.course.crn).map(a => Object.assign({ assessmentType: 'assignment' }, a));
+      const exams = this.$store.state.work.upcomingExams.filter(ex => ex.courseCRN === this.course.crn).map(ex => Object.assign({ assessmentType: 'exam' }, ex));
+
+      return assignments.concat(exams);
+    }
   },
   methods: {
     linkDisplay (href) {
@@ -115,5 +141,9 @@ export default {
       margin-right: 3px;
     }
   }
+}
+
+.small-margin {
+  margin: 12px 0;
 }
 </style>
