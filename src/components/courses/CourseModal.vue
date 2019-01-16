@@ -27,7 +27,7 @@
         </h2>
         <hr>
         <ul
-          v-if="course.links"
+          v-if="course.links && course.links.length > 0"
           class="course-links"
         >
           <li
