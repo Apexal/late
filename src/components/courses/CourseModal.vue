@@ -32,15 +32,39 @@
 
         <hr class="small-margin">
 
-        <router-link
-          v-for="assessment in upcomingAssessments"
-          :key="assessment._id"
-          class="tag"
-          :style="{ backgroundColor: course.color, color: 'white' }"
-          :to="`/${assessment.assessmentType}s/${assessment._id}`"
-        >
-          {{ assessment.title }}
-        </router-link>
+        <div class="upcoming-assessments">
+          <span
+            v-if="upcomingAssessments.length === 0"
+            class="has-text-grey"
+          >
+            No upcoming assignments or exams.
+          </span>
+          <span v-else>
+            Upcoming
+          </span>
+
+          <router-link
+            v-for="assessment in upcomingAssessments"
+            :key="assessment._id"
+            class="tag assessment-tag"
+            :style="{ backgroundColor: course.color, color: 'white' }"
+            :to="`/${assessment.assessmentType}s/${assessment._id}`"
+            :title="assessmentLinkTitle(assessment)"
+          >
+            {{ limitTo(assessment.title, 15) }}
+
+            <span
+              v-if="assessment.assessmentType === 'assignment'"
+              class="icon"
+            >
+              <i
+                class="fa"
+                :class="assessment.completed ? 'fa-check' : 'fa-times'"
+              />
+            </span>
+          </router-link>
+        </div>
+
 
         <hr class="small-margin">
 
@@ -91,6 +115,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   name: 'CourseModal',
   props: {
@@ -102,17 +128,30 @@ export default {
   },
   computed: {
     upcomingAssessments () {
-      const assignments = this.$store.state.work.upcomingAssignments.filter(a => a.courseCRN === this.course.crn).map(a => Object.assign({ assessmentType: 'assignment' }, a));
-      const exams = this.$store.state.work.upcomingExams.filter(ex => ex.courseCRN === this.course.crn).map(ex => Object.assign({ assessmentType: 'exam' }, ex));
+      const nextMonth = moment().add(1, 'month');
+      const assignments = this.$store.state.work.upcomingAssignments
+        .filter(a => a.courseCRN === this.course.crn)
+        .map(a => Object.assign({ assessmentType: 'assignment' }, a));
 
-      return assignments.concat(exams);
+      const exams = this.$store.state.work.upcomingExams
+        .filter(ex => moment(ex.date).isBefore(nextMonth) && ex.courseCRN === this.course.crn)
+        .map(ex => Object.assign({ assessmentType: 'exam' }, ex));
+
+      return assignments.concat(exams).slice(0, 4);
     }
   },
   methods: {
     linkDisplay (href) {
       href = href.replace('https://', '').replace('http://', '').replace('www.', '');
-      if (href.length > 30) href = href.substr(0, 30) + '...';
-      return href;
+      return this.limitTo(href, 40);
+    },
+    limitTo (str, length) {
+      if (str.length > length) str = str.substr(0, length) + '...';
+      return str;
+    },
+    assessmentLinkTitle (assessment) {
+      if (assessment.assessmentType === 'exam') return 'Upcoming Exam';
+      else if (assessment.assessmentType === 'assignment') return (assessment.completed ? 'Completed' : 'Incomplete') + ' Assignment';
     },
     addAssessment (assessmentType) {
       this.$store.commit('CLOSE_COURSE_MODAL');
@@ -129,6 +168,10 @@ export default {
 <style lang="scss" scoped>
 .section-tag {
   color: white;
+}
+
+.assessment-tag:not(:last-of-type) {
+  margin-right: 10px;
 }
 
 .course-links {
