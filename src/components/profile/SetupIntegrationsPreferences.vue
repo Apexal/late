@@ -72,6 +72,8 @@ export default {
   },
   computed: {
     saved () {
+      if (!this.$store.getters.userSetup.integrations) return false;
+
       return (
         JSON.stringify(this.preferences) ===
         JSON.stringify(this.user.notificationPreferences)
