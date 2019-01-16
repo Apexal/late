@@ -47,8 +47,6 @@
         </h2>
       </div>
 
-      <hr>
-
       <ExamOverviewStats :exam="exam" />
 
       <div class="content exam-description">
@@ -277,9 +275,5 @@ export default {
   }
 
   margin-bottom: 10px;
-}
-
-.exam-stats {
-  padding: 10px;
 }
 </style>
