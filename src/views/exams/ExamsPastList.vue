@@ -133,7 +133,7 @@ export default {
     canGoNext () {
       return moment(this.startMoment)
         .add(1, 'month')
-        .isSameOrBefore(this.currentTerm.end, 'month');
+        .isSameOrBefore(moment(), 'month');
     },
     monthOf () {
       return this.startMoment.format('MMMM YYYY');
@@ -183,7 +183,7 @@ export default {
         return this.$toasted.error(e.response.data.message);
       }
 
-      this.currentExams = request.data.exams;
+      this.currentExams = request.data.exams.filter(e => e.passed); // Only get passed exams
       this.loading = false;
     },
     fromNow (date) {
