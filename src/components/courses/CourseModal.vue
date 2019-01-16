@@ -19,10 +19,14 @@
         <div
           class="tag section-tag is-pulled-right"
           :style="{ 'background-color': course.color }"
+          :title="'You are in section ' + course.section_id"
         >
           Section {{ course.section_id }}
         </div>
-        <h2 class="subtitle course-longname">
+        <h2
+          class="subtitle course-longname"
+          :title="course.original_longname + ' - ' + course.summary + ' - ' + course.section_id"
+        >
           {{ course.longname }}
           <br>
           <small class="has-text-grey course-summary">
@@ -39,10 +43,6 @@
           >
             No upcoming assignments or exams.
           </span>
-          <span v-else>
-            Upcoming
-          </span>
-
           <router-link
             v-for="assessment in upcomingAssessments"
             :key="assessment._id"
@@ -79,8 +79,9 @@
             <a
               :href="l"
               target="_blank"
+              :title="l"
             >
-              {{ linkDisplay(l) }}
+              {{ l }}
             </a>
           </li>
         </ul>
@@ -174,8 +175,10 @@ export default {
   margin-right: 10px;
 }
 
-.course-links {
-  overflow: auto;
+.course-links li {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .buttons {
