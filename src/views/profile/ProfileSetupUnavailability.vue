@@ -102,7 +102,7 @@ export default {
   data () {
     return {
       loading: false,
-      saved: true,
+      saved: false,
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
