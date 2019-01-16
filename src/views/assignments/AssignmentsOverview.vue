@@ -48,9 +48,7 @@
         </h1>
       </div>
 
-      <hr>
-
-      <nav class="level is-mobile box assignment-stats">
+      <nav class="level is-mobile assignment-stats">
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">
@@ -109,7 +107,6 @@
           </div>
         </div>
       </nav>
-
       <div class="content assignment-description">
         <blockquote>
           <VueMarkdown
@@ -448,7 +445,9 @@ export default {
   margin-top: 5px;
 }
 
-.assignment-stats {
+.level.assignment-stats {
+  margin-top: 20px;
+  margin-bottom: 0;
   padding: 10px;
 }
 
