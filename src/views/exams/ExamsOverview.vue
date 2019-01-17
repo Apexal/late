@@ -5,7 +5,7 @@
       :open="editing"
       :initial-exam="exam"
       @toggle-modal="editing = !editing"
-      @edit-exam="editedExam"
+      @edit-exam="updatedExam"
       @remove-exam="remove"
     />
     <section
@@ -69,7 +69,7 @@
         :exam="exam"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
-        @add-work-block="addWorkBlock"
+        @update-assessment="updatedExam"
         @edit-work-block="editWorkBlock"
         @remove-work-block="removeWorkBlock"
       />
@@ -129,29 +129,8 @@ export default {
     toggleEditing () {
       this.editing = !this.editing;
     },
-    editedExam (newExam) {
+    updatedExam (newExam) {
       this.exam = newExam;
-    },
-    async addWorkBlock ({ start, end }) {
-      let request;
-      request = await this.$http.post(`/blocks/exam/${this.exam._id}`, {
-        startTime: start,
-        endTime: end,
-        assessmentType: 'exam'
-      });
-
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
-      } else {
-        this.editedExam(request.data.updatedExam);
-      }
-
-      this.$toasted.success('Added work block to your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
     },
     async editWorkBlock ({ blockID, start, end }) {
       let request;
@@ -163,7 +142,7 @@ export default {
       if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
         this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
       } else {
-        this.editedExam(request.data.updatedExam);
+        this.updatedExam(request.data.updatedExam);
       }
 
       this.$toasted.show('Rescheduled work block!', {
@@ -182,7 +161,7 @@ export default {
       if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
         this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
       } else {
-        this.editedExam(request.data.updatedExam);
+        this.updatedExam(request.data.updatedExam);
       }
 
       this.$toasted.error('Removed work block from your schedule!', {

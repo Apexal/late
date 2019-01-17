@@ -6,7 +6,6 @@
       :initial-assignment="assignment"
       @toggle-modal="editing = !editing"
       @edit-assignment="updatedAssignment"
-      @update-assessment="updatedAssignment"
       @remove-assignment="remove"
     />
     <section
@@ -128,6 +127,7 @@
         :assignment="assignment"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
+        @update-assessment="updatedAssignment"
         @add-comment="addComment"
         @edit-work-block="editWorkBlock"
         @remove-work-block="removeWorkBlock"
