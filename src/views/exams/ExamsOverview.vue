@@ -152,25 +152,6 @@ export default {
         position: 'top-right'
       });
     },
-    async removeWorkBlock (blockID) {
-      let request;
-      request = await this.$http.delete(
-        `/blocks/exam/${this.exam._id}/${blockID}`
-      );
-
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
-      } else {
-        this.updatedExam(request.data.updatedExam);
-      }
-
-      this.$toasted.error('Removed work block from your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
     async getExam () {
       // If its an upcoming exam, we already have the data on it
       if (this.$store.getters.getUpcomingExamById(this.$route.params.examID)) {

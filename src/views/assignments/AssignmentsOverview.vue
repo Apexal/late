@@ -130,7 +130,6 @@
         @update-assessment="updatedAssignment"
         @add-comment="addComment"
         @edit-work-block="editWorkBlock"
-        @remove-work-block="removeWorkBlock"
       />
     </section>
   </div>
@@ -349,28 +348,6 @@ export default {
       }
 
       this.$toasted.show('Rescheduled work block!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
-    async removeWorkBlock (blockID) {
-      let request;
-      request = await this.$http.delete(
-        `/blocks/assignment/${this.assignment._id}/${blockID}`
-      );
-
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.updatedAssignment(request.data.updatedAssignment);
-      }
-
-      this.$toasted.error('Removed work block from your schedule!', {
         icon: 'clock',
         duration: 2000,
         fullWidth: false,

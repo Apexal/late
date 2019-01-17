@@ -239,7 +239,7 @@ export default {
 
       this.saved = false;
 
-      this.addWorkBlock({ start, end });
+      this.addWorkBlock(start, end);
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType !== 'work-block') return;
@@ -263,12 +263,7 @@ export default {
         }
       }
 
-      /* Remove work block */
-      this.workBlocks = this.workBlocks.filter(
-        e => !moment(e.start).isSame(moment(calEvent.start))
-      );
-
-      this.$emit('remove-work-block', calEvent.blockID);
+      this.removeWorkBlock(calEvent.blockID);
 
       this.saved = false;
     },
@@ -297,7 +292,7 @@ export default {
         end: calEvent.end
       });
     },
-    async addWorkBlock ({ start, end }) {
+    async addWorkBlock (start, end) {
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
         assessmentType: this.assessmentType,
         assessment: this.assessment,
@@ -324,6 +319,34 @@ export default {
       });
 
       this.$refs.calendar.fireMethod('unselect');
+    },
+    async removeWorkBlock (blockID) {
+      const updatedAssessment = await this.$store.dispatch(
+        'REMOVE_WORK_BLOCK',
+        {
+          assessmentType: this.assessmentType,
+          assessment: this.assessment,
+          blockID
+        }
+      );
+      const capitalized =
+        this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+
+      if (
+        !this.$store.getters['getUpcoming' + capitalized + 'ById'](
+          this.assessment._id
+        )
+      ) {
+        // Updated past assessment, send up to parent overview
+        this.$emit('update-assessment', updatedAssessment);
+      }
+
+      this.$toasted.error('Removed work block from your schedule!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     }
   }
 };

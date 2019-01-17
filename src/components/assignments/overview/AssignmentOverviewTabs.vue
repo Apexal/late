@@ -48,7 +48,6 @@
       @add-comment="$emit('add-comment', arguments[0])"
       @update-assessment="$emit('update-assessment', arguments[0])"
       @edit-work-block="$emit('edit-work-block', arguments[0])"
-      @remove-work-block="$emit('remove-work-block', arguments[0])"
     />
   </div>
 </template>

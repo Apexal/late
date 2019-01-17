@@ -171,6 +171,16 @@ const actions = {
     const request = await axios.delete(
       `/blocks/${assessmentType}/${assessment._id}/${blockID}`
     );
+    const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+
+    if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
+      commit(
+        `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
+        request.data['updated' + capitalized]
+      );
+    }
+
+    return request['updated' + capitalized];
   }
 };
 
