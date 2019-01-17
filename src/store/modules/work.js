@@ -83,13 +83,12 @@ const getters = {
     assessmentType: type,
     title: assessment.title,
     className: 'work-block-event',
-    editable: moment(b.startTime).isAfter(moment()),
+    // editable: moment(b.startTime).isAfter(moment()),
     color: 'black',
     borderColor: getters.getCourseFromCRN(assessment.courseCRN).color,
     start: b.startTime,
     end: b.endTime,
     constraint: {
-      start: new Date(),
       end: type === 'assignment' ? assessment.dueDate : assessment.date
     },
     assessment,
