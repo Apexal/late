@@ -167,6 +167,26 @@ const actions = {
 
     return request['updated' + capitalized];
   },
+  async EDIT_WORK_BLOCK (
+    { commit },
+    { assessmentType, assessment, blockID, start, end }
+  ) {
+    const request = await axios.patch(
+      `/blocks/${assessmentType}/${assessment._id}/${blockID}`,
+      { startTime: start, endTime: end, assessmentType }
+    );
+
+    const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+
+    if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
+      commit(
+        `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
+        request.data['updated' + capitalized]
+      );
+    }
+
+    return request['updated' + capitalized];
+  },
   async REMOVE_WORK_BLOCK ({ commit }, { assessmentType, assessment, blockID }) {
     const request = await axios.delete(
       `/blocks/${assessmentType}/${assessment._id}/${blockID}`

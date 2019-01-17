@@ -70,8 +70,6 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @update-assessment="updatedExam"
-        @edit-work-block="editWorkBlock"
-        @remove-work-block="removeWorkBlock"
       />
     </section>
   </div>
@@ -132,26 +130,7 @@ export default {
     updatedExam (newExam) {
       this.exam = newExam;
     },
-    async editWorkBlock ({ blockID, start, end }) {
-      let request;
-      request = await this.$http.patch(
-        `/blocks/exam/${this.exam._id}/${blockID}`,
-        { startTime: start, endTime: end, assessmentType: 'exam' }
-      );
 
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
-      } else {
-        this.updatedExam(request.data.updatedExam);
-      }
-
-      this.$toasted.show('Rescheduled work block!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
     async getExam () {
       // If its an upcoming exam, we already have the data on it
       if (this.$store.getters.getUpcomingExamById(this.$route.params.examID)) {

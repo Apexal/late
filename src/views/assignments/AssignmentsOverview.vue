@@ -129,7 +129,6 @@
         @set-tab="tabChanged"
         @update-assessment="updatedAssignment"
         @add-comment="addComment"
-        @edit-work-block="editWorkBlock"
       />
     </section>
   </div>
@@ -330,29 +329,6 @@ export default {
           }
         }
       );
-    },
-    async editWorkBlock ({ blockID, start, end }) {
-      let request;
-      request = await this.$http.patch(
-        `/blocks/assignment/${this.assignment._id}/${blockID}`,
-        { startTime: start, endTime: end, assessmentType: 'assignment' }
-      );
-
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.updatedAssignment(request.data.updatedAssignment);
-      }
-
-      this.$toasted.show('Rescheduled work block!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
     },
     async addComment (newComment) {
       if (!newComment) return;

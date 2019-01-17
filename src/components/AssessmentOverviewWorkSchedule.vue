@@ -274,11 +274,7 @@ export default {
           return revertFunc();
         }
       }
-      this.$emit('edit-work-block', {
-        blockID: calEvent.blockID,
-        start: calEvent.start,
-        end: calEvent.end
-      });
+      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
     },
     eventResize (calEvent, delta, revertFunc) {
       if (moment(calEvent.end).isBefore(moment())) {
@@ -286,11 +282,7 @@ export default {
           return revertFunc();
         }
       }
-      this.$emit('edit-work-block', {
-        blockID: calEvent.blockID,
-        start: calEvent.start,
-        end: calEvent.end
-      });
+      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
     },
     async addWorkBlock (start, end) {
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
@@ -319,6 +311,33 @@ export default {
       });
 
       this.$refs.calendar.fireMethod('unselect');
+    },
+    async editWorkBlock (blockID, start, end) {
+      const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+        assessmentType: this.assessmentType,
+        assessment: this.assessment,
+        blockID,
+        start,
+        end
+      });
+
+      const capitalized =
+        this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+      if (
+        !this.$store.getters['getUpcoming' + capitalized + 'ById'](
+          this.assessment._id
+        )
+      ) {
+        // Updated past assessment, send up to parent overview
+        this.$emit('update-assessment', updatedAssessment);
+      }
+
+      this.$toasted.show('Rescheduled work block!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     },
     async removeWorkBlock (blockID) {
       const updatedAssessment = await this.$store.dispatch(
