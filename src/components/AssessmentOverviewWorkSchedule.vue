@@ -224,31 +224,27 @@ export default {
   },
   methods: {
     select (start, end) {
-      const assessmentTitle = this.assessment.title;
-      const dateStr = moment(start).format('dddd');
-      const startStr = moment(start).format('h:mm a');
-      const endStr = moment(end).format('h:mm a');
-      if (
-        !confirm(
-          `You want to ${
-            this.assessmentType === 'assignment' ? 'work on' : 'study for'
-          } ${assessmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`
-        )
-      ) {
-        return;
+      // Only confirm with user if they are trying to add work block to the past
+      if (moment(start).isBefore(moment())) {
+        if (
+          !confirm(
+            `Add work block to your history for ${moment(start).format(
+              'M/DD/YY'
+            )}?`
+          )
+        ) {
+          return this.$refs.calendar.fireMethod('unselect');
+        }
       }
 
-      this.$refs.calendar.fireMethod('unselect');
       this.saved = false;
 
-      // TODO: customize, top right
-
       this.$emit('add-work-block', { start, end });
+      this.$refs.calendar.fireMethod('unselect');
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType !== 'work-block') return;
 
-      // Cannot remove past blocks
       if (moment(calEvent.end).isBefore(moment())) {
         if (!confirm('Remove this work block from your history?')) return;
       } else {
@@ -268,7 +264,6 @@ export default {
         }
       }
 
-
       /* Remove work block */
       this.workBlocks = this.workBlocks.filter(
         e => !moment(e.start).isSame(moment(calEvent.start))
@@ -281,7 +276,9 @@ export default {
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
       // Update work block on server
       if (calEvent.end.isBefore(moment())) {
-        if (!confirm('Add this work block to your history?')) return revertFunc();
+        if (!confirm('Move this work block to your history?')) {
+          return revertFunc();
+        }
       }
       this.$emit('edit-work-block', {
         blockID: calEvent.blockID,
@@ -291,7 +288,9 @@ export default {
     },
     eventResize (calEvent, delta, revertFunc) {
       if (moment(calEvent.end).isBefore(moment())) {
-        if (!confirm('Edit this work block from your history?')) return revertFunc();
+        if (!confirm('Edit this work block from your history?')) {
+          return revertFunc();
+        }
       }
       this.$emit('edit-work-block', {
         blockID: calEvent.blockID,
