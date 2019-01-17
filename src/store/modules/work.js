@@ -147,6 +147,30 @@ const actions = {
     });
     const exams = response.data.exams;
     commit('SET_UPCOMING_EXAMS', exams);
+  },
+  async ADD_WORK_BLOCK (
+    { commit, getters },
+    { assessmentType, assessment, start, end }
+  ) {
+    const request = await axios.post(
+      `/blocks/${assessmentType}/${assessment._id}`,
+      { startTime: start, endTime: end }
+    );
+
+    if (getters.getUpcomingAssignmentById(assessment._id)) {
+      commit(
+        `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
+        // eslint-disable-next-line standard/computed-property-even-spacing
+        request.data[
+          'updated' + (assessmentType === 'assignment' ? 'Assignment' : 'Exam')
+        ]
+      );
+    }
+
+    // eslint-disable-next-line standard/computed-property-even-spacing
+    return request[
+      'updated' + (assessmentType === 'assignment' ? 'Assignment' : 'Exam')
+    ];
   }
 };
 

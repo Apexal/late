@@ -333,19 +333,15 @@ export default {
       );
     },
     async addWorkBlock ({ start, end }) {
-      let request;
-      request = await this.$http.post(
-        `/blocks/assignment/${this.assignment._id}`,
-        { startTime: start, endTime: end }
-      );
+      const updatedAssignment = await this.$store.dispatch('ADD_WORK_BLOCK', {
+        assessmentType: 'assignment',
+        assessment: this.assignment,
+        start,
+        end
+      });
 
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.editedAssignment(request.data.updatedAssignment);
+      if (!this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.editedAssignment(updatedAssignment);
       }
 
       this.$toasted.success('Added work block to your schedule!', {
