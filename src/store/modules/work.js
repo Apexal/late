@@ -156,21 +156,21 @@ const actions = {
       `/blocks/${assessmentType}/${assessment._id}`,
       { startTime: start, endTime: end }
     );
+    const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    if (getters.getUpcomingAssignmentById(assessment._id)) {
+    if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
       commit(
         `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
-        // eslint-disable-next-line standard/computed-property-even-spacing
-        request.data[
-          'updated' + (assessmentType === 'assignment' ? 'Assignment' : 'Exam')
-        ]
+        request.data['updated' + capitalized]
       );
     }
 
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    return request[
-      'updated' + (assessmentType === 'assignment' ? 'Assignment' : 'Exam')
-    ];
+    return request['updated' + capitalized];
+  },
+  async REMOVE_WORK_BLOCK ({ commit }, { assessmentType, assessment, blockID }) {
+    const request = await axios.delete(
+      `/blocks/${assessmentType}/${assessment._id}/${blockID}`
+    );
   }
 };
 

@@ -223,7 +223,7 @@ export default {
     this.workBlocks = this.workBlockEvents.slice(0);
   },
   methods: {
-    select (start, end) {
+    async select (start, end) {
       // Only confirm with user if they are trying to add work block to the past
       if (moment(start).isBefore(moment())) {
         if (
@@ -239,8 +239,7 @@ export default {
 
       this.saved = false;
 
-      this.$emit('add-work-block', { start, end });
-      this.$refs.calendar.fireMethod('unselect');
+      this.addWorkBlock({ start, end });
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType !== 'work-block') return;
@@ -297,6 +296,34 @@ export default {
         start: calEvent.start,
         end: calEvent.end
       });
+    },
+    async addWorkBlock ({ start, end }) {
+      const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
+        assessmentType: this.assessmentType,
+        assessment: this.assessment,
+        start,
+        end
+      });
+      const capitalized =
+        this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+
+      if (
+        !this.$store.getters['getUpcoming' + capitalized + 'ById'](
+          this.assessment._id
+        )
+      ) {
+        // Updated past assessment, send up to parent overview
+        this.$emit('update-assessment', updatedAssessment);
+      }
+
+      this.$toasted.success('Added work block to your schedule!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
+
+      this.$refs.calendar.fireMethod('unselect');
     }
   }
 };

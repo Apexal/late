@@ -5,7 +5,8 @@
       :open="editing"
       :initial-assignment="assignment"
       @toggle-modal="editing = !editing"
-      @edit-assignment="editedAssignment"
+      @edit-assignment="updatedAssignment"
+      @update-assessment="updatedAssignment"
       @remove-assignment="remove"
     />
     <section
@@ -128,7 +129,6 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @add-comment="addComment"
-        @add-work-block="addWorkBlock"
         @edit-work-block="editWorkBlock"
         @remove-work-block="removeWorkBlock"
       />
@@ -209,7 +209,7 @@ export default {
     toggleEditing () {
       this.editing = !this.editing;
     },
-    editedAssignment (newAssignment) {
+    updatedAssignment (newAssignment) {
       this.assignment = newAssignment;
     },
     async toggleCompleted () {
@@ -239,7 +239,7 @@ export default {
             `/assignments/a/${this.assignment._id}/toggle`
           );
 
-          this.editedAssignment(request.data.updatedAssignment);
+          this.updatedAssignment(request.data.updatedAssignment);
         }
         this.$toasted.show('Toggled assignment.', {
           icon: this.assignment.completed ? 'check-circle' : 'circle',
@@ -332,25 +332,6 @@ export default {
         }
       );
     },
-    async addWorkBlock ({ start, end }) {
-      const updatedAssignment = await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessmentType: 'assignment',
-        assessment: this.assignment,
-        start,
-        end
-      });
-
-      if (!this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.editedAssignment(updatedAssignment);
-      }
-
-      this.$toasted.success('Added work block to your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
     async editWorkBlock ({ blockID, start, end }) {
       let request;
       request = await this.$http.patch(
@@ -364,7 +345,7 @@ export default {
           request.data.updatedAssignment
         );
       } else {
-        this.editedAssignment(request.data.updatedAssignment);
+        this.updatedAssignment(request.data.updatedAssignment);
       }
 
       this.$toasted.show('Rescheduled work block!', {
@@ -386,7 +367,7 @@ export default {
           request.data.updatedAssignment
         );
       } else {
-        this.editedAssignment(request.data.updatedAssignment);
+        this.updatedAssignment(request.data.updatedAssignment);
       }
 
       this.$toasted.error('Removed work block from your schedule!', {
@@ -413,7 +394,7 @@ export default {
           request.data.updatedAssignment
         );
       } else {
-        this.editedAssignment(request.data.updatedAssignment);
+        this.updatedAssignment(request.data.updatedAssignment);
       }
 
       this.commentLoading = false;
