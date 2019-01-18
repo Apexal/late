@@ -120,8 +120,10 @@ export default {
             start: this.start,
             end: this.end
           },
+          selectConstraint: { end: this.assessmentDate },
           height: 500,
           allDay: false,
+          allDayText: 'Due',
           minTime: this.$store.state.auth.user.earliestWorkTime,
           maxTime: this.$store.state.auth.user.latestWorkTime,
           timezone: 'local',
@@ -157,11 +159,15 @@ export default {
     dueDateEvent () {
       return {
         eventType: 'due-date',
-        title: 'Assessment Due',
+        title:
+          (this.assessmentType === 'assignment' ? 'Due' : 'Taken') +
+          ' @ ' +
+          moment(this.assessmentDate).format('h:mma'),
         editable: false,
-        start: this.assessmentDate,
+        start: moment(this.assessmentDate).startOf('day'),
+        // end: moment(this.assessmentDate).add(20, 'minute')
         color: this.course.color,
-        end: moment(this.assessmentDate).add(20, 'minute')
+        allDay: true
       };
     },
     course () {
@@ -204,7 +210,6 @@ export default {
     }
   },
   watch: {
-    /* end () {}, */
     workBlockEvents () {
       this.workBlocks = this.workBlockEvents.slice(0);
     },

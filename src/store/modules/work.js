@@ -188,7 +188,7 @@ const actions = {
 
     return request['updated' + capitalized];
   },
-  async REMOVE_WORK_BLOCK ({ commit }, { blockID }) {
+  async REMOVE_WORK_BLOCK ({ commit, getters }, { blockID }) {
     const block = getters.getWorkBlocksAsEvents.find(
       b => b.blockID === blockID
     );
