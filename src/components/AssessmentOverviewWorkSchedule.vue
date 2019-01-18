@@ -314,8 +314,6 @@ export default {
     },
     async editWorkBlock (blockID, start, end) {
       const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
-        assessmentType: this.assessmentType,
-        assessment: this.assessment,
         blockID,
         start,
         end
@@ -343,8 +341,6 @@ export default {
       const updatedAssessment = await this.$store.dispatch(
         'REMOVE_WORK_BLOCK',
         {
-          assessmentType: this.assessmentType,
-          assessment: this.assessment,
           blockID
         }
       );

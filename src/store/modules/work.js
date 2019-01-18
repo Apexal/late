@@ -167,35 +167,40 @@ const actions = {
 
     return request['updated' + capitalized];
   },
-  async EDIT_WORK_BLOCK (
-    { commit },
-    { assessmentType, assessment, blockID, start, end }
-  ) {
+  async EDIT_WORK_BLOCK ({ commit, getters }, { blockID, start, end }) {
+    const block = getters.getWorkBlocksAsEvents.find(
+      b => b.blockID === blockID
+    );
     const request = await axios.patch(
-      `/blocks/${assessmentType}/${assessment._id}/${blockID}`,
-      { startTime: start, endTime: end, assessmentType }
+      `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`,
+      { startTime: start, endTime: end, assessmentType: block.assessmentType }
     );
 
-    const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    const capitalized =
+      block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
+    if (getters['getUpcoming' + capitalized + 'ById'](block.assessment._id)) {
       commit(
-        `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
+        `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
         request.data['updated' + capitalized]
       );
     }
 
     return request['updated' + capitalized];
   },
-  async REMOVE_WORK_BLOCK ({ commit }, { assessmentType, assessment, blockID }) {
-    const request = await axios.delete(
-      `/blocks/${assessmentType}/${assessment._id}/${blockID}`
+  async REMOVE_WORK_BLOCK ({ commit }, { blockID }) {
+    const block = getters.getWorkBlocksAsEvents.find(
+      b => b.blockID === blockID
     );
-    const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    const request = await axios.delete(
+      `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`
+    );
+    const capitalized =
+      block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
+    if (getters['getUpcoming' + capitalized + 'ById'](block.assessment._id)) {
       commit(
-        `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
+        `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
         request.data['updated' + capitalized]
       );
     }

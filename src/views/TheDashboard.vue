@@ -55,8 +55,8 @@ export default {
           maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
           timezone: 'local',
           defaultView: 'agendaFiveDay',
-          eventOverlap: false,
-          selectOverlap: false,
+          eventOverlap: true,
+          selectOverlap: true,
           selectHelper: false,
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
@@ -79,37 +79,8 @@ export default {
             // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
           },
           */
-          eventClick: (calEvent, jsEvent, view) => {
-            if (calEvent.eventType === 'course') {
-              this.$store.commit(
-                'SET_ADD_ASSIGNMENT_MODAL_DUE_DATE',
-                calEvent.start
-              );
-              this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
-            } else if (calEvent.eventType === 'assignment') {
-              this.$router.push({
-                name: 'assignments-overview',
-                params: { assignmentID: calEvent.assignment._id }
-              });
-            } else if (calEvent.eventType === 'exam') {
-              this.$router.push({
-                name: 'exams-overview',
-                params: { examID: calEvent.exam._id }
-              });
-            } else if (calEvent.eventType === 'work-block') {
-              if (calEvent.assessmentType === 'assignment') {
-                this.$router.push({
-                  name: 'assignments-overview',
-                  params: { assignmentID: calEvent.assignment._id }
-                });
-              } else if (calEvent.assessmentType === 'exam') {
-                this.$router.push({
-                  name: 'exams-overview',
-                  params: { examID: calEvent.exam._id }
-                });
-              }
-            }
-          }
+          eventClick: this.eventClick,
+          eventResize: this.eventResize
         }
       }
     };
@@ -150,6 +121,58 @@ export default {
     },
     assignments () {
       return this.$store.state.work.upcomingAssignments;
+    }
+  },
+  methods: {
+    eventClick (calEvent, jsEvent, view) {
+      if (calEvent.eventType === 'course') {
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', calEvent.start);
+        this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
+      } else if (calEvent.eventType === 'assignment') {
+        this.$router.push({
+          name: 'assignments-overview',
+          params: { assignmentID: calEvent.assignment._id }
+        });
+      } else if (calEvent.eventType === 'exam') {
+        this.$router.push({
+          name: 'exams-overview',
+          params: { examID: calEvent.exam._id }
+        });
+      } else if (calEvent.eventType === 'work-block') {
+        if (calEvent.assessmentType === 'assignment') {
+          this.$router.push({
+            name: 'assignments-overview',
+            params: { assignmentID: calEvent.assignment._id }
+          });
+        } else if (calEvent.assessmentType === 'exam') {
+          this.$router.push({
+            name: 'exams-overview',
+            params: { examID: calEvent.exam._id }
+          });
+        }
+      }
+    },
+    eventResize (calEvent, delta, revertFunc) {
+      if (moment(calEvent.end).isBefore(moment())) {
+        if (!confirm('Edit this work block from your history?')) {
+          return revertFunc();
+        }
+      }
+      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
+    },
+    async editWorkBlock (blockID, start, end) {
+      const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+        blockID,
+        start,
+        end
+      });
+
+      this.$toasted.show('Rescheduled work block!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
     }
   }
 };
