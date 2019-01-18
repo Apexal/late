@@ -60,6 +60,13 @@
                 </b>
                 {{ a.title }}
               </router-link>
+              <span
+                :style="{visibility: a.fullyScheduled ? 'hidden' : ''}"
+                class="tooltip is-tooltip-left icon has-text-danger is-pulled-right"
+                :data-tooltip="`You've only scheduled ${a.scheduledTime} out of ${a.timeEstimate * 60} min to work on this.`"
+              >
+                <i class="far fa-clock" />
+              </span>
               <small
                 :data-tooltip="'in ' + hoursFromNow(a.dueDate) + ' hours'"
                 class="tooltip is-tooltip-left is-pulled-right has-text-grey"
@@ -165,6 +172,7 @@ export default {
 }
 
 .assignment {
+  padding-right: 5px;
   transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
 
   .assignment-link {
