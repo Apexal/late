@@ -66,12 +66,23 @@
         >
           <div>
             <p class="heading">
-              Scheduled Work Left
+              {{ assignment.fullyScheduled ? 'Scheduled Work Left' : 'Work Schedule' }}
             </p>
-            <p class="subtitle">
+            <p
+              v-if="assignment.fullyScheduled"
+              class="subtitle"
+            >
               {{ assignment.scheduledTimeRemaing }}
               <span class="has-text-grey">
                 min
+              </span>
+            </p>
+            <p v-else>
+              <span
+                class="tag is-danger not-scheduled-tag"
+                @click="tab = 'schedule'"
+              >
+                Not fully scheduled!
               </span>
             </p>
           </div>
@@ -123,6 +134,7 @@
       </div>
 
       <AssignmentOverviewTabs
+        ref="tabs"
         :tab="tab"
         :assignment="assignment"
         :loading="loading || commentLoading"
@@ -357,6 +369,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.not-scheduled-tag {
+  cursor: pointer;
+}
+
 .course-tag {
   cursor: pointer;
   color: white;

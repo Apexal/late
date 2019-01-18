@@ -82,8 +82,16 @@ schema.virtual('passed').get(function () {
   return moment(this.dueDate).isBefore(new Date());
 });
 
+schema.virtual('scheduledTime').get(function () {
+  return this._blocks.reduce((acc, block) => acc + block.duration, 0);
+});
+
 schema.virtual('scheduledTimeRemaing').get(function () {
-  return this._blocks.filter(b => !b.completed).reduce((acc, block) => acc + block.duration, 0);
+  return this._blocks.filter(b => !b.passed).reduce((acc, block) => acc + block.duration, 0);
+});
+
+schema.virtual('fullyScheduled').get(function () {
+  return this.scheduledTime >= this.timeEstimate * 60;
 });
 
 schema.pre('save', async function () {

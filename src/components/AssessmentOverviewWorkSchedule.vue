@@ -8,7 +8,7 @@
       This {{ assessmentType }} is done so your work schedule can no longer be changed.
     </div>
     <div
-      v-else-if="!fullyScheduled"
+      v-else-if="!assessment.fullyScheduled"
       class="box"
     >
       <div
@@ -88,9 +88,6 @@ export default {
       return Math.round(
         (this.scheduledMinutes / this.totalEstimatedMinutes) * 100
       );
-    },
-    fullyScheduled () {
-      return this.scheduledMinutes >= this.totalEstimatedMinutes;
     },
     editable () {
       if (this.assessmentType === 'exam') return !this.assessment.passed;
