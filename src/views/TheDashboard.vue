@@ -13,7 +13,7 @@
         ref="calendar"
         :events="events"
         :editable="true"
-        :selectable="true"
+        :selectable="false"
         :header="calendar.header"
         :config="calendar.config"
       />
@@ -80,6 +80,7 @@ export default {
           },
           */
           eventClick: this.eventClick,
+          eventDrop: this.eventDrop,
           eventResize: this.eventResize
         }
       }
@@ -151,6 +152,15 @@ export default {
           });
         }
       }
+    },
+    eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
+      // Update work block on server
+      if (calEvent.end.isBefore(moment())) {
+        if (!confirm('Move this work block to your history?')) {
+          return revertFunc();
+        }
+      }
+      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
     },
     eventResize (calEvent, delta, revertFunc) {
       if (moment(calEvent.end).isBefore(moment())) {
