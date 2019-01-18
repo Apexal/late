@@ -106,7 +106,6 @@ export default {
     calendar () {
       return {
         header: {
-          center: 'agendaFiveDay'
         },
         config: {
           views: {
