@@ -126,18 +126,7 @@ export default {
           selectOverlap: false,
           eventColor: 'black',
           timeFormat: 'h(:mm)t',
-          eventClick: (calEvent, jsEvent, view) => {
-            if (!calEvent.eventType === 'unavailability') return;
-
-            this.saved = false;
-            this.calendar.events = this.calendar.events.filter(
-              e =>
-                !(
-                  e.dow[0] === calEvent.start.day() &&
-                  calEvent.start.format('HH:mm') === e.start
-                )
-            );
-          },
+          eventClick: this.eventClick,
 
           select: (start, end) => {
             const eventData = {
@@ -145,6 +134,7 @@ export default {
               eventType: 'unavailability',
               title: 'Busy',
               start: start.format('HH:mm'),
+              editable: false,
               end: end.format('HH:mm'),
               dow: [start.day()]
             };
@@ -170,18 +160,34 @@ export default {
     }
   },
   watch: {
-    earliest () {
+    earliest (minTime) {
       this.saved = false;
+      this.$refs.calendar.fireMethod('option', 'minTime', minTime);
     },
-    latest () {
+    latest (maxTime) {
       this.saved = false;
+      this.$refs.calendar.fireMethod('option', 'maxTime', maxTime);
     }
   },
   created () {
     this.calendar.events = this.$store.getters.getUnavailabilityAsEvents.slice();
   },
   methods: {
+    eventClick (calEvent, jsEvent, view) {
+      if (!calEvent.eventType === 'unavailability') return;
+
+      this.saved = false;
+      this.calendar.events = this.calendar.events.filter(
+        e =>
+          !(
+            e.dow[0] === calEvent.start.day() &&
+            calEvent.start.format('HH:mm') === e.start
+          )
+      );
+    },
+
     eventResized (calEvent) {
+      console.log(calEvent);
       this.saved = false;
       this.calendar.events.find(e =>
         moment(e.start).isSame(moment(calEvent.start))
