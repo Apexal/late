@@ -43,6 +43,13 @@
           >
             {{ shortDateStr(ex.date) }}
           </span>
+          <span
+            :style="{visibility: ex.fullyScheduled ? 'hidden' : ''}"
+            class="tooltip is-tooltip-right icon has-text-danger"
+            :data-tooltip="`You've only scheduled ${ex.scheduledTime} out of ${ex.timeEstimate * 60} min to study for this.`"
+          >
+            <i class="far fa-clock" />
+          </span>
           <div class="content">
             <blockquote>
               <p>{{ shortDescription(ex.description) }}</p>
