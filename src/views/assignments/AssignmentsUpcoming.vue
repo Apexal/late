@@ -4,7 +4,8 @@
       v-if="none"
       class="has-text-centered has-text-grey"
     >
-      No upcoming assignments<i v-if="filter.length > 0 || !showCompleted">
+      No upcoming assignments
+      <i v-if="filter.length > 0 || !showCompleted">
         with filters
       </i>!
     </p>
@@ -61,7 +62,7 @@
                 {{ a.title }}
               </router-link>
               <span
-                :style="{visibility: a.fullyScheduled ? 'hidden' : ''}"
+                :style="{visibility: a.completed || a.fullyScheduled ? 'hidden' : ''}"
                 class="tooltip is-tooltip-left icon has-text-danger is-pulled-right"
                 :data-tooltip="`You've only scheduled ${a.scheduledTime} out of ${a.timeEstimate * 60} min to work on this.`"
               >
@@ -173,6 +174,7 @@ export default {
 
 .assignment {
   padding-right: 5px;
+  padding-left: 5px;
   transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
 
   .assignment-link {
