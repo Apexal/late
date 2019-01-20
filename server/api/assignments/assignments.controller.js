@@ -294,6 +294,11 @@ async function toggleAssignment (ctx) {
     ? moment().toDate()
     : null;
 
+  // Readjust time estimate if completed
+  ctx.state.assignment.timeEstimate = ctx.state.assignment._blocks
+    .filter(b => b.endTime <= ctx.state.assignment.completedAt)
+    .reduce((acc, b) => acc + b.duration, 0);
+
   try {
     await ctx.state.assignment.save();
   } catch (e) {
