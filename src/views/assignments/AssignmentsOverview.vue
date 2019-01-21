@@ -1,5 +1,6 @@
 <template>
   <div class="assignments-overview">
+    <canvas id="confetti-canvas" />
     <AssignmentsModalEdit
       v-if="!isPast"
       :open="editing"
@@ -149,6 +150,7 @@
 <script>
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
+import 'confetti-js';
 
 // Page components
 import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
@@ -171,7 +173,9 @@ export default {
       loading: true,
       isUpcoming: false,
       assignment: {},
-      editing: false
+      editing: false,
+      confetti: null,
+      confettiSettings: { target: 'confetti-canvas', clock: 100, max: 400 }
     };
   },
   computed: {
@@ -208,6 +212,10 @@ export default {
   },
   watch: {
     $route: 'getAssignment'
+  },
+  mounted () {
+    // eslint-disable-next-line no-undef
+    this.confetti = new ConfettiGenerator(this.confettiSettings);
   },
   created () {
     this.getAssignment();
@@ -251,12 +259,17 @@ export default {
 
           this.updatedAssignment(request.data.updatedAssignment);
         }
-        this.$toasted.show('Toggled assignment.', {
+        this.$toasted[this.assignment.completed ? 'success' : 'show'](this.assignment.completed ? 'Marked assignment as completed! Nice job!' : 'Marked assignment as incomplete.', {
           icon: this.assignment.completed ? 'check-circle' : 'circle',
           action: {
             text: 'Undo'
           }
         });
+
+        if (this.assignment.completed) {
+          this.confetti.render();
+          setTimeout(() => this.confetti.clear(), 2000);
+        }
       } catch (e) {
         this.$toasted.error(e.response.data.message);
       }
@@ -403,5 +416,14 @@ export default {
 
 .margin-left {
   margin-left: 2px !important;
+}
+
+#confetti-canvas {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
