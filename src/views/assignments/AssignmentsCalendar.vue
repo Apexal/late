@@ -30,7 +30,6 @@ export default {
   data () {
     return {
       calendar: {
-        events: [],
         header: {
           left: 'title',
           center: '',
@@ -48,21 +47,19 @@ export default {
           eventClick: (calEvent, jsEvent, view) => {
             this.$router.push(`/assignments/${calEvent.assignment._id}`);
           },
+          eventRender: (event, el) => {
+            if (this.filter.includes(event.assignment.courseCRN) || (this.showCompleted && !event.assignment.completed)) {
+              return false;
+            }
+          },
           timezone: 'local'
         }
       }
     };
   },
-  computed: {
-    filtered () {
-      return this.events
-        .filter(e => !this.filter.includes(this.course(e.assignment).crn))
-        .filter(e => (this.showCompleted ? true : !e.assignment.completed));
-    }
-  },
   watch: {
     filter () {
-      this.$refs.calendar.fireMethod('refetchEvents');
+      this.$refs.calendar.fireMethod('rerenderEvents');
     },
     showCompleted () {
       this.$refs.calendar.fireMethod('refetchEvents');
@@ -89,11 +86,9 @@ export default {
           start: a.dueDate,
           color: this.course(a).color,
           assignment: a
-          // eslint-disable-next-line
         }));
 
-      this.events = events;
-      callback(this.filtered);
+      callback(events);
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
