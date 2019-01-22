@@ -18,10 +18,6 @@ export default {
   name: 'ExamsCalendar',
   components: { FullCalendar },
   props: {
-    showCompleted: {
-      type: Boolean,
-      default: true
-    },
     filter: {
       type: Array,
       default: () => []
@@ -30,7 +26,6 @@ export default {
   data () {
     return {
       calendar: {
-        events: [],
         header: {
           left: 'title',
           center: '',
@@ -48,24 +43,19 @@ export default {
           eventClick: (calEvent, jsEvent, view) => {
             this.$router.push(`/exams/${calEvent.exam._id}`);
           },
+          eventRender: (event, el) => {
+            if (this.filter.includes(event.exam.courseCRN)) {
+              return false;
+            }
+          },
           timezone: 'local'
         }
       }
     };
   },
-  computed: {
-    filtered () {
-      return this.events
-        .filter(e => !this.filter.includes(this.course(e.exam).crn))
-        .filter(e => (this.showCompleted ? true : !e.exam.completed));
-    }
-  },
   watch: {
     filter () {
-      this.$refs.calendar.fireMethod('refetchEvents');
-    },
-    showCompleted () {
-      this.$refs.calendar.fireMethod('refetchEvents');
+      this.$refs.calendar.fireMethod('rerenderEvents');
     }
   },
   methods: {
@@ -83,7 +73,6 @@ export default {
 
       const exams = request.data.exams;
       const events = exams
-        .filter(e => (this.showCompleted ? true : !e.passed))
         .map(e => ({
           title: e.title,
           start: e.date,
@@ -91,8 +80,8 @@ export default {
           exam: e
         }));
 
-      this.events = events;
-      callback(this.filtered);
+
+      callback(events);
     },
     course (e) {
       return this.$store.getters.getCourseFromCRN(e.courseCRN);
