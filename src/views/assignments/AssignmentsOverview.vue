@@ -175,7 +175,7 @@ export default {
       assignment: {},
       editing: false,
       confetti: null,
-      confettiSettings: { target: 'confetti-canvas', clock: 100, max: 400 }
+      confettiSettings: { target: 'confetti-canvas', clock: 75, max: 200 }
     };
   },
   computed: {
@@ -266,10 +266,10 @@ export default {
           }
         });
 
-        if (this.assignment.completed) {
+        /* if (this.assignment.completed) {
           this.confetti.render();
           setTimeout(() => this.confetti.clear(), 2000);
-        }
+        } */
       } catch (e) {
         this.$toasted.error(e.response.data.message);
       }
