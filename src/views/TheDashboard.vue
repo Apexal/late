@@ -51,8 +51,13 @@ export default {
           height: 700,
           dayCount: 5,
           allDayText: 'Due',
-          minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
-          maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
+          // minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
+          // maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
+          businessHours: {
+            dow: [0, 1, 2, 3, 4, 5, 6],
+            start: this.$store.state.auth.user.earliestWorkTime,
+            end: this.$store.state.auth.user.latestWorkTime
+          },
           timezone: 'local',
           defaultView: 'agendaFiveDay',
           eventOverlap: true,
