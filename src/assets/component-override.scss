@@ -1,0 +1,11 @@
+text.knob-control__text-display{
+  font-size: 0.9em !important;
+  // x: x - 1;
+  // padding-top: -2px;
+}
+
+.knob-control__range{
+  &:hover{
+    cursor: pointer;
+  }
+}

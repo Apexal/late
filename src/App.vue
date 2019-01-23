@@ -73,7 +73,7 @@
 import TheHeader from '@/components/TheHeader';
 import TheFooter from '@/components/TheFooter';
 import TheSidebar from '@/components/sidebar/TheSidebar';
-import AssignmentsModalAdd from '@/components/assignments/AssignmentsModalAdd';
+import AssignmentsModalAdd from '@/components/assignments/AssignmentsModalAddRedux';
 import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
 import CourseModal from '@/components/courses/CourseModal';
 
