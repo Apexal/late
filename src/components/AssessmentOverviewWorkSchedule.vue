@@ -117,7 +117,7 @@ export default {
             end: this.end
           },
           selectConstraint: { end: this.assessmentDate },
-          height: 500,
+          height: 700,
           allDay: false,
           allDayText: 'Due',
           minTime: this.$store.state.auth.user.earliestWorkTime,
