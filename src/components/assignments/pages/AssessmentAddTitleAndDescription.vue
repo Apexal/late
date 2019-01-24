@@ -24,9 +24,9 @@
       </label>
       <div class="control">
         <textarea
-          style="height: 25%;"
           id="add-assignment-description"
           v-model="local_description"
+          style="height: 25%;"
           cols="30"
           rows="10"
           class="input"
@@ -40,18 +40,18 @@
 <script>
 export default {
   name: 'AssessmentAddTitleAndDescription',
+  props: ['title', 'description'],
   data () {
     return {
       local_title: this.title,
       local_description: this.description
-    }
+    };
   },
-  props: ['title', 'description'],
   watch: {
-    local_title: function(val) {
+    local_title: function (val) {
       this.$emit('update-title', val);
     },
-    local_description: function(val) {
+    local_description: function (val) {
       this.$emit('update-desc', val);
     }
   }

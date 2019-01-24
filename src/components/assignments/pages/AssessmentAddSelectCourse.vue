@@ -5,7 +5,8 @@
       v-for="c in courses"
       :key="c.crn"
     >
-      <div class="course box"
+      <div
+        class="course box"
         :value="c.crn"
         @click="nextStep($event)"
       >
@@ -13,7 +14,7 @@
           class="tag is-pulled-right"
           :style="{'background-color': c.color , 'color': 'white'}"
           :title="'You are in Section ' + c.section_id"
-          >
+        >
           Section {{ c.section_id }}
         </span>
         {{ c.longname }}
@@ -29,11 +30,11 @@ export default {
     courses: {
       type: Array,
       required: true
-    },
+    }
   },
   methods: {
-    nextStep(event){
-      this.$emit('update-crn', event.target.attributes.value.value)
+    nextStep (event) {
+      this.$emit('update-crn', event.target.attributes.value.value);
       this.$emit('next-step');
     }
   }

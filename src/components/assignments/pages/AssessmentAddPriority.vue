@@ -1,18 +1,18 @@
 <template>
   <div class="columns">
     <!-- <h1>What day is the assignment due</h1> -->
-    <div class='priority column'>
+    <div class="priority column">
       <label>
         Priority
       </label>
-      <knob-control
+      <KnobControl
+        v-model="local_priority"
         :min="1"
         :max="5"
         :size="200"
-        :strokeWidth="5"
+        :stroke-width="5"
         :value-display-function="priorityWordMap"
         primary-color="#70CAD1"
-        v-model="local_priority"
       />
       <div class="button-group">
         <button
@@ -29,19 +29,19 @@
         </button>
       </div>
     </div>
-    <div class='time column'>
+    <div class="time column">
       <label>
         Time Estimate
       </label>
-      <knob-control
+      <KnobControl
+        v-model="local_timeEstimate"
         :min="0.5"
         :max="20"
         :step-size="0.5"
         :size="200"
-        :strokeWidth="5"
+        :stroke-width="5"
         :value-display-function="formatTime"
         primary-color="#70CAD1"
-        v-model="local_timeEstimate"
       />
       <div class="button-group">
         <button
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import KnobControl from 'vue-knob-control'
+import KnobControl from 'vue-knob-control';
 import '../../../assets/component-override.scss';
 
 export default {
@@ -74,44 +74,44 @@ export default {
   data () {
     return {
       local_priority: this.priority,
-      local_timeEstimate: this.timeEstimate,
+      local_timeEstimate: this.timeEstimate
+    };
+  },
+  watch: {
+    local_priority: function (val) {
+      this.$emit('update-priority', val);
+    },
+    local_timeEstimate: function (val) {
+      this.$emit('update-timeEstimate', val);
     }
   },
   methods: {
-    formatTime: function(val) {
-      if(val > 1){
-        return val + " hours";
-      }else {
-        return val + " hour";
+    formatTime: function (val) {
+      if (val > 1) {
+        return val + ' hours';
+      } else {
+        return val + ' hour';
       }
     },
-    priorityWordMap: function(val) {
-      const word_map = {
+    priorityWordMap: function (val) {
+      const wordMap = {
         1: 'Very Low',
         2: 'Low',
         3: 'Medium',
         4: 'High',
-        5: '𝙊𝙃 𝙂𝙊𝘿',
-      }
-      return word_map[val];
+        5: '𝙊𝙃 𝙂𝙊𝘿'
+      };
+      return wordMap[val];
     },
-    changeTimeEstimate: function(val) {
-      if(this.local_timeEstimate + val < 0.5 ||
-         this.local_timeEstimate + val > 20) return;
+    changeTimeEstimate: function (val) {
+      if (this.local_timeEstimate + val < 0.5 ||
+        this.local_timeEstimate + val > 20) return;
       this.local_timeEstimate += val;
     },
-    changePriority: function(val) {
-      if(this.local_priority + val < 1 ||
-         this.local_priority + val > 5) return;
+    changePriority: function (val) {
+      if (this.local_priority + val < 1 ||
+        this.local_priority + val > 5) return;
       this.local_priority += val;
-    }
-  },
-  watch: {
-    local_priority: function(val) {
-      this.$emit('update-priority', val);
-    },
-    local_timeEstimate: function(val) {
-      this.$emit('update-timeEstimate', val);
     }
   }
 };

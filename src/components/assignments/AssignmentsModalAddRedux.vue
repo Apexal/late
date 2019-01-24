@@ -4,10 +4,10 @@
     class="add-assignment-modal modal"
   >
     <div
-      class="modal-background fade-in"
+      class="modal-background"
       @click="$emit('toggle-modal')"
     />
-    <div class="modal-card fade-in">
+    <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
           Add Assignment
@@ -18,6 +18,7 @@
         <div class="steps">
           <div
             v-for="s in steps"
+            :key="s.step"
             tag="div"
             class="step-item"
             :class="{ 'is-completed': s.completed,
@@ -26,10 +27,12 @@
           >
             <div class="step-marker ">
               <span class="icon">
-                <i v-if="s.completed"
+                <i
+                  v-if="s.completed"
                   class="fas fa-check"
                 />
-                <i v-else
+                <i
+                  v-else
                   class="fas fa-times"
                 />
               </span>
@@ -66,7 +69,7 @@
           />
           <AssessmentAddPriority
             v-else-if="step === 4"
-            :timeEstimate="timeEstimate"
+            :time-estimate="timeEstimate"
             :priority="priority"
             @update-priority="priority = $event"
             @update-timeEstimate="timeEstimate = $event"
@@ -74,24 +77,33 @@
         </transition>
       </section>
       <footer class="modal-card-foot modal-nav">
-        <div v-if="step > 1" class="modal-nav-button back">
+        <div
+          v-if="step > 1"
+          class="modal-nav-button back"
+        >
           <h1 @click="lastStep()">
-          Back
+            Back
           </h1>
         </div>
         <div class="modal-nav-button cancel">
           <h1 @click="$emit('toggle-modal')">
-          Cancel Assignment Creation
+            Cancel Assignment Creation
           </h1>
         </div>
-        <div v-if="step === 2 || step === 3" class="modal-nav-button next">
+        <div
+          v-if="step === 2 || step === 3"
+          class="modal-nav-button next"
+        >
           <h1 @click="nextStep()">
-          Next
+            Next
           </h1>
         </div>
-        <div v-if="step === 4" class="modal-nav-button save">
-          <h1 @click="testSave()">
-          Create Assignment
+        <div
+          v-if="step === 4"
+          class="modal-nav-button save"
+        >
+          <h1 @click="save()">
+            Create Assignment
           </h1>
         </div>
       </footer>
@@ -131,7 +143,7 @@ export default {
       title: '',
       description: '',
       dueDate: '',
-      time: '08:00', // HH:mm
+      time: '08:00',
       timeEstimate: 1.0,
       priority: 3,
       steps: [
@@ -148,13 +160,13 @@ export default {
           active: false
         },
         {
-          label: 'Add Calendar',
+          label: 'Due Date',
           step: 3,
           completed: false,
           active: false
         },
         {
-          label: 'Priority',
+          label: 'Time',
           step: 4,
           completed: false,
           active: false
@@ -163,99 +175,65 @@ export default {
     };
   },
   computed: {
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
-    maxDate () {
-      return moment(this.currentTerm.end).format('YYYY-MM-DD');
-    },
-    defaultCourseCRN () {
-      return this.$store.state.addAssignmentModal.courseCRN;
-    },
-    dueDateString () {
-      return this.$store.getters.addAssignmentModalDueDateString;
-    },
-    dueTimeString () {
-      return this.$store.getters.addAssignmentModalDueTimeString;
-    },
     courses () {
       return this.$store.getters.current_schedule;
-    },
-    today: () => moment().format('YYYY-MM-DD'),
-
-  },
-  watch: {
-    dueDateString () {
-      this.dueDate = this.dueDateString;
-    },
-    dueTimeString () {
-      this.time = this.dueTimeString;
-    },
-    defaultCourseCRN () {
-      this.courseCRN = this.defaultCourseCRN;
     }
   },
   methods: {
-    nextStep() {
-      this.step = this.step + 1
+    nextStep () {
+      this.step = this.step + 1;
       this.updateSteps();
     },
-    lastStep() {
+    lastStep () {
       this.step = this.step - 1;
       this.updateSteps();
     },
-    updateSteps() {
+    updateSteps () {
       var curStep = this.step;
-      this.steps.forEach(function(step_) {
-        if (step_.step === curStep){
+      this.steps.forEach(function (step_) {
+        if (step_.step === curStep) {
           step_.active = true;
         } else {
           step_.active = false;
         }
       });
-      if(this.courseCRN != -1){
+      if (this.courseCRN !== -1) {
         this.steps[0].completed = true;
       }
-      if(this.description != '' && this.title != ''){
+      if (this.description !== '' && this.title !== '') {
         this.steps[1].completed = true;
       }
-      if(this.dueDate != ''){
+      if (this.dueDate !== '') {
         this.steps[2].completed = true;
       }
-      if(this.step == 4){
+      if (this.step === 4) {
         this.steps[3].completed = true;
       }
     },
-
-    testSave(){
-      var flag = false;
-      this.steps.forEach(function(step_){
-        if(step_.completed === false){
-          flag = true;
-          console.log("step " + step_.step + " is not completed");
-        }
-      });
-      if(flag) return
-      console.log("ASSIGNMENT DATA -----------")
-      console.log("title: " + this.title);
-      console.log("description: " + this.description);
-      console.log("crn: " + this.courseCRN);
-      console.log("dueDate: " + this.dueDate.format('YYYY-MM-DD'));
-      console.log("priority: " + this.priority);
-      console.log("timeEstimate: " + this.timeEstimate);
-    },
-
     async save () {
       this.loading = true;
       // TODO: error handle
       let request;
+
+      var flag = false;
+      this.steps.forEach(function (step_) {
+        if (step_.completed === false) {
+          flag = true;
+        }
+      });
+      if (flag) {
+        this.$toasted.error(
+          'Please complete every step'
+        );
+        return;
+      }
 
       try {
         request = await this.$http.post('/assignments', {
           title: this.title,
           description: this.description,
           dueDate: moment(
-            this.dueDate + ' ' + this.time,
+            this.dueDate.format('YYYY-MM-DD') + ' ' + this.time,
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),
@@ -278,12 +256,22 @@ export default {
       );
 
       // Reset important fields
+      this.step = 1;
+      this.courseCRN = -1;
       this.title = '';
       this.description = '';
       this.timeEstimate = 1;
+      this.dueDate = '';
       this.priority = 3;
-
       this.loading = false;
+
+      // Reset Steps
+      this.steps.forEach(function (step_) {
+        step_.completed = false;
+        step_.active = false;
+      });
+      this.steps[0].active = true;
+
 
       // Close modal
       this.$emit('toggle-modal');
@@ -310,7 +298,6 @@ export default {
 </script>
 
 
-
 <style lang="scss" scoped>
 
 .step-marker {
@@ -328,7 +315,6 @@ export default {
 .steps .is-active .step-details {
   font-weight: 600!important;
 }
-
 
 .modal-nav-button {
   cursor: pointer;
@@ -372,23 +358,6 @@ export default {
   font-size: 16px;
   display:flex;
   flex-direction:row;
-}
-
-.fade-in {
-	opacity: 1;
-	animation-name: fadeInOpacity;
-	animation-iteration-count: 1;
-	animation-timing-function: ease-in;
-	animation-duration: 0.13s;
-}
-
-@keyframes fadeInOpacity {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
 }
 
 .add-assignment-modal {

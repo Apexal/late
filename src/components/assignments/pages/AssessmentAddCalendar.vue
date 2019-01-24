@@ -20,7 +20,7 @@ export default {
   components: {
     FullCalendar
   },
-  data (){
+  data () {
     return {
       calendar: {
         events: [],
@@ -44,10 +44,10 @@ export default {
           }
         }
       }
-    }
+    };
   },
-  methods : {
-    updateDate(date) {
+  methods: {
+    updateDate (date) {
       this.$emit('update-date', date);
     }
   }
