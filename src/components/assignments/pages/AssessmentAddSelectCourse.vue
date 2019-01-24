@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <h1>Which course has the Assignment:</h1>
+  <div class="columns is-multiline">
     <div
       v-for="c in courses"
       :key="c.crn"
+      class="column is-half"
     >
       <div
         class="course box"
@@ -43,9 +43,9 @@ export default {
 
 <style lang="scss" scoped>
 .course.box {
-  &:hover{
+  padding: 15px 20px;
+  &:hover {
     cursor: pointer;
   }
-  margin-top: 10px;
 }
 </style>
