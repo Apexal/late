@@ -1,36 +1,26 @@
 <template>
   <div>
     <div class="field">
-      <label
-        for="add-assignment-title"
-      >
-        What do you have to do?
-      </label>
       <input
         id="add-assignment-title"
-        v-model="local_title"
+        v-model="localTitle"
         type="text"
         class="input"
-        maxlength="200"
-        placeholder="Short descriptive title"
+        maxlength="75"
+        placeholder="Assignment Title - Keep it concise!"
         required
       >
     </div>
     <div class="field">
-      <label
-        for="add-assignment-description"
-      >
-        Description
-      </label>
       <div class="control">
         <textarea
           id="add-assignment-description"
-          v-model="local_description"
+          v-model="localDescription"
           style="height: 25%;"
           cols="30"
           rows="10"
           class="input"
-          placeholder="Long description of the assignment here! You can use Markdown!"
+          placeholder="(optional) Long description of the assignment here! You can use Markdown!"
         />
       </div>
     </div>
@@ -43,15 +33,15 @@ export default {
   props: ['title', 'description'],
   data () {
     return {
-      local_title: this.title,
-      local_description: this.description
+      localTitle: this.title,
+      localDescription: this.description
     };
   },
   watch: {
-    local_title: function (val) {
+    localTitle: function (val) {
       this.$emit('update-title', val);
     },
-    local_description: function (val) {
+    localDescription: function (val) {
       this.$emit('update-desc', val);
     }
   }
