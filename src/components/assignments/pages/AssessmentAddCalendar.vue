@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>What day is the assignment due</h2>
     <FullCalendar
       ref="calendar"
       :editable="false"
@@ -12,6 +11,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
@@ -38,15 +38,21 @@ export default {
           defaultView: 'month',
           timeFormat: 'h(:mm)t',
           timezone: 'local',
-          dayClick: (date) => {
-            // console.log(date);
-            this.updateDate(date);
-          }
+          dayClick: this.dayClick
         }
       }
     };
   },
   methods: {
+    dayClick (date) {
+      if (
+        moment(date)
+          .endOf('day')
+          .isBefore(moment().startOf('day')) &&
+        !confirm('Add this assignment to the past?')
+      ) { return; }
+      this.updateDate(date);
+    },
     updateDate (date) {
       this.$emit('update-date', date);
     }
@@ -55,5 +61,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>
