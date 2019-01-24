@@ -142,6 +142,7 @@
         @set-tab="tabChanged"
         @update-assessment="updatedAssignment"
         @add-comment="addComment"
+        @delete-comment="deleteComment"
       />
     </section>
   </div>
@@ -376,6 +377,23 @@ export default {
       }
 
       this.commentLoading = false;
+    },
+    async deleteComment (i) {
+      let request;
+      request = await this.$http.delete(
+        `/assignments/a/${this.assignment._id}/comments`,
+        { params: { index: i } }
+      );
+
+      // Calls API and updates state
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.updatedAssignment(request.data.updatedAssignment);
+      }
     }
   }
 };
