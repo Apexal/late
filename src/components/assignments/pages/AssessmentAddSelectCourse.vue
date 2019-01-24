@@ -8,7 +8,7 @@
       <div
         class="course box"
         :value="c.crn"
-        @click="nextStep($event)"
+        @click="setCRN(c.crn)"
       >
         <span
           class="tag is-pulled-right"
@@ -33,8 +33,8 @@ export default {
     }
   },
   methods: {
-    nextStep (event) {
-      this.$emit('update-crn', event.target.attributes.value.value);
+    setCRN (crn) {
+      this.$emit('update-crn', crn);
       this.$emit('next-step');
     }
   }

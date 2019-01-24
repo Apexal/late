@@ -14,7 +14,7 @@
         </p>
       </header>
 
-      <section class="modal-card-body">
+      <div class="modal-card-body">
         <div class="steps">
           <div
             v-for="s in steps"
@@ -25,7 +25,7 @@
                       'is-active': s.active }"
             @click="step = s.step; updateSteps()"
           >
-            <div class="step-marker ">
+            <div class="step-marker">
               <span class="icon">
                 <i
                   v-if="s.completed"
@@ -75,7 +75,7 @@
             @update-timeEstimate="timeEstimate = $event"
           />
         </transition>
-      </section>
+      </div>
       <footer class="modal-card-foot modal-nav">
         <div
           v-if="step > 1"
@@ -87,7 +87,7 @@
         </div>
         <div class="modal-nav-button cancel">
           <h1 @click="$emit('toggle-modal')">
-            Cancel Assignment Creation
+            Cancel
           </h1>
         </div>
         <div
@@ -189,7 +189,7 @@ export default {
       this.updateSteps();
     },
     updateSteps () {
-      var curStep = this.step;
+      let curStep = this.step;
       this.steps.forEach(function (step_) {
         if (step_.step === curStep) {
           step_.active = true;
@@ -215,16 +215,10 @@ export default {
       // TODO: error handle
       let request;
 
-      var flag = false;
-      this.steps.forEach(function (step_) {
-        if (step_.completed === false) {
-          flag = true;
-        }
-      });
-      if (flag) {
-        this.$toasted.error(
-          'Please complete every step'
-        );
+      let complete = this.steps.some(step => !step.completed);
+
+      if (complete) {
+        this.$toasted.error('Make sure you complete every step!');
         return;
       }
 
@@ -272,7 +266,6 @@ export default {
       });
       this.steps[0].active = true;
 
-
       // Close modal
       this.$emit('toggle-modal');
 
@@ -299,13 +292,12 @@ export default {
 
 
 <style lang="scss" scoped>
-
 .step-marker {
   cursor: pointer;
 }
 //Makes the hovered step icon appear more dynamic
 .step-marker:hover {
-  background-color: #5b9ba0!important;
+  background-color: #5b9ba0 !important;
 }
 
 //Makes the current step bold
@@ -313,18 +305,18 @@ export default {
   font-weight: inherit;
 }
 .steps .is-active .step-details {
-  font-weight: 600!important;
+  font-weight: 600 !important;
 }
 
 .modal-nav-button {
   cursor: pointer;
   text-align: center;
-  flex-grow:1;
+  flex-grow: 1;
   padding-top: 15px;
   padding-bottom: 15px;
   transition: 0.12s;
 }
-.cancel{
+.cancel {
   &:hover {
     background-color: #dbdbdb;
   }
@@ -335,13 +327,13 @@ export default {
     background-color: #dbdbdb;
     border-bottom-left-radius: 6px;
   }
-  border-right: 1px solid #dbdbdb ;
+  border-right: 1px solid #dbdbdb;
   float: left;
 }
 
 .save {
-  background-color: #66C6CE;
-  color:white;
+  background-color: #66c6ce;
+  color: white;
 }
 
 .next {
@@ -349,15 +341,15 @@ export default {
     background-color: #dbdbdb;
     border-bottom-right-radius: 6px;
   }
-  border-left: 1px solid #dbdbdb ;
+  border-left: 1px solid #dbdbdb;
   float: right;
 }
 
 .modal-nav {
   padding: 0px;
   font-size: 16px;
-  display:flex;
-  flex-direction:row;
+  display: flex;
+  flex-direction: row;
 }
 
 .add-assignment-modal {
@@ -370,11 +362,11 @@ export default {
     height: 200px;
     max-height: 500px;
   }
-  -moz-transition: height 1s ease-in-out, left .5s ease-in-out;
-    -webkit-transition: height 1s ease-in-out, left .5s ease-in-out;
-    -moz-transition: height 1s ease-in-out, left .5s ease-in-out;
-    -o-transition: height 1s ease-in-out, left .5s ease-in-out;
-    transition: height 1s ease-in-out, left .5s ease-in-out;
+  -moz-transition: height 1s ease-in-out, left 0.5s ease-in-out;
+  -webkit-transition: height 1s ease-in-out, left 0.5s ease-in-out;
+  -moz-transition: height 1s ease-in-out, left 0.5s ease-in-out;
+  -o-transition: height 1s ease-in-out, left 0.5s ease-in-out;
+  transition: height 1s ease-in-out, left 0.5s ease-in-out;
   #add-assignment-time-estimate {
     width: 150px;
   }
