@@ -1,6 +1,5 @@
 <template>
   <div class="columns">
-    <!-- <h1>What day is the assignment due</h1> -->
     <div class="priority column">
       <label>
         Priority
@@ -63,10 +62,10 @@
 
 <script>
 import KnobControl from 'vue-knob-control';
-import '../../../assets/component-override.scss';
+import '../../assets/component-override.scss';
 
 export default {
-  name: 'AssessmentAddPriority',
+  name: 'ModalPriorityAndTimeEstimate',
   components: {
     KnobControl
   },

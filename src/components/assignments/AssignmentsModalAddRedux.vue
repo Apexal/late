@@ -50,24 +50,27 @@
           name="fade"
           mode="out-in"
         >
-          <AssessmentAddSelectCourse
+          <ModalSelectCourse
             v-if="step === 1"
             :courses="courses"
+            :active-c-r-n="this.courseCRN"
             @update-crn="courseCRN = $event"
             @next-step="nextStep()"
           />
-          <AssessmentAddTitleAndDescription
+          <ModalTitleAndDescription
             v-else-if="step === 2"
             :title="title"
             :description="description"
+            :title-place-holder="'Assignment Title - Keep it concise!'"
+            :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
             @update-title="title = $event"
             @update-desc="description = $event"
           />
-          <AssessmentAddCalendar
+          <ModalCalendar
             v-else-if="step === 3"
             @update-date="dueDate = $event; nextStep();"
           />
-          <AssessmentAddPriority
+          <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
             :time-estimate="timeEstimate"
             :priority="priority"
@@ -116,18 +119,18 @@ import moment from 'moment';
 
 import 'bulma-steps';
 
-import AssessmentAddSelectCourse from '@/components/assignments/pages/AssessmentAddSelectCourse';
-import AssessmentAddTitleAndDescription from '@/components/assignments/pages/AssessmentAddTitleAndDescription';
-import AssessmentAddCalendar from '@/components/assignments/pages/AssessmentAddCalendar';
-import AssessmentAddPriority from '@/components/assignments/pages/AssessmentAddPriority';
+import ModalSelectCourse from '@/components/modal/ModalSelectCourse';
+import ModalTitleAndDescription from '@/components/modal/ModalTitleAndDescription';
+import ModalCalendar from '@/components/modal/ModalCalendar';
+import ModalPriorityAndTimeEstimate from '@/components/modal/ModalPriorityAndTimeEstimate';
 
 export default {
   name: 'AssignmentsModalAdd',
   components: {
-    AssessmentAddSelectCourse,
-    AssessmentAddTitleAndDescription,
-    AssessmentAddCalendar,
-    AssessmentAddPriority
+    ModalSelectCourse,
+    ModalTitleAndDescription,
+    ModalCalendar,
+    ModalPriorityAndTimeEstimate
   },
   props: {
     open: {
@@ -200,7 +203,7 @@ export default {
       if (this.courseCRN !== -1) {
         this.steps[0].completed = true;
       }
-      if (this.description !== '' && this.title !== '') {
+      if (this.title !== '') {
         this.steps[1].completed = true;
       }
       if (this.dueDate !== '') {

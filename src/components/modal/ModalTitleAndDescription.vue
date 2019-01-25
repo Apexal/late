@@ -2,25 +2,24 @@
   <div>
     <div class="field">
       <input
-        id="add-assignment-title"
+        id="add-title"
         v-model="localTitle"
         type="text"
         class="input"
         maxlength="75"
-        placeholder="Assignment Title - Keep it concise!"
-        required
+        :placeholder="titlePlaceHolder"
       >
     </div>
     <div class="field">
       <div class="control">
         <textarea
-          id="add-assignment-description"
+          id="add-description"
           v-model="localDescription"
           style="height: 25%;"
           cols="30"
           rows="10"
           class="input"
-          placeholder="(optional) Long description of the assignment here! You can use Markdown!"
+          :placeholder="descriptionPlaceHolder"
         />
       </div>
     </div>
@@ -29,8 +28,8 @@
 
 <script>
 export default {
-  name: 'AssessmentAddTitleAndDescription',
-  props: ['title', 'description'],
+  name: 'ModalTitleAndDescription',
+  props: ['title', 'description', 'titlePlaceHolder', 'descriptionPlaceHolder'],
   data () {
     return {
       localTitle: this.title,

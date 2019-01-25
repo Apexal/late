@@ -16,7 +16,7 @@ import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
 export default {
-  name: 'AssessmentAddCalendar',
+  name: 'ModalCalendar',
   components: {
     FullCalendar
   },
