@@ -1,7 +1,7 @@
 <template>
   <div class="assignments-overview">
     <canvas id="confetti-canvas" />
-    <AssignmentsModalEdit
+    <AssignmentsModalEditRedux
       v-if="!isPast"
       :open="editing"
       :initial-assignment="assignment"
@@ -154,7 +154,7 @@ import VueMarkdown from 'vue-markdown';
 import 'confetti-js';
 
 // Page components
-import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
+import AssignmentsModalEditRedux from '@/components/assignments/AssignmentsModalEditRedux';
 import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
 import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
 
@@ -162,7 +162,7 @@ export default {
   name: 'AssignmentsOverview',
   components: {
     VueMarkdown,
-    AssignmentsModalEdit,
+    AssignmentsModalEditRedux,
     AssignmentOverviewActionButtons,
     AssignmentOverviewTabs
   },
