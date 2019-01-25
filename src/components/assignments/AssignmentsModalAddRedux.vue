@@ -83,29 +83,35 @@
         <div
           v-if="step > 1"
           class="modal-nav-button back"
+          @click="lastStep()"
         >
-          <h1 @click="lastStep()">
-            Back
-          </h1>
+          <i
+            class="fas fa-arrow-left"
+          />
         </div>
-        <div class="modal-nav-button cancel">
-          <h1 @click="$emit('toggle-modal')">
+        <div
+          class="modal-nav-button cancel"
+          @click="$emit('toggle-modal')"
+        >
+          <h1>
             Cancel
           </h1>
         </div>
         <div
-          v-if="step === 2 || step === 3"
+          v-if="step !== 4"
           class="modal-nav-button next"
+          @click="nextStep()"
         >
-          <h1 @click="nextStep()">
-            Next
-          </h1>
+          <i
+            class="fas fa-arrow-right"
+          />
         </div>
         <div
           v-if="step === 4"
           class="modal-nav-button save"
+          @click="save()"
         >
-          <h1 @click="save()">
+          <h1>
             Create Assignment
           </h1>
         </div>
@@ -330,11 +336,17 @@ export default {
     background-color: #dbdbdb;
     border-bottom-left-radius: 6px;
   }
+  flex-grow: 0;
+  width: 100px;
   border-right: 1px solid #dbdbdb;
   float: left;
 }
 
 .save {
+  &:hover {
+    background-color: #62B1B7;
+  }
+  border-bottom-right-radius: 6px;
   background-color: #66c6ce;
   color: white;
 }
@@ -344,6 +356,8 @@ export default {
     background-color: #dbdbdb;
     border-bottom-right-radius: 6px;
   }
+  flex-grow: 0;
+  width: 100px;
   border-left: 1px solid #dbdbdb;
   float: right;
 }
