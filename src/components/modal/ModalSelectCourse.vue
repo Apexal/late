@@ -8,6 +8,8 @@
       <div
         class="course box"
         :value="c.crn"
+        :class="{ 'active': isActive(c.crn) }"
+        :style="{'--box-shadow-color': c.color}"
         @click="setCRN(c.crn)"
       >
         <span
@@ -25,15 +27,23 @@
 
 <script>
 export default {
-  name: 'AssessmentAddSelectCourse',
-  props: {
-    courses: {
-      type: Array,
-      required: true
-    }
+  name: 'ModalSelectCourse',
+  props: ['courses', 'activeCRN'],
+  data () {
+    return {
+      courseCRN: this.activeCRN
+    };
   },
   methods: {
+    isActive (crn) {
+      if (this.courseCRN === crn) {
+        return 'active';
+      } else {
+        return '';
+      }
+    },
     setCRN (crn) {
+      this.courseCRN = crn;
       this.$emit('update-crn', crn);
       this.$emit('next-step');
     }
@@ -47,5 +57,10 @@ export default {
   &:hover {
     cursor: pointer;
   }
+}
+
+.active {
+  box-shadow: -0px 0px 2px 0.5px var(--box-shadow-color);
+  // box-shadow:
 }
 </style>

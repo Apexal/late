@@ -11,6 +11,14 @@
       :key="index"
       class="box"
     >
+      <button
+        class="button has-text-grey is-pulled-right delete-comment"
+        @click="$emit('delete-comment', index)"
+      >
+        <i
+          class="fas fa-trash-alt"
+        />
+      </button>
       <small
         class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
         :data-tooltip="toFullDateTimeString(c.addedAt)"
@@ -93,6 +101,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.delete-comment {
+  font-size: 13px;
+  margin-top: -2px;
+  margin-left: 8px;
+}
+
 #new-comment {
   max-width: 900px;
   min-height: 100px;

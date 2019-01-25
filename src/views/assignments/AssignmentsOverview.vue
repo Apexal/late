@@ -1,7 +1,7 @@
 <template>
   <div class="assignments-overview">
     <canvas id="confetti-canvas" />
-    <AssignmentsModalEdit
+    <AssignmentsModalEditRedux
       v-if="!isPast"
       :open="editing"
       :initial-assignment="assignment"
@@ -142,6 +142,7 @@
         @set-tab="tabChanged"
         @update-assessment="updatedAssignment"
         @add-comment="addComment"
+        @delete-comment="deleteComment"
       />
     </section>
   </div>
@@ -153,7 +154,7 @@ import VueMarkdown from 'vue-markdown';
 import 'confetti-js';
 
 // Page components
-import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
+import AssignmentsModalEditRedux from '@/components/assignments/AssignmentsModalEditRedux';
 import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
 import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
 
@@ -161,7 +162,7 @@ export default {
   name: 'AssignmentsOverview',
   components: {
     VueMarkdown,
-    AssignmentsModalEdit,
+    AssignmentsModalEditRedux,
     AssignmentOverviewActionButtons,
     AssignmentOverviewTabs
   },
@@ -376,6 +377,23 @@ export default {
       }
 
       this.commentLoading = false;
+    },
+    async deleteComment (i) {
+      let request;
+      request = await this.$http.delete(
+        `/assignments/a/${this.assignment._id}/comments`,
+        { params: { index: i } }
+      );
+
+      // Calls API and updates state
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.updatedAssignment(request.data.updatedAssignment);
+      }
     }
   }
 };

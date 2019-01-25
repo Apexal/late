@@ -53,29 +53,29 @@
           <ModalSelectCourse
             v-if="step === 1"
             :courses="courses"
-            :active-c-r-n="this.courseCRN"
-            @update-crn="courseCRN = $event"
+            :active-c-r-n="this.assignment.courseCRN"
+            @update-crn="assignment.courseCRN = $event"
             @next-step="nextStep()"
           />
           <ModalTitleAndDescription
             v-else-if="step === 2"
-            :title="title"
-            :description="description"
+            :title="assignment.title"
+            :description="assignment.description"
             :title-place-holder="'Assignment Title - Keep it concise!'"
             :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
-            @update-title="title = $event"
-            @update-desc="description = $event"
+            @update-title="assignment.title = $event"
+            @update-desc="assignment.description = $event"
           />
           <ModalCalendar
             v-else-if="step === 3"
-            @update-date="dueDate = $event; nextStep();"
+            @update-date="assignment.dueDate = $event; nextStep();"
           />
           <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
-            :time-estimate="timeEstimate"
-            :priority="priority"
-            @update-priority="priority = $event"
-            @update-timeEstimate="timeEstimate = $event"
+            :time-estimate="assignment.timeEstimate"
+            :priority="assignment.priority"
+            @update-priority="assignment.priority = $event"
+            @update-timeEstimate="assignment.timeEstimate = $event"
           />
         </transition>
       </div>
@@ -98,6 +98,24 @@
           </h1>
         </div>
         <div
+          class="modal-nav-button save"
+          @click="$emit('remove-assignment')"
+        >
+          <h1>
+            Delete Assignment
+          </h1>
+        </div>
+        <div
+          class="modal-nav-button save"
+          @click="save()"
+        >
+          <h1>
+            Save Assignment
+          </h1>
+        </div>
+
+        <!--  @click="$emit('remove-assignment')-->
+        <div
           v-if="step !== 4"
           class="modal-nav-button next"
           @click="nextStep()"
@@ -105,15 +123,6 @@
           <i
             class="fas fa-arrow-right"
           />
-        </div>
-        <div
-          v-if="step === 4"
-          class="modal-nav-button save"
-          @click="save()"
-        >
-          <h1>
-            Create Assignment
-          </h1>
         </div>
       </footer>
     </div>
@@ -131,7 +140,7 @@ import ModalCalendar from '@/components/modal/ModalCalendar';
 import ModalPriorityAndTimeEstimate from '@/components/modal/ModalPriorityAndTimeEstimate';
 
 export default {
-  name: 'AssignmentsModalAdd',
+  name: 'AssignmentsModalAddRedux',
   components: {
     ModalSelectCourse,
     ModalTitleAndDescription,
@@ -142,42 +151,50 @@ export default {
     open: {
       type: Boolean,
       required: true
+    },
+    initialAssignment: {
+      type: Object,
+      default: () => ({
+        courseCRN: '',
+        title: '',
+        description: '',
+        dueDate: moment()
+          .add(1, 'days')
+          .format('YYYY-MM-DD'),
+        time: '08:00', // HH:mm
+        timeEstimate: 1,
+        priority: 5
+      }),
+      required: true
     }
   },
   data () {
     return {
-      loading: false,
+      assignment: this.convertAssignment(this.initialAssignment),
       step: 1,
-      courseCRN: -1,
-      title: '',
-      description: '',
-      dueDate: '',
-      time: '08:00',
-      timeEstimate: 1.0,
-      priority: 3,
       steps: [
         {
           label: 'Select course',
           step: 1,
-          completed: false,
+          completed: true,
           active: true
         },
         {
           label: 'Basic Info',
           step: 2,
-          completed: false,
+          completed: true,
           active: false
         },
         {
           label: 'Due Date',
           step: 3,
-          completed: false,
+          completed: true,
           active: false
         },
         {
           label: 'Time',
           step: 4,
-          completed: false,
+          completed: true,
           active: false
         }
       ]
@@ -186,6 +203,11 @@ export default {
   computed: {
     courses () {
       return this.$store.getters.current_schedule;
+    }
+  },
+  watch: {
+    initialAssignment (newA, oldA) {
+      this.assignment = this.convertAssignment(newA);
     }
   },
   methods: {
@@ -206,20 +228,21 @@ export default {
           step_.active = false;
         }
       });
-      if (this.courseCRN !== -1) {
-        this.steps[0].completed = true;
-      }
-      if (this.title !== '') {
+      if (this.assignment.title === '') {
+        this.steps[1].completed = false;
+      } else if (this.assignment.title !== '') {
         this.steps[1].completed = true;
       }
-      if (this.dueDate !== '') {
-        this.steps[2].completed = true;
-      }
-      if (this.step === 4) {
-        this.steps[3].completed = true;
-      }
+    },
+    convertAssignment (assignment) {
+      const data = Object.assign({}, assignment);
+      data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD');
+      data.time = moment(assignment.dueDate).format('HH:mm');
+      return data;
     },
     async save () {
+      this.updateSteps();
+
       this.loading = true;
       // TODO: error handle
       let request;
@@ -231,67 +254,48 @@ export default {
         return;
       }
 
-      try {
-        request = await this.$http.post('/assignments', {
-          title: this.title,
-          description: this.description,
+      this.loading = true;
+
+      request = await this.$http.patch(
+        `/assignments/a/${this.assignment._id}`,
+        {
+          title: this.assignment.title,
+          description: this.assignment.description,
           dueDate: moment(
-            this.dueDate.format('YYYY-MM-DD') + ' ' + this.time,
+            this.assignment.dueDate + ' ' + this.assignment.time,
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),
-          courseCRN: this.courseCRN,
-          timeEstimate: this.timeEstimate,
-          priority: this.priority
-        });
-      } catch (e) {
-        this.$toasted.error(
-          'There was an error adding the assignment. Please try again later.'
-        );
-        this.loading = false;
-        return;
-      }
-
-      // Update global state
-      this.$store.commit(
-        'ADD_UPCOMING_ASSIGNMENT',
-        request.data.createdAssignment
+          courseCRN: this.assignment.courseCRN,
+          timeEstimate: this.assignment.timeEstimate,
+          priority: this.assignment.priority
+        }
       );
 
-      // Reset important fields
-      this.step = 1;
-      this.courseCRN = -1;
-      this.title = '';
-      this.description = '';
-      this.timeEstimate = 1;
-      this.dueDate = '';
-      this.priority = 3;
-      this.loading = false;
+      // Calls API and updates state
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      }
+      this.$emit('edit-assignment', this.assignment);
 
-      // Reset Steps
-      this.steps.forEach(function (step_) {
-        step_.completed = false;
-        step_.active = false;
-      });
-      this.steps[0].active = true;
+      this.loading = false;
 
       // Close modal
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$toasted.success(
-        `Added assignment '${
-          request.data.createdAssignment.title
-        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`,
+      this.$toasted.info(
+        `Edited assignment '${
+          request.data.updatedAssignment.title
+        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
         {
-          icon: 'plus',
           action: {
-            text: 'View',
-            push: {
-              name: 'assignments-overview',
-              params: { assignmentID: request.data.createdAssignment._id }
-            }
-          }
+            text: 'Undo'
+          },
+          icon: 'pen'
         }
       );
     }
@@ -344,11 +348,9 @@ export default {
 
 .save {
   &:hover {
-    background-color: #62B1B7;
+    background-color: #dbdbdb;
   }
-  border-bottom-right-radius: 6px;
-  background-color: #66c6ce;
-  color: white;
+  border-left: 1px solid #dbdbdb;
 }
 
 .next {
@@ -361,6 +363,7 @@ export default {
   border-left: 1px solid #dbdbdb;
   float: right;
 }
+
 
 .modal-nav {
   padding: 0px;

@@ -29,5 +29,6 @@ router.delete(
 
 /* Assignment Comments */
 router.post('/a/:assignmentID/comments', Ctrl.addComment);
+router.delete('/a/:assignmentID/comments', Ctrl.deleteComment);
 
 module.exports = router.routes();
