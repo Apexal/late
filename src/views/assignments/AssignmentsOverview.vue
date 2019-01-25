@@ -176,7 +176,7 @@ export default {
       assignment: {},
       editing: false,
       confetti: null,
-      confettiSettings: { target: 'confetti-canvas', clock: 75, max: 200 }
+      confettiSettings: { target: 'confetti-canvas', clock: 75, max: 150 }
     };
   },
   computed: {
@@ -267,10 +267,10 @@ export default {
           }
         });
 
-        /* if (this.assignment.completed) {
+        if (this.assignment.completed) {
           this.confetti.render();
           setTimeout(() => this.confetti.clear(), 2000);
-        } */
+        }
       } catch (e) {
         this.$toasted.error(e.response.data.message);
       }
@@ -438,7 +438,7 @@ export default {
 
 #confetti-canvas {
   z-index: -1;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
