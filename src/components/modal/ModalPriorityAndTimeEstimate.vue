@@ -63,44 +63,73 @@
       <label>
         Time Due
       </label>
-      <div class="time">
-        <div class="field">
-          <input
-            id="hours"
-            type="text"
-            class="input"
-            maxlength="2"
-            :placeholder="11"
-          >
-        </div>
-        <div class="time-colon">
-          <div class="colon">
-            :
-          </div>
-        </div>
-        <div class="field">
-          <!-- v-model="" -->
-          <input
-            id="minutes"
-            type="text"
-            class="input"
-            maxlength="2"
-            :placeholder="59"
-          >
-        </div>
-        <div class="am-pm">
-          <!-- v-model="" -->
+      <div class="columns">
+        <div class="right-column column">
           <button
-            id="am-pm"
             class="button"
+            disabled
           >
-            pm
+            Start of class
+          </button>
+        </div>
+        <div class="column">
+          <div class="time">
+            <div class="field">
+              <input
+                id="hours"
+                v-model="local_timeHour"
+                type="text"
+                class="input"
+                maxlength="2"
+                :placeholder="11"
+              >
+            </div>
+            <div class="time-colon">
+              <div class="colon">
+                :
+              </div>
+            </div>
+            <div class="field">
+              <!-- v-model="" -->
+              <input
+                id="minutes"
+                v-model="local_timeMinute"
+                type="text"
+                class="input"
+                maxlength="2"
+                :placeholder="59"
+              >
+            </div>
+            <div class="am-pm">
+              <button
+                v-if="local_timeisAm"
+                class="button toggle-am-pm"
+                @click="toggleAmPm(false)"
+              >
+                AM
+              </button>
+              <button
+                v-else
+                class="button toggle-am-pm"
+                @click="toggleAmPm(true)"
+              >
+                PM
+              </button>
+            </div>
+          </div>
+          <small>
+            Default Time: 11:59 pm
+          </small>
+        </div>
+        <div class="left-column column">
+          <button
+            class="button"
+            disabled
+          >
+            End of class
           </button>
         </div>
       </div>
-      <small>
-        Default Time: 11:59 pm
-      </small>
     </div>
   </div>
 </template>
@@ -114,22 +143,61 @@ export default {
   components: {
     KnobControl
   },
-  props: ['priority', 'timeEstimate'],
+  props: ['timeHour', 'timeMinute', 'timeisAm', 'priority', 'timeEstimate'],
   data () {
     return {
+      local_timeHour: this.timeHour,
+      local_timeMinute: this.timeMinute,
+      local_timeisAm: this.timeisAm,
       local_priority: this.priority,
       local_timeEstimate: this.timeEstimate
     };
   },
   watch: {
+    local_timeHour: function (val, old) {
+      this.checkTime();
+      if (isNaN(val) || val === '0') {
+        this.local_timeHour = old;
+      }
+      if (val > 12) {
+        this.local_timeHour = old;
+      } else {
+        this.$emit('update-timeHour', val);
+      }
+    },
+    local_timeMinute: function (val, old) {
+      this.checkTime();
+      if (isNaN(val)) {
+        this.local_timeMinute = old;
+      }
+      if (old === '' && val > 5) {
+        this.local_timeMinute = old;
+      } else {
+        this.$emit('update-timeMinute', val);
+      }
+    },
     local_priority: function (val) {
       this.$emit('update-priority', val);
     },
     local_timeEstimate: function (val) {
       this.$emit('update-timeEstimate', val);
+    },
+    local_timeisAm: function (val) {
+      this.$emit('update-time-is-am', val);
     }
   },
   methods: {
+    toggleAmPm: function (val) {
+      if (!val && this.local_timeHour === '12') {
+        this.local_timeHour = '11';
+      }
+      this.local_timeisAm = val;
+    },
+    checkTime: function () {
+      if (!this.local_timeisAm && this.local_timeHour === '12') {
+        this.toggleAmPm(false);
+      }
+    },
     formatHours: function (val) {
       if (val > 1) {
         return val + ' hours';
@@ -163,10 +231,26 @@ export default {
 
 <style lang="scss" scoped>
 
+.toggle-am-pm {
+  height: 49px;
+  margin-top:0px!important;
+}
+
 label {
   font-size: 18px;
   padding-bottom: 5px;
   border-bottom: 1px #dbdbdb solid;
+}
+
+.right-column,
+.left-column{
+  flex-grow: 0!important;
+}
+
+.right-column > button,
+.left-column > button {
+  margin-top: 20px !important;
+  height: 49px;
 }
 
 .bottom-section {
