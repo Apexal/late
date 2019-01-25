@@ -141,7 +141,7 @@ export default {
     return {
       loading: false,
       step: 1,
-      courseCRN: -1,
+      courseCRN: this.defaultCourseCRN,
       title: '',
       description: '',
       dueDate: '',
@@ -177,8 +177,17 @@ export default {
     };
   },
   computed: {
+    defaultCourseCRN () {
+      return this.$store.state.addAssignmentModal.courseCRN;
+    },
     courses () {
       return this.$store.getters.current_schedule;
+    }
+  },
+  watch: {
+    defaultCourseCRN (newCRN) {
+      this.courseCRN = newCRN;
+      alert(newCRN);
     }
   },
   methods: {

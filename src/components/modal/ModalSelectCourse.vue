@@ -29,17 +29,11 @@
 export default {
   name: 'ModalSelectCourse',
   props: ['courses', 'activeCRN'],
-  data () {
-    return {
-      courseCRN: this.activeCRN
-    };
-  },
   methods: {
     isActive (crn) {
-      return this.courseCRN === crn ? 'active' : '';
+      return this.activeCRN === crn ? 'active' : '';
     },
     setCRN (crn) {
-      this.courseCRN = crn;
       this.$emit('update-crn', crn);
       this.$emit('next-step');
     }
