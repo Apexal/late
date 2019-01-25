@@ -5,9 +5,9 @@
         id="add-assignment-title"
         v-model="localTitle"
         type="text"
-        class="input"
+        class="input is-medium"
         maxlength="75"
-        placeholder="Assignment Title - Keep it concise!"
+        placeholder="What do you have to do?"
         required
       >
     </div>
@@ -29,20 +29,20 @@
 
 <script>
 export default {
-  name: 'AssessmentAddTitleAndDescription',
-  props: ['title', 'description'],
-  data () {
+  name: "AssessmentAddTitleAndDescription",
+  props: ["title", "description"],
+  data() {
     return {
       localTitle: this.title,
       localDescription: this.description
     };
   },
   watch: {
-    localTitle: function (val) {
-      this.$emit('update-title', val);
+    localTitle: function(val) {
+      this.$emit("update-title", val);
     },
-    localDescription: function (val) {
-      this.$emit('update-desc', val);
+    localDescription: function(val) {
+      this.$emit("update-desc", val);
     }
   }
 };

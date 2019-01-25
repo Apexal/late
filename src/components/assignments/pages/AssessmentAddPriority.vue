@@ -1,12 +1,9 @@
 <template>
   <div class="columns">
-    <!-- <h1>What day is the assignment due</h1> -->
     <div class="priority column">
-      <label>
-        Priority
-      </label>
+      <label>Priority</label>
       <KnobControl
-        v-model="local_priority"
+        v-model="localPriorityiority"
         :min="1"
         :max="5"
         :size="200"
@@ -15,26 +12,14 @@
         primary-color="#70CAD1"
       />
       <div class="button-group">
-        <button
-          class="button"
-          @click="changePriority(-1)"
-        >
-          Decrease
-        </button>
-        <button
-          class="button"
-          @click="changePriority(1)"
-        >
-          Increase
-        </button>
+        <button class="button" @click="changePriority(-1)">Decrease</button>
+        <button class="button" @click="changePriority(1)">Increase</button>
       </div>
     </div>
     <div class="time column">
-      <label>
-        Time Estimate
-      </label>
+      <label>Time Estimate</label>
       <KnobControl
-        v-model="local_timeEstimate"
+        v-model="localTimeEstimate"
         :min="0.5"
         :max="20"
         :step-size="0.5"
@@ -44,81 +29,76 @@
         primary-color="#70CAD1"
       />
       <div class="button-group">
-        <button
-          class="button"
-          @click="changeTimeEstimate(-0.5)"
-        >
-          -30 min
-        </button>
-        <button
-          class="button"
-          @click="changeTimeEstimate(0.5)"
-        >
-          +30 min
-        </button>
+        <button class="button" @click="changeTimeEstimate(-0.5)">-30 min</button>
+        <button class="button" @click="changeTimeEstimate(0.5)">+30 min</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import KnobControl from 'vue-knob-control';
-import '../../../assets/component-override.scss';
+import KnobControl from "vue-knob-control";
+import "../../../assets/component-override.scss";
 
 export default {
-  name: 'AssessmentAddPriority',
+  name: "AssessmentAddPriority",
   components: {
     KnobControl
   },
-  props: ['priority', 'timeEstimate'],
-  data () {
+  props: ["priority", "timeEstimate"],
+  data() {
     return {
-      local_priority: this.priority,
-      local_timeEstimate: this.timeEstimate
+      localPriorityiority: this.priority,
+      localTimeEstimate: this.timeEstimate
     };
   },
   watch: {
-    local_priority: function (val) {
-      this.$emit('update-priority', val);
+    localPriorityiority: function(val) {
+      this.$emit("update-priority", val);
     },
-    local_timeEstimate: function (val) {
-      this.$emit('update-timeEstimate', val);
+    localTimeEstimate: function(val) {
+      this.$emit("update-timeEstimate", val);
     }
   },
   methods: {
-    formatTime: function (val) {
+    formatTime: function(val) {
       if (val > 1) {
-        return val + ' hours';
+        return val + " hours";
       } else {
-        return val + ' hour';
+        return val + " hour";
       }
     },
-    priorityWordMap: function (val) {
+    priorityWordMap: function(val) {
       const wordMap = {
-        1: 'Very Low',
-        2: 'Low',
-        3: 'Medium',
-        4: 'High',
-        5: '𝙊𝙃 𝙂𝙊𝘿'
+        1: "Optional",
+        2: "Low",
+        3: "Medium",
+        4: "High",
+        5: "𝙊𝙃 𝙂𝙊𝘿"
       };
       return wordMap[val];
     },
-    changeTimeEstimate: function (val) {
-      if (this.local_timeEstimate + val < 0.5 ||
-        this.local_timeEstimate + val > 20) return;
-      this.local_timeEstimate += val;
+    changeTimeEstimate: function(val) {
+      if (
+        this.localTimeEstimate + val < 0.5 ||
+        this.localTimeEstimate + val > 20
+      )
+        return;
+      this.localTimeEstimate += val;
     },
-    changePriority: function (val) {
-      if (this.local_priority + val < 1 ||
-        this.local_priority + val > 5) return;
-      this.local_priority += val;
+    changePriority: function(val) {
+      if (
+        this.localPriorityiority + val < 1 ||
+        this.localPriorityiority + val > 5
+      )
+        return;
+      this.localPriorityiority += val;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
 .priority {
   border-right: 1px solid #dbdbdb;
 }
@@ -131,5 +111,4 @@ export default {
   font-size: 20px;
   margin: 5px;
 }
-
 </style>
