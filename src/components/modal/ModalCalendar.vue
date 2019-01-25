@@ -33,7 +33,7 @@ export default {
         config: {
           validRange: {
             start: this.$store.getters.currentTerm.start,
-            end: this.$store.getters.currentTerm.end
+            end: this.$store.getters.currentTerm.classesEnd
           },
           height: 500,
           defaultView: 'month',
@@ -54,9 +54,13 @@ export default {
     }
   },
   watch: {
+    activeCRN () {
+      this.$refs.calendar.fireMethod('prev');
+      this.$refs.calendar.fireMethod('next');
+    },
     activeDueDate () {
-      alert('Update!');
-      this.$refs.calendar.fireMethod('rerenderEvents');
+      this.$refs.calendar.fireMethod('prev');
+      this.$refs.calendar.fireMethod('next');
     }
   },
   methods: {

@@ -153,8 +153,7 @@ export default {
       local_timeMinute: this.timeMinute,
       local_timeisAm: this.timeisAm,
       local_priority: this.priority,
-      local_timeEstimate: this.timeEstimate,
-      hasClass: this.hasClassTimes
+      local_timeEstimate: this.timeEstimate
     };
   },
   computed: {
@@ -162,8 +161,7 @@ export default {
       if (this.activeCRN === undefined) {
         return false;
       }
-      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
-      courseSchedule = courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
+      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents.filter(ev => ev.course.crn === this.activeCRN);
 
       if (courseSchedule.length === 0) {
         return false;
@@ -254,7 +252,7 @@ export default {
     },
     priorityWordMap: function (val) {
       const wordMap = {
-        1: 'Very Low',
+        1: 'Optional',
         2: 'Low',
         3: 'Medium',
         4: 'High',

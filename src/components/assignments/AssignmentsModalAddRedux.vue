@@ -53,7 +53,7 @@
           <ModalSelectCourse
             v-if="step === 1"
             :courses="courses"
-            :active-c-r-n="this.courseCRN"
+            :active-c-r-n="courseCRN"
             @update-crn="courseCRN = $event"
             @next-step="nextStep()"
           />
@@ -68,18 +68,18 @@
           />
           <ModalCalendar
             v-else-if="step === 3"
-            :active-c-r-n="this.courseCRN"
-            :active-due-date="this.dueDate"
+            :active-c-r-n="courseCRN"
+            :active-due-date="dueDate"
             @update-date="dueDate = $event; nextStep();"
           />
           <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
-            :active-c-r-n="this.courseCRN"
-            :time-hour="this.timeHour"
-            :time-minute="this.timeMinute"
-            :timeis-am="this.timeisAm"
-            :time-estimate="this.timeEstimate"
-            :priority="this.priority"
+            :active-c-r-n="courseCRN"
+            :time-hour="timeHour"
+            :time-minute="timeMinute"
+            :timeis-am="timeisAm"
+            :time-estimate="timeEstimate"
+            :priority="priority"
             @update-timeHour="timeHour = $event"
             @update-timeMinute="timeMinute = $event"
             @update-time-is-am="timeisAm = $event"
@@ -203,12 +203,11 @@ export default {
   watch: {
     defaultCourseCRN (newCRN) {
       this.courseCRN = newCRN;
-      alert(newCRN);
     },
-    dueDateString (newDueDate) {
+    defaultDueDateString (newDueDate) {
       this.dueDate = newDueDate;
     },
-    dueTimeString (newDueTime) {
+    defaultDueTimeString (newDueTime) {
       this.time = newDueTime;
     }
   },
