@@ -69,6 +69,7 @@
           <ModalCalendar
             v-else-if="step === 3"
             :active-c-r-n="this.courseCRN"
+            :active-due-date="this.dueDate"
             @update-date="dueDate = $event; nextStep();"
           />
           <ModalPriorityAndTimeEstimate
@@ -180,6 +181,12 @@ export default {
     defaultCourseCRN () {
       return this.$store.state.addAssignmentModal.courseCRN;
     },
+    defaultDueDateString () {
+      return this.$store.getters.addAssignmentModalDueDateString;
+    },
+    defaultDueTimeString () {
+      return this.$store.getters.addAssignmentModalDueTimeString;
+    },
     courses () {
       return this.$store.getters.current_schedule;
     }
@@ -188,6 +195,12 @@ export default {
     defaultCourseCRN (newCRN) {
       this.courseCRN = newCRN;
       alert(newCRN);
+    },
+    dueDateString (newDueDate) {
+      this.dueDate = newDueDate;
+    },
+    dueTimeString (newDueTime) {
+      this.time = newDueTime;
     }
   },
   methods: {

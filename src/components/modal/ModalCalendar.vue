@@ -21,7 +21,7 @@ export default {
   components: {
     FullCalendar
   },
-  props: ['activeCRN'],
+  props: ['activeDueDate', 'activeCRN'],
   data () {
     return {
       calendar: {
@@ -39,7 +39,8 @@ export default {
           defaultView: 'month',
           timeFormat: 'h(:mm)t',
           timezone: 'local',
-          dayClick: this.dayClick
+          dayClick: this.dayClick,
+          dayRender: this.dayRender
         }
       }
     };
@@ -52,7 +53,19 @@ export default {
       return courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
     }
   },
+  watch: {
+    activeDueDate () {
+      alert('Update!');
+      this.$refs.calendar.fireMethod('rerenderEvents');
+    }
+  },
   methods: {
+    course (crn) {
+      return this.$store.getters.getCourseFromCRN(crn);
+    },
+    dayRender (date, cell) {
+      if (moment(date).isSame(this.activeDueDate, 'day')) { cell.css('background-color', this.course(this.activeCRN).color); }
+    },
     dayClick (date) {
       if (
         moment(date)
@@ -75,4 +88,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.selected-date {
+  background-color: black;
+}
 </style>
