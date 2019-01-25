@@ -46,7 +46,21 @@ export default {
   name: 'TheAboutPage',
   data () {
     return {
-      contributors: ['Frank Matranga', 'Christie Nero', 'Abigail Medina', 'Bowen Wang', 'Ziyi Wang', 'Seth Laurenceau', 'Zach Love', 'Kikiola Sanusi', 'Tyler Machado']
+      contributors: [
+        'Frank Matranga',
+        'Zach Love',
+        'Abigail Medina',
+        'Christie Nero',
+        'Tyler Machado',
+        'Jose A Figueroa',
+        'Alexandra Rachiele',
+        'Anglea Lopez',
+        'Henry Heffernan',
+        'Colton Zecca',
+        'Alex Ford',
+        'Jose Deantes',
+        'Sam Fawcett'
+      ]
     };
   }
 };
