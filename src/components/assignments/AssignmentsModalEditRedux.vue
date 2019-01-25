@@ -72,8 +72,15 @@
           />
           <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
+            :active-c-r-n="assignment.courseCRN"
+            :time-hour="assignment.timeHour"
+            :time-minute="assignment.timeMinute"
+            :timeis-am="assignment.timeisAm"
             :time-estimate="assignment.timeEstimate"
             :priority="assignment.priority"
+            @update-timeHour="assignment.timeHour = $event"
+            @update-timeMinute="assignment.timeMinute = $event"
+            @update-time-is-am="assignment.timeisAm = $event"
             @update-priority="assignment.priority = $event"
             @update-timeEstimate="assignment.timeEstimate = $event"
           />
@@ -151,7 +158,9 @@ export default {
         dueDate: moment()
           .add(1, 'days')
           .format('YYYY-MM-DD'),
-        time: '08:00', // HH:mm
+        timeHour: '',
+        timeMinute: '',
+        timeisAm: false,
         timeEstimate: 1,
         priority: 5
       }),
@@ -227,7 +236,23 @@ export default {
     convertAssignment (assignment) {
       const data = Object.assign({}, assignment);
       data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD');
-      data.time = moment(assignment.dueDate).format('HH:mm');
+      let time, hour, minute, isAm;
+
+      time = moment(assignment.dueDate).format('HH:mm');
+      time = time.split(':');
+
+      hour = parseInt(time[0]);
+      minute = parseInt(time[1]);
+
+      if (hour > 12) {
+        hour -= 12;
+        isAm = false;
+      }
+
+      data.timeHour = hour;
+      data.timeMinute = minute;
+      data.timeisAm = isAm;
+
       return data;
     },
     async save () {
@@ -239,10 +264,32 @@ export default {
 
       let complete = this.steps.some(step => !step.completed);
 
+      let time;
+      let hour = parseInt(this.assignment.timeHour);
+      let minute = parseInt(this.assignment.timeMinute);
+
+      if (this.assignment.timeHour === '') {
+        hour = 11;
+      }
+      if (this.assignment.timeMinute === '') {
+        minute = 59;
+      }
+
       if (complete) {
         this.$toasted.error('Make sure you complete every step!');
         return;
       }
+
+      if (!this.assignment.timeisAm && hour !== 12) {
+        hour += 12;
+      }
+      if (hour > 0 && hour < 10 && this.assignment.timeHour.length === 1) {
+        hour = '0' + hour;
+      }
+      if (minute > 0 && minute < 10) {
+        minute = '0' + minute;
+      }
+      time = hour + ':' + minute;
 
       this.loading = true;
 
@@ -252,7 +299,7 @@ export default {
           title: this.assignment.title,
           description: this.assignment.description,
           dueDate: moment(
-            this.assignment.dueDate + ' ' + this.assignment.time,
+            this.assignment.dueDate + ' ' + time,
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),

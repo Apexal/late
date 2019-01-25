@@ -65,9 +65,11 @@
       </label>
       <div class="columns">
         <div class="right-column column">
+          <!-- disabled -->
           <button
             class="button"
-            disabled
+            :disabled="!hasClassTimes"
+            @click="setTimeStart"
           >
             Start of class
           </button>
@@ -124,7 +126,8 @@
         <div class="left-column column">
           <button
             class="button"
-            disabled
+            :disabled="!hasClassTimes"
+            @click="setTimeEnd"
           >
             End of class
           </button>
@@ -143,15 +146,30 @@ export default {
   components: {
     KnobControl
   },
-  props: ['timeHour', 'timeMinute', 'timeisAm', 'priority', 'timeEstimate'],
+  props: ['activeCRN', 'timeHour', 'timeMinute', 'timeisAm', 'priority', 'timeEstimate'],
   data () {
     return {
       local_timeHour: this.timeHour,
       local_timeMinute: this.timeMinute,
       local_timeisAm: this.timeisAm,
       local_priority: this.priority,
-      local_timeEstimate: this.timeEstimate
+      local_timeEstimate: this.timeEstimate,
+      hasClass: this.hasClassTimes
     };
+  },
+  computed: {
+    hasClassTimes: function () {
+      if (this.activeCRN === undefined) {
+        return false;
+      }
+      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
+      courseSchedule = courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
+
+      if (courseSchedule.length === 0) {
+        return false;
+      }
+      return true;
+    }
   },
   watch: {
     local_timeHour: function (val, old) {
@@ -187,15 +205,44 @@ export default {
     }
   },
   methods: {
+    setTime: function (timeStr) {
+      let time, hour, minute, isAm;
+
+      time = timeStr.split(':');
+      hour = time[0];
+      minute = time[1];
+      isAm = true;
+
+      if (parseInt(hour) >= 12) {
+        if (parseInt(hour) >= 13) {
+          hour = parseInt(hour) - 12;
+        }
+        isAm = false;
+      }
+      this.local_timeisAm = isAm;
+
+      this.local_timeHour = hour;
+      this.local_timeMinute = minute;
+    },
+    setTimeStart: function () {
+      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
+      courseSchedule = courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
+      this.setTime(courseSchedule[0].start);
+    },
+    setTimeEnd: function () {
+      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
+      courseSchedule = courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
+      this.setTime(courseSchedule[0].end);
+    },
     toggleAmPm: function (val) {
-      if (!val && this.local_timeHour === '12') {
+      if (val && this.local_timeHour === '12') {
         this.local_timeHour = '11';
       }
       this.local_timeisAm = val;
     },
     checkTime: function () {
-      if (!this.local_timeisAm && this.local_timeHour === '12') {
-        this.toggleAmPm(false);
+      if (this.local_timeisAm && this.local_timeHour === '12') {
+        this.toggleAmPm(true);
       }
     },
     formatHours: function (val) {
@@ -230,6 +277,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 
 .toggle-am-pm {
   height: 49px;

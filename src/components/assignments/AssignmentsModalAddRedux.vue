@@ -74,11 +74,12 @@
           />
           <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
-            :time-hour="timeHour"
-            :time-minute="timeMinute"
-            :timeis-am="timeisAm"
-            :time-estimate="timeEstimate"
-            :priority="priority"
+            :active-c-r-n="this.courseCRN"
+            :time-hour="this.timeHour"
+            :time-minute="this.timeMinute"
+            :timeis-am="this.timeisAm"
+            :time-estimate="this.timeEstimate"
+            :priority="this.priority"
             @update-timeHour="timeHour = $event"
             @update-timeMinute="timeMinute = $event"
             @update-time-is-am="timeisAm = $event"
@@ -276,10 +277,14 @@ export default {
       if (hour > 0 && hour < 10 && this.timeHour.length === 1) {
         hour = '0' + hour;
       }
+      if (minute === 0) {
+        minute = '00';
+      }
       if (minute > 0 && minute < 10) {
         minute = '0' + minute;
       }
       time = hour + ':' + minute;
+      console.log(time);
 
       try {
         request = await this.$http.post('/assignments', {
