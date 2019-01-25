@@ -85,33 +85,25 @@
           class="modal-nav-button back"
           @click="lastStep()"
         >
-          <i
-            class="fas fa-arrow-left"
-          />
+          <i class="fas fa-arrow-left" />
         </div>
         <div
           class="modal-nav-button cancel"
           @click="$emit('toggle-modal')"
         >
-          <h1>
-            Cancel
-          </h1>
+          <h1>Cancel</h1>
         </div>
         <div
           class="modal-nav-button save"
           @click="$emit('remove-assignment')"
         >
-          <h1>
-            Delete Assignment
-          </h1>
+          <h1>Delete Assignment</h1>
         </div>
         <div
           class="modal-nav-button save"
           @click="save()"
         >
-          <h1>
-            Save Assignment
-          </h1>
+          <h1>Save Assignment</h1>
         </div>
 
         <!--  @click="$emit('remove-assignment')-->
@@ -120,9 +112,7 @@
           class="modal-nav-button next"
           @click="nextStep()"
         >
-          <i
-            class="fas fa-arrow-right"
-          />
+          <i class="fas fa-arrow-right" />
         </div>
       </footer>
     </div>
@@ -363,7 +353,6 @@ export default {
   border-left: 1px solid #dbdbdb;
   float: right;
 }
-
 
 .modal-nav {
   padding: 0px;

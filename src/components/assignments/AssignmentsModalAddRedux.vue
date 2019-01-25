@@ -68,6 +68,7 @@
           />
           <ModalCalendar
             v-else-if="step === 3"
+            :active-c-r-n="this.courseCRN"
             @update-date="dueDate = $event; nextStep();"
           />
           <ModalPriorityAndTimeEstimate
@@ -85,35 +86,27 @@
           class="modal-nav-button back"
           @click="lastStep()"
         >
-          <i
-            class="fas fa-arrow-left"
-          />
+          <i class="fas fa-arrow-left" />
         </div>
         <div
           class="modal-nav-button cancel"
           @click="$emit('toggle-modal')"
         >
-          <h1>
-            Cancel
-          </h1>
+          <h1>Cancel</h1>
         </div>
         <div
           v-if="step !== 4"
           class="modal-nav-button next"
           @click="nextStep()"
         >
-          <i
-            class="fas fa-arrow-right"
-          />
+          <i class="fas fa-arrow-right" />
         </div>
         <div
           v-if="step === 4"
           class="modal-nav-button save"
           @click="save()"
         >
-          <h1>
-            Create Assignment
-          </h1>
+          <h1>Create Assignment</h1>
         </div>
       </footer>
     </div>
@@ -344,7 +337,7 @@ export default {
 
 .save {
   &:hover {
-    background-color: #62B1B7;
+    background-color: #62b1b7;
   }
   border-bottom-right-radius: 6px;
   background-color: #66c6ce;

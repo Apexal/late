@@ -36,11 +36,7 @@ export default {
   },
   methods: {
     isActive (crn) {
-      if (this.courseCRN === crn) {
-        return 'active';
-      } else {
-        return '';
-      }
+      return this.courseCRN === crn ? 'active' : '';
     },
     setCRN (crn) {
       this.courseCRN = crn;
@@ -53,14 +49,11 @@ export default {
 
 <style lang="scss" scoped>
 .course.box {
-  padding: 15px 20px;
-  &:hover {
-    cursor: pointer;
-  }
+  padding: 10px 15px;
+  cursor: pointer;
 }
 
 .active {
   box-shadow: -0px 0px 2px 0.5px var(--box-shadow-color);
-  // box-shadow:
 }
 </style>

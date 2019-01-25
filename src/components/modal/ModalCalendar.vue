@@ -4,6 +4,7 @@
       ref="calendar"
       :editable="false"
       :selectable="false"
+      :events="selectedCourseScheduleEvents"
       :header="calendar.header"
       :config="calendar.config"
     />
@@ -20,10 +21,10 @@ export default {
   components: {
     FullCalendar
   },
+  props: ['activeCRN'],
   data () {
     return {
       calendar: {
-        events: [],
         header: {
           left: 'title',
           center: '',
@@ -43,6 +44,14 @@ export default {
       }
     };
   },
+  computed: {
+    selectedCourseScheduleEvents () {
+      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents.map(
+        ev => Object.assign({}, ev, { title: this.periodType(ev.period) })
+      );
+      return courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
+    }
+  },
   methods: {
     dayClick (date) {
       if (
@@ -50,11 +59,16 @@ export default {
           .endOf('day')
           .isBefore(moment().startOf('day')) &&
         !confirm('Add this assignment to the past?')
-      ) { return; }
+      ) {
+        return;
+      }
       this.updateDate(date);
     },
     updateDate (date) {
       this.$emit('update-date', date);
+    },
+    periodType (p) {
+      return this.$store.getters.periodType(p.type);
     }
   }
 };
