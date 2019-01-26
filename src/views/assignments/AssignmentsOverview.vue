@@ -1,11 +1,12 @@
 <template>
   <div class="assignments-overview">
-    <AssignmentsModalEdit
+    <canvas id="confetti-canvas" />
+    <AssignmentsModalEditRedux
       v-if="!isPast"
       :open="editing"
       :initial-assignment="assignment"
       @toggle-modal="editing = !editing"
-      @edit-assignment="editedAssignment"
+      @edit-assignment="updatedAssignment"
       @remove-assignment="remove"
     />
     <section
@@ -48,9 +49,7 @@
         </h1>
       </div>
 
-      <hr>
-
-      <nav class="level is-mobile box assignment-stats">
+      <nav class="level is-mobile assignment-stats">
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">
@@ -68,12 +67,23 @@
         >
           <div>
             <p class="heading">
-              Scheduled Work Left
+              {{ assignment.fullyScheduled ? 'Scheduled Work Left' : 'Work Schedule' }}
             </p>
-            <p class="subtitle">
+            <p
+              v-if="assignment.fullyScheduled"
+              class="subtitle"
+            >
               {{ assignment.scheduledTimeRemaing }}
               <span class="has-text-grey">
                 min
+              </span>
+            </p>
+            <p v-else>
+              <span
+                class="tag is-danger not-scheduled-tag"
+                @click="tab = 'schedule'"
+              >
+                Not fully scheduled!
               </span>
             </p>
           </div>
@@ -109,7 +119,6 @@
           </div>
         </div>
       </nav>
-
       <div class="content assignment-description">
         <blockquote>
           <VueMarkdown
@@ -126,14 +135,14 @@
       </div>
 
       <AssignmentOverviewTabs
+        ref="tabs"
         :tab="tab"
         :assignment="assignment"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
+        @update-assessment="updatedAssignment"
         @add-comment="addComment"
-        @add-work-block="addWorkBlock"
-        @edit-work-block="editWorkBlock"
-        @remove-work-block="removeWorkBlock"
+        @delete-comment="deleteComment"
       />
     </section>
   </div>
@@ -142,9 +151,10 @@
 <script>
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
+import 'confetti-js';
 
 // Page components
-import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
+import AssignmentsModalEditRedux from '@/components/assignments/AssignmentsModalEditRedux';
 import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
 import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
 
@@ -152,7 +162,7 @@ export default {
   name: 'AssignmentsOverview',
   components: {
     VueMarkdown,
-    AssignmentsModalEdit,
+    AssignmentsModalEditRedux,
     AssignmentOverviewActionButtons,
     AssignmentOverviewTabs
   },
@@ -164,7 +174,9 @@ export default {
       loading: true,
       isUpcoming: false,
       assignment: {},
-      editing: false
+      editing: false,
+      confetti: null,
+      confettiSettings: { target: 'confetti-canvas', clock: 75, max: 150 }
     };
   },
   computed: {
@@ -202,6 +214,10 @@ export default {
   watch: {
     $route: 'getAssignment'
   },
+  mounted () {
+    // eslint-disable-next-line no-undef
+    this.confetti = new ConfettiGenerator(this.confettiSettings);
+  },
   created () {
     this.getAssignment();
   },
@@ -212,7 +228,7 @@ export default {
     toggleEditing () {
       this.editing = !this.editing;
     },
-    editedAssignment (newAssignment) {
+    updatedAssignment (newAssignment) {
       this.assignment = newAssignment;
     },
     async toggleCompleted () {
@@ -242,14 +258,19 @@ export default {
             `/assignments/a/${this.assignment._id}/toggle`
           );
 
-          this.editedAssignment(request.data.updatedAssignment);
+          this.updatedAssignment(request.data.updatedAssignment);
         }
-        this.$toasted.show('Toggled assignment.', {
+        this.$toasted[this.assignment.completed ? 'success' : 'show'](this.assignment.completed ? 'Marked assignment as completed! Nice job!' : 'Marked assignment as incomplete.', {
           icon: this.assignment.completed ? 'check-circle' : 'circle',
           action: {
             text: 'Undo'
           }
         });
+
+        if (this.assignment.completed) {
+          this.confetti.render();
+          setTimeout(() => this.confetti.clear(), 2000);
+        }
       } catch (e) {
         this.$toasted.error(e.response.data.message);
       }
@@ -335,74 +356,6 @@ export default {
         }
       );
     },
-    async addWorkBlock ({ start, end }) {
-      let request;
-      request = await this.$http.post(
-        `/blocks/assignment/${this.assignment._id}`,
-        { startTime: start, endTime: end }
-      );
-
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.editedAssignment(request.data.updatedAssignment);
-      }
-
-      this.$toasted.success('Added work block to your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
-    async editWorkBlock ({ blockID, start, end }) {
-      let request;
-      request = await this.$http.patch(
-        `/blocks/assignment/${this.assignment._id}/${blockID}`,
-        { startTime: start, endTime: end, assessmentType: 'assignment' }
-      );
-
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.editedAssignment(request.data.updatedAssignment);
-      }
-
-      this.$toasted.show('Rescheduled work block!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
-    async removeWorkBlock (blockID) {
-      let request;
-      request = await this.$http.delete(
-        `/blocks/assignment/${this.assignment._id}/${blockID}`
-      );
-
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.editedAssignment(request.data.updatedAssignment);
-      }
-
-      this.$toasted.error('Removed work block from your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
     async addComment (newComment) {
       if (!newComment) return;
 
@@ -420,16 +373,37 @@ export default {
           request.data.updatedAssignment
         );
       } else {
-        this.editedAssignment(request.data.updatedAssignment);
+        this.updatedAssignment(request.data.updatedAssignment);
       }
 
       this.commentLoading = false;
+    },
+    async deleteComment (i) {
+      let request;
+      request = await this.$http.delete(
+        `/assignments/a/${this.assignment._id}/comments`,
+        { params: { index: i } }
+      );
+
+      // Calls API and updates state
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.updatedAssignment(request.data.updatedAssignment);
+      }
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.not-scheduled-tag {
+  cursor: pointer;
+}
+
 .course-tag {
   cursor: pointer;
   color: white;
@@ -448,7 +422,9 @@ export default {
   margin-top: 5px;
 }
 
-.assignment-stats {
+.level.assignment-stats {
+  margin-top: 20px;
+  margin-bottom: 0;
   padding: 10px;
 }
 
@@ -458,5 +434,14 @@ export default {
 
 .margin-left {
   margin-left: 2px !important;
+}
+
+#confetti-canvas {
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>

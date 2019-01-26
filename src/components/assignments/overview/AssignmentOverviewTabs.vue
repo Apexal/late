@@ -46,9 +46,8 @@
       :assessment="assignment"
       :loading="loading"
       @add-comment="$emit('add-comment', arguments[0])"
-      @add-work-block="$emit('add-work-block', arguments[0])"
-      @edit-work-block="$emit('edit-work-block', arguments[0])"
-      @remove-work-block="$emit('remove-work-block', arguments[0])"
+      @delete-comment="$emit('delete-comment', arguments[0])"
+      @update-assessment="$emit('update-assessment', arguments[0])"
     />
   </div>
 </template>
@@ -80,7 +79,10 @@ export default {
   },
   computed: {
     scheduledMinutes () {
-      return this.assignment._blocks.reduce((acc, block) => acc + block.duration, 0);
+      return this.assignment._blocks.reduce(
+        (acc, block) => acc + block.duration,
+        0
+      );
     },
     totalEstimatedMinutes () {
       return this.assignment.timeEstimate * 60;

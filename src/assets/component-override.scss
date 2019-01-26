@@ -1,0 +1,13 @@
+/**
+KNOB CONTROL CSS
+
+**/
+text.knob-control__text-display{
+  font-size: 0.9em !important;
+}
+
+.knob-control__range{
+  &:hover{
+    cursor: pointer;
+  }
+}

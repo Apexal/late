@@ -77,30 +77,63 @@
         class="course-edit"
         @submit.prevent="save"
       >
-        <p>Course Title: </p>
-        <input
-          v-model.trim="courseData.longname"
-          type="text"
-          :placeholder="courseData.original_longname"
-          class="input course-longname-input"
-          required
-        >
-        <p>Section: </p>
-        <input
-          v-model.trim="courseData.section_id"
-          type="text"
-          placeholder="Section"
-          class="input course-section-input"
-          required
-        >
-        <p>Course Color: </p>
-        <input
-          v-model="courseData.color"
-          type="color"
-          class="input course-color-input"
-        >
-        <p>Course Links: </p>
+        <div class="columns is-multiline">
+          <div class="column">
+            <label>Course</label>
+            <input
+              type="text"
+              class="input"
+              :value="courseData.summary"
+              disabled
+            >
+          </div>
+          <div class="column">
+            <label :for="'course-title-' + elementID">
+              Title
+            </label>
+            <input
+              :id="'course-title-' + elementID"
+              v-model.trim="courseData.longname"
+              type="text"
+              :placeholder="courseData.original_longname"
+              class="input course-longname-input"
+              required
+            >
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <label :for="'course-section-' + elementID">
+              Section
+            </label>
+            <input
+              :id="'course-section-' + elementID"
+              v-model.trim="courseData.section_id"
+              type="text"
+              placeholder="Section"
+              class="input course-section-input"
+              required
+            >
+          </div>
+          <div class="column">
+            <label :for="'course-color-' + elementID">
+              Color
+            </label>
+            <input
+              :id="'course-color-' + elementID"
+              v-model="courseData.color"
+              type="color"
+              class="input course-color-input"
+            >
+          </div>
+        </div>
+
+
+        <label :for="'course-links-' + elementID">
+          Links
+        </label>
         <InputTag
+          :id="'course-links-' + elementID"
           v-model="courseData.links"
           placeholder="Put links to courses here! Hit Enter after each link."
         />
@@ -144,6 +177,7 @@ export default {
     };
   },
   computed: {
+    elementID () { return this.courseData.summary.replace(' ', '').toLowerCase(); },
     sortedPeriods () {
       return this.courseData.periods
         .concat()
@@ -151,6 +185,11 @@ export default {
     },
     saved () {
       return JSON.stringify(this.course) === JSON.stringify(this.courseData);
+    }
+  },
+  watch: {
+    course (newCourse) {
+      this.courseData = Object.assign({}, this.course);
     }
   },
   methods: {

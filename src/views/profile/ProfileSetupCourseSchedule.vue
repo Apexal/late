@@ -261,14 +261,17 @@ export default {
       this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.info('Your course schedule has been compiled.', {
-        action: {
-          text: 'Next Step',
-          push: {
-            name: 'setup-unavailability'
+      this.$toasted.info(
+        'Your course schedule has been compiled. Edit the courses to your liking below.',
+        {
+          action: {
+            text: 'Next Step',
+            push: {
+              name: 'setup-unavailability'
+            }
           }
         }
-      });
+      );
 
       // this.saved = true;
       this.loading = false;

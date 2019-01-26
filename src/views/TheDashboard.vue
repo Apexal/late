@@ -13,7 +13,7 @@
         ref="calendar"
         :events="events"
         :editable="true"
-        :selectable="true"
+        :selectable="false"
         :header="calendar.header"
         :config="calendar.config"
       />
@@ -34,7 +34,7 @@ export default {
     return {
       calendar: {
         header: {
-          center: 'listDay,agendaFiveDay'
+
         },
         config: {
           views: {
@@ -50,20 +50,27 @@ export default {
           },
           height: 700,
           dayCount: 5,
-          allDayText: 'Incomplete\nAssign.',
-          minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
-          maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
+          allDayText: 'Due',
+          // minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
+          // maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
+          businessHours: {
+            dow: [0, 1, 2, 3, 4, 5, 6],
+            start: this.$store.state.auth.user.earliestWorkTime,
+            end: this.$store.state.auth.user.latestWorkTime
+          },
           timezone: 'local',
           defaultView: 'agendaFiveDay',
-          eventOverlap: false,
-          selectOverlap: false,
+          eventOverlap: true,
+          selectOverlap: true,
           selectHelper: false,
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
-              if (moment(event.start).isAfter(this.term.classesEnd)) return false;
+              if (moment(event.start).isAfter(this.term.classesEnd)) {
+                return false;
+              }
             }
           },
           buttonText: {
@@ -77,40 +84,9 @@ export default {
             // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
           },
           */
-          eventClick: (calEvent, jsEvent, view) => {
-            if (calEvent.eventType === 'course') {
-              this.$store.commit(
-                'SET_ADD_ASSIGNMENT_MODAL_DUE_DATE',
-                calEvent.start
-              );
-              this.$store.commit(
-                'OPEN_COURSE_MODAL',
-                calEvent.course
-              );
-            } else if (calEvent.eventType === 'assignment') {
-              this.$router.push({
-                name: 'assignments-overview',
-                params: { assignmentID: calEvent.assignment._id }
-              });
-            } else if (calEvent.eventType === 'exam') {
-              this.$router.push({
-                name: 'exams-overview',
-                params: { examID: calEvent.exam._id }
-              });
-            } else if (calEvent.eventType === 'work-block') {
-              if (calEvent.assessmentType === 'assignment') {
-                this.$router.push({
-                  name: 'assignments-overview',
-                  params: { assignmentID: calEvent.assignment._id }
-                });
-              } else if (calEvent.assessmentType === 'exam') {
-                this.$router.push({
-                  name: 'exams-overview',
-                  params: { examID: calEvent.exam._id }
-                });
-              }
-            }
-          }
+          eventClick: this.eventClick,
+          eventDrop: this.eventDrop,
+          eventResize: this.eventResize
         }
       }
     };
@@ -139,8 +115,8 @@ export default {
 
       const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
 
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(
-        e => Object.assign({}, e, { backgroundColor: 'black' })
+      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
+        Object.assign({}, e)
       );
 
       return courseSchedule
@@ -152,9 +128,73 @@ export default {
     assignments () {
       return this.$store.state.work.upcomingAssignments;
     }
+  },
+  methods: {
+    eventClick (calEvent, jsEvent, view) {
+      if (calEvent.eventType === 'course') {
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', calEvent.start);
+        this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
+      } else if (calEvent.eventType === 'assignment') {
+        this.$router.push({
+          name: 'assignments-overview',
+          params: { assignmentID: calEvent.assignment._id }
+        });
+      } else if (calEvent.eventType === 'exam') {
+        this.$router.push({
+          name: 'exams-overview',
+          params: { examID: calEvent.exam._id }
+        });
+      } else if (calEvent.eventType === 'work-block') {
+        if (calEvent.assessmentType === 'assignment') {
+          this.$router.push({
+            name: 'assignments-overview',
+            params: { assignmentID: calEvent.assignment._id }
+          });
+        } else if (calEvent.assessmentType === 'exam') {
+          this.$router.push({
+            name: 'exams-overview',
+            params: { examID: calEvent.exam._id }
+          });
+        }
+      }
+    },
+    eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
+      // Update work block on server
+      if (calEvent.end.isBefore(moment())) {
+        if (!confirm('Move this work block to your history?')) {
+          return revertFunc();
+        }
+      }
+      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
+    },
+    eventResize (calEvent, delta, revertFunc) {
+      if (moment(calEvent.end).isBefore(moment())) {
+        if (!confirm('Edit this work block from your history?')) {
+          return revertFunc();
+        }
+      }
+      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
+    },
+    async editWorkBlock (blockID, start, end) {
+      const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+        blockID,
+        start,
+        end
+      });
+
+      this.$toasted.show('Rescheduled work block!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
+    }
   }
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
+.work-block-event {
+  border-width: 3px !important;
+}
 </style>

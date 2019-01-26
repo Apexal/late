@@ -5,7 +5,7 @@
       :open="editing"
       :initial-exam="exam"
       @toggle-modal="editing = !editing"
-      @edit-exam="editedExam"
+      @edit-exam="updatedExam"
       @remove-exam="remove"
     />
     <section
@@ -47,8 +47,6 @@
         </h2>
       </div>
 
-      <hr>
-
       <ExamOverviewStats :exam="exam" />
 
       <div class="content exam-description">
@@ -71,9 +69,7 @@
         :exam="exam"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
-        @add-work-block="addWorkBlock"
-        @edit-work-block="editWorkBlock"
-        @remove-work-block="removeWorkBlock"
+        @update-assessment="updatedExam"
       />
     </section>
   </div>
@@ -131,69 +127,10 @@ export default {
     toggleEditing () {
       this.editing = !this.editing;
     },
-    editedExam (newExam) {
+    updatedExam (newExam) {
       this.exam = newExam;
     },
-    async addWorkBlock ({ start, end }) {
-      let request;
-      request = await this.$http.post(`/blocks/exam/${this.exam._id}`, {
-        startTime: start,
-        endTime: end,
-        assessmentType: 'exam'
-      });
 
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
-      } else {
-        this.editedExam(request.data.updatedExam);
-      }
-
-      this.$toasted.success('Added work block to your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
-    async editWorkBlock ({ blockID, start, end }) {
-      let request;
-      request = await this.$http.patch(
-        `/blocks/exam/${this.exam._id}/${blockID}`,
-        { startTime: start, endTime: end, assessmentType: 'exam' }
-      );
-
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
-      } else {
-        this.editedExam(request.data.updatedExam);
-      }
-
-      this.$toasted.show('Rescheduled work block!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
-    async removeWorkBlock (blockID) {
-      let request;
-      request = await this.$http.delete(
-        `/blocks/exam/${this.exam._id}/${blockID}`
-      );
-
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
-      } else {
-        this.editedExam(request.data.updatedExam);
-      }
-
-      this.$toasted.error('Removed work block from your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    },
     async getExam () {
       // If its an upcoming exam, we already have the data on it
       if (this.$store.getters.getUpcomingExamById(this.$route.params.examID)) {
@@ -277,9 +214,5 @@ export default {
   }
 
   margin-bottom: 10px;
-}
-
-.exam-stats {
-  padding: 10px;
 }
 </style>

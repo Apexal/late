@@ -122,7 +122,7 @@ export default {
       return {
         schedule: this.$store.getters.todaysAgenda.length,
         assignments: this.pressingAssignments.length,
-        exams: this.upcomingExams.length,
+        exams: this.upcomingExamsOneMonth.length,
         todos: this.externalCounts.todos
       };
     },

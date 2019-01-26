@@ -1,8 +1,5 @@
 <template>
   <div class="integrations-preferences">
-    <h2 class="title">
-      Notification Preferences
-    </h2>
     <form @submit.prevent="save">
       <div
         v-for="(notification, key) in notifications"
@@ -75,6 +72,8 @@ export default {
   },
   computed: {
     saved () {
+      if (!this.$store.getters.userSetup.integrations) return false;
+
       return (
         JSON.stringify(this.preferences) ===
         JSON.stringify(this.user.notificationPreferences)

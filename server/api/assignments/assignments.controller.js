@@ -294,6 +294,11 @@ async function toggleAssignment (ctx) {
     ? moment().toDate()
     : null;
 
+  // Readjust time estimate if completed
+  ctx.state.assignment.timeEstimate = ctx.state.assignment._blocks
+    .filter(b => b.endTime <= ctx.state.assignment.completedAt)
+    .reduce((acc, b) => acc + b.duration, 0);
+
   try {
     await ctx.state.assignment.save();
   } catch (e) {
@@ -396,6 +401,60 @@ async function addComment (ctx) {
   ctx.ok({ updatedAssignment: assignment });
 }
 
+/**
+ * Delete a comment on an assignment. The request url should contain the following:
+ * - index: the index of the comment to delete
+ *
+ * @param {Koa context} ctx
+ * @returns The updated assignment
+ */
+async function deleteComment (ctx) {
+  const assignmentID = ctx.params.assignmentID;
+
+  // CLEAN UP
+  // Convoluted way to get the index? Can you not send data in a DELETE request?
+  const index = parseInt(ctx.request.url.split('?index=')[1]);
+
+  let assignment;
+  try {
+    assignment = await Assignment.findOne({
+      _student: ctx.state.user._id,
+      _id: assignmentID
+    }).populate('_blocks');
+  } catch (e) {
+    logger.error(`Failed to get assignment for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.internalServerError(
+      'There was an error getting the assignment to comment on.'
+    );
+  }
+
+  if (!assignment) {
+    logger.error(
+      `Failed to find assignment with ID ${assignmentID} for ${
+        ctx.state.user.rcs_id
+      }`
+    );
+    return ctx.notFound('Could not find assignment to comment on.');
+  }
+
+  let commentID;
+  commentID = assignment.comments[index]['_id'];
+
+  assignment.comments.pull({ _id: commentID });
+
+  try {
+    await assignment.save();
+  } catch (e) {
+    logger.error(
+      `Failed to save assignment for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('There was an error adding the comment.');
+  }
+
+  ctx.ok({ updatedAssignment: assignment });
+}
+
+
 module.exports = {
   getAssignmentMiddleware,
   getAssignments,
@@ -404,5 +463,6 @@ module.exports = {
   toggleAssignment,
   editAssignment,
   removeAssignment,
-  addComment
+  addComment,
+  deleteComment
 };

@@ -1,5 +1,5 @@
 <template>
-  <div class="assignment-calendar">
+  <div class="exam-calendar">
     <FullCalendar
       ref="calendar"
       :editable="false"
@@ -15,13 +15,9 @@ import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
 export default {
-  name: 'AssignmentsCalendar',
+  name: 'ExamsCalendar',
   components: { FullCalendar },
   props: {
-    showCompleted: {
-      type: Boolean,
-      default: true
-    },
     filter: {
       type: Array,
       default: () => []
@@ -45,10 +41,10 @@ export default {
           defaultView: 'month',
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
-            this.$router.push(`/assignments/${calEvent.assignment._id}`);
+            this.$router.push(`/exams/${calEvent.exam._id}`);
           },
           eventRender: (event, el) => {
-            if (this.filter.includes(event.assignment.courseCRN) || (this.showCompleted && !event.assignment.completed)) {
+            if (this.filter.includes(event.exam.courseCRN)) {
               return false;
             }
           },
@@ -60,9 +56,6 @@ export default {
   watch: {
     filter () {
       this.$refs.calendar.fireMethod('rerenderEvents');
-    },
-    showCompleted () {
-      this.$refs.calendar.fireMethod('refetchEvents');
     }
   },
   methods: {
@@ -71,27 +64,27 @@ export default {
 
       try {
         request = await this.$http.get(
-          '/assignments', { params: { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') } }
+          '/exams', { params: { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') } }
         );
       } catch (e) {
         this.events = [];
         return this.$toasted.error(e.response.data.message);
       }
 
-      const assignments = request.data.assignments;
-      const events = assignments
-        .filter(a => (this.showCompleted ? true : !a.completed))
-        .map(a => ({
-          title: a.title,
-          start: a.dueDate,
-          color: this.course(a).color,
-          assignment: a
+      const exams = request.data.exams;
+      const events = exams
+        .map(e => ({
+          title: e.title,
+          start: e.date,
+          color: this.course(e).color,
+          exam: e
         }));
+
 
       callback(events);
     },
-    course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+    course (e) {
+      return this.$store.getters.getCourseFromCRN(e.courseCRN);
     }
   }
 };

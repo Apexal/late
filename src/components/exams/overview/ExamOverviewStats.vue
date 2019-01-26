@@ -1,5 +1,5 @@
 <template>
-  <nav class="level is-mobile box exam-stats">
+  <nav class="level is-mobile exam-stats">
     <div class="level-item has-text-centered">
       <div>
         <p class="heading">
@@ -71,4 +71,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.exam-stats {
+  margin-top: 20px;
+  margin-bottom: 0;
+  padding: 10px;
+}
 </style>

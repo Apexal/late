@@ -181,6 +181,7 @@ async function disableDiscord (ctx) {
 async function saveNotificationPreferences (ctx) {
   const preferences = ctx.request.body;
   ctx.state.user.notificationPreferences = preferences;
+  ctx.state.user.setup.integrations = true;
 
   try {
     await ctx.state.user.save();

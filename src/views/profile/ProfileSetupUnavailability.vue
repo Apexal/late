@@ -102,7 +102,7 @@ export default {
   data () {
     return {
       loading: false,
-      saved: true,
+      saved: false,
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
@@ -117,27 +117,20 @@ export default {
           height: 700,
           columnHeaderFormat: 'ddd',
           allDaySlot: false,
-          minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
-          maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
+          businessHours: {
+            dow: [0, 1, 2, 3, 4, 5, 6],
+            start: this.$store.state.auth.user.earliestWorkTime,
+            end: this.$store.state.auth.user.latestWorkTime
+          },
           navLinks: false,
           defaultView: 'agendaWeek',
           selectHelper: true,
           eventOverlap: false,
           selectOverlap: false,
+          selectConstraint: 'businessHours',
           eventColor: 'black',
           timeFormat: 'h(:mm)t',
-          eventClick: (calEvent, jsEvent, view) => {
-            if (!calEvent.eventType === 'unavailability') return;
-
-            this.saved = false;
-            this.calendar.events = this.calendar.events.filter(
-              e =>
-                !(
-                  e.dow[0] === calEvent.start.day() &&
-                  calEvent.start.format('HH:mm') === e.start
-                )
-            );
-          },
+          eventClick: this.eventClick,
 
           select: (start, end) => {
             const eventData = {
@@ -145,6 +138,7 @@ export default {
               eventType: 'unavailability',
               title: 'Busy',
               start: start.format('HH:mm'),
+              editable: false,
               end: end.format('HH:mm'),
               dow: [start.day()]
             };
@@ -167,20 +161,54 @@ export default {
       return this.$store.getters.getCourseScheduleAsEvents.concat(
         this.calendar.events
       );
+    },
+    fixedLatest () {
+      const rawEnd = moment(this.latest, 'HH:mm', true);
+
+      if (rawEnd.isBefore(moment(this.earliest, 'HH:mm', true))) {
+        let hours = (24 + rawEnd.hours()).toString();
+        let minutes = rawEnd.minutes().toString();
+
+        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+      }
+
+      return this.latest;
     }
   },
   watch: {
-    earliest () {
+    earliest (minTime) {
       this.saved = false;
+      this.$refs.calendar.fireMethod('option', 'businessHours', {
+        dow: [0, 1, 2, 3, 4, 5, 6],
+        start: this.earliest,
+        end: this.fixedLatest
+      });
     },
-    latest () {
+    latest (maxTime) {
       this.saved = false;
+      this.$refs.calendar.fireMethod('option', 'businessHours', {
+        dow: [0, 1, 2, 3, 4, 5, 6],
+        start: this.earliest,
+        end: this.fixedLatest
+      });
     }
   },
   created () {
     this.calendar.events = this.$store.getters.getUnavailabilityAsEvents.slice();
   },
   methods: {
+    eventClick (calEvent, jsEvent, view) {
+      if (!calEvent.eventType === 'unavailability') return;
+
+      this.saved = false;
+      this.calendar.events = this.calendar.events.filter(
+        e =>
+          !(
+            e.dow[0] === calEvent.start.day() &&
+            calEvent.start.format('HH:mm') === e.start
+          )
+      );
+    },
     eventResized (calEvent) {
       this.saved = false;
       this.calendar.events.find(e =>
@@ -195,7 +223,7 @@ export default {
       try {
         request = await this.$http.post('/setup/unavailability', {
           earliest: this.earliest,
-          latest: this.latest,
+          latest: this.fixedLatest,
           events: this.calendar.events
         });
       } catch (e) {

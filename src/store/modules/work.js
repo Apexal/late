@@ -82,13 +82,13 @@ const getters = {
     eventType: 'work-block',
     assessmentType: type,
     title: assessment.title,
-    backgroundColor: 'black',
-    editable: moment(b.startTime).isAfter(moment()),
-    color: getters.getCourseFromCRN(assessment.courseCRN).color,
+    className: 'work-block-event',
+    // editable: moment(b.startTime).isAfter(moment()),
+    color: 'black',
+    borderColor: getters.getCourseFromCRN(assessment.courseCRN).color,
     start: b.startTime,
     end: b.endTime,
     constraint: {
-      start: new Date(),
       end: type === 'assignment' ? assessment.dueDate : assessment.date
     },
     assessment,
@@ -147,6 +147,65 @@ const actions = {
     });
     const exams = response.data.exams;
     commit('SET_UPCOMING_EXAMS', exams);
+  },
+  async ADD_WORK_BLOCK (
+    { commit, getters },
+    { assessmentType, assessment, start, end }
+  ) {
+    const request = await axios.post(
+      `/blocks/${assessmentType}/${assessment._id}`,
+      { startTime: start, endTime: end }
+    );
+    const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+
+    if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
+      commit(
+        `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
+        request.data['updated' + capitalized]
+      );
+    }
+
+    return request['updated' + capitalized];
+  },
+  async EDIT_WORK_BLOCK ({ commit, getters }, { blockID, start, end }) {
+    const block = getters.getWorkBlocksAsEvents.find(
+      b => b.blockID === blockID
+    );
+    const request = await axios.patch(
+      `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`,
+      { startTime: start, endTime: end, assessmentType: block.assessmentType }
+    );
+
+    const capitalized =
+      block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+
+    if (getters['getUpcoming' + capitalized + 'ById'](block.assessment._id)) {
+      commit(
+        `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
+        request.data['updated' + capitalized]
+      );
+    }
+
+    return request['updated' + capitalized];
+  },
+  async REMOVE_WORK_BLOCK ({ commit, getters }, { blockID }) {
+    const block = getters.getWorkBlocksAsEvents.find(
+      b => b.blockID === blockID
+    );
+    const request = await axios.delete(
+      `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`
+    );
+    const capitalized =
+      block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+
+    if (getters['getUpcoming' + capitalized + 'ById'](block.assessment._id)) {
+      commit(
+        `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
+        request.data['updated' + capitalized]
+      );
+    }
+
+    return request['updated' + capitalized];
   }
 };
 

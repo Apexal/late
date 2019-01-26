@@ -23,7 +23,7 @@
       </div>
       <div
         v-for="event in filteredTodaysAgenda"
-        :key="event.start.toString()"
+        :key="event.title + '-' + event.start.toString()"
         class="panel-block event is-size-7"
         :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event) }"
       >
@@ -58,7 +58,9 @@
               type="checkbox"
               class="switch"
             >
-            <label for="agenda-show-passed">Show Passed</label>
+            <label for="agenda-show-passed">
+              Show Passed
+            </label>
           </div>
         </span>
       </div>

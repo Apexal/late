@@ -103,7 +103,6 @@ const router = new Router({
           },
           component: () => import('@/views/exams/ExamsUpcoming.vue')
         },
-        /*
         {
           path: 'calendar',
           name: 'exams-calendar',
@@ -112,7 +111,6 @@ const router = new Router({
           },
           component: () => import('@/views/exams/ExamsCalendar.vue')
         },
-        */
         {
           path: 'past',
           name: 'past-exams',
