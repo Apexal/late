@@ -34,14 +34,14 @@ export default {
     return {
       calendar: {
         header: {
-
+          center: 'agendaWeek, agendaFiveDay'
         },
         config: {
           views: {
             agendaFiveDay: {
               type: 'agenda',
               duration: { days: 5 },
-              buttonText: 'Week'
+              buttonText: '5-Day Agenda'
             }
           },
           validRange: {
