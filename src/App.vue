@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TheHeader />
+    <TheHeader ref="header" />
     <Loading
       :active.sync="loading"
       :is-full-page="true"
@@ -38,7 +38,10 @@
             id="sidebar-column"
             class="column is-3 child-view"
           >
-            <TheSidebar ref="sidebar" />
+            <TheSidebar
+              ref="sidebar"
+              @sidebar-loaded="onResize"
+            />
           </div>
         </transition>
         <div
@@ -124,10 +127,19 @@ export default {
       return this.$store.getters.isUserSetup;
     }
   },
-  async created () {
+  async mounted () {
     if (typeof window.orientation === 'undefined') {
       window.addEventListener('resize', this.resizeThrottler, false);
-      setTimeout(this.onResize, 500);
+
+      const offset = 110;
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 0) {
+          let pixels = Math.max(offset - window.pageYOffset, 0) + 55; // Min of 55px
+          document.getElementById('sidebar').style.top = pixels + 'px';
+        } else {
+          document.getElementById('sidebar').style.top = 'initial';
+        }
+      });
     }
 
     if (this.$route.query.accountLocked) {

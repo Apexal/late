@@ -157,6 +157,7 @@ export default {
     }
   },
   mounted () {
+    this.$emit('sidebar-loaded');
     if (localStorage.getItem('todos')) {
       try {
         const todos = JSON.parse(localStorage.getItem('todos'));
@@ -189,7 +190,10 @@ export default {
 
 <style lang='scss'>
 #sidebar {
-  background-color: white;
+  .panel {
+    background-color: white;
+  }
+
   position: fixed;
 
   @media only screen and (max-width: 768px) {
