@@ -134,7 +134,9 @@ export default {
     },
     upcomingExamsOneMonth () {
       const monthFromNow = moment().add(1, 'month');
-      return this.upcomingExams.filter(ex => moment(ex.date).isSameOrBefore(monthFromNow));
+      return this.upcomingExams.filter(ex =>
+        moment(ex.date).isSameOrBefore(monthFromNow)
+      );
     },
     upcomingExams () {
       return this.$store.getters.pendingUpcomingExams;
@@ -187,7 +189,14 @@ export default {
 
 <style lang='scss'>
 #sidebar {
-  z-index: 5;
+  background-color: white;
+  position: fixed;
+
+  @media only screen and (max-width: 768px) {
+    position: initial;
+  }
+
+  z-index: 2;
   padding: 15px;
 
   .panel-tabs {
