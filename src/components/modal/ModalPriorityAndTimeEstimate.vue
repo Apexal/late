@@ -2,11 +2,9 @@
   <div>
     <div class="columns">
       <div class="priority column">
-        <label>
-          Priority
-        </label>
+        <label>Priority</label>
         <KnobControl
-          v-model="local_priority"
+          v-model.number="local_priority"
           :min="1"
           :max="5"
           :size="200"
@@ -30,11 +28,9 @@
         </div>
       </div>
       <div class="time-est column">
-        <label>
-          Time Estimate
-        </label>
+        <label>Time Estimate</label>
         <KnobControl
-          v-model="local_timeEstimate"
+          v-model.number="local_timeEstimate"
           :min="0.5"
           :max="20"
           :step-size="0.5"
@@ -60,9 +56,7 @@
       </div>
     </div>
     <div class="bottom-section">
-      <label>
-        Time Due
-      </label>
+      <label>Time Due</label>
       <div class="columns">
         <div class="right-column column">
           <!-- disabled -->
@@ -79,11 +73,12 @@
             <div class="field">
               <input
                 id="hours"
-                v-model="local_timeHour"
+                v-model.number="local_timeHour"
                 type="text"
                 class="input"
                 maxlength="2"
                 :placeholder="11"
+                required
               >
             </div>
             <div class="time-colon">
@@ -95,11 +90,12 @@
               <!-- v-model="" -->
               <input
                 id="minutes"
-                v-model="local_timeMinute"
+                v-model.number="local_timeMinute"
                 type="text"
                 class="input"
                 maxlength="2"
                 :placeholder="59"
+                required
               >
             </div>
             <div class="am-pm">
@@ -119,9 +115,7 @@
               </button>
             </div>
           </div>
-          <small>
-            Default Time: 11:59 pm
-          </small>
+          <small>Default Time: 11:59 pm</small>
         </div>
         <div class="left-column column">
           <button
@@ -141,27 +135,41 @@
 import KnobControl from 'vue-knob-control';
 import '../../assets/component-override.scss';
 
+import moment from 'moment';
+
 export default {
   name: 'ModalPriorityAndTimeEstimate',
   components: {
     KnobControl
   },
-  props: ['activeCRN', 'timeHour', 'timeMinute', 'timeisAm', 'priority', 'timeEstimate'],
+  props: ['activeCRN', 'dueTime', 'priority', 'timeEstimate'],
   data () {
     return {
-      local_timeHour: this.timeHour,
-      local_timeMinute: this.timeMinute,
-      local_timeisAm: this.timeisAm,
-      local_priority: this.priority,
-      local_timeEstimate: this.timeEstimate
+      local_timeHour: 11,
+      local_timeMinute: 59,
+      local_timeisAm: false,
+      local_priority: 3,
+      local_timeEstimate: 1
     };
   },
   computed: {
+    formattedTime () {
+      return `${(this.local_timeisAm
+        ? this.local_timeHour
+        : this.local_timeHour + 12
+      )
+        .toString()
+        .padStart(2, '0')}:${this.local_timeMinute
+        .toString()
+        .padStart(2, '0')}`;
+    },
     hasClassTimes: function () {
       if (this.activeCRN === undefined) {
         return false;
       }
-      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents.filter(ev => ev.course.crn === this.activeCRN);
+      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents.filter(
+        ev => ev.course.crn === this.activeCRN
+      );
 
       if (courseSchedule.length === 0) {
         return false;
@@ -170,27 +178,14 @@ export default {
     }
   },
   watch: {
+    dueTime (newDueTime) {
+      this.setTime(newDueTime);
+    },
     local_timeHour: function (val, old) {
-      this.checkTime();
-      if (isNaN(val) || val === '0') {
-        this.local_timeHour = old;
-      }
-      if (val > 12) {
-        this.local_timeHour = old;
-      } else {
-        this.$emit('update-timeHour', val);
-      }
+      this.$emit('update-due-time', this.formattedTime);
     },
     local_timeMinute: function (val, old) {
-      this.checkTime();
-      if (isNaN(val)) {
-        this.local_timeMinute = old;
-      }
-      if (old === '' && val > 5) {
-        this.local_timeMinute = old;
-      } else {
-        this.$emit('update-timeMinute', val);
-      }
+      this.$emit('update-due-time', this.formattedTime);
     },
     local_priority: function (val) {
       this.$emit('update-priority', val);
@@ -204,44 +199,32 @@ export default {
   },
   methods: {
     setTime: function (timeStr) {
-      let time, hour, minute, isAm;
+      // HH:mm
+      const time = moment(timeStr, 'HH:mm', true);
 
-      time = timeStr.split(':');
-      hour = time[0];
-      minute = time[1];
-      isAm = true;
-
-      if (parseInt(hour) >= 12) {
-        if (parseInt(hour) >= 13) {
-          hour = parseInt(hour) - 12;
-        }
-        isAm = false;
+      this.local_timeMinute = time.minutes();
+      this.local_timeHour = time.hours();
+      if (time.hours() > 12) {
+        this.local_timeHour -= 12;
+        this.local_timeisAm = false;
       }
-      this.local_timeisAm = isAm;
-
-      this.local_timeHour = hour;
-      this.local_timeMinute = minute;
     },
     setTimeStart: function () {
       let courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
-      courseSchedule = courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
-      this.setTime(courseSchedule[0].start);
+      courseSchedule = courseSchedule.filter(
+        ev => ev.course.crn === this.activeCRN
+      );
+      this.setTime(courseSchedule[0].start); // Hmm
     },
     setTimeEnd: function () {
       let courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
-      courseSchedule = courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
-      this.setTime(courseSchedule[0].end);
+      courseSchedule = courseSchedule.filter(
+        ev => ev.course.crn === this.activeCRN
+      );
+      this.setTime(courseSchedule[0].end); // Hmm
     },
     toggleAmPm: function (val) {
-      if (val && this.local_timeHour === '12') {
-        this.local_timeHour = '11';
-      }
-      this.local_timeisAm = val;
-    },
-    checkTime: function () {
-      if (this.local_timeisAm && this.local_timeHour === '12') {
-        this.toggleAmPm(true);
-      }
+      this.local_timeisAm = !this.local_timeisAm;
     },
     formatHours: function (val) {
       if (val > 1) {
@@ -261,13 +244,14 @@ export default {
       return wordMap[val];
     },
     changeTimeEstimate: function (val) {
-      if (this.local_timeEstimate + val < 0.5 ||
-        this.local_timeEstimate + val > 20) return;
+      if (
+        this.local_timeEstimate + val < 0.5 ||
+        this.local_timeEstimate + val > 20
+      ) { return; }
       this.local_timeEstimate += val;
     },
     changePriority: function (val) {
-      if (this.local_priority + val < 1 ||
-        this.local_priority + val > 5) return;
+      if (this.local_priority + val < 1 || this.local_priority + val > 5) { return; }
       this.local_priority += val;
     }
   }
@@ -275,11 +259,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-
 .toggle-am-pm {
   height: 49px;
-  margin-top:0px!important;
+  margin-top: 0px !important;
 }
 
 label {
@@ -289,8 +271,8 @@ label {
 }
 
 .right-column,
-.left-column{
-  flex-grow: 0!important;
+.left-column {
+  flex-grow: 0 !important;
 }
 
 .right-column > button,
@@ -315,10 +297,10 @@ label {
 
 .field {
   display: inline-block;
-  margin-bottom: 0px!important;
+  margin-bottom: 0px !important;
 }
 
-.time-colon{
+.time-colon {
   display: inline-block;
   font-size: 25px;
   margin-bottom: -20px;
@@ -354,5 +336,4 @@ input {
   font-size: 20px;
   margin: 5px;
 }
-
 </style>

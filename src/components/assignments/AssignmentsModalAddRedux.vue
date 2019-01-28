@@ -75,16 +75,12 @@
           <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
             :active-c-r-n="courseCRN"
-            :time-hour="timeHour"
-            :time-minute="timeMinute"
-            :timeis-am="timeisAm"
+            :due-time="dueTime"
             :time-estimate="timeEstimate"
             :priority="priority"
-            @update-timeHour="timeHour = $event"
-            @update-timeMinute="timeMinute = $event"
-            @update-time-is-am="timeisAm = $event"
+            @update-due-time="dueTime = $event"
             @update-priority="priority = $event"
-            @update-timeEstimate="timeEstimate = $event"
+            @update-time-estimate="timeEstimate = $event"
           />
         </transition>
       </div>
@@ -153,9 +149,7 @@ export default {
       title: '',
       description: '',
       dueDate: '',
-      timeHour: '',
-      timeMinute: '',
-      timeisAm: false,
+      dueTime: '08:00',
       timeEstimate: 1.0,
       priority: 3,
       steps: [
@@ -254,43 +248,17 @@ export default {
         return;
       }
 
-      let time;
-      let hour = parseInt(this.timeHour);
-      let minute = parseInt(this.timeMinute);
-
-      if (this.timeHour === '') {
-        hour = 11;
-      }
-      if (this.timeMinute === '') {
-        minute = 59;
-      }
-
       if (complete) {
         this.$toasted.error('Make sure you complete every step!');
         return;
       }
-
-      if (!this.timeisAm && hour !== 12) {
-        hour += 12;
-      }
-      if (hour > 0 && hour < 10 && this.timeHour.length === 1) {
-        hour = '0' + hour;
-      }
-      if (minute === 0) {
-        minute = '00';
-      }
-      if (minute > 0 && minute < 10) {
-        minute = '0' + minute;
-      }
-      time = hour + ':' + minute;
-      console.log(time);
 
       try {
         request = await this.$http.post('/assignments', {
           title: this.title,
           description: this.description,
           dueDate: moment(
-            this.dueDate.format('YYYY-MM-DD') + ' ' + time,
+            this.dueDate.format('YYYY-MM-DD') + ' ' + this.dueTime,
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),
@@ -318,12 +286,10 @@ export default {
       this.title = '';
       this.description = '';
       this.dueDate = '';
-      this.timeHour = '';
-      this.timeMinute = '';
-      this.timeisAm = false;
+      this.dueTime = '08:00';
       this.timeEstimate = 1;
-      this.dueDate = '';
       this.priority = 3;
+
       this.loading = false;
 
       // Reset Steps
