@@ -29,15 +29,14 @@
                 <b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.
               </p>
               <div class="control">
-                <input
+                <TimeInput
                   id="earliest"
                   v-model="earliest"
                   min="00:00"
                   max="12:00"
                   type="time"
-                  class="input is-small"
                   required
-                >
+                />
               </div>
             </div>
             <div class="column field">
@@ -63,9 +62,7 @@
           </div>
         </form>
       </div>
-      <h2 class="subtit">
-        Drag to set your study/work unavailability
-      </h2>
+      <h2>Drag to set your study/work unavailability</h2>
       <p class="help">
         Click on blocks to remove them. You can also drag, drop, and resive them.
       </p>
@@ -96,9 +93,11 @@ import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
+import TimeInput from '@/components/TimeInput';
+
 export default {
   name: 'ProfileSetupUnavailability',
-  components: { FullCalendar },
+  components: { FullCalendar, TimeInput },
   data () {
     return {
       loading: false,
@@ -213,8 +212,7 @@ export default {
       this.saved = false;
       this.calendar.events.find(e =>
         moment(e.start).isSame(moment(calEvent.start))
-      ).end =
-        calEvent.end;
+      ).end = calEvent.end;
     },
     async save () {
       this.loading = true;
