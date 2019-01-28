@@ -191,11 +191,14 @@ export default {
       this.$emit('update-priority', val);
     },
     local_timeEstimate: function (val) {
-      this.$emit('update-timeEstimate', val);
+      this.$emit('update-time-estimate', val);
     },
     local_timeisAm: function (val) {
       this.$emit('update-time-is-am', val);
     }
+  },
+  created () {
+    this.setTime(this.dueTime);
   },
   methods: {
     setTime: function (timeStr) {
@@ -247,11 +250,15 @@ export default {
       if (
         this.local_timeEstimate + val < 0.5 ||
         this.local_timeEstimate + val > 20
-      ) { return; }
+      ) {
+        return;
+      }
       this.local_timeEstimate += val;
     },
     changePriority: function (val) {
-      if (this.local_priority + val < 1 || this.local_priority + val > 5) { return; }
+      if (this.local_priority + val < 1 || this.local_priority + val > 5) {
+        return;
+      }
       this.local_priority += val;
     }
   }

@@ -202,7 +202,8 @@ export default {
       this.dueDate = newDueDate;
     },
     defaultDueTimeString (newDueTime) {
-      this.time = newDueTime;
+      alert(newDueTime);
+      this.dueTime = newDueTime;
     }
   },
   methods: {
@@ -241,14 +242,9 @@ export default {
       // TODO: error handle
       let request;
 
-      let complete = this.steps.some(step => !step.completed);
+      let incomplete = this.steps.some(step => !step.completed);
 
-      if (complete) {
-        this.$toasted.error('Make sure you complete every step!');
-        return;
-      }
-
-      if (complete) {
+      if (incomplete) {
         this.$toasted.error('Make sure you complete every step!');
         return;
       }
