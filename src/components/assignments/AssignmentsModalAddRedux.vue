@@ -281,12 +281,8 @@ export default {
 
       // Reset important fields
       this.step = 1;
-      this.courseCRN = -1;
       this.title = '';
       this.description = '';
-      this.dueDate = moment()
-        .add(1, 'day')
-        .toDate();
       this.dueTime = '08:00';
       this.timeEstimate = 1;
       this.priority = 3;
