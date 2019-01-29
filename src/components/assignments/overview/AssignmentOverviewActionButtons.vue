@@ -86,6 +86,18 @@
       </button>
 
       <button
+        v-if="assignment.passed"
+        class="button is-danger tooltip"
+        data-tooltip="Remove Assignment"
+        @click="$emit('remove-assignment')"
+      >
+        <span class="icon">
+          <i class="fas fa-times" />
+        </span>
+        Remove
+      </button>
+
+      <button
         class="button tooltip"
         :class="{ 'is-success': !assignment.completed, 'is-danger': assignment.completed }"
         data-tooltip="Toggle this assignment's completion status."

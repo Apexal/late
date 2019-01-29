@@ -29,14 +29,13 @@
                 <b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.
               </p>
               <div class="control">
-                <TimeInput
+                <input
                   id="earliest"
                   v-model="earliest"
-                  min="00:00"
-                  max="12:00"
                   type="time"
+                  class="input is-small"
                   required
-                />
+                >
               </div>
             </div>
             <div class="column field">
