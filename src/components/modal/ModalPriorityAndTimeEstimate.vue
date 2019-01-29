@@ -124,10 +124,12 @@ export default {
       }[this.priority];
     },
     dueDatePeriodStart () {
+      if (!this.dueDatePeriod) return '00:00';
       const time = moment(this.dueDatePeriod.start, 'Hmm', true);
       return time.format('HH:mm');
     },
     dueDatePeriodEnd () {
+      if (!this.dueDatePeriod) return '00:00';
       const time = moment(this.dueDatePeriod.end, 'Hmm', true);
       return time.format('HH:mm');
     },

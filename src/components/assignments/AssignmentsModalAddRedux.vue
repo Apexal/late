@@ -263,6 +263,7 @@ export default {
           priority: this.priority
         });
       } catch (e) {
+        console.error(e);
         this.$toasted.error(
           'There was an error adding the assignment. Please try again later.'
         );
