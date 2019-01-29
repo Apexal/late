@@ -444,4 +444,8 @@ export default {
   width: 100%;
   height: 100%;
 }
+
+.assignment-description { 
+    word-break: break-all; 
+    }
 </style>
