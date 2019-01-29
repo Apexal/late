@@ -75,6 +75,7 @@
           <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
             :active-c-r-n="courseCRN"
+            :due-date="dueDate"
             :due-time="dueTime"
             :time-estimate="timeEstimate"
             :priority="priority"
@@ -202,7 +203,6 @@ export default {
       this.dueDate = newDueDate;
     },
     defaultDueTimeString (newDueTime) {
-      alert(newDueTime);
       this.dueTime = newDueTime;
     }
   },
