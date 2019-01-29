@@ -262,13 +262,13 @@ export default {
     const header = this.$refs.header;
     const offset = this.$refs.navbar.offsetTop;
 
-    window.onscroll = () => {
+    window.addEventListener('scroll', () => {
       if (window.pageYOffset >= offset) {
         header.classList.add('sticky');
       } else {
         header.classList.remove('sticky');
       }
-    };
+    });
   }
 };
 </script>

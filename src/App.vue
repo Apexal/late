@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TheHeader />
+    <TheHeader ref="header" />
     <Loading
       :active.sync="loading"
       :is-full-page="true"
@@ -35,9 +35,13 @@
         <transition name="fade">
           <div
             v-if="loggedIn && expanded"
+            id="sidebar-column"
             class="column is-3 child-view"
           >
-            <TheSidebar />
+            <TheSidebar
+              ref="sidebar"
+              @sidebar-loaded="onResize"
+            />
           </div>
         </transition>
         <div
@@ -93,6 +97,7 @@ export default {
   },
   data () {
     return {
+      resizeTimeout: null,
       loading: true
     };
   },
@@ -122,7 +127,21 @@ export default {
       return this.$store.getters.isUserSetup;
     }
   },
-  async created () {
+  async mounted () {
+    if (typeof window.orientation === 'undefined') {
+      window.addEventListener('resize', this.resizeThrottler, false);
+
+      const offset = 110;
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 0) {
+          let pixels = Math.max(offset - window.pageYOffset, 0) + 55; // Min of 55px
+          document.getElementById('sidebar').style.top = pixels + 'px';
+        } else {
+          document.getElementById('sidebar').style.top = 'initial';
+        }
+      });
+    }
+
     if (this.$route.query.accountLocked) {
       this.loading = false;
       return this.$toasted.error(
@@ -149,7 +168,24 @@ export default {
 
     this.loading = false;
   },
-  methods: {}
+  methods: {
+    resizeThrottler () {
+      // ignore resize events as long as an actualResizeHandler execution is in the queue
+      if (!this.resizeTimeout) {
+        this.resizeTimeout = setTimeout(() => {
+          this.resizeTimeout = null;
+          this.onResize();
+          // The actualResizeHandler will execute at a rate of 15fps
+        }, 66);
+      }
+    },
+    onResize () {
+      if (document.getElementById('sidebar-column')) {
+        document.getElementById('sidebar').style.width =
+          document.getElementById('sidebar-column').offsetWidth + 'px';
+      }
+    }
+  }
 };
 </script>
 
