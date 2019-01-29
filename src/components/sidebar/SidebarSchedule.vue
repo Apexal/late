@@ -14,7 +14,7 @@
     </div>
     <div
       v-else
-      class="agenda"
+      class="sidebar-body agenda"
     >
       <div v-if="filteredTodaysAgenda.length === 0">
         <div class="panel-block has-text-grey">
@@ -49,21 +49,21 @@
           </div>
         </span>
       </div>
-      <div class="controls panel-block">
-        <span class="is-full-width">
-          <div class="field">
-            <input
-              id="agenda-show-passed"
-              v-model="showPassed"
-              type="checkbox"
-              class="switch"
-            >
-            <label for="agenda-show-passed">
-              Show Passed
-            </label>
-          </div>
-        </span>
-      </div>
+    </div>
+    <div class="controls panel-block">
+      <span class="is-full-width">
+        <div class="field">
+          <input
+            id="agenda-show-passed"
+            v-model="showPassed"
+            type="checkbox"
+            class="switch"
+          >
+          <label for="agenda-show-passed">
+            Show Passed
+          </label>
+        </div>
+      </span>
     </div>
   </div>
 </template>

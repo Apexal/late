@@ -15,6 +15,7 @@
       <transition-group
         name="list"
         tag="div"
+        class="sidebar-body"
       >
         <router-link
           v-for="a in pressing"
