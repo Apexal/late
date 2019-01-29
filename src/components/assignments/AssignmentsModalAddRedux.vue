@@ -149,7 +149,9 @@ export default {
       courseCRN: this.defaultCourseCRN,
       title: '',
       description: '',
-      dueDate: '',
+      dueDate: moment()
+        .add(1, 'days')
+        .toDate(),
       dueTime: '08:00',
       timeEstimate: 1.0,
       priority: 3,
@@ -200,7 +202,7 @@ export default {
       this.courseCRN = newCRN;
     },
     defaultDueDateString (newDueDate) {
-      this.dueDate = newDueDate;
+      this.dueDate = moment(newDueDate, 'YYYY-MM-DD', true);
     },
     defaultDueTimeString (newDueTime) {
       this.dueTime = newDueTime;
@@ -282,7 +284,9 @@ export default {
       this.courseCRN = -1;
       this.title = '';
       this.description = '';
-      this.dueDate = '';
+      this.dueDate = moment()
+        .add(1, 'day')
+        .toDate();
       this.dueTime = '08:00';
       this.timeEstimate = 1;
       this.priority = 3;
