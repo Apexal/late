@@ -130,6 +130,17 @@ export default {
           position: 'top-right'
         });
       }
+
+      localStorage.setItem('assignmentsShowCompleted', nowShowing);
+    }
+  },
+  mounted () {
+    if (localStorage.getItem('assignmentsShowCompleted')) {
+      try {
+        this.showCompleted = JSON.parse(localStorage.getItem('assignmentsShowCompleted'));
+      } catch (e) {
+        localStorage.removeItem('assignmentsShowCompleted');
+      }
     }
   },
   methods: {
