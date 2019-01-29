@@ -27,6 +27,7 @@
           :loading="loading || toggleLoading"
           @toggle-editing="toggleEditing"
           @toggle-completed="toggleCompleted"
+          @remove-assignment="remove"
         />
 
         <span
