@@ -1,46 +1,65 @@
 <template>
   <div class="home">
-    <TheDashboard v-if="loggedIn" />
+    <!-- <TheDashboard v-if="loggedIn" /> -->
     <section
-      v-else
       class="section"
     >
-      <h2 class="title">
-        Welcome to LATE
-      </h2><img
-        id="late-image"
-        class="image is-pulled-right"
-        src="https://rcos.io/uploads/apexal/late/ADuF2L6adeNaC9TcL8oTMyVG.png"
-      >
-      <div class="content">
-        <p>
-          <b>LATE</b> is an automatic time scheduler that, given your assignments with rough time estimates, and your calendar will:
-          <ul>
-            <li>automatically allocate study/work time throughout your schedule</li>
-            <li>allow you to adjust the personal schedule made for you each week</li>
-            <li>readjust itself and your calendar if you fall off track</li>
-            <li>
-              <span class="has-text-grey">
-                (optionally)
-              </span> keep you updated on your work and progress with weekly progress emails
-            </li>
-            <li>
-              <span class="has-text-grey">
-                (optionally)
-              </span> interact with you through text messages to remind you to study/work at the proper times
-            </li>
-            <li>
-              <span class="has-text-grey">
-                (optionally)
-              </span> interact with you through a variety of integrations including Discord and Slack
-            </li>
-          </ul>
-        </p>
-        <p>
-          <b>LATE</b> is a free, open-source project made by RPI students, currently for RPI students only. It integrates with SIS to be much more than a
-          personal scheduling assistant.
-        </p>
-      </div>
+      <section class="section">
+        <h1
+          class="is-size-2 title"
+          style="text-align: center"
+        >
+          Welcome to LATE
+        </h1>
+        <hr>
+        <div
+          class="column"
+          style="margin-left: 10em; max-width: 50em;"
+        >
+          <div class="columns about">
+            <img src="/availability.png">
+            <p class="right">
+              Tell us when you would like to work.
+            </p>
+          </div>
+
+          <div class="columns about">
+            <p class="left">
+              Easily add your RPI class schedule by letting us grab the information from SIS. No more manual schedule setting. Reimport your schedule when you add or drop a class and we take care of the rest.
+            </p>
+            <img src="/importSchedule.png">
+          </div>
+
+
+          <div class="columns about">
+            <img src="/addAssignments.png">
+            <p class="right">
+              Quickly be able to add, edit, and delete assignments for your classes.
+            </p>
+          </div>
+
+          <div class="columns about">
+            <p class="left">
+              See a clear list of all upcoming assignments and tests.
+            </p>
+            <img src="/upcomingAssignments.png">
+          </div>
+
+          <div class="columns about">
+            <img src="/dailyWorkSchedule.png">
+            <p class="right">
+              See a clear layout of your day! Just follow the list and let yourself be the lazy student you always dreamed of.
+            </p>
+          </div>
+
+          <div class="columns about">
+            <p class="left">
+              We will notify you when it is time to work. You wont ever have to think about whether or not you <i>should</i> be working on something
+            </p>
+            <img src="/notify.png">
+          </div>
+        </div>
+      </section>
     </section>
   </div>
 </template>
@@ -57,9 +76,36 @@ export default {
 };
 </script>
 
+
 <style lang="scss" scoped>
-#late-image {
-  max-width: 400px;
-}
+  hr{
+    margin:3em;
+    background-color:darkgrey;
+  }
+  .title{
+    text-align:center;
+  }
+  .columns{
+    .left{
+      margin-right:2em !important;
+      text-align:right;
+    }
+    .right{
+      margin-left: 2em !important;
+    }
+    .about{
+      margin-bottom:8em;
+
+      p{
+        color: #4a4a4a;
+        font-weight: 400;
+        font-size: larger;
+      }
+      img{
+        width:75%;
+        height:75%;
+      }
+    }
+  }
 </style>
 
