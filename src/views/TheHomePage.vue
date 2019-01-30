@@ -1,7 +1,8 @@
 <template>
   <div class="home">
-    <!-- <TheDashboard v-if="loggedIn" /> -->
+    <TheDashboard v-if="loggedIn" />
     <section
+      v-else
       class="section"
     >
       <section class="section">
