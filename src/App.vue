@@ -183,7 +183,7 @@ export default {
     onResize () {
       if (document.getElementById('sidebar-column')) {
         document.getElementById('sidebar').style.width =
-          document.getElementById('sidebar-column').offsetWidth + 'px';
+          (document.getElementById('sidebar-column').offsetWidth - 15) + 'px';
       }
     }
   }

@@ -163,10 +163,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.course-title {
-  margin-right: 5px;
-}
-
 .assignment {
   padding-right: 5px;
   padding-left: 5px;
