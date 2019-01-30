@@ -133,6 +133,7 @@ export default {
 
       const offset = 110;
       window.addEventListener('scroll', () => {
+        if (!document.getElementById('sidebar')) return; // Sidebar is collapsed
         if (window.pageYOffset > 0) {
           let pixels = Math.max(offset - window.pageYOffset, 0) + 55; // Min of 55px
           document.getElementById('sidebar').style.top = pixels + 'px';
