@@ -203,7 +203,7 @@ export default {
 }
 
 .toggle-sidebar {
-  z-index: 10;
+  z-index: 4;
   position: absolute;
 
   //Styling the toggle button to fit the theme

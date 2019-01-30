@@ -315,7 +315,7 @@ export default {
 
 header.sticky {
   .hero-foot {
-    z-index: 5;
+    z-index: 10;
     position: fixed;
     top: 0;
     width: 100%;
