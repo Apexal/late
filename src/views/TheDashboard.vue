@@ -34,7 +34,7 @@ export default {
     return {
       calendar: {
         header: {
-
+          center: 'agendaFiveDay, agendaWeek'
         },
         config: {
           views: {
