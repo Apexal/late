@@ -156,10 +156,10 @@
                   list="priorities"
                   type="range"
                   min="1"
-                  max="10"
+                  max="5"
                   name="edit-assignment-priority"
                   step="1"
-                  placeholder="0 - 10"
+                  placeholder="0 - 5"
                 >
                 <div
                   class="level"
@@ -180,11 +180,6 @@
                   <option value="3" />
                   <option value="4" />
                   <option value="5" />
-                  <option value="6" />
-                  <option value="7" />
-                  <option value="8" />
-                  <option value="9" />
-                  <option value="10" />
                 </datalist>
               </div>
             </div>
@@ -244,7 +239,7 @@ export default {
           .format('YYYY-MM-DD'),
         time: '08:00', // HH:mm
         timeEstimate: 1,
-        priority: 5
+        priority: 3
       }),
       required: true
     }

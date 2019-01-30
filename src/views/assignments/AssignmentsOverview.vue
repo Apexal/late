@@ -1,7 +1,7 @@
 <template>
   <div class="assignments-overview">
     <canvas id="confetti-canvas" />
-    <AssignmentsModalEditRedux
+    <AssignmentsModalEdit
       v-if="!isPast"
       :open="editing"
       :initial-assignment="assignment"
@@ -27,6 +27,7 @@
           :loading="loading || toggleLoading"
           @toggle-editing="toggleEditing"
           @toggle-completed="toggleCompleted"
+          @remove-assignment="remove"
         />
 
         <span
@@ -66,7 +67,9 @@
           class="level-item has-text-centered"
         >
           <div>
-            <p class="heading">
+            <p
+              class="heading"
+            >
               {{ assignment.fullyScheduled ? 'Scheduled Work Left' : 'Work Schedule' }}
             </p>
             <p
@@ -154,7 +157,7 @@ import VueMarkdown from 'vue-markdown';
 import 'confetti-js';
 
 // Page components
-import AssignmentsModalEditRedux from '@/components/assignments/AssignmentsModalEditRedux';
+import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
 import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
 import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
 
@@ -162,7 +165,7 @@ export default {
   name: 'AssignmentsOverview',
   components: {
     VueMarkdown,
-    AssignmentsModalEditRedux,
+    AssignmentsModalEdit,
     AssignmentOverviewActionButtons,
     AssignmentOverviewTabs
   },
@@ -260,12 +263,17 @@ export default {
 
           this.updatedAssignment(request.data.updatedAssignment);
         }
-        this.$toasted[this.assignment.completed ? 'success' : 'show'](this.assignment.completed ? 'Marked assignment as completed! Nice job!' : 'Marked assignment as incomplete.', {
-          icon: this.assignment.completed ? 'check-circle' : 'circle',
-          action: {
-            text: 'Undo'
+        this.$toasted[this.assignment.completed ? 'success' : 'show'](
+          this.assignment.completed
+            ? 'Marked assignment as completed! Nice job!'
+            : 'Marked assignment as incomplete.',
+          {
+            icon: this.assignment.completed ? 'check-circle' : 'circle',
+            action: {
+              text: 'Undo'
+            }
           }
-        });
+        );
 
         if (this.assignment.completed) {
           this.confetti.render();
