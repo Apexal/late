@@ -151,8 +151,8 @@ export default {
       return str;
     },
     assessmentLinkTitle (assessment) {
-      if (assessment.assessmentType === 'exam') return 'Upcoming Exam';
-      else if (assessment.assessmentType === 'assignment') return (assessment.completed ? 'Completed' : 'Incomplete') + ' Assignment';
+      if (assessment.assessmentType === 'exam') return 'On ' + moment(assessment.date).format('M/DD/YY');
+      else if (assessment.assessmentType === 'assignment') return 'Due on ' + moment(assessment.dueDate).format('M/DD/YY');
     },
     addAssessment (assessmentType) {
       this.$store.commit('CLOSE_COURSE_MODAL');
