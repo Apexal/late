@@ -183,6 +183,26 @@ const router = new Router({
       ]
     },
     {
+      path: '/admin',
+      name: 'AdminPage',
+      meta: {
+        requiresAuth: true,
+        requiresAdmin: true
+      },
+      component: () => import('@/views/admin/TheAdminPage')
+      /*
+      beforeEnter: (to, from, next) => {
+        // this route requires admin
+        if (!store.state.auth.user.admin) {
+          next('/');
+          // Vue.$toasted.error('You are not an admin!');
+        } else {
+          next();
+        }
+      }
+      */
+    },
+    {
       path: '*',
       name: 'NotFound',
       meta: {
