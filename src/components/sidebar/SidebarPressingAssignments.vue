@@ -10,7 +10,7 @@
         v-if="pressing.length == 0"
         class="panel-block has-text-grey"
       >
-        <span style="text-align: center;width: 100%;">
+        <span style="has-text-centered">
           No pressing assignments!
         </span>
       </div>

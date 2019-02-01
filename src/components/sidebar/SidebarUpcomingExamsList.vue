@@ -10,7 +10,7 @@
         v-if="upcoming.length == 0"
         class="panel-block has-text-grey"
       >
-        <span style="text-align: center;width: 100%;">
+        <span class="has-text-centered">
           No upcoming exams within the next month!
         </span>
       </div>
