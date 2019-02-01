@@ -87,7 +87,7 @@
 
       <button
         v-if="assignment.passed"
-        class="button is-danger tooltip"
+        class="button is-warning tooltip"
         data-tooltip="Remove Assignment"
         @click="$emit('remove-assignment')"
       >

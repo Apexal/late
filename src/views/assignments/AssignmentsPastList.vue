@@ -3,6 +3,7 @@
     <h2 class="subtitle">
       Week of {{ weekOf }}
     </h2>
+
     <div class="columns">
       <div class="column is-narrow">
         <button
@@ -101,6 +102,7 @@
           </th>
           <th>Assignment</th>
           <th>Completed</th>
+          <th />
         </tr>
       </thead>
       <tbody>
@@ -151,6 +153,15 @@
                 :class="{ 'fa-check': a.completed, 'fa-times': !a.completed }"
               />
             </span>
+          </td>
+          <td>
+            <button
+              class="button is-danger tooltip"
+              data-tooltip="Remove Assignment"
+              @click="removeAssignment(a)"
+            >
+              Remove
+            </button>
           </td>
         </tr>
       </tbody>
@@ -235,6 +246,33 @@ export default {
     this.getAssignments();
   },
   methods: {
+    async removeAssignment (assignment) {
+      // Confirm user wants to remove assignment
+      const assignmentTitle = assignment.title;
+      if (
+        !confirm(
+          `Are you sure you want to remove assignment ${assignment.title}?`
+        )
+      ) {
+        return;
+      }
+
+      // This handles the API call and state update
+      await this.$http.delete(`/assignments/a/${assignment._id}`);
+
+      this.currentAssignments = this.currentAssignments.filter(a => a._id !== assignment._id);
+
+      // Notify user of success
+      this.$toasted.success(
+        `Successfully removed assignment past '${assignment.title}'.`,
+        {
+          icon: 'times',
+          action: {
+            text: 'Undo'
+          }
+        }
+      );
+    },
     gotoLastWeek () {
       this.endDate = this.today;
       this.startDate = moment()
