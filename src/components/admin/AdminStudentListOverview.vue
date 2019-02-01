@@ -1,5 +1,8 @@
 <template>
-  <details class="user-overview box">
+  <details
+    class="user-overview box"
+    @toggle="getStats()"
+  >
     <summary>
       <h2 class="subtitle">
         <span
@@ -55,7 +58,7 @@
               Assignments Added
             </p>
             <p>
-              ---
+              {{ counts.assignments }}
             </p>
           </div>
         </div>
@@ -65,7 +68,7 @@
               Exams Added
             </p>
             <p>
-              ---
+              {{ counts.exams }}
             </p>
           </div>
         </div>
@@ -75,7 +78,7 @@
               Work Blocks Scheduled
             </p>
             <p>
-              ---
+              {{ counts.blocks }}
             </p>
           </div>
         </div>
@@ -103,6 +106,15 @@
 export default {
   name: 'AdminStudentListOverview',
   props: ['student'],
+  data () {
+    return {
+      counts: {
+        assignments: 0,
+        exams: 0,
+        blocks: 0
+      }
+    };
+  },
   computed: {
     setupCheckNames () {
       return {
@@ -119,6 +131,14 @@ export default {
         unavailability: this.student.setup.unavailability.length > 0,
         integrations: this.student.setup.integrations
       };
+    }
+  },
+  methods: {
+    async getStats () {
+      let request;
+
+      request = await this.$http.get(`/students/${this.student._id}`, { params: { counts: true } });
+      this.counts = request.data.counts;
     }
   }
 };
