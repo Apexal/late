@@ -5,62 +5,65 @@
       v-else
       class="section"
     >
-      <section class="section">
-        <h1
-          class="is-size-2 title"
-          style="text-align: center"
-        >
-          Welcome to LATE
-        </h1>
-        <hr>
-        <div
-          class="column"
-          style="margin-left: 10em; max-width: 50em;"
-        >
-          <div class="columns about">
-            <img src="/availability.png">
-            <p class="right">
-              Tell us when you would like to work.
-            </p>
-          </div>
-
-          <div class="columns about">
-            <p class="left">
-              Easily add your RPI class schedule by letting us grab the information from SIS. No more manual schedule setting. Reimport your schedule when you add or drop a class and we take care of the rest.
-            </p>
-            <img src="/importSchedule.png">
-          </div>
-
-
-          <div class="columns about">
-            <img src="/addAssignments.png">
-            <p class="right">
-              Quickly be able to add, edit, and delete assignments for your classes.
-            </p>
-          </div>
-
-          <div class="columns about">
-            <p class="left">
-              See a clear list of all upcoming assignments and tests.
-            </p>
-            <img src="/upcomingAssignments.png">
-          </div>
-
-          <div class="columns about">
-            <img src="/dailyWorkSchedule.png">
-            <p class="right">
-              See a clear layout of your day! Just follow the list and let yourself be the lazy student you always dreamed of.
-            </p>
-          </div>
-
-          <div class="columns about">
-            <p class="left">
-              We will notify you when it is time to work. You wont ever have to think about whether or not you <i>should</i> be working on something
-            </p>
-            <img src="/notify.png">
-          </div>
+      <div class="notification is-warning">
+        <b>NOTICE:</b>&nbsp;<b>LATE</b> will soon be switching to closed BETA. New users will have to reach out to the <a href="mailto:matraf@rpi.edu">
+          Project Head
+        </a> to request access as a BETA tester.
+      </div>
+      <h1
+        class="is-size-2 title"
+        style="text-align: center"
+      >
+        Welcome to LATE
+      </h1>
+      <hr>
+      <div
+        class="column"
+        style="margin-left: 10em; max-width: 50em;"
+      >
+        <div class="columns about">
+          <img src="/availability.png">
+          <p class="right">
+            Tell us when you would like to work.
+          </p>
         </div>
-      </section>
+
+        <div class="columns about">
+          <p class="left">
+            Easily add your RPI class schedule by letting us grab the information from SIS. No more manual schedule setting. Reimport your schedule when you add or drop a class and we take care of the rest.
+          </p>
+          <img src="/importSchedule.png">
+        </div>
+
+
+        <div class="columns about">
+          <img src="/addAssignments.png">
+          <p class="right">
+            Quickly be able to add, edit, and delete assignments for your classes.
+          </p>
+        </div>
+
+        <div class="columns about">
+          <p class="left">
+            See a clear list of all upcoming assignments and tests.
+          </p>
+          <img src="/upcomingAssignments.png">
+        </div>
+
+        <div class="columns about">
+          <img src="/dailyWorkSchedule.png">
+          <p class="right">
+            See a clear layout of your day! Just follow the list and let yourself be the lazy student you always dreamed of.
+          </p>
+        </div>
+
+        <div class="columns about">
+          <p class="left">
+            We will notify you when it is time to work. You wont ever have to think about whether or not you <i>should</i> be working on something
+          </p>
+          <img src="/notify.png">
+        </div>
+      </div>
     </section>
   </div>
 </template>

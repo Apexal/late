@@ -1,6 +1,9 @@
 const logger = require('../../modules/logger');
 
 const Student = require('./students.model');
+const Assignment = require('../assignments/assignments.model');
+const Exam = require('../exams/exams.model');
+const Block = require('../blocks/blocks.model');
 
 /**
  * Only available in development mode. Login as a user given their ID.
@@ -40,7 +43,37 @@ async function getUser (ctx) {
   });
 }
 
+async function getStudents (ctx) {
+  if (!ctx.state.user.admin) return ctx.forbidden('You are not an administrator!');
+
+  logger.info(`Getting all students for ${ctx.state.user.rcs_id}`);
+  let students = await Student.find();
+  ctx.ok({ students });
+}
+
+async function getStudent (ctx) {
+  if (!ctx.state.user.admin) return ctx.forbidden('You are not an administrator!');
+  const studentID = ctx.params.studentID;
+
+  logger.info(`Getting student ${studentID} for ${ctx.state.user.rcs_id}`);
+  let student = await Student.findById(studentID);
+  if (!student) {
+    logger.error(`Failed to find student ${studentID} for ${ctx.state.user.rcs_id}`);
+    return ctx.notFound(`Student ${studentID} not found.`);
+  }
+  let counts = {};
+  if (ctx.query.counts) {
+    // Also get stats
+    counts.assignments = await Assignment.count({ _student: studentID });
+    counts.exams = await Exam.count({ _student: studentID });
+    counts.blocks = await Block.count({ _student: studentID });
+  }
+  ctx.ok({ student, counts });
+}
+
 module.exports = {
   loginAs,
-  getUser
+  getUser,
+  getStudent,
+  getStudents
 };
