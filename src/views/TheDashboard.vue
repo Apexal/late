@@ -34,14 +34,14 @@ export default {
     return {
       calendar: {
         header: {
-
+          center: 'agendaFiveDay, agendaWeek'
         },
         config: {
           views: {
             agendaFiveDay: {
               type: 'agenda',
               duration: { days: 5 },
-              buttonText: 'Week'
+              buttonText: '5-Day Agenda'
             }
           },
           validRange: {
@@ -77,7 +77,8 @@ export default {
             today: 'Today',
             day: 'Daily Agenda',
             month: 'Month Overview',
-            agendaWeek: 'Weekly Agenda'
+            agendaFiveDay: '5-Day',
+            agendaWeek: 'Full Week'
           },
           /* dayClick: (date, jsEvent, view) => {
             // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);

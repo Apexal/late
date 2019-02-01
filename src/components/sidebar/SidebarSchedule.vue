@@ -25,7 +25,8 @@
         v-for="event in filteredTodaysAgenda"
         :key="event.title + '-' + event.start.toString()"
         class="panel-block event is-size-7"
-        :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event) }"
+        :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event), 'clickable': event.link }"
+        @click="eventClicked(event)"
       >
         <span class="is-full-width">
           <span
@@ -36,7 +37,6 @@
           <span
             class="event-title tooltip is-tooltip-right"
             :data-tooltip="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
-            @click="eventClicked(event)"
           >
             {{ event.title }}
           </span>
@@ -169,7 +169,9 @@ export default {
 
 <style lang='scss' scoped>
 .event {
-  cursor: pointer;
+  &.clickable {
+    cursor: pointer;
+  }
   &.has-background-success {
     font-weight: bold;
     color: white;

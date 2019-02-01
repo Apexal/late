@@ -133,6 +133,7 @@ export default {
 
       const offset = 110;
       window.addEventListener('scroll', () => {
+        if (!document.getElementById('sidebar')) return; // Sidebar is collapsed
         if (window.pageYOffset > 0) {
           let pixels = Math.max(offset - window.pageYOffset, 0) + 55; // Min of 55px
           document.getElementById('sidebar').style.top = pixels + 'px';
@@ -182,7 +183,7 @@ export default {
     onResize () {
       if (document.getElementById('sidebar-column')) {
         document.getElementById('sidebar').style.width =
-          document.getElementById('sidebar-column').offsetWidth + 'px';
+          (document.getElementById('sidebar-column').offsetWidth - 15) + 'px';
       }
     }
   }
@@ -203,7 +204,7 @@ export default {
 }
 
 .toggle-sidebar {
-  z-index: 10;
+  z-index: 4;
   position: absolute;
 
   //Styling the toggle button to fit the theme

@@ -16,10 +16,19 @@ async function loginAs (ctx) {
   ctx.session.cas_user = rcsID;
   logger.info(`Logging in as ${rcsID}`);
 
-  ctx.state.user = await Student.findOne()
+  let student = await Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec();
-
+  if (!student) {
+    student = Student({
+      rcs_id: ctx.session.cas_user,
+      joined_date: new Date(),
+      last_login: new Date()
+    });
+    await student.save();
+    logger.info('Created new user for testing.');
+  }
+  ctx.state.user = student;
   await getUser(ctx);
 }
 
@@ -31,13 +40,7 @@ async function getUser (ctx) {
   });
 }
 
-/*
-async function getStudent (ctx) {
-
-}
-*/
 module.exports = {
   loginAs,
   getUser
-  // getStudent
 };

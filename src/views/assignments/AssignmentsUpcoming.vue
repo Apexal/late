@@ -69,8 +69,7 @@
                 <i class="far fa-clock" />
               </span>
               <small
-                :data-tooltip="'in ' + hoursFromNow(a.dueDate) + ' hours'"
-                class="tooltip is-tooltip-left is-pulled-right has-text-grey"
+                class="is-pulled-right has-text-grey"
               >
                 {{ toTimeString(a.dueDate) }}
               </small>
@@ -156,9 +155,6 @@ export default {
     toTimeString (dueDate) {
       return moment(dueDate).format('h:mma');
     },
-    hoursFromNow (date) {
-      return moment(date).diff(this.now, 'hours');
-    },
     daysAway (date) {
       return moment(date).diff(moment(this.now).startOf('day'), 'days');
     }
@@ -167,10 +163,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.course-title {
-  margin-right: 5px;
-}
-
 .assignment {
   padding-right: 5px;
   padding-left: 5px;
