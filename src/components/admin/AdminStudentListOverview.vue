@@ -45,6 +45,21 @@
         </tbody>
       </table>
     </div>
+
+    <div class="student-actions">
+      <hr>
+      <div class="buttons has-addons">
+        <button class="button is-small">
+          Email
+        </button>
+        <button class="button is-info is-small">
+          View Profile
+        </button>
+        <button class="button is-danger is-small">
+          Lock Account
+        </button>
+      </div>
+    </div>
   </details>
 </template>
 
