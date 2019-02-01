@@ -46,6 +46,42 @@
       </table>
     </div>
 
+    <div class="content-stats">
+      <hr>
+      <div class="level is-mobile">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">
+              Assignments Added
+            </p>
+            <p>
+              ---
+            </p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">
+              Exams Added
+            </p>
+            <p>
+              ---
+            </p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">
+              Work Blocks Scheduled
+            </p>
+            <p>
+              ---
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="student-actions">
       <hr>
       <div class="buttons has-addons">

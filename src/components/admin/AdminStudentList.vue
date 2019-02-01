@@ -4,6 +4,14 @@
       User List
       <small class="is-pulled-right has-text-grey">
         {{ students.length }} total
+
+        <button
+          class="button"
+          :class="{ 'is-loading': loading }"
+          @click="$emit('refresh-students')"
+        >
+          Refresh
+        </button>
       </small>
     </h2>
 
@@ -63,7 +71,7 @@ import AdminStudentListOverview from '@/components/admin/AdminStudentListOvervie
 export default {
   name: 'AdminStudentList',
   components: { AdminStudentListOverview },
-  props: ['sortBy', 'sortAscending', 'students']
+  props: ['loading', 'sortBy', 'sortAscending', 'students']
 
 };
 </script>

@@ -7,11 +7,13 @@
       Administrator Control Panel
     </h1>
     <AdminStudentList
+      :loading="loadingStudents"
       :students="students"
       :sort-by="sortBy"
       :sort-ascending="sortAscending"
       @sort-by="sortBy = $event"
       @sort-ascending="sortAscending = $event"
+      @refresh-students="getStudents()"
     />
   </section>
 </template>
@@ -24,6 +26,7 @@ export default {
   components: { AdminStudentList },
   data () {
     return {
+      loadingStudents: true,
       sortBy: 'joined_date',
       sortAscending: true,
       students: []
@@ -60,17 +63,20 @@ export default {
       });
     },
     async getStudents () {
+      this.loadingStudents = true;
       let request;
       try {
         request = await this.$http.get('/students');
       } catch (e) {
         this.$toasted.error(e.response.data.message);
         this.students = [];
+        this.loadingStudents = false;
         return;
       }
 
       this.students = request.data.students;
       this.sortStudents();
+      this.loadingStudents = false;
     }
   }
 };
