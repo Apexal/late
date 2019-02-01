@@ -59,7 +59,7 @@
               class="switch"
             >
             <label for="agenda-show-passed">
-              Show Passed
+              Show Previous Classes
             </label>
           </div>
         </span>

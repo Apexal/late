@@ -10,7 +10,9 @@
         v-if="pressing.length == 0"
         class="panel-block has-text-grey"
       >
-        <span>No pressing assignments!</span>
+        <span style="text-align: center;width: 100%;">
+          No pressing assignments!
+        </span>
       </div>
       <transition-group
         name="list"
@@ -61,7 +63,7 @@
             class="button is-link is-small is-outlined is-pulled-right"
             to="/assignments"
           >
-            Browse
+            View Assignments
           </router-link>
         </span>
       </div>
