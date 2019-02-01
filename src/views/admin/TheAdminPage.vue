@@ -61,7 +61,13 @@ export default {
     },
     async getStudents () {
       let request;
-      request = await this.$http.get('/students');
+      try {
+        request = await this.$http.get('/students');
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.students = [];
+        return;
+      }
 
       this.students = request.data.students;
       this.sortStudents();

@@ -73,6 +73,18 @@
               Dashboard
             </router-link>
 
+            <router-link
+              v-if="user.admin"
+              class="navbar-item"
+              to="/admin"
+              title="View the administrator page."
+            >
+              <span class="icon">
+                <i class="fas fa-user-lock" />
+              </span>
+              Administrators
+            </router-link>
+
             <template v-if="loggedIn">
               <div
                 v-if="!onBreak"
