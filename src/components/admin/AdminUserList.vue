@@ -4,13 +4,21 @@
       User List
     </h2>
 
-    <div class="users">
+    <div class="users columns is-multiline">
       <div
-        v-for="user in users"
-        :key="user._id"
-        class="box user"
+        v-for="student in students"
+        :key="student._id"
+        class="column is-half"
       >
-        {{ user.rcs_id }}
+        <div class="box user">
+          {{ student.display_name }}
+          <a
+            class="has-text-grey"
+            :href="'mailto:' + student.rcs_id + '@rpi.edu'"
+          >
+            {{ student.rcs_id + '@rpi.edu' }}
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -19,7 +27,8 @@
 <script>
 export default {
   name: 'AdminUserList',
-  props: ['users']
+  props: ['students']
+
 };
 </script>
 

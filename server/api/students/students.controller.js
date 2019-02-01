@@ -40,7 +40,17 @@ async function getUser (ctx) {
   });
 }
 
+async function getStudents (ctx) {
+  // if (!ctx.state.user.admin) return ctx.forbidden('You are not an administrator!');
+
+  logger.info(`Getting all students for ${ctx.state.user.rcs_id}`);
+  let students;
+  students = await Student.find();
+  ctx.ok({ students });
+}
+
 module.exports = {
   loginAs,
-  getUser
+  getUser,
+  getStudents
 };
