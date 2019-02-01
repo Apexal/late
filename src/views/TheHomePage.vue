@@ -59,7 +59,7 @@
 
         <div class="columns about">
           <p class="left">
-            We will notify you when it is time to work. You wont ever have to think about whether or not you <i>should</i> be working on something
+            We will notify you when it is time to work. You won't ever have to think about whether or not you <i>should</i> be working on something
           </p>
           <img src="/notify.png">
         </div>
