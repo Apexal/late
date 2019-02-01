@@ -57,9 +57,7 @@
             <p class="heading">
               Assignments Added
             </p>
-            <p>
-              {{ counts.assignments }}
-            </p>
+            <p>{{ counts.assignments }}</p>
           </div>
         </div>
         <div class="level-item has-text-centered">
@@ -67,9 +65,7 @@
             <p class="heading">
               Exams Added
             </p>
-            <p>
-              {{ counts.exams }}
-            </p>
+            <p>{{ counts.exams }}</p>
           </div>
         </div>
         <div class="level-item has-text-centered">
@@ -77,12 +73,23 @@
             <p class="heading">
               Work Blocks Scheduled
             </p>
-            <p>
-              {{ counts.blocks }}
-            </p>
+            <p>{{ counts.blocks }}</p>
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="dates">
+      <hr>
+      <span>
+        <b>Joined:</b>
+        {{ joinedDateString(student.joined_date) }}
+      </span>
+      <br>
+      <span>
+        <b>Last Login:</b>
+        {{ joinedDateString(student.last_login) }}
+      </span>
     </div>
 
     <div class="student-actions">
@@ -103,6 +110,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   name: 'AdminStudentListOverview',
   props: ['student'],
@@ -134,10 +143,15 @@ export default {
     }
   },
   methods: {
+    joinedDateString (date) {
+      return moment(date).format('M/D/YY h:mm a');
+    },
     async getStats () {
       let request;
 
-      request = await this.$http.get(`/students/${this.student._id}`, { params: { counts: true } });
+      request = await this.$http.get(`/students/${this.student._id}`, {
+        params: { counts: true }
+      });
       this.counts = request.data.counts;
     }
   }
@@ -151,6 +165,7 @@ export default {
   }
 
   .setup-checks {
+    overflow: auto;
     .fa.fa-check {
       color: green;
     }
