@@ -101,8 +101,12 @@
             Course
           </th>
           <th>Assignment</th>
-          <th>Completed</th>
-          <th />
+          <th>
+            <span class="is-hidden-touch">
+              Completed
+            </span>
+          </th>
+          <th class="is-hidden-touch" />
         </tr>
       </thead>
       <tbody>
@@ -154,7 +158,7 @@
               />
             </span>
           </td>
-          <td>
+          <td class="is-hidden-touch">
             <button
               class="button is-danger tooltip"
               data-tooltip="Remove Assignment"
@@ -170,7 +174,8 @@
       v-if="filtered.length === 0"
       class="has-text-centered has-text-grey"
     >
-      There were no assignments this month<i v-if="filter.length > 0 || !showCompleted">
+      There were no assignments this month
+      <i v-if="filter.length > 0 || !showCompleted">
         with filters
       </i>.
     </p>
@@ -236,7 +241,10 @@ export default {
       return this.currentAssignments.filter(a => {
         if (!this.showCompleted && a.completed) return false;
         if (this.assignmentFilter.length > 0) {
-          return !this.filter.includes(this.course(a).crn) && a.title.toLowerCase().includes(this.assignmentFilter.toLowerCase());
+          return (
+            !this.filter.includes(this.course(a).crn) &&
+            a.title.toLowerCase().includes(this.assignmentFilter.toLowerCase())
+          );
         }
         return !this.filter.includes(this.course(a).crn);
       });
@@ -260,7 +268,9 @@ export default {
       // This handles the API call and state update
       await this.$http.delete(`/assignments/a/${assignment._id}`);
 
-      this.currentAssignments = this.currentAssignments.filter(a => a._id !== assignment._id);
+      this.currentAssignments = this.currentAssignments.filter(
+        a => a._id !== assignment._id
+      );
 
       // Notify user of success
       this.$toasted.success(
