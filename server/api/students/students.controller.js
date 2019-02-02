@@ -71,9 +71,17 @@ async function getStudent (ctx) {
   ctx.ok({ student, counts });
 }
 
+async function getStudentCounts (ctx) {
+  let testers = await Student.count({ accountLocked: false });
+  let waitlist = await Student.count({ accountLocked: true });
+
+  return ctx.ok({ waitlist, testers });
+}
+
 module.exports = {
   loginAs,
   getUser,
   getStudent,
-  getStudents
+  getStudents,
+  getStudentCounts
 };

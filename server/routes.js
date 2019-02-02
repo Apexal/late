@@ -10,6 +10,7 @@ module.exports = router => {
     async function (ctx, next) {
       if (
         !ctx.request.url.startsWith('/api/students/loginas') &&
+        !ctx.request.url.startsWith('/api/students/counts') &&
         !ctx.session.cas_user
       ) {
         return ctx.unauthorized('You must be logged in to use the API.');

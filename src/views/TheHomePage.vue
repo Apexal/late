@@ -5,10 +5,26 @@
       v-else
       class="section"
     >
-      <div class="notification is-warning">
-        <b>NOTICE:</b>&nbsp;<b>LATE</b> will soon be switching to closed BETA. New users will have to reach out to the <a href="mailto:matraf@rpi.edu">
-          Project Head
-        </a> to request access as a BETA tester.
+      <div
+        v-if="waitlisted"
+        class="notification is-info"
+      >
+        <b>WAIT LIST</b> You are currently on the wait list and will be notified by email once LATE opens to the student body. Reach out to the <a href="mailto:matraf@rpi.edu">
+          project lead
+        </a> if you have any questions, or join the <a
+          target="_blank"
+          href="https://discord.gg/2GUKcHg"
+        >
+          Discord server.
+        </a>
+      </div>
+      <div
+        v-else
+        class="notification is-warning"
+      >
+        <b>LATE</b> is currently in closed BETA and is not available to the general student body yet. Interested students can be added to the wait list by <a href="/auth/login">
+          logging in
+        </a> and will be notified as soon as the website is ready to publicly launch.
       </div>
       <h1
         class="is-size-2 title"
@@ -16,6 +32,11 @@
       >
         Welcome to LATE
       </h1>
+      <h2 class="subtitle has-text-grey has-text-centered">
+        <b>{{ testers }}</b> Current Testers
+        |
+        <b>{{ waitlist }}</b> {{ waitlist === 1 ? 'Student' : 'Students' }} on Wait List
+      </h2>
       <hr>
       <div
         class="column"
@@ -70,12 +91,33 @@
 
 <script>
 import TheDashboard from '@/views/TheDashboard';
+import { setTimeout } from 'timers';
 
 export default {
   name: 'TheHomePage',
   components: { TheDashboard },
+  data () {
+    return {
+      testers: 0,
+      waitlist: 0
+    };
+  },
   computed: {
-    loggedIn () { return this.$store.state.auth.isAuthenticated; }
+    loggedIn () { return this.$store.state.auth.isAuthenticated; },
+    waitlisted () {
+      return !!this.$route.query.waitlisted;
+    }
+  },
+  async created () {
+    await this.getCounts();
+    setTimeout(this.getCounts, 1000 * 60 * 15); // 15 minutes
+  },
+  methods: {
+    async getCounts () {
+      let request = await this.$http.get('/students/counts');
+      this.testers = request.data.testers;
+      this.waitlist = request.data.waitlist;
+    }
   }
 };
 </script>
