@@ -5,7 +5,23 @@
       v-else
       class="section"
     >
-      <div class="notification is-warning">
+      <div
+        v-if="waitlisted"
+        class="notification is-info"
+      >
+        <b>WAIT LIST</b> You are currently on the wait list and will be notified by email once LATE opens to the student body. Reach out to the <a href="mailto:matraf@rpi.edu">
+          project lead
+        </a> if you have any questions, or join the <a
+          target="_blank"
+          href="https://discord.gg/2GUKcHg"
+        >
+          Discord server.
+        </a>
+      </div>
+      <div
+        v-else
+        class="notification is-warning"
+      >
         <b>NOTICE:</b>&nbsp;<b>LATE</b> will soon be switching to closed BETA. New users will have to reach out to the <a href="mailto:matraf@rpi.edu">
           Project Head
         </a> to request access as a BETA tester.
@@ -75,7 +91,10 @@ export default {
   name: 'TheHomePage',
   components: { TheDashboard },
   computed: {
-    loggedIn () { return this.$store.state.auth.isAuthenticated; }
+    loggedIn () { return this.$store.state.auth.isAuthenticated; },
+    waitlisted () {
+      return !!this.$route.query.waitlisted;
+    }
   }
 };
 </script>
