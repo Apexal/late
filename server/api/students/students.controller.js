@@ -71,9 +71,18 @@ async function getStudent (ctx) {
   ctx.ok({ student, counts });
 }
 
+async function getWaitList (ctx) {
+  let waitlist = await Student.find({ accountLocked: true });
+
+  let usernames = waitlist.map(s => s.rcs_id);
+
+  return ctx.ok({ waitlist: usernames });
+}
+
 module.exports = {
   loginAs,
   getUser,
   getStudent,
-  getStudents
+  getStudents,
+  getWaitList
 };
