@@ -4,7 +4,7 @@ const router = new Router();
 const Ctrl = require('./students.controller');
 
 router.get('/', Ctrl.getStudents);
-router.get('/waitlist', Ctrl.getWaitList);
+router.get('/counts', Ctrl.getStudentCounts);
 router.get('/user', Ctrl.getUser);
 router.get('/loginas', Ctrl.loginAs);
 router.get('/:studentID', Ctrl.getStudent);
