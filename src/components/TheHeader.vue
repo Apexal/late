@@ -305,7 +305,10 @@ export default {
 
 #top-navbar {
   //Pushes the left and right navbar menus slightly off the edges of the screen.
-  padding: 0px 1em 0px 1em;
+  padding: 0;
+  padding-right: 80px;
+  transition: padding-right 0.2s;
+
   .navbar-item {
     span.icon {
       margin-right: 3px;
@@ -334,12 +337,17 @@ header.sticky {
   }
   margin-bottom: 50px;
   #logo {
-    display: block;
+    opacity: 1;
+  }
+  #top-navbar {
+    padding-right: 10px;
   }
 }
 
 #logo {
-  display: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+
   font-size: 1.6rem;
   font-weight: 600;
 }
