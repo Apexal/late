@@ -195,6 +195,7 @@ export default {
   }
 
   .sidebar-body {
+    overflow-x: hidden;
     overflow-y: auto;
     max-height: 50vh;
   }
