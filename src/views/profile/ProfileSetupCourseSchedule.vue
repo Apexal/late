@@ -156,12 +156,12 @@
         <h2 class="subtitle">
           Your Courses
           <small class="has-text-grey">
-            {{ courses.length }} total
+            {{ coursesWithoutOther.length }} total
           </small>
         </h2>
         <div class="course-list">
           <ProfileCourse
-            v-for="c in courses"
+            v-for="c in coursesWithoutOther"
             :key="c.crn"
             :course="c"
             @update-course="updatedCourse"
@@ -211,6 +211,9 @@ export default {
     },
     courses () {
       return this.$store.getters.current_schedule;
+    },
+    coursesWithoutOther () {
+      return this.courses.filter(c => c.summary !== 'OTHER');
     }
   },
   created () {
