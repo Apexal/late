@@ -309,7 +309,7 @@ export default {
       courseData: Object.assign({}, this.course),
       editedPeriods: JSON.parse(JSON.stringify(this.course.periods)),
       editing: false,
-      periodTypes: ['LEC', 'STU', 'TES', 'REC'],
+      periodTypes: ['LEC', 'REC', 'LAB', 'TES', 'STU'],
       newPeriod: {
         day: 1,
         start: '08:00',
@@ -342,6 +342,7 @@ export default {
   watch: {
     course (newCourse) {
       this.courseData = Object.assign({}, this.course);
+      this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
     }
   },
   methods: {
