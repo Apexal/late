@@ -158,7 +158,7 @@
             >
               <td>
                 <select
-                  v-model="p.day"
+                  v-model.number="p.day"
                   required
                 >
                   <option
@@ -220,7 +220,7 @@
           <tfoot>
             <tr>
               <td>
-                <select v-model="newPeriod.day">
+                <select v-model.number="newPeriod.day">
                   <option
                     v-for="i in 7"
                     :key="i"
@@ -245,7 +245,7 @@
               </td>
               <td>
                 <input
-                  v-model="newPeriod.location"
+                  v-model.trim="newPeriod.location"
                   type="text"
                   placeholder="Location of new period."
                 >
@@ -413,12 +413,21 @@ export default {
       );
 
       this.$toasted.show(
-        `Removed ${this.type(periodToRemove.type)} period from ${
+        `${this.type(periodToRemove.type)} period will be removed from ${
           this.courseData.longname
-        }.`
+        } when you save.`
       );
     },
     addPeriod () {
+      // Validate
+      if (
+        this.newPeriod.location.length === 0 ||
+        !this.newPeriod.start ||
+        !this.newPeriod.end
+      ) {
+        this.$toasted.error('Make sure the time and location is set!');
+        return;
+      }
       // Remeber to convert start/end from HH:mm to Hmm
       this.editedPeriods.push(
         Object.assign({}, this.newPeriod, {
@@ -428,9 +437,9 @@ export default {
       );
 
       this.$toasted.success(
-        `Added new ${this.type(this.newPeriod.type)} period to ${
+        `New ${this.type(this.newPeriod.type)} period will be added ${
           this.courseData.longname
-        }`
+        } when you save.`
       );
 
       this.newPeriod = {
