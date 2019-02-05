@@ -194,6 +194,12 @@ export default {
     background-color: white;
   }
 
+  .sidebar-body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 50vh;
+  }
+
   position: fixed;
 
   @media only screen and (max-width: 768px) {
