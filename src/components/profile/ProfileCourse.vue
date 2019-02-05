@@ -6,11 +6,14 @@
           class="is-clearfix is-unselectable"
           style="cursor:pointer;"
         >
+          <span class="has-text-grey">
+            {{ courseData.summary }}
+          </span>
           {{ courseData.longname }}
           <small
             class="has-text-grey"
           >
-            {{ courseData.periods.length }} periods
+            {{ courseData.periods.length }} periods | {{ courseData.links.length }} links
           </small>
           <span
             class="tag is-pulled-right"
@@ -124,10 +127,10 @@
               v-model="courseData.color"
               type="color"
               class="input course-color-input"
+              required
             >
           </div>
         </div>
-
 
         <label :for="'course-links-' + elementID">
           Links
@@ -137,6 +140,78 @@
           v-model="courseData.links"
           placeholder="Put links to courses here! Hit Enter after each link."
         />
+
+        <table class="table is-full-width">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Time</th>
+              <th>Location</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="p in editedPeriods"
+              :key="p.day + p.start"
+            >
+              <td>
+                <select
+                  v-model="p.day"
+                  required
+                >
+                  <option
+                    v-for="i in 6"
+                    :key="i"
+                    :value="i - 1"
+                  >
+                    {{ day(i-1) }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <input
+                  :value="formatToInputTime(p.start)"
+                  type="time"
+                  required
+                  @change="changePeriodTime(p, 'start', $event.target.value)"
+                >
+                <span class="has-text-grey-light">
+                  -
+                </span>
+                <input
+                  :value="formatToInputTime(p.end)"
+                  type="time"
+                  required
+                  @change="changePeriodTime(p, 'end', $event.target.value)"
+                >
+              </td>
+              <td>
+                <input
+                  v-model="p.location"
+                  type="text"
+                  :placeholder="p.location"
+                  required
+                >
+              </td>
+              <td>
+                <select
+                  v-model="p.type"
+                  required
+                >
+                  <option
+                    v-for="t in periodTypes"
+                    :key="t"
+                    :value="t"
+                  >
+                    {{ type(t) }}
+                  </option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
         <button
           type="button"
           class="button is-warning"
@@ -173,18 +248,29 @@ export default {
     return {
       open: false,
       courseData: Object.assign({}, this.course),
-      editing: false
+      editedPeriods: JSON.parse(JSON.stringify(this.course.periods)),
+      editing: false,
+      periodTypes: ['LEC', 'STU', 'TES', 'REC']
     };
   },
   computed: {
-    elementID () { return this.courseData.summary.replace(' ', '').toLowerCase(); },
+    elementID () {
+      return this.courseData.summary.replace(' ', '').toLowerCase();
+    },
     sortedPeriods () {
       return this.courseData.periods
         .concat()
         .sort((a, b) => parseInt(a.day) - parseInt(b.day));
     },
     saved () {
-      return JSON.stringify(this.course) === JSON.stringify(this.courseData);
+      return (
+        JSON.stringify(this.course) ===
+        JSON.stringify(
+          Object.assign(this.courseData, {
+            periods: this.editedPeriods
+          })
+        )
+      );
     }
   },
   watch: {
@@ -193,6 +279,9 @@ export default {
     }
   },
   methods: {
+    changePeriodTime (p, startOrEnd, inputFormat) {
+      p[startOrEnd] = moment(inputFormat, 'HH:mm', true).format('Hmm');
+    },
     day: num =>
       [
         'Sunday',
@@ -212,11 +301,14 @@ export default {
       }
       return dt.format('h:mma');
     },
+    formatToInputTime: oldFormat =>
+      moment(oldFormat, 'Hmm', true).format('HH:mm'),
     type (pType) {
       return this.$store.getters.periodType(pType);
     },
     cancel () {
       this.courseData = Object.assign({}, this.course);
+      this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
       this.editing = false;
     },
     async save () {
@@ -224,9 +316,17 @@ export default {
         this.courseData.longname.length === 0 ||
         this.courseData.section_id.length === 0
       ) {
+        this.$toasted.error(
+          'You cannot set an empty name or section for a course!'
+        );
         return;
       }
-      this.$emit('update-course', this.courseData);
+      this.$emit(
+        'update-course',
+        Object.assign(this.courseData, {
+          periods: this.editedPeriods
+        })
+      );
       this.editing = false;
       this.open = true;
     }
@@ -263,8 +363,13 @@ export default {
 }
 
 .course-edit {
-  p { margin-top: 5px; }
+  p {
+    margin-top: 5px;
+  }
   //Button readability and interactivity
-  button { margin-top: 10px; margin-right: 10px; }
+  button {
+    margin-top: 10px;
+    margin-right: 10px;
+  }
 }
 </style>

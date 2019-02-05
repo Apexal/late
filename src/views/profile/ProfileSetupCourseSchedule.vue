@@ -10,7 +10,7 @@
     <template v-else>
       <h2 class="is-size-4 integration-note">
         What is your
-        <b>{{ currentTerm.name }}</b> schedule?
+        <b>{{ currentTerm.name }}</b> course schedule?
       </h2>
       <form
         class="box"
@@ -22,7 +22,7 @@
               style="display: inline-block; cursor: pointer;"
               class="subtitle is-unselectable"
             >
-              Automatically Set Your Course Schedule
+              <b>Import Schedule from SIS</b>
             </h2>
           </summary>
 
@@ -155,20 +155,20 @@
       <template v-else>
         <h2 class="subtitle">
           Your Courses
+          <small class="has-text-grey">
+            {{ courses.length }} total
+          </small>
         </h2>
-        <div class="columns is-multiline course-list">
-          <div
+        <div class="course-list">
+          <ProfileCourse
             v-for="c in courses"
             :key="c.crn"
-            class="column is-half"
-          >
-            <ProfileCourse
-              :course="c"
-              @update-course="updatedCourse"
-            />
-          </div>
+            :course="c"
+            @update-course="updatedCourse"
+          />
         </div>
       </template>
+      <hr>
       <router-link
         to="/profile/unavailability"
         class="button is-primary"
