@@ -41,8 +41,8 @@
       <div v-else>
         <p>
           Direct message
-                 <b>LATE bot</b>
-                 <code>.verify {{ verificationCode }}</code> to link your account!
+          <b>LATE bot</b>
+          <code>.verify {{ verificationCode }}</code> to link your account!
         </p>
         <br>
         <button

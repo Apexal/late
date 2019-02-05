@@ -148,6 +148,7 @@
               <th>Time</th>
               <th>Location</th>
               <th>Type</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -207,6 +208,12 @@
                     {{ type(t) }}
                   </option>
                 </select>
+              </td>
+              <td>
+                <i
+                  class="fa fa-times has-text-danger remove-period"
+                  @click="removePeriod(p)"
+                />
               </td>
             </tr>
           </tbody>
@@ -329,6 +336,26 @@ export default {
       );
       this.editing = false;
       this.open = true;
+    },
+    removePeriod (periodToRemove) {
+      if (
+        !confirm(
+          `Remove ${periodToRemove.start} ${this.type(
+            periodToRemove.type
+          )} period on ${this.day(periodToRemove.day)}?`
+        )
+      ) { return; }
+
+      // Remove period by filtering by CRN
+      this.editedPeriods = this.editedPeriods.filter(
+        p => !(p.day === periodToRemove.day && p.start === periodToRemove.start)
+      );
+
+      this.$toasted.show(
+        `Removed ${this.type(periodToRemove.type)} period from ${
+          this.courseData.longname
+        }.`
+      );
     }
   }
 };
@@ -370,6 +397,10 @@ export default {
   button {
     margin-top: 10px;
     margin-right: 10px;
+  }
+
+  .remove-period {
+    cursor: pointer;
   }
 }
 </style>
