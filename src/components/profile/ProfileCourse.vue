@@ -162,7 +162,7 @@
                   required
                 >
                   <option
-                    v-for="i in 6"
+                    v-for="i in 7"
                     :key="i"
                     :value="i - 1"
                   >
@@ -209,7 +209,7 @@
                   </option>
                 </select>
               </td>
-              <td>
+              <td title="Remove period.">
                 <i
                   class="fa fa-times has-text-danger remove-period"
                   @click="removePeriod(p)"
@@ -217,6 +217,58 @@
               </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                <select v-model="newPeriod.day">
+                  <option
+                    v-for="i in 7"
+                    :key="i"
+                    :value="i - 1"
+                  >
+                    {{ day(i-1) }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <input
+                  v-model="newPeriod.start"
+                  type="time"
+                >
+                <span class="has-text-grey-light">
+                  -
+                </span>
+                <input
+                  v-model="newPeriod.end"
+                  type="time"
+                >
+              </td>
+              <td>
+                <input
+                  v-model="newPeriod.location"
+                  type="text"
+                  placeholder="Location of new period."
+                >
+              </td>
+              <td>
+                <select v-model="newPeriod.type">
+                  <option
+                    v-for="t in periodTypes"
+                    :key="t"
+                    :value="t"
+                  >
+                    {{ type(t) }}
+                  </option>
+                </select>
+              </td>
+              <td title="Add period.">
+                <i
+                  class="fa fa-plus has-text-success add-period"
+                  @click="addPeriod"
+                />
+              </td>
+            </tr>
+          </tfoot>
         </table>
 
         <button
@@ -257,7 +309,14 @@ export default {
       courseData: Object.assign({}, this.course),
       editedPeriods: JSON.parse(JSON.stringify(this.course.periods)),
       editing: false,
-      periodTypes: ['LEC', 'STU', 'TES', 'REC']
+      periodTypes: ['LEC', 'STU', 'TES', 'REC'],
+      newPeriod: {
+        day: 1,
+        start: '08:00',
+        end: '09:50',
+        location: '',
+        type: 'LEC'
+      }
     };
   },
   computed: {
@@ -344,9 +403,11 @@ export default {
             periodToRemove.type
           )} period on ${this.day(periodToRemove.day)}?`
         )
-      ) { return; }
+      ) {
+        return;
+      }
 
-      // Remove period by filtering by CRN
+      // Remove period by filtering by day and start time
       this.editedPeriods = this.editedPeriods.filter(
         p => !(p.day === periodToRemove.day && p.start === periodToRemove.start)
       );
@@ -356,6 +417,29 @@ export default {
           this.courseData.longname
         }.`
       );
+    },
+    addPeriod () {
+      // Remeber to convert start/end from HH:mm to Hmm
+      this.editedPeriods.push(
+        Object.assign({}, this.newPeriod, {
+          start: moment(this.newPeriod.start, 'HH:mm', true).format('Hmm'),
+          end: moment(this.newPeriod.end, 'HH:mm', true).format('Hmm')
+        })
+      );
+
+      this.$toasted.success(
+        `Added new ${this.type(this.newPeriod.type)} period to ${
+          this.courseData.longname
+        }`
+      );
+
+      this.newPeriod = {
+        day: 1,
+        start: '08:00',
+        end: '09:50',
+        location: '',
+        type: 'LEC'
+      };
     }
   }
 };
@@ -399,7 +483,8 @@ export default {
     margin-right: 10px;
   }
 
-  .remove-period {
+  .remove-period,
+  .add-period {
     cursor: pointer;
   }
 }
