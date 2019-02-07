@@ -64,52 +64,37 @@
     <div class="assignment-controls buttons has-addons is-pulled-right is-hidden-touch">
       <router-link
         to="/assignments"
-        class="button is-link tooltip"
+        class="button tooltip"
         data-tooltip="Browse all assignments."
       >
-        <span class="icon">
-          <i class="fas fa-angle-left margin-right" />
-        </span>
-        Browse
+        <i class="fas fa-angle-left margin-right" />
       </router-link>
 
       <button
         v-if="!assignment.passed"
-        class="button is-warning tooltip"
+        class="button tooltip"
         data-tooltip="Change this assignment's info."
         @click="$emit('toggle-editing')"
       >
-        <span class="icon">
-          <i class="fas fa-pencil-alt" />
-        </span>
-        Edit Info
+        <i class="fas fa-pencil-alt" />
       </button>
 
       <button
         v-if="assignment.passed"
-        class="button is-warning tooltip"
+        class="button tooltip"
         data-tooltip="Remove Assignment"
         @click="$emit('remove-assignment')"
       >
-        <span class="icon">
-          <i class="fas fa-times" />
-        </span>
-        Remove
+        <i class="fas fa-times" />
       </button>
 
       <button
-        class="button tooltip"
-        :class="{ 'is-success': !assignment.completed, 'is-danger': assignment.completed }"
+        class="button tooltip is-outlined"
+        :class="{ 'is-success' : assignment.completed, 'is-danger': !assignment.completed }"
         data-tooltip="Toggle this assignment's completion status."
         @click="$emit('toggle-completed')"
       >
-        <span class="icon">
-          <i
-            class="fas"
-            :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
-          />
-        </span>
-        {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
+        <i class="fas fa-check-square" />
       </button>
     </div>
   </div>

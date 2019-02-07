@@ -22,16 +22,15 @@
       class="section"
     >
       <div class="is-clearfix">
-        <AssignmentOverviewActionButtons
+        <!--<AssignmentOverviewActionButtons
           :assignment="assignment"
           :loading="loading || toggleLoading"
           @toggle-editing="toggleEditing"
           @toggle-completed="toggleCompleted"
           @remove-assignment="remove"
-        />
-
+        />-->
         <span
-          class="tag is-medium course-tag"
+          class="tag is-medium course-tag is-pulled-right"
           :style="{ 'background-color': course.color }"
           @click="$store.commit('OPEN_COURSE_MODAL', course)"
         >
@@ -63,6 +62,19 @@
           </div>
         </div>
 
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">
+              {{ isPast ? 'Was Due' : 'Due' }}
+            </p>
+            <p
+              class="subtitle tooltip"
+              :data-tooltip="timeLeft"
+            >
+              {{ shortDueDateString }}
+            </p>
+          </div>
+        </div>
         <div
           v-if="assignment.completed"
           class="level-item has-text-centered"
@@ -76,22 +88,6 @@
               :data-tooltip="fromNow(assignment.completedAt)"
             >
               {{ completedAt }}
-            </p>
-          </div>
-        </div>
-        <div
-          v-else
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p class="heading">
-              {{ isPast ? 'Was Due' : 'Due' }}
-            </p>
-            <p
-              class="subtitle tooltip"
-              :data-tooltip="timeLeft"
-            >
-              {{ shortDueDateString }}
             </p>
           </div>
         </div>
@@ -126,6 +122,32 @@
           </div>
         </div>
       </nav>
+      <div
+        class="buttons has-addons is-full-width"
+        style="display: flex"
+      >
+        <button
+          class="button"
+          style="flex: 1"
+        >
+          <i class="fas fa-check-square" />Toggle
+        </button>
+        <button
+          class="button"
+          style="flex: 1"
+          @click="toggleEditing"
+        >
+          <i class="fas fa-pencil-alt" />Edit
+        </button>
+        <router-link
+          style="flex: 1"
+          to="/assignments"
+          class="button tooltip"
+          data-tooltip="Browse all assignments."
+        >
+          <i class="fas fa-angle-left margin-right" /> Browse
+        </router-link>
+      </div>
       <hr style="margin-bottom: 0">
 
       <div class="content assignment-description">
