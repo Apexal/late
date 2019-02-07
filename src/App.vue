@@ -183,7 +183,7 @@ export default {
     onResize () {
       if (document.getElementById('sidebar-column')) {
         document.getElementById('sidebar').style.width =
-          (document.getElementById('sidebar-column').offsetWidth - 15) + 'px';
+          document.getElementById('sidebar-column').offsetWidth - 15 + 'px';
       }
     }
   }
@@ -193,6 +193,14 @@ export default {
 <style lang="scss">
 /* These styles will apply to the whole app. */
 @import "@/assets/bulma.scss";
+
+// Replace Fullcalendar ugly button style with Bulma's nice style
+.fc-button {
+  color: initial;
+  background: none;
+  text-shadow: none;
+  @extend .button;
+}
 
 //Removes annoying outline around elements when clicked.
 *:focus {
