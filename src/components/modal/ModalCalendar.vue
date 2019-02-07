@@ -47,9 +47,11 @@ export default {
   },
   computed: {
     selectedCourseScheduleEvents () {
-      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents.map(
-        ev => Object.assign({}, ev, { title: this.periodType(ev.period) })
-      );
+      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents
+        .filter(ev => ev.period.type !== 'TES')
+        .map(ev =>
+          Object.assign({}, ev, { title: this.periodType(ev.period) })
+        );
       return courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
     }
   },
@@ -68,7 +70,9 @@ export default {
       return this.$store.getters.getCourseFromCRN(crn);
     },
     dayRender (date, cell) {
-      if (moment(date).isSame(this.activeDueDate, 'day')) { cell.css('background-color', this.course(this.activeCRN).color); }
+      if (moment(date).isSame(this.activeDueDate, 'day')) {
+        cell.css('background-color', this.course(this.activeCRN).color);
+      }
     },
     dayClick (date) {
       if (
