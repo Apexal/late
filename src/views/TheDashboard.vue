@@ -68,6 +68,7 @@ export default {
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
+              // No classes after classes end date
               if (moment(event.start).isAfter(this.term.classesEnd)) {
                 return false;
               }
