@@ -71,6 +71,7 @@ export default {
       return this.$store.getters.getCourseFromCRN(crn);
     },
     eventClick (calEvent, jsEvent, view) {
+      this.$emit('update-due-time', moment(calEvent.start).format('HH:mm'));
       this.updateDate(moment(calEvent.start).startOf('day'));
     },
     dayRender (date, cell) {
