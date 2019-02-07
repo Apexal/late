@@ -56,8 +56,12 @@
             <p class="heading">
               Priority
             </p>
-            <p class="subtitle">
-              {{ assignment.priority }}
+            <p
+              class="subtitle"
+              :title="'Priority level ' + assignment.priority"
+              :class="{ 'has-text-grey': assignment.priority === 1 }"
+            >
+              {{ priorityString }}
             </p>
           </div>
         </div>
@@ -196,6 +200,17 @@ export default {
       return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)
         ? 'never'
         : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+    },
+    priorityString () {
+      return (
+        {
+          1: 'Optional',
+          2: 'Low',
+          3: 'Normal',
+          4: 'High',
+          5: 'Important'
+        }[this.assignment.priority] || 'Unknown'
+      );
     },
     timeLeft () {
       const diff = moment.duration(
