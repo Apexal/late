@@ -40,6 +40,7 @@ export default {
           timeFormat: 'h(:mm)t',
           timezone: 'local',
           dayClick: this.dayClick,
+          eventClick: this.eventClick,
           dayRender: this.dayRender
         }
       }
@@ -69,12 +70,18 @@ export default {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     },
+    eventClick (calEvent, jsEvent, view) {
+      this.updateDate(moment(calEvent.start).startOf('day'));
+    },
     dayRender (date, cell) {
       if (moment(date).isSame(this.activeDueDate, 'day')) {
         cell.css('background-color', this.course(this.activeCRN).color);
       }
     },
     dayClick (date) {
+      this.updateDate(date);
+    },
+    updateDate (date) {
       if (
         moment(date)
           .endOf('day')
@@ -83,9 +90,6 @@ export default {
       ) {
         return;
       }
-      this.updateDate(date);
-    },
-    updateDate (date) {
       this.$emit('update-date', date);
     },
     periodType (p) {
