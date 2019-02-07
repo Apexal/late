@@ -46,7 +46,7 @@
         </h1>
       </div>
 
-      <nav class="level assignment-stats">
+      <nav class="box level assignment-stats">
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">
@@ -56,6 +56,7 @@
               class="subtitle"
               :title="'Priority level ' + assignment.priority"
               :class="{ 'has-text-grey': assignment.priority === 1 }"
+              :style="{ 'font-weight': fontWeight }"
             >
               {{ priorityString }}
             </p>
@@ -125,6 +126,8 @@
           </div>
         </div>
       </nav>
+      <hr style="margin-bottom: 0">
+
       <div class="content assignment-description">
         <blockquote>
           <VueMarkdown
@@ -139,7 +142,7 @@
           </i>
         </blockquote>
       </div>
-
+      <hr>
       <AssignmentOverviewTabs
         ref="tabs"
         :tab="tab"
@@ -150,6 +153,22 @@
         @add-comment="addComment"
         @delete-comment="deleteComment"
       />
+      <hr>
+      <div class="bottom-actions clearfix">
+        <AssignmentOverviewActionButtons
+          :assignment="assignment"
+          :loading="loading || toggleLoading"
+          @toggle-editing="toggleEditing"
+          @toggle-completed="toggleCompleted"
+          @remove-assignment="remove"
+        />
+        <button
+          class="button"
+          @click="scrollToTop"
+        >
+          Back to Top
+        </button>
+      </div>
     </section>
   </div>
 </template>
@@ -199,6 +218,17 @@ export default {
       return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)
         ? 'never'
         : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+    },
+    fontWeight () {
+      return (
+        {
+          1: 300,
+          2: 300,
+          3: 'normal',
+          4: 500,
+          5: 700
+        }[this.assignment.priority] || 600
+      );
     },
     priorityString () {
       return (
@@ -254,6 +284,12 @@ export default {
     notFullyScheduledClick () {
       this.tab = 'schedule';
       this.$refs.tabs.scrollTo();
+    },
+    scrollToTop () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     },
     async toggleCompleted () {
       if (
