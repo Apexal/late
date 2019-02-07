@@ -43,14 +43,10 @@
 
         <h1 class="title">
           {{ assignment.title }}
-          <h2 class="subtitle has-text-grey due-title">
-            {{ isPast ? 'Was due' : 'Due' }}
-            <b>{{ shortDateTimeString(assignment.dueDate) }}</b>
-          </h2>
         </h1>
       </div>
 
-      <nav class="level is-mobile assignment-stats">
+      <nav class="level assignment-stats">
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">
@@ -62,6 +58,39 @@
               :class="{ 'has-text-grey': assignment.priority === 1 }"
             >
               {{ priorityString }}
+            </p>
+          </div>
+        </div>
+
+        <div
+          v-if="assignment.completed"
+          class="level-item has-text-centered"
+        >
+          <div>
+            <p class="heading">
+              Completed
+            </p>
+            <p
+              class="subtitle tooltip is-tooltip-bottom"
+              :data-tooltip="fromNow(assignment.completedAt)"
+            >
+              {{ completedAt }}
+            </p>
+          </div>
+        </div>
+        <div
+          v-else
+          class="level-item has-text-centered"
+        >
+          <div>
+            <p class="heading">
+              {{ isPast ? 'Was Due' : 'Due' }}
+            </p>
+            <p
+              class="subtitle tooltip"
+              :data-tooltip="timeLeft"
+            >
+              {{ shortDueDateString }}
             </p>
           </div>
         </div>
@@ -92,36 +121,6 @@
               >
                 Not fully scheduled!
               </span>
-            </p>
-          </div>
-        </div>
-
-        <div
-          v-if="assignment.completed"
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p class="heading">
-              Completed
-            </p>
-            <p
-              class="subtitle tooltip is-tooltip-bottom"
-              :data-tooltip="fromNow(assignment.completedAt)"
-            >
-              {{ completedAt }}
-            </p>
-          </div>
-        </div>
-        <div
-          v-else
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p class="heading">
-              Due In
-            </p>
-            <p class="subtitle">
-              {{ timeLeft }}
             </p>
           </div>
         </div>
@@ -217,6 +216,9 @@ export default {
         moment(this.assignment.dueDate).diff(this.now)
       );
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
+    },
+    shortDueDateString () {
+      return this.shortDateTimeString(this.assignment.dueDate);
     },
     isPast () {
       return this.assignment.passed;
@@ -318,7 +320,6 @@ export default {
         this.isUpcoming = true;
         document.title = `${this.assignment.title} | LATE`;
         if (this.assignment.completed) this.tab = 'comments';
-
         return;
       }
 
@@ -344,7 +345,7 @@ export default {
       this.loading = false;
     },
     shortDateTimeString: dueDate =>
-      moment(dueDate).format('dddd, MMM Do YYYY [@] h:mma'),
+      moment(dueDate).format('ddd, MMM Do YY [@] h:mma'),
     toFullDateTimeString: dueDate =>
       moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     fromNow (date) {
