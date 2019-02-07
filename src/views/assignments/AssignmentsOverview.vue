@@ -88,7 +88,7 @@
             <p v-else>
               <span
                 class="tag is-danger not-scheduled-tag"
-                @click="tab = 'schedule'"
+                @click="notFullyScheduledClick"
               >
                 Not fully scheduled!
               </span>
@@ -248,6 +248,10 @@ export default {
     },
     updatedAssignment (newAssignment) {
       this.assignment = newAssignment;
+    },
+    notFullyScheduledClick () {
+      this.tab = 'schedule';
+      this.$refs.tabs.scrollTo();
     },
     async toggleCompleted () {
       if (
