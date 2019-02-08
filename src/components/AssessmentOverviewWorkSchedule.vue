@@ -8,52 +8,6 @@
       This {{ assessmentType }} is done so your work schedule can no longer be changed.
     </div>
 
-    <div
-      class="box"
-    >
-      <div
-        class="columns tooltip"
-        :data-tooltip="scheduledPercent + '% scheduled'"
-      >
-        <div class="column is-narrow">
-          You've scheduled
-          <b>{{ scheduledMinutes }}</b> out of
-          <b>{{ totalEstimatedMinutes }}</b>
-          minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
-        </div>
-        <div class="column">
-          <progress
-            class="progress"
-            :value="scheduledMinutes"
-            :max="totalEstimatedMinutes"
-          >
-            {{ scheduledPercent }}%
-          </progress>
-        </div>
-      </div>
-
-      <div
-        class="columns tooltip"
-        :data-tooltip="finishedPercent + '% finished'"
-      >
-        <div class="column is-narrow">
-          You've finished
-          <b>{{ finishedMinutes }}</b> out of
-          <b>{{ totalEstimatedMinutes }}</b>
-          minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
-        </div>
-        <div class="column">
-          <progress
-            class="progress"
-            :value="finishedMinutes"
-            :max="totalEstimatedMinutes"
-          >
-            {{ finishedPercent }}%
-          </progress>
-        </div>
-      </div>
-    </div>
-
     <FullCalendar
       ref="calendar"
       :events="totalEvents"
@@ -97,33 +51,6 @@ export default {
       } else if (this.assessmentType === 'exam') return this.passed;
       return false;
     },
-    scheduledMinutes () {
-      return this.assessment._blocks.reduce(
-        (acc, block) => acc + block.duration,
-        0
-      );
-    },
-    finishedMinutes () {
-      // TODO added new may need to take exam model into account in calculation separately
-      return this.assessment._blocks.filter(b => b.passed).reduce((acc, block) => acc + block.duration, 0);
-    },
-    totalEstimatedMinutes () {
-      return this.assessment.timeEstimate * 60;
-    },
-    scheduledPercent () {
-      return Math.round(
-        (this.scheduledMinutes / this.totalEstimatedMinutes) * 100
-      );
-    },
-    finishedPercent () { // TODO added new
-      if (this.scheduledMinutes !== 0) {
-        return Math.round(
-          (this.finishedMinutes / this.scheduledMinutes) * 100
-        );
-      } else {
-        return 0;
-      }
-    },
     editable () {
       if (this.assessmentType === 'exam') return !this.assessment.passed;
       return !this.assessment.completed && !this.assessment.passed;
@@ -137,9 +64,9 @@ export default {
     },
     calendar () {
       return {
-        header: {
-        },
+        header: {},
         config: {
+          snapDuration: '00:15',
           views: {
             agendaFiveDay: {
               type: 'agenda',

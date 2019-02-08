@@ -10,11 +10,14 @@
         v-if="pressing.length == 0"
         class="panel-block has-text-grey"
       >
-        <span>No pressing assignments!</span>
+        <span style="has-text-centered">
+          No pressing assignments!
+        </span>
       </div>
       <transition-group
         name="list"
         tag="div"
+        class="sidebar-body"
       >
         <router-link
           v-for="a in pressing"
@@ -49,6 +52,7 @@
         <span class="is-full-width">
           <button
             class="button is-link is-small"
+            title="Add new assignment"
             @click.prevent="$emit('toggle-modal')"
           >
             <span class="icon">
@@ -60,8 +64,9 @@
             tag="button"
             class="button is-link is-small is-outlined is-pulled-right"
             to="/assignments"
+            title="View all assignments"
           >
-            Browse
+            View Assignments
           </router-link>
         </span>
       </div>

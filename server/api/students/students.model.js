@@ -103,10 +103,6 @@ const schema = new Schema(
       }
     },
     setup: {
-      perSemester: {
-        type: Object,
-        default: {}
-      },
       personal_info: {
         type: Boolean,
         default: false

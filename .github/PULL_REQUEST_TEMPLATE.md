@@ -2,6 +2,4 @@ Fixes issue #
 
 ## Proposed Changes
 
-  -
-  -
-  -
+-
