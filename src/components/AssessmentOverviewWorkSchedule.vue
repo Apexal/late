@@ -102,9 +102,9 @@ export default {
     },
     calendar () {
       return {
-        header: {
-        },
+        header: {},
         config: {
+          snapDuration: '00:15',
           views: {
             agendaFiveDay: {
               type: 'agenda',

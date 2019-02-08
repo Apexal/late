@@ -65,6 +65,7 @@ export default {
           selectHelper: false,
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
+          snapDuration: '00:15',
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
@@ -139,14 +140,20 @@ export default {
     earliest () {
       let earliest = this.$store.state.auth.user.earliestWorkTime;
       const courses = this.$store.getters.getCourseScheduleAsEvents;
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e => Object.assign({}, e));
+      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
+        Object.assign({}, e)
+      );
 
       let i;
       for (i = 0; i < courses.length; i++) {
-        if ((courses[i].start).localeCompare(earliest) < 0) { earliest = courses[i].start; }
+        if (courses[i].start.localeCompare(earliest) < 0) {
+          earliest = courses[i].start;
+        }
       }
       for (i = 0; i < workBlocks.length; i++) {
-        if ((workBlocks[i].start).localeCompare(earliest) < 0) { earliest = workBlocks[i].start; }
+        if (workBlocks[i].start.localeCompare(earliest) < 0) {
+          earliest = workBlocks[i].start;
+        }
       }
 
       return earliest;
@@ -155,7 +162,11 @@ export default {
   watch: {
     earliest (newEarliest) {
       this.calendar.config.scrollTime = this.earliest;
-      this.$refs.calendar.fireMethod('option', 'scrollTime', this.calendar.config.scrollTime);
+      this.$refs.calendar.fireMethod(
+        'option',
+        'scrollTime',
+        this.calendar.config.scrollTime
+      );
     }
   },
   created () {
