@@ -1,11 +1,8 @@
 <template>
-  <div
-    class="buttons assignment-actions has-addons is-full-width is-flex"
-  >
+  <div class="buttons assignment-actions has-addons is-full-width is-flex">
     <button
-      class="button tooltip"
+      class="button is-success tooltip"
       :data-tooltip="'Mark this assignment as ' + (assignment.completed ? 'incomplete.' : 'finished.')"
-      :class="[assignment.completed ? 'is-success' : 'is-danger']"
       @click="$emit('toggle-completed')"
     >
       <i class="fas fa-check-square" />
@@ -17,7 +14,8 @@
       data-tooltip="Change this assignment's info."
       @click="$emit('toggle-editing')"
     >
-      <i class="fas fa-pencil-alt" />Edit <span class="is-hidden-touch">
+      <i class="fas fa-pencil-alt" />Edit
+      <span class="is-hidden-touch">
         Details
       </span>
     </button>
@@ -29,12 +27,24 @@
     >
       <i class="fas fa-times" /> Remove
     </button>
+    <button
+      class="button is-info tooltip"
+      data-tooltip="Hide description"
+      @click="$emit('toggle-description')"
+    >
+      <i
+        class="fas"
+        :class="[descriptionExpanded ? 'fa-angle-down' : 'fa-angle-up']"
+      />
+      {{ descriptionExpanded ? 'Hide': 'Show' }} Description
+    </button>
     <router-link
       to="/assignments"
       class="button is-link tooltip"
       data-tooltip="Browse all assignments."
     >
-      <i class="fas fa-angle-left" />Browse <span class="is-hidden-touch">
+      <i class="fas fa-angle-left" />Browse
+      <span class="is-hidden-touch">
         Assignments
       </span>
     </router-link>
@@ -49,6 +59,10 @@ export default {
       type: Object,
       required: true
     },
+    descriptionExpanded: {
+      type: Boolean,
+      required: true
+    },
     loading: {
       type: Boolean,
       required: true
@@ -61,7 +75,7 @@ export default {
 .assignment-actions {
   margin-bottom: 0;
 
- .button {
+  .button {
     flex: 1;
     margin-bottom: 0;
     i.fas {
@@ -70,7 +84,6 @@ export default {
 
     .is-hidden-touch {
       margin-left: 3px;
-
     }
   }
 }
