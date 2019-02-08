@@ -270,6 +270,8 @@ export default {
       return this.$store.state.work.upcomingExams.length;
     }
   },
+
+  // "Sticky" header script
   mounted () {
     const header = this.$refs.header;
     const offset = this.$refs.navbar.offsetTop;
@@ -306,7 +308,6 @@ export default {
 #top-navbar {
   //Pushes the left and right navbar menus slightly off the edges of the screen.
   padding: 0;
-  padding-right: 80px;
   transition: padding-right 200ms cubic-bezier(0.23, 1, 0.32, 1);
 
   .navbar-item {
@@ -328,6 +329,7 @@ export default {
   margin: 0 0 0 4em;
 }
 
+/*"Sticky" header styling*/
 header.sticky {
   .hero-foot {
     z-index: 10;
@@ -338,14 +340,24 @@ header.sticky {
   margin-bottom: 50px;
   #logo {
     opacity: 1;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 5.5em;
+    height: 3.25rem;
+    transition: 0.3s;
+    transition-delay: 0.7;
   }
   #top-navbar {
-    padding-right: 10px;
+    margin-left: 5.5em;
+    transition: 0.2s;
   }
 }
 
 #logo {
   opacity: 0;
+
+  width: 0px;
   transition: opacity 0.05s cubic-bezier(0.755, 0.05, 0.855, 0.06);
 
   font-size: 1.6rem;
