@@ -137,11 +137,11 @@ export default {
       return this.$store.state.work.upcomingAssignments;
     },
     earliest () {
-      var earliest = this.$store.state.auth.user.earliestWorkTime;
+      let earliest = this.$store.state.auth.user.earliestWorkTime;
       const courses = this.$store.getters.getCourseScheduleAsEvents;
       const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e => Object.assign({}, e));
 
-      var i;
+      let i;
       for (i = 0; i < courses.length; i++) {
         if ((courses[i].start).localeCompare(earliest) < 0) { earliest = courses[i].start; }
       }
@@ -150,6 +150,12 @@ export default {
       }
 
       return earliest;
+    }
+  },
+  watch: {
+    earliest (newEarliest) {
+      this.calendar.config.scrollTime = this.earliest;
+      this.$refs.calendar.fireMethod('option', 'scrollTime', this.calendar.config.scrollTime);
     }
   },
   created () {
