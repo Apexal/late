@@ -140,136 +140,137 @@
           v-model="courseData.links"
           placeholder="Put links to courses here! Hit Enter after each link."
         />
-
-        <table class="table is-full-width">
-          <thead>
-            <tr>
-              <th>Day</th>
-              <th>Time</th>
-              <th>Location</th>
-              <th>Type</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="p in editedPeriods"
-              :key="p.day + p.start"
-            >
-              <td>
-                <select
-                  v-model.number="p.day"
-                  required
-                >
-                  <option
-                    v-for="i in 7"
-                    :key="i"
-                    :value="i - 1"
+        <div class="periods">
+          <table class="table is-full-width">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="p in editedPeriods"
+                :key="p.day + p.start"
+              >
+                <td>
+                  <select
+                    v-model.number="p.day"
+                    required
                   >
-                    {{ day(i-1) }}
-                  </option>
-                </select>
-              </td>
-              <td>
-                <input
-                  :value="formatToInputTime(p.start)"
-                  type="time"
-                  required
-                  @change="changePeriodTime(p, 'start', $event.target.value)"
-                >
-                <span class="has-text-grey-light">
-                  -
-                </span>
-                <input
-                  :value="formatToInputTime(p.end)"
-                  type="time"
-                  required
-                  @change="changePeriodTime(p, 'end', $event.target.value)"
-                >
-              </td>
-              <td>
-                <input
-                  v-model="p.location"
-                  type="text"
-                  :placeholder="p.location"
-                  required
-                >
-              </td>
-              <td>
-                <select
-                  v-model="p.type"
-                  required
-                >
-                  <option
-                    v-for="t in periodTypes"
-                    :key="t"
-                    :value="t"
+                    <option
+                      v-for="i in 7"
+                      :key="i"
+                      :value="i - 1"
+                    >
+                      {{ day(i-1) }}
+                    </option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    :value="formatToInputTime(p.start)"
+                    type="time"
+                    required
+                    @change="changePeriodTime(p, 'start', $event.target.value)"
                   >
-                    {{ type(t) }}
-                  </option>
-                </select>
-              </td>
-              <td title="Remove period.">
-                <i
-                  class="fa fa-times has-text-danger remove-period"
-                  @click="removePeriod(p)"
-                />
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td>
-                <select v-model.number="newPeriod.day">
-                  <option
-                    v-for="i in 7"
-                    :key="i"
-                    :value="i - 1"
+                  <span class="has-text-grey-light">
+                    -
+                  </span>
+                  <input
+                    :value="formatToInputTime(p.end)"
+                    type="time"
+                    required
+                    @change="changePeriodTime(p, 'end', $event.target.value)"
                   >
-                    {{ day(i-1) }}
-                  </option>
-                </select>
-              </td>
-              <td>
-                <input
-                  v-model="newPeriod.start"
-                  type="time"
-                >
-                <span class="has-text-grey-light">
-                  -
-                </span>
-                <input
-                  v-model="newPeriod.end"
-                  type="time"
-                >
-              </td>
-              <td>
-                <input
-                  v-model.trim="newPeriod.location"
-                  type="text"
-                  placeholder="Location of new period."
-                >
-              </td>
-              <td>
-                <select v-model="newPeriod.type">
-                  <option
-                    v-for="t in periodTypes"
-                    :key="t"
-                    :value="t"
+                </td>
+                <td>
+                  <input
+                    v-model="p.location"
+                    type="text"
+                    :placeholder="p.location"
+                    required
                   >
-                    {{ type(t) }}
-                  </option>
-                </select>
-              </td>
-              <td title="Add period.">
-                <i
-                  class="fa fa-plus has-text-success add-period"
-                  @click="addPeriod"
-                />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+                </td>
+                <td>
+                  <select
+                    v-model="p.type"
+                    required
+                  >
+                    <option
+                      v-for="t in periodTypes"
+                      :key="t"
+                      :value="t"
+                    >
+                      {{ type(t) }}
+                    </option>
+                  </select>
+                </td>
+                <td title="Remove period.">
+                  <i
+                    class="fa fa-times has-text-danger remove-period"
+                    @click="removePeriod(p)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  <select v-model.number="newPeriod.day">
+                    <option
+                      v-for="i in 7"
+                      :key="i"
+                      :value="i - 1"
+                    >
+                      {{ day(i-1) }}
+                    </option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    v-model="newPeriod.start"
+                    type="time"
+                  >
+                  <span class="has-text-grey-light">
+                    -
+                  </span>
+                  <input
+                    v-model="newPeriod.end"
+                    type="time"
+                  >
+                </td>
+                <td>
+                  <input
+                    v-model.trim="newPeriod.location"
+                    type="text"
+                    placeholder="Location of new period."
+                  >
+                </td>
+                <td>
+                  <select v-model="newPeriod.type">
+                    <option
+                      v-for="t in periodTypes"
+                      :key="t"
+                      :value="t"
+                    >
+                      {{ type(t) }}
+                    </option>
+                  </select>
+                </td>
+                <td title="Add period.">
+                  <i
+                    class="fa fa-plus has-text-success add-period"
+                    @click="addPeriod"
+                  />
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
 
         <button
           type="button"

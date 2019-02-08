@@ -11,19 +11,21 @@
         >
       </div>
     </form>
-    <div
-      v-for="(t, index) in todos"
-      :key="index"
-      class="panel-block todo"
-      title="Click to mark completed."
-      @click="removeTodo(t)"
-    >
-      <span class="is-full-width">
-        <small class="todo-time is-pulled-right has-text-grey is-size-7">
-          {{ fromNow(t.addedAt) }}
-        </small>
-        {{ t.text }}
-      </span>
+    <div class="sidebar-body">
+      <div
+        v-for="(t, index) in todos"
+        :key="index"
+        class="panel-block todo"
+        title="Click to mark completed."
+        @click="removeTodo(t)"
+      >
+        <span class="is-full-width">
+          <small class="todo-time is-pulled-right has-text-grey is-size-7">
+            {{ fromNow(t.addedAt) }}
+          </small>
+          {{ t.text }}
+        </span>
+      </div>
     </div>
     <div
       v-if="todos.length === 0"
