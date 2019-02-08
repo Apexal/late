@@ -130,10 +130,7 @@ export default {
       return this.tabs[this.tab];
     },
     pressingAssignments () {
-      // This filters out optional assignments
-      return this.$store.getters.incompleteUpcomingAssignments
-        .filter(a => a.priority > 1)
-        .slice(0, 5);
+      return this.$store.getters.incompleteUpcomingAssignments.slice(0, 5);
     },
     upcomingExamsOneMonth () {
       const monthFromNow = moment().add(1, 'month');
@@ -195,12 +192,6 @@ export default {
 #sidebar {
   .panel {
     background-color: white;
-  }
-
-  .sidebar-body {
-    overflow-x: hidden;
-    overflow-y: auto;
-    max-height: 50vh;
   }
 
   position: fixed;

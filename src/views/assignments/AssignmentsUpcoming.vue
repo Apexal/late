@@ -52,9 +52,9 @@
               </span>
               <router-link
                 class="assignment-link"
-                :title="(a.priority === 1 ? '(OPTIONAL) ' : '') + a.description.substring(0, 500)"
+                :title="a.description.substring(0, 500)"
                 :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-                :class="{ 'priority': a.priority > 3, 'has-text-grey is-italic': a.priority === 1 }"
+                :class="{ 'priority': a.priority > 3 }"
               >
                 <b class="course-title is-hidden-tablet">
                   {{ course(a).longname }}
@@ -68,7 +68,9 @@
               >
                 <i class="far fa-clock" />
               </span>
-              <small class="is-pulled-right has-text-grey">
+              <small
+                class="is-pulled-right has-text-grey"
+              >
                 {{ toTimeString(a.dueDate) }}
               </small>
             </span>

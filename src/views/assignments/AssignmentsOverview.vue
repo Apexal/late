@@ -21,70 +21,43 @@
       v-else
       class="section"
     >
-      <div class="is-flex-tablet">
-        <h1
-          class="title assignment-title has-text-centered-mobile"
-          style="flex: 1"
+      <div class="is-clearfix">
+        <AssignmentOverviewActionButtons
+          :assignment="assignment"
+          :loading="loading || toggleLoading"
+          @toggle-editing="toggleEditing"
+          @toggle-completed="toggleCompleted"
+          @remove-assignment="remove"
+        />
+
+        <span
+          class="tag is-medium course-tag"
+          :style="{ 'background-color': course.color }"
+          @click="$store.commit('OPEN_COURSE_MODAL', course)"
         >
+          <b class="course-longname">
+            {{ course.longname }}
+          </b>
+          {{ isPast ? 'Past ': '' }}Assignment
+        </span>
+
+        <h1 class="title">
           {{ assignment.title }}
+          <h2 class="subtitle has-text-grey due-title">
+            {{ isPast ? 'Was due' : 'Due' }}
+            <b>{{ shortDateTimeString(assignment.dueDate) }}</b>
+          </h2>
         </h1>
-        <div class="has-text-centered-mobile">
-          <span
-            class="tag is-medium course-tag"
-            :style="{ 'background-color': course.color }"
-            @click="$store.commit('OPEN_COURSE_MODAL', course)"
-          >
-            <b class="course-longname">
-              {{ course.longname }}
-            </b>
-            {{ isPast ? 'Past ': '' }}Assignment
-          </span>
-        </div>
       </div>
 
-      <nav class="box level assignment-stats">
+      <nav class="level is-mobile assignment-stats">
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">
               Priority
             </p>
-            <p
-              class="subtitle"
-              :title="'Priority level ' + assignment.priority"
-              :class="{ 'has-text-grey': assignment.priority === 1 }"
-              :style="{ 'font-weight': fontWeight }"
-            >
-              {{ priorityString }}
-            </p>
-          </div>
-        </div>
-
-        <div class="level-item has-text-centered">
-          <div>
-            <p class="heading">
-              {{ isPast ? 'Was Due' : 'Due' }}
-            </p>
-            <p
-              class="subtitle tooltip"
-              :data-tooltip="timeLeft"
-            >
-              {{ shortDueDateString }}
-            </p>
-          </div>
-        </div>
-        <div
-          v-if="assignment.completed"
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p class="heading">
-              Completed
-            </p>
-            <p
-              class="subtitle tooltip"
-              :data-tooltip="fromNow(assignment.completedAt)"
-            >
-              {{ completedAt }}
+            <p class="subtitle">
+              {{ assignment.priority }}
             </p>
           </div>
         </div>
@@ -111,23 +84,44 @@
             <p v-else>
               <span
                 class="tag is-danger not-scheduled-tag"
-                @click="notFullyScheduledClick"
+                @click="tab = 'schedule'"
               >
                 Not fully scheduled!
               </span>
             </p>
           </div>
         </div>
+
+        <div
+          v-if="assignment.completed"
+          class="level-item has-text-centered"
+        >
+          <div>
+            <p class="heading">
+              Completed
+            </p>
+            <p
+              class="subtitle tooltip is-tooltip-bottom"
+              :data-tooltip="fromNow(assignment.completedAt)"
+            >
+              {{ completedAt }}
+            </p>
+          </div>
+        </div>
+        <div
+          v-else
+          class="level-item has-text-centered"
+        >
+          <div>
+            <p class="heading">
+              Due In
+            </p>
+            <p class="subtitle">
+              {{ timeLeft }}
+            </p>
+          </div>
+        </div>
       </nav>
-
-      <AssignmentOverviewActionButtons
-        :assignment="assignment"
-        :loading="loading || toggleLoading"
-        @toggle-completed="toggleCompleted"
-        @toggle-editing="toggleEditing"
-        @remove-assignment="remove"
-      />
-
       <div class="content assignment-description">
         <blockquote>
           <VueMarkdown
@@ -142,7 +136,7 @@
           </i>
         </blockquote>
       </div>
-      <hr>
+
       <AssignmentOverviewTabs
         ref="tabs"
         :tab="tab"
@@ -153,15 +147,6 @@
         @add-comment="addComment"
         @delete-comment="deleteComment"
       />
-      <hr>
-      <div class="bottom-actions clearfix">
-        <button
-          class="button"
-          @click="scrollToTop"
-        >
-          Back to Top
-        </button>
-      </div>
     </section>
   </div>
 </template>
@@ -212,36 +197,11 @@ export default {
         ? 'never'
         : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
     },
-    fontWeight () {
-      return (
-        {
-          1: 300,
-          2: 300,
-          3: 'normal',
-          4: 500,
-          5: 700
-        }[this.assignment.priority] || 600
-      );
-    },
-    priorityString () {
-      return (
-        {
-          1: 'Optional',
-          2: 'Low',
-          3: 'Normal',
-          4: 'High',
-          5: 'Important'
-        }[this.assignment.priority] || 'Unknown'
-      );
-    },
     timeLeft () {
       const diff = moment.duration(
         moment(this.assignment.dueDate).diff(this.now)
       );
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
-    },
-    shortDueDateString () {
-      return this.shortDateTimeString(this.assignment.dueDate);
     },
     isPast () {
       return this.assignment.passed;
@@ -273,16 +233,6 @@ export default {
     },
     updatedAssignment (newAssignment) {
       this.assignment = newAssignment;
-    },
-    notFullyScheduledClick () {
-      this.tab = 'schedule';
-      this.$refs.tabs.scrollTo();
-    },
-    scrollToTop () {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
     },
     async toggleCompleted () {
       if (
@@ -349,6 +299,7 @@ export default {
         this.isUpcoming = true;
         document.title = `${this.assignment.title} | LATE`;
         if (this.assignment.completed) this.tab = 'comments';
+
         return;
       }
 
@@ -374,7 +325,7 @@ export default {
       this.loading = false;
     },
     shortDateTimeString: dueDate =>
-      moment(dueDate).format('ddd, MMM Do YY [@] h:mma'),
+      moment(dueDate).format('dddd, MMM Do YYYY [@] h:mma'),
     toFullDateTimeString: dueDate =>
       moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     fromNow (date) {
@@ -459,10 +410,6 @@ export default {
 <style lang="scss" scoped>
 .not-scheduled-tag {
   cursor: pointer;
-}
-
-.assignment-title {
-  margin-bottom: 0;
 }
 
 .course-tag {

@@ -118,7 +118,7 @@ export default {
       return {
         1: 'Optional',
         2: 'Low',
-        3: 'Normal',
+        3: 'Medium',
         4: 'High',
         5: '𝙊𝙃 𝙂𝙊𝘿'
       }[this.priority];

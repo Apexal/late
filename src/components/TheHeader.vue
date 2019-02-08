@@ -307,7 +307,7 @@ export default {
   //Pushes the left and right navbar menus slightly off the edges of the screen.
   padding: 0;
   padding-right: 80px;
-  transition: padding-right 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: padding-right 0.2s;
 
   .navbar-item {
     span.icon {
@@ -346,7 +346,7 @@ header.sticky {
 
 #logo {
   opacity: 0;
-  transition: opacity 0.05s cubic-bezier(0.755, 0.05, 0.855, 0.06);
+  transition: opacity 0.2s;
 
   font-size: 1.6rem;
   font-weight: 600;

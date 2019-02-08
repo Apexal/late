@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="tabs"
-    class="assignment-overview-tabs"
-  >
+  <div class="assignment-overview-tabs">
     <div class="tabs">
       <ul>
         <li
@@ -101,13 +98,6 @@ export default {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule'
       }[this.tab];
-    }
-  },
-  methods: {
-    scrollTo () {
-      this.$refs.tabs.scrollIntoView({
-        behavior: 'smooth'
-      });
     }
   }
 };
