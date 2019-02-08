@@ -58,6 +58,7 @@
             v-model="showPassed"
             type="checkbox"
             class="switch"
+            title="Show your completed courses"
           >
           <label for="agenda-show-passed">
             Show Passed

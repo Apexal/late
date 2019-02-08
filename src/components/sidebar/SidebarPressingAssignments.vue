@@ -52,6 +52,7 @@
         <span class="is-full-width">
           <button
             class="button is-link is-small"
+            title="Add new assignment"
             @click.prevent="$emit('toggle-modal')"
           >
             <span class="icon">
@@ -63,6 +64,7 @@
             tag="button"
             class="button is-link is-small is-outlined is-pulled-right"
             to="/assignments"
+            title="View all assignments"
           >
             View Assignments
           </router-link>

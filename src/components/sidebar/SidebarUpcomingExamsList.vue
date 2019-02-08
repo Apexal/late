@@ -51,6 +51,7 @@
         <span class="is-full-width">
           <button
             class="button is-link is-small"
+            title="Add an upcoming exam"
             @click.prevent="$emit('toggle-modal')"
           >
             <span class="icon">
@@ -62,6 +63,7 @@
             tag="button"
             class="button is-link is-small is-outlined is-pulled-right"
             to="/exams"
+            title="View all upcoming exams"
           >
             View Exams
           </router-link>
