@@ -68,6 +68,13 @@ export default {
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
+              if (event.period.type === 'TES') {
+                return !!this.$store.state.work.upcomingExams.find(ex =>
+                  moment(ex.date).isSame(event.start, 'day')
+                );
+              }
+
+              // No classes after classes end date
               if (moment(event.start).isAfter(this.term.classesEnd)) {
                 return false;
               }

@@ -40,6 +40,7 @@ export default {
           timeFormat: 'h(:mm)t',
           timezone: 'local',
           dayClick: this.dayClick,
+          eventClick: this.eventClick,
           dayRender: this.dayRender
         }
       }
@@ -47,9 +48,11 @@ export default {
   },
   computed: {
     selectedCourseScheduleEvents () {
-      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents.map(
-        ev => Object.assign({}, ev, { title: this.periodType(ev.period) })
-      );
+      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents
+        .filter(ev => ev.period.type !== 'TES')
+        .map(ev =>
+          Object.assign({}, ev, { title: this.periodType(ev.period) })
+        );
       return courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
     }
   },
@@ -67,10 +70,19 @@ export default {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     },
+    eventClick (calEvent, jsEvent, view) {
+      this.$emit('update-due-time', moment(calEvent.start).format('HH:mm'));
+      this.updateDate(moment(calEvent.start).startOf('day'));
+    },
     dayRender (date, cell) {
-      if (moment(date).isSame(this.activeDueDate, 'day')) { cell.css('background-color', this.course(this.activeCRN).color); }
+      if (moment(date).isSame(this.activeDueDate, 'day')) {
+        cell.css('background-color', this.course(this.activeCRN).color);
+      }
     },
     dayClick (date) {
+      this.updateDate(date);
+    },
+    updateDate (date) {
       if (
         moment(date)
           .endOf('day')
@@ -79,9 +91,6 @@ export default {
       ) {
         return;
       }
-      this.updateDate(date);
-    },
-    updateDate (date) {
       this.$emit('update-date', date);
     },
     periodType (p) {
