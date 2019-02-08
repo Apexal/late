@@ -21,28 +21,25 @@
       v-else
       class="section"
     >
-      <div class="is-clearfix">
-        <!--<AssignmentOverviewActionButtons
-          :assignment="assignment"
-          :loading="loading || toggleLoading"
-          @toggle-editing="toggleEditing"
-          @toggle-completed="toggleCompleted"
-          @remove-assignment="remove"
-        />-->
-        <span
-          class="tag is-medium course-tag is-pulled-right"
-          :style="{ 'background-color': course.color }"
-          @click="$store.commit('OPEN_COURSE_MODAL', course)"
+      <div class="is-flex-tablet">
+        <h1
+          class="title assignment-title has-text-centered-mobile"
+          style="flex: 1"
         >
-          <b class="course-longname">
-            {{ course.longname }}
-          </b>
-          {{ isPast ? 'Past ': '' }}Assignment
-        </span>
-
-        <h1 class="title">
           {{ assignment.title }}
         </h1>
+        <div class="has-text-centered-mobile">
+          <span
+            class="tag is-medium course-tag"
+            :style="{ 'background-color': course.color }"
+            @click="$store.commit('OPEN_COURSE_MODAL', course)"
+          >
+            <b class="course-longname">
+              {{ course.longname }}
+            </b>
+            {{ isPast ? 'Past ': '' }}Assignment
+          </span>
+        </div>
       </div>
 
       <nav class="box level assignment-stats">
@@ -84,7 +81,7 @@
               Completed
             </p>
             <p
-              class="subtitle tooltip is-tooltip-bottom"
+              class="subtitle tooltip"
               :data-tooltip="fromNow(assignment.completedAt)"
             >
               {{ completedAt }}
@@ -122,33 +119,14 @@
           </div>
         </div>
       </nav>
-      <div
-        class="buttons has-addons is-full-width"
-        style="display: flex"
-      >
-        <button
-          class="button"
-          style="flex: 1"
-        >
-          <i class="fas fa-check-square" />Toggle
-        </button>
-        <button
-          class="button"
-          style="flex: 1"
-          @click="toggleEditing"
-        >
-          <i class="fas fa-pencil-alt" />Edit
-        </button>
-        <router-link
-          style="flex: 1"
-          to="/assignments"
-          class="button tooltip"
-          data-tooltip="Browse all assignments."
-        >
-          <i class="fas fa-angle-left margin-right" /> Browse
-        </router-link>
-      </div>
-      <hr style="margin-bottom: 0">
+
+      <AssignmentOverviewActionButtons
+        :assignment="assignment"
+        :loading="loading || toggleLoading"
+        @toggle-completed="toggleCompleted"
+        @toggle-editing="toggleEditing"
+        @remove-assignment="remove"
+      />
 
       <div class="content assignment-description">
         <blockquote>
@@ -177,13 +155,6 @@
       />
       <hr>
       <div class="bottom-actions clearfix">
-        <AssignmentOverviewActionButtons
-          :assignment="assignment"
-          :loading="loading || toggleLoading"
-          @toggle-editing="toggleEditing"
-          @toggle-completed="toggleCompleted"
-          @remove-assignment="remove"
-        />
         <button
           class="button"
           @click="scrollToTop"
@@ -488,6 +459,10 @@ export default {
 <style lang="scss" scoped>
 .not-scheduled-tag {
   cursor: pointer;
+}
+
+.assignment-title {
+  margin-bottom: 0;
 }
 
 .course-tag {
