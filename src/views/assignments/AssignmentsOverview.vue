@@ -26,6 +26,14 @@
           class="title assignment-title has-text-centered-mobile"
           style="flex: 1"
         >
+          <span
+            v-if="assignment.completed"
+            title="This assignment is complete!"
+            :style="{ 'color': course.color }"
+            class="icon"
+          >
+            <i class="fa fa-check-square" />
+          </span>
           {{ assignment.title }}
         </h1>
         <div class="has-text-centered-mobile">
@@ -123,12 +131,17 @@
       <AssignmentOverviewActionButtons
         :assignment="assignment"
         :loading="loading || toggleLoading"
+        :description-expanded="descriptionExpanded"
+        @toggle-description="descriptionExpanded = !descriptionExpanded"
         @toggle-completed="toggleCompleted"
         @toggle-editing="toggleEditing"
         @remove-assignment="remove"
       />
 
-      <div class="content assignment-description">
+      <div
+        v-if="descriptionExpanded"
+        class="content assignment-description"
+      >
         <blockquote>
           <VueMarkdown
             v-if="assignment.description.length > 0"
@@ -191,6 +204,7 @@ export default {
       toggleLoading: false,
       loading: true,
       isUpcoming: false,
+      descriptionExpanded: true,
       assignment: {},
       editing: false,
       confetti: null,
@@ -255,11 +269,27 @@ export default {
     }
   },
   watch: {
-    $route: 'getAssignment'
+    $route: 'getAssignment',
+    descriptionExpanded (newDescriptionExpanded) {
+      localStorage.setItem(
+        'assignmentOverviewDescriptionExpanded',
+        newDescriptionExpanded
+      );
+    }
   },
   mounted () {
     // eslint-disable-next-line no-undef
     this.confetti = new ConfettiGenerator(this.confettiSettings);
+
+    if (localStorage.getItem('assignmentOverviewDescriptionExpanded')) {
+      try {
+        this.descriptionExpanded = JSON.parse(
+          localStorage.getItem('assignmentOverviewDescriptionExpanded')
+        );
+      } catch (e) {
+        localStorage.removeItem('assignmentOverviewDescriptionExpanded');
+      }
+    }
   },
   created () {
     this.getAssignment();
