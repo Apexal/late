@@ -27,13 +27,13 @@ The target audience is college students who use tools such as Google Calendar to
 Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with version `>= 11.0.0`.
 
 - Clone the repository
-- If you want to use a specific branch, switch to it with `$ git checkout branch_name`
+- Checkout the `dev` branch with `$ git checkout dev`
 - `$ npm install -g @vue/cli`
 - `$ npm install`
-- Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables
+- Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables **TEAM MEMBERS: ** Ask Frank for the official `.env` file
 
 To run the project in development mode, you must run the API server in one terminal and the front end hot-reloading server in another terminal:
 
-- `$ npm run dev` to run the API server (in one terminal)
-- `$ npm run serve` to run the hot-reloading Vue server (in another terminal)
-- Go to url `http://localhost:8080` in your browser
+- `$ npm run frontend` to run the hot-reloading Vue server (in one terminal)
+- `$ npm run backend` to run the API server (in another terminal)
+- Go to url `http://localhost:8080` (whatever `$ npm run frontend` tells you go to) in your browser
