@@ -1,117 +1,43 @@
 <template>
-  <div class="assignment-actions">
-    <div class="dropdown is-hoverable is-right is-pulled-right is-hidden-desktop">
-      <div class="dropdown-trigger">
-        <button
-          class="button is-dark"
-          :class="{ 'is-loading': loading }"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-        >
-          <span>Actions</span>
-          <span class="icon is-small">
-            <i
-              class="fas fa-angle-down"
-              aria-hidden="true"
-            />
-          </span>
-        </button>
-      </div>
-      <div
-        id="dropdown-menu"
-        class="dropdown-menu"
-        role="menu"
-      >
-        <div class="dropdown-content">
-          <a
-            v-if="!assignment.passed"
-            href="#"
-            class="dropdown-item"
-            @click="$emit('toggle-editing')"
-          >
-            <span class="icon margin-left">
-              <i class="fas fa-pencil-alt" />
-            </span>
-            Edit Info
-          </a>
-          <a
-            href="#"
-            class="dropdown-item"
-            @click="$emit('toggle-completed')"
-          >
-            <span class="icon margin-left">
-              <i
-                class="fas"
-                :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
-              />
-            </span>
-            {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
-          </a>
-          <hr class="dropdown-divider">
-          <router-link
-            to="/assignments"
-            class="dropdown-item"
-          >
-            <span class="icon">
-              <i class="fas fa-angle-left margin-right" />
-            </span>
-            All Assignments
-          </router-link>
-        </div>
-      </div>
-    </div>
-
-    <div class="assignment-controls buttons has-addons is-pulled-right is-hidden-touch">
-      <router-link
-        to="/assignments"
-        class="button is-link tooltip"
-        data-tooltip="Browse all assignments."
-      >
-        <span class="icon">
-          <i class="fas fa-angle-left margin-right" />
-        </span>
-        Browse
-      </router-link>
-
-      <button
-        v-if="!assignment.passed"
-        class="button is-warning tooltip"
-        data-tooltip="Change this assignment's info."
-        @click="$emit('toggle-editing')"
-      >
-        <span class="icon">
-          <i class="fas fa-pencil-alt" />
-        </span>
-        Edit Info
-      </button>
-
-      <button
-        v-if="assignment.passed"
-        class="button is-warning tooltip"
-        data-tooltip="Remove Assignment"
-        @click="$emit('remove-assignment')"
-      >
-        <span class="icon">
-          <i class="fas fa-times" />
-        </span>
-        Remove
-      </button>
-
-      <button
-        class="button tooltip"
-        :class="{ 'is-success': !assignment.completed, 'is-danger': assignment.completed }"
-        data-tooltip="Toggle this assignment's completion status."
-        @click="$emit('toggle-completed')"
-      >
-        <span class="icon">
-          <i
-            class="fas"
-            :class="{ 'fa-times' : assignment.completed, 'fa-check': !assignment.completed }"
-          />
-        </span>
-        {{ assignment.completed ? 'Mark Incomplete' : 'Mark Complete' }}
-      </button>
-    </div>
+  <div
+    class="buttons assignment-actions has-addons is-full-width is-flex"
+  >
+    <button
+      class="button tooltip"
+      :data-tooltip="'Mark this assignment as ' + (assignment.completed ? 'incomplete.' : 'finished.')"
+      :class="[assignment.completed ? 'is-success' : 'is-danger']"
+      @click="$emit('toggle-completed')"
+    >
+      <i class="fas fa-check-square" />
+      {{ assignment.completed ? 'Undo' : 'Mark Done' }}
+    </button>
+    <button
+      v-if="!assignment.passed"
+      class="button is-warning tooltip"
+      data-tooltip="Change this assignment's info."
+      @click="$emit('toggle-editing')"
+    >
+      <i class="fas fa-pencil-alt" />Edit <span class="is-hidden-touch">
+        Details
+      </span>
+    </button>
+    <button
+      v-else
+      class="button is-warning tooltip"
+      data-tooltip="Remove Assignment"
+      @click="$emit('remove-assignment')"
+    >
+      <i class="fas fa-times" /> Remove
+    </button>
+    <router-link
+      to="/assignments"
+      class="button is-link tooltip"
+      data-tooltip="Browse all assignments."
+    >
+      <i class="fas fa-angle-left" />Browse <span class="is-hidden-touch">
+        Assignments
+      </span>
+    </router-link>
   </div>
 </template>
 
@@ -132,9 +58,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.assignment-controls {
-  span.icon {
-    margin-right: 0px !important;
+.assignment-actions {
+  margin-bottom: 0;
+
+ .button {
+    flex: 1;
+    margin-bottom: 0;
+    i.fas {
+      margin-right: 5px;
+    }
+
+    .is-hidden-touch {
+      margin-left: 3px;
+
+    }
   }
 }
 </style>

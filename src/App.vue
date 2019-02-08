@@ -234,7 +234,7 @@ export default {
 /* TRANSITIONS */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 200ms ease;
 }
 .fade-enter,
 .fade-leave-to {
@@ -242,7 +242,7 @@ export default {
 }
 
 .child-view {
-  transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 100ms cubic-bezier(0.55, 0, 0.1, 1);
 }
 .slide-left-enter,
 .slide-right-leave-active {
