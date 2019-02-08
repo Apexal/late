@@ -128,7 +128,25 @@ export default {
     },
     assignments () {
       return this.$store.state.work.upcomingAssignments;
+    },
+    earliest () {
+      var earliest = this.$store.state.auth.user.earliestWorkTime;
+      const courses = this.$store.getters.getCourseScheduleAsEvents;
+      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e => Object.assign({}, e));
+
+      var i;
+      for (i = 0; i < courses.length; i++) {
+        if ((courses[i].start).localeCompare(earliest) < 0) { earliest = courses[i].start; }
+      }
+      for (i = 0; i < workBlocks.length; i++) {
+        if ((workBlocks[i].start).localeCompare(earliest) < 0) { earliest = workBlocks[i].start; }
+      }
+
+      return earliest;
     }
+  },
+  created () {
+    this.calendar.config.scrollTime = this.earliest;
   },
   methods: {
     eventClick (calEvent, jsEvent, view) {
