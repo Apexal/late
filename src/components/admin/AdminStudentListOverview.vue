@@ -16,6 +16,11 @@
           {{ student.grade_name }}
         </span>
         {{ student.display_name }}
+        <i
+          v-if="student.admin"
+          class="fa fa-star"
+          style="color:#e5c100"
+        />
       </h2>
     </summary>
 
