@@ -453,7 +453,7 @@ export default {
   height: 100%;
 }
 
-.assignment-description { 
-    word-break: break-all; 
+.assignment-description {
+    word-break: break-all;
     }
 </style>

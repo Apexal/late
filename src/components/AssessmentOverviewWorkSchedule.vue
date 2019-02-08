@@ -7,8 +7,8 @@
       <i class="fa fa-lock" />
       This {{ assessmentType }} is done so your work schedule can no longer be changed.
     </div>
+
     <div
-      v-else-if="!assessment.fullyScheduled"
       class="box"
     >
       <div
@@ -31,7 +31,29 @@
           </progress>
         </div>
       </div>
+
+      <div
+        class="columns tooltip"
+        :data-tooltip="finishedPercent + '% finished'"
+      >
+        <div class="column is-narrow">
+          You've finished
+          <b>{{ finishedMinutes }}</b> out of
+          <b>{{ totalEstimatedMinutes }}</b>
+          minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
+        </div>
+        <div class="column">
+          <progress
+            class="progress"
+            :value="finishedMinutes"
+            :max="totalEstimatedMinutes"
+          >
+            {{ finishedPercent }}%
+          </progress>
+        </div>
+      </div>
     </div>
+
     <FullCalendar
       ref="calendar"
       :events="totalEvents"
@@ -81,6 +103,10 @@ export default {
         0
       );
     },
+    finishedMinutes () {
+      // TODO added new may need to take exam model into account in calculation separately
+      return this.assessment._blocks.filter(b => b.passed).reduce((acc, block) => acc + block.duration, 0);
+    },
     totalEstimatedMinutes () {
       return this.assessment.timeEstimate * 60;
     },
@@ -88,6 +114,15 @@ export default {
       return Math.round(
         (this.scheduledMinutes / this.totalEstimatedMinutes) * 100
       );
+    },
+    finishedPercent () { // TODO added new
+      if (this.scheduledMinutes !== 0) {
+        return Math.round(
+          (this.finishedMinutes / this.scheduledMinutes) * 100
+        );
+      } else {
+        return 0;
+      }
     },
     editable () {
       if (this.assessmentType === 'exam') return !this.assessment.passed;
