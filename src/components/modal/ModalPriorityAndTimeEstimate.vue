@@ -24,7 +24,7 @@
             class="button is-small"
             :class="{ 'is-active': dueTime === dueDatePeriodStart}"
             :disabled="!dueDatePeriod"
-            @click="$emit('update-due-time', dueDatePeriodStart)"
+            @click="dueDatePeriod && $emit('update-due-time', dueDatePeriodStart)"
           >
             Start of Class
           </span>
@@ -39,7 +39,7 @@
             class="button is-small"
             :class="{ 'is-active': dueTime === dueDatePeriodEnd}"
             :disabled="!dueDatePeriod"
-            @click="$emit('update-due-time', dueDatePeriodEnd)"
+            @click="dueDatePeriod && $emit('update-due-time', dueDatePeriodEnd)"
           >
             End of Class
           </span>
