@@ -29,7 +29,7 @@ async function loginStudent (ctx) {
     if (student.accountLocked) {
       logger.info(`${student.rcs_id} tried to login to locked account`);
       ctx.session = null;
-      return ctx.redirect('/?accountLocked=true');
+      return ctx.redirect('/?waitlisted=1');
     }
 
     logger.info(`Logging in ${student.rcs_id}`);
@@ -37,13 +37,19 @@ async function loginStudent (ctx) {
     // TODO: CMS api to get personal info here
     student = Student({
       rcs_id: ctx.session.cas_user,
+      accountLocked: true, // WAIT LIST
       joined_date: new Date()
     });
+    /*
     logger.info(
       `Creating and logging in new student with rcs_id: ${student.rcs_id}`
     );
+    */
+    await student.save();
+    logger.info(`Creating and adding new user to waitlist with rcs_id: ${student.rcs_id}`);
     sendNewUserEmail(student.rcs_id);
-    ctx.query.redirectTo = '/profile';
+    ctx.session = null;
+    return ctx.redirect('/?waitlisted=1');
   }
 
   student.last_login = new Date();

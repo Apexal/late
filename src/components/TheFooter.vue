@@ -8,7 +8,10 @@
         <span class="icon">
           <i class="fas fa-question-circle" />
         </span>Learn more
-        <router-link to="/about">
+        <router-link
+          to="/about"
+          title="Visit our about page"
+        >
           about us.
         </router-link>
       </p>
@@ -20,6 +23,7 @@
         <a
           href="https://opensource.org/licenses/mit-license.php"
           target="_blank"
+          title="View source code license"
         >
           MIT.
         </a>
@@ -32,6 +36,7 @@
         <a
           href="https://github.com/Apexal/late/"
           target="_blank"
+          title="View repository"
         >
           Github.
         </a>
@@ -44,6 +49,7 @@
         <a
           href="https://rcos.io/projects/apexal/late/profile"
           target="_blank"
+          title="View RCOS project listing"
         >
           Observatory.
         </a>

@@ -70,6 +70,7 @@
             v-else-if="step === 3"
             :active-c-r-n="courseCRN"
             :active-due-date="dueDate"
+            @update-due-time="dueTime = $event"
             @update-date="dueDate = $event; nextStep();"
           />
           <ModalPriorityAndTimeEstimate

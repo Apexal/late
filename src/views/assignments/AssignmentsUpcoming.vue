@@ -52,9 +52,9 @@
               </span>
               <router-link
                 class="assignment-link"
-                :title="a.description.substring(0, 500)"
+                :title="(a.priority === 1 ? '(OPTIONAL) ' : '') + a.description.substring(0, 500)"
                 :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-                :class="{ 'priority': a.priority > 3 }"
+                :class="{ 'priority': a.priority > 3, 'has-text-grey is-italic': a.priority === 1 }"
               >
                 <b class="course-title is-hidden-tablet">
                   {{ course(a).longname }}
@@ -68,10 +68,7 @@
               >
                 <i class="far fa-clock" />
               </span>
-              <small
-                :data-tooltip="'in ' + hoursFromNow(a.dueDate) + ' hours'"
-                class="tooltip is-tooltip-left is-pulled-right has-text-grey"
-              >
+              <small class="is-pulled-right has-text-grey">
                 {{ toTimeString(a.dueDate) }}
               </small>
             </span>
@@ -156,9 +153,6 @@ export default {
     toTimeString (dueDate) {
       return moment(dueDate).format('h:mma');
     },
-    hoursFromNow (date) {
-      return moment(date).diff(this.now, 'hours');
-    },
     daysAway (date) {
       return moment(date).diff(moment(this.now).startOf('day'), 'days');
     }
@@ -167,10 +161,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.course-title {
-  margin-right: 5px;
-}
-
 .assignment {
   padding-right: 5px;
   padding-left: 5px;

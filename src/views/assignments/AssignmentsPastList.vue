@@ -3,6 +3,7 @@
     <h2 class="subtitle">
       Week of {{ weekOf }}
     </h2>
+
     <div class="columns">
       <div class="column is-narrow">
         <button
@@ -100,7 +101,12 @@
             Course
           </th>
           <th>Assignment</th>
-          <th>Completed</th>
+          <th>
+            <span class="is-hidden-touch">
+              Completed
+            </span>
+          </th>
+          <th class="is-hidden-touch" />
         </tr>
       </thead>
       <tbody>
@@ -152,6 +158,15 @@
               />
             </span>
           </td>
+          <td class="is-hidden-touch">
+            <button
+              class="button is-danger tooltip"
+              data-tooltip="Remove Assignment"
+              @click="removeAssignment(a)"
+            >
+              Remove
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -159,7 +174,8 @@
       v-if="filtered.length === 0"
       class="has-text-centered has-text-grey"
     >
-      There were no assignments this month<i v-if="filter.length > 0 || !showCompleted">
+      There were no assignments this month
+      <i v-if="filter.length > 0 || !showCompleted">
         with filters
       </i>.
     </p>
@@ -225,7 +241,10 @@ export default {
       return this.currentAssignments.filter(a => {
         if (!this.showCompleted && a.completed) return false;
         if (this.assignmentFilter.length > 0) {
-          return !this.filter.includes(this.course(a).crn) && a.title.toLowerCase().includes(this.assignmentFilter.toLowerCase());
+          return (
+            !this.filter.includes(this.course(a).crn) &&
+            a.title.toLowerCase().includes(this.assignmentFilter.toLowerCase())
+          );
         }
         return !this.filter.includes(this.course(a).crn);
       });
@@ -235,6 +254,35 @@ export default {
     this.getAssignments();
   },
   methods: {
+    async removeAssignment (assignment) {
+      // Confirm user wants to remove assignment
+      const assignmentTitle = assignment.title;
+      if (
+        !confirm(
+          `Are you sure you want to remove assignment ${assignment.title}?`
+        )
+      ) {
+        return;
+      }
+
+      // This handles the API call and state update
+      await this.$http.delete(`/assignments/a/${assignment._id}`);
+
+      this.currentAssignments = this.currentAssignments.filter(
+        a => a._id !== assignment._id
+      );
+
+      // Notify user of success
+      this.$toasted.success(
+        `Successfully removed assignment past '${assignment.title}'.`,
+        {
+          icon: 'times',
+          action: {
+            text: 'Undo'
+          }
+        }
+      );
+    },
     gotoLastWeek () {
       this.endDate = this.today;
       this.startDate = moment()
