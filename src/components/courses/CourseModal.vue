@@ -91,6 +91,7 @@
           :is="activeTab"
           :course="course"
           :upcoming-assessments="upcomingAssessments"
+          @add-assessment="addAssessment"
         />
       </div>
     </div>
@@ -102,11 +103,12 @@ import moment from 'moment';
 
 // Tabs
 import CourseModalUpcoming from './CourseModalUpcoming';
+import CourseModalSchedule from './CourseModalSchedule';
 import CourseModalLinks from './CourseModalLinks';
 
 export default {
   name: 'CourseModal',
-  components: { CourseModalUpcoming, CourseModalLinks },
+  components: { CourseModalUpcoming, CourseModalSchedule, CourseModalLinks },
   props: {
     open: {
       type: Boolean,
