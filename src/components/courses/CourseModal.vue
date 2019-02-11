@@ -19,7 +19,7 @@
         <div
           class="tag section-tag is-pulled-right"
           :style="{ 'background-color': course.color }"
-          :title="'You are in section ' + course.section_id"
+          :title="'You are in Section ' + course.section_id"
         >
           Section {{ course.section_id }}
         </div>
@@ -65,6 +65,9 @@
                   />
                 </span>
                 <span>Schedule</span>
+                <span class="tag">
+                  {{ course.periods.length }}
+                </span>
               </a>
             </li>
             <li
@@ -156,6 +159,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+div.tabs.is-centered {
+  margin-bottom: 12px;
+}
 h2.subtitle.course-longname {
   margin-bottom: 0;
 }

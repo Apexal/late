@@ -1,11 +1,11 @@
 <template>
   <div class="upcoming">
-    <span
+    <p
       v-if="upcomingAssessments.length === 0"
-      class="has-text-grey"
+      class="has-text-grey has-text-centered"
     >
       No upcoming assignments or exams for one week.
-    </span>
+    </p>
     <div
       v-else
       class="columns is-multiline"

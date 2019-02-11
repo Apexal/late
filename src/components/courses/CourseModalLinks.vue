@@ -17,12 +17,12 @@
         </a>
       </li>
     </ul>
-    <span
+    <p
       v-else
       class="has-text-centered has-text-grey"
     >
-      No links added.
-    </span>
+      You haven't added any links for this course yet.
+    </p>
   </div>
 </template>
 
