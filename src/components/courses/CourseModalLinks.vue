@@ -1,11 +1,11 @@
 <template>
   <div class="course-links">
     <ul
-      v-if="course.links && course.links.length > 0"
+      v-if="links && links.length > 0"
       class="course-links"
     >
       <li
-        v-for="l in course.links"
+        v-for="l in links"
         :key="l"
       >
         <a
@@ -33,6 +33,11 @@ export default {
     course: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    links () {
+      return this.course.links || [];
     }
   }
 };

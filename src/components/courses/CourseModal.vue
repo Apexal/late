@@ -54,6 +54,7 @@
               </a>
             </li>
             <li
+              v-if="course.periods"
               :class="{ 'is-active': activeTab === 'CourseModalSchedule' }"
               @click="activeTab = 'CourseModalSchedule'"
             >
@@ -83,7 +84,7 @@
                 </span>
                 <span>Links</span>
                 <span class="tag">
-                  {{ course.links.length }}
+                  {{ links.length }}
                 </span>
               </a>
             </li>
@@ -141,6 +142,9 @@ export default {
         .map(ex => Object.assign({ assessmentType: 'exam' }, ex));
 
       return assignments.concat(exams).slice(0, 4);
+    },
+    links () {
+      return this.course.links || [];
     }
   },
   methods: {
