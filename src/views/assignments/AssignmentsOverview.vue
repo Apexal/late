@@ -219,12 +219,12 @@ export default {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
     },
     completedAt () {
-      return moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+      return moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
     },
     lastEdited () {
       return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)
         ? 'never'
-        : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+        : moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
     },
     fontWeight () {
       return (
@@ -263,7 +263,7 @@ export default {
     toggleButtonTitle () {
       return this.assignment.completed
         ? `Completed ${moment(this.assignment.completedAt).format(
-          'MM/DD/YY h:mma'
+          'M/DD/YY h:mma'
         )}`
         : 'Click to mark as completed.';
     }

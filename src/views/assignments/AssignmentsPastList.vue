@@ -323,7 +323,7 @@ export default {
     },
     toFullDateTimeString: dueDate =>
       moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
-    toDateShorterString: dueDate => moment(dueDate).format('MM/DD/YY'),
+    toDateShorterString: dueDate => moment(dueDate).format('M/DD/YY'),
     toTimeString: time => moment(time).format('h:mm a')
   }
 };

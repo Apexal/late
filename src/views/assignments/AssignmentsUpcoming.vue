@@ -126,7 +126,7 @@ export default {
       return (
         this.course(a).longname +
         (a.completedAt
-          ? ` | Completed ${moment(a.completedAt).format('MM/DD/YY h:mma')}`
+          ? ` | Completed ${moment(a.completedAt).format('M/DD/YY h:mma')}`
           : '')
       );
     },

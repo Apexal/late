@@ -41,7 +41,13 @@
               @click="activeTab = 'CourseModalUpcoming'"
             >
               <a>
-                Upcoming
+                <span class="icon is-small">
+                  <i
+                    class="fas fa-clipboard-list"
+                    aria-hidden="true"
+                  />
+                </span>
+                <span>Upcoming</span>
                 <span class="tag">
                   {{ upcomingAssessments.length }}
                 </span>
@@ -51,14 +57,28 @@
               :class="{ 'is-active': activeTab === 'CourseModalSchedule' }"
               @click="activeTab = 'CourseModalSchedule'"
             >
-              <a>Schedule</a>
+              <a>
+                <span class="icon is-small">
+                  <i
+                    class="far fa-clock"
+                    aria-hidden="true"
+                  />
+                </span>
+                <span>Schedule</span>
+              </a>
             </li>
             <li
               :class="{ 'is-active': activeTab === 'CourseModalLinks' }"
               @click="activeTab = 'CourseModalLinks'"
             >
               <a>
-                Links
+                <span class="icon is-small">
+                  <i
+                    class="fas fa-link"
+                    aria-hidden="true"
+                  />
+                </span>
+                <span>Links</span>
                 <span class="tag">
                   {{ course.links.length }}
                 </span>
