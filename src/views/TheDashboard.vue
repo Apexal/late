@@ -1,8 +1,21 @@
 <template>
   <section class="section dasboard">
-    <h1 class="title">
-      Your Dashboard
-    </h1>
+    <div class="tabs is-right">
+      <ul>
+        <h1
+          class="title"
+          style="flex: 1"
+        >
+          Your Dashboard
+        </h1>
+        <li>
+          <a>Your Week</a>
+        </li>
+        <li class="is-active">
+          <a>Calendar</a>
+        </li>
+      </ul>
+    </div>
     <template v-if="onBreak">
       <h2 class="subtitle">
         On Break
@@ -70,9 +83,10 @@ export default {
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
               if (event.period.type === 'TES') {
-                return !!this.$store.state.work.upcomingExams.find(ex =>
-                  ex.courseCRN === event.course.crn &&
-                  moment(ex.date).isSame(event.start, 'day')
+                return !!this.$store.state.work.upcomingExams.find(
+                  ex =>
+                    ex.courseCRN === event.course.crn &&
+                    moment(ex.date).isSame(event.start, 'day')
                 );
               }
 
@@ -238,6 +252,9 @@ export default {
 </script>
 
 <style lang='scss'>
+.tabs .title {
+  margin: 0;
+}
 .work-block-event {
   border-width: 3px !important;
 }
