@@ -71,6 +71,7 @@ export default {
             if (event.eventType === 'course') {
               if (event.period.type === 'TES') {
                 return !!this.$store.state.work.upcomingExams.find(ex =>
+                  ex.courseCRN === event.course.crn &&
                   moment(ex.date).isSame(event.start, 'day')
                 );
               }
