@@ -6,14 +6,17 @@
     <div class="content has-text-centered columns">
       <p class="column">
         <span class="icon">
-          <i class="fas fa-question-circle" />
-        </span>Learn more
-        <router-link
-          to="/about"
-          title="Visit our about page"
+          <img
+            src="https://github.com/Apexal/old-ontrac/blob/master/client/public/images/logos/logo128x128.png?raw=true"
+          >
+        </span>In memory of
+        <a
+          href="https://github.com/Apexal/old-ontrac/"
+          target="_blank"
+          title="View the project that inspired LATE"
         >
-          about us.
-        </router-link>
+          OnTrac.
+        </a>
       </p>
       <p class="column">
         <span class="icon">
