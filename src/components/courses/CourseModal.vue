@@ -141,7 +141,7 @@ export default {
         )
         .map(ex => Object.assign({ assessmentType: 'exam' }, ex));
 
-      return assignments.concat(exams).slice(0, 4);
+      return exams.concat(assignments);
     },
     links () {
       return this.course.links || [];

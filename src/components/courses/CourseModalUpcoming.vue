@@ -85,30 +85,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.assessment-box {
-  padding: 10px;
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.upcoming {
+  padding-top: 12px;
+
+  .column.is-half {
+    padding: 8px;
   }
 
-  .assessment-completion-icon {
-    color: red;
-    &.fa-check {
-      color: green;
+  .assessment-box {
+    padding: 10px;
+    span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .assessment-completion-icon {
+      color: red;
+      &.fa-check {
+        color: green;
+      }
     }
   }
-}
 
-hr.small-margin {
-  margin: 12px 0;
-}
+  hr.small-margin {
+    margin: 12px 0;
+  }
 
-.buttons {
-  button {
-    i.fa {
-      margin-right: 5px;
+  .buttons {
+    button {
+      i.fa {
+        margin-right: 5px;
+      }
     }
   }
 }
