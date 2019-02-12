@@ -411,9 +411,7 @@ async function addComment (ctx) {
 async function deleteComment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
-  // CLEAN UP
-  // Convoluted way to get the index? Can you not send data in a DELETE request?
-  const index = parseInt(ctx.request.url.split('?index=')[1]);
+  const index = ctx.params.commentIndex;
 
   let assignment;
   try {
@@ -424,7 +422,7 @@ async function deleteComment (ctx) {
   } catch (e) {
     logger.error(`Failed to get assignment for ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.internalServerError(
-      'There was an error getting the assignment to comment on.'
+      'There was an error getting the assignment to remove the comment from.'
     );
   }
 
@@ -434,13 +432,13 @@ async function deleteComment (ctx) {
         ctx.state.user.rcs_id
       }`
     );
-    return ctx.notFound('Could not find assignment to comment on.');
+    return ctx.notFound(
+      'Could not find assignment to remove the comment from.'
+    );
   }
 
-  let commentID;
-  commentID = assignment.comments[index]['_id'];
-
-  assignment.comments.pull({ _id: commentID });
+  // Remove the comment by its index
+  assignment.comments.splice(index, 1);
 
   try {
     await assignment.save();
@@ -453,7 +451,6 @@ async function deleteComment (ctx) {
 
   ctx.ok({ updatedAssignment: assignment });
 }
-
 
 module.exports = {
   getAssignmentMiddleware,

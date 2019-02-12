@@ -468,8 +468,7 @@ export default {
     async deleteComment (i) {
       let request;
       request = await this.$http.delete(
-        `/assignments/a/${this.assignment._id}/comments`,
-        { params: { index: i } }
+        `/assignments/a/${this.assignment._id}/comments/${i}`
       );
 
       // Calls API and updates state
