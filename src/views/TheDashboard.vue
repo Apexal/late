@@ -26,7 +26,7 @@
         ref="calendar"
         :events="events"
         :editable="true"
-        :selectable="false"
+        :selectable="true"
         :header="calendar.header"
         :config="calendar.config"
       />
@@ -75,7 +75,7 @@ export default {
           defaultView: 'agendaFiveDay',
           eventOverlap: true,
           selectOverlap: true,
-          selectHelper: false,
+          selectHelper: true,
           nowIndicator: true,
           timeFormat: 'h(:mm)t',
           snapDuration: '00:15',
@@ -110,7 +110,8 @@ export default {
           */
           eventClick: this.eventClick,
           eventDrop: this.eventDrop,
-          eventResize: this.eventResize
+          eventResize: this.eventResize,
+          select: this.select
         }
       }
     };
@@ -188,6 +189,12 @@ export default {
     this.calendar.config.scrollTime = this.earliest;
   },
   methods: {
+    select (start, end, jsEvent, view) {
+      this.$toasted.show(
+        'You will be able to schedule work blocks by selecting soon.'
+      );
+      this.$refs.calendar.fireMethod('unselect');
+    },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {
         this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', calEvent.start);
