@@ -143,16 +143,30 @@
         class="content assignment-description"
       >
         <blockquote>
-          <VueMarkdown
-            v-if="assignment.description.length > 0"
-            :source="assignment.description"
-            :html="false"
-            :emoji="true"
-            :anchor-attributes="{target: '_blank'}"
+          <textarea
+            v-if="editingDescription"
+            v-model.trim="editedDescription"
+            class="edited-description"
           />
-          <i v-else>
-            No description given.
-          </i>
+          <template v-else>
+            <VueMarkdown
+              v-if="assignment.description.length > 0"
+              :source="assignment.description"
+              :html="false"
+              :emoji="true"
+              :anchor-attributes="{target: '_blank'}"
+            />
+            <i v-else>
+              No description given.
+            </i>
+          </template>
+          <span
+            class="edit-description tooltip is-tooltip-left"
+            :data-tooltip="editingDescription ? 'Click to save description.' : 'Click to edit description.'"
+            @click="toggleEditingDescription"
+          >
+            <i class="fas fa-pencil-alt" />
+          </span>
         </blockquote>
       </div>
       <hr>
@@ -200,6 +214,8 @@ export default {
   data () {
     return {
       tab: 'schedule',
+      editingDescription: false,
+      editedDescription: '',
       commentLoading: false,
       toggleLoading: false,
       loading: true,
@@ -304,6 +320,43 @@ export default {
     updatedAssignment (newAssignment) {
       this.assignment = newAssignment;
     },
+    async toggleEditingDescription () {
+      if (this.editingDescription) {
+        if (this.editedDescription === this.assignment.description) {
+          this.editingDescription = false;
+          return;
+        }
+
+        let request;
+        try {
+          request = await this.$http.patch(
+            `/assignments/a/${this.assignment._id}`,
+            { description: this.editedDescription }
+          );
+        } catch (e) {
+          this.$toasted.error(e.response.data.message);
+          this.editingDescription = false;
+          return;
+        }
+
+        // Calls API and updates state
+        if (
+          this.$store.getters.getUpcomingAssignmentById(this.assignment._id)
+        ) {
+          this.$store.commit(
+            'UPDATE_UPCOMING_ASSIGNMENT',
+            request.data.updatedAssignment
+          );
+        } else {
+          this.updatedAssignment(request.data.updatedAssignment);
+        }
+
+        this.editingDescription = false;
+      } else {
+        this.editedDescription = this.assignment.description;
+        this.editingDescription = true;
+      }
+    },
     notFullyScheduledClick () {
       this.tab = 'schedule';
       this.$refs.tabs.scrollTo();
@@ -375,6 +428,8 @@ export default {
         this.assignment = this.$store.getters.getUpcomingAssignmentById(
           this.$route.params.assignmentID
         );
+        this.editedDescription = this.assignment.description;
+
         this.loading = false;
         this.isUpcoming = true;
         document.title = `${this.assignment.title} | LATE`;
@@ -400,6 +455,8 @@ export default {
       }
 
       this.assignment = request.data.assignment;
+      this.editedDescription = this.assignment.description;
+
       document.title = `${this.assignment.title} | LATE`;
       this.loading = false;
     },
@@ -551,7 +608,24 @@ export default {
   height: 100%;
 }
 
-.assignment-description {
-  word-break: break-all;
+.assignment-description blockquote {
+  word-break: break-word;
+  position: relative;
+
+  .edited-description {
+    max-width: 600px;
+    min-width: 100%;
+
+    min-height: 100px;
+    max-height: 400px;
+  }
+
+  .edit-description {
+    cursor: pointer;
+    z-index: 2;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 }
 </style>
