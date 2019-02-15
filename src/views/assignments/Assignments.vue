@@ -63,6 +63,16 @@
             Show Completed
           </label>
         </div>
+        <div class="select">
+          <select v-model="groupBy">
+            <option value="dueDate">
+              Group by Due Date
+            </option>
+            <option value="course">
+              Group by Course
+            </option>
+          </select>
+        </div>
       </div>
     </div>
     <hr>
@@ -72,6 +82,7 @@
     >
       <router-view
         class="child-view"
+        :group-by="groupBy"
         :show-completed="showCompleted"
         :filter="filter"
         @toggle-assignment="toggleAssignment"
@@ -98,6 +109,7 @@ export default {
   name: 'Assignments',
   data () {
     return {
+      groupBy: 'dueDate',
       showCompleted: true,
       filter: []
     };
@@ -137,7 +149,9 @@ export default {
   mounted () {
     if (localStorage.getItem('assignmentsShowCompleted')) {
       try {
-        this.showCompleted = JSON.parse(localStorage.getItem('assignmentsShowCompleted'));
+        this.showCompleted = JSON.parse(
+          localStorage.getItem('assignmentsShowCompleted')
+        );
       } catch (e) {
         localStorage.removeItem('assignmentsShowCompleted');
       }
