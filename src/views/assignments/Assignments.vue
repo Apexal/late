@@ -63,7 +63,10 @@
             Show Completed
           </label>
         </div>
-        <div class="select">
+        <div
+          v-if="view === 'assignments-upcoming'"
+          class="select"
+        >
           <select v-model="groupBy">
             <option value="dueDate">
               Group by Due Date
