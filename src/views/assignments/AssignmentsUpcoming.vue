@@ -19,7 +19,10 @@
         class="column is-one-third-desktop is-half-tablet"
       >
         <div class="panel">
-          <p class="panel-heading is-unselectable key-heading">
+          <p
+            class="panel-heading is-unselectable key-heading"
+            :style="headerStyle(key)"
+          >
             <span
               class="tag is-pulled-right"
               :class="progressClass(key)"
@@ -29,7 +32,7 @@
             </span>
             <span
               class="key"
-              :title="headerTitle(key)"
+              :title="headerTitle"
               @click="headerClick(key)"
             >
               {{ headerText(key) }}
@@ -115,6 +118,9 @@ export default {
     none () {
       return Object.keys(this.filtered).length === 0;
     },
+    headerTitle () {
+      return this.groupBy === 'course' ? 'Open course modal.' : 'Add assignment to this day.';
+    },
     filtered () {
       const filtered = {};
       for (let key in this.groupedAssignments) {
@@ -146,8 +152,13 @@ export default {
     headerText (key) {
       return this.groupBy === 'course' ? this.course(key).longname : this.toDateShortString(key);
     },
-    headerTitle (key) {
-      return this.groupBy === 'course' ? 'Open course modal.' : 'Add assignment to this day.';
+    headerStyle (key) {
+      if (this.groupBy === 'dueDate') return {};
+      let color = this.course(key).color;
+      if (color.length < 5) {
+        color += color.slice(1);
+      }
+      return { 'background-color': this.groupBy === 'course' ? this.course(key).color : 'inherit', color: (color.replace('#', '0x')) > (0xffffff / 1.2) ? '#333' : '#fff' };
     },
     headerClick (key) {
       if (this.groupBy === 'course') {
@@ -204,7 +215,7 @@ export default {
 
 <style lang="scss" scoped>
 .key-heading {
-  span {
+  span.key {
     cursor: pointer;
   }
 }
