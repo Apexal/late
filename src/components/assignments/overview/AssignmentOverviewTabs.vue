@@ -16,7 +16,8 @@
               data-tooltip="This can no longer be edited."
             >
               <i class="fa fa-lock" />
-            </span>Work Schedule
+            </span>
+            <span>Work Schedule</span>
             <span
               v-if="!assignment.completed && !fullyScheduled"
               class="tag is-danger tooltip is-tooltip-right"
