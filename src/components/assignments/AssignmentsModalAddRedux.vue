@@ -65,6 +65,7 @@
             :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
             @update-title="title = $event"
             @update-desc="description = $event"
+            @next-step="nextStep()"
           />
           <ModalCalendar
             v-else-if="step === 3"

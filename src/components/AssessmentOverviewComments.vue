@@ -15,9 +15,7 @@
         class="button has-text-grey is-pulled-right delete-comment"
         @click="$emit('delete-comment', index)"
       >
-        <i
-          class="fas fa-trash-alt"
-        />
+        <i class="fas fa-trash-alt" />
       </button>
       <small
         class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
@@ -46,6 +44,7 @@
                 rows="10"
                 class="input"
                 required
+                @keyup.ctrl.enter="$emit('add-comment', newComment); newComment = '';"
               />
             </div>
           </div>
