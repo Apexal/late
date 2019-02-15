@@ -28,7 +28,11 @@
               >
                 {{ percentDone(crn) }}%
               </span>
-              <span class="date">
+              <span
+                class="crn"
+                title="Click to open course modal."
+                @click="$store.commit('OPEN_COURSE_MODAL', course(crn))"
+              >
                 {{ course(crn).longname }}
               </span>
             </p>
@@ -84,10 +88,7 @@
           class="due-date column is-one-third-desktop is-half-tablet"
         >
           <div class="panel">
-            <p
-              class="panel-heading tooltip is-tooltip-bottom is-unselectable date-heading"
-              :data-tooltip="daysAway(date) + ' days away'"
-            >
+            <p class="panel-heading is-unselectable date-heading">
               <span
                 class="tag is-pulled-right"
                 :class="progressClass(date)"
@@ -95,7 +96,11 @@
               >
                 {{ percentDone(date) }}%
               </span>
-              <span class="date">
+              <span
+                title="Click to add an assignment to this day."
+                class="date"
+                @click="clickDateHeading(date)"
+              >
                 {{ toDateShortString(date) }}
               </span>
             </p>
@@ -198,6 +203,10 @@ export default {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     },
+    clickDateHeading (date) {
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', moment(date));
+      this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+    },
     toggleAssignmentTitle (a) {
       return (
         this.course(a.courseCRN).longname +
@@ -240,6 +249,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.course-heading,
+.date-heading {
+  span {
+    cursor: pointer;
+  }
+}
 .assignment {
   padding-right: 5px;
   padding-left: 5px;
