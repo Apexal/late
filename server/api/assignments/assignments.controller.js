@@ -361,44 +361,24 @@ async function addComment (ctx) {
   const assignmentID = ctx.params.assignmentID;
   const text = ctx.request.body.comment;
 
-  let assignment;
-  try {
-    assignment = await Assignment.findOne({
-      _student: ctx.state.user._id,
-      _id: assignmentID
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(`Failed to get assignment for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.internalServerError(
-      'There was an error getting the assignment to comment on.'
-    );
-  }
-
-  if (!assignment) {
-    logger.error(
-      `Failed to find assignment with ID ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }`
-    );
-    return ctx.notFound('Could not find assignment to comment on.');
-  }
-
   // Add comment
-  assignment.comments.push({
+  ctx.state.assignment.comments.push({
     addedAt: new Date(),
     body: text
   });
 
   try {
-    await assignment.save();
+    await ctx.state.assignment.save();
   } catch (e) {
     logger.error(
-      `Failed to save assignment for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to save assignment ${assignmentID} for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
     );
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedAssignment: assignment });
+  ctx.ok({ updatedAssignment: ctx.state.assignment });
 }
 
 /**
@@ -413,43 +393,21 @@ async function deleteComment (ctx) {
 
   const index = ctx.params.commentIndex;
 
-  let assignment;
-  try {
-    assignment = await Assignment.findOne({
-      _student: ctx.state.user._id,
-      _id: assignmentID
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(`Failed to get assignment for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.internalServerError(
-      'There was an error getting the assignment to remove the comment from.'
-    );
-  }
-
-  if (!assignment) {
-    logger.error(
-      `Failed to find assignment with ID ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }`
-    );
-    return ctx.notFound(
-      'Could not find assignment to remove the comment from.'
-    );
-  }
-
   // Remove the comment by its index
-  assignment.comments.splice(index, 1);
+  ctx.state.assignment.comments.splice(index, 1);
 
   try {
-    await assignment.save();
+    await ctx.state.assignment.save();
   } catch (e) {
     logger.error(
-      `Failed to save assignment for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to save assignment ${assignmentID} for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
     );
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedAssignment: assignment });
+  ctx.ok({ updatedAssignment: ctx.state.assignment });
 }
 
 module.exports = {
