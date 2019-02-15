@@ -6,30 +6,40 @@
     >
       {{ assessment.passed ? 'No comments were posted for this ' + assessmentType + '.' : 'You have not posted any comments yet.' }}
     </div>
-    <div
+
+    <article
       v-for="(c, index) in assessment.comments"
       :key="index"
-      class="box"
+      class="media"
     >
-      <button
-        class="button has-text-grey is-pulled-right delete-comment"
-        @click="$emit('delete-comment', index)"
-      >
-        <i class="fas fa-trash-alt" />
-      </button>
-      <small
-        class="has-text-grey is-pulled-right added-at tooltip is-tooltip-left"
-        :data-tooltip="toFullDateTimeString(c.addedAt)"
-      >
-        {{ fromNow(c.addedAt) }}
-      </small>
-      <VueMarkdown
-        :source="c.body"
-        :html="false"
-        :emoji="true"
-        :anchor-attributes="{target: '_blank'}"
-      />
-    </div>
+      <div class="media-content">
+        <VueMarkdown
+          :source="c.body"
+          :html="false"
+          :emoji="true"
+          :anchor-attributes="{target: '_blank'}"
+        />
+        <nav class="level is-mobile">
+          <div class="level-left">
+            <small
+              class="level-item tooltip is-tooltip-right has-text-grey"
+              :data-tooltip="toFullDateTimeString(c.addedAt)"
+            >
+              {{ fromNow(c.addedAt) }}
+            </small>
+          </div>
+        </nav>
+      </div>
+      <div class="media-right">
+        <button
+          title="Delete comment."
+          class="delete"
+          @click="$emit('delete-comment', index)"
+        />
+      </div>
+      <hr>
+    </article>
+
     <template>
       <hr>
       <div class="box is-clearfix">
