@@ -40,6 +40,17 @@ const getters = {
 
     return grouped;
   },
+  upcomingAssignmentsGroupedByCourse: state => {
+    const grouped = {};
+
+    for (let a of state.upcomingAssignments) {
+      if (!grouped[a.courseCRN]) grouped[a.courseCRN] = [];
+
+      grouped[a.courseCRN].push(a);
+    }
+
+    return grouped;
+  },
   incompleteUpcomingAssignments: state =>
     state.upcomingAssignments.filter(a => !a.completed),
   getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>

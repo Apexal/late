@@ -14,24 +14,28 @@
       class="columns is-multiline"
     >
       <div
-        v-for="(assignments, date) in filtered"
-        :key="date"
-        class="due-date column is-one-third-desktop is-half-tablet"
+        v-for="(assignments, key) in filtered"
+        :key="key"
+        class="column is-one-third-desktop is-half-tablet"
       >
         <div class="panel">
           <p
-            class="panel-heading tooltip is-tooltip-bottom is-unselectable date-heading"
-            :data-tooltip="daysAway(date) + ' days away'"
+            class="panel-heading is-unselectable key-heading"
+            :style="headerStyle(key)"
           >
             <span
               class="tag is-pulled-right"
-              :class="progressClass(date)"
-              :title="`You are ${percentDone(date)}% complete with this day's assignments.`"
+              :class="progressClass(key)"
+              :title="`You are ${percentDone(key)}% complete with these assignments.`"
             >
-              {{ percentDone(date) }}%
+              {{ percentDone(key) }}%
             </span>
-            <span class="date">
-              {{ toDateShortString(date) }}
+            <span
+              class="key"
+              :title="headerTitle"
+              @click="headerClick(key)"
+            >
+              {{ headerText(key) }}
             </span>
           </p>
           <div
@@ -47,7 +51,7 @@
                 <span
                   :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
                   :title="toggleAssignmentTitle(a)"
-                  :style="{ 'color': course(a).color }"
+                  :style="{ 'color': course(a.courseCRN).color }"
                 />
               </span>
               <router-link
@@ -57,7 +61,7 @@
                 :class="{ 'priority': a.priority > 3, 'has-text-grey is-italic': a.priority === 1 }"
               >
                 <b class="course-title is-hidden-tablet">
-                  {{ course(a).longname }}
+                  {{ course(a.courseCRN).longname }}
                 </b>
                 {{ a.title }}
               </router-link>
@@ -68,8 +72,18 @@
               >
                 <i class="far fa-clock" />
               </span>
-              <small class="is-pulled-right has-text-grey">
+              <small
+                v-if="groupBy === 'dueDate'"
+                class="is-pulled-right has-text-grey"
+              >
                 {{ toTimeString(a.dueDate) }}
+              </small>
+              <small
+                v-else
+                class="is-pulled-right tooltip is-tooltip-left has-text-grey"
+                :data-tooltip="toDateShortString(a.dueDate) + ' ' + toTimeString(a.dueDate)"
+              >
+                {{ fromNow(a.dueDate) }}
               </small>
             </span>
           </div>
@@ -88,6 +102,10 @@ export default {
       type: Boolean,
       default: true
     },
+    groupBy: {
+      type: String,
+      required: true
+    },
     filter: {
       type: Array,
       default: () => []
@@ -100,44 +118,76 @@ export default {
     none () {
       return Object.keys(this.filtered).length === 0;
     },
+    headerTitle () {
+      return this.groupBy === 'course' ? 'Open course modal.' : 'Add assignment to this day.';
+    },
     filtered () {
       const filtered = {};
-      for (let date in this.upcomingAssignmentsGroupedByDueDate) {
-        filtered[date] = this.upcomingAssignmentsGroupedByDueDate[date].filter(
-          a => {
-            if (!this.showCompleted && a.completed) return false;
-            return !this.filter.includes(this.course(a).crn);
-          }
-        );
-        if (filtered[date].length === 0) delete filtered[date];
+      for (let key in this.groupedAssignments) {
+        filtered[key] = this.groupedAssignments[key].filter(a => {
+          if (!this.showCompleted && a.completed) return false;
+          return !this.filter.includes(this.course(a.crn));
+        });
+        if (filtered[key].length === 0) delete filtered[key];
       }
 
       return filtered;
     },
+    groupedAssignments () {
+      return this.groupBy === 'course'
+        ? this.upcomingAssignmentsGroupedByCourse
+        : this.upcomingAssignmentsGroupedByDueDate;
+    },
     upcomingAssignmentsGroupedByDueDate () {
       return this.$store.getters.upcomingAssignmentsGroupedByDueDate;
+    },
+    upcomingAssignmentsGroupedByCourse () {
+      return this.$store.getters.upcomingAssignmentsGroupedByCourse;
     }
   },
   methods: {
-    course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+    course (crn) {
+      return this.$store.getters.getCourseFromCRN(crn);
+    },
+    headerText (key) {
+      return this.groupBy === 'course' ? this.course(key).longname : this.toDateShortString(key);
+    },
+    headerStyle (key) {
+      if (this.groupBy === 'dueDate') return {};
+      let color = this.course(key).color;
+      if (color.length < 5) {
+        color += color.slice(1);
+      }
+      return { 'background-color': this.groupBy === 'course' ? this.course(key).color : 'inherit', color: (color.replace('#', '0x')) > (0xffffff / 1.2) ? '#333' : '#fff' };
+    },
+    headerClick (key) {
+      if (this.groupBy === 'course') {
+        this.$store.commit('OPEN_COURSE_MODAL', this.course(key));
+      } else {
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', moment(key));
+        this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+      }
+    },
+    clickDateHeading (date) {
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', moment(date));
+      this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
     },
     toggleAssignmentTitle (a) {
       return (
-        this.course(a).longname +
+        this.course(a.courseCRN).longname +
         (a.completedAt
           ? ` | Completed ${moment(a.completedAt).format('M/DD/YY h:mma')}`
           : '')
       );
     },
-    percentDone (date) {
-      const assignments = this.upcomingAssignmentsGroupedByDueDate[date];
+    percentDone (key) {
+      const assignments = this.groupedAssignments[key];
       return Math.round(
         (assignments.filter(a => a.completed).length / assignments.length) * 100
       );
     },
-    progressClass (date) {
-      const percentDone = this.percentDone(date);
+    progressClass (key) {
+      const percentDone = this.percentDone(key);
       if (percentDone === 100) return 'is-success';
       if (percentDone >= 50) return 'is-warning';
       if (percentDone > 0) return 'is-danger';
@@ -153,6 +203,9 @@ export default {
     toTimeString (dueDate) {
       return moment(dueDate).format('h:mma');
     },
+    fromNow (date) {
+      return moment(date).fromNow();
+    },
     daysAway (date) {
       return moment(date).diff(moment(this.now).startOf('day'), 'days');
     }
@@ -161,6 +214,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.key-heading {
+  span.key {
+    cursor: pointer;
+  }
+}
 .assignment {
   padding-right: 5px;
   padding-left: 5px;
