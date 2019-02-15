@@ -119,14 +119,16 @@ export default {
       return Object.keys(this.filtered).length === 0;
     },
     headerTitle () {
-      return this.groupBy === 'course' ? 'Open course modal.' : 'Add assignment to this day.';
+      return this.groupBy === 'course'
+        ? 'Open course modal.'
+        : 'Add assignment to this day.';
     },
     filtered () {
       const filtered = {};
       for (let key in this.groupedAssignments) {
         filtered[key] = this.groupedAssignments[key].filter(a => {
           if (!this.showCompleted && a.completed) return false;
-          return !this.filter.includes(this.course(a.crn));
+          return !this.filter.includes(a.courseCRN);
         });
         if (filtered[key].length === 0) delete filtered[key];
       }
@@ -150,7 +152,9 @@ export default {
       return this.$store.getters.getCourseFromCRN(crn);
     },
     headerText (key) {
-      return this.groupBy === 'course' ? this.course(key).longname : this.toDateShortString(key);
+      return this.groupBy === 'course'
+        ? this.course(key).longname
+        : this.toDateShortString(key);
     },
     headerStyle (key) {
       if (this.groupBy === 'dueDate') return {};
@@ -158,7 +162,11 @@ export default {
       if (color.length < 5) {
         color += color.slice(1);
       }
-      return { 'background-color': this.groupBy === 'course' ? this.course(key).color : 'inherit', color: (color.replace('#', '0x')) > (0xffffff / 1.2) ? '#333' : '#fff' };
+      return {
+        'background-color':
+          this.groupBy === 'course' ? this.course(key).color : 'inherit',
+        color: color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
+      };
     },
     headerClick (key) {
       if (this.groupBy === 'course') {

@@ -76,7 +76,6 @@
         </div>
       </div>
     </div>
-    <hr>
     <transition
       name="slide-left"
       mode="out-in"
