@@ -13,139 +13,79 @@
       v-else
       class="columns is-multiline"
     >
-      <template v-if="groupBy === 'course'">
-        <div
-          v-for="(assignments, crn) in filtered"
-          :key="crn"
-          class="due-date column is-one-third-desktop is-half-tablet"
-        >
-          <div class="panel">
-            <p class="panel-heading is-unselectable course-heading">
-              <span
-                class="tag is-pulled-right"
-                :class="progressClass(crn)"
-                :title="`You are ${percentDone(crn)}% complete with this course's assignments.`"
-              >
-                {{ percentDone(crn) }}%
-              </span>
-              <span
-                class="crn"
-                title="Click to open course modal."
-                @click="$store.commit('OPEN_COURSE_MODAL', course(crn))"
-              >
-                {{ course(crn).longname }}
-              </span>
-            </p>
-            <div
-              v-for="a in assignments"
-              :key="a._id"
-              class="panel-block assignment"
+      <div
+        v-for="(assignments, key) in filtered"
+        :key="key"
+        class="column is-one-third-desktop is-half-tablet"
+      >
+        <div class="panel">
+          <p class="panel-heading is-unselectable key-heading">
+            <span
+              class="tag is-pulled-right"
+              :class="progressClass(key)"
+              :title="`You are ${percentDone(key)}% complete with these assignments.`"
             >
-              <span class="is-full-width">
+              {{ percentDone(key) }}%
+            </span>
+            <span
+              class="key"
+              :title="headerTitle(key)"
+              @click="headerClick(key)"
+            >
+              {{ headerText(key) }}
+            </span>
+          </p>
+          <div
+            v-for="a in assignments"
+            :key="a._id"
+            class="panel-block assignment"
+          >
+            <span class="is-full-width">
+              <span
+                class="icon toggle-assignment"
+                @click="$emit('toggle-assignment', a._id)"
+              >
                 <span
-                  class="icon toggle-assignment"
-                  @click="$emit('toggle-assignment', a._id)"
-                >
-                  <span
-                    :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
-                    :title="toggleAssignmentTitle(a)"
-                    :style="{ 'color': course(a.courseCRN).color }"
-                  />
-                </span>
-                <router-link
-                  class="assignment-link"
-                  :title="(a.priority === 1 ? '(OPTIONAL) ' : '') + a.description.substring(0, 500)"
-                  :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-                  :class="{ 'priority': a.priority > 3, 'has-text-grey is-italic': a.priority === 1 }"
-                >
-                  <b class="course-title is-hidden-tablet">
-                    {{ course(a.courseCRN).longname }}
-                  </b>
-                  {{ a.title }}
-                </router-link>
-                <span
-                  :style="{visibility: a.completed || a.fullyScheduled ? 'hidden' : ''}"
-                  class="tooltip is-tooltip-left icon has-text-danger is-pulled-right"
-                  :data-tooltip="`You've only scheduled ${a.scheduledTime} out of ${a.timeEstimate * 60} min to work on this.`"
-                >
-                  <i class="far fa-clock" />
-                </span>
-                <small
-                  class="is-pulled-right tooltip is-tooltip-left has-text-grey"
-                  :data-tooltip="toDateShortString(a.dueDate) + ' ' + toTimeString(a.dueDate)"
-                >
-                  {{ fromNow(a.dueDate) }}
-                </small>
+                  :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
+                  :title="toggleAssignmentTitle(a)"
+                  :style="{ 'color': course(a.courseCRN).color }"
+                />
               </span>
-            </div>
+              <router-link
+                class="assignment-link"
+                :title="(a.priority === 1 ? '(OPTIONAL) ' : '') + a.description.substring(0, 500)"
+                :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
+                :class="{ 'priority': a.priority > 3, 'has-text-grey is-italic': a.priority === 1 }"
+              >
+                <b class="course-title is-hidden-tablet">
+                  {{ course(a.courseCRN).longname }}
+                </b>
+                {{ a.title }}
+              </router-link>
+              <span
+                :style="{visibility: a.completed || a.fullyScheduled ? 'hidden' : ''}"
+                class="tooltip is-tooltip-left icon has-text-danger is-pulled-right"
+                :data-tooltip="`You've only scheduled ${a.scheduledTime} out of ${a.timeEstimate * 60} min to work on this.`"
+              >
+                <i class="far fa-clock" />
+              </span>
+              <small
+                v-if="groupBy === 'dueDate'"
+                class="is-pulled-right has-text-grey"
+              >
+                {{ toTimeString(a.dueDate) }}
+              </small>
+              <small
+                v-else
+                class="is-pulled-right tooltip is-tooltip-left has-text-grey"
+                :data-tooltip="toDateShortString(a.dueDate) + ' ' + toTimeString(a.dueDate)"
+              >
+                {{ fromNow(a.dueDate) }}
+              </small>
+            </span>
           </div>
         </div>
-      </template>
-      <template v-else>
-        <div
-          v-for="(assignments, date) in filtered"
-          :key="date"
-          class="due-date column is-one-third-desktop is-half-tablet"
-        >
-          <div class="panel">
-            <p class="panel-heading is-unselectable date-heading">
-              <span
-                class="tag is-pulled-right"
-                :class="progressClass(date)"
-                :title="`You are ${percentDone(date)}% complete with this day's assignments.`"
-              >
-                {{ percentDone(date) }}%
-              </span>
-              <span
-                title="Click to add an assignment to this day."
-                class="date"
-                @click="clickDateHeading(date)"
-              >
-                {{ toDateShortString(date) }}
-              </span>
-            </p>
-            <div
-              v-for="a in assignments"
-              :key="a._id"
-              class="panel-block assignment"
-            >
-              <span class="is-full-width">
-                <span
-                  class="icon toggle-assignment"
-                  @click="$emit('toggle-assignment', a._id)"
-                >
-                  <span
-                    :class="{ 'fas fa-check-circle': a.completed, 'far fa-circle': !a.completed }"
-                    :title="toggleAssignmentTitle(a)"
-                    :style="{ 'color': course(a.courseCRN).color }"
-                  />
-                </span>
-                <router-link
-                  class="assignment-link"
-                  :title="(a.priority === 1 ? '(OPTIONAL) ' : '') + a.description.substring(0, 500)"
-                  :to="{ name: 'assignments-overview', params: { assignmentID: a._id }}"
-                  :class="{ 'priority': a.priority > 3, 'has-text-grey is-italic': a.priority === 1 }"
-                >
-                  <b class="course-title is-hidden-tablet">
-                    {{ course(a.courseCRN).longname }}
-                  </b>
-                  {{ a.title }}
-                </router-link>
-                <span
-                  :style="{visibility: a.completed || a.fullyScheduled ? 'hidden' : ''}"
-                  class="tooltip is-tooltip-left icon has-text-danger is-pulled-right"
-                  :data-tooltip="`You've only scheduled ${a.scheduledTime} out of ${a.timeEstimate * 60} min to work on this.`"
-                >
-                  <i class="far fa-clock" />
-                </span>
-                <small class="is-pulled-right has-text-grey">
-                  {{ toTimeString(a.dueDate) }}
-                </small>
-              </span>
-            </div>
-          </div>
-        </div>
-      </template>
+      </div>
     </div>
   </div>
 </template>
@@ -203,6 +143,20 @@ export default {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     },
+    headerText (key) {
+      return this.groupBy === 'course' ? this.course(key).longname : this.toDateShortString(key);
+    },
+    headerTitle (key) {
+      return this.groupBy === 'course' ? 'Open course modal.' : 'Add assignment to this day.';
+    },
+    headerClick (key) {
+      if (this.groupBy === 'course') {
+        this.$store.commit('OPEN_COURSE_MODAL', this.course(key));
+      } else {
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', moment(key));
+        this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+      }
+    },
     clickDateHeading (date) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', moment(date));
       this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
@@ -249,8 +203,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.course-heading,
-.date-heading {
+.key-heading {
   span {
     cursor: pointer;
   }
