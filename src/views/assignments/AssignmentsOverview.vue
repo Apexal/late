@@ -448,10 +448,16 @@ export default {
 
       this.commentLoading = true;
       let request;
-      request = await this.$http.post(
-        `/assignments/a/${this.assignment._id}/comments`,
-        { comment: newComment }
-      );
+      try {
+        request = await this.$http.post(
+          `/assignments/a/${this.assignment._id}/comments`,
+          { comment: newComment }
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.commentLoading = false;
+        return;
+      }
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
@@ -467,9 +473,17 @@ export default {
     },
     async deleteComment (i) {
       let request;
-      request = await this.$http.delete(
-        `/assignments/a/${this.assignment._id}/comments/${i}`
-      );
+
+      this.commentLoading = true;
+      try {
+        request = await this.$http.delete(
+          `/assignments/a/${this.assignment._id}/comments/${i}`
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.commentLoading = false;
+        return;
+      }
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
@@ -480,6 +494,8 @@ export default {
       } else {
         this.updatedAssignment(request.data.updatedAssignment);
       }
+
+      this.commentLoading = false;
     }
   }
 };
