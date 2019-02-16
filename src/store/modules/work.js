@@ -226,6 +226,7 @@ const mutations = {
   },
   ADD_UPCOMING_ASSIGNMENT: (state, assignment) => {
     state.upcomingAssignments.push(assignment);
+    state.upcomingAssignments.sort((a, b) => a.dueDate - b.dueDate);
   },
   UPDATE_UPCOMING_ASSIGNMENT: (state, updatedAssignment) => {
     Object.assign(
