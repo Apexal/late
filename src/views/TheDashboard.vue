@@ -58,7 +58,7 @@ export default {
             }
           },
           validRange: {
-            start: moment().startOf('week'),
+            start: this.$store.getters.currentTerm.start,
             end: this.$store.getters.currentTerm.end
           },
           height: 700,
