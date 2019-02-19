@@ -286,6 +286,9 @@ export default {
   },
   watch: {
     $route: 'getAssignment',
+    assignment (newAssignment) {
+      document.title = `${newAssignment.title} | LATE`;
+    },
     descriptionExpanded (newDescriptionExpanded) {
       localStorage.setItem(
         'assignmentOverviewDescriptionExpanded',
@@ -432,7 +435,7 @@ export default {
 
         this.loading = false;
         this.isUpcoming = true;
-        document.title = `${this.assignment.title} | LATE`;
+
         if (this.assignment.completed) this.tab = 'comments';
         return;
       }
@@ -457,7 +460,6 @@ export default {
       this.assignment = request.data.assignment;
       this.editedDescription = this.assignment.description;
 
-      document.title = `${this.assignment.title} | LATE`;
       this.loading = false;
     },
     shortDateTimeString: dueDate =>
