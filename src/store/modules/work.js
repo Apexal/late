@@ -132,9 +132,18 @@ const actions = {
       dispatch('GET_UPCOMING_EXAMS');
     }, 1000 * 60 * 60);
   },
+  async ADD_UPCOMING_ASSIGNMENT ({ commit }, newAssignment) {
+    commit('ADD_UPCOMING_ASSIGNMENT', newAssignment);
+    commit('SORT_UPCOMING_ASSIGNMENTS');
+  },
+  async UPDATE_UPCOMING_ASSIGNMENT ({ commit }, updatedAssignment) {
+    commit('UPDATE_UPCOMING_ASSIGNMENT', updatedAssignment);
+    commit('SORT_UPCOMING_ASSIGNMENTS');
+  },
   async TOGGLE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
     commit('UPDATE_UPCOMING_ASSIGNMENT', request.data.updatedAssignment);
+    commit('SORT_UPCOMING_ASSIGNMENTS');
     return request.data.updatedAssignment;
   },
   async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
@@ -224,9 +233,18 @@ const mutations = {
   SET_UPCOMING_ASSIGNMENTS: (state, assignments) => {
     state.upcomingAssignments = assignments;
   },
+  SORT_UPCOMING_ASSIGNMENTS: () => {
+    state.upcomingAssignments.sort((a, b) => {
+      if (a.dueDate > b.dueDate) {
+        return 1;
+      } else if (a.dueDate < b.dueDate) {
+        return -1;
+      }
+      return 0;
+    });
+  },
   ADD_UPCOMING_ASSIGNMENT: (state, assignment) => {
     state.upcomingAssignments.push(assignment);
-    state.upcomingAssignments.sort((a, b) => a.dueDate - b.dueDate);
   },
   UPDATE_UPCOMING_ASSIGNMENT: (state, updatedAssignment) => {
     Object.assign(

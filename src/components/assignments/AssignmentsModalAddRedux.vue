@@ -276,7 +276,7 @@ export default {
       }
 
       // Update global state
-      this.$store.commit(
+      this.$store.dispatch(
         'ADD_UPCOMING_ASSIGNMENT',
         request.data.createdAssignment
       );
