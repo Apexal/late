@@ -33,6 +33,16 @@ export default new Vuex.Store({
       if (!getters.userSetup.course_schedule) return [];
 
       let events = state.schedule.periods
+        .filter(p => {
+          if (p.type !== 'TES') return true;
+
+          // Check if there is a test scheduled this day
+          return !!state.work.upcomingExams.find(
+            ex =>
+              ex.courseCRN === getters.getCourseFromPeriod(p).crn &&
+              moment(ex.date).isSame(moment(), 'day')
+          );
+        })
         .map(p => ({
           eventType: 'period',
           title: `${

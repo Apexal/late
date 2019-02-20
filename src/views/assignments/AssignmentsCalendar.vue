@@ -48,7 +48,10 @@ export default {
             this.$router.push(`/assignments/${calEvent.assignment._id}`);
           },
           eventRender: (event, el) => {
-            if (this.filter.includes(event.assignment.courseCRN) || (this.showCompleted && !event.assignment.completed)) {
+            if (
+              this.filter.includes(event.assignment.courseCRN) ||
+              (!this.showCompleted && event.assignment.completed)
+            ) {
               return false;
             }
           },
@@ -70,9 +73,12 @@ export default {
       let request;
 
       try {
-        request = await this.$http.get(
-          '/assignments', { params: { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') } }
-        );
+        request = await this.$http.get('/assignments', {
+          params: {
+            start: start.format('YYYY-MM-DD'),
+            end: end.format('YYYY-MM-DD')
+          }
+        });
       } catch (e) {
         this.events = [];
         return this.$toasted.error(e.response.data.message);

@@ -14,7 +14,7 @@
     </div>
     <div
       v-else
-      class="agenda"
+      class="sidebar-body agenda"
     >
       <div v-if="filteredTodaysAgenda.length === 0">
         <div class="panel-block has-text-grey">
@@ -25,7 +25,8 @@
         v-for="event in filteredTodaysAgenda"
         :key="event.title + '-' + event.start.toString()"
         class="panel-block event is-size-7"
-        :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event) }"
+        :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event), 'clickable': event.link }"
+        @click="eventClicked(event)"
       >
         <span class="is-full-width">
           <span
@@ -36,7 +37,6 @@
           <span
             class="event-title tooltip is-tooltip-right"
             :data-tooltip="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
-            @click="eventClicked(event)"
           >
             {{ event.title }}
           </span>
@@ -49,21 +49,22 @@
           </div>
         </span>
       </div>
-      <div class="controls panel-block">
-        <span class="is-full-width">
-          <div class="field">
-            <input
-              id="agenda-show-passed"
-              v-model="showPassed"
-              type="checkbox"
-              class="switch"
-            >
-            <label for="agenda-show-passed">
-              Show Passed
-            </label>
-          </div>
-        </span>
-      </div>
+    </div>
+    <div class="controls panel-block">
+      <span class="is-full-width">
+        <div class="field">
+          <input
+            id="agenda-show-passed"
+            v-model="showPassed"
+            type="checkbox"
+            class="switch"
+            title="Show your completed courses"
+          >
+          <label for="agenda-show-passed">
+            Show Passed
+          </label>
+        </div>
+      </span>
     </div>
   </div>
 </template>
@@ -169,7 +170,9 @@ export default {
 
 <style lang='scss' scoped>
 .event {
-  cursor: pointer;
+  &.clickable {
+    cursor: pointer;
+  }
   &.has-background-success {
     font-weight: bold;
     color: white;

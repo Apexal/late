@@ -51,27 +51,38 @@
         </div>
       </div>
       <div class="level-right">
-        <div class="field">
-          <label
-            class="checkbox is-unselectable tooltip"
-            data-tooltip="Toggle completed assignments."
+        <label
+          class="checkbox is-unselectable tooltip"
+          data-tooltip="Toggle completed assignments."
+        >
+          <input
+            v-model="showCompleted"
+            type="checkbox"
           >
-            <input
-              v-model="showCompleted"
-              type="checkbox"
-            >
-            Show Completed
-          </label>
+          Show Completed
+        </label>
+        <div
+          v-if="view === 'assignments-upcoming'"
+          class="select group-by-select"
+        >
+          <select v-model="groupBy">
+            <option value="dueDate">
+              Group by Due Date
+            </option>
+            <option value="course">
+              Group by Course
+            </option>
+          </select>
         </div>
       </div>
     </div>
-    <hr>
     <transition
       name="slide-left"
       mode="out-in"
     >
       <router-view
         class="child-view"
+        :group-by="groupBy"
         :show-completed="showCompleted"
         :filter="filter"
         @toggle-assignment="toggleAssignment"
@@ -98,6 +109,7 @@ export default {
   name: 'Assignments',
   data () {
     return {
+      groupBy: 'dueDate',
       showCompleted: true,
       filter: []
     };
@@ -132,14 +144,32 @@ export default {
       }
 
       localStorage.setItem('assignmentsShowCompleted', nowShowing);
+    },
+    groupBy (newGroupBy) {
+      localStorage.setItem('assignmentsGroupBy', newGroupBy);
     }
   },
   mounted () {
     if (localStorage.getItem('assignmentsShowCompleted')) {
       try {
-        this.showCompleted = JSON.parse(localStorage.getItem('assignmentsShowCompleted'));
+        this.showCompleted = JSON.parse(
+          localStorage.getItem('assignmentsShowCompleted')
+        );
       } catch (e) {
         localStorage.removeItem('assignmentsShowCompleted');
+      }
+    }
+    if (localStorage.getItem('assignmentsGroupBy')) {
+      try {
+        this.groupBy = localStorage.getItem('assignmentsGroupBy');
+        if (this.groupBy !== 'course' && this.groupBy !== 'dueDate') {
+          throw new Error(
+            'Invalid value for assignmentsGroupBy in localStorage'
+          );
+        }
+      } catch (e) {
+        alert(e);
+        localStorage.removeItem('assignmentsGroupBy');
       }
     }
   },
@@ -215,6 +245,10 @@ span.dot.course-dot {
 
 .assignment-controls {
   padding: 10px !important;
+}
+
+.group-by-select {
+  margin-left: 10px;
 }
 
 @media only screen and (max-width: 768px) {

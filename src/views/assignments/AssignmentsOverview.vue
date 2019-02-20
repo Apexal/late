@@ -21,43 +21,78 @@
       v-else
       class="section"
     >
-      <div class="is-clearfix">
-        <AssignmentOverviewActionButtons
-          :assignment="assignment"
-          :loading="loading || toggleLoading"
-          @toggle-editing="toggleEditing"
-          @toggle-completed="toggleCompleted"
-          @remove-assignment="remove"
-        />
-
-        <span
-          class="tag is-medium course-tag"
-          :style="{ 'background-color': course.color }"
-          @click="$store.commit('OPEN_COURSE_MODAL', course)"
+      <div class="is-flex-tablet">
+        <h1
+          class="title assignment-title has-text-centered-mobile"
+          style="flex: 1"
         >
-          <b class="course-longname">
-            {{ course.longname }}
-          </b>
-          {{ isPast ? 'Past ': '' }}Assignment
-        </span>
-
-        <h1 class="title">
+          <span
+            v-if="assignment.completed"
+            title="This assignment is complete!"
+            :style="{ 'color': course.color }"
+            class="icon"
+          >
+            <i class="fa fa-check-square" />
+          </span>
           {{ assignment.title }}
-          <h2 class="subtitle has-text-grey due-title">
-            {{ isPast ? 'Was due' : 'Due' }}
-            <b>{{ shortDateTimeString(assignment.dueDate) }}</b>
-          </h2>
         </h1>
+        <div class="has-text-centered-mobile">
+          <span
+            class="tag is-medium course-tag"
+            :style="{ 'background-color': course.color }"
+            @click="$store.commit('OPEN_COURSE_MODAL', course)"
+          >
+            <b class="course-longname">
+              {{ course.longname }}
+            </b>
+            {{ isPast ? 'Past ': '' }}Assignment
+          </span>
+        </div>
       </div>
 
-      <nav class="level is-mobile assignment-stats">
+      <nav class="box level assignment-stats">
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">
               Priority
             </p>
-            <p class="subtitle">
-              {{ assignment.priority }}
+            <p
+              class="subtitle"
+              :title="'Priority level ' + assignment.priority"
+              :class="{ 'has-text-grey': assignment.priority === 1 }"
+              :style="{ 'font-weight': fontWeight }"
+            >
+              {{ priorityString }}
+            </p>
+          </div>
+        </div>
+
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">
+              {{ isPast ? 'Was Due' : 'Due' }}
+            </p>
+            <p
+              class="subtitle tooltip"
+              :data-tooltip="timeLeft"
+            >
+              {{ shortDueDateString }}
+            </p>
+          </div>
+        </div>
+        <div
+          v-if="assignment.completed"
+          class="level-item has-text-centered"
+        >
+          <div>
+            <p class="heading">
+              Completed
+            </p>
+            <p
+              class="subtitle tooltip"
+              :data-tooltip="fromNow(assignment.completedAt)"
+            >
+              {{ completedAt }}
             </p>
           </div>
         </div>
@@ -84,59 +119,57 @@
             <p v-else>
               <span
                 class="tag is-danger not-scheduled-tag"
-                @click="tab = 'schedule'"
+                @click="notFullyScheduledClick"
               >
                 Not fully scheduled!
               </span>
             </p>
           </div>
         </div>
-
-        <div
-          v-if="assignment.completed"
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p class="heading">
-              Completed
-            </p>
-            <p
-              class="subtitle tooltip is-tooltip-bottom"
-              :data-tooltip="fromNow(assignment.completedAt)"
-            >
-              {{ completedAt }}
-            </p>
-          </div>
-        </div>
-        <div
-          v-else
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p class="heading">
-              Due In
-            </p>
-            <p class="subtitle">
-              {{ timeLeft }}
-            </p>
-          </div>
-        </div>
       </nav>
-      <div class="content assignment-description">
+
+      <AssignmentOverviewActionButtons
+        :assignment="assignment"
+        :loading="loading || toggleLoading"
+        :description-expanded="descriptionExpanded"
+        @toggle-description="descriptionExpanded = !descriptionExpanded"
+        @toggle-completed="toggleCompleted"
+        @toggle-editing="toggleEditing"
+        @remove-assignment="remove"
+      />
+
+      <div
+        v-if="descriptionExpanded"
+        class="content assignment-description"
+      >
         <blockquote>
-          <VueMarkdown
-            v-if="assignment.description.length > 0"
-            :source="assignment.description"
-            :html="false"
-            :emoji="true"
-            :anchor-attributes="{target: '_blank'}"
+          <textarea
+            v-if="editingDescription"
+            v-model.trim="editedDescription"
+            class="edited-description"
           />
-          <i v-else>
-            No description given.
-          </i>
+          <template v-else>
+            <VueMarkdown
+              v-if="assignment.description.length > 0"
+              :source="assignment.description"
+              :html="false"
+              :emoji="true"
+              :anchor-attributes="{target: '_blank'}"
+            />
+            <i v-else>
+              No description given.
+            </i>
+          </template>
+          <span
+            class="edit-description tooltip is-tooltip-left"
+            :data-tooltip="editingDescription ? 'Click to save description.' : 'Click to edit description.'"
+            @click="toggleEditingDescription"
+          >
+            <i class="fas fa-pencil-alt" />
+          </span>
         </blockquote>
       </div>
-
+      <hr>
       <AssignmentOverviewTabs
         ref="tabs"
         :tab="tab"
@@ -147,6 +180,15 @@
         @add-comment="addComment"
         @delete-comment="deleteComment"
       />
+      <hr>
+      <div class="bottom-actions clearfix">
+        <button
+          class="button"
+          @click="scrollToTop"
+        >
+          Back to Top
+        </button>
+      </div>
     </section>
   </div>
 </template>
@@ -172,10 +214,13 @@ export default {
   data () {
     return {
       tab: 'schedule',
+      editingDescription: false,
+      editedDescription: '',
       commentLoading: false,
       toggleLoading: false,
       loading: true,
       isUpcoming: false,
+      descriptionExpanded: true,
       assignment: {},
       editing: false,
       confetti: null,
@@ -190,12 +235,34 @@ export default {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
     },
     completedAt () {
-      return moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+      return moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
     },
     lastEdited () {
       return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)
         ? 'never'
-        : moment(this.assignment.updatedAt).format('MM/DD/YY h:mma');
+        : moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
+    },
+    fontWeight () {
+      return (
+        {
+          1: 300,
+          2: 300,
+          3: 'normal',
+          4: 500,
+          5: 700
+        }[this.assignment.priority] || 600
+      );
+    },
+    priorityString () {
+      return (
+        {
+          1: 'Optional',
+          2: 'Low',
+          3: 'Normal',
+          4: 'High',
+          5: 'Important'
+        }[this.assignment.priority] || 'Unknown'
+      );
     },
     timeLeft () {
       const diff = moment.duration(
@@ -203,23 +270,45 @@ export default {
       );
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
     },
+    shortDueDateString () {
+      return this.shortDateTimeString(this.assignment.dueDate);
+    },
     isPast () {
       return this.assignment.passed;
     },
     toggleButtonTitle () {
       return this.assignment.completed
         ? `Completed ${moment(this.assignment.completedAt).format(
-          'MM/DD/YY h:mma'
+          'M/DD/YY h:mma'
         )}`
         : 'Click to mark as completed.';
     }
   },
   watch: {
-    $route: 'getAssignment'
+    $route: 'getAssignment',
+    assignment (newAssignment) {
+      document.title = `${newAssignment.title} | LATE`;
+    },
+    descriptionExpanded (newDescriptionExpanded) {
+      localStorage.setItem(
+        'assignmentOverviewDescriptionExpanded',
+        newDescriptionExpanded
+      );
+    }
   },
   mounted () {
     // eslint-disable-next-line no-undef
     this.confetti = new ConfettiGenerator(this.confettiSettings);
+
+    if (localStorage.getItem('assignmentOverviewDescriptionExpanded')) {
+      try {
+        this.descriptionExpanded = JSON.parse(
+          localStorage.getItem('assignmentOverviewDescriptionExpanded')
+        );
+      } catch (e) {
+        localStorage.removeItem('assignmentOverviewDescriptionExpanded');
+      }
+    }
   },
   created () {
     this.getAssignment();
@@ -233,6 +322,53 @@ export default {
     },
     updatedAssignment (newAssignment) {
       this.assignment = newAssignment;
+    },
+    async toggleEditingDescription () {
+      if (this.editingDescription) {
+        if (this.editedDescription === this.assignment.description) {
+          this.editingDescription = false;
+          return;
+        }
+
+        let request;
+        try {
+          request = await this.$http.patch(
+            `/assignments/a/${this.assignment._id}`,
+            { description: this.editedDescription }
+          );
+        } catch (e) {
+          this.$toasted.error(e.response.data.message);
+          this.editingDescription = false;
+          return;
+        }
+
+        // Calls API and updates state
+        if (
+          this.$store.getters.getUpcomingAssignmentById(this.assignment._id)
+        ) {
+          this.$store.dispatch(
+            'UPDATE_UPCOMING_ASSIGNMENT',
+            request.data.updatedAssignment
+          );
+        } else {
+          this.updatedAssignment(request.data.updatedAssignment);
+        }
+
+        this.editingDescription = false;
+      } else {
+        this.editedDescription = this.assignment.description;
+        this.editingDescription = true;
+      }
+    },
+    notFullyScheduledClick () {
+      this.tab = 'schedule';
+      this.$refs.tabs.scrollTo();
+    },
+    scrollToTop () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     },
     async toggleCompleted () {
       if (
@@ -295,11 +431,12 @@ export default {
         this.assignment = this.$store.getters.getUpcomingAssignmentById(
           this.$route.params.assignmentID
         );
+        this.editedDescription = this.assignment.description;
+
         this.loading = false;
         this.isUpcoming = true;
-        document.title = `${this.assignment.title} | LATE`;
-        if (this.assignment.completed) this.tab = 'comments';
 
+        if (this.assignment.completed) this.tab = 'comments';
         return;
       }
 
@@ -321,11 +458,12 @@ export default {
       }
 
       this.assignment = request.data.assignment;
-      document.title = `${this.assignment.title} | LATE`;
+      this.editedDescription = this.assignment.description;
+
       this.loading = false;
     },
     shortDateTimeString: dueDate =>
-      moment(dueDate).format('dddd, MMM Do YYYY [@] h:mma'),
+      moment(dueDate).format('ddd, MMM Do YY [@] h:mma'),
     toFullDateTimeString: dueDate =>
       moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
     fromNow (date) {
@@ -369,14 +507,20 @@ export default {
 
       this.commentLoading = true;
       let request;
-      request = await this.$http.post(
-        `/assignments/a/${this.assignment._id}/comments`,
-        { comment: newComment }
-      );
+      try {
+        request = await this.$http.post(
+          `/assignments/a/${this.assignment._id}/comments`,
+          { comment: newComment }
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.commentLoading = false;
+        return;
+      }
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
+        this.$store.dispatch(
           'UPDATE_UPCOMING_ASSIGNMENT',
           request.data.updatedAssignment
         );
@@ -388,20 +532,29 @@ export default {
     },
     async deleteComment (i) {
       let request;
-      request = await this.$http.delete(
-        `/assignments/a/${this.assignment._id}/comments`,
-        { params: { index: i } }
-      );
+
+      this.commentLoading = true;
+      try {
+        request = await this.$http.delete(
+          `/assignments/a/${this.assignment._id}/comments/${i}`
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.commentLoading = false;
+        return;
+      }
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
+        this.$store.dispatch(
           'UPDATE_UPCOMING_ASSIGNMENT',
           request.data.updatedAssignment
         );
       } else {
         this.updatedAssignment(request.data.updatedAssignment);
       }
+
+      this.commentLoading = false;
     }
   }
 };
@@ -410,6 +563,10 @@ export default {
 <style lang="scss" scoped>
 .not-scheduled-tag {
   cursor: pointer;
+}
+
+.assignment-title {
+  margin-bottom: 0;
 }
 
 .course-tag {
@@ -453,7 +610,24 @@ export default {
   height: 100%;
 }
 
-.assignment-description { 
-    word-break: break-all; 
-    }
+.assignment-description blockquote {
+  word-break: break-word;
+  position: relative;
+
+  .edited-description {
+    max-width: 600px;
+    min-width: 100%;
+
+    min-height: 100px;
+    max-height: 400px;
+  }
+
+  .edit-description {
+    cursor: pointer;
+    z-index: 2;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+}
 </style>

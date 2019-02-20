@@ -6,11 +6,17 @@
     <div class="content has-text-centered columns">
       <p class="column">
         <span class="icon">
-          <i class="fas fa-question-circle" />
-        </span>Learn more
-        <router-link to="/about">
-          about us.
-        </router-link>
+          <img
+            src="https://github.com/Apexal/old-ontrac/blob/master/client/public/images/logos/logo128x128.png?raw=true"
+          >
+        </span>In memory of
+        <a
+          href="https://github.com/Apexal/old-ontrac/"
+          target="_blank"
+          title="View the project that inspired LATE"
+        >
+          OnTrac.
+        </a>
       </p>
       <p class="column">
         <span class="icon">
@@ -20,6 +26,7 @@
         <a
           href="https://opensource.org/licenses/mit-license.php"
           target="_blank"
+          title="View source code license"
         >
           MIT.
         </a>
@@ -32,6 +39,7 @@
         <a
           href="https://github.com/Apexal/late/"
           target="_blank"
+          title="View repository"
         >
           Github.
         </a>
@@ -44,6 +52,7 @@
         <a
           href="https://rcos.io/projects/apexal/late/profile"
           target="_blank"
+          title="View RCOS project listing"
         >
           Observatory.
         </a>

@@ -361,44 +361,24 @@ async function addComment (ctx) {
   const assignmentID = ctx.params.assignmentID;
   const text = ctx.request.body.comment;
 
-  let assignment;
-  try {
-    assignment = await Assignment.findOne({
-      _student: ctx.state.user._id,
-      _id: assignmentID
-    }).populate('_blocks');
-  } catch (e) {
-    logger.error(`Failed to get assignment for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.internalServerError(
-      'There was an error getting the assignment to comment on.'
-    );
-  }
-
-  if (!assignment) {
-    logger.error(
-      `Failed to find assignment with ID ${assignmentID} for ${
-        ctx.state.user.rcs_id
-      }`
-    );
-    return ctx.notFound('Could not find assignment to comment on.');
-  }
-
   // Add comment
-  assignment.comments.push({
+  ctx.state.assignment.comments.push({
     addedAt: new Date(),
     body: text
   });
 
   try {
-    await assignment.save();
+    await ctx.state.assignment.save();
   } catch (e) {
     logger.error(
-      `Failed to save assignment for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to save assignment ${assignmentID} for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
     );
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedAssignment: assignment });
+  ctx.ok({ updatedAssignment: ctx.state.assignment });
 }
 
 /**
@@ -411,49 +391,24 @@ async function addComment (ctx) {
 async function deleteComment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
-  // CLEAN UP
-  // Convoluted way to get the index? Can you not send data in a DELETE request?
-  const index = parseInt(ctx.request.url.split('?index=')[1]);
+  const index = ctx.params.commentIndex;
 
-  let assignment;
+  // Remove the comment by its index
+  ctx.state.assignment.comments.splice(index, 1);
+
   try {
-    assignment = await Assignment.findOne({
-      _student: ctx.state.user._id,
-      _id: assignmentID
-    }).populate('_blocks');
+    await ctx.state.assignment.save();
   } catch (e) {
-    logger.error(`Failed to get assignment for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.internalServerError(
-      'There was an error getting the assignment to comment on.'
-    );
-  }
-
-  if (!assignment) {
     logger.error(
-      `Failed to find assignment with ID ${assignmentID} for ${
+      `Failed to save assignment ${assignmentID} for ${
         ctx.state.user.rcs_id
-      }`
-    );
-    return ctx.notFound('Could not find assignment to comment on.');
-  }
-
-  let commentID;
-  commentID = assignment.comments[index]['_id'];
-
-  assignment.comments.pull({ _id: commentID });
-
-  try {
-    await assignment.save();
-  } catch (e) {
-    logger.error(
-      `Failed to save assignment for ${ctx.state.user.rcs_id}: ${e}`
+      }: ${e}`
     );
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedAssignment: assignment });
+  ctx.ok({ updatedAssignment: ctx.state.assignment });
 }
-
 
 module.exports = {
   getAssignmentMiddleware,

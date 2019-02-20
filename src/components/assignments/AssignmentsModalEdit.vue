@@ -301,7 +301,7 @@ export default {
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.commit(
+        this.$store.dispatch(
           'UPDATE_UPCOMING_ASSIGNMENT',
           request.data.updatedAssignment
         );

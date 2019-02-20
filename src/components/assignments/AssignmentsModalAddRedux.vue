@@ -65,11 +65,13 @@
             :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
             @update-title="title = $event"
             @update-desc="description = $event"
+            @next-step="nextStep()"
           />
           <ModalCalendar
             v-else-if="step === 3"
             :active-c-r-n="courseCRN"
             :active-due-date="dueDate"
+            @update-due-time="dueTime = $event"
             @update-date="dueDate = $event; nextStep();"
           />
           <ModalPriorityAndTimeEstimate
@@ -274,7 +276,7 @@ export default {
       }
 
       // Update global state
-      this.$store.commit(
+      this.$store.dispatch(
         'ADD_UPCOMING_ASSIGNMENT',
         request.data.createdAssignment
       );

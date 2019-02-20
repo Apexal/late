@@ -8,6 +8,7 @@
         class="input is-medium"
         maxlength="75"
         :placeholder="titlePlaceHolder"
+        @keyup.enter="$emit('next-step')"
       >
     </div>
     <div class="field">
@@ -20,6 +21,7 @@
           rows="10"
           class="input"
           :placeholder="descriptionPlaceHolder"
+          @keyup.ctrl.enter="$emit('next-step')"
         />
       </div>
     </div>
