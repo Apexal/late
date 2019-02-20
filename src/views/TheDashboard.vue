@@ -192,8 +192,10 @@ export default {
     },
     filteredUpcomingAssessments () {
       return this.$store.state.work.upcomingAssignments
-        .filter(assignment =>
-          moment(this.selectModal.end).isBefore(assignment.dueDate)
+        .filter(
+          assignment =>
+            moment(this.selectModal.end).isBefore(assignment.dueDate) &&
+            !assignment.completed
         )
         .map(assignment =>
           Object.assign({}, assignment, { assessmentType: 'assignment' })
