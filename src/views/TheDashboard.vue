@@ -1,5 +1,45 @@
 <template>
   <section class="section dasboard">
+    <div
+      :class="{'is-active': selectModal.open}"
+      class="modal dashboard-calendar-select-modal"
+    >
+      <div
+        class="modal-background"
+        @click="selectModal.open = !selectModal.open"
+      />
+      <div class="modal-content panel">
+        <p
+          class="panel-heading"
+        >
+          Choose Assessment for {{ selectModalDateStrs.start }} to {{ selectModalDateStrs.end }}
+        </p>
+        <div
+          v-for="assessment in filteredUpcomingAssessments"
+          :key="assessment._id"
+          class="panel-block is-flex"
+          @click="addWorkBlock(assessment)"
+        >
+          <span style="flex: 1">
+            <span class="tag assessment-type-tag">
+              {{ assessment.assessmentType }}
+            </span>
+            {{ assessment.title }}
+          </span>
+          <span
+            class="has-text-grey is-pulled-right"
+          >
+            due {{ formatDate(assessment.dueDate || assessment.date) }}
+          </span>
+        </div>
+      </div>
+      <button
+        class="modal-close is-large"
+        aria-label="close"
+        @click="selectModal.open = !selectModal.open"
+      />
+    </div>
+
     <div class="tabs is-right">
       <ul>
         <h1
@@ -45,6 +85,11 @@ export default {
   components: { FullCalendar },
   data () {
     return {
+      selectModal: {
+        open: false,
+        start: moment(),
+        end: moment()
+      },
       calendar: {
         header: {
           center: 'agendaFiveDay, agendaWeek'
@@ -123,6 +168,26 @@ export default {
     term () {
       return this.$store.getters.currentTerm;
     },
+    selectModalDateStrs () {
+      return {
+        start: this.selectModal.start.format('M/D/YY h:mm a'),
+        end: this.selectModal.end.format('M/D/YY h:mm a')
+      };
+    },
+    filteredUpcomingAssessments () {
+      return this.$store.state.work.upcomingAssignments
+        .filter(assignment =>
+          moment(this.selectModal.end).isBefore(assignment.dueDate)
+        )
+        .map(assignment =>
+          Object.assign({}, assignment, { assessmentType: 'assignment' })
+        )
+        .concat(
+          this.$store.state.work.upcomingExams
+            .filter(exam => this.selectModal.end < exam.date)
+            .map(exam => Object.assign({}, exam, { assessmentType: 'exam' }))
+        );
+    },
     events () {
       const courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
 
@@ -149,9 +214,6 @@ export default {
         .concat(unavailabilitySchedule)
         .concat(upcomingExams)
         .concat(workBlocks);
-    },
-    assignments () {
-      return this.$store.state.work.upcomingAssignments;
     },
     earliest () {
       let earliest = this.$store.state.auth.user.earliestWorkTime;
@@ -190,10 +252,32 @@ export default {
   },
   methods: {
     select (start, end, jsEvent, view) {
-      this.$toasted.show(
-        'You will be able to schedule work blocks by selecting soon.'
-      );
+      // this.$toasted.show(
+      //   'You will be able to schedule work blocks by selecting soon.'
+      // );
       this.$refs.calendar.fireMethod('unselect');
+      this.selectModal.open = true;
+      this.selectModal.start = start;
+      this.selectModal.end = end;
+    },
+    async addWorkBlock (assessment) {
+      if (!assessment || !this.selectModal.open) return;
+
+      const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
+        assessmentType: assessment.assessmentType,
+        assessment: assessment,
+        start: this.selectModal.start,
+        end: this.selectModal.end
+      });
+
+      this.$toasted.success('Added work block to your schedule!', {
+        icon: 'clock',
+        duration: 2000,
+        fullWidth: false,
+        position: 'top-right'
+      });
+
+      this.selectModal.open = false;
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {
@@ -253,6 +337,9 @@ export default {
         fullWidth: false,
         position: 'top-right'
       });
+    },
+    formatDate (date) {
+      return moment(date).format('M/D/YY h:mm A');
     }
   }
 };
@@ -264,5 +351,12 @@ export default {
 }
 .work-block-event {
   border-width: 3px !important;
+}
+
+.dashboard-calendar-select-modal .panel {
+  .panel-block {
+    background-color: white;
+    cursor: pointer;
+  }
 }
 </style>
