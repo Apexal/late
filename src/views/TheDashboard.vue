@@ -9,11 +9,17 @@
         @click="selectModal.open = !selectModal.open"
       />
       <div class="modal-content panel">
-        <p
-          class="panel-heading"
-        >
-          Choose Assessment for {{ selectModalDateStrs.start }} to {{ selectModalDateStrs.end }}
+        <p class="panel-heading">
+          Schedule
+          <b>{{ selectModalDateStrs.start }}</b> to
+          <b>{{ selectModalDateStrs.end }}</b>
         </p>
+        <div
+          v-if="filteredUpcomingAssessments.length === 0"
+          class="panel-block has-text-grey"
+        >
+          No assignments or exams are open to work on at that time.
+        </div>
         <div
           v-for="assessment in filteredUpcomingAssessments"
           :key="assessment._id"
@@ -172,10 +178,17 @@ export default {
       return this.$store.getters.currentTerm;
     },
     selectModalDateStrs () {
-      return {
-        start: this.selectModal.start.format('M/D/YY h:mm a'),
-        end: this.selectModal.end.format('M/D/YY h:mm a')
-      };
+      if (this.selectModal.start.isSame(this.selectModal.end, 'day')) {
+        return {
+          start: this.selectModal.start.format('M/D/YY h:mm a'),
+          end: this.selectModal.end.format('h:mm a')
+        };
+      } else {
+        return {
+          start: this.selectModal.start.format('M/D/YY h:mm a'),
+          end: this.selectModal.end.format('M/D/YY h:mm a')
+        };
+      }
     },
     filteredUpcomingAssessments () {
       return this.$store.state.work.upcomingAssignments
@@ -363,6 +376,9 @@ export default {
   .assessment-type-tag {
     text-transform: capitalize;
     color: white;
+  }
+  b {
+    font-weight: normal;
   }
   .panel-block {
     background-color: white;
