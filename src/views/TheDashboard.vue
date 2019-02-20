@@ -21,7 +21,10 @@
           @click="addWorkBlock(assessment)"
         >
           <span style="flex: 1">
-            <span class="tag assessment-type-tag">
+            <span
+              class="tag assessment-type-tag"
+              :style="{ 'background-color': course(assessment.courseCRN).color }"
+            >
               {{ assessment.assessmentType }}
             </span>
             {{ assessment.title }}
@@ -251,6 +254,9 @@ export default {
     this.calendar.config.scrollTime = this.earliest;
   },
   methods: {
+    course (crn) {
+      return this.$store.getters.getCourseFromCRN(crn);
+    },
     select (start, end, jsEvent, view) {
       // this.$toasted.show(
       //   'You will be able to schedule work blocks by selecting soon.'
@@ -354,6 +360,10 @@ export default {
 }
 
 .dashboard-calendar-select-modal .panel {
+  .assessment-type-tag {
+    text-transform: capitalize;
+    color: white;
+  }
   .panel-block {
     background-color: white;
     cursor: pointer;
