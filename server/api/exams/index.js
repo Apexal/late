@@ -12,12 +12,12 @@ router.delete('/e/:examID', Ctrl.getExamMiddleware, Ctrl.removeExam);
 
 /* Exam Comments */
 router.post(
-  '/a/:examID/comments',
+  '/e/:examID/comments',
   Ctrl.getExamMiddleware,
   Ctrl.addComment
 );
 router.delete(
-  '/a/:examID/comments/:commentIndex',
+  '/e/:examID/comments/:commentIndex',
   Ctrl.getExamMiddleware,
   Ctrl.deleteComment
 );

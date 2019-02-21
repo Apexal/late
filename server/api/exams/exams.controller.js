@@ -222,7 +222,7 @@ async function addComment (ctx) {
   });
 
   try {
-    await ctx.state.assignment.save();
+    await ctx.state.exam.save();
   } catch (e) {
     logger.error(
       `Failed to save exam ${examID} for ${
