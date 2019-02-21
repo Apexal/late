@@ -203,11 +203,74 @@ async function removeExam (ctx) {
   });
 }
 
+/* COMMENTS */
+/**
+ * Add a comment to an exam. The request body should contain the following:
+ * - comment: the text of the comment
+ *
+ * @param {Koa context} ctx
+ * @returns The updated exam
+ */
+async function addComment (ctx) {
+  const examID = ctx.params.examID;
+  const text = ctx.request.body.comment;
+
+  // Add comment
+  ctx.state.exam.comments.push({
+    addedAt: new Date(),
+    body: text
+  });
+
+  try {
+    await ctx.state.assignment.save();
+  } catch (e) {
+    logger.error(
+      `Failed to save exam ${examID} for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    );
+    return ctx.badRequest('There was an error adding the comment.');
+  }
+
+  ctx.ok({ updatedExam: ctx.state.exam });
+}
+
+/**
+ * Delete a comment on an exam. The request url should contain the following:
+ * - index: the index of the comment to delete
+ *
+ * @param {Koa context} ctx
+ * @returns The updated exam
+ */
+async function deleteComment (ctx) {
+  const examID = ctx.params.examID;
+
+  const index = ctx.params.commentIndex;
+
+  // Remove the comment by its index
+  ctx.state.exam.comments.splice(index, 1);
+
+  try {
+    await ctx.state.exam.save();
+  } catch (e) {
+    logger.error(
+      `Failed to save exam ${examID} for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    );
+    return ctx.badRequest('There was an error adding the comment.');
+  }
+
+  ctx.ok({ updatedExam: ctx.state.exam });
+}
+
 module.exports = {
   getExamMiddleware,
   getExams,
   getExam,
   createExam,
   editExam,
-  removeExam
+  removeExam,
+  addComment,
+  deleteComment
 };

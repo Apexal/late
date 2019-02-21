@@ -10,4 +10,16 @@ router.get('/e/:examID', Ctrl.getExamMiddleware, Ctrl.getExam);
 router.patch('/e/:examID', Ctrl.getExamMiddleware, Ctrl.editExam);
 router.delete('/e/:examID', Ctrl.getExamMiddleware, Ctrl.removeExam);
 
+/* Exam Comments */
+router.post(
+  '/a/:examID/comments',
+  Ctrl.getExamMiddleware,
+  Ctrl.addComment
+);
+router.delete(
+  '/a/:examID/comments/:commentIndex',
+  Ctrl.getExamMiddleware,
+  Ctrl.deleteComment
+);
+
 module.exports = router.routes();
