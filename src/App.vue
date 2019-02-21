@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <vue-progress-bar />
     <TheHeader ref="header" />
     <Loading
       :active.sync="loading"
