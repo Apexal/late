@@ -68,12 +68,6 @@
       >
         Add Exam
       </button>
-      <button
-        class="button is-dark is-outlined is-pulled-right"
-        @click="exportExams"
-      >
-        Export Exams
-      </button>
     </section>
   </div>
 </template>
@@ -98,13 +92,6 @@ export default {
     }
   },
   methods: {
-    exportExams () {
-      this.$toasted.error('Coming soon!', {
-        icon: 'frown',
-        duration: 1000,
-        fullWidth: false
-      });
-    },
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN);
     },

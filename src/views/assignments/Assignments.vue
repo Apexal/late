@@ -95,12 +95,6 @@
     >
       Add Assignment
     </button>
-    <button
-      class="button is-dark is-outlined is-pulled-right"
-      @click="exportAssignments"
-    >
-      Export Assignments
-    </button>
   </section>
 </template>
 
@@ -193,13 +187,6 @@ export default {
       } catch (e) {
         return this.$toasted.error(e.response.data.message);
       }
-    },
-    exportAssignments () {
-      this.$toasted.error('Coming soon!', {
-        icon: 'frown',
-        duration: 1000,
-        fullWidth: false
-      });
     },
     isFiltered (c) {
       return this.filter.includes(c.crn);
