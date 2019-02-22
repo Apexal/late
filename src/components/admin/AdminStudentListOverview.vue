@@ -110,13 +110,22 @@
         >
           Lock Account
         </button>
-        <button
-          v-if="user.rcs_id === 'matraf'"
-          class="button is-danger is-small"
-          @click="deleteStudent"
-        >
-          Delete Account
-        </button>
+        <template v-if="user.rcs_id === 'matraf'">
+          <button
+            v-if="confirming"
+            class="button is-danger is-small"
+            @click="deleteStudent"
+          >
+            Confirm
+          </button>
+          <button
+            v-else
+            class="button is-danger is-small"
+            @click="confirming = true"
+          >
+            Delete Account
+          </button>
+        </template>
       </div>
     </div>
   </details>
@@ -130,6 +139,7 @@ export default {
   props: ['student'],
   data () {
     return {
+      confirming: false,
       counts: {
         assignments: 0,
         exams: 0,
@@ -187,7 +197,12 @@ export default {
       this.$toasted.show('Updated student.');
     },
     async deleteStudent () {
-      if (!confirm('Are you sure you want to delete this student account?')) {
+      if (
+        !confirm(
+          'Are you sure you want to delete this student account? This is IRREVERSIBLE'
+        )
+      ) {
+        this.confirming = false;
         return;
       }
 
