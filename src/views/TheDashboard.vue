@@ -58,9 +58,12 @@
           Your Dashboard
         </h1>
         <li>
-          <a>Your Week</a>
+          <a title="View your weekly schedule">Your Week</a>
         </li>
-        <li class="is-active">
+        <li
+          class="is-active"
+          title="View calendar"
+        >
           <a>Calendar</a>
         </li>
       </ul>
