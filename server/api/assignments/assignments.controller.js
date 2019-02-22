@@ -297,7 +297,7 @@ async function toggleAssignment (ctx) {
   // Readjust time estimate if completed
   ctx.state.assignment.timeEstimate = ctx.state.assignment._blocks
     .filter(b => b.endTime <= ctx.state.assignment.completedAt)
-    .reduce((acc, b) => acc + b.duration, 0);
+    .reduce((acc, b) => acc + b.duration, 0) / 60; // MUST BE IN HOURS
 
   try {
     await ctx.state.assignment.save();
