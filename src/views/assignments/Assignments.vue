@@ -256,7 +256,7 @@ span.dot.course-dot {
   }
 }
 
-//Created new class tab-nav  to match dashboard styling.
+//Created new class tab-nav to match dashboard styling.
 .tab-nav {
   router-link {
     display: block;
@@ -272,7 +272,7 @@ span.dot.course-dot {
   }
 
   a {
-    margin: -3.5px 0px 0px 0px; //Negative decimal margins. I'm sorry.
+    margin: -3px 0px 0px 0px; //Negative margins. I'm sorry.
     padding: 0px 5px 0px 5px;
     //border-style: none; //For some reason we get double border styling
     padding: 0.5em 1em;

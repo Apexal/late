@@ -1,29 +1,38 @@
 <template>
   <div class="exams">
     <section class="section exam-list">
-      <div class="exam-view-buttons buttons has-addons is-pulled-right">
-        <router-link
-          class="button tooltip"
-          to="/exams/upcoming"
-          data-tooltip="Switch to view upcoming exams."
-        >
-          Upcoming
-        </router-link>
-        <router-link
-          class="button tooltip"
-          to="/exams/past"
-          data-tooltip="Switch to view past exams."
-        >
-          Past
-        </router-link>
-        <router-link
-          class="button tooltip"
-          to="/exams/calendar"
-          data-tooltip="Switch to view your exam calendar."
-        >
-          Calendar
-        </router-link>
+      <div class="tab-nav has-addons is-pulled-right tabs">
+        <ul>
+          <li>
+            <router-link
+              class=""
+              to="/exams/upcoming"
+              data-tooltip="Switch to view upcoming exams."
+            >
+              Upcoming
+            </router-link>
+          </li>
+          <li>
+            <router-link
+              class=""
+              to="/exams/past"
+              data-tooltip="Switch to view past exams."
+            >
+              Previous
+            </router-link>
+          </li>
+          <li>
+            <router-link
+              class=""
+              to="/exams/calendar"
+              data-tooltip="Switch to view your exam calendar."
+            >
+              Calendar
+            </router-link>
+          </li>
+        </ul>
       </div>
+
       <h1 class="title">
         {{ title }}
       </h1>
@@ -149,5 +158,35 @@ span.dot.course-dot {
   .level-left + .level-right {
     margin-top: 5px !important;
   }
+}
+
+//Copied header styling from Assignments.vue
+.tab-nav {
+  router-link {
+    display: block;
+  }
+
+  .is-active {
+    border-bottom-color: #3273dc;
+    color: #3273dc;
+  }
+
+  ul {
+    border-style: none;
+  }
+
+  a {
+    margin: -3px 0px 0px 0px; //Negative margins. I'm sorry.
+    padding: 0px 5px 0px 5px;
+    //border-style: none; //For some reason we get double border styling
+    padding: 0.5em 1em;
+  }
+}
+
+.title {
+    border-bottom-color: #dbdbdb;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-bottom: 1px; //Slightly shifts title up to match dashboard
 }
 </style>
