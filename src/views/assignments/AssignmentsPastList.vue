@@ -174,10 +174,19 @@
       v-if="filtered.length === 0"
       class="has-text-centered has-text-grey"
     >
-      There were no assignments this month
-      <i v-if="filter.length > 0 || !showCompleted">
-        with filters
-      </i>.
+      No assignments
+      <i
+        v-if="filter.length > 0 || !showCompleted"
+        style="font-style:inherit"
+      >
+        matching your filters.
+      </i>
+      <i
+        v-if="filter.length <= 0"
+        style="font-style:inherit"
+      >
+        this month!
+      </i>
     </p>
   </div>
 </template>

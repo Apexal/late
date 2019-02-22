@@ -5,9 +5,18 @@
       class="has-text-centered has-text-grey"
     >
       No upcoming assignments
-      <i v-if="filter.length > 0 || !showCompleted">
-        with filters
-      </i>!
+      <i
+        v-if="filter.length > 0 || !showCompleted"
+        style="font-style:inherit"
+      >
+        matching your filters.
+      </i>
+      <i
+        v-if="filter.length <= 0"
+        style="font-style:inherit"
+      >
+        this month!
+      </i>
     </p>
     <div
       v-else
