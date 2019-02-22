@@ -215,13 +215,7 @@ export default {
         c => !c.assignment.completed
       );
 
-      const unavailabilitySchedule = this.$store.getters.getUnavailabilityAsEvents.map(
-        e =>
-          Object.assign({}, e, {
-            backgroundColor: 'black',
-            rendering: 'background'
-          })
-      );
+      const unavailabilitySchedule = this.$store.getters.getUnavailabilityAsEvents;
 
       const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
 
