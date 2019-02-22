@@ -83,8 +83,8 @@ export default {
     updatedStudent (student) {
       Object.assign(this.students.find(s => s._id === student._id), student);
     },
-    deletedStudent (student) {
-      this.students = this.students.filter(s => s._id !== student._id);
+    deletedStudent (studentID) {
+      this.students = this.students.filter(s => s._id !== studentID);
     }
   }
 };

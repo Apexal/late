@@ -44,7 +44,9 @@ async function getUser (ctx) {
 }
 
 async function getStudents (ctx) {
-  if (!ctx.state.user.admin) { return ctx.forbidden('You are not an administrator!'); }
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
 
   logger.info(`Getting all students for ${ctx.state.user.rcs_id}`);
   let students = await Student.find();
@@ -52,7 +54,9 @@ async function getStudents (ctx) {
 }
 
 async function getStudent (ctx) {
-  if (!ctx.state.user.admin) { return ctx.forbidden('You are not an administrator!'); }
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
   const studentID = ctx.params.studentID;
 
   logger.info(`Getting student ${studentID} for ${ctx.state.user.rcs_id}`);
@@ -83,7 +87,9 @@ async function getStudent (ctx) {
  * @returns The updated student
  */
 async function editStudent (ctx) {
-  if (!ctx.state.user.admin) { return ctx.forbidden('You are not an administrator!'); }
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
   const studentID = ctx.params.studentID;
 
   let student = await Student.findById(studentID);
@@ -114,6 +120,39 @@ async function editStudent (ctx) {
   });
 }
 
+async function deleteStudent (ctx) {
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
+  const studentID = ctx.params.studentID;
+
+  if (ctx.state.user.rcs_id !== 'matraf') { return ctx.forbidden('Only Frank can delete accounts!'); }
+
+  let student = await Student.findById(studentID);
+  if (!student) {
+    logger.error(
+      `Failed to find student ${studentID} for admin ${ctx.state.user.rcs_id}`
+    );
+    return ctx.notFound(`Student ${studentID} not found.`);
+  }
+
+  try {
+    await student.remove();
+    // TODO: remove all their assessments
+  } catch (e) {
+    logger.error(
+      `Failed to remove student ${studentID} for admin ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    );
+    return ctx.badRequest('There was an error deleting the student.');
+  }
+
+  ctx.ok({
+    deletedStudent: student
+  });
+}
+
 async function getStudentCounts (ctx) {
   let testers = await Student.count({ accountLocked: false });
   let waitlist = await Student.count({ accountLocked: true });
@@ -126,6 +165,7 @@ module.exports = {
   getUser,
   getStudent,
   editStudent,
+  deleteStudent,
   getStudents,
   getStudentCounts
 };
