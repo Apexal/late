@@ -9,21 +9,21 @@
     </div>
 
     <div
-      class="box"
+      class="box columns"
     >
       <div
-        class="columns tooltip"
+        class="column is-one-half tooltip"
         :data-tooltip="scheduledPercent + '% scheduled'"
       >
-        <div class="column is-narrow">
+        <div class=" is-narrow">
           You've scheduled
           <b>{{ scheduledMinutes }}</b> out of
           <b>{{ totalEstimatedMinutes }}</b>
           minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
         </div>
-        <div class="column">
+        <div class="">
           <progress
-            class="progress"
+            class="progress is-danger"
             :value="scheduledMinutes"
             :max="totalEstimatedMinutes"
           >
@@ -33,20 +33,20 @@
       </div>
 
       <div
-        class="columns tooltip"
+        class="column is-one-half tooltip"
         :data-tooltip="finishedPercent + '% finished'"
       >
-        <div class="column is-narrow">
+        <div class="is-narrow">
           You've finished
           <b>{{ finishedMinutes }}</b> out of
-          <b>{{ totalEstimatedMinutes }}</b>
-          minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
+          <b>{{ scheduledMinutes }}</b>
+          scheduled minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
         </div>
-        <div class="column">
+        <div class="">
           <progress
-            class="progress"
+            class="progress is-success"
             :value="finishedMinutes"
-            :max="totalEstimatedMinutes"
+            :max="scheduledMinutes"
           >
             {{ finishedPercent }}%
           </progress>
