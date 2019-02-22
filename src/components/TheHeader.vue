@@ -73,6 +73,18 @@
               Dashboard
             </router-link>
 
+            <router-link
+              v-if="user.admin"
+              class="navbar-item"
+              to="/admin"
+              title="View the administrator page."
+            >
+              <span class="icon">
+                <i class="fas fa-user-lock" />
+              </span>
+              Administrators
+            </router-link>
+
             <template v-if="loggedIn">
               <div
                 v-if="!onBreak"
@@ -258,6 +270,8 @@ export default {
       return this.$store.state.work.upcomingExams.length;
     }
   },
+
+  // "Sticky" header script
   mounted () {
     const header = this.$refs.header;
     const offset = this.$refs.navbar.offsetTop;
@@ -293,7 +307,9 @@ export default {
 
 #top-navbar {
   //Pushes the left and right navbar menus slightly off the edges of the screen.
-  padding: 0px 1em 0px 1em;
+  padding: 0;
+  transition: padding-right 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
   .navbar-item {
     span.icon {
       margin-right: 3px;
@@ -313,21 +329,37 @@ export default {
   margin: 0 0 0 4em;
 }
 
+/*"Sticky" header styling*/
 header.sticky {
   .hero-foot {
-    z-index: 5;
+    z-index: 10;
     position: fixed;
     top: 0;
     width: 100%;
   }
   margin-bottom: 50px;
   #logo {
-    display: block;
+    opacity: 1;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 5.5em;
+    height: 3.25rem;
+    transition: 0.3s;
+    transition-delay: 0.7;
+  }
+  #top-navbar {
+    margin-left: 5.5em;
+    transition: 0.2s;
   }
 }
 
 #logo {
-  display: none;
+  opacity: 0;
+
+  width: 0px;
+  transition: opacity 0.05s cubic-bezier(0.755, 0.05, 0.855, 0.06);
+
   font-size: 1.6rem;
   font-weight: 600;
 }

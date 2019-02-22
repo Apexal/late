@@ -115,6 +115,7 @@ export default {
           height: 700,
           columnHeaderFormat: 'ddd',
           allDaySlot: false,
+          snapDuration: '00:15',
           businessHours: {
             dow: [0, 1, 2, 3, 4, 5, 6],
             start: this.$store.state.auth.user.earliestWorkTime,

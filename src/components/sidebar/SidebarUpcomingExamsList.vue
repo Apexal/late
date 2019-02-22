@@ -10,11 +10,14 @@
         v-if="upcoming.length == 0"
         class="panel-block has-text-grey"
       >
-        <span>No upcoming exams within the next month!</span>
+        <span class="has-text-centered">
+          No upcoming exams within the next month!
+        </span>
       </div>
       <transition-group
         name="list"
         tag="div"
+        class="sidebar-body"
       >
         <router-link
           v-for="ex in upcoming"
@@ -48,6 +51,7 @@
         <span class="is-full-width">
           <button
             class="button is-link is-small"
+            title="Add an upcoming exam"
             @click.prevent="$emit('toggle-modal')"
           >
             <span class="icon">
@@ -59,8 +63,9 @@
             tag="button"
             class="button is-link is-small is-outlined is-pulled-right"
             to="/exams"
+            title="View all upcoming exams"
           >
-            Browse
+            View Exams
           </router-link>
         </span>
       </div>
