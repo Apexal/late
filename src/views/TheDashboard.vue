@@ -101,14 +101,19 @@ export default {
       },
       calendar: {
         header: {
-          center: 'agendaFiveDay, agendaWeek'
+          center: 'agendaThreeDay, agendaFiveDay, agendaWeek'
         },
         config: {
           views: {
+            agendaThreeDay: {
+              type: 'agenda',
+              duration: { days: 3 },
+              buttonText: '3-Day'
+            },
             agendaFiveDay: {
               type: 'agenda',
               duration: { days: 5 },
-              buttonText: '5-Day Agenda'
+              buttonText: '5-Day'
             }
           },
           validRange: {
@@ -152,10 +157,7 @@ export default {
           },
           buttonText: {
             today: 'Today',
-            day: 'Daily Agenda',
-            month: 'Month Overview',
-            agendaFiveDay: '5-Day',
-            agendaWeek: 'Full Week'
+            agendaWeek: 'Week'
           },
           /* dayClick: (date, jsEvent, view) => {
             // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);

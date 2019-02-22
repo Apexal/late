@@ -48,6 +48,7 @@
       :assessment="exam"
       :loading="loading"
       @add-comment="$emit('add-comment', arguments[0])"
+      @delete-comment="$emit('delete-comment', arguments[0])"
       @update-assessment="$emit('update-assessment', arguments[0])"
     />
   </div>

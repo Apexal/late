@@ -70,6 +70,8 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @update-assessment="updatedExam"
+        @add-comment="addComment"
+        @delete-comment="deleteComment"
       />
     </section>
   </div>
@@ -130,7 +132,6 @@ export default {
     updatedExam (newExam) {
       this.exam = newExam;
     },
-
     async getExam () {
       // If its an upcoming exam, we already have the data on it
       if (this.$store.getters.getUpcomingExamById(this.$route.params.examID)) {
@@ -192,6 +193,60 @@ export default {
           text: 'Undo'
         }
       });
+    },
+    async addComment (newComment) {
+      if (!newComment) return;
+
+      this.commentLoading = true;
+      let request;
+      try {
+        request = await this.$http.post(
+          `/exams/e/${this.exam._id}/comments`,
+          { comment: newComment }
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.commentLoading = false;
+        return;
+      }
+
+      // Calls API and updates state
+      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_EXAM',
+          request.data.updatedExam
+        );
+      } else {
+        this.updatedExam(request.data.updatedExam);
+      }
+
+      this.commentLoading = false;
+    },
+    async deleteComment (i) {
+      let request;
+
+      this.commentLoading = true;
+      try {
+        request = await this.$http.delete(
+          `/exams/e/${this.exam._id}/comments/${i}`
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.commentLoading = false;
+        return;
+      }
+
+      // Calls API and updates state
+      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
+        this.$store.commit(
+          'UPDATE_UPCOMING_EXAM',
+          request.data.updatedExam
+        );
+      } else {
+        this.updatedExam(request.data.updatedExam);
+      }
+
+      this.commentLoading = false;
     },
     shortDateTimeString: date =>
       moment(date).format('dddd, MMM Do YYYY [@] h:mma'),

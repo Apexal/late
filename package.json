@@ -45,6 +45,7 @@
     "vue-knob-control": "^1.3.1",
     "vue-loading-overlay": "^3.1.1",
     "vue-markdown": "^2.2.4",
+    "vue-progressbar": "^0.7.5",
     "vue-router": "^3.0.2",
     "vue-toasted": "^1.1.26",
     "vuex": "^3.1.0",
@@ -170,7 +171,8 @@
             "router-link",
             "transition",
             "transition-group",
-            "keep-alive"
+            "keep-alive",
+            "vue-progress-bar"
           ]
         }
       ],
