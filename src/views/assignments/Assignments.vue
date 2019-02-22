@@ -1,27 +1,35 @@
 <template>
   <section class="section assignment-list">
-    <div class="assignment-view-buttons buttons has-addons is-pulled-right">
-      <router-link
-        class="button tooltip"
-        to="/assignments/upcoming"
-        data-tooltip="Switch to view upcoming assignments."
-      >
-        Upcoming
-      </router-link>
-      <router-link
-        class="button tooltip"
-        to="/assignments/past"
-        data-tooltip="Switch to view past assignments."
-      >
-        Past
-      </router-link>
-      <router-link
-        class="button tooltip"
-        to="/assignments/calendar"
-        data-tooltip="Switch to view your assignment calendar."
-      >
-        Calendar
-      </router-link>
+    <div class="tab-nav has-addons is-pulled-right tabs">
+      <ul>
+        <li>
+          <router-link
+            class=""
+            to="/assignments/upcoming"
+            data-tooltip="Switch to view upcoming assignments."
+          >
+            Upcoming
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            class=""
+            to="/assignments/past"
+            data-tooltip="Switch to view past assignments."
+          >
+            Previous
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            class=""
+            to="/assignments/calendar"
+            data-tooltip="Switch to view your assignment calendar."
+          >
+            Calendar
+          </router-link>
+        </li>
+      </ul>
     </div>
     <h1 class="title">
       {{ title }}
@@ -246,5 +254,35 @@ span.dot.course-dot {
   .level-left + .level-right {
     margin-top: 5px !important;
   }
+}
+
+//Created new class tab-nav  to match dashboard styling.
+.tab-nav {
+  router-link {
+    display: block;
+  }
+
+  .is-active {
+    border-bottom-color: #3273dc;
+    color: #3273dc;
+  }
+
+  ul {
+    border-style: none;
+  }
+
+  a {
+    margin: -3.5px 0px 0px 0px; //Negative decimal margins. I'm sorry.
+    padding: 0px 5px 0px 5px;
+    //border-style: none; //For some reason we get double border styling
+    padding: 0.5em 1em;
+  }
+}
+
+.title {
+    border-bottom-color: #dbdbdb;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-bottom: 1px; //Slightly shifts title up to match dashboard
 }
 </style>
