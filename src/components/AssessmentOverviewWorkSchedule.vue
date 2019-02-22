@@ -5,7 +5,7 @@
       class="notification is-warning"
     >
       <i class="fa fa-lock" />
-      This {{ assessmentType }} is done so your work schedule can no longer be changed.
+      This {{ assessmentType }} is overdue so your work schedule can no longer be changed.
     </div>
 
     <div

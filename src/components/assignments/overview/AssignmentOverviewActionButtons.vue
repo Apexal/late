@@ -9,7 +9,6 @@
       {{ assignment.completed ? 'Undo' : 'Mark Done' }}
     </button>
     <button
-      v-if="!assignment.passed"
       class="button is-warning tooltip"
       data-tooltip="Change this assignment's info."
       @click="$emit('toggle-editing')"
@@ -18,14 +17,6 @@
       <span class="is-hidden-touch">
         Details
       </span>
-    </button>
-    <button
-      v-else
-      class="button is-warning tooltip"
-      data-tooltip="Remove Assignment"
-      @click="$emit('remove-assignment')"
-    >
-      <i class="fas fa-times" /> Remove
     </button>
     <button
       class="button is-info tooltip"
