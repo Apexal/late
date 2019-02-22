@@ -2,7 +2,6 @@
   <div class="assignments-overview">
     <canvas id="confetti-canvas" />
     <AssignmentsModalEdit
-      v-if="!isPast"
       :open="editing"
       :initial-assignment="assignment"
       @toggle-modal="editing = !editing"
