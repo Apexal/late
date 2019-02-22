@@ -4,30 +4,24 @@
       User List
       <small class="is-pulled-right has-text-grey">
         {{ students.length }} total
-
         <button
           class="button"
           :class="{ 'is-loading': loading }"
           @click="$emit('refresh-students')"
-        >
-          Refresh
-        </button>
+        >Refresh</button>
       </small>
     </h2>
 
     <label
       for="sort-by"
       class="label"
-    >
-      Sort By
-    </label>
+    >Sort By</label>
     <div class="field has-addons">
       <div class="control is-expanded">
         <div class="select is-fullwidth">
           <select
             id="sort-by"
             :value="sortBy"
-
             @change="$emit('sort-by', $event.target.value)"
           >
             <option value="last_login">
@@ -49,9 +43,7 @@
         <a
           class="button"
           @click="$emit('sort-ascending', !sortAscending)"
-        >
-          {{ sortAscending ? 'Ascending' : 'Descending' }}
-        </a>
+        >{{ sortAscending ? 'Ascending' : 'Descending' }}</a>
       </div>
     </div>
     <div class="users columns is-multiline">
@@ -60,7 +52,11 @@
         :key="student._id"
         class="column is-half"
       >
-        <AdminStudentListOverview :student="student" />
+        <AdminStudentListOverview
+          :student="student"
+          @update-student="$emit('update-student', arguments[0])"
+          @delete-student="$emit('delete-student', arguments[0])"
+        />
       </div>
     </div>
   </div>
@@ -72,10 +68,8 @@ export default {
   name: 'AdminStudentList',
   components: { AdminStudentListOverview },
   props: ['loading', 'sortBy', 'sortAscending', 'students']
-
 };
 </script>
 
 <style lang="scss" scoped>
-
 </style>

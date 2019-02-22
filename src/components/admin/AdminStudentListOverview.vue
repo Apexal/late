@@ -12,9 +12,7 @@
         >
           <i class="fa fa-lock" />
         </span>
-        <span class="has-text-grey">
-          {{ student.grade_name }}
-        </span>
+        <span class="has-text-grey">{{ student.grade_name }}</span>
         {{ student.display_name }}
         <i
           v-if="student.admin"
@@ -106,8 +104,18 @@
         <button class="button is-info is-small">
           View Profile
         </button>
-        <button class="button is-danger is-small">
+        <button
+          class="button is-warning is-small"
+          @click="updateStudent({ accountLocked: !student.accountLocked })"
+        >
           Lock Account
+        </button>
+        <button
+          v-if="user.rcs_id === 'matraf'"
+          class="button is-danger is-small"
+          @click="deleteStudent"
+        >
+          Delete Account
         </button>
       </div>
     </div>
@@ -130,6 +138,9 @@ export default {
     };
   },
   computed: {
+    user () {
+      return this.$store.state.auth.user;
+    },
     setupCheckNames () {
       return {
         personal_info: 'Personal Info',
@@ -158,6 +169,37 @@ export default {
         params: { counts: true }
       });
       this.counts = request.data.counts;
+    },
+    async updateStudent (updates) {
+      if (!confirm('Update student?')) return;
+
+      let request;
+      try {
+        request = await this.$http.patch(
+          '/students/' + this.student._id,
+          updates
+        );
+      } catch (e) {
+        return this.$toasted.error(e.response.data.message);
+      }
+
+      this.$emit('update-student', request.data.updatedStudent);
+      this.$toasted.show('Updated student.');
+    },
+    async deleteStudent () {
+      if (!confirm('Are you sure you want to delete this student account?')) {
+        return;
+      }
+
+      let request;
+      try {
+        request = await this.$http.delete('/students/' + this.student._id);
+      } catch (e) {
+        return this.$toasted.error(e.response.data.message);
+      }
+
+      this.$emit('delete-student', this.student._id);
+      this.$toasted.show('Deleted student account.');
     }
   }
 };

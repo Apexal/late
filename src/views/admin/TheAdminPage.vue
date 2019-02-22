@@ -14,6 +14,8 @@
       @sort-by="sortBy = $event"
       @sort-ascending="sortAscending = $event"
       @refresh-students="getStudents()"
+      @update-student="updatedStudent"
+      @delete-student="deletedStudent"
     />
   </section>
 </template>
@@ -77,11 +79,16 @@ export default {
       this.students = request.data.students;
       this.sortStudents();
       this.loadingStudents = false;
+    },
+    updatedStudent (student) {
+      Object.assign(this.students.find(s => s._id === student._id), student);
+    },
+    deletedStudent (student) {
+      this.students = this.students.filter(s => s._id !== student._id);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
 </style>
