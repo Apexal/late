@@ -8,6 +8,6 @@ router.get('/counts', Ctrl.getStudentCounts);
 router.get('/user', Ctrl.getUser);
 router.get('/loginas', Ctrl.loginAs);
 router.get('/:studentID', Ctrl.getStudent);
-
+router.patch('/:studentID', Ctrl.editStudent);
 
 module.exports = router.routes();
