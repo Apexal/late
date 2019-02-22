@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const moment = require('moment');
 
-require('../blocks/blocks.model');
+const Block = require('../blocks/blocks.model');
+const Assignment = require('../assignments/assignments.model');
+const Exam = require('../exams/exams.model');
 
 // const rpiValidator = require('rpi-validator');
 
@@ -237,6 +239,19 @@ schema.virtual('grade_name').get(function () {
 schema.pre('save', function () {
   this.setup.course_schedule = [...new Set(this.setup.course_schedule)];
   this.setup.unavailability = [...new Set(this.setup.unavailability)];
+});
+
+schema.pre('remove', async function () {
+  // Delete all work blocks, exams, and assignments from this student
+  await Block.deleteMany({
+    _student: this._id
+  });
+  await Assignment.deleteMany({
+    _student: this._id
+  });
+  await Exam.deleteMany({
+    _student: this._id
+  });
 });
 
 module.exports = mongoose.model('Student', schema);
