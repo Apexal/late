@@ -7,7 +7,7 @@
             <router-link
               class=""
               to="/exams/upcoming"
-              data-tooltip="Switch to view upcoming exams."
+              title="Switch to view upcoming exams."
             >
               Upcoming
             </router-link>
@@ -16,7 +16,7 @@
             <router-link
               class=""
               to="/exams/past"
-              data-tooltip="Switch to view past exams."
+              title="Switch to view past exams."
             >
               Previous
             </router-link>
@@ -25,7 +25,7 @@
             <router-link
               class=""
               to="/exams/calendar"
-              data-tooltip="Switch to view your exam calendar."
+              title="Switch to view your exam calendar."
             >
               Calendar
             </router-link>

@@ -6,7 +6,7 @@
           <router-link
             class=""
             to="/assignments/upcoming"
-            data-tooltip="Switch to view upcoming assignments."
+            title="Switch to view upcoming assignments."
           >
             Upcoming
           </router-link>
@@ -15,7 +15,7 @@
           <router-link
             class=""
             to="/assignments/past"
-            data-tooltip="Switch to view past assignments."
+            title="Switch to view past assignments."
           >
             Previous
           </router-link>
@@ -24,7 +24,7 @@
           <router-link
             class=""
             to="/assignments/calendar"
-            data-tooltip="Switch to view your assignment calendar."
+            title="Switch to view your assignment calendar."
           >
             Calendar
           </router-link>
