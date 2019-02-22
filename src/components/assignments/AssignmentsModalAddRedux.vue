@@ -151,9 +151,7 @@ export default {
       courseCRN: this.defaultCourseCRN,
       title: '',
       description: '',
-      dueDate: moment()
-        .add(1, 'days')
-        .toDate(),
+      dueDate: '',
       dueTime: '08:00',
       timeEstimate: 1.0,
       priority: 3,
@@ -189,9 +187,6 @@ export default {
     defaultCourseCRN () {
       return this.$store.state.addAssignmentModal.courseCRN;
     },
-    defaultDueDateString () {
-      return this.$store.getters.addAssignmentModalDueDateString;
-    },
     defaultDueTimeString () {
       return this.$store.getters.addAssignmentModalDueTimeString;
     },
@@ -202,9 +197,6 @@ export default {
   watch: {
     defaultCourseCRN (newCRN) {
       this.courseCRN = newCRN;
-    },
-    defaultDueDateString (newDueDate) {
-      this.dueDate = moment(newDueDate, 'YYYY-MM-DD', true);
     },
     defaultDueTimeString (newDueTime) {
       this.dueTime = newDueTime;
