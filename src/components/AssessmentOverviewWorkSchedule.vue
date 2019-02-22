@@ -7,23 +7,23 @@
       <i class="fa fa-lock" />
       This {{ assessmentType }} is done so your work schedule can no longer be changed.
     </div>
+
     <div
-      v-else-if="!assessment.fullyScheduled"
-      class="box"
+      class="box columns"
     >
       <div
-        class="columns tooltip"
+        class="column is-one-half tooltip"
         :data-tooltip="scheduledPercent + '% scheduled'"
       >
-        <div class="column is-narrow">
+        <div class=" is-narrow">
           You've scheduled
           <b>{{ scheduledMinutes }}</b> out of
           <b>{{ totalEstimatedMinutes }}</b>
           minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
         </div>
-        <div class="column">
+        <div class="">
           <progress
-            class="progress"
+            class="progress is-info"
             :value="scheduledMinutes"
             :max="totalEstimatedMinutes"
           >
@@ -31,7 +31,29 @@
           </progress>
         </div>
       </div>
+
+      <div
+        class="column is-one-half tooltip"
+        :data-tooltip="finishedPercent + '% finished'"
+      >
+        <div class="is-narrow">
+          You've finished
+          <b>{{ finishedMinutes }}</b> out of
+          <b>{{ scheduledMinutes }}</b>
+          scheduled minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
+        </div>
+        <div class="">
+          <progress
+            class="progress is-success"
+            :value="finishedMinutes"
+            :max="scheduledMinutes"
+          >
+            {{ finishedPercent }}%
+          </progress>
+        </div>
+      </div>
     </div>
+
     <FullCalendar
       ref="calendar"
       :events="totalEvents"
@@ -81,13 +103,30 @@ export default {
         0
       );
     },
+    finishedMinutes () {
+      // TODO added new may need to take exam model into account in calculation separately
+      return this.assessment._blocks.filter(b => b.passed).reduce((acc, block) => acc + block.duration, 0);
+    },
     totalEstimatedMinutes () {
       return this.assessment.timeEstimate * 60;
     },
     scheduledPercent () {
-      return Math.round(
-        (this.scheduledMinutes / this.totalEstimatedMinutes) * 100
-      );
+      if (this.totalEstimatedMinutes !== 0) {
+        return Math.round(
+          (this.scheduledMinutes / this.totalEstimatedMinutes) * 100
+        );
+      } else {
+        return 0;
+      }
+    },
+    finishedPercent () { // TODO added new
+      if (this.scheduledMinutes !== 0) {
+        return Math.round(
+          (this.finishedMinutes / this.scheduledMinutes) * 100
+        );
+      } else {
+        return 0;
+      }
     },
     editable () {
       if (this.assessmentType === 'exam') return !this.assessment.passed;

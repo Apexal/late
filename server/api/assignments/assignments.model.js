@@ -94,6 +94,7 @@ schema.virtual('fullyScheduled').get(function () {
   return this.scheduledTime >= this.timeEstimate * 60;
 });
 
+
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the assignment date now
   if (!this.isNew) {
