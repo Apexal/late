@@ -392,4 +392,33 @@ export default {
     cursor: pointer;
   }
 }
+
+.fc .fc-toolbar > * > * {
+  margin: 0 auto;
+}
+
+.fc-center,.fc-right {
+
+  * {
+    border-style: none;
+    color: #444444;
+  }
+
+  .fc-state-active {
+    color: black;
+  }
+
+  .fc-button:hover {
+    border-color: #b5b5b5;
+    color: black;
+  }
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+}
+
+.fc-right .fc-button-group{
+  border-left: 1px solid #dbdbdb;
+  margin-left: 5px;
+}
+
 </style>
