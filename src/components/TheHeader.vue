@@ -308,8 +308,8 @@ export default {
 }
 
 .hero-body {
-  padding-bottom: 24px;
-  padding-top: 24px;
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 
 .beta-tag {
