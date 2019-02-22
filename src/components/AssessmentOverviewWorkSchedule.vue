@@ -23,7 +23,7 @@
         </div>
         <div class="">
           <progress
-            class="progress is-danger"
+            class="progress is-info"
             :value="scheduledMinutes"
             :max="totalEstimatedMinutes"
           >
@@ -111,9 +111,13 @@ export default {
       return this.assessment.timeEstimate * 60;
     },
     scheduledPercent () {
-      return Math.round(
-        (this.scheduledMinutes / this.totalEstimatedMinutes) * 100
-      );
+      if (this.totalEstimatedMinutes !== 0) {
+        return Math.round(
+          (this.scheduledMinutes / this.totalEstimatedMinutes) * 100
+        );
+      } else {
+        return 0;
+      }
     },
     finishedPercent () { // TODO added new
       if (this.scheduledMinutes !== 0) {
