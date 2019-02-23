@@ -8,11 +8,11 @@ const SIS_LOGIN_URL = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin';
 const SIS_SCHEDULE_URL = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl';
 
 const DAY_INITIALS = {
-  'M': 1,
-  'T': 2,
-  'W': 3,
-  'R': 4,
-  'F': 5
+  M: 1,
+  T: 2,
+  W: 3,
+  R: 4,
+  F: 5
 };
 
 /**
@@ -78,17 +78,24 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
       td.dddefault CRN_HERE
   */
   const courseSchedule = [];
-  const courseOverviews = $('table[summary="This layout table is used to present the schedule course detail"]');
+  const courseOverviews = $(
+    'table[summary="This layout table is used to present the schedule course detail"]'
+  );
 
   courseOverviews.each(function (i, el) {
-    const courseTitleLine = $(this).find('caption[class="captiontext"]').first().text();
+    const courseTitleLine = $(this)
+      .find('caption[class="captiontext"]')
+      .first()
+      .text();
 
     const courseParts = courseTitleLine.split(' - ');
     const courseLongName = courseParts[0];
     const summary = courseParts[1];
     const sectionId = courseParts[2];
 
-    const crn = $(this).find('acronym[title="Course Reference Number"]').parent()
+    const crn = $(this)
+      .find('acronym[title="Course Reference Number"]')
+      .parent()
       .next()
       .text();
 
@@ -99,18 +106,31 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
       summary: summary,
       longname: courseLongName,
       crn,
+      links: [],
       periods: []
     };
 
-    $(this).next('table[summary="This table lists the scheduled meeting times and assigned instructors for this class.."]')
+    $(this)
+      .next(
+        'table[summary="This table lists the scheduled meeting times and assigned instructors for this class.."]'
+      )
       .find('tr:not(:first-child)')
       .each(function (i, el) {
-        const time = $(this).find('td:nth-child(2)').text().split(' - ');
+        const time = $(this)
+          .find('td:nth-child(2)')
+          .text()
+          .split(' - ');
         const start = moment(time[0], 'h:mm a', true).format('Hmm');
         const end = moment(time[1], 'h:mm a', true).format('Hmm');
-        const location = $(this).find('td:nth-child(4)').text();
+        const location = $(this)
+          .find('td:nth-child(4)')
+          .text();
 
-        const days = $(this).find('td:nth-child(3)').text().split('').map(d => DAY_INITIALS[d]);
+        const days = $(this)
+          .find('td:nth-child(3)')
+          .text()
+          .split('')
+          .map(d => DAY_INITIALS[d]);
 
         for (let day of days) {
           const period = {
