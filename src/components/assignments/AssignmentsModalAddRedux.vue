@@ -277,7 +277,7 @@ export default {
 
       // Update global state if they are not in the past
       if (
-        !moment(request.data.createdAssignment.dueDate).isBefore(
+        moment(request.data.createdAssignment.dueDate).isAfter(
           moment().startOf('day')
         )
       ) {

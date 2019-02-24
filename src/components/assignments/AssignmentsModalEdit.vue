@@ -26,9 +26,7 @@
                 <label
                   for="edit-assignment-course-id"
                   class="label"
-                >
-                  Course
-                </label>
+                >Course</label>
                 <div class="control">
                   <select
                     id="edit-assignment-course-id"
@@ -55,9 +53,7 @@
                 <label
                   for="edit-assignment-title"
                   class="label"
-                >
-                  Title
-                </label>
+                >Title</label>
                 <div class="control">
                   <input
                     id="edit-assignment-title"
@@ -76,9 +72,7 @@
                 <label
                   for="edit-assignment-description"
                   class="label"
-                >
-                  Description
-                </label>
+                >Description</label>
                 <div class="control">
                   <textarea
                     id="edit-assignment-description"
@@ -99,9 +93,7 @@
                 <label
                   for="edit-assignment-due-date"
                   class="label"
-                >
-                  Due Date
-                </label>
+                >Due Date</label>
                 <div class="control">
                   <input
                     id="edit-assignment-due-date"
@@ -128,9 +120,7 @@
                 <label
                   for="edit-assignment-time-estimate"
                   class="label"
-                >
-                  Time Estimate (hrs)
-                </label>
+                >Time Estimate (hrs)</label>
                 <input
                   id="edit-assignment-time-estimate"
                   v-model.number="assignment.timeEstimate"
@@ -147,9 +137,7 @@
                 <label
                   for="edit-assignment-priority"
                   class="label"
-                >
-                  Priority
-                </label>
+                >Priority</label>
                 <input
                   id="edit-assignment-priority"
                   v-model.number="assignment.priority"
@@ -201,17 +189,13 @@
           <button
             class="button is-warning"
             @click="$emit('toggle-modal')"
-          >
-            Cancel
-          </button>
+          >Cancel</button>
           <button
             form="edit-assignment-form"
             class="button is-success"
             :class="{'is-loading': loading}"
             :disabled="saved"
-          >
-            Save
-          </button>
+          >Save</button>
         </span>
       </footer>
     </div>
@@ -303,6 +287,16 @@ export default {
       if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.dispatch(
           'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
+        );
+      } else if (
+        moment(request.data.updatedAssignment.dueDate).isAfter(
+          moment().startOf('day')
+        )
+      ) {
+        // Past assignment was moved to the future
+        this.$store.dispatch(
+          'ADD_UPCOMING_ASSIGNMENT',
           request.data.updatedAssignment
         );
       }
