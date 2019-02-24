@@ -12,9 +12,7 @@
           <span
             class="tag is-primary beta-tag"
             title="LATE is still in active development!"
-          >
-            BETA
-          </span>
+          >BETA</span>
         </h1>
         <h2 class="subtitle">
           <router-link to="/dashboard">
@@ -37,9 +35,7 @@
             id="logo"
             class="navbar-item"
             href="#"
-          >
-            LATE
-          </a>
+          >LATE</a>
 
           <a
             :class="{'is-active': navbarExpanded}"
@@ -73,18 +69,6 @@
               Dashboard
             </router-link>
 
-            <router-link
-              v-if="user.admin"
-              class="navbar-item"
-              to="/admin"
-              title="View the administrator page."
-            >
-              <span class="icon">
-                <i class="fas fa-user-lock" />
-              </span>
-              Administrators
-            </router-link>
-
             <template v-if="loggedIn">
               <div
                 v-if="!onBreak"
@@ -98,9 +82,7 @@
                   <span
                     v-if="assignmentCount > 0"
                     class="tag is-warning assignment-count"
-                  >
-                    {{ assignmentCount }}
-                  </span>
+                  >{{ assignmentCount }}</span>
                 </a>
 
                 <div class="navbar-dropdown">
@@ -151,9 +133,7 @@
                   <span
                     v-if="examCount > 0"
                     class="tag is-danger exam-count"
-                  >
-                    {{ examCount }}
-                  </span>
+                  >{{ examCount }}</span>
                 </a>
 
                 <div class="navbar-dropdown">
@@ -199,12 +179,28 @@
               <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
                   <span class="icon">
-                    <i class="fas fa-user-circle" />
+                    <i
+                      class="fas"
+                      :title="user.admin ? 'You are an administrator!' : ''"
+                      :class="[ user.admin ? 'fa-star' : 'fa-user-circle' ]"
+                    />
                   </span>
                   {{ user.display_name }}
                 </a>
 
                 <div class="navbar-dropdown is-right">
+                  <router-link
+                    v-if="user.admin"
+                    class="navbar-item"
+                    to="/admin"
+                    title="View the administrator page."
+                  >
+                    <span class="icon">
+                      <i class="fas fa-user-lock" />
+                    </span>
+                    Administration
+                  </router-link>
+
                   <router-link
                     class="navbar-item"
                     to="/profile"
@@ -217,6 +213,7 @@
                     />
                     Edit Account
                   </router-link>
+
                   <a
                     class="navbar-item"
                     href="/auth/logout"
