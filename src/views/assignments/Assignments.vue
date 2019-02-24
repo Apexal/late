@@ -1,10 +1,16 @@
 <template>
   <section class="section assignment-list">
-    <div class="tab-nav has-addons is-pulled-right tabs">
+    <div class="tab-nav tabs is-right">
       <ul>
+        <h1
+          class="title"
+          style="flex: 1"
+        >
+          {{ title }}
+        </h1>
         <li>
           <router-link
-            class=""
+            class
             to="/assignments/upcoming"
             title="Switch to view upcoming assignments"
           >
@@ -13,7 +19,6 @@
         </li>
         <li>
           <router-link
-            class=""
             to="/assignments/past"
             title="Switch to view past assignments"
           >
@@ -22,7 +27,6 @@
         </li>
         <li>
           <router-link
-            class=""
             to="/assignments/calendar"
             title="Switch to view your assignment calendar"
           >
@@ -31,30 +35,24 @@
         </li>
       </ul>
     </div>
-    <h1 class="title">
-      {{ title }}
-    </h1>
 
     <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
-          <span class="subtitle is-6">
-            Filter Courses
-          </span>
+          <span class="subtitle is-6">Filter Courses</span>
           <span
             v-for="c in courses"
             :key="c.original_longname"
             class="tag is-white course-tag level-item is-unselectable"
             :title="`Click to toggle filtering out ${c.longname} assignments.`"
             :class="{ 'has-text-grey-light filtered': isFiltered(c) }"
-            @click="toggleFilter(c)"
           >
             <span
               class="dot course-dot"
               :style="{ 'background-color': c.color }"
               @click.prevent="$store.commit('OPEN_COURSE_MODAL', c)"
             />
-            {{ c.longname }}
+            <span @click="toggleFilter(c)">{{ c.longname }}</span>
           </span>
         </div>
       </div>
@@ -256,33 +254,13 @@ span.dot.course-dot {
   }
 }
 
-//Created new class tab-nav to match dashboard styling.
 .tab-nav {
-  router-link {
-    display: block;
+  .title {
+    margin: 0;
   }
-
   .is-active {
     border-bottom-color: #3273dc;
     color: #3273dc;
   }
-
-  ul {
-    border-style: none;
-  }
-
-  a {
-    margin: -3px 0px 0px 0px; //Negative margins. I'm sorry.
-    padding: 0px 5px 0px 5px;
-    //border-style: none; //For some reason we get double border styling
-    padding: 0.5em 1em;
-  }
-}
-
-.title {
-    border-bottom-color: #dbdbdb;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    padding-bottom: 1px; //Slightly shifts title up to match dashboard
 }
 </style>
