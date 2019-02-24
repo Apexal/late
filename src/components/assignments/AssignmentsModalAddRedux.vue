@@ -275,11 +275,17 @@ export default {
         return;
       }
 
-      // Update global state
-      this.$store.dispatch(
-        'ADD_UPCOMING_ASSIGNMENT',
-        request.data.createdAssignment
-      );
+      // Update global state if they are not in the past
+      if (
+        !moment(request.data.createdAssignment.dueDate).isBefore(
+          moment().startOf('day')
+        )
+      ) {
+        this.$store.dispatch(
+          'ADD_UPCOMING_ASSIGNMENT',
+          request.data.createdAssignment
+        );
+      }
 
       // Reset important fields
       this.step = 1;
