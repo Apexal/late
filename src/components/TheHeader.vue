@@ -42,18 +42,17 @@
         class="navbar-menu is-unselectable"
       >
         <div class="navbar-start">
-          <router-link
-            class="navbar-item"
-            to="/dashboard"
-            title="View your dashboard."
-          >
-            <span class="icon">
-              <i class="fas fa-home" />
-            </span>
-            Dashboard
-          </router-link>
-
           <template v-if="loggedIn">
+            <router-link
+              class="navbar-item"
+              to="/dashboard"
+              title="View your dashboard."
+            >
+              <span class="icon">
+                <i class="fas fa-home" />
+              </span>
+              Dashboard
+            </router-link>
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"

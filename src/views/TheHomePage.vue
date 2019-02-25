@@ -41,16 +41,6 @@
         class="join-beta button is-primary is-large"
       >Log in</a>
       <hr>
-
-      <!--
-        d "/availability.png" - Tell us when you would like to work.
-        d "/importSchedule.png" - Easily add your RPI class schedule by letting us grab the information from SIS. No more manual schedule setting. Reimport your schedule when you add or drop a class and we take care of the rest.
-        d "/addAssignments.png" - Quickly be able to add, edit, and delete assignments for your classes.
-        d "/upcomingAssignments.png" - See a clear list of all upcoming assignments and tests.
-        d "/dailyWorkSchedule.png" - See a clear layout of your day! Just follow the list and let yourself be the lazy student you always dreamed of.
-        "/notify.png" - We will notify you when it is time to work. You won't ever have to think about whether or not you <i>should</i> be working on something
-        -->
-
       <div
         class="columns is-multiline"
         style="margin: 0 auto; max-width: 80vw;"
