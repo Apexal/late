@@ -14,20 +14,18 @@
       @click="$emit('toggle-editing')"
     >
       <i class="fas fa-pencil-alt" />Edit
-      <span class="is-hidden-touch">
-        Details
-      </span>
+      <span class="is-hidden-touch">Details</span>
     </button>
     <button
       class="button is-info tooltip"
-      data-tooltip="Hide description"
+      data-tooltip="Toggle description."
       @click="$emit('toggle-description')"
     >
       <i
         class="fas"
         :class="[descriptionExpanded ? 'fa-angle-down' : 'fa-angle-up']"
       />
-      {{ descriptionExpanded ? 'Hide': 'Show' }} Description
+      {{ descriptionExpanded ? 'Showing': 'Hiding' }} Description
     </button>
     <router-link
       to="/assignments"
@@ -35,9 +33,7 @@
       data-tooltip="Browse all assignments."
     >
       <i class="fas fa-angle-left" />Browse
-      <span class="is-hidden-touch">
-        Assignments
-      </span>
+      <span class="is-hidden-touch">Assignments</span>
     </router-link>
   </div>
 </template>
