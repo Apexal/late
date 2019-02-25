@@ -1,7 +1,10 @@
 <template>
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">
-      An RCOS project!
+      An <a
+        href="/about"
+        title="View project proposal and contributors"
+      >RCOS project</a>!
     </h1>
     <div class="content has-text-centered columns">
       <p class="column">

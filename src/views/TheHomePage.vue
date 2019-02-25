@@ -18,16 +18,8 @@
           Discord server.
         </a>
       </div>
-      <div
-        v-else
-        class="notification is-warning"
-      >
-        <b>LATE</b> is currently in closed BETA and is not available to the general student body yet. Interested students can be added to the wait list by <a href="/auth/login">
-          logging in
-        </a> and will be notified as soon as the website is ready to publicly launch.
-      </div>
       <h1
-        class="is-size-2 title"
+        class="is-size-1 title"
         style="text-align: center"
       >
         Welcome to LATE
@@ -37,52 +29,103 @@
         |
         <b>{{ waitlist }}</b> {{ waitlist === 1 ? 'Student' : 'Students' }} on Wait List
       </h2>
-      <hr>
-      <div
-        class="column"
-        style="margin-left: 10em; max-width: 50em;"
+      <p
+        class="is-size-8 has-text-centered"
+        style="max-width:800px;margin:0 auto;"
       >
-        <div class="columns about">
-          <img src="/availability.png">
-          <p class="right">
+        <b>LATE</b> is currently in closed BETA and is not available to the general student body yet. Interested students can be added to the wait list by logging in and will be notified as soon as the website is ready to publicly launch.
+      </p>
+
+      <a
+        href="/auth/login"
+        class="join-beta button is-primary is-large"
+      >Log in</a>
+      <hr>
+
+      <!--
+        d "/availability.png" - Tell us when you would like to work.
+        d "/importSchedule.png" - Easily add your RPI class schedule by letting us grab the information from SIS. No more manual schedule setting. Reimport your schedule when you add or drop a class and we take care of the rest.
+        d "/addAssignments.png" - Quickly be able to add, edit, and delete assignments for your classes.
+        d "/upcomingAssignments.png" - See a clear list of all upcoming assignments and tests.
+        d "/dailyWorkSchedule.png" - See a clear layout of your day! Just follow the list and let yourself be the lazy student you always dreamed of.
+        "/notify.png" - We will notify you when it is time to work. You won't ever have to think about whether or not you <i>should</i> be working on something
+        -->
+
+      <div
+        class="columns is-multiline"
+        style="margin: 0 auto; max-width: 80vw;"
+      >
+        <div class="column is-third">
+          <h2 class="is-size-3 title">
             Tell us when you would like to work.
-          </p>
+          </h2>
+          <h3 class="is-size-6 tagline">
+            Not everybody's a workaholic. Late will adjust itself to fit other committments, your social life, or just you time :)
+          </h3>
+          <img
+            class="example"
+            src="/availability.png"
+          >
         </div>
-
-        <div class="columns about">
-          <p class="left">
-            Easily add your RPI class schedule by letting us grab the information from SIS. No more manual schedule setting. Reimport your schedule when you add or drop a class and we take care of the rest.
-          </p>
-          <img src="/importSchedule.png">
+        <div class="column is-third">
+          <h2 class="is-size-3 title">
+            Import schedule from SIS.
+          </h2>
+          <h3 class="is-size-6 tagline">
+            No more manual scheduling. LATE grabs your classes automatically using your SIS login for hassle-free setup. Reimport your schedule when you add or drop a class and we take care of the rest.
+          </h3>
+          <img
+            class="example"
+            src="/importSchedule.png"
+          >
         </div>
-
-
-        <div class="columns about">
-          <img src="/addAssignments.png">
-          <p class="right">
-            Quickly be able to add, edit, and delete assignments for your classes.
-          </p>
+        <div class="column is-third">
+          <h2 class="is-size-3 title">
+            See a clear layout of your day.
+          </h2>
+          <h3 class="is-size-6 tagline">
+            All of your classes at a glance. Be the lazy student you always dreamed of.
+          </h3>
+          <img
+            class="example"
+            src="/dailyWorkSchedule.png"
+          >
         </div>
-
-        <div class="columns about">
-          <p class="left">
-            See a clear list of all upcoming assignments and tests.
-          </p>
-          <img src="/upcomingAssignments.png">
+        <div class="column is-third">
+          <h2 class="is-size-3 title">
+            Keeps track of upcoming assignments and tests.
+          </h2>
+          <h3 class="is-size-6 tagline">
+            No more planners or fiddling with syllabi. LATE helps you stay on top of your work.
+          </h3>
+          <img
+            class="example"
+            src="/upcomingAssignments.png"
+          >
         </div>
-
-        <div class="columns about">
-          <img src="/dailyWorkSchedule.png">
-          <p class="right">
-            See a clear layout of your day! Just follow the list and let yourself be the lazy student you always dreamed of.
-          </p>
+        <div class="column is-third">
+          <h2 class="is-size-3 title">
+            Add, edit, and remove assignments.
+          </h2>
+          <h3 class="is-size-6 tagline">
+            Quickly edit and remove assignments and assessments from your calendar.
+          </h3>
+          <img
+            class="example"
+            src="/addAssignments.png"
+          >
         </div>
-
-        <div class="columns about">
-          <p class="left">
-            We will notify you when it is time to work. You won't ever have to think about whether or not you <i>should</i> be working on something
-          </p>
-          <img src="/notify.png">
+        <div class="column is-third">
+          <h2 class="is-size-3 title">
+            Be notified when it's time to work.
+          </h2>
+          <h3 class="is-size-6 tagline">
+            Using integrations like SMS, email, and Discord, LATE will automatically remind you of scheduled study blocks and upcoming work.
+          </h3>
+          <img
+            class="example"
+            src="/notify.png"
+          >
         </div>
       </div>
     </section>
@@ -124,6 +167,13 @@ export default {
 
 
 <style lang="scss" scoped>
+  .join-beta {
+    display: block;
+    margin: 0 auto;
+    max-width: 15vw;
+    margin-top: 25px;
+  }
+
   hr{
     margin:3em;
     background-color:darkgrey;
@@ -131,26 +181,46 @@ export default {
   .title{
     text-align:center;
   }
-  .columns{
-    .left{
-      margin-right:2em !important;
-      text-align:right;
-    }
-    .right{
-      margin-left: 2em !important;
-    }
-    .about{
-      margin-bottom:8em;
 
-      p{
-        color: #4a4a4a;
-        font-weight: 400;
-        font-size: larger;
+  .columns{
+    text-align: center;
+    max-width: 95vw;
+
+    .column {
+      padding: 10px 20px 10px 20px;
+      min-width: 350px; //Adjust number of columns on devices.
+      margin: 10px;
+
+      //Copied "box" styles
+      background-color: #fff;
+      border-radius: 6px;
+      -webkit-box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+      box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+      color: #4a4a4a;
+      transition: 0.2s;
+      -webkit-transition: 0.2s;
+
+      //Example images
+      .example {
+        width: 100%;
+        height: auto;
       }
-      img{
-        width:75%;
-        height:75%;
+
+      .title {
+        margin-bottom: 5px;
       }
+
+      .tagline {
+        margin-bottom: 10px;
+        height: 6.3em; //Standardizes height so image offset is the same
+      }
+    }
+
+    .column:hover {
+      -webkit-box-shadow: 2px 3px 5px rgba(10,10,10,.3), 0 0 0 1px rgba(10,10,10,.1);
+      box-shadow: 2px 3px 5px rgba(10,10,10,.3), 0 0 0 1px rgba(10,10,10,.1);
+      transition: 0.2s;
+      -webkit-transition: 0.2s;
     }
   }
 </style>
