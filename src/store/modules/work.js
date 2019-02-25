@@ -185,7 +185,7 @@ const actions = {
       );
     }
 
-    return request['updated' + capitalized];
+    return request.data['updated' + capitalized];
   },
   async EDIT_WORK_BLOCK ({ commit, getters }, { blockID, start, end }) {
     const block = getters.getWorkBlocksAsEvents.find(
@@ -206,7 +206,7 @@ const actions = {
       );
     }
 
-    return request['updated' + capitalized];
+    return request.data['updated' + capitalized];
   },
   async REMOVE_WORK_BLOCK ({ commit, getters }, { blockID }) {
     const block = getters.getWorkBlocksAsEvents.find(
@@ -225,7 +225,7 @@ const actions = {
       );
     }
 
-    return request['updated' + capitalized];
+    return request.data['updated' + capitalized];
   }
 };
 
