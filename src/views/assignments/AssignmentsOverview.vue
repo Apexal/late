@@ -26,12 +26,15 @@
           style="flex: 1"
         >
           <span
-            v-if="assignment.completed"
-            title="This assignment is complete!"
+            :title="`This assignment is ${assignment.completed ? 'completed' : 'incomplete'}!`"
             :style="{ 'color': course.color }"
-            class="icon"
+            class="icon toggle-complete"
+            @click="toggleCompleted"
           >
-            <i class="fa fa-check-square" />
+            <i
+              class="fa"
+              :class="[assignment.completed ? 'fa-check-circle' : 'fa-times-circle']"
+            />
           </span>
           {{ assignment.title }}
         </h1>
@@ -41,9 +44,7 @@
             :style="{ 'background-color': course.color }"
             @click="$store.commit('OPEN_COURSE_MODAL', course)"
           >
-            <b class="course-longname">
-              {{ course.longname }}
-            </b>
+            <b class="course-longname">{{ course.longname }}</b>
             {{ isPast ? 'Past ': '' }}Assignment
           </span>
         </div>
@@ -111,17 +112,13 @@
               class="subtitle"
             >
               {{ assignment.scheduledTimeRemaing }}
-              <span class="has-text-grey">
-                min
-              </span>
+              <span class="has-text-grey">min</span>
             </p>
             <p v-else>
               <span
                 class="tag is-danger not-scheduled-tag"
                 @click="notFullyScheduledClick"
-              >
-                Not fully scheduled!
-              </span>
+              >Not fully scheduled!</span>
             </p>
           </div>
         </div>
@@ -155,9 +152,7 @@
               :emoji="true"
               :anchor-attributes="{target: '_blank'}"
             />
-            <i v-else>
-              No description given.
-            </i>
+            <i v-else>No description given.</i>
           </template>
           <span
             class="edit-description tooltip is-tooltip-left"
@@ -584,6 +579,10 @@ export default {
 
 .due-title {
   margin-top: 5px;
+}
+
+.toggle-complete {
+  cursor: pointer;
 }
 
 .level.assignment-stats {
