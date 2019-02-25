@@ -37,7 +37,7 @@
           <div
             v-if="loggedIn && expanded"
             id="sidebar-column"
-            class="column is-3 child-view"
+            class="column is-3 child-view sidebar-holder"
           >
             <TheSidebar
               ref="sidebar"
@@ -131,17 +131,6 @@ export default {
   async mounted () {
     if (typeof window.orientation === 'undefined') {
       window.addEventListener('resize', this.resizeThrottler, false);
-
-      const offset = 110;
-      window.addEventListener('scroll', () => {
-        if (!document.getElementById('sidebar')) return; // Sidebar is collapsed
-        if (window.pageYOffset > 0) {
-          let pixels = Math.max(offset - window.pageYOffset, 0) + 55; // Min of 55px
-          document.getElementById('sidebar').style.top = pixels + 'px';
-        } else {
-          document.getElementById('sidebar').style.top = 'initial';
-        }
-      });
     }
 
     if (this.$route.query.accountLocked) {
@@ -213,8 +202,13 @@ export default {
 }
 
 .toggle-sidebar {
+  top: 70px;
   z-index: 4;
-  position: absolute;
+  position: fixed;
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    top: 55px;
+  }
 
   //Styling the toggle button to fit the theme
   margin: 1em;
@@ -240,6 +234,9 @@ export default {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.sidebar-holder {
 }
 
 .child-view {
