@@ -13,7 +13,13 @@
           id="logo"
           class="navbar-item"
           href="#"
-        >LATE</a>
+        >
+          LATE
+          <span
+            class="tag is-primary beta-tag"
+            title="LATE is still in active development!"
+          >BETA</span>
+        </a>
 
         <a
           :class="{'is-active': navbarExpanded}"
@@ -273,6 +279,11 @@ export default {
 
 .no-margin-left {
   margin-left: 0;
+}
+
+#logo {
+  font-size: 1.6rem;
+  font-weight: 600;
 }
 
 #top-navbar {
