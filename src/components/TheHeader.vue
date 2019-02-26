@@ -46,7 +46,7 @@
             <router-link
               class="navbar-item"
               to="/dashboard"
-              title="View your dashboard."
+              title="View your dashboard"
             >
               <span class="icon">
                 <i class="fas fa-home" />
@@ -72,28 +72,28 @@
                 <router-link
                   class="navbar-item"
                   to="/assignments/upcoming"
-                  title="View upcoming assignments (due in the future)."
+                  title="View upcoming assignments"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
                   to="/assignments/past"
-                  title="Browse all past assignments."
+                  title="Browse all past assignments"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
                   to="/assignments/calendar"
-                  title="View a calendar of all your assignment due dates."
+                  title="View a calendar of all your assignment due dates"
                 >
                   Calendar
                 </router-link>
                 <hr class="navbar-divider">
                 <a
                   class="navbar-item"
-                  title="Add a new assignment."
+                  title="Add a new assignment"
                   @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                 >
                   <span class="icon">
@@ -123,28 +123,28 @@
                 <router-link
                   class="navbar-item"
                   to="/exams/upcoming"
-                  title="View upcoming exams."
+                  title="View upcoming exams"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
                   to="/exams/past"
-                  title="Browse all past exams."
+                  title="Browse all past exams"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
                   to="/exams/calendar"
-                  title="View a calendar of all your exams."
+                  title="View a calendar of all your exams"
                 >
                   Calendar
                 </router-link>
                 <hr class="navbar-divider">
                 <a
                   class="navbar-item"
-                  title="Add a new exam."
+                  title="Add a new exam"
                   @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
                 >
                   <span class="icon">
@@ -176,7 +176,7 @@
                   v-if="user.admin"
                   class="navbar-item"
                   to="/admin"
-                  title="View the administrator page."
+                  title="View the administrator page"
                 >
                   <span class="icon">
                     <i class="fas fa-user-lock" />
@@ -187,7 +187,7 @@
                 <router-link
                   class="navbar-item"
                   to="/profile"
-                  title="Edit your profile."
+                  title="Edit your profile"
                 >
                   <i
                     data-v-203ae283
@@ -201,6 +201,7 @@
                   class="navbar-item"
                   href="https://github.com/Apexal/late/issues/new/choose"
                   target="none"
+                  title="Report a bug or request a feature on GitHub"
                 >
                   <span class="icon bug-report">
                     <i
@@ -215,6 +216,7 @@
                   class="navbar-item"
                   href="https://discord.gg/MnSmCde"
                   target="none"
+                  title="Join the testing Discord server"
                 >
                   <span class="icon">
                     <i
@@ -225,9 +227,12 @@
                   Join Discord
                 </a>
 
+                <hr class="navbar-divider">
+
                 <a
                   class="navbar-item"
                   href="/auth/logout"
+                  title="Sign out of LATE"
                 >
                   <span class="icon">
                     <i class="fas fa-sign-out-alt" />
@@ -241,7 +246,7 @@
             v-else
             class="navbar-item"
             href="/auth/login"
-            title="Login to LATE with RPI CAS."
+            title="Login to LATE with RPI CAS"
           >
             <b>Log in</b>
           </a>
@@ -287,6 +292,23 @@ export default {
 
 .beta-tag {
   margin-left: 5px;
+  transition: 0.2s;
+  background-color: #70cad1;
+  color: white;
+  line-height: 1.2em;
+}
+
+.has-dropdown .navbar-link::after { transition: 0.2s; }
+
+.has-dropdown:hover .navbar-link::after {
+  transition: 0.2s;
+  transition-timing-function: ease-out;
+}
+
+.navbar-brand:hover .beta-tag {
+  background-color: #84edf5!important;
+  color: #616161;
+  transition: 0.2s;
 }
 
 .no-margin-left {

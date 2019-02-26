@@ -61,7 +61,7 @@
             title="Show your completed courses"
           >
           <label for="agenda-show-passed">
-            Show Passed
+            Show Previous
           </label>
         </div>
       </span>

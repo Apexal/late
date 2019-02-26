@@ -44,7 +44,7 @@
             v-for="c in courses"
             :key="c.original_longname"
             class="tag is-white course-tag level-item is-unselectable"
-            :title="`Click to toggle filtering out ${c.longname} assignments.`"
+            :title="`Filter ${c.longname} assignments`"
             :class="{ 'filtered-out filtered': isFiltered(c) }"
             :style="{ 'background-color': c.color }"
             @click="toggleFilter(c)"
@@ -94,6 +94,7 @@
     <hr>
     <button
       class="button is-dark"
+      title="Add an upcoming assignment"
       @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     >
       Add Assignment
