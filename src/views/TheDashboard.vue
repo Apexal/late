@@ -409,7 +409,6 @@ export default {
   }
 
   .fc-button:hover {
-    border-color: #b5b5b5;
     color: black;
   }
   border: 1px solid #dbdbdb;

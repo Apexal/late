@@ -213,6 +213,20 @@
 
                 <a
                   class="navbar-item"
+                  href="https://discord.gg/MnSmCde"
+                  target="none"
+                >
+                  <span class="icon">
+                    <i
+                      class="fas fa-comment"
+                      style="margin-right: 5px"
+                    />
+                  </span>
+                  Join Discord
+                </a>
+
+                <a
+                  class="navbar-item"
                   href="/auth/logout"
                 >
                   <span class="icon">

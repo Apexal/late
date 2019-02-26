@@ -21,19 +21,21 @@
         :open="addExamModalExpanded"
         @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
       />
-      <span
-        v-if="loggedIn && !expanded"
-        class="icon button is-dark toggle-sidebar"
-        title="Toggle sidebar."
-        @click="$store.commit('TOGGLE_SIDEBAR')"
-      >
-        <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
-      </span>
+      <transition name="slide-fade">
+        <span
+          v-if="loggedIn && !expanded"
+          class="icon button is-dark toggle-sidebar"
+          title="Toggle sidebar."
+          @click="$store.commit('TOGGLE_SIDEBAR')"
+        >
+          <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
+        </span>
+      </transition>
       <div
         class="columns"
         style="margin-right: initial;"
       >
-        <transition name="fade">
+        <transition name="slide-fade">
           <div
             v-if="loggedIn && expanded"
             id="sidebar-column"
@@ -242,6 +244,9 @@ export default {
 .child-view {
   transition: all 100ms cubic-bezier(0.55, 0, 0.1, 1);
 }
+
+//Slide
+
 .slide-left-enter,
 .slide-right-leave-active {
   opacity: 0;
@@ -254,6 +259,20 @@ export default {
   -webkit-transform: translate(-30px, 0);
   transform: translate(-30px, 0);
 }
+
+//Slide-fade
+.slide-fade-enter-active {
+  transition: all .2s ease;
+}
+.slide-fade-leave-active {
+  transition: all .15s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(-80px);
+  opacity: 0;
+}
+
 
 .no-bottom-padding {
   padding-bottom: 0;
