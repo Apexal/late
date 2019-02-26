@@ -199,7 +199,7 @@
 
                 <a
                   class="navbar-item"
-                  href="https://github.com/Apexal/late/issues/new"
+                  href="https://github.com/Apexal/late/issues/new/choose"
                   target="none"
                 >
                   <span class="icon bug-report">
