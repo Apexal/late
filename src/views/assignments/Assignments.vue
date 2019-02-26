@@ -47,8 +47,9 @@
             :title="`Click to toggle filtering out ${c.longname} assignments.`"
             :class="{ 'filtered-out filtered': isFiltered(c) }"
             :style="{ 'background-color': c.color }"
+            @click="toggleFilter(c)"
           >
-            <span @click="toggleFilter(c)">{{ c.longname }}</span>
+            <span>{{ c.longname }}</span>
           </span>
         </div>
       </div>
