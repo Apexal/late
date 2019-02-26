@@ -39,19 +39,15 @@
     <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
-          <span class="subtitle is-6">Filter Courses</span>
+          <span class="subtitle is-6">Filter Courses: </span>
           <span
             v-for="c in courses"
             :key="c.original_longname"
             class="tag is-white course-tag level-item is-unselectable"
             :title="`Click to toggle filtering out ${c.longname} assignments.`"
-            :class="{ 'has-text-grey-light filtered': isFiltered(c) }"
+            :class="{ 'filtered-out filtered': isFiltered(c) }"
+            :style="{ 'background-color': c.color }"
           >
-            <span
-              class="dot course-dot"
-              :style="{ 'background-color': c.color }"
-              @click.prevent="$store.commit('OPEN_COURSE_MODAL', c)"
-            />
             <span @click="toggleFilter(c)">{{ c.longname }}</span>
           </span>
         </div>
@@ -223,9 +219,16 @@ export default {
 <style lang="scss" scoped>
 span.tag.course-tag {
   cursor: pointer;
-  font-weight: bold;
+  //font-weight: bold;
   margin: 0;
-  padding-right: 0;
+  margin-left: 2px;
+  margin-right: 2px;
+  color: white;
+}
+
+.filtered-out {
+  color: #686868!important;
+  background-color:rgb(214, 214, 214)!important;
 }
 
 span.dot.course-dot {

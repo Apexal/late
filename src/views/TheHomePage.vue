@@ -39,6 +39,7 @@
       <a
         href="/auth/login"
         class="join-beta button is-primary is-large"
+        title="Log in to LATE beta"
       >Log in</a>
       <hr>
       <div
@@ -202,7 +203,7 @@ export default {
 
       .tagline {
         margin-bottom: 10px;
-        height: 6.3em; //Standardizes height so image offset is the same
+        height: 6.7em; //Standardizes height so image offset is the same
       }
     }
 

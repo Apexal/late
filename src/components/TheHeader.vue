@@ -199,6 +199,20 @@
 
                 <a
                   class="navbar-item"
+                  href="https://github.com/Apexal/late/issues/new"
+                  target="none"
+                >
+                  <span class="icon bug-report">
+                    <i
+                      class="fas fa-bug"
+                      style="margin-right: 5px"
+                    />
+                  </span>
+                  Report a bug
+                </a>
+
+                <a
+                  class="navbar-item"
                   href="/auth/logout"
                 >
                   <span class="icon">
@@ -217,21 +231,6 @@
           >
             <b>Log in</b>
           </a>
-
-          <div
-            class="navbar-item is-hoverable"
-            title="Report bug"
-            style="margin-right:10px;"
-          >
-            <a
-              href="https://github.com/Apexal/late/issues/new"
-              target="none"
-            >
-              <span class="icon bug-report">
-                <i class="fas fa-bug" />
-              </span>
-            </a>
-          </div>
         </div>
       </div>
     </nav>
@@ -303,10 +302,4 @@ export default {
   }
 }
 
-.bug-report {
-  color: white;
-}
-.bug-report:hover {
-  color: rgb(241, 227, 171);
-}
 </style>
