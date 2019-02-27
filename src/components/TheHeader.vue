@@ -9,18 +9,21 @@
       aria-label="main navigation"
     >
       <div class="navbar-brand">
-        <a
+        <router-link
           id="logo"
           class="navbar-item"
-          href="#"
+          to="/dashboard"
+          active-class=""
+          exact-active-class=""
         >
           LATE
           <span
             class="tag is-primary beta-tag"
             title="LATE is still in active development!"
-          >BETA</span>
-        </a>
-
+          >
+            BETA
+          </span>
+        </router-link>
         <a
           :class="{'is-active': navbarExpanded}"
           role="button"
@@ -65,7 +68,9 @@
                 <span
                   v-if="assignmentCount > 0"
                   class="tag is-warning assignment-count"
-                >{{ assignmentCount }}</span>
+                >
+                  {{ assignmentCount }}
+                </span>
               </a>
 
               <div class="navbar-dropdown">
@@ -116,7 +121,9 @@
                 <span
                   v-if="examCount > 0"
                   class="tag is-danger exam-count"
-                >{{ examCount }}</span>
+                >
+                  {{ examCount }}
+                </span>
               </a>
 
               <div class="navbar-dropdown">
@@ -307,7 +314,6 @@ export default {
 
 .navbar-brand:hover .beta-tag {
   background-color: #84edf5!important;
-  color: #616161;
   transition: 0.2s;
 }
 
