@@ -6,7 +6,7 @@
         @click="$emit('toggle-assignment', assignment._id)"
       >
         <span
-          :class="{ 'fas fa-check-circle': assignment.completed, 'far fa-circle': !assignment.completed }"
+          :class="[ assignment.completed ? 'fas fa-check-circle' : 'far fa-circle' ]"
           :title="toggleAssignmentTitle"
           :style="{ 'color': course.color }"
         />
@@ -23,11 +23,13 @@
         {{ assignment.title }}
       </router-link>
       <span
-        :style="{visibility: assignment.completed || assignment.fullyScheduled ? 'hidden' : ''}"
         class="tooltip is-tooltip-left icon has-text-danger is-pulled-right"
         :data-tooltip="`You've only scheduled ${assignment.scheduledTime} out of ${assignment.timeEstimate * 60} min to work on this.`"
       >
-        <i class="far fa-clock" />
+        <i
+          :style="{ opacity: assignmentTimeWarningOpacity }"
+          class="far fa-clock"
+        />
       </span>
       <small
         v-if="groupBy === 'dueDate'"
@@ -90,6 +92,12 @@ export default {
     },
     daysAway () {
       return moment(this.assignment.dueDate).diff(moment(this.now).startOf('day'), 'days');
+    },
+    assignmentTimeWarningOpacity () {
+      if (this.assignment.completed) return 0;
+      if (this.assignment.timeEstimate === this.assignment.scheduledTime) return 0;
+
+      return this.assignment.scheduledTime / (this.assignment.timeEstimate * 60);
     }
   },
   methods: {
