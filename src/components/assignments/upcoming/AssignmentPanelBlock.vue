@@ -17,9 +17,7 @@
         :to="{ name: 'assignments-overview', params: { assignmentID: assignment._id }}"
         :class="{ 'priority': assignment.priority > 3, 'has-text-grey is-italic': assignment.priority === 1 }"
       >
-        <b class="course-title is-hidden-tablet">
-          {{ course.longname }}
-        </b>
+        <b class="course-title is-hidden-tablet">{{ course.longname }}</b>
         {{ assignment.title }}
       </router-link>
       <span
@@ -34,16 +32,12 @@
       <small
         v-if="groupBy === 'dueDate'"
         class="is-pulled-right has-text-grey"
-      >
-        {{ toTimeString }}
-      </small>
+      >{{ toTimeString }}</small>
       <small
         v-else
         class="is-pulled-right tooltip is-tooltip-left has-text-grey"
         :data-tooltip="toDateShortString + ' ' + toTimeString"
-      >
-        {{ fromNow }}
-      </small>
+      >{{ fromNow }}</small>
     </span>
   </div>
 </template>
@@ -73,13 +67,17 @@ export default {
       return (
         this.course.longname +
         (this.assignment.completedAt
-          ? ` | Completed ${moment(this.assignment.completedAt).format('M/DD/YY h:mma')}`
+          ? ` | Completed ${moment(this.assignment.completedAt).format(
+            'M/DD/YY h:mma'
+          )}`
           : '')
       );
     },
     toDateShortString () {
-      if (moment(this.assignment.dueDate).isSame(moment(), 'day')) return 'Today';
-      if (moment(this.assignment.dueDate).isSame(moment().add(1, 'day'), 'day')) {
+      if (moment(this.assignment.dueDate).isSame(moment(), 'day')) { return 'Today'; }
+      if (
+        moment(this.assignment.dueDate).isSame(moment().add(1, 'day'), 'day')
+      ) {
         return 'Tomorrow';
       }
       return moment(this.assignment.dueDate).format('dddd [the] Do');
@@ -91,17 +89,23 @@ export default {
       return moment(this.assignment.dueDate).fromNow();
     },
     daysAway () {
-      return moment(this.assignment.dueDate).diff(moment(this.now).startOf('day'), 'days');
+      return moment(this.assignment.dueDate).diff(
+        moment(this.now).startOf('day'),
+        'days'
+      );
     },
     assignmentTimeWarningOpacity () {
       if (this.assignment.completed) return 0;
-      if (this.assignment.timeEstimate === this.assignment.scheduledTime) return 0;
+      if (this.assignment.scheduledTime === 0) return 1;
+      if (this.assignment.timeEstimate === 0) return 0;
+      if (this.assignment.timeEstimate === this.assignment.scheduledTime) { return 0; }
 
-      return this.assignment.scheduledTime / (this.assignment.timeEstimate * 60);
+      return (
+        this.assignment.scheduledTime / (this.assignment.timeEstimate * 60)
+      );
     }
   },
-  methods: {
-  }
+  methods: {}
 };
 </script>
 
