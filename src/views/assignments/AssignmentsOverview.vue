@@ -110,35 +110,14 @@
         @toggle-editing="toggleEditing"
       />
 
-      <div
+      <AssessmentOverviewDescription
         v-if="descriptionExpanded"
-        class="content assignment-description"
-      >
-        <blockquote>
-          <textarea
-            v-if="editingDescription"
-            v-model.trim="editedDescription"
-            class="edited-description"
-          />
-          <template v-else>
-            <VueMarkdown
-              v-if="assignment.description.length > 0"
-              :source="assignment.description"
-              :html="false"
-              :emoji="true"
-              :anchor-attributes="{target: '_blank'}"
-            />
-            <i v-else>No description given.</i>
-          </template>
-          <span
-            class="edit-description tooltip is-tooltip-left"
-            :data-tooltip="editingDescription ? 'Click to save description.' : 'Click to edit description.'"
-            @click="toggleEditingDescription"
-          >
-            <i class="fas fa-pencil-alt" />
-          </span>
-        </blockquote>
-      </div>
+        :assessment-type="'assignment'"
+        :assessment="assignment"
+        :expanded="descriptionExpanded"
+        @update-assessment="updatedAssignment"
+      />
+
       <hr>
       <AssignmentOverviewTabs
         ref="tabs"
@@ -163,10 +142,10 @@
 
 <script>
 import moment from 'moment';
-import VueMarkdown from 'vue-markdown';
 import 'confetti-js';
 
 // Page components
+import AssessmentOverviewDescription from '@/components/AssessmentOverviewDescription';
 import AssessmentOverviewActionButtons from '@/components/AssessmentOverviewActionButtons';
 import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
 import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
@@ -175,8 +154,8 @@ import AssignmentOverviewTabs from '@/components/assignments/overview/Assignment
 export default {
   name: 'AssignmentsOverview',
   components: {
+    AssessmentOverviewDescription,
     AssessmentOverviewTitle,
-    VueMarkdown,
     AssignmentsModalEdit,
     AssessmentOverviewActionButtons,
     AssignmentOverviewTabs
@@ -184,8 +163,6 @@ export default {
   data () {
     return {
       tab: 'schedule',
-      editingDescription: false,
-      editedDescription: '',
       commentLoading: false,
       toggleLoading: false,
       loading: true,
@@ -292,43 +269,6 @@ export default {
     },
     updatedAssignment (newAssignment) {
       this.assignment = newAssignment;
-    },
-    async toggleEditingDescription () {
-      if (this.editingDescription) {
-        if (this.editedDescription === this.assignment.description) {
-          this.editingDescription = false;
-          return;
-        }
-
-        let request;
-        try {
-          request = await this.$http.patch(
-            `/assignments/a/${this.assignment._id}`,
-            { description: this.editedDescription }
-          );
-        } catch (e) {
-          this.$toasted.error(e.response.data.message);
-          this.editingDescription = false;
-          return;
-        }
-
-        // Calls API and updates state
-        if (
-          this.$store.getters.getUpcomingAssignmentById(this.assignment._id)
-        ) {
-          this.$store.dispatch(
-            'UPDATE_UPCOMING_ASSIGNMENT',
-            request.data.updatedAssignment
-          );
-        } else {
-          this.updatedAssignment(request.data.updatedAssignment);
-        }
-
-        this.editingDescription = false;
-      } else {
-        this.editedDescription = this.assignment.description;
-        this.editingDescription = true;
-      }
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
@@ -506,26 +446,5 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-.assignment-description blockquote {
-  word-break: break-word;
-  position: relative;
-
-  .edited-description {
-    max-width: 600px;
-    min-width: 100%;
-
-    min-height: 100px;
-    max-height: 400px;
-  }
-
-  .edit-description {
-    cursor: pointer;
-    z-index: 2;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
 }
 </style>

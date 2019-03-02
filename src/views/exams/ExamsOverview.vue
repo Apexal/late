@@ -27,19 +27,22 @@
 
       <ExamOverviewStats :exam="exam" />
 
-      <div class="content exam-description">
-        <blockquote>
-          <VueMarkdown
-            v-if="exam.description.length > 0"
-            :source="exam.description"
-            :html="false"
-            :emoji="true"
-            :anchor-attributes="{target: '_blank'}"
-          />
-          <i v-else>No description given.</i>
-        </blockquote>
-      </div>
-
+      <AssessmentOverviewActionButtons
+        :assessment-type="'exam'"
+        :assessment="exam"
+        :loading="loading"
+        :description-expanded="descriptionExpanded"
+        @toggle-description="descriptionExpanded = !descriptionExpanded"
+        @toggle-editing="toggleEditing"
+      />
+      <AssessmentOverviewDescription
+        v-if="descriptionExpanded"
+        :assessment-type="'exam'"
+        :assessment="exam"
+        :expanded="descriptionExpanded"
+        @update-assessment="updatedExam"
+      />
+      <hr>
       <ExamOverviewTabs
         :tab="tab"
         :exam="exam"
@@ -56,24 +59,27 @@ import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
 
+import AssessmentOverviewDescription from '@/components/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/components/AssessmentOverviewActionButtons';
 import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
 import ExamOverviewStats from '@/components/exams/overview/ExamOverviewStats';
-import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
 import ExamOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
 
 export default {
   name: 'ExamsOverview',
   components: {
+    AssessmentOverviewDescription,
     AssessmentOverviewTitle,
     VueMarkdown,
     ExamsModalEdit,
     ExamOverviewStats,
-    ExamOverviewActionButtons,
+    AssessmentOverviewActionButtons,
     ExamOverviewTabs
   },
   data () {
     return {
       tab: 'schedule',
+      descriptionExpanded: true,
       commentLoading: false,
       loading: true,
       isUpcoming: false,
