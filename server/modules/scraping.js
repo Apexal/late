@@ -8,6 +8,11 @@ const SIS_LOGIN_URL = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin';
 const SIS_SCHEDULE_URL = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl';
 const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs'; // + term + '.htm'
 
+const PERIOD_TABLE_TYPE_COLUMN = 3;
+const PERIOD_TABLE_DAYS_COLUMN = 6;
+const PERIOD_TABLE_START_TIME_COLUMN = 7;
+const PERIOD_TABLE_END_TIME_COLUMN = 8;
+
 const DAY_INITIALS = {
   M: 1,
   T: 2,
@@ -168,6 +173,8 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
 
   for (let course of courses) {
     // Scrape for period type
+
+    // Generate title as found on the table site
     const title =
       course.crn +
       ' ' +
@@ -175,13 +182,77 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
       '-' +
       course.section_id;
     logger.info(`Finding period types for '${title}'`);
-    const td = $(`table tr td:first-child:contains('${title}')`);
-    // TODO: navigate table
-    for (let period of course.periods) {
-      period.type = 'LEC';
+    const topRow = $(`table tr td:first-child:contains('${title}')`).parent(
+      'tr'
+    );
+    if (topRow.length === 0) {
+      logger.info('Cannot find period info for ' + title + '. Skipping.');
+      continue;
     }
-  }
+    // There is one row for each unique period, see https://snag.gy/uHR9OK.jpg for example
+    // One row could be for multiple days if they have the same start and end time
+    let currentRow = topRow;
+    do {
+      let startTimeText = $(
+        `td:nth-child(${PERIOD_TABLE_START_TIME_COLUMN}) span`,
+        currentRow
+      ).text();
 
+      const endTime = moment(
+        $(
+          `td:nth-child(${PERIOD_TABLE_END_TIME_COLUMN}) span`,
+          currentRow
+        ).text(),
+        'h:mmA'
+      );
+      let meridiem = 'AM';
+      if (endTime.hours() >= 12) {
+        // endTime is PM, determine start time
+        meridiem = 'PM';
+        if (
+          parseInt(startTimeText.split(':')[0]) > endTime.hours() &&
+          parseInt(startTimeText.split(':')[0]) >= 6
+        ) {
+          meridiem = 'AM';
+        }
+      }
+      const startTime = moment(
+        $(
+          `td:nth-child(${PERIOD_TABLE_START_TIME_COLUMN}) span`,
+          currentRow
+        ).text() + meridiem,
+        'h:mmA'
+      );
+
+      const days = $(
+        `td:nth-child(${PERIOD_TABLE_DAYS_COLUMN}) span`,
+        currentRow
+      )
+        .text()
+        .split('')
+        .map(str => DAY_INITIALS[str]);
+
+      const matchedPeriod = course.periods.find(
+        p =>
+          days.includes(p.day) &&
+          p.start === startTime.format('Hmm') &&
+          p.end === endTime.format('Hmm')
+      );
+
+      if (matchedPeriod) {
+        matchedPeriod.type = $(
+          `td:nth-child(${PERIOD_TABLE_TYPE_COLUMN}) span`,
+          currentRow
+        ).text();
+      }
+
+      currentRow = currentRow.next('tr');
+    } while (
+      $('td:nth-child(1)', currentRow)
+        .text()
+        .trim().length === 0
+    );
+  }
   return courses;
 }
 
