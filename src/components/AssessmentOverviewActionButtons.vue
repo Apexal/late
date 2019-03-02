@@ -1,16 +1,17 @@
 <template>
-  <div class="buttons assignment-actions has-addons is-full-width is-flex">
+  <div class="buttons assessment-actions has-addons is-full-width is-flex">
     <button
+      v-if="assessmentType === 'assignment'"
       class="button is-success tooltip"
-      :data-tooltip="'Mark this assignment as ' + (assignment.completed ? 'incomplete.' : 'finished.')"
+      :data-tooltip="'Mark this assignment as ' + (assessment.completed ? 'incomplete.' : 'finished.')"
       @click="$emit('toggle-completed')"
     >
       <i class="fas fa-check-square" />
-      {{ assignment.completed ? 'Undo' : 'Mark Done' }}
+      {{ assessment.completed ? 'Undo' : 'Mark Done' }}
     </button>
     <button
       class="button is-warning tooltip"
-      data-tooltip="Change this assignment's info."
+      :data-tooltip="`Change this ${assessmentType}'s info.`"
       @click="$emit('toggle-editing')"
     >
       <i class="fas fa-pencil-alt" />Edit
@@ -28,21 +29,25 @@
       {{ descriptionExpanded ? 'Showing': 'Hiding' }} Description
     </button>
     <router-link
-      to="/assignments"
+      :to="`/${assessmentType}s`"
       class="button is-link tooltip"
-      data-tooltip="Browse all assignments."
+      :data-tooltip="`Browse all ${assessmentType}s.`"
     >
       <i class="fas fa-angle-left" />Browse
-      <span class="is-hidden-touch">Assignments</span>
+      <span class="is-hidden-touch">{{ assessmentType }}s</span>
     </router-link>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'AssignmentOverviewActionButtons',
+  name: 'AssessmentOverviewActionButtons',
   props: {
-    assignment: {
+    assessmentType: {
+      type: String,
+      required: true
+    },
+    assessment: {
       type: Object,
       required: true
     },
@@ -59,7 +64,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.assignment-actions {
+.assessment-actions {
   margin-bottom: 0;
 
   .button {

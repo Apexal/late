@@ -100,14 +100,14 @@
         </div>
       </nav>
 
-      <AssignmentOverviewActionButtons
-        :assignment="assignment"
+      <AssessmentOverviewActionButtons
+        :assessment-type="'assignment'"
+        :assessment="assignment"
         :loading="loading || toggleLoading"
         :description-expanded="descriptionExpanded"
         @toggle-description="descriptionExpanded = !descriptionExpanded"
         @toggle-completed="toggleCompleted"
         @toggle-editing="toggleEditing"
-        @remove-assignment="remove"
       />
 
       <div
@@ -167,9 +167,9 @@ import VueMarkdown from 'vue-markdown';
 import 'confetti-js';
 
 // Page components
+import AssessmentOverviewActionButtons from '@/components/AssessmentOverviewActionButtons';
 import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
 import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
-import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
 import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
 
 export default {
@@ -178,7 +178,7 @@ export default {
     AssessmentOverviewTitle,
     VueMarkdown,
     AssignmentsModalEdit,
-    AssignmentOverviewActionButtons,
+    AssessmentOverviewActionButtons,
     AssignmentOverviewTabs
   },
   data () {
