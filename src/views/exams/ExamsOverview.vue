@@ -20,32 +20,10 @@
       v-else
       class="section"
     >
-      <div class="is-clearfix">
-        <ExamOverviewActionButtons
-          :exam="exam"
-          :loading="loading"
-          @toggle-editing="toggleEditing"
-        />
-
-        <span
-          class="tag is-medium course-tag"
-          :style="{ 'background-color': course.color }"
-          @click="$store.commit('OPEN_COURSE_MODAL', course)"
-        >
-          <b class="course-longname">
-            {{ course.longname }}
-          </b>
-          {{ exam.passed ? 'Past ': '' }}Exam
-        </span>
-
-        <h1 class="title">
-          {{ exam.title }}
-        </h1>
-        <h2 class="subtitle has-text-grey due-title">
-          {{ isPast ? 'Was on' : 'On' }}
-          <b>{{ shortDateTimeString(exam.date) }}</b>
-        </h2>
-      </div>
+      <AssessmentOverviewTitle
+        :assessment-type="'exam'"
+        :assessment="exam"
+      />
 
       <ExamOverviewStats :exam="exam" />
 
@@ -58,9 +36,7 @@
             :emoji="true"
             :anchor-attributes="{target: '_blank'}"
           />
-          <i v-else>
-            No description given.
-          </i>
+          <i v-else>No description given.</i>
         </blockquote>
       </div>
 
@@ -82,6 +58,7 @@ import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
 
+import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
 import ExamOverviewStats from '@/components/exams/overview/ExamOverviewStats';
 import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
 import ExamOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
@@ -89,6 +66,7 @@ import ExamOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
 export default {
   name: 'ExamsOverview',
   components: {
+    AssessmentOverviewTitle,
     VueMarkdown,
     ExamsModalEdit,
     ExamOverviewStats,
@@ -200,10 +178,9 @@ export default {
       this.commentLoading = true;
       let request;
       try {
-        request = await this.$http.post(
-          `/exams/e/${this.exam._id}/comments`,
-          { comment: newComment }
-        );
+        request = await this.$http.post(`/exams/e/${this.exam._id}/comments`, {
+          comment: newComment
+        });
       } catch (e) {
         this.$toasted.error(e.response.data.message);
         this.commentLoading = false;
@@ -212,10 +189,7 @@ export default {
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_EXAM',
-          request.data.updatedExam
-        );
+        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
       } else {
         this.updatedExam(request.data.updatedExam);
       }
@@ -238,10 +212,7 @@ export default {
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_EXAM',
-          request.data.updatedExam
-        );
+        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
       } else {
         this.updatedExam(request.data.updatedExam);
       }
@@ -260,14 +231,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.course-tag {
-  cursor: pointer;
-  color: white;
 
-  .course-longname {
-    margin-right: 5px;
-  }
-
-  margin-bottom: 10px;
-}
 </style>

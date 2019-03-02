@@ -20,35 +20,11 @@
       v-else
       class="section"
     >
-      <div class="is-flex-tablet">
-        <h1
-          class="title assignment-title has-text-centered-mobile"
-          style="flex: 1"
-        >
-          <span
-            :title="`This assignment is ${assignment.completed ? 'completed' : 'incomplete'}!`"
-            :style="{ 'color': course.color }"
-            class="icon toggle-complete"
-            @click="toggleCompleted"
-          >
-            <i
-              class="fa"
-              :class="[assignment.completed ? 'fa-check-circle' : 'fa-times-circle']"
-            />
-          </span>
-          {{ assignment.title }}
-        </h1>
-        <div class="has-text-centered-mobile">
-          <span
-            class="tag is-medium course-tag"
-            :style="{ 'background-color': course.color }"
-            @click="$store.commit('OPEN_COURSE_MODAL', course)"
-          >
-            <b class="course-longname">{{ course.longname }}</b>
-            {{ isPast ? 'Past ': '' }}Assignment
-          </span>
-        </div>
-      </div>
+      <AssessmentOverviewTitle
+        :assessment-type="'assignment'"
+        :assessment="assignment"
+        @toggle-completed="toggleCompleted"
+      />
 
       <nav class="box level assignment-stats">
         <div class="level-item has-text-centered">
@@ -193,6 +169,7 @@ import VueMarkdown from 'vue-markdown';
 import 'confetti-js';
 
 // Page components
+import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
 import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
 import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
 import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
@@ -200,6 +177,7 @@ import AssignmentOverviewTabs from '@/components/assignments/overview/Assignment
 export default {
   name: 'AssignmentsOverview',
   components: {
+    AssessmentOverviewTitle,
     VueMarkdown,
     AssignmentsModalEdit,
     AssignmentOverviewActionButtons,
@@ -559,30 +537,8 @@ export default {
   cursor: pointer;
 }
 
-.assignment-title {
-  margin-bottom: 0;
-}
-
-.course-tag {
-  cursor: pointer;
-  color: white;
-
-  .course-longname {
-    margin-right: 5px;
-  }
-
-  margin-bottom: 10px;
-}
-.course-circle {
-  cursor: pointer;
-}
-
 .due-title {
   margin-top: 5px;
-}
-
-.toggle-complete {
-  cursor: pointer;
 }
 
 .level.assignment-stats {
