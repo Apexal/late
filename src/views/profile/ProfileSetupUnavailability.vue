@@ -22,9 +22,7 @@
               <label
                 for="earliest"
                 class="label"
-              >
-                Earliest Time Preference
-              </label>
+              >Earliest Time Preference</label>
               <p class="help">
                 <b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.
               </p>
@@ -42,9 +40,7 @@
               <label
                 for="latest"
                 class="label"
-              >
-                Latest Time Preference
-              </label>
+              >Latest Time Preference</label>
               <p class="help">
                 <b>LATE</b> will not schedule any work for you after this time unless it absolutely does not fit anywhere else.
               </p>
@@ -135,7 +131,7 @@ export default {
             const eventData = {
               id: 'unavailable',
               eventType: 'unavailability',
-              title: 'Busy',
+              title: prompt('What is it?') || 'Busy',
               start: start.format('HH:mm'),
               editable: false,
               end: end.format('HH:mm'),
@@ -212,7 +208,8 @@ export default {
       this.saved = false;
       this.calendar.events.find(e =>
         moment(e.start).isSame(moment(calEvent.start))
-      ).end = calEvent.end;
+      ).end =
+        calEvent.end;
     },
     async save () {
       this.loading = true;

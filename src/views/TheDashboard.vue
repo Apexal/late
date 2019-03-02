@@ -30,16 +30,12 @@
             <span
               class="tag assessment-type-tag"
               :style="{ 'background-color': course(assessment.courseCRN).color }"
-            >
-              {{ assessment.assessmentType }}
-            </span>
+            >{{ assessment.assessmentType }}</span>
             {{ assessment.title }}
           </span>
           <span
             class="has-text-grey is-pulled-right"
-          >
-            due {{ formatDate(assessment.dueDate || assessment.date) }}
-          </span>
+          >due {{ formatDate(assessment.dueDate || assessment.date) }}</span>
         </div>
       </div>
       <button
@@ -218,7 +214,8 @@ export default {
         c => !c.assignment.completed
       );
 
-      const unavailabilitySchedule = this.$store.getters.getUnavailabilityAsEvents;
+      const unavailabilitySchedule = this.$store.getters
+        .getUnavailabilityAsEvents;
 
       const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
 
@@ -391,8 +388,8 @@ export default {
   margin: 0 auto;
 }
 
-.fc-center,.fc-right {
-
+.fc-center,
+.fc-right {
   * {
     border-style: none;
     color: #444444;
@@ -409,9 +406,8 @@ export default {
   border-radius: 4px;
 }
 
-.fc-right .fc-button-group{
+.fc-right .fc-button-group {
   border-left: 1px solid #dbdbdb;
   margin-left: 5px;
 }
-
 </style>
