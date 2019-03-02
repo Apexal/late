@@ -20,7 +20,7 @@ const DAY_INITIALS = {
  */
 function checkLogin ($) {
   // TODO: implement
-  return true;
+  return $('title').text() !== 'User Login';
 }
 
 /**
