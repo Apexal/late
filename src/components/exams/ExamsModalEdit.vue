@@ -277,7 +277,7 @@ export default {
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
+        this.$store.dispatch('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
       } else if (
         moment(request.data.updatedExam.dueDate).isAfter(
           moment().startOf('day')
