@@ -8,20 +8,18 @@
       This {{ assessmentType }} is overdue so your work schedule can no longer be changed.
     </div>
 
-    <div
-      class="box columns"
-    >
+    <div class="box columns">
       <div
         class="column is-one-half tooltip"
         :data-tooltip="scheduledPercent + '% scheduled'"
       >
-        <div class=" is-narrow">
+        <div class="is-narrow">
           You've scheduled
           <b>{{ scheduledMinutes }}</b> out of
           <b>{{ totalEstimatedMinutes }}</b>
           minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
         </div>
-        <div class="">
+        <div class>
           <progress
             class="progress is-info"
             :value="scheduledMinutes"
@@ -42,7 +40,7 @@
           <b>{{ scheduledMinutes }}</b>
           scheduled minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
         </div>
-        <div class="">
+        <div class>
           <progress
             class="progress is-success"
             :value="finishedMinutes"
@@ -105,7 +103,9 @@ export default {
     },
     finishedMinutes () {
       // TODO added new may need to take exam model into account in calculation separately
-      return this.assessment._blocks.filter(b => b.passed).reduce((acc, block) => acc + block.duration, 0);
+      return this.assessment._blocks
+        .filter(b => b.passed)
+        .reduce((acc, block) => acc + block.duration, 0);
     },
     totalEstimatedMinutes () {
       return this.assessment.timeEstimate * 60;
@@ -119,11 +119,10 @@ export default {
         return 0;
       }
     },
-    finishedPercent () { // TODO added new
+    finishedPercent () {
+      // TODO added new
       if (this.scheduledMinutes !== 0) {
-        return Math.round(
-          (this.finishedMinutes / this.scheduledMinutes) * 100
-        );
+        return Math.round((this.finishedMinutes / this.scheduledMinutes) * 100);
       } else {
         return 0;
       }

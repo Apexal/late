@@ -37,9 +37,10 @@ const getters = {
     return rootGetters.current_unavailability.map(p => {
       return {
         id: 'unavailable',
-        title: 'Busy',
+        title: p.title || 'Busy',
         editable: false,
         eventType: 'unavailability',
+        color: 'black',
         start: p.start,
         end: p.end,
         dow: p.dow
