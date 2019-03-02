@@ -216,7 +216,12 @@ export default {
       );
     },
     unavailabilitySchedule () {
-      return this.$store.getters.getUnavailabilityAsEvents;
+      return this.$store.getters.getUnavailabilityAsEvents.map(e =>
+        Object.assign({}, e, {
+          backgroundColor: 'black',
+          rendering: 'background'
+        })
+      );
     },
     workBlockEvents () {
       return this.$store.getters.getWorkBlocksAsEvents.map(e => {

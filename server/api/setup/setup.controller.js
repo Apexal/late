@@ -199,6 +199,7 @@ async function setUnavailability (ctx) {
   // Remove dates, split times
   const unavailabilityPeriods = events.map(e => ({
     dow: e.dow,
+    title: e.title,
     start: e.start,
     end: e.end
   }));

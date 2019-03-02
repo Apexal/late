@@ -40,6 +40,7 @@ const getters = {
         title: p.title || 'Busy',
         editable: false,
         eventType: 'unavailability',
+        color: 'grey',
         start: p.start,
         end: p.end,
         dow: p.dow
