@@ -1,7 +1,10 @@
 const moment = require('moment');
 const ical = require('node-ical');
 const logger = require('../../modules/logger');
-const { scrapeSISForCourseSchedule } = require('../../modules/scraping');
+const {
+  scrapeSISForCourseSchedule,
+  scrapePeriodTypesFromCRNs
+} = require('../../modules/scraping');
 const { getSectionInfoFromCRN } = require('../../modules/yacs_api');
 const { convertICalIntoCourseSchedule } = require('../../modules/ical');
 
@@ -87,6 +90,9 @@ async function setCourseSchedule (ctx) {
 
   // Remove courses that YACS could not find
   courseSchedule = courseSchedule.filter(course => !!course);
+
+  // Set course types for each course
+  await scrapePeriodTypesFromCRNs(ctx.session.currentTerm.code, courseSchedule);
 
   // "Other" course
   courseSchedule.push({

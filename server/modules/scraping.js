@@ -6,6 +6,7 @@ const logger = require('./logger');
 
 const SIS_LOGIN_URL = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin';
 const SIS_SCHEDULE_URL = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl';
+const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs'; // + term + '.htm'
 
 const DAY_INITIALS = {
   M: 1,
@@ -19,7 +20,6 @@ const DAY_INITIALS = {
  * Checks if the login was successful by checking the HTML of the page for login error messages.
  */
 function checkLogin ($) {
-  // TODO: implement
   return $('title').text() !== 'User Login';
 }
 
@@ -150,4 +150,39 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
   return courseSchedule;
 }
 
-module.exports = { scrapeSISForCourseSchedule };
+/**
+ * Given a term code and a list of CRNs to search for,
+ * request the period list site and find the period type
+ * for each CRN in the table.
+ *
+ * @param {String} term
+ * @param {Array} crns
+ * @returns {Object} mapping of crn to 3-character period type (LEC, LAB, TES, etc)
+ */
+async function scrapePeriodTypesFromCRNs (termCode, courses) {
+  const uri = PERIOD_LIST_URL_BASE + termCode + '.htm';
+  const $ = await request({
+    uri,
+    transform: body => cheerio.load(body)
+  });
+
+  for (let course of courses) {
+    // Scrape for period type
+    const title =
+      course.crn +
+      ' ' +
+      course.summary.replace(' ', '-') +
+      '-' +
+      course.section_id;
+    logger.info(`Finding period types for '${title}'`);
+    const td = $(`table tr td:first-child:contains('${title}')`);
+    // TODO: navigate table
+    for (let period of course.periods) {
+      period.type = 'LEC';
+    }
+  }
+
+  return courses;
+}
+
+module.exports = { scrapeSISForCourseSchedule, scrapePeriodTypesFromCRNs };

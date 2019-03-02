@@ -26,9 +26,7 @@
                 <label
                   for="add-assignment-course-id"
                   class="label"
-                >
-                  Course
-                </label>
+                >Course</label>
                 <div class="control">
                   <select
                     id="add-assignment-course-id"
@@ -53,9 +51,7 @@
                 <label
                   for="add-assignment-title"
                   class="label"
-                >
-                  What do you have to do?
-                </label>
+                >What do you have to do?</label>
                 <div class="control">
                   <input
                     id="add-assignment-title"
@@ -75,9 +71,7 @@
                 <label
                   for="add-assignment-description"
                   class="label"
-                >
-                  Description
-                </label>
+                >Description</label>
                 <div class="control">
                   <textarea
                     id="add-assignment-description"
@@ -98,9 +92,7 @@
                 <label
                   for="add-assignment-due-date"
                   class="label"
-                >
-                  Due
-                </label>
+                >Due</label>
                 <div class="control">
                   <input
                     id="add-assignment-due-date"
@@ -126,9 +118,7 @@
                 <label
                   for="add-assignment-time-estimate"
                   class="label"
-                >
-                  Time Estimate (hrs)
-                </label>
+                >Time Estimate (hrs)</label>
                 <input
                   id="add-assignment-time-estimate"
                   v-model.number="timeEstimate"
@@ -145,9 +135,7 @@
                 <label
                   for="add-assignment-priority"
                   class="label"
-                >
-                  Priority
-                </label>
+                >Priority</label>
                 <input
                   id="add-assignment-priority"
                   v-model.number="priority"
@@ -263,9 +251,8 @@ export default {
   methods: {
     async save () {
       this.loading = true;
-      // TODO: error handle
-      let request;
 
+      let request;
       try {
         request = await this.$http.post('/assignments', {
           title: this.title,

@@ -126,7 +126,9 @@ async function deleteStudent (ctx) {
   }
   const studentID = ctx.params.studentID;
 
-  if (ctx.state.user.rcs_id !== 'matraf') { return ctx.forbidden('Only Frank can delete accounts!'); }
+  if (ctx.state.user.rcs_id !== 'matraf') {
+    return ctx.forbidden('Only Frank can delete accounts!');
+  }
 
   let student = await Student.findById(studentID);
   if (!student) {
@@ -138,7 +140,6 @@ async function deleteStudent (ctx) {
 
   try {
     await student.remove();
-    // TODO: remove all their assessments
   } catch (e) {
     logger.error(
       `Failed to remove student ${studentID} for admin ${
