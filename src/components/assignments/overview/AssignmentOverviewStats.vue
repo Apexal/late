@@ -133,10 +133,6 @@ export default {
   cursor: pointer;
 }
 
-.due-title {
-  margin-top: 5px;
-}
-
 .level.assignment-stats {
   margin-top: 20px;
   margin-bottom: 0;
