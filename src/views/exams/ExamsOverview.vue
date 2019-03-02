@@ -46,8 +46,6 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @update-assessment="updatedExam"
-        @add-comment="addComment"
-        @delete-comment="deleteComment"
       />
     </section>
   </div>
@@ -231,5 +229,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

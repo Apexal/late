@@ -147,8 +147,6 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @update-assessment="updatedAssignment"
-        @add-comment="addComment"
-        @delete-comment="deleteComment"
       />
       <hr>
       <div class="bottom-actions clearfix">
@@ -473,60 +471,6 @@ export default {
           }
         }
       );
-    },
-    async addComment (newComment) {
-      if (!newComment) return;
-
-      this.commentLoading = true;
-      let request;
-      try {
-        request = await this.$http.post(
-          `/assignments/a/${this.assignment._id}/comments`,
-          { comment: newComment }
-        );
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.commentLoading = false;
-        return;
-      }
-
-      // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.updatedAssignment(request.data.updatedAssignment);
-      }
-
-      this.commentLoading = false;
-    },
-    async deleteComment (i) {
-      let request;
-
-      this.commentLoading = true;
-      try {
-        request = await this.$http.delete(
-          `/assignments/a/${this.assignment._id}/comments/${i}`
-        );
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.commentLoading = false;
-        return;
-      }
-
-      // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.updatedAssignment(request.data.updatedAssignment);
-      }
-
-      this.commentLoading = false;
     }
   }
 };

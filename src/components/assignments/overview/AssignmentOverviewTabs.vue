@@ -22,9 +22,7 @@
               v-if="!assignment.completed && !fullyScheduled"
               class="tag is-danger tooltip is-tooltip-right"
               data-tooltip="You haven't scheduled enough time to work on this!"
-            >
-              !
-            </span>
+            >!</span>
           </a>
         </li>
         <li
@@ -36,9 +34,7 @@
             <span
               v-if="assignment.comments.length > 0"
               class="tag is-dark comment-count"
-            >
-              {{ assignment.comments.length }}
-            </span>
+            >{{ assignment.comments.length }}</span>
           </a>
         </li>
       </ul>
@@ -49,8 +45,6 @@
       :assessment-type="'assignment'"
       :assessment="assignment"
       :loading="loading"
-      @add-comment="$emit('add-comment', arguments[0])"
-      @delete-comment="$emit('delete-comment', arguments[0])"
       @update-assessment="$emit('update-assessment', arguments[0])"
     />
   </div>
