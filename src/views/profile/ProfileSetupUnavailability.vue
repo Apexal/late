@@ -126,21 +126,7 @@ export default {
           eventColor: 'black',
           timeFormat: 'h(:mm)t',
           eventClick: this.eventClick,
-
-          select: (start, end) => {
-            const eventData = {
-              id: 'unavailable',
-              eventType: 'unavailability',
-              title: prompt('What is it?') || 'Busy',
-              start: start.format('HH:mm'),
-              editable: false,
-              end: end.format('HH:mm'),
-              dow: [start.day()]
-            };
-            this.calendar.events.push(eventData);
-            this.$refs.calendar.fireMethod('unselect');
-            this.saved = false;
-          }
+          select: this.select
         }
       }
     };
@@ -210,6 +196,21 @@ export default {
         moment(e.start).isSame(moment(calEvent.start))
       ).end =
         calEvent.end;
+    },
+    select (start, end) {
+      let promptedTitle = prompt('What is it?').trim();
+      const eventData = {
+        id: 'unavailable',
+        eventType: 'unavailability',
+        title: promptedTitle || 'Busy',
+        start: start.format('HH:mm'),
+        editable: false,
+        end: end.format('HH:mm'),
+        dow: [start.day()]
+      };
+      this.calendar.events.push(eventData);
+      this.$refs.calendar.fireMethod('unselect');
+      this.saved = false;
     },
     async save () {
       this.loading = true;
