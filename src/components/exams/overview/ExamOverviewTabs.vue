@@ -20,9 +20,7 @@
               v-if="!exam.passed && !fullyScheduled"
               class="tag is-danger tooltip is-tooltip-right"
               data-tooltip="You haven't scheduled enough time to study for this!"
-            >
-              !
-            </span>
+            >!</span>
           </a>
         </li>
         <li
@@ -34,9 +32,7 @@
             <span
               v-if="exam.comments.length > 0"
               class="tag is-dark comment-count"
-            >
-              {{ exam.comments.length }}
-            </span>
+            >{{ exam.comments.length }}</span>
           </a>
         </li>
       </ul>
@@ -47,8 +43,6 @@
       :assessment-type="'exam'"
       :assessment="exam"
       :loading="loading"
-      @add-comment="$emit('add-comment', arguments[0])"
-      @delete-comment="$emit('delete-comment', arguments[0])"
       @update-assessment="$emit('update-assessment', arguments[0])"
     />
   </div>

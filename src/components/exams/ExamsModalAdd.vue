@@ -285,11 +285,21 @@ export default {
         return;
       }
 
-      this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
+      // Update global state if they are not in the past
+      if (
+        moment(request.data.createdExam.dueDate).isAfter(
+          moment().startOf('day')
+        )
+      ) {
+        this.$store.commit(
+          'ADD_UPCOMING_EXAM',
+          request.data.createdExam
+        );
+      }
 
       this.title = '';
       this.description = '';
-      this.timeEstimate = 1;
+      this.timeEstimate = 3;
       this.priority = 2;
 
       this.loading = false;

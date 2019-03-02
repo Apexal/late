@@ -1,7 +1,10 @@
 const moment = require('moment');
 const ical = require('node-ical');
 const logger = require('../../modules/logger');
-const { scrapeSISForCourseSchedule } = require('../../modules/scraping');
+const {
+  scrapeSISForCourseSchedule,
+  scrapePeriodTypesFromCRNs
+} = require('../../modules/scraping');
 const { getSectionInfoFromCRN } = require('../../modules/yacs_api');
 const { convertICalIntoCourseSchedule } = require('../../modules/ical');
 
@@ -61,11 +64,15 @@ async function setCourseSchedule (ctx) {
 
   let courseSchedule = [];
   if (method === 'sis') {
-    courseSchedule = await scrapeSISForCourseSchedule(
-      ctx.state.user.rin,
-      body.pin,
-      ctx.session.currentTerm.code
-    );
+    try {
+      courseSchedule = await scrapeSISForCourseSchedule(
+        ctx.state.user.rin,
+        body.pin,
+        ctx.session.currentTerm.code
+      );
+    } catch (e) {
+      return ctx.badRequest('Invalid SIS credentials!');
+    }
   } else if (method === 'crn') {
     const CRNs = body.crns.split(',').map(crn => crn.trim());
     courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
@@ -84,6 +91,9 @@ async function setCourseSchedule (ctx) {
   // Remove courses that YACS could not find
   courseSchedule = courseSchedule.filter(course => !!course);
 
+  // Set course types for each course
+  await scrapePeriodTypesFromCRNs(ctx.session.currentTerm.code, courseSchedule);
+
   // "Other" course
   courseSchedule.push({
     longname: 'Other',
@@ -95,20 +105,31 @@ async function setCourseSchedule (ctx) {
   });
 
   // If reimporting, update old list but keep longnames and colors
-  const oldSchedule = ctx.state.user.semester_schedules[ctx.session.currentTerm.code];
-  if (oldSchedule && ctx.state.user.setup.course_schedule.includes(ctx.session.currentTerm.code)) {
+  const oldSchedule =
+    ctx.state.user.semester_schedules[ctx.session.currentTerm.code];
+  if (
+    oldSchedule &&
+    ctx.state.user.setup.course_schedule.includes(ctx.session.currentTerm.code)
+  ) {
     // Already previously imported
     for (let i in courseSchedule) {
       const course = courseSchedule[i];
       // Look for match in old schedule
       const oldMatch = oldSchedule.find(c => c.summary === course.summary);
-      if (oldMatch) Object.assign(course, { longname: oldMatch.longname, color: oldMatch.color, links: oldMatch.links || [] });
+      if (oldMatch) {
+        Object.assign(course, {
+          longname: oldMatch.longname,
+          color: oldMatch.color,
+          links: oldMatch.links || []
+        });
+      }
     }
   }
 
   for (let i in courseSchedule) {
     if (!courseSchedule[i].color) {
-      courseSchedule[i].color = '#' +
+      courseSchedule[i].color =
+        '#' +
         Math.random()
           .toString(16)
           .substr(-6);

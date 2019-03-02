@@ -4,7 +4,19 @@
       v-if="filtered.length === 0"
       class="has-text-centered has-text-grey"
     >
-      No upcoming exams!
+      No upcoming exams
+      <i
+        v-if="filter.length > 0"
+        style="font-style:inherit"
+      >
+        matching your filters.
+      </i>
+      <i
+        v-if="filter.length <= 0"
+        style="font-style:inherit"
+      >
+        this month!
+      </i>
     </p>
     <div
       v-else

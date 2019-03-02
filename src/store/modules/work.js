@@ -157,6 +157,14 @@ const actions = {
     commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
     const request = await axios.delete(`/assignments/a/${assignmentID}`);
   },
+  async ADD_UPCOMING_EXAM ({ commit }, updatedExam) {
+    commit('ADD_UPCOMING_EXAM', updatedExam);
+    commit('SORT_UPCOMING_EXAMS');
+  },
+  async UPDATE_UPCOMING_EXAM ({ commit }, updatedExam) {
+    commit('UPDATE_UPCOMING_EXAM', updatedExam);
+    commit('SORT_UPCOMING_EXAMS');
+  },
   async REMOVE_UPCOMING_EXAM ({ commit }, examID) {
     commit('REMOVE_UPCOMING_EXAM', examID); // It shows up as removed before it actually is ;)
     const request = await axios.delete(`/exams/e/${examID}`);
@@ -185,7 +193,7 @@ const actions = {
       );
     }
 
-    return request['updated' + capitalized];
+    return request.data['updated' + capitalized];
   },
   async EDIT_WORK_BLOCK ({ commit, getters }, { blockID, start, end }) {
     const block = getters.getWorkBlocksAsEvents.find(
@@ -206,7 +214,7 @@ const actions = {
       );
     }
 
-    return request['updated' + capitalized];
+    return request.data['updated' + capitalized];
   },
   async REMOVE_WORK_BLOCK ({ commit, getters }, { blockID }) {
     const block = getters.getWorkBlocksAsEvents.find(
@@ -225,7 +233,7 @@ const actions = {
       );
     }
 
-    return request['updated' + capitalized];
+    return request.data['updated' + capitalized];
   }
 };
 
@@ -259,6 +267,16 @@ const mutations = {
   },
   SET_UPCOMING_EXAMS: (state, exams) => {
     state.upcomingExams = exams;
+  },
+  SORT_UPCOMING_EXAMS: () => {
+    state.upcomingExams.sort((a, b) => {
+      if (a.date > b.date) {
+        return 1;
+      } else if (a.date < b.date) {
+        return -1;
+      }
+      return 0;
+    });
   },
   ADD_UPCOMING_EXAM: (state, exam) => {
     state.upcomingExams.push(exam);

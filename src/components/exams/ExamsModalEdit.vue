@@ -27,9 +27,7 @@
                 <label
                   for="edit-exam-course-id"
                   class="label"
-                >
-                  Course
-                </label>
+                >Course</label>
                 <div class="control">
                   <select
                     id="edit-exam-course-id"
@@ -54,9 +52,7 @@
                 <label
                   for="edit-exam-title"
                   class="label"
-                >
-                  Exam Title
-                </label>
+                >Exam Title</label>
                 <div class="control">
                   <input
                     id="edit-exam-title"
@@ -76,9 +72,7 @@
                 <label
                   for="edit-exam-description"
                   class="label"
-                >
-                  Description
-                </label>
+                >Description</label>
                 <div class="control">
                   <textarea
                     id="edit-exam-description"
@@ -99,9 +93,7 @@
                 <label
                   for="edit-exam-date"
                   class="label"
-                >
-                  When
-                </label>
+                >When</label>
                 <div class="control">
                   <input
                     id="edit-exam-date"
@@ -127,9 +119,7 @@
                 <label
                   for="edit-exam-time-estimate"
                   class="label"
-                >
-                  Time Estimate (hrs)
-                </label>
+                >Time Estimate (hrs)</label>
                 <input
                   id="edit-exam-time-estimate"
                   v-model.number="exam.timeEstimate"
@@ -146,9 +136,7 @@
                 <label
                   for="edit-exam-priority"
                   class="label"
-                >
-                  Priority
-                </label>
+                >Priority</label>
                 <input
                   id="edit-exam-priority"
                   v-model.number="exam.priority"
@@ -197,16 +185,12 @@
           <button
             class="button is-warning"
             @click="$emit('toggle-modal')"
-          >
-            Cancel
-          </button>
+          >Cancel</button>
           <button
             form="edit-exam-form"
             class="button is-success"
             :class="{'is-loading': loading}"
-          >
-            Save
-          </button>
+          >Save</button>
         </span>
       </footer>
     </div>
@@ -293,7 +277,14 @@ export default {
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
+        this.$store.dispatch('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
+      } else if (
+        moment(request.data.updatedExam.dueDate).isAfter(
+          moment().startOf('day')
+        )
+      ) {
+        // Past assignment was moved to the future
+        this.$store.commit('ADD_UPCOMING_EXAM', request.data.updatedExam);
       }
       this.$emit('edit-exam', this.exam);
 

@@ -20,155 +20,37 @@
       v-else
       class="section"
     >
-      <div class="is-flex-tablet">
-        <h1
-          class="title assignment-title has-text-centered-mobile"
-          style="flex: 1"
-        >
-          <span
-            v-if="assignment.completed"
-            title="This assignment is complete!"
-            :style="{ 'color': course.color }"
-            class="icon"
-          >
-            <i class="fa fa-check-square" />
-          </span>
-          {{ assignment.title }}
-        </h1>
-        <div class="has-text-centered-mobile">
-          <span
-            class="tag is-medium course-tag"
-            :style="{ 'background-color': course.color }"
-            @click="$store.commit('OPEN_COURSE_MODAL', course)"
-          >
-            <b class="course-longname">
-              {{ course.longname }}
-            </b>
-            {{ isPast ? 'Past ': '' }}Assignment
-          </span>
-        </div>
-      </div>
+      <AssessmentOverviewTitle
+        :assessment-type="'assignment'"
+        :assessment="assignment"
+        @toggle-completed="toggleCompleted"
+      />
 
-      <nav class="box level assignment-stats">
-        <div class="level-item has-text-centered">
-          <div>
-            <p class="heading">
-              Priority
-            </p>
-            <p
-              class="subtitle"
-              :title="'Priority level ' + assignment.priority"
-              :class="{ 'has-text-grey': assignment.priority === 1 }"
-              :style="{ 'font-weight': fontWeight }"
-            >
-              {{ priorityString }}
-            </p>
-          </div>
-        </div>
-
-        <div class="level-item has-text-centered">
-          <div>
-            <p class="heading">
-              {{ isPast ? 'Was Due' : 'Due' }}
-            </p>
-            <p
-              class="subtitle tooltip"
-              :data-tooltip="timeLeft"
-            >
-              {{ shortDueDateString }}
-            </p>
-          </div>
-        </div>
-        <div
-          v-if="assignment.completed"
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p class="heading">
-              Completed
-            </p>
-            <p
-              class="subtitle tooltip"
-              :data-tooltip="fromNow(assignment.completedAt)"
-            >
-              {{ completedAt }}
-            </p>
-          </div>
-        </div>
-
-        <div
-          v-if="!assignment.completed"
-          class="level-item has-text-centered"
-        >
-          <div>
-            <p
-              class="heading"
-            >
-              {{ assignment.fullyScheduled ? 'Scheduled Work Left' : 'Work Schedule' }}
-            </p>
-            <p
-              v-if="assignment.fullyScheduled"
-              class="subtitle"
-            >
-              {{ assignment.scheduledTimeRemaing }}
-              <span class="has-text-grey">
-                min
-              </span>
-            </p>
-            <p v-else>
-              <span
-                class="tag is-danger not-scheduled-tag"
-                @click="notFullyScheduledClick"
-              >
-                Not fully scheduled!
-              </span>
-            </p>
-          </div>
-        </div>
-      </nav>
-
-      <AssignmentOverviewActionButtons
+      <AssignmentOverviewStats
         :assignment="assignment"
+        @not-fully-scheduled-click="notFullyScheduledClick"
+      />
+
+      <AssessmentOverviewActionButtons
+        :assessment-type="'assignment'"
+        :assessment="assignment"
         :loading="loading || toggleLoading"
         :description-expanded="descriptionExpanded"
         @toggle-description="descriptionExpanded = !descriptionExpanded"
         @toggle-completed="toggleCompleted"
         @toggle-editing="toggleEditing"
-        @remove-assignment="remove"
       />
 
-      <div
+      <AssessmentOverviewDescription
         v-if="descriptionExpanded"
-        class="content assignment-description"
-      >
-        <blockquote>
-          <textarea
-            v-if="editingDescription"
-            v-model.trim="editedDescription"
-            class="edited-description"
-          />
-          <template v-else>
-            <VueMarkdown
-              v-if="assignment.description.length > 0"
-              :source="assignment.description"
-              :html="false"
-              :emoji="true"
-              :anchor-attributes="{target: '_blank'}"
-            />
-            <i v-else>
-              No description given.
-            </i>
-          </template>
-          <span
-            class="edit-description tooltip is-tooltip-left"
-            :data-tooltip="editingDescription ? 'Click to save description.' : 'Click to edit description.'"
-            @click="toggleEditingDescription"
-          >
-            <i class="fas fa-pencil-alt" />
-          </span>
-        </blockquote>
-      </div>
-      <hr>
+        :assessment-type="'assignment'"
+        :assessment="assignment"
+        :expanded="descriptionExpanded"
+        @update-assessment="updatedAssignment"
+      />
+
+      <hr v-else>
+
       <AssignmentOverviewTabs
         ref="tabs"
         :tab="tab"
@@ -176,8 +58,6 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @update-assessment="updatedAssignment"
-        @add-comment="addComment"
-        @delete-comment="deleteComment"
       />
       <hr>
       <div class="bottom-actions clearfix">
@@ -194,27 +74,29 @@
 
 <script>
 import moment from 'moment';
-import VueMarkdown from 'vue-markdown';
 import 'confetti-js';
 
 // Page components
+import AssignmentOverviewStats from '@/components/assignments/overview/AssignmentOverviewStats';
+import AssessmentOverviewDescription from '@/components/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/components/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
 import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
-import AssignmentOverviewActionButtons from '@/components/assignments/overview/AssignmentOverviewActionButtons';
 import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
 
 export default {
   name: 'AssignmentsOverview',
   components: {
-    VueMarkdown,
+    AssignmentOverviewStats,
+    AssessmentOverviewDescription,
+    AssessmentOverviewTitle,
     AssignmentsModalEdit,
-    AssignmentOverviewActionButtons,
+    AssessmentOverviewActionButtons,
     AssignmentOverviewTabs
   },
   data () {
     return {
       tab: 'schedule',
-      editingDescription: false,
-      editedDescription: '',
       commentLoading: false,
       toggleLoading: false,
       loading: true,
@@ -241,37 +123,6 @@ export default {
         ? 'never'
         : moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
     },
-    fontWeight () {
-      return (
-        {
-          1: 300,
-          2: 300,
-          3: 'normal',
-          4: 500,
-          5: 700
-        }[this.assignment.priority] || 600
-      );
-    },
-    priorityString () {
-      return (
-        {
-          1: 'Optional',
-          2: 'Low',
-          3: 'Normal',
-          4: 'High',
-          5: 'Important'
-        }[this.assignment.priority] || 'Unknown'
-      );
-    },
-    timeLeft () {
-      const diff = moment.duration(
-        moment(this.assignment.dueDate).diff(this.now)
-      );
-      return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
-    },
-    shortDueDateString () {
-      return this.shortDateTimeString(this.assignment.dueDate);
-    },
     isPast () {
       return this.assignment.passed;
     },
@@ -290,7 +141,7 @@ export default {
     },
     descriptionExpanded (newDescriptionExpanded) {
       localStorage.setItem(
-        'assignmentOverviewDescriptionExpanded',
+        'assessmentOverviewDescriptionExpanded',
         newDescriptionExpanded
       );
     }
@@ -299,13 +150,13 @@ export default {
     // eslint-disable-next-line no-undef
     this.confetti = new ConfettiGenerator(this.confettiSettings);
 
-    if (localStorage.getItem('assignmentOverviewDescriptionExpanded')) {
+    if (localStorage.getItem('assessmentOverviewDescriptionExpanded')) {
       try {
         this.descriptionExpanded = JSON.parse(
-          localStorage.getItem('assignmentOverviewDescriptionExpanded')
+          localStorage.getItem('assessmentOverviewDescriptionExpanded')
         );
       } catch (e) {
-        localStorage.removeItem('assignmentOverviewDescriptionExpanded');
+        localStorage.removeItem('assessmentOverviewDescriptionExpanded');
       }
     }
   },
@@ -321,43 +172,6 @@ export default {
     },
     updatedAssignment (newAssignment) {
       this.assignment = newAssignment;
-    },
-    async toggleEditingDescription () {
-      if (this.editingDescription) {
-        if (this.editedDescription === this.assignment.description) {
-          this.editingDescription = false;
-          return;
-        }
-
-        let request;
-        try {
-          request = await this.$http.patch(
-            `/assignments/a/${this.assignment._id}`,
-            { description: this.editedDescription }
-          );
-        } catch (e) {
-          this.$toasted.error(e.response.data.message);
-          this.editingDescription = false;
-          return;
-        }
-
-        // Calls API and updates state
-        if (
-          this.$store.getters.getUpcomingAssignmentById(this.assignment._id)
-        ) {
-          this.$store.dispatch(
-            'UPDATE_UPCOMING_ASSIGNMENT',
-            request.data.updatedAssignment
-          );
-        } else {
-          this.updatedAssignment(request.data.updatedAssignment);
-        }
-
-        this.editingDescription = false;
-      } else {
-        this.editedDescription = this.assignment.description;
-        this.editingDescription = true;
-      }
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
@@ -461,13 +275,6 @@ export default {
 
       this.loading = false;
     },
-    shortDateTimeString: dueDate =>
-      moment(dueDate).format('ddd, MMM Do YY [@] h:mma'),
-    toFullDateTimeString: dueDate =>
-      moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
-    fromNow (date) {
-      return moment(date).from(this.now);
-    },
     async remove () {
       // Confirm user wants to remove assignment
       if (
@@ -500,98 +307,12 @@ export default {
           }
         }
       );
-    },
-    async addComment (newComment) {
-      if (!newComment) return;
-
-      this.commentLoading = true;
-      let request;
-      try {
-        request = await this.$http.post(
-          `/assignments/a/${this.assignment._id}/comments`,
-          { comment: newComment }
-        );
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.commentLoading = false;
-        return;
-      }
-
-      // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.updatedAssignment(request.data.updatedAssignment);
-      }
-
-      this.commentLoading = false;
-    },
-    async deleteComment (i) {
-      let request;
-
-      this.commentLoading = true;
-      try {
-        request = await this.$http.delete(
-          `/assignments/a/${this.assignment._id}/comments/${i}`
-        );
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.commentLoading = false;
-        return;
-      }
-
-      // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSIGNMENT',
-          request.data.updatedAssignment
-        );
-      } else {
-        this.updatedAssignment(request.data.updatedAssignment);
-      }
-
-      this.commentLoading = false;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.not-scheduled-tag {
-  cursor: pointer;
-}
-
-.assignment-title {
-  margin-bottom: 0;
-}
-
-.course-tag {
-  cursor: pointer;
-  color: white;
-
-  .course-longname {
-    margin-right: 5px;
-  }
-
-  margin-bottom: 10px;
-}
-.course-circle {
-  cursor: pointer;
-}
-
-.due-title {
-  margin-top: 5px;
-}
-
-.level.assignment-stats {
-  margin-top: 20px;
-  margin-bottom: 0;
-  padding: 10px;
-}
-
 .margin-right {
   margin-right: 10px;
 }
@@ -607,26 +328,5 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-.assignment-description blockquote {
-  word-break: break-word;
-  position: relative;
-
-  .edited-description {
-    max-width: 600px;
-    min-width: 100%;
-
-    min-height: 100px;
-    max-height: 400px;
-  }
-
-  .edit-description {
-    cursor: pointer;
-    z-index: 2;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
 }
 </style>

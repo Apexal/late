@@ -1,5 +1,5 @@
 <template>
-  <nav class="level is-mobile exam-stats">
+  <nav class="level box exam-stats">
     <div class="level-item has-text-centered">
       <div>
         <p class="heading">
@@ -11,19 +11,16 @@
       </div>
     </div>
 
-    <div
-      v-if="!exam.passed"
-      class="level-item has-text-centered"
-    >
+    <div class="level-item has-text-centered">
       <div>
         <p class="heading">
-          Scheduled Studying Left
+          {{ exam.passed ? 'Was On' : 'When' }}
         </p>
-        <p class="subtitle">
-          {{ exam.scheduledTimeRemaing }}
-          <span class="has-text-grey">
-            min
-          </span>
+        <p
+          class="subtitle tooltip"
+          :data-tooltip="timeLeft"
+        >
+          {{ shortDueDateString }}
         </p>
       </div>
     </div>
@@ -34,10 +31,20 @@
     >
       <div>
         <p class="heading">
-          Starting In
+          {{ exam.fullyScheduled ? 'Scheduled Work Left' : 'Work Schedule' }}
         </p>
-        <p class="subtitle">
-          {{ timeLeft }}
+        <p
+          v-if="exam.fullyScheduled"
+          class="subtitle"
+        >
+          {{ exam.scheduledTimeRemaing }}
+          <span class="has-text-grey">min</span>
+        </p>
+        <p v-else>
+          <span
+            class="tag is-danger not-scheduled-tag"
+            @click="$emit('not-fully-scheduled-click')"
+          >Not fully scheduled!</span>
         </p>
       </div>
     </div>
@@ -65,12 +72,28 @@ export default {
     timeLeft () {
       const diff = moment.duration(moment(this.exam.date).diff(this.now));
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
+    },
+    shortDueDateString () {
+      return this.shortDateTimeString(this.exam.date);
+    }
+  },
+  methods: {
+    shortDateTimeString: date =>
+      moment(date).format('ddd, MMM Do YY [@] h:mma'),
+    toFullDateTimeString: date =>
+      moment(date).format('dddd, MMMM Do YYYY, h:mma'),
+    fromNow (date) {
+      return moment(date).from(this.now);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.not-scheduled-tag {
+  cursor: pointer;
+}
+
 .exam-stats {
   margin-top: 20px;
   margin-bottom: 0;

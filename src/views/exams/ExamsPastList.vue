@@ -87,7 +87,19 @@
       v-if="filtered.length === 0"
       class="has-text-grey has-text-centered"
     >
-      No tests this month recorded!
+      No exams
+      <i
+        v-if="filter.length > 0"
+        style="font-style:inherit"
+      >
+        matching your filters.
+      </i>
+      <i
+        v-if="filter.length <= 0"
+        style="font-style:inherit"
+      >
+        this month!
+      </i>
     </p>
   </div>
 </template>

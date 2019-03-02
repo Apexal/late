@@ -1,52 +1,55 @@
 <template>
   <section class="section assignment-list">
-    <div class="assignment-view-buttons buttons has-addons is-pulled-right">
-      <router-link
-        class="button tooltip"
-        to="/assignments/upcoming"
-        data-tooltip="Switch to view upcoming assignments."
-      >
-        Upcoming
-      </router-link>
-      <router-link
-        class="button tooltip"
-        to="/assignments/past"
-        data-tooltip="Switch to view past assignments."
-      >
-        Past
-      </router-link>
-      <router-link
-        class="button tooltip"
-        to="/assignments/calendar"
-        data-tooltip="Switch to view your assignment calendar."
-      >
-        Calendar
-      </router-link>
+    <div class="tab-nav tabs is-right">
+      <ul>
+        <h1
+          class="title"
+          style="flex: 1"
+        >
+          {{ title }}
+        </h1>
+        <li>
+          <router-link
+            class
+            to="/assignments/upcoming"
+            title="Switch to view upcoming assignments"
+          >
+            Upcoming
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            to="/assignments/past"
+            title="Switch to view past assignments"
+          >
+            Previous
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            to="/assignments/calendar"
+            title="Switch to view your assignment calendar"
+          >
+            Calendar
+          </router-link>
+        </li>
+      </ul>
     </div>
-    <h1 class="title">
-      {{ title }}
-    </h1>
 
     <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
-          <span class="subtitle is-6">
-            Filter Courses
-          </span>
+          <span class="subtitle is-6">Filter Courses: </span>
           <span
             v-for="c in courses"
             :key="c.original_longname"
             class="tag is-white course-tag level-item is-unselectable"
-            :title="`Click to toggle filtering out ${c.longname} assignments.`"
-            :class="{ 'has-text-grey-light filtered': isFiltered(c) }"
+            :title="`Filter ${c.longname} assignments`"
+            :class="{ 'filtered-out filtered': isFiltered(c) }"
+            :style="{ 'background-color': c.color }"
             @click="toggleFilter(c)"
           >
-            <span
-              class="dot course-dot"
-              :style="{ 'background-color': c.color }"
-              @click.prevent="$store.commit('OPEN_COURSE_MODAL', c)"
-            />
-            {{ c.longname }}
+            <span>{{ c.longname }}</span>
           </span>
         </div>
       </div>
@@ -91,6 +94,7 @@
     <hr>
     <button
       class="button is-dark"
+      title="Add an upcoming assignment"
       @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     >
       Add Assignment
@@ -217,9 +221,16 @@ export default {
 <style lang="scss" scoped>
 span.tag.course-tag {
   cursor: pointer;
-  font-weight: bold;
+  //font-weight: bold;
   margin: 0;
-  padding-right: 0;
+  margin-left: 2px;
+  margin-right: 2px;
+  color: white;
+}
+
+.filtered-out {
+  color: #686868!important;
+  background-color:rgb(214, 214, 214)!important;
 }
 
 span.dot.course-dot {
@@ -245,6 +256,16 @@ span.dot.course-dot {
 
   .level-left + .level-right {
     margin-top: 5px !important;
+  }
+}
+
+.tab-nav {
+  .title {
+    margin: 0;
+  }
+  .is-active {
+    border-bottom-color: #3273dc;
+    color: #3273dc;
   }
 }
 </style>

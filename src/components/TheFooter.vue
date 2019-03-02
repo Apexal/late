@@ -1,13 +1,17 @@
 <template>
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">
-      An RCOS project!
+      An <a
+        href="/about"
+        title="View project proposal and contributors"
+      >RCOS project</a>!
     </h1>
     <div class="content has-text-centered columns">
       <p class="column">
         <span class="icon">
           <img
             src="https://github.com/Apexal/old-ontrac/blob/master/client/public/images/logos/logo128x128.png?raw=true"
+            style="max-height: 15px; max-width: 15px;"
           >
         </span>In memory of
         <a

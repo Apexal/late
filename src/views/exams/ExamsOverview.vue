@@ -20,49 +20,30 @@
       v-else
       class="section"
     >
-      <div class="is-clearfix">
-        <ExamOverviewActionButtons
-          :exam="exam"
-          :loading="loading"
-          @toggle-editing="toggleEditing"
-        />
-
-        <span
-          class="tag is-medium course-tag"
-          :style="{ 'background-color': course.color }"
-          @click="$store.commit('OPEN_COURSE_MODAL', course)"
-        >
-          <b class="course-longname">
-            {{ course.longname }}
-          </b>
-          {{ exam.passed ? 'Past ': '' }}Exam
-        </span>
-
-        <h1 class="title">
-          {{ exam.title }}
-        </h1>
-        <h2 class="subtitle has-text-grey due-title">
-          {{ isPast ? 'Was on' : 'On' }}
-          <b>{{ shortDateTimeString(exam.date) }}</b>
-        </h2>
-      </div>
+      <AssessmentOverviewTitle
+        :assessment-type="'exam'"
+        :assessment="exam"
+      />
 
       <ExamOverviewStats :exam="exam" />
 
-      <div class="content exam-description">
-        <blockquote>
-          <VueMarkdown
-            v-if="exam.description.length > 0"
-            :source="exam.description"
-            :html="false"
-            :emoji="true"
-            :anchor-attributes="{target: '_blank'}"
-          />
-          <i v-else>
-            No description given.
-          </i>
-        </blockquote>
-      </div>
+      <AssessmentOverviewActionButtons
+        :assessment-type="'exam'"
+        :assessment="exam"
+        :loading="loading"
+        :description-expanded="descriptionExpanded"
+        @toggle-description="descriptionExpanded = !descriptionExpanded"
+        @toggle-editing="toggleEditing"
+      />
+      <AssessmentOverviewDescription
+        v-if="descriptionExpanded"
+        :assessment-type="'exam'"
+        :assessment="exam"
+        :expanded="descriptionExpanded"
+        @update-assessment="updatedExam"
+      />
+
+      <hr v-else>
 
       <ExamOverviewTabs
         :tab="tab"
@@ -70,8 +51,6 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @update-assessment="updatedExam"
-        @add-comment="addComment"
-        @delete-comment="deleteComment"
       />
     </section>
   </div>
@@ -82,22 +61,27 @@ import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
 
+import AssessmentOverviewDescription from '@/components/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/components/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
 import ExamOverviewStats from '@/components/exams/overview/ExamOverviewStats';
-import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
 import ExamOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
 
 export default {
   name: 'ExamsOverview',
   components: {
+    AssessmentOverviewDescription,
+    AssessmentOverviewTitle,
     VueMarkdown,
     ExamsModalEdit,
     ExamOverviewStats,
-    ExamOverviewActionButtons,
+    AssessmentOverviewActionButtons,
     ExamOverviewTabs
   },
   data () {
     return {
       tab: 'schedule',
+      descriptionExpanded: true,
       commentLoading: false,
       loading: true,
       isUpcoming: false,
@@ -117,10 +101,30 @@ export default {
     }
   },
   watch: {
-    $route: 'getExam'
+    $route: 'getExam',
+    exam (newExam) {
+      document.title = `${newExam.title} | LATE`;
+    },
+    descriptionExpanded (newDescriptionExpanded) {
+      localStorage.setItem(
+        'assessmentOverviewDescriptionExpanded',
+        newDescriptionExpanded
+      );
+    }
   },
   created () {
     this.getExam();
+  },
+  mounted () {
+    if (localStorage.getItem('assessmentOverviewDescriptionExpanded')) {
+      try {
+        this.descriptionExpanded = JSON.parse(
+          localStorage.getItem('assessmentOverviewDescriptionExpanded')
+        );
+      } catch (e) {
+        localStorage.removeItem('assessmentOverviewDescriptionExpanded');
+      }
+    }
   },
   methods: {
     tabChanged (newTab) {
@@ -194,60 +198,6 @@ export default {
         }
       });
     },
-    async addComment (newComment) {
-      if (!newComment) return;
-
-      this.commentLoading = true;
-      let request;
-      try {
-        request = await this.$http.post(
-          `/exams/e/${this.exam._id}/comments`,
-          { comment: newComment }
-        );
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.commentLoading = false;
-        return;
-      }
-
-      // Calls API and updates state
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_EXAM',
-          request.data.updatedExam
-        );
-      } else {
-        this.updatedExam(request.data.updatedExam);
-      }
-
-      this.commentLoading = false;
-    },
-    async deleteComment (i) {
-      let request;
-
-      this.commentLoading = true;
-      try {
-        request = await this.$http.delete(
-          `/exams/e/${this.exam._id}/comments/${i}`
-        );
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.commentLoading = false;
-        return;
-      }
-
-      // Calls API and updates state
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.commit(
-          'UPDATE_UPCOMING_EXAM',
-          request.data.updatedExam
-        );
-      } else {
-        this.updatedExam(request.data.updatedExam);
-      }
-
-      this.commentLoading = false;
-    },
     shortDateTimeString: date =>
       moment(date).format('dddd, MMM Do YYYY [@] h:mma'),
     toFullDateTimeString: date =>
@@ -260,14 +210,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.course-tag {
-  cursor: pointer;
-  color: white;
-
-  .course-longname {
-    margin-right: 5px;
-  }
-
-  margin-bottom: 10px;
-}
 </style>

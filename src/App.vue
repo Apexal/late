@@ -21,23 +21,25 @@
         :open="addExamModalExpanded"
         @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
       />
-      <span
-        v-if="loggedIn && !expanded"
-        class="icon button is-dark toggle-sidebar"
-        title="Toggle sidebar."
-        @click="$store.commit('TOGGLE_SIDEBAR')"
-      >
-        <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
-      </span>
+      <transition name="slide-fade">
+        <span
+          v-if="loggedIn && !expanded"
+          class="icon button is-dark toggle-sidebar"
+          title="Toggle sidebar."
+          @click="$store.commit('TOGGLE_SIDEBAR')"
+        >
+          <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
+        </span>
+      </transition>
       <div
         class="columns"
         style="margin-right: initial;"
       >
-        <transition name="fade">
+        <transition name="slide-fade">
           <div
             v-if="loggedIn && expanded"
             id="sidebar-column"
-            class="column is-3 child-view"
+            class="column is-3 child-view sidebar-holder"
           >
             <TheSidebar
               ref="sidebar"
@@ -131,17 +133,6 @@ export default {
   async mounted () {
     if (typeof window.orientation === 'undefined') {
       window.addEventListener('resize', this.resizeThrottler, false);
-
-      const offset = 110;
-      window.addEventListener('scroll', () => {
-        if (!document.getElementById('sidebar')) return; // Sidebar is collapsed
-        if (window.pageYOffset > 0) {
-          let pixels = Math.max(offset - window.pageYOffset, 0) + 55; // Min of 55px
-          document.getElementById('sidebar').style.top = pixels + 'px';
-        } else {
-          document.getElementById('sidebar').style.top = 'initial';
-        }
-      });
     }
 
     if (this.$route.query.accountLocked) {
@@ -213,8 +204,13 @@ export default {
 }
 
 .toggle-sidebar {
+  top: 70px;
   z-index: 4;
-  position: absolute;
+  position: fixed;
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    top: 55px;
+  }
 
   //Styling the toggle button to fit the theme
   margin: 1em;
@@ -242,9 +238,15 @@ export default {
   opacity: 0;
 }
 
+.sidebar-holder {
+}
+
 .child-view {
   transition: all 100ms cubic-bezier(0.55, 0, 0.1, 1);
 }
+
+//Slide
+
 .slide-left-enter,
 .slide-right-leave-active {
   opacity: 0;
@@ -257,6 +259,20 @@ export default {
   -webkit-transform: translate(-30px, 0);
   transform: translate(-30px, 0);
 }
+
+//Slide-fade
+.slide-fade-enter-active {
+  transition: all .2s ease;
+}
+.slide-fade-leave-active {
+  transition: all .15s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(-80px);
+  opacity: 0;
+}
+
 
 .no-bottom-padding {
   padding-bottom: 0;

@@ -24,9 +24,7 @@
             <small
               class="level-item tooltip is-tooltip-right has-text-grey"
               :data-tooltip="toFullDateTimeString(c.addedAt)"
-            >
-              {{ fromNow(c.addedAt) }}
-            </small>
+            >{{ fromNow(c.addedAt) }}</small>
           </div>
         </nav>
       </div>
@@ -34,7 +32,7 @@
         <button
           title="Delete comment."
           class="delete"
-          @click="$emit('delete-comment', index)"
+          @click="deleteComment(index)"
         />
       </div>
       <hr>
@@ -43,7 +41,7 @@
     <template>
       <hr>
       <div class="box is-clearfix">
-        <form @submit.prevent="$emit('add-comment', newComment); newComment = '';">
+        <form @submit.prevent="addComment">
           <div class="field">
             <div class="control">
               <textarea
@@ -54,7 +52,7 @@
                 rows="10"
                 class="input"
                 required
-                @keyup.ctrl.enter="$emit('add-comment', newComment); newComment = '';"
+                @keyup.ctrl.enter="addComment"
               />
             </div>
           </div>
@@ -86,16 +84,18 @@ export default {
     assessment: {
       type: Object,
       required: true
-    },
-    loading: {
-      type: Boolean,
-      required: true
     }
   },
   data () {
     return {
-      newComment: ''
+      newComment: '',
+      loading: false
     };
+  },
+  computed: {
+    capitalizedAssessmentType () {
+      return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    }
   },
   methods: {
     shortDateTimeString: date =>
@@ -104,6 +104,66 @@ export default {
       moment(date).format('dddd, MMMM Do YYYY, h:mma'),
     fromNow (date) {
       return moment(date).from(this.now);
+    },
+    async updateAssessmentFromRequest (request) {
+      // Calls API and updates state
+      if (
+        this.$store.getters[`getUpcoming${this.capitalizedAssessmentType}ById`](
+          this.assessment._id
+        )
+      ) {
+        this.$store.dispatch(
+          `UPDATE_UPCOMING_${this.assessmentType.toUpperCase()}`,
+          request.data[`updated${this.capitalizedAssessmentType}`]
+        );
+      } else {
+        this.$emit(
+          'update-assessment',
+          request.data[`updated${this.capitalizedAssessmentType}`]
+        );
+      }
+    },
+    async addComment () {
+      if (!this.newComment) return;
+
+      this.loading = true;
+      let request;
+      try {
+        request = await this.$http.post(
+          `/${this.assessmentType}s/${this.assessmentType.charAt(0)}/${
+            this.assessment._id
+          }/comments`,
+          { comment: this.newComment }
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.loading = false;
+        return;
+      }
+
+      this.updateAssessmentFromRequest(request);
+
+      this.newComment = '';
+      this.loading = false;
+    },
+    async deleteComment (i) {
+      let request;
+
+      this.loading = true;
+      try {
+        request = await this.$http.delete(
+          `/${this.assessmentType}s/${this.assessmentType.charAt(0)}/${
+            this.assessment._id
+          }/comments/${i}`
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.commentLoading = false;
+        return;
+      }
+
+      this.updateAssessmentFromRequest(request);
+      this.loading = false;
     }
   }
 };
