@@ -118,7 +118,8 @@
         @update-assessment="updatedAssignment"
       />
 
-      <hr>
+      <hr v-else>
+
       <AssignmentOverviewTabs
         ref="tabs"
         :tab="tab"
@@ -238,7 +239,7 @@ export default {
     },
     descriptionExpanded (newDescriptionExpanded) {
       localStorage.setItem(
-        'assignmentOverviewDescriptionExpanded',
+        'assessmentOverviewDescriptionExpanded',
         newDescriptionExpanded
       );
     }
@@ -247,13 +248,13 @@ export default {
     // eslint-disable-next-line no-undef
     this.confetti = new ConfettiGenerator(this.confettiSettings);
 
-    if (localStorage.getItem('assignmentOverviewDescriptionExpanded')) {
+    if (localStorage.getItem('assessmentOverviewDescriptionExpanded')) {
       try {
         this.descriptionExpanded = JSON.parse(
-          localStorage.getItem('assignmentOverviewDescriptionExpanded')
+          localStorage.getItem('assessmentOverviewDescriptionExpanded')
         );
       } catch (e) {
-        localStorage.removeItem('assignmentOverviewDescriptionExpanded');
+        localStorage.removeItem('assessmentOverviewDescriptionExpanded');
       }
     }
   },

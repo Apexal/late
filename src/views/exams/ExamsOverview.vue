@@ -42,7 +42,9 @@
         :expanded="descriptionExpanded"
         @update-assessment="updatedExam"
       />
-      <hr>
+
+      <hr v-else>
+
       <ExamOverviewTabs
         :tab="tab"
         :exam="exam"
@@ -99,10 +101,30 @@ export default {
     }
   },
   watch: {
-    $route: 'getExam'
+    $route: 'getExam',
+    exam (newExam) {
+      document.title = `${newExam.title} | LATE`;
+    },
+    descriptionExpanded (newDescriptionExpanded) {
+      localStorage.setItem(
+        'assessmentOverviewDescriptionExpanded',
+        newDescriptionExpanded
+      );
+    }
   },
   created () {
     this.getExam();
+  },
+  mounted () {
+    if (localStorage.getItem('assessmentOverviewDescriptionExpanded')) {
+      try {
+        this.descriptionExpanded = JSON.parse(
+          localStorage.getItem('assessmentOverviewDescriptionExpanded')
+        );
+      } catch (e) {
+        localStorage.removeItem('assessmentOverviewDescriptionExpanded');
+      }
+    }
   },
   methods: {
     tabChanged (newTab) {
