@@ -54,7 +54,7 @@
             v-if="step === 1"
             :courses="courses"
             :active-c-r-n="courseCRN"
-            @update-crn="courseCRN = $event"
+            @update-crn="setValue('courseCRN', $event)"
             @next-step="nextStep()"
           />
           <ModalTitleAndDescription
@@ -63,16 +63,16 @@
             :description="description"
             :title-place-holder="'Assignment Title - Keep it concise!'"
             :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
-            @update-title="title = $event"
-            @update-desc="description = $event"
+            @update-title="setValue('title', $event)"
+            @update-desc="setValue('description', $event)"
             @next-step="nextStep()"
           />
           <ModalCalendar
             v-else-if="step === 3"
             :active-c-r-n="courseCRN"
             :active-due-date="dueDate"
-            @update-due-time="dueTime = $event"
-            @update-date="dueDate = $event; nextStep();"
+            @update-due-time="setValue('dueTime', $event)"
+            @update-date="setValue('dueDate', $event); nextStep();"
           />
           <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
@@ -81,9 +81,9 @@
             :due-time="dueTime"
             :time-estimate="timeEstimate"
             :priority="priority"
-            @update-due-time="dueTime = $event"
-            @update-priority="priority = $event"
-            @update-time-estimate="timeEstimate = $event"
+            @update-due-time="setValue('dueTime', $event)"
+            @update-priority="setValue('priority', $event)"
+            @update-time-estimate="setValue('timeEstimate', $event)"
           />
         </transition>
       </div>
@@ -148,15 +148,6 @@ export default {
     return {
       loading: false,
       step: 1,
-      courseCRN: this.defaultCourseCRN,
-      title: '',
-      description: '',
-      dueDate: moment()
-        .add(1, 'days')
-        .toDate(),
-      dueTime: '08:00',
-      timeEstimate: 1.0,
-      priority: 3,
       steps: [
         {
           label: 'Select course',
@@ -186,28 +177,29 @@ export default {
     };
   },
   computed: {
-    defaultCourseCRN () {
+    courseCRN () {
       return this.$store.state.addAssignmentModal.courseCRN;
     },
-    defaultDueDateString () {
-      return this.$store.getters.addAssignmentModalDueDateString;
+    dueDate () {
+      return this.$store.state.addAssignmentModal.dueDate;
     },
-    defaultDueTimeString () {
-      return this.$store.getters.addAssignmentModalDueTimeString;
+    dueTime () {
+      return this.$store.state.addAssignmentModal.dueTime;
+    },
+    title () {
+      return this.$store.state.addAssignmentModal.title;
+    },
+    description () {
+      return this.$store.state.addAssignmentModal.description;
+    },
+    timeEstimate () {
+      return this.$store.state.addAssignmentModal.timeEstimate;
+    },
+    priority () {
+      return this.$store.state.addAssignmentModal.priority;
     },
     courses () {
       return this.$store.getters.current_schedule;
-    }
-  },
-  watch: {
-    defaultCourseCRN (newCRN) {
-      this.courseCRN = newCRN;
-    },
-    defaultDueDateString (newDueDate) {
-      this.dueDate = moment(newDueDate, 'YYYY-MM-DD', true);
-    },
-    defaultDueTimeString (newDueTime) {
-      this.dueTime = newDueTime;
     }
   },
   methods: {
@@ -240,6 +232,11 @@ export default {
       if (this.step === 4) {
         this.steps[3].completed = true;
       }
+    },
+    setValue (property, value) {
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+        [property]: value
+      });
     },
     async save () {
       this.loading = true;
@@ -289,11 +286,13 @@ export default {
 
       // Reset important fields
       this.step = 1;
-      this.title = '';
-      this.description = '';
-      this.dueTime = '08:00';
-      this.timeEstimate = 1;
-      this.priority = 3;
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+        dueTime: '08:00',
+        title: '',
+        description: '',
+        timeEstimate: 1.0,
+        priority: 3
+      });
 
       this.loading = false;
 
