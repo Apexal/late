@@ -39,7 +39,7 @@
     <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
-          <span class="subtitle is-6">Filter Courses: </span>
+          <span class="subtitle is-6">Filter Courses:</span>
           <span
             v-for="c in courses"
             :key="c.original_longname"
@@ -226,11 +226,17 @@ span.tag.course-tag {
   margin-left: 2px;
   margin-right: 2px;
   color: white;
+  span {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .filtered-out {
-  color: #686868!important;
-  background-color:rgb(214, 214, 214)!important;
+  color: #686868 !important;
+  background-color: rgb(214, 214, 214) !important;
 }
 
 span.dot.course-dot {
