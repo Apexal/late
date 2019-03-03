@@ -67,6 +67,12 @@
         >
           Back to Top
         </button>
+        <button
+          class="button is-pulled-right is-warning"
+          @click="copyAssignment"
+        >
+          Copy Assignment
+        </button>
       </div>
     </section>
   </div>
@@ -182,6 +188,10 @@ export default {
         top: 0,
         behavior: 'smooth'
       });
+    },
+    copyAssignment () {
+      this.$store.dispatch('COPY_ASSIGNMENT_TO_MODAL', this.assignment);
+      this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
     },
     async toggleCompleted () {
       if (
