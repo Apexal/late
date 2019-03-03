@@ -8,15 +8,11 @@
       <i
         v-if="filter.length > 0"
         style="font-style:inherit"
-      >
-        matching your filters.
-      </i>
+      >matching your filters.</i>
       <i
         v-if="filter.length <= 0"
         style="font-style:inherit"
-      >
-        this month!
-      </i>
+      >this month!</i>
     </p>
     <div
       v-else
@@ -27,7 +23,7 @@
         :key="ex._id"
         class="column is-half"
       >
-        <div class="box upcoming-exam">
+        <div class="upcoming-exam">
           <router-link
             tag="h2"
             :to="{ name: 'exams-overview', params: { examID: ex._id }}"
@@ -39,22 +35,16 @@
             <span
               v-if="ex.priority === 3"
               class="is-pulled-right tag is-danger"
-            >
-              High Priority
-            </span>
+            >High Priority</span>
             <span
               v-else-if="ex.priority === 1"
               class="is-pulled-right tag is-dark"
-            >
-              Low Priority
-            </span>
+            >Low Priority</span>
           </router-link>
           <span
             class="has-text-grey tooltip is-tooltip-right"
             :data-tooltip="fromNow(ex.date)"
-          >
-            {{ shortDateStr(ex.date) }}
-          </span>
+          >{{ shortDateStr(ex.date) }}</span>
           <span
             :style="{visibility: ex.fullyScheduled ? 'hidden' : ''}"
             class="tooltip is-tooltip-right icon has-text-danger"
@@ -64,9 +54,18 @@
           </span>
           <div class="content">
             <blockquote>
-              <p>{{ shortDescription(ex.description) }}</p>
+              <p v-if="ex.description">
+                {{ shortDescription(ex.description) }}
+              </p>
+              <p
+                v-else
+                class="has-text-grey"
+              >
+                No description given...
+              </p>
             </blockquote>
           </div>
+          <hr>
         </div>
       </div>
     </div>
@@ -113,7 +112,6 @@ export default {
     },
     shortDescription (desc) {
       if (desc.length > 350) return desc.substring(0, 350) + '...';
-      else if (desc.length === 0) return 'No description given...';
       else return desc;
     }
   }
