@@ -3,7 +3,7 @@
     <div
       v-for="c in courses"
       :key="c.crn"
-      class="column is-half"
+      class="column course-column is-half"
     >
       <div
         class="course box"
@@ -16,9 +16,7 @@
           class="tag is-pulled-right"
           :style="{'background-color': c.color , 'color': 'white'}"
           :title="'You are in Section ' + c.section_id"
-        >
-          Section {{ c.section_id }}
-        </span>
+        >Section {{ c.section_id }}</span>
         {{ c.longname }}
       </div>
     </div>
@@ -42,6 +40,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.course-column {
+  padding: 6px;
+}
+
 .course.box {
   padding: 10px 15px;
   cursor: pointer;

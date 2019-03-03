@@ -45,7 +45,6 @@
             </div>
           </div>
         </div>
-        <hr>
         <transition
           name="fade"
           mode="out-in"
