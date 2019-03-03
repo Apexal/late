@@ -3,7 +3,7 @@ const moment = require('moment');
 const state = {
   expanded: false,
   courseCRN: '',
-  dueDate: moment(),
+  dueDate: null,
   dueTime: '08:00',
   title: '',
   description: '',
