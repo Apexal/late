@@ -88,7 +88,7 @@ import moment from 'moment';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
-import TimeInput from '@/components/TimeInput';
+import TimeInput from '@/views/components/TimeInput';
 
 export default {
   name: 'ProfileSetupUnavailability',

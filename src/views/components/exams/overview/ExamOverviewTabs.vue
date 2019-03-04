@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="tabs"
-    class="assignment-overview-tabs"
-  >
+  <div class="exam-overview-tabs">
     <div class="tabs">
       <ul>
         <li
@@ -18,10 +15,11 @@
               <i class="fa fa-lock" />
             </span>
             <span>Work Schedule</span>
+
             <span
-              v-if="!assignment.completed && !fullyScheduled"
+              v-if="!exam.passed && !fullyScheduled"
               class="tag is-danger tooltip is-tooltip-right"
-              data-tooltip="You haven't scheduled enough time to work on this!"
+              data-tooltip="You haven't scheduled enough time to study for this!"
             >!</span>
           </a>
         </li>
@@ -32,9 +30,9 @@
           <a>
             Comments
             <span
-              v-if="assignment.comments.length > 0"
+              v-if="exam.comments.length > 0"
               class="tag is-dark comment-count"
-            >{{ assignment.comments.length }}</span>
+            >{{ exam.comments.length }}</span>
           </a>
         </li>
       </ul>
@@ -42,8 +40,8 @@
 
     <Component
       :is="componentName"
-      :assessment-type="'assignment'"
-      :assessment="assignment"
+      :assessment-type="'exam'"
+      :assessment="exam"
       :loading="loading"
       @update-assessment="$emit('update-assessment', arguments[0])"
     />
@@ -52,11 +50,11 @@
 
 <script>
 // Tabs
-import AssessmentOverviewComments from '@/components/AssessmentOverviewComments';
-import AssessmentOverviewWorkSchedule from '@/components/AssessmentOverviewWorkSchedule';
+import AssessmentOverviewWorkSchedule from '@/views/components/AssessmentOverviewWorkSchedule';
+import AssessmentOverviewComments from '@/views/components/AssessmentOverviewComments';
 
 export default {
-  name: 'AssignmentOverviewTabs',
+  name: 'ExamOverviewTabs',
   components: {
     AssessmentOverviewComments,
     AssessmentOverviewWorkSchedule
@@ -66,7 +64,7 @@ export default {
       type: String,
       required: true
     },
-    assignment: {
+    exam: {
       type: Object,
       required: true
     },
@@ -77,32 +75,22 @@ export default {
   },
   computed: {
     scheduledMinutes () {
-      return this.assignment._blocks.reduce(
-        (acc, block) => acc + block.duration,
-        0
-      );
+      return this.exam._blocks.reduce((acc, block) => acc + block.duration, 0);
     },
     totalEstimatedMinutes () {
-      return this.assignment.timeEstimate * 60;
+      return this.exam.timeEstimate * 60;
     },
     fullyScheduled () {
       return this.scheduledMinutes >= this.totalEstimatedMinutes;
     },
     workScheduleLocked () {
-      return this.assignment.completed || this.assignment.passed;
+      return this.exam.passed;
     },
     componentName () {
       return {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule'
       }[this.tab];
-    }
-  },
-  methods: {
-    scrollTo () {
-      this.$refs.tabs.scrollIntoView({
-        behavior: 'smooth'
-      });
     }
   }
 };
@@ -112,7 +100,6 @@ export default {
 .comment-count {
   margin-left: 3px;
 }
-
 .tag {
   margin-left: 3px;
 }

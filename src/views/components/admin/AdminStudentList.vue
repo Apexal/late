@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import AdminStudentListOverview from '@/components/admin/AdminStudentListOverview.vue';
+import AdminStudentListOverview from '@/views/components/admin/AdminStudentListOverview.vue';
 export default {
   name: 'AdminStudentList',
   components: { AdminStudentListOverview },

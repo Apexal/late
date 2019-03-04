@@ -45,6 +45,7 @@
             </div>
           </div>
         </div>
+        <hr>
         <transition
           name="fade"
           mode="out-in"
@@ -52,37 +53,36 @@
           <ModalSelectCourse
             v-if="step === 1"
             :courses="courses"
-            :active-c-r-n="courseCRN"
-            @update-crn="setValue('courseCRN', $event)"
+            :active-c-r-n="this.assignment.courseCRN"
+            @update-crn="assignment.courseCRN = $event"
             @next-step="nextStep()"
           />
           <ModalTitleAndDescription
             v-else-if="step === 2"
-            :title="title"
-            :description="description"
+            :title="assignment.title"
+            :description="assignment.description"
             :title-place-holder="'Assignment Title - Keep it concise!'"
             :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
-            @update-title="setValue('title', $event)"
-            @update-desc="setValue('description', $event)"
-            @next-step="nextStep()"
+            @update-title="assignment.title = $event"
+            @update-desc="assignment.description = $event"
           />
           <ModalCalendar
             v-else-if="step === 3"
-            :active-c-r-n="courseCRN"
-            :active-due-date="dueDate"
-            @update-due-time="setValue('dueTime', $event)"
-            @update-date="setValue('dueDate', $event); nextStep();"
+            @update-date="assignment.dueDate = $event; nextStep();"
           />
           <ModalPriorityAndTimeEstimate
             v-else-if="step === 4"
-            :active-c-r-n="courseCRN"
-            :due-date="dueDate"
-            :due-time="dueTime"
-            :time-estimate="timeEstimate"
-            :priority="priority"
-            @update-due-time="setValue('dueTime', $event)"
-            @update-priority="setValue('priority', $event)"
-            @update-time-estimate="setValue('timeEstimate', $event)"
+            :active-c-r-n="assignment.courseCRN"
+            :time-hour="assignment.timeHour"
+            :time-minute="assignment.timeMinute"
+            :timeis-am="assignment.timeisAm"
+            :time-estimate="assignment.timeEstimate"
+            :priority="assignment.priority"
+            @update-timeHour="assignment.timeHour = $event"
+            @update-timeMinute="assignment.timeMinute = $event"
+            @update-time-is-am="assignment.timeisAm = $event"
+            @update-priority="assignment.priority = $event"
+            @update-timeEstimate="assignment.timeEstimate = $event"
           />
         </transition>
       </div>
@@ -101,18 +101,25 @@
           <h1>Cancel</h1>
         </div>
         <div
+          class="modal-nav-button save"
+          @click="$emit('remove-assignment')"
+        >
+          <h1>Delete Assignment</h1>
+        </div>
+        <div
+          class="modal-nav-button save"
+          @click="save()"
+        >
+          <h1>Save Assignment</h1>
+        </div>
+
+        <!--  @click="$emit('remove-assignment')-->
+        <div
           v-if="step !== 4"
           class="modal-nav-button next"
           @click="nextStep()"
         >
           <i class="fas fa-arrow-right" />
-        </div>
-        <div
-          v-if="step === 4"
-          class="modal-nav-button save"
-          @click="save()"
-        >
-          <h1>Create Assignment</h1>
         </div>
       </footer>
     </div>
@@ -124,13 +131,13 @@ import moment from 'moment';
 
 import 'bulma-steps';
 
-import ModalSelectCourse from '@/components/modal/ModalSelectCourse';
-import ModalTitleAndDescription from '@/components/modal/ModalTitleAndDescription';
-import ModalCalendar from '@/components/modal/ModalCalendar';
-import ModalPriorityAndTimeEstimate from '@/components/modal/ModalPriorityAndTimeEstimate';
+import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
+import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
+import ModalCalendar from '@/views/components/modal/ModalCalendar';
+import ModalPriorityAndTimeEstimate from '@/views/components/modal/ModalPriorityAndTimeEstimate';
 
 export default {
-  name: 'AssignmentsModalAdd',
+  name: 'AssignmentsModalAddRedux',
   components: {
     ModalSelectCourse,
     ModalTitleAndDescription,
@@ -141,64 +148,65 @@ export default {
     open: {
       type: Boolean,
       required: true
+    },
+    initialAssignment: {
+      type: Object,
+      default: () => ({
+        courseCRN: '',
+        title: '',
+        description: '',
+        dueDate: moment()
+          .add(1, 'days')
+          .format('YYYY-MM-DD'),
+        timeHour: '',
+        timeMinute: '',
+        timeisAm: false,
+        timeEstimate: 1,
+        priority: 5
+      }),
+      required: true
     }
   },
   data () {
     return {
-      loading: false,
+      assignment: this.convertAssignment(this.initialAssignment),
       step: 1,
       steps: [
         {
           label: 'Select course',
           step: 1,
-          completed: false,
+          completed: true,
           active: true
         },
         {
           label: 'Basic Info',
           step: 2,
-          completed: false,
+          completed: true,
           active: false
         },
         {
           label: 'Due Date',
           step: 3,
-          completed: false,
+          completed: true,
           active: false
         },
         {
           label: 'Time',
           step: 4,
-          completed: false,
+          completed: true,
           active: false
         }
       ]
     };
   },
   computed: {
-    courseCRN () {
-      return this.$store.state.addAssignmentModal.courseCRN;
-    },
-    dueDate () {
-      return this.$store.state.addAssignmentModal.dueDate;
-    },
-    dueTime () {
-      return this.$store.state.addAssignmentModal.dueTime;
-    },
-    title () {
-      return this.$store.state.addAssignmentModal.title;
-    },
-    description () {
-      return this.$store.state.addAssignmentModal.description;
-    },
-    timeEstimate () {
-      return this.$store.state.addAssignmentModal.timeEstimate;
-    },
-    priority () {
-      return this.$store.state.addAssignmentModal.priority;
-    },
     courses () {
       return this.$store.getters.current_schedule;
+    }
+  },
+  watch: {
+    initialAssignment (newA, oldA) {
+      this.assignment = this.convertAssignment(newA);
     }
   },
   methods: {
@@ -219,106 +227,112 @@ export default {
           step_.active = false;
         }
       });
-      if (this.courseCRN !== -1) {
-        this.steps[0].completed = true;
-      }
-      if (this.title !== '') {
+      if (this.assignment.title === '') {
+        this.steps[1].completed = false;
+      } else if (this.assignment.title !== '') {
         this.steps[1].completed = true;
       }
-      if (this.dueDate !== '') {
-        this.steps[2].completed = true;
-      }
-      if (this.step === 4) {
-        this.steps[3].completed = true;
-      }
     },
-    setValue (property, value) {
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-        [property]: value
-      });
+    convertAssignment (assignment) {
+      const data = Object.assign({}, assignment);
+      data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD');
+      let time, hour, minute, isAm;
+
+      time = moment(assignment.dueDate).format('HH:mm');
+      time = time.split(':');
+
+      hour = parseInt(time[0]);
+      minute = parseInt(time[1]);
+
+      if (hour > 12) {
+        hour -= 12;
+        isAm = false;
+      }
+
+      data.timeHour = hour;
+      data.timeMinute = minute;
+      data.timeisAm = isAm;
+
+      return data;
     },
     async save () {
+      this.updateSteps();
+
       this.loading = true;
       // TODO: error handle
       let request;
 
-      let incomplete = this.steps.some(step => !step.completed);
+      let complete = this.steps.some(step => !step.completed);
 
-      if (incomplete) {
+      let time;
+      let hour = parseInt(this.assignment.timeHour);
+      let minute = parseInt(this.assignment.timeMinute);
+
+      if (this.assignment.timeHour === '') {
+        hour = 11;
+      }
+      if (this.assignment.timeMinute === '') {
+        minute = 59;
+      }
+
+      if (complete) {
         this.$toasted.error('Make sure you complete every step!');
         return;
       }
 
-      try {
-        request = await this.$http.post('/assignments', {
-          title: this.title,
-          description: this.description,
+      if (!this.assignment.timeisAm && hour !== 12) {
+        hour += 12;
+      }
+      if (hour > 0 && hour < 10 && this.assignment.timeHour.length === 1) {
+        hour = '0' + hour;
+      }
+      if (minute > 0 && minute < 10) {
+        minute = '0' + minute;
+      }
+      time = hour + ':' + minute;
+
+      this.loading = true;
+
+      request = await this.$http.patch(
+        `/assignments/a/${this.assignment._id}`,
+        {
+          title: this.assignment.title,
+          description: this.assignment.description,
           dueDate: moment(
-            this.dueDate.format('YYYY-MM-DD') + ' ' + this.dueTime,
+            this.assignment.dueDate + ' ' + time,
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),
-          courseCRN: this.courseCRN,
-          timeEstimate: this.timeEstimate,
-          priority: this.priority
-        });
-      } catch (e) {
-        console.error(e);
-        this.$toasted.error(
-          'There was an error adding the assignment. Please try again later.'
-        );
-        this.loading = false;
-        return;
-      }
+          courseCRN: this.assignment.courseCRN,
+          timeEstimate: this.assignment.timeEstimate,
+          priority: this.assignment.priority
+        }
+      );
 
-      // Update global state if they are not in the past
-      if (
-        moment(request.data.createdAssignment.dueDate).isAfter(
-          moment().startOf('day')
-        )
-      ) {
+      // Calls API and updates state
+      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
         this.$store.dispatch(
-          'ADD_UPCOMING_ASSIGNMENT',
-          request.data.createdAssignment
+          'UPDATE_UPCOMING_ASSIGNMENT',
+          request.data.updatedAssignment
         );
       }
-
-      // Reset important fields
-      this.step = 1;
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-        dueTime: '08:00',
-        title: '',
-        description: '',
-        timeEstimate: 1.0,
-        priority: 3
-      });
+      this.$emit('edit-assignment', this.assignment);
 
       this.loading = false;
-
-      // Reset Steps
-      this.steps.forEach(function (step_) {
-        step_.completed = false;
-        step_.active = false;
-      });
-      this.steps[0].active = true;
 
       // Close modal
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$toasted.success(
-        `Added assignment '${
-          request.data.createdAssignment.title
-        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`,
+      this.$toasted.info(
+        `Edited assignment '${
+          request.data.updatedAssignment.title
+        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
         {
-          icon: 'plus',
           action: {
-            text: 'View',
-            push: {
-              name: 'assignments-overview',
-              params: { assignmentID: request.data.createdAssignment._id }
-            }
-          }
+            text: 'Undo'
+          },
+          icon: 'pen'
         }
       );
     }
@@ -371,11 +385,9 @@ export default {
 
 .save {
   &:hover {
-    background-color: #62b1b7;
+    background-color: #dbdbdb;
   }
-  border-bottom-right-radius: 6px;
-  background-color: #66c6ce;
-  color: white;
+  border-left: 1px solid #dbdbdb;
 }
 
 .next {

@@ -181,7 +181,7 @@
 </template>
 
 <script>
-import ProfileCourse from '@/components/profile/ProfileCourse';
+import ProfileCourse from '@/views/components/profile/ProfileCourse';
 
 export default {
   name: 'ProfileSetupCourseSchedule',

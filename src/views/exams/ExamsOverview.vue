@@ -59,13 +59,13 @@
 <script>
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
-import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
+import ExamsModalEdit from '@/views/components/exams/ExamsModalEdit';
 
-import AssessmentOverviewDescription from '@/components/AssessmentOverviewDescription';
-import AssessmentOverviewActionButtons from '@/components/AssessmentOverviewActionButtons';
-import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
-import ExamOverviewStats from '@/components/exams/overview/ExamOverviewStats';
-import ExamOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
+import AssessmentOverviewDescription from '@/views/components/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/views/components/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/views/components/AssessmentOverviewTitle';
+import ExamOverviewStats from '@/views/components/exams/overview/ExamOverviewStats';
+import ExamOverviewTabs from '@/views/components/exams/overview/ExamOverviewTabs';
 
 export default {
   name: 'ExamsOverview',

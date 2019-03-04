@@ -83,12 +83,12 @@ import moment from 'moment';
 import 'confetti-js';
 
 // Page components
-import AssignmentOverviewStats from '@/components/assignments/overview/AssignmentOverviewStats';
-import AssessmentOverviewDescription from '@/components/AssessmentOverviewDescription';
-import AssessmentOverviewActionButtons from '@/components/AssessmentOverviewActionButtons';
-import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
-import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
-import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
+import AssignmentOverviewStats from '@/views/components/assignments/overview/AssignmentOverviewStats';
+import AssessmentOverviewDescription from '@/views/components/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/views/components/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/views/components/AssessmentOverviewTitle';
+import AssignmentsModalEdit from '@/views/components/assignments/AssignmentsModalEdit';
+import AssignmentOverviewTabs from '@/views/components/assignments/overview/AssignmentOverviewTabs';
 
 export default {
   name: 'AssignmentsOverview',
