@@ -276,7 +276,6 @@ export default {
       // this.$toasted.show(
       //   'You will be able to schedule work blocks by selecting soon.'
       // );
-      this.$refs.calendar.fireMethod('unselect');
       this.selectModal.open = true;
       this.selectModal.start = start;
       this.selectModal.end = end;
@@ -299,6 +298,7 @@ export default {
       });
 
       this.selectModal.open = false;
+      this.$refs.calendar.fireMethod('unselect');
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {

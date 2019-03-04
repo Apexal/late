@@ -156,7 +156,7 @@ export default {
         personal_info: 'Personal Info',
         course_schedule: 'Course Schedule',
         unavailability: 'Unavailability',
-        integrations: 'Integrations'
+        integrations: 'Notifications'
       };
     },
     hasSetupCheck () {

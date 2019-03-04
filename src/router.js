@@ -175,7 +175,7 @@ const router = new Router({
           path: 'integrations',
           name: 'setup-integrations',
           meta: {
-            title: 'Integrations'
+            title: 'Notifications'
           },
           component: () =>
             import('@/views/profile/ProfileSetupIntegrations.vue')

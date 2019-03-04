@@ -70,7 +70,7 @@ export default {
           setup_check: 'unavailability'
         },
         {
-          label: 'Integrations',
+          label: 'Notifications',
           link: '/profile/integrations',
           setup_check: 'integrations'
         }
