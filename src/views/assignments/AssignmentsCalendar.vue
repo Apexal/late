@@ -97,8 +97,8 @@ export default {
 
       callback(events);
     },
-    dayClick (date, jsEvent, view) {
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
+    dayClick (date) {
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: date });
       this.$store.commit(
         'TOGGLE_ADD_ASSIGNMENT_MODAL'
       );

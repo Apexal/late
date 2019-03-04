@@ -298,7 +298,7 @@ export default {
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {
-        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', calEvent.start);
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: calEvent.start });
         this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
       } else if (calEvent.eventType === 'assignment') {
         this.$router.push({

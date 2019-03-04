@@ -174,12 +174,12 @@ export default {
       if (this.groupBy === 'course') {
         this.$store.commit('OPEN_COURSE_MODAL', this.course(key));
       } else {
-        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', moment(key));
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: moment(key) });
         this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
       }
     },
     clickDateHeading (date) {
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', moment(date));
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: moment(date) });
       this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
     },
     toggleAssignmentTitle (a) {
