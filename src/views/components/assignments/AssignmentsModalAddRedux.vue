@@ -15,49 +15,32 @@
       </header>
 
       <div class="modal-card-body">
-        <div class="steps">
-          <div
-            v-for="s in steps"
-            :key="s.step"
-            tag="div"
-            class="step-item"
-            :class="{ 'is-completed': s.completed,
-                      'is-active': s.active }"
-            @click="step = s.step; updateSteps()"
-          >
-            <div class="step-marker">
-              <span class="icon">
-                <i
-                  v-if="s.completed"
-                  class="fas fa-check"
-                />
-                <i
-                  v-else
-                  class="fas fa-times"
-                />
-              </span>
-            </div>
-
-            <div class="step-details">
-              <p class="step-title">
-                {{ s.label }}
-              </p>
-            </div>
-          </div>
+        <div class="tabs is-fullwidth">
+          <ul>
+            <li
+              v-for="(s, index) in steps"
+              :key="index"
+              :class="{'is-active': index === step}"
+              @click="step = index"
+            >
+              <a>{{ s.label }}</a>
+            </li>
+          </ul>
         </div>
+
         <transition
           name="fade"
           mode="out-in"
         >
           <ModalSelectCourse
-            v-if="step === 1"
+            v-if="step === 0"
             :courses="courses"
             :active-c-r-n="courseCRN"
             @update-crn="setValue('courseCRN', $event)"
             @next-step="nextStep()"
           />
           <ModalTitleAndDescription
-            v-else-if="step === 2"
+            v-else-if="step === 1"
             :title="title"
             :description="description"
             :title-place-holder="'Assignment Title - Keep it concise!'"
@@ -67,14 +50,14 @@
             @next-step="nextStep()"
           />
           <ModalCalendar
-            v-else-if="step === 3"
+            v-else-if="step === 2"
             :active-c-r-n="courseCRN"
             :active-due-date="dueDate"
             @update-due-time="setValue('dueTime', $event)"
             @update-date="setValue('dueDate', $event); nextStep();"
           />
           <ModalPriorityAndTimeEstimate
-            v-else-if="step === 4"
+            v-else-if="step === 3"
             :active-c-r-n="courseCRN"
             :due-date="dueDate"
             :due-time="dueTime"
@@ -146,31 +129,27 @@ export default {
   data () {
     return {
       loading: false,
-      step: 1,
+      step: 0,
       steps: [
         {
-          label: 'Select course',
-          step: 1,
+          label: 'Course',
           completed: false,
-          active: true
+          component: 'ModalSelectCourse'
         },
         {
           label: 'Basic Info',
-          step: 2,
           completed: false,
-          active: false
+          component: 'ModalTitleAndDescription'
         },
         {
           label: 'Due Date',
-          step: 3,
           completed: false,
-          active: false
+          component: 'ModalCalendar'
         },
         {
           label: 'Time',
-          step: 4,
           completed: false,
-          active: false
+          component: 'ModalPriorityAndTimeEstimate'
         }
       ]
     };
@@ -239,7 +218,6 @@ export default {
     },
     async save () {
       this.loading = true;
-      // TODO: error handle
       let request;
 
       let incomplete = this.steps.some(step => !step.completed);
@@ -328,6 +306,10 @@ export default {
 
 
 <style lang="scss" scoped>
+.modal-card-body {
+  padding-top: 0;
+}
+
 .step-marker {
   cursor: pointer;
 }
