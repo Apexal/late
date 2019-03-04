@@ -1,10 +1,14 @@
 <template>
   <div class="exams">
     <section class="section exam-list">
-      <div class="tab-nav tabs is-right">
+      <h1 class="is-hidden-desktop has-text-centered is-marginless title">
+        {{ title }}
+      </h1>
+
+      <div class="tab-nav tabs is-centered">
         <ul>
           <h1
-            class="title"
+            class="is-hidden-touch title"
             style="flex: 1"
           >
             {{ title }}

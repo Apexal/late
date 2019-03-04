@@ -45,10 +45,14 @@
       />
     </div>
 
-    <div class="tabs is-right">
+    <h1 class="is-hidden-desktop has-text-centered is-marginless title">
+      The Dashboard
+    </h1>
+
+    <div class="tabs is-centered">
       <ul>
         <h1
-          class="title"
+          class="is-hidden-touch title"
           style="flex: 1"
         >
           Your Dashboard
