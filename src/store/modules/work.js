@@ -9,7 +9,8 @@ const removedCourse = {
   longname: 'Removed Course',
   crn: '00000',
   periods: [],
-  color: 'grey'
+  color: 'grey',
+  links: []
 };
 
 const state = {
