@@ -36,10 +36,9 @@
       </ul>
     </div>
 
-    <div class="level box assignment-controls">
+    <div class="level assignment-controls">
       <div class="level-left disable-shrink">
         <div class="filters">
-          <span class="subtitle is-6">Filter Courses:</span>
           <span
             v-for="c in courses"
             :key="c.original_longname"
@@ -53,7 +52,7 @@
           </span>
         </div>
       </div>
-      <div class="level-right">
+      <div class="level-right box">
         <label
           class="checkbox is-unselectable tooltip"
           data-tooltip="Toggle completed assignments."
@@ -219,6 +218,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.tab-nav.tabs {
+  margin-bottom: 5px;
+}
+
 span.tag.course-tag {
   cursor: pointer;
   //font-weight: bold;
@@ -247,8 +250,8 @@ span.dot.course-dot {
   flex-shrink: initial;
 }
 
-.assignment-controls {
-  padding: 10px !important;
+.level-right.box {
+  padding: 10px;
 }
 
 .group-by-select {
