@@ -50,20 +50,29 @@
       </div>
     </div>
     <hr>
-    <AssignmentsUpcomingFarFutureTable
-      v-if="showingFutureAssignments"
-      :assignments="farFutureUpcomingAssignments"
-      @hide="showingFutureAssignments = false"
-    />
-    <p
-      v-else
-      class="has-text-centered has-text-grey"
+    <div
+      v-if="farFutureUpcomingAssignments.length > 0"
+      class="far-future-assignments"
     >
-      {{ farFutureUpcomingAssignments.length }} far future assignments hidden
-      <a
-        @click="showingFutureAssignments = true"
-      >Show</a>
-    </p>
+      <template v-if="showingFutureAssignments">
+        <h3 class="subtitle has-text-centered is-marginless">
+          {{ filteredFarFuture.length }} Far Future Assignments
+          <a
+            @click="showingFutureAssignments = false"
+          >Hide</a>
+        </h3>
+        <AssignmentsTable :assignments="filteredFarFuture" />
+      </template>
+      <p
+        v-else
+        class="has-text-centered has-text-grey"
+      >
+        {{ farFutureUpcomingAssignments.length }} far future assignments hidden
+        <a
+          @click="showingFutureAssignments = true"
+        >Show</a>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -71,11 +80,11 @@
 import moment from 'moment';
 
 import AssignmentPanelBlock from '@/views/components/assignments/upcoming/AssignmentPanelBlock';
-import AssignmentsUpcomingFarFutureTable from '@/views/components/assignments/upcoming/AssignmentsUpcomingFarFutureTable.vue';
+import AssignmentsTable from '@/views/components/assignments/AssignmentsTable.vue';
 
 export default {
   name: 'AssignmentsUpcoming',
-  components: { AssignmentsUpcomingFarFutureTable, AssignmentPanelBlock },
+  components: { AssignmentsTable, AssignmentPanelBlock },
   props: {
     showCompleted: {
       type: Boolean,
@@ -92,7 +101,7 @@ export default {
   },
   data () {
     return {
-      showingFutureAssignments: true
+      showingFutureAssignments: false
     };
   },
   computed: {
@@ -118,6 +127,12 @@ export default {
       }
 
       return filtered;
+    },
+    filteredFarFuture () {
+      return this.farFutureUpcomingAssignments.filter(a => {
+        if (!this.showCompleted && a.completed) return false;
+        return !this.filter.includes(a.courseCRN);
+      });
     },
     groupedAssignments () {
       return this.groupBy === 'course'
