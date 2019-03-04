@@ -121,9 +121,6 @@ export default {
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
     },
-    completedAt () {
-      return moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
-    },
     lastEdited () {
       return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)
         ? 'never'
