@@ -8,15 +8,11 @@
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
-      >
-        matching your filters.
-      </i>
+      >matching your filters.</i>
       <i
         v-if="filter.length <= 0"
         style="font-style:inherit"
-      >
-        this month!
-      </i>
+      >this month!</i>
     </p>
     <div
       v-else
@@ -36,16 +32,12 @@
               class="tag is-pulled-right"
               :class="progressClass(key)"
               :title="`You are ${percentDone(key)}% complete with these assignments.`"
-            >
-              {{ percentDone(key) }}%
-            </span>
+            >{{ percentDone(key) }}%</span>
             <span
               class="key"
               :title="headerTitle"
               @click="headerClick(key)"
-            >
-              {{ headerText(key) }}
-            </span>
+            >{{ headerText(key) }}</span>
           </p>
           <AssignmentPanelBlock
             v-for="a in assignments"
@@ -57,6 +49,12 @@
         </div>
       </div>
     </div>
+    <hr>
+    <p
+      class="has-text-centered has-text-grey"
+    >
+      {{ farFutureUpcomingAssignments.length }} far future assignments hidden
+    </p>
   </div>
 </template>
 
@@ -110,6 +108,9 @@ export default {
       return this.groupBy === 'course'
         ? this.upcomingAssignmentsGroupedByCourse
         : this.upcomingAssignmentsGroupedByDueDate;
+    },
+    farFutureUpcomingAssignments () {
+      return this.$store.getters.farFutureUpcomingAssignments;
     },
     upcomingAssignmentsGroupedByDueDate () {
       return this.$store.getters.upcomingAssignmentsGroupedByDueDate;

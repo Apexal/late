@@ -1,6 +1,8 @@
 import axios from '@/api';
 import moment from 'moment';
 
+const UPCOMING_ASSIGNMENTS_WEEK_CUTOFF = 3;
+
 const removedCourse = {
   listing_id: '000',
   section_id: '000',
@@ -16,6 +18,22 @@ const state = {
 };
 
 const getters = {
+  limitedUpcomingAssignments: (state, getters, rootState) =>
+    state.upcomingAssignments.filter(a =>
+      moment(a.dueDate).isBefore(
+        moment(rootState.now)
+          .add(UPCOMING_ASSIGNMENTS_WEEK_CUTOFF, 'weeks')
+          .startOf('day')
+      )
+    ),
+  farFutureUpcomingAssignments: (state, getters, rootState) =>
+    state.upcomingAssignments.filter(a =>
+      moment(a.dueDate).isAfter(
+        moment(rootState.now)
+          .add(UPCOMING_ASSIGNMENTS_WEEK_CUTOFF, 'weeks')
+          .startOf('day')
+      )
+    ),
   getUpcomingAssigmentsDueOn: state => date => {
     return state.upcomingAssignments.filter(a => a.dueDate === date);
   },
@@ -25,10 +43,10 @@ const getters = {
   getUpcomingAssignmentById: state => assignmentID => {
     return state.upcomingAssignments.find(a => a._id === assignmentID);
   },
-  upcomingAssignmentsGroupedByDueDate: state => {
+  upcomingAssignmentsGroupedByDueDate: (state, getters) => {
     const grouped = {};
 
-    for (let a of state.upcomingAssignments) {
+    for (let a of getters.limitedUpcomingAssignments) {
       const day = moment(a.dueDate)
         .startOf('day')
         .toDate();
@@ -40,12 +58,11 @@ const getters = {
 
     return grouped;
   },
-  upcomingAssignmentsGroupedByCourse: state => {
+  upcomingAssignmentsGroupedByCourse: (state, getters) => {
     const grouped = {};
 
-    for (let a of state.upcomingAssignments) {
+    for (let a of getters.limitedUpcomingAssignments) {
       if (!grouped[a.courseCRN]) grouped[a.courseCRN] = [];
-
       grouped[a.courseCRN].push(a);
     }
 
@@ -105,7 +122,7 @@ const getters = {
     assessment,
     [type]: assessment
   }),
-  getWorkBlocks: (state, getters) => {
+  getWorkBlocks: state => {
     return state.upcomingAssignments
       .map(a => a._blocks)
       .concat(state.upcomingExams.map(ex => ex._blocks))
