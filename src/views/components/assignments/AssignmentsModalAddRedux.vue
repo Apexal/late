@@ -27,13 +27,13 @@
             </li>
           </ul>
         </div>
-
         <transition
           name="fade"
           mode="out-in"
         >
           <Component
             :is="currentStep.component"
+            class="component"
             :courses="courses"
             :course-c-r-n="courseCRN"
             :title="title"
@@ -57,7 +57,7 @@
       </div>
       <footer class="modal-card-foot modal-nav">
         <div
-          v-if="step > 1"
+          v-if="step > 0"
           class="modal-nav-button back"
           @click="lastStep()"
         >
@@ -70,18 +70,18 @@
           <h1>Cancel</h1>
         </div>
         <div
-          v-if="step !== 4"
-          class="modal-nav-button next"
-          @click="nextStep()"
-        >
-          <i class="fas fa-arrow-right" />
-        </div>
-        <div
-          v-if="step === 4"
+          v-if="isComplete"
           class="modal-nav-button save"
           @click="save()"
         >
           <h1>Create Assignment</h1>
+        </div>
+        <div
+          v-if="step !== steps.length - 1"
+          class="modal-nav-button next"
+          @click="nextStep()"
+        >
+          <i class="fas fa-arrow-right" />
         </div>
       </footer>
     </div>
@@ -144,6 +144,10 @@ export default {
     currentStep () {
       return this.steps[this.step];
     },
+    isComplete () {
+      if (!this.courseCRN || !this.title || !this.dueTime || !this.dueDate) return false;
+      return true;
+    },
     courseCRN () {
       return this.$store.state.addAssignmentModal.courseCRN;
     },
@@ -171,34 +175,10 @@ export default {
   },
   methods: {
     nextStep () {
-      this.step = this.step + 1;
-      this.updateSteps();
+      this.step += 1;
     },
     lastStep () {
-      this.step = this.step - 1;
-      this.updateSteps();
-    },
-    updateSteps () {
-      let curStep = this.step;
-      this.steps.forEach(function (step_) {
-        if (step_.step === curStep) {
-          step_.active = true;
-        } else {
-          step_.active = false;
-        }
-      });
-      if (this.courseCRN !== -1) {
-        this.steps[0].completed = true;
-      }
-      if (this.title !== '') {
-        this.steps[1].completed = true;
-      }
-      if (this.dueDate !== '') {
-        this.steps[2].completed = true;
-      }
-      if (this.step === 4) {
-        this.steps[3].completed = true;
-      }
+      this.step -= 1;
     },
     setValue (property, value) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
@@ -209,9 +189,7 @@ export default {
       this.loading = true;
       let request;
 
-      let incomplete = this.steps.some(step => !step.completed);
-
-      if (incomplete) {
+      if (!this.isComplete) {
         this.$toasted.error('Make sure you complete every step!');
         return;
       }
@@ -230,7 +208,6 @@ export default {
           priority: this.priority
         });
       } catch (e) {
-        console.error(e);
         this.$toasted.error(
           'There was an error adding the assignment. Please try again later.'
         );
@@ -261,13 +238,6 @@ export default {
       });
 
       this.loading = false;
-
-      // Reset Steps
-      this.steps.forEach(function (step_) {
-        step_.completed = false;
-        step_.active = false;
-      });
-      this.steps[0].active = true;
 
       // Close modal
       this.$emit('toggle-modal');
