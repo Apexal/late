@@ -149,6 +149,15 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
         }
       });
 
+    course.periods = course.periods.sort((a, b) => {
+      if (a.day > b.day) return 1;
+      else if (a.day < b.day) return -1;
+      else if (parseInt(a.start) > parseInt(b.start)) return 1;
+      else if (parseInt(a.start) < parseInt(b.start)) return -1;
+
+      return 0;
+    });
+
     courseSchedule.push(course);
   });
 

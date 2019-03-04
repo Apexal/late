@@ -1,4 +1,3 @@
-const moment = require('moment');
 const ical = require('node-ical');
 const logger = require('../../modules/logger');
 const {
