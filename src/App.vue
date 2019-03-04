@@ -238,9 +238,6 @@ export default {
   opacity: 0;
 }
 
-.sidebar-holder {
-}
-
 .child-view {
   transition: all 100ms cubic-bezier(0.55, 0, 0.1, 1);
 }
@@ -262,17 +259,16 @@ export default {
 
 //Slide-fade
 .slide-fade-enter-active {
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 .slide-fade-leave-active {
-  transition: all .15s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all 0.15s cubic-bezier(1, 0.5, 0.8, 1);
 }
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(-80px);
   opacity: 0;
 }
-
 
 .no-bottom-padding {
   padding-bottom: 0;

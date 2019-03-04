@@ -53,7 +53,7 @@
           <ModalSelectCourse
             v-if="step === 1"
             :courses="courses"
-            :active-c-r-n="this.assignment.courseCRN"
+            :active-c-r-n="assignment.courseCRN"
             @update-crn="assignment.courseCRN = $event"
             @next-step="nextStep()"
           />
@@ -205,7 +205,7 @@ export default {
     }
   },
   watch: {
-    initialAssignment (newA, oldA) {
+    initialAssignment (newA) {
       this.assignment = this.convertAssignment(newA);
     }
   },

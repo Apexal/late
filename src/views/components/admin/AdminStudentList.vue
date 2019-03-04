@@ -67,7 +67,24 @@ import AdminStudentListOverview from '@/views/components/admin/AdminStudentListO
 export default {
   name: 'AdminStudentList',
   components: { AdminStudentListOverview },
-  props: ['loading', 'sortBy', 'sortAscending', 'students']
+  props: {
+    loading: {
+      type: Boolean,
+      required: true
+    },
+    sortBy: {
+      type: String,
+      required: true
+    },
+    sortAscending: {
+      type: Boolean,
+      required: true
+    },
+    students: {
+      type: Array,
+      required: true
+    }
+  }
 };
 </script>
 
