@@ -158,6 +158,11 @@ export default {
           height: 700,
           allDay: false,
           allDayText: 'Due',
+          businessHours: {
+            dow: [0, 1, 2, 3, 4, 5, 6],
+            start: this.$store.state.auth.user.earliestWorkTime,
+            end: this.$store.state.auth.user.latestWorkTime
+          },
           scrollTime: this.$store.state.auth.user.earliestWorkTime,
           timezone: 'local',
           defaultView: 'agendaFiveDay',
