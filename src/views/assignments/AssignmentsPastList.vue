@@ -4,93 +4,88 @@
       Week of {{ weekOf }}
     </h2>
 
-    <div class="columns">
-      <div class="column is-narrow">
-        <button
-          class="button"
-          :class="{ 'is-loading': loading }"
-          @click="shiftDates(-7)"
-        >
-          <span class="icon">
-            <i class="fas fa-chevron-left" />
-          </span>
-        </button>
-      </div>
-      <div class="column is-narrow">
-        <div class="field is-horizontal">
-          <div class="field-body">
-            <div class="control">
-              <input
-                id="start"
-                :value="startDate"
-                class="input"
-                type="date"
-                min="2018-09-01"
-                :max="endDate"
-                disabled
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column">
-        <div class="buttons is-centered">
-          <div class="field is-horizontal">
-            <div class="field-body">
-              <div
-                class="control"
-                style="margin-right:1em;"
-              >
-                <input
-                  id="assignmentFilter"
-                  v-model="assignmentFilter"
-                  class="input"
-                  type="text"
-                  placeholder="Filter Assignments"
-                >
-              </div>
-            </div>
-
-            <button
-              class="button is-primary"
-              :disabled="isLastWeek"
-              @click="gotoLastWeek"
+    <div class="is-flex-tablet">
+      <button
+        class="button"
+        :class="{ 'is-loading': loading }"
+        @click="shiftDates(-7)"
+      >
+        <span class="icon">
+          <i class="fas fa-chevron-left" />
+        </span>
+      </button>
+      <div class="field is-horizontal">
+        <div class="field-body">
+          <div class="control">
+            <input
+              id="start"
+              :value="startDate"
+              class="input"
+              type="date"
+              min="2018-09-01"
+              :max="endDate"
+              disabled
             >
-              Last Week
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="column is-narrow">
-        <div class="field is-horizontal">
-          <div class="field-body">
-            <div class="control">
-              <input
-                id="end"
-                :value="endDate"
-                class="input"
-                type="date"
-                min="2018-09-01"
-                :max="today"
-                disabled
-              >
-            </div>
           </div>
         </div>
       </div>
 
-      <div class="column is-narrow">
-        <button
-          class="button"
-          :class="{ 'is-loading': loading }"
-          :disabled="!canGoForward"
-          @click="shiftDates(7)"
-        >
-          <span class="icon">
-            <i class="fas fa-chevron-right" />
-          </span>
-        </button>
+      <div
+        style="flex: 1"
+        class="buttons is-centered"
+      >
+        <div class="field is-horizontal">
+          <div class="field-body">
+            <div
+              class="control"
+              style="margin-right:1em;"
+            >
+              <input
+                id="assignmentFilter"
+                v-model="assignmentFilter"
+                class="input"
+                type="text"
+                placeholder="Filter Assignments"
+              >
+            </div>
+          </div>
+
+          <button
+            class="button is-primary"
+            :disabled="isLastWeek"
+            @click="gotoLastWeek"
+          >
+            Last Week
+          </button>
+        </div>
       </div>
+
+      <div class="field is-horizontal">
+        <div class="field-body">
+          <div class="control">
+            <input
+              id="end"
+              :value="endDate"
+              class="input"
+              type="date"
+              min="2018-09-01"
+              :max="today"
+              disabled
+            >
+          </div>
+        </div>
+      </div>
+
+      <button
+        class="button"
+        :class="{ 'is-loading': loading }"
+        :disabled="!canGoForward"
+        @click="shiftDates(7)"
+      >
+        <span class="icon">
+          <i class="fas fa-chevron-right" />
+        </span>
+      </button>
     </div>
 
     <AssignmentsTable

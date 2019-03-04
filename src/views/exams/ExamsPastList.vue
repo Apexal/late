@@ -1,37 +1,34 @@
 <template>
   <div class="past-exams">
-    <div class="columns">
-      <div class="column is-narrow">
-        <button
-          class="button"
-          :disabled="!canGoPrev"
-          :class="{ 'is-loading': loading }"
-          @click="prevMonth"
-        >
-          <span class="icon">
-            <i class="fas fa-chevron-left" />
-          </span>
-        </button>
-      </div>
+    <div class="is-flex">
+      <button
+        class="button"
+        :disabled="!canGoPrev"
+        :class="{ 'is-loading': loading }"
+        @click="prevMonth"
+      >
+        <span class="icon">
+          <i class="fas fa-chevron-left" />
+        </span>
+      </button>
 
-      <div class="column">
-        <h2 class="subtitle has-text-centered">
-          Month of {{ monthOf }}
-        </h2>
-      </div>
+      <h2
+        style="flex: 1"
+        class="subtitle has-text-centered"
+      >
+        Month of {{ monthOf }}
+      </h2>
 
-      <div class="column is-narrow">
-        <button
-          class="button"
-          :disabled="!canGoNext"
-          :class="{ 'is-loading': loading }"
-          @click="nextMonth"
-        >
-          <span class="icon">
-            <i class="fas fa-chevron-right" />
-          </span>
-        </button>
-      </div>
+      <button
+        class="button"
+        :disabled="!canGoNext"
+        :class="{ 'is-loading': loading }"
+        @click="nextMonth"
+      >
+        <span class="icon">
+          <i class="fas fa-chevron-right" />
+        </span>
+      </button>
     </div>
 
     <table class="exam-table table is-full-width">
