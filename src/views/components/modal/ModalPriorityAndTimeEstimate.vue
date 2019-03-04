@@ -103,7 +103,7 @@ import moment from 'moment';
 
 export default {
   name: 'ModalPriorityAndTimeEstimate',
-  props: ['activeCRN', 'dueDate', 'dueTime', 'priority', 'timeEstimate'],
+  props: ['courseCRN', 'dueDate', 'dueTime', 'priority', 'timeEstimate'],
   computed: {
     prioritySliderClass () {
       return {
@@ -134,9 +134,9 @@ export default {
       return time.format('HH:mm');
     },
     dueDatePeriod () {
-      if (!this.activeCRN) return false;
+      if (!this.courseCRN) return false;
       let course = this.$store.getters.current_schedule.find(
-        course => course.crn === this.activeCRN
+        course => course.crn === this.courseCRN
       );
       return course.periods.find(p => p.day === moment(this.dueDate).day());
     }

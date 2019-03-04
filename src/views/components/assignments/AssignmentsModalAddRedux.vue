@@ -32,40 +32,26 @@
           name="fade"
           mode="out-in"
         >
-          <ModalSelectCourse
-            v-if="step === 0"
+          <Component
+            :is="currentStep.component"
             :courses="courses"
-            :active-c-r-n="courseCRN"
-            @update-crn="setValue('courseCRN', $event)"
-            @next-step="nextStep()"
-          />
-          <ModalTitleAndDescription
-            v-else-if="step === 1"
+            :course-c-r-n="courseCRN"
             :title="title"
             :description="description"
             :title-place-holder="'Assignment Title - Keep it concise!'"
             :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
-            @update-title="setValue('title', $event)"
-            @update-desc="setValue('description', $event)"
-            @next-step="nextStep()"
-          />
-          <ModalCalendar
-            v-else-if="step === 2"
-            :active-c-r-n="courseCRN"
-            :active-due-date="dueDate"
-            @update-due-time="setValue('dueTime', $event)"
-            @update-date="setValue('dueDate', $event); nextStep();"
-          />
-          <ModalPriorityAndTimeEstimate
-            v-else-if="step === 3"
-            :active-c-r-n="courseCRN"
             :due-date="dueDate"
             :due-time="dueTime"
             :time-estimate="timeEstimate"
             :priority="priority"
+            @update-crn="setValue('courseCRN', $event)"
+            @update-date="setValue('dueDate', $event); nextStep();"
             @update-due-time="setValue('dueTime', $event)"
+            @update-title="setValue('title', $event)"
+            @update-desc="setValue('description', $event)"
             @update-priority="setValue('priority', $event)"
             @update-time-estimate="setValue('timeEstimate', $event)"
+            @next-step="nextStep()"
           />
         </transition>
       </div>
@@ -155,6 +141,9 @@ export default {
     };
   },
   computed: {
+    currentStep () {
+      return this.steps[this.step];
+    },
     courseCRN () {
       return this.$store.state.addAssignmentModal.courseCRN;
     },

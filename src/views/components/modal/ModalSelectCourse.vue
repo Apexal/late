@@ -26,10 +26,10 @@
 <script>
 export default {
   name: 'ModalSelectCourse',
-  props: ['courses', 'activeCRN'],
+  props: ['courses', 'courseCRN'],
   methods: {
     isActive (crn) {
-      return this.activeCRN === crn ? 'active' : '';
+      return this.courseCRN === crn ? 'active' : '';
     },
     setCRN (crn) {
       this.$emit('update-crn', crn);

@@ -21,7 +21,7 @@ export default {
   components: {
     FullCalendar
   },
-  props: ['activeDueDate', 'activeCRN'],
+  props: ['activeDueDate', 'courseCRN'],
   data () {
     return {
       calendar: {
@@ -53,11 +53,11 @@ export default {
         .map(ev =>
           Object.assign({}, ev, { title: this.periodType(ev.period) })
         );
-      return courseSchedule.filter(ev => ev.course.crn === this.activeCRN);
+      return courseSchedule.filter(ev => ev.course.crn === this.courseCRN);
     }
   },
   watch: {
-    activeCRN () {
+    courseCRN () {
       this.$refs.calendar.fireMethod('prev');
       this.$refs.calendar.fireMethod('next');
     },
@@ -76,7 +76,7 @@ export default {
     },
     dayRender (date, cell) {
       if (moment(date).isSame(this.activeDueDate, 'day')) {
-        cell.css('background-color', this.course(this.activeCRN).color);
+        cell.css('background-color', this.course(this.courseCRN).color);
       }
     },
     dayClick (date) {
