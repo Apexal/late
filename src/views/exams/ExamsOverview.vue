@@ -61,9 +61,9 @@ import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 import ExamsModalEdit from '@/views/components/exams/ExamsModalEdit';
 
-import AssessmentOverviewDescription from '@/views/components/AssessmentOverviewDescription';
-import AssessmentOverviewActionButtons from '@/views/components/AssessmentOverviewActionButtons';
-import AssessmentOverviewTitle from '@/views/components/AssessmentOverviewTitle';
+import AssessmentOverviewDescription from '@/views/components/assessment/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/views/components/assessment/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/views/components/assessment/AssessmentOverviewTitle';
 import ExamOverviewStats from '@/views/components/exams/overview/ExamOverviewStats';
 import ExamOverviewTabs from '@/views/components/exams/overview/ExamOverviewTabs';
 
