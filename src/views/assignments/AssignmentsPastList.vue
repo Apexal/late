@@ -93,83 +93,12 @@
       </div>
     </div>
 
-    <table class="table is-full-width">
-      <thead>
-        <tr>
-          <th>Due</th>
-          <th class="is-hidden-mobile">
-            Course
-          </th>
-          <th>Assignment</th>
-          <th>
-            <span class="is-hidden-touch">
-              Completed
-            </span>
-          </th>
-          <th class="is-hidden-touch" />
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="a in filtered"
-          :key="a._id"
-        >
-          <td :title="toFullDateTimeString(a.dueDate)">
-            {{ toDateShorterString(a.dueDate) }}
-            <span
-              class="has-text-grey"
-            >
-              {{ toTimeString(a.dueDate) }}
-            </span>
-          </td>
-          <td
-            class="is-hidden-mobile"
-            @click="$store.commit('OPEN_COURSE_MODAL', course(a))"
-          >
-            <span
-              class="dot"
-              :title="course(a).longname"
-              :style="'background-color: ' + course(a).color"
-            />
-            <b class="course-title">
-              {{ course(a).longname }}
-            </b>
-          </td>
-          <td>
-            <span
-              class="dot is-hidden-tablet"
-              :title="course(a).longname"
-              :style="'background-color: ' + course(a).color"
-              @click="$store.commit('OPEN_COURSE_MODAL', course(a))"
-            />
-            <router-link
-              class="assignment-link"
-              :title="a.description.substring(0, 500)"
-              :to="{name: 'assignments-overview', params: { assignmentID: a._id }}"
-            >
-              {{ a.title }}
-            </router-link>
-          </td>
-          <td>
-            <span class="icon">
-              <i
-                class="fas"
-                :class="{ 'fa-check': a.completed, 'fa-times': !a.completed }"
-              />
-            </span>
-          </td>
-          <td class="is-hidden-touch">
-            <button
-              class="button is-danger tooltip"
-              data-tooltip="Remove Assignment"
-              @click="removeAssignment(a)"
-            >
-              Remove
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <AssignmentsTable
+      :assignments="filtered"
+      :show-remove-button="true"
+      @remove-assignment="removeAssignment"
+    />
+
     <p
       v-if="filtered.length === 0"
       class="has-text-centered has-text-grey"
@@ -178,15 +107,11 @@
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
-      >
-        matching your filters.
-      </i>
+      >matching your filters.</i>
       <i
         v-if="filter.length <= 0"
         style="font-style:inherit"
-      >
-        this month!
-      </i>
+      >this month!</i>
     </p>
   </div>
 </template>
@@ -194,8 +119,11 @@
 <script>
 import moment from 'moment';
 
+import AssignmentsTable from '@/views/components/assignments/AssignmentsTable';
+
 export default {
   name: 'AssignmentsPastList',
+  components: { AssignmentsTable },
   props: {
     showCompleted: {
       type: Boolean,
@@ -265,7 +193,6 @@ export default {
   methods: {
     async removeAssignment (assignment) {
       // Confirm user wants to remove assignment
-      const assignmentTitle = assignment.title;
       if (
         !confirm(
           `Are you sure you want to remove assignment ${assignment.title}?`
