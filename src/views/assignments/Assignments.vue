@@ -1,9 +1,13 @@
 <template>
   <section class="section assignment-list">
+    <h1 class="is-hidden-desktop title">
+      {{ title }}
+    </h1>
+
     <div class="tab-nav tabs is-right">
       <ul>
         <h1
-          class="title"
+          class="is-hidden-touch title"
           style="flex: 1"
         >
           {{ title }}
