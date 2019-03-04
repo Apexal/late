@@ -106,6 +106,9 @@ export default {
         }[this.assignment.priority] || 'Unknown'
       );
     },
+    completedAt () {
+      return moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
+    },
     timeLeft () {
       const diff = moment.duration(
         moment(this.assignment.dueDate).diff(this.now)

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import CoursePeriodsTable from '@/components/CoursePeriodsTable';
+import CoursePeriodsTable from '@/views/components/CoursePeriodsTable';
 export default {
   name: 'CourseModalSchedule',
   components: { CoursePeriodsTable },

@@ -63,7 +63,7 @@
 <script>
 import moment from 'moment';
 
-import AssignmentPanelBlock from '@/components/assignments/upcoming/AssignmentPanelBlock';
+import AssignmentPanelBlock from '@/views/components/assignments/upcoming/AssignmentPanelBlock';
 
 export default {
   name: 'AssignmentsUpcoming',

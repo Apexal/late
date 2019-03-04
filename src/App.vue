@@ -77,12 +77,12 @@
   </div>
 </template>
 <script>
-import TheHeader from '@/components/TheHeader';
-import TheFooter from '@/components/TheFooter';
-import TheSidebar from '@/components/sidebar/TheSidebar';
-import AssignmentsModalAdd from '@/components/assignments/AssignmentsModalAddRedux';
-import ExamsModalAdd from '@/components/exams/ExamsModalAdd';
-import CourseModal from '@/components/courses/CourseModal';
+import TheHeader from '@/views/components/TheHeader';
+import TheFooter from '@/views/components/TheFooter';
+import TheSidebar from '@/views/components/sidebar/TheSidebar';
+import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
+import ExamsModalAdd from '@/views/components/exams/ExamsModalAdd';
+import CourseModal from '@/views/components/courses/CourseModal';
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';

@@ -83,12 +83,12 @@ import moment from 'moment';
 import 'confetti-js';
 
 // Page components
-import AssignmentOverviewStats from '@/components/assignments/overview/AssignmentOverviewStats';
-import AssessmentOverviewDescription from '@/components/AssessmentOverviewDescription';
-import AssessmentOverviewActionButtons from '@/components/AssessmentOverviewActionButtons';
-import AssessmentOverviewTitle from '@/components/AssessmentOverviewTitle';
-import AssignmentsModalEdit from '@/components/assignments/AssignmentsModalEdit';
-import AssignmentOverviewTabs from '@/components/assignments/overview/AssignmentOverviewTabs';
+import AssignmentOverviewStats from '@/views/components/assignments/overview/AssignmentOverviewStats';
+import AssessmentOverviewDescription from '@/views/components/assessment/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/views/components/assessment/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/views/components/assessment/AssessmentOverviewTitle';
+import AssignmentsModalEdit from '@/views/components/assignments/AssignmentsModalEdit';
+import AssignmentOverviewTabs from '@/views/components/assignments/overview/AssignmentOverviewTabs';
 
 export default {
   name: 'AssignmentsOverview',
@@ -120,9 +120,6 @@ export default {
     },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assignment.courseCRN);
-    },
-    completedAt () {
-      return moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
     },
     lastEdited () {
       return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)

@@ -63,10 +63,10 @@
 <script>
 import moment from 'moment';
 
-import SidebarSchedule from '@/components/sidebar/SidebarSchedule';
-import SidebarPressingAssignments from '@/components/sidebar/SidebarPressingAssignments';
-import SidebarUpcomingExamsList from '@/components/sidebar/SidebarUpcomingExamsList';
-import SidebarTodoList from '@/components/sidebar/SidebarTodoList';
+import SidebarSchedule from '@/views/components/sidebar/SidebarSchedule';
+import SidebarPressingAssignments from '@/views/components/sidebar/SidebarPressingAssignments';
+import SidebarUpcomingExamsList from '@/views/components/sidebar/SidebarUpcomingExamsList';
+import SidebarTodoList from '@/views/components/sidebar/SidebarTodoList';
 
 export default {
   name: 'TheSidebar',

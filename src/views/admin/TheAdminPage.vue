@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import AdminStudentList from '@/components/admin/AdminStudentList';
+import AdminStudentList from '@/views/components/admin/AdminStudentList';
 
 export default {
   name: 'TheAdminPage',
