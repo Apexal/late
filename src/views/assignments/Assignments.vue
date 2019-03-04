@@ -1,10 +1,10 @@
 <template>
   <section class="section assignment-list">
-    <h1 class="is-hidden-desktop title">
+    <h1 class="is-hidden-desktop has-text-centered is-marginless title">
       {{ title }}
     </h1>
 
-    <div class="tab-nav tabs is-right">
+    <div class="tab-nav tabs is-centered">
       <ul>
         <h1
           class="is-hidden-touch title"
@@ -56,7 +56,7 @@
           </span>
         </div>
       </div>
-      <div class="level-right box">
+      <div class="level-right box has-text-centered">
         <label
           class="checkbox is-unselectable tooltip"
           data-tooltip="Toggle completed assignments."
