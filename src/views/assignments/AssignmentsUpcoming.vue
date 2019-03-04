@@ -50,10 +50,19 @@
       </div>
     </div>
     <hr>
+    <AssignmentsUpcomingFarFutureTable
+      v-if="showingFutureAssignments"
+      :assignments="farFutureUpcomingAssignments"
+      @hide="showingFutureAssignments = false"
+    />
     <p
+      v-else
       class="has-text-centered has-text-grey"
     >
       {{ farFutureUpcomingAssignments.length }} far future assignments hidden
+      <a
+        @click="showingFutureAssignments = true"
+      >Show</a>
     </p>
   </div>
 </template>
@@ -62,10 +71,11 @@
 import moment from 'moment';
 
 import AssignmentPanelBlock from '@/views/components/assignments/upcoming/AssignmentPanelBlock';
+import AssignmentsUpcomingFarFutureTable from '@/views/components/assignments/upcoming/AssignmentsUpcomingFarFutureTable.vue';
 
 export default {
   name: 'AssignmentsUpcoming',
-  components: { AssignmentPanelBlock },
+  components: { AssignmentsUpcomingFarFutureTable, AssignmentPanelBlock },
   props: {
     showCompleted: {
       type: Boolean,
@@ -79,6 +89,11 @@ export default {
       type: Array,
       default: () => []
     }
+  },
+  data () {
+    return {
+      showingFutureAssignments: true
+    };
   },
   computed: {
     now () {

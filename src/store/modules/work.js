@@ -1,7 +1,7 @@
 import axios from '@/api';
 import moment from 'moment';
 
-const UPCOMING_ASSIGNMENTS_WEEK_CUTOFF = 3;
+const UPCOMING_ASSIGNMENTS_WEEK_CUTOFF = 2;
 
 const removedCourse = {
   listing_id: '000',
