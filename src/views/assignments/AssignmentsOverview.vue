@@ -186,8 +186,9 @@ export default {
         behavior: 'smooth'
       });
     },
-    copyAssignment () {
-      this.$store.dispatch('COPY_ASSIGNMENT_TO_MODAL', this.assignment);
+    async copyAssignment () {
+      await this.$store.dispatch('COPY_ASSIGNMENT_TO_MODAL', this.assignment);
+      await this.$nextTick();
       this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
     },
     async toggleCompleted () {

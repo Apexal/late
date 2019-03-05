@@ -3,11 +3,12 @@
     <div class="field">
       <input
         id="add-title"
-        v-model="localTitle"
+        :value="title"
         type="text"
         class="input is-medium"
         maxlength="75"
         :placeholder="titlePlaceHolder"
+        @change="$emit('update-title', $event.target.value)"
         @keyup.enter="$emit('next-step')"
       >
     </div>
@@ -15,12 +16,13 @@
       <div class="control">
         <textarea
           id="add-description"
-          v-model="localDescription"
+          :value="description"
           style="height: 25%;"
           cols="30"
           rows="10"
           class="input"
           :placeholder="descriptionPlaceHolder"
+          @change="$emit('update-description', $event.target.value)"
           @keyup.ctrl.enter="$emit('next-step')"
         />
       </div>
@@ -31,19 +33,22 @@
 <script>
 export default {
   name: 'ModalTitleAndDescription',
-  props: ['title', 'description', 'titlePlaceHolder', 'descriptionPlaceHolder'],
-  data () {
-    return {
-      localTitle: this.title,
-      localDescription: this.description
-    };
-  },
-  watch: {
-    localTitle: function (val) {
-      this.$emit('update-title', val);
+  props: {
+    title: {
+      type: String,
+      required: true
     },
-    localDescription: function (val) {
-      this.$emit('update-desc', val);
+    description: {
+      type: String,
+      required: true
+    },
+    titlePlaceholder: {
+      type: String,
+      default: ''
+    },
+    descriptionPlaceholder: {
+      type: String,
+      default: ''
     }
   }
 };

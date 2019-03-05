@@ -38,8 +38,8 @@
             :course-c-r-n="courseCRN"
             :title="title"
             :description="description"
-            :title-place-holder="'Assignment Title - Keep it concise!'"
-            :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
+            :title-placeholder="'Assignment Title - Keep it concise!'"
+            :description-placeholder="'(optional) Long description of the assignment here! You can use Markdown!'"
             :due-date="dueDate"
             :due-time="dueTime"
             :time-estimate="timeEstimate"
@@ -145,7 +145,7 @@ export default {
       return this.steps[this.step];
     },
     isComplete () {
-      if (!this.courseCRN || !this.title || !this.dueTime || !this.dueDate) return false;
+      if (!this.courseCRN || !this.title || !this.dueTime || !this.dueDate) { return false; }
       return true;
     },
     courseCRN () {
