@@ -150,10 +150,14 @@ export default {
   methods: {
     addAssessment (assessmentType) {
       this.$store.commit('CLOSE_COURSE_MODAL');
-      this.$store.commit(
-        'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_COURSE_CRN',
-        this.course.crn
-      );
+      if (assessmentType === 'assignment') {
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { courseCRN: this.course.crn });
+      } else {
+        this.$store.commit(
+          'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_COURSE_CRN',
+          this.course.crn
+        );
+      }
       this.$store.commit(
         'TOGGLE_ADD_' + assessmentType.toUpperCase() + '_MODAL'
       );
