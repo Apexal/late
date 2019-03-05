@@ -58,7 +58,7 @@
       </div>
       <div class="level-right box has-text-centered">
         <label
-          class="checkbox is-unselectable tooltip"
+          class="checkbox is-unselectable tooltip show-completed-toggle"
           data-tooltip="Toggle completed assignments."
         >
           <input
@@ -256,6 +256,9 @@ span.dot.course-dot {
 
 .level-right.box {
   padding: 10px;
+  .show-completed-toggle {
+    vertical-align: middle;
+  }
 }
 
 .group-by-select {
