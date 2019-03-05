@@ -23,7 +23,15 @@
               :class="{'is-active': index === step}"
               @click="step = index"
             >
-              <a>{{ s.label }}</a>
+              <a>
+                {{ s.label }}
+                <span
+                  v-if="completedChecks[s.component]"
+                  class="icon"
+                >
+                  <i class="fa fa-check" />
+                </span>
+              </a>
             </li>
           </ul>
         </div>
@@ -46,9 +54,9 @@
             :priority="priority"
             @update-crn="setValue('courseCRN', $event)"
             @update-date="setValue('dueDate', $event); nextStep();"
-            @update-due-time="setValue('dueTime', $event)"
-            @update-title="setValue('title', $event)"
-            @update-desc="setValue('description', $event)"
+            @update-due-time="setValue('dueTime', $event.trim())"
+            @update-title="setValue('title', $event.trim())"
+            @update-desc="setValue('description', $event.trim())"
             @update-priority="setValue('priority', $event)"
             @update-time-estimate="setValue('timeEstimate', $event)"
             @next-step="nextStep()"
@@ -145,7 +153,9 @@ export default {
       return this.steps[this.step];
     },
     isComplete () {
-      if (!this.courseCRN || !this.title || !this.dueTime || !this.dueDate) { return false; }
+      if (!this.courseCRN || !this.title || !this.dueTime || !this.dueDate) {
+        return false;
+      }
       return true;
     },
     courseCRN () {
@@ -171,6 +181,14 @@ export default {
     },
     courses () {
       return this.$store.getters.current_schedule;
+    },
+    completedChecks () {
+      return {
+        ModalSelectCourse: this.courseCRN.length > 0,
+        ModalTitleAndDescription: this.title.length > 0,
+        ModalCalendar: !!this.dueDate,
+        ModalPriorityAndTimeEstimate: true
+      };
     }
   },
   methods: {
