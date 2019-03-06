@@ -50,9 +50,9 @@ export default {
         `/${this.assessmentType}s?title=${this.assessment.title}`
       );
 
-      this.related = request.data[this.assessmentType + 's'].filter(
-        assessment => assessment._id !== this.assessment._id
-      );
+      this.related = request.data[this.assessmentType + 's']
+        .filter(assessment => assessment._id !== this.assessment._id)
+        .reverse();
 
       this.loading = false;
     }
