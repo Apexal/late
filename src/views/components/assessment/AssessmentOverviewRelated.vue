@@ -15,6 +15,12 @@
       :exams="related"
       :date-format="'M/D/YY h:mm a'"
     />
+    <p
+      v-if="!loading && related.length === 0"
+      class="has-text-grey has-text-centered"
+    >
+      No related {{ assessmentType }}s found!
+    </p>
   </div>
 </template>
 

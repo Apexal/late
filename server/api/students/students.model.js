@@ -182,7 +182,7 @@ schema.methods.getAssignments = function (start, end, title) {
     .exec();
 };
 
-schema.methods.getExams = function (start, end) {
+schema.methods.getExams = function (start, end, title) {
   let query = {
     _student: this._id
   };
@@ -195,6 +195,10 @@ schema.methods.getExams = function (start, end) {
   if (end) {
     query.date = query.date || {};
     query.date['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate();
+  }
+
+  if (title) {
+    query.title = new RegExp('^' + title + '$', 'i');
   }
 
   return this.model('Exam')

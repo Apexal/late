@@ -40,9 +40,9 @@ async function getExamMiddleware (ctx, next) {
  */
 async function getExams (ctx) {
   let exams;
-  let { start, end } = ctx.query;
+  let { start, end, title } = ctx.query;
   try {
-    exams = await ctx.state.user.getExams(start, end);
+    exams = await ctx.state.user.getExams(start, end, title);
   } catch (e) {
     logger.error(`Failed to send exams to ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.internalServerError('There was an error loading your exams.');
@@ -225,9 +225,7 @@ async function addComment (ctx) {
     await ctx.state.exam.save();
   } catch (e) {
     logger.error(
-      `Failed to save exam ${examID} for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
+      `Failed to save exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
     );
     return ctx.badRequest('There was an error adding the comment.');
   }
@@ -254,9 +252,7 @@ async function deleteComment (ctx) {
     await ctx.state.exam.save();
   } catch (e) {
     logger.error(
-      `Failed to save exam ${examID} for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
+      `Failed to save exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
     );
     return ctx.badRequest('There was an error adding the comment.');
   }
