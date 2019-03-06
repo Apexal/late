@@ -54,17 +54,19 @@
           >{{ c.longname }}</span>
         </div>
       </div>
-      <div class="level-right box has-text-centered">
-        <label
-          class="checkbox is-unselectable tooltip show-completed-toggle"
-          data-tooltip="Toggle completed assignments."
-        >
-          <input
-            v-model="showCompleted"
-            type="checkbox"
+      <div class="level-right has-text-centered">
+        <div class="box">
+          <label
+            class="checkbox is-unselectable tooltip show-completed-toggle"
+            data-tooltip="Toggle completed assignments."
           >
-          Show Completed
-        </label>
+            <input
+              v-model="showCompleted"
+              type="checkbox"
+            >
+            Show Completed
+          </label>
+        </div>
         <div
           v-if="view === 'assignments-upcoming'"
           class="select group-by-select"
@@ -252,11 +254,10 @@ span.dot.course-dot {
   flex-shrink: initial;
 }
 
-.level-right.box {
-  padding: 10px;
-  .show-completed-toggle {
-    vertical-align: middle;
-  }
+.level-right .box {
+  padding: 5px;
+  margin: 0;
+  display: inline-block;
 }
 
 .group-by-select {
