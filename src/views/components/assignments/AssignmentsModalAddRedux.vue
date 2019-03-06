@@ -52,13 +52,15 @@
             :due-time="dueTime"
             :time-estimate="timeEstimate"
             :priority="priority"
+            :is-recurring="isRecurring"
             @update-crn="setValue('courseCRN', $event)"
             @update-date="setValue('dueDate', $event); nextStep();"
             @update-due-time="setValue('dueTime', $event.trim())"
             @update-title="setValue('title', $event.trim())"
             @update-desc="setValue('description', $event.trim())"
-            @update-priority="setValue('priority', $event)"
             @update-time-estimate="setValue('timeEstimate', $event)"
+            @update-priority="setValue('priority', $event)"
+            @update-is-recurring="setValue('isRecurring', $event)"
             @next-step="nextStep()"
           />
         </transition>
@@ -104,7 +106,7 @@ import 'bulma-steps';
 import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
 import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
 import ModalCalendar from '@/views/components/modal/ModalCalendar';
-import ModalPriorityAndTimeEstimate from '@/views/components/modal/ModalPriorityAndTimeEstimate';
+import ModalTime from '@/views/components/modal/ModalTime';
 
 export default {
   name: 'AssignmentsModalAdd',
@@ -112,7 +114,7 @@ export default {
     ModalSelectCourse,
     ModalTitleAndDescription,
     ModalCalendar,
-    ModalPriorityAndTimeEstimate
+    ModalTime
   },
   props: {
     open: {
@@ -143,7 +145,7 @@ export default {
         {
           label: 'Time',
           completed: false,
-          component: 'ModalPriorityAndTimeEstimate'
+          component: 'ModalTime'
         }
       ]
     };
@@ -179,6 +181,9 @@ export default {
     priority () {
       return this.$store.state.addAssignmentModal.priority;
     },
+    isRecurring () {
+      return this.$store.state.addAssignmentModal.isRecurring;
+    },
     courses () {
       return this.$store.getters.current_schedule;
     },
@@ -187,7 +192,7 @@ export default {
         ModalSelectCourse: this.courseCRN.length > 0,
         ModalTitleAndDescription: this.title.length > 0,
         ModalCalendar: !!this.dueDate,
-        ModalPriorityAndTimeEstimate: true
+        ModalTime: true
       };
     }
   },
@@ -223,7 +228,8 @@ export default {
           ).toDate(),
           courseCRN: this.courseCRN,
           timeEstimate: this.timeEstimate,
-          priority: this.priority
+          priority: this.priority,
+          isRecurring: this.isRecurring
         });
       } catch (e) {
         this.$toasted.error(

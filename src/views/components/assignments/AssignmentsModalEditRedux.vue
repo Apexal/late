@@ -70,7 +70,7 @@
             v-else-if="step === 3"
             @update-date="assignment.dueDate = $event; nextStep();"
           />
-          <ModalPriorityAndTimeEstimate
+          <ModalTime
             v-else-if="step === 4"
             :active-c-r-n="assignment.courseCRN"
             :time-hour="assignment.timeHour"
@@ -134,7 +134,7 @@ import 'bulma-steps';
 import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
 import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
 import ModalCalendar from '@/views/components/modal/ModalCalendar';
-import ModalPriorityAndTimeEstimate from '@/views/components/modal/ModalPriorityAndTimeEstimate';
+import ModalTime from '@/views/components/modal/ModalTime';
 
 export default {
   name: 'AssignmentsModalAddRedux',
@@ -142,7 +142,7 @@ export default {
     ModalSelectCourse,
     ModalTitleAndDescription,
     ModalCalendar,
-    ModalPriorityAndTimeEstimate
+    ModalTime
   },
   props: {
     open: {

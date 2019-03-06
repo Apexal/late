@@ -31,7 +31,15 @@ const schema = new Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Block'
       }
-    ]
+    ],
+    isRecurring: {
+      type: Boolean,
+      default: false
+    },
+    recurringOriginal: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Assignment'
+    }
   },
   { timestamps: true }
 );
@@ -87,13 +95,14 @@ schema.virtual('scheduledTime').get(function () {
 });
 
 schema.virtual('scheduledTimeRemaing').get(function () {
-  return this._blocks.filter(b => !b.passed).reduce((acc, block) => acc + block.duration, 0);
+  return this._blocks
+    .filter(b => !b.passed)
+    .reduce((acc, block) => acc + block.duration, 0);
 });
 
 schema.virtual('fullyScheduled').get(function () {
   return this.scheduledTime >= this.timeEstimate * 60;
 });
-
 
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the assignment date now

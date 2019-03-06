@@ -8,7 +8,8 @@ const state = {
   title: '',
   description: '',
   timeEstimate: 1.0,
-  priority: 3
+  priority: 3,
+  isRecurring: false
 };
 const getters = {};
 const actions = {

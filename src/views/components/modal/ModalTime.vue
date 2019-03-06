@@ -6,9 +6,7 @@
           <label
             class="label"
             for="time-due"
-          >
-            When is it due?
-          </label>
+          >When is it due?</label>
           <div class="control">
             <input
               id="time-due"
@@ -25,24 +23,18 @@
             :class="{ 'is-active': dueTime === dueDatePeriodStart}"
             :disabled="!dueDatePeriod"
             @click="dueDatePeriod && $emit('update-due-time', dueDatePeriodStart)"
-          >
-            Start of Class
-          </span>
+          >Start of Class</span>
           <span
             class="button is-small"
             :class="{ 'is-active': dueTime === '23:59'}"
             @click="$emit('update-due-time', '23:59')"
-          >
-            Midnight
-          </span>
+          >Midnight</span>
           <span
             class="button is-small"
             :class="{ 'is-active': dueTime === dueDatePeriodEnd}"
             :disabled="!dueDatePeriod"
             @click="dueDatePeriod && $emit('update-due-time', dueDatePeriodEnd)"
-          >
-            End of Class
-          </span>
+          >End of Class</span>
         </div>
       </div>
       <div class="column">
@@ -55,9 +47,7 @@
             <span
               class="tag"
               :class="prioritySliderClass"
-            >
-              {{ priorityString }}
-            </span>
+            >{{ priorityString }}</span>
           </label>
           <input
             id="priority"
@@ -77,9 +67,7 @@
             for="time-estimate"
           >
             Time Estimate
-            <span class="tag">
-              {{ timeEstimate }} hours
-            </span>
+            <span class="tag">{{ timeEstimate }} hours</span>
           </label>
           <input
             id="time-estimate"
@@ -93,6 +81,20 @@
             @change="$emit('update-time-estimate', $event.target.value)"
           >
         </div>
+        <div class="recurring">
+          <label
+            class="label"
+            for="is-recurring"
+          >
+            Recurring?
+            <input
+              id="is-recurring"
+              :checked="isRecurring"
+              type="checkbox"
+              @change="$emit('update-is-recurring', $event.target.checked)"
+            >
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -102,8 +104,15 @@
 import moment from 'moment';
 
 export default {
-  name: 'ModalPriorityAndTimeEstimate',
-  props: ['courseCRN', 'dueDate', 'dueTime', 'priority', 'timeEstimate'],
+  name: 'ModalTime',
+  props: [
+    'courseCRN',
+    'dueDate',
+    'dueTime',
+    'priority',
+    'timeEstimate',
+    'isRecurring'
+  ],
   computed: {
     prioritySliderClass () {
       return {
