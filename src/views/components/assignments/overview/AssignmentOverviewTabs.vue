@@ -37,6 +37,12 @@
             >{{ assignment.comments.length }}</span>
           </a>
         </li>
+        <li
+          :class="{ 'is-active': tab === 'related' }"
+          @click="$emit('set-tab', 'related')"
+        >
+          <a>Related Assignments</a>
+        </li>
       </ul>
     </div>
 
@@ -54,12 +60,14 @@
 // Tabs
 import AssessmentOverviewComments from '@/views/components/assessment/AssessmentOverviewComments';
 import AssessmentOverviewWorkSchedule from '@/views/components/assessment/AssessmentOverviewWorkSchedule';
+import AssessmentOverviewRelated from '@/views/components/assessment/AssessmentOverviewRelated';
 
 export default {
   name: 'AssignmentOverviewTabs',
   components: {
     AssessmentOverviewComments,
-    AssessmentOverviewWorkSchedule
+    AssessmentOverviewWorkSchedule,
+    AssessmentOverviewRelated
   },
   props: {
     tab: {
@@ -94,7 +102,8 @@ export default {
     componentName () {
       return {
         comments: 'AssessmentOverviewComments',
-        schedule: 'AssessmentOverviewWorkSchedule'
+        schedule: 'AssessmentOverviewWorkSchedule',
+        related: 'AssessmentOverviewRelated'
       }[this.tab];
     }
   },
