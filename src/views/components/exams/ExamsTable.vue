@@ -60,6 +60,10 @@ export default {
       type: Boolean,
       default: false
     },
+    dateFormat: {
+      type: String,
+      default: 'dddd [the] Do'
+    },
     exams: {
       type: Array,
       required: true
@@ -72,7 +76,9 @@ export default {
     fromNow (date) {
       return moment(date).from(this.now);
     },
-    toDateShorterString: date => moment(date).format('dddd [the] Do')
+    toDateShorterString (date) {
+      return moment(date).format(this.dateFormat);
+    }
   }
 };
 </script>

@@ -10,15 +10,21 @@
       v-if="!loading && assessmentType === 'assignment'"
       :assignments="related"
     />
+    <ExamsTable
+      v-if="!loading && assessmentType === 'exam'"
+      :exams="related"
+      :date-format="'M/D/YY h:mm a'"
+    />
   </div>
 </template>
 
 <script>
 import AssignmentsTable from '@/views/components/assignments/AssignmentsTable';
+import ExamsTable from '@/views/components/exams/ExamsTable';
 
 export default {
   name: 'AssessmentOverviewRelated',
-  components: { AssignmentsTable },
+  components: { AssignmentsTable, ExamsTable },
   props: {
     assessmentType: {
       type: String,
@@ -46,9 +52,16 @@ export default {
       this.loading = true;
 
       let request;
-      request = await this.$http.get(
-        `/${this.assessmentType}s?title=${this.assessment.title}`
-      );
+      try {
+        request = await this.$http.get(
+          `/${this.assessmentType}s?title=${this.assessment.title}`
+        );
+      } catch (e) {
+        this.$toasted.error(`Failed to load related ${this.assessmentType}s.`);
+        this.related = [];
+        this.loading = false;
+        return;
+      }
 
       this.related = request.data[this.assessmentType + 's']
         .filter(assessment => assessment._id !== this.assessment._id)

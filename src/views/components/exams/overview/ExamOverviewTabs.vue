@@ -35,6 +35,12 @@
             >{{ exam.comments.length }}</span>
           </a>
         </li>
+        <li
+          :class="{ 'is-active': tab === 'related' }"
+          @click="$emit('set-tab', 'related')"
+        >
+          <a>Related Exams</a>
+        </li>
       </ul>
     </div>
 
@@ -52,12 +58,14 @@
 // Tabs
 import AssessmentOverviewWorkSchedule from '@/views/components/assessment/AssessmentOverviewWorkSchedule';
 import AssessmentOverviewComments from '@/views/components/assessment/AssessmentOverviewComments';
+import AssessmentOverviewRelated from '@/views/components/assessment/AssessmentOverviewRelated';
 
 export default {
   name: 'ExamOverviewTabs',
   components: {
     AssessmentOverviewComments,
-    AssessmentOverviewWorkSchedule
+    AssessmentOverviewWorkSchedule,
+    AssessmentOverviewRelated
   },
   props: {
     tab: {
@@ -89,7 +97,8 @@ export default {
     componentName () {
       return {
         comments: 'AssessmentOverviewComments',
-        schedule: 'AssessmentOverviewWorkSchedule'
+        schedule: 'AssessmentOverviewWorkSchedule',
+        related: 'AssessmentOverviewRelated'
       }[this.tab];
     }
   }
