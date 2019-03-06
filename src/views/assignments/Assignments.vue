@@ -42,7 +42,7 @@
 
     <div class="level assignment-controls">
       <div class="level-left disable-shrink">
-        <div class="filters">
+        <div class="filters has-text-centered-touch">
           <span
             v-for="c in courses"
             :key="c.original_longname"
@@ -51,9 +51,7 @@
             :class="{ 'filtered-out filtered': isFiltered(c) }"
             :style="{ 'background-color': c.color }"
             @click="toggleFilter(c)"
-          >
-            <span>{{ c.longname }}</span>
-          </span>
+          >{{ c.longname }}</span>
         </div>
       </div>
       <div class="level-right box has-text-centered">

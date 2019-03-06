@@ -54,24 +54,17 @@
       v-if="farFutureUpcomingAssignments.length > 0"
       class="far-future-assignments"
     >
-      <template v-if="showingFutureAssignments">
-        <h3 class="subtitle has-text-centered is-marginless">
-          {{ filteredFarFuture.length }} Far Future Assignments
-          <a
-            @click="showingFutureAssignments = false"
-          >Hide</a>
-        </h3>
-        <AssignmentsTable :assignments="filteredFarFuture" />
-      </template>
-      <p
-        v-else
-        class="has-text-centered has-text-grey"
-      >
-        {{ farFutureUpcomingAssignments.length }} far future assignments hidden
+      <p class="has-text-centered has-text-grey">
+        {{ farFutureUpcomingAssignments.length }} far future assignments {{ showingFutureAssignments ? 'shown' : 'hidden' }}
         <a
-          @click="showingFutureAssignments = true"
-        >Show</a>
+          @click="showingFutureAssignments = !showingFutureAssignments"
+        >Toggle</a>
       </p>
+
+      <AssignmentsTable
+        v-if="showingFutureAssignments"
+        :assignments="filteredFarFuture"
+      />
     </div>
   </div>
 </template>
@@ -174,12 +167,16 @@ export default {
       if (this.groupBy === 'course') {
         this.$store.commit('OPEN_COURSE_MODAL', this.course(key));
       } else {
-        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: moment(key) });
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+          dueDate: moment(key)
+        });
         this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
       }
     },
     clickDateHeading (date) {
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: moment(date) });
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+        dueDate: moment(date)
+      });
       this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
     },
     toggleAssignmentTitle (a) {
