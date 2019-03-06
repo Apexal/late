@@ -53,7 +53,8 @@ async function getAssignments (ctx) {
   try {
     assignments = await ctx.state.user.getAssignments(
       ctx.query.start,
-      ctx.query.end
+      ctx.query.end,
+      ctx.query.title
     );
   } catch (e) {
     logger.error(
@@ -296,9 +297,10 @@ async function toggleAssignment (ctx) {
 
   // Readjust time estimate if completed
   if (ctx.state.assignment.completed) {
-    ctx.state.assignment.timeEstimate = ctx.state.assignment._blocks
-      .filter(b => b.endTime <= ctx.state.assignment.completedAt)
-      .reduce((acc, b) => acc + b.duration, 0) / 60; // MUST BE IN HOURS
+    ctx.state.assignment.timeEstimate =
+      ctx.state.assignment._blocks
+        .filter(b => b.endTime <= ctx.state.assignment.completedAt)
+        .reduce((acc, b) => acc + b.duration, 0) / 60; // MUST BE IN HOURS
   }
 
   try {

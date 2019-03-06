@@ -155,7 +155,7 @@ schema.methods.courseFromCRN = function (currentTermCode, crn) {
   return this.semester_schedules[currentTermCode].find(c => c.crn === crn);
 };
 
-schema.methods.getAssignments = function (start, end) {
+schema.methods.getAssignments = function (start, end, title) {
   let query = {
     _student: this._id
   };
@@ -168,6 +168,10 @@ schema.methods.getAssignments = function (start, end) {
   if (end) {
     query.dueDate = query.dueDate || {};
     query.dueDate['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate();
+  }
+
+  if (title) {
+    query.title = new RegExp('^' + title + '$', 'i');
   }
 
   return this.model('Assignment')
