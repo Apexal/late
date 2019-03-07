@@ -94,6 +94,21 @@
               @change="$emit('update-is-recurring', $event.target.checked)"
             >
           </label>
+          <div
+            v-if="isRecurring"
+            class="recurring-options"
+          >
+            <div class="buttons has-addons">
+              <a
+                v-for="(day, index) in dayNames"
+                :key="index"
+                class="button"
+                :class="{ 'is-active': recurringDays.includes(index) }"
+                title="Repeat this assignment daily at the same time."
+                @click="recurringDayClick(index)"
+              >{{ day }}</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -111,7 +126,8 @@ export default {
     'dueTime',
     'priority',
     'timeEstimate',
-    'isRecurring'
+    'isRecurring',
+    'recurringDays'
   ],
   computed: {
     prioritySliderClass () {
@@ -148,9 +164,22 @@ export default {
         course => course.crn === this.courseCRN
       );
       return course.periods.find(p => p.day === moment(this.dueDate).day());
+    },
+    dayNames () {
+      return ['Su', 'M', 'T', 'W', 'Th', 'F', 'Sa'];
     }
   },
   methods: {
+    recurringDayClick (index) {
+      if (this.recurringDays.includes(index)) {
+        this.$emit(
+          'update-recurring-days',
+          this.recurringDays.filter(dayIndex => dayIndex !== index)
+        );
+      } else {
+        this.$emit('update-recurring-days', [index, ...this.recurringDays]);
+      }
+    },
     formatHours: function (val) {
       if (val > 1) {
         return val + ' hours';

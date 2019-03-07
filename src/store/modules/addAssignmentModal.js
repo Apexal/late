@@ -9,7 +9,8 @@ const state = {
   description: '',
   timeEstimate: 1.0,
   priority: 3,
-  isRecurring: false
+  isRecurring: false,
+  recurringDays: []
 };
 const getters = {};
 const actions = {

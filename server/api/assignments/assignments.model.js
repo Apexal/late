@@ -39,6 +39,10 @@ const schema = new Schema(
     recurringOriginal: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Assignment'
+    },
+    recurringdays: {
+      type: Array,
+      default: []
     }
   },
   { timestamps: true }

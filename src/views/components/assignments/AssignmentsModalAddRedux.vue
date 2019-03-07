@@ -53,6 +53,7 @@
             :time-estimate="timeEstimate"
             :priority="priority"
             :is-recurring="isRecurring"
+            :recurring-days="recurringDays"
             @update-crn="setValue('courseCRN', $event)"
             @update-date="setValue('dueDate', $event); nextStep();"
             @update-due-time="setValue('dueTime', $event.trim())"
@@ -61,6 +62,7 @@
             @update-time-estimate="setValue('timeEstimate', $event)"
             @update-priority="setValue('priority', $event)"
             @update-is-recurring="setValue('isRecurring', $event)"
+            @update-recurring-days="setValue('recurringDays', $event)"
             @next-step="nextStep()"
           />
         </transition>
@@ -183,6 +185,9 @@ export default {
     },
     isRecurring () {
       return this.$store.state.addAssignmentModal.isRecurring;
+    },
+    recurringDays () {
+      return this.$store.state.addAssignmentModal.recurringDays;
     },
     courses () {
       return this.$store.getters.current_schedule;
