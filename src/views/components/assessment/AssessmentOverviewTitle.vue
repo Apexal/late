@@ -25,7 +25,7 @@
         @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
         <b class="course-longname">{{ course.longname }}</b>
-        {{ assessment.passed ? 'Past ': '' }} {{ capitalizedAssessmentType }}
+        {{ assessment.passed ? 'Past ': '' }}{{ assessmentType === 'assignment' && assessment.isRecurring ? 'Recurring ' : '' }}{{ capitalizedAssessmentType }}
       </span>
     </div>
   </div>
