@@ -104,9 +104,9 @@
                 :key="index"
                 class="button"
                 :class="{ 'is-active': recurringDays.includes(index) }"
-                title="Repeat this assignment daily at the same time."
+                :title="`Repeat this assignment every ${day} each week.`"
                 @click="recurringDayClick(index)"
-              >{{ day }}</a>
+              >{{ day.charAt(0) }}</a>
             </div>
           </div>
         </div>
@@ -166,7 +166,15 @@ export default {
       return course.periods.find(p => p.day === moment(this.dueDate).day());
     },
     dayNames () {
-      return ['Su', 'M', 'T', 'W', 'Th', 'F', 'Sa'];
+      return [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday'
+      ];
     }
   },
   methods: {

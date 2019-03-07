@@ -22,13 +22,17 @@ const actions = {
       title: assignment.title,
       description: assignment.description,
       timeEstimate: assignment.timeEstimate,
-      priority: assignment.priority
+      priority: assignment.priority,
+      recurringDays: [moment(assignment.dueDate).day()]
     });
   }
 };
 const mutations = {
-  SET_ADD_ASSIGNMENT_MODAL_VALUES: (state, updates) =>
-    Object.assign(state, updates),
+  SET_ADD_ASSIGNMENT_MODAL_VALUES: (state, updates) => {
+    if ('dueDate' in updates) updates.recurringDays = [updates.dueDate.day()];
+
+    return Object.assign(state, updates);
+  },
   TOGGLE_ADD_ASSIGNMENT_MODAL: state => (state.expanded = !state.expanded)
 };
 
