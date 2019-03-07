@@ -249,6 +249,12 @@ export default {
           'ADD_UPCOMING_ASSIGNMENT',
           request.data.createdAssignment
         );
+
+        if (request.data.recurringAssignments.length > 0) {
+          for (let a of request.data.recurringAssignments) {
+            this.$store.dispatch('ADD_UPCOMING_ASSIGNMENT', a);
+          }
+        }
       }
 
       // Reset important fields
@@ -270,7 +276,13 @@ export default {
       this.$toasted.success(
         `Added assignment '${
           request.data.createdAssignment.title
-        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}.`,
+        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}${
+          request.data.recurringAssignments.length > 0
+            ? ' and ' +
+              request.data.recurringAssignments.length +
+              ' recurring assignments'
+            : ''
+        }.`,
         {
           icon: 'plus',
           action: {
