@@ -58,7 +58,7 @@
             @update-date="setValue('dueDate', $event); nextStep();"
             @update-due-time="setValue('dueTime', $event.trim())"
             @update-title="setValue('title', $event.trim())"
-            @update-desc="setValue('description', $event.trim())"
+            @update-description="setValue('description', $event.trim())"
             @update-time-estimate="setValue('timeEstimate', $event)"
             @update-priority="setValue('priority', $event)"
             @update-is-recurring="setValue('isRecurring', $event)"
