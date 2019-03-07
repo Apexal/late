@@ -7,6 +7,13 @@
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>
+    <template v-else-if="!hasPersonalInfoSetup">
+      <h2
+        class="subtitle has-text-centered"
+      >
+        To setup your course schedule, you must first enter your RIN on the previous page.
+      </h2>
+    </template>
     <template v-else>
       <h2 class="is-size-4 integration-note">
         What is your
@@ -31,9 +38,7 @@
               <label
                 for="method"
                 class="label"
-              >
-                Method
-              </label>
+              >Method</label>
               <div class="control">
                 <select
                   id="method"
@@ -63,9 +68,7 @@
                 <label
                   for="pin"
                   class="label"
-                >
-                  SIS PIN
-                </label>
+                >SIS PIN</label>
                 <p
                   class="help"
                 >
@@ -91,9 +94,7 @@
                 <label
                   class="label"
                   for="crns"
-                >
-                  Directly Enter Your Course CRNs
-                </label>
+                >Directly Enter Your Course CRNs</label>
                 <p class="help">
                   These are found in SIS under 'View Weekly Schedule'.
                 </p>
@@ -118,9 +119,7 @@
                 <label
                   for="ical-file"
                   class="label"
-                >
-                  iCal File from YACS
-                </label>
+                >iCal File from YACS</label>
                 <div class="control">
                   <input
                     id="ical-file"
@@ -155,9 +154,7 @@
       <template v-else>
         <h2 class="subtitle">
           Your Courses
-          <small class="has-text-grey">
-            {{ coursesWithoutOther.length }} total
-          </small>
+          <small class="has-text-grey">{{ coursesWithoutOther.length }} total</small>
         </h2>
         <div class="course-list">
           <ProfileCourse
@@ -197,6 +194,9 @@ export default {
     };
   },
   computed: {
+    hasPersonalInfoSetup () {
+      return this.$store.getters.userSetup.personal_info;
+    },
     currentTerm () {
       return this.$store.getters.currentTerm;
     },
