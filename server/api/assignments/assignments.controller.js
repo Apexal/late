@@ -54,7 +54,8 @@ async function getAssignments (ctx) {
     assignments = await ctx.state.user.getAssignments(
       ctx.query.start,
       ctx.query.end,
-      ctx.query.title
+      ctx.query.title,
+      ctx.query.courseCRN
     );
   } catch (e) {
     logger.error(

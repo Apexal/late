@@ -40,9 +40,9 @@ async function getExamMiddleware (ctx, next) {
  */
 async function getExams (ctx) {
   let exams;
-  let { start, end, title } = ctx.query;
+  let { start, end, title, courseCRN } = ctx.query;
   try {
-    exams = await ctx.state.user.getExams(start, end, title);
+    exams = await ctx.state.user.getExams(start, end, title, courseCRN);
   } catch (e) {
     logger.error(`Failed to send exams to ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.internalServerError('There was an error loading your exams.');

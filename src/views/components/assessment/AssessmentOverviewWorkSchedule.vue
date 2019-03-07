@@ -8,7 +8,7 @@
       This {{ assessmentType }} is overdue so your work schedule can no longer be changed.
     </div>
 
-    <div class="box columns">
+    <div class="box columns percents">
       <div
         class="column is-one-half tooltip"
         :data-tooltip="scheduledPercent + '% scheduled'"
@@ -411,4 +411,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.box.percents {
+  padding: 10px;
+}
 </style>

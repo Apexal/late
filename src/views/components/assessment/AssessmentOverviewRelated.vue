@@ -59,9 +59,12 @@ export default {
 
       let request;
       try {
-        request = await this.$http.get(
-          `/${this.assessmentType}s?title=${this.assessment.title}`
-        );
+        request = await this.$http.get(`/${this.assessmentType}s`, {
+          params: {
+            title: this.assessment.title,
+            courseCRN: this.assessment.courseCRN
+          }
+        });
       } catch (e) {
         this.$toasted.error(`Failed to load related ${this.assessmentType}s.`);
         this.related = [];

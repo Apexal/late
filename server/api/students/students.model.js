@@ -155,7 +155,7 @@ schema.methods.courseFromCRN = function (currentTermCode, crn) {
   return this.semester_schedules[currentTermCode].find(c => c.crn === crn);
 };
 
-schema.methods.getAssignments = function (start, end, title) {
+schema.methods.getAssignments = function (start, end, title, courseCRN) {
   let query = {
     _student: this._id
   };
@@ -174,6 +174,10 @@ schema.methods.getAssignments = function (start, end, title) {
     query.title = new RegExp('^' + title + '$', 'i');
   }
 
+  if (courseCRN) {
+    query.courseCRN = courseCRN;
+  }
+
   return this.model('Assignment')
     .find(query)
     .populate('_blocks')
@@ -182,7 +186,7 @@ schema.methods.getAssignments = function (start, end, title) {
     .exec();
 };
 
-schema.methods.getExams = function (start, end, title) {
+schema.methods.getExams = function (start, end, title, courseCRN) {
   let query = {
     _student: this._id
   };
@@ -199,6 +203,10 @@ schema.methods.getExams = function (start, end, title) {
 
   if (title) {
     query.title = new RegExp('^' + title + '$', 'i');
+  }
+
+  if (courseCRN) {
+    query.courseCRN = courseCRN;
   }
 
   return this.model('Exam')

@@ -70,6 +70,8 @@ export default {
   .button {
     flex: 1;
     margin-bottom: 0;
+    text-transform: capitalize;
+
     i.fas {
       margin-right: 5px;
     }
