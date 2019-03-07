@@ -7,7 +7,7 @@
         type="text"
         class="input is-medium"
         maxlength="75"
-        :placeholder="titlePlaceHolder"
+        :placeholder="titlePlaceholder"
         @change="$emit('update-title', $event.target.value)"
         @keyup.enter="$emit('next-step')"
       >
@@ -21,7 +21,7 @@
           cols="30"
           rows="10"
           class="input"
-          :placeholder="descriptionPlaceHolder"
+          :placeholder="descriptionPlaceholder"
           @change="$emit('update-description', $event.target.value)"
           @keyup.ctrl.enter="$emit('next-step')"
         />
