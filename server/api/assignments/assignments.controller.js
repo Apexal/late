@@ -114,8 +114,7 @@ async function createAssignment (ctx) {
       'You cannot add an assignment due outisde of this semester.'
     );
   }
-
-  const newAssignment = new Assignment({
+  const assignmentData = {
     _student: ctx.state.user._id,
     title: body.title,
     description: body.description,
@@ -123,8 +122,10 @@ async function createAssignment (ctx) {
     courseCRN: body.courseCRN,
     timeEstimate: body.timeEstimate,
     timeRemaining: body.timeEstimate,
-    priority: parseInt(body.priority, 10)
-  });
+    priority: parseInt(body.priority, 10),
+    isRecurring: body.isRecurring
+  };
+  const newAssignment = new Assignment(assignmentData);
 
   // AUTO WORK-BLOCK ALLOCATION
   // const openSchedule = compileWeeklyOpenSchedule(
@@ -166,9 +167,26 @@ async function createAssignment (ctx) {
   //   }
   // }
   // --------------------------
-
+  let recurringAssignments = [];
   try {
     await newAssignment.save();
+
+    if (body.isRecurring) {
+      // Create all assignments every week up until end of classes in current semester
+      logger.info('Creating recurring assignments...');
+      const day = moment(due).add(1, 'week');
+      while (day.isBefore(ctx.session.currentTerm.classesEnd)) {
+        const recurringAssignment = new Assignment({
+          ...assignmentData,
+          recurringOriginal: newAssignment._id,
+          dueDate: day
+        });
+        await recurringAssignment.save();
+        recurringAssignments.push(recurringAssignment);
+
+        day.add(1, 'week');
+      }
+    }
   } catch (e) {
     // mapping schema fields to form fields
     const errMap = {
@@ -201,7 +219,8 @@ async function createAssignment (ctx) {
   );
 
   ctx.created({
-    createdAssignment: newAssignment
+    createdAssignment: newAssignment,
+    recurringAssignments
   });
 }
 
