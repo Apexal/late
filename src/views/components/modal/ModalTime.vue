@@ -103,12 +103,16 @@
                 v-for="(day, index) in dayNames"
                 :key="index"
                 class="button"
-                :class="{ 'is-active': recurringDays.includes(index) }"
+                :class="{ 'is-primary': index === dueDate.day(), 'is-active': recurringDays.includes(index) }"
                 :title="`Repeat this assignment every ${day} each week.`"
                 @click="recurringDayClick(index)"
               >{{ day.charAt(0) }}</a>
             </div>
           </div>
+          <small
+            v-if="isRecurring"
+            class="has-text-grey"
+          >on {{ recurringDays.length }} {{ recurringDays.length === 1 ? 'day' : 'days' }} weekly</small>
         </div>
       </div>
     </div>
@@ -180,6 +184,8 @@ export default {
   methods: {
     recurringDayClick (index) {
       if (this.recurringDays.includes(index)) {
+        if (index === this.dueDate.day()) return;
+
         this.$emit(
           'update-recurring-days',
           this.recurringDays.filter(dayIndex => dayIndex !== index)

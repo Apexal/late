@@ -234,7 +234,8 @@ export default {
           courseCRN: this.courseCRN,
           timeEstimate: this.timeEstimate,
           priority: this.priority,
-          isRecurring: this.isRecurring
+          isRecurring: this.isRecurring,
+          recurringDays: this.isRecurring ? this.recurringDays : undefined
         });
       } catch (e) {
         this.$toasted.error(

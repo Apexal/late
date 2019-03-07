@@ -174,17 +174,26 @@ async function createAssignment (ctx) {
     if (body.isRecurring) {
       // Create all assignments every week up until end of classes in current semester
       logger.info('Creating recurring assignments...');
-      const day = moment(due).add(1, 'week');
-      while (day.isBefore(ctx.session.currentTerm.classesEnd)) {
-        const recurringAssignment = new Assignment({
-          ...assignmentData,
-          recurringOriginal: newAssignment._id,
-          dueDate: day
-        });
-        await recurringAssignment.save();
-        recurringAssignments.push(recurringAssignment);
 
-        day.add(1, 'week');
+      // For other days of the week
+      for (let dayIndex of body.recurringDays) {
+        const nextFirst = moment(due).add(1, 'day');
+        while (nextFirst.day() !== dayIndex) {
+          nextFirst.add(1, 'day');
+        }
+
+        // For day of week of actual assignment
+        while (nextFirst.isBefore(ctx.session.currentTerm.classesEnd)) {
+          const recurringAssignment = new Assignment({
+            ...assignmentData,
+            recurringOriginal: newAssignment._id,
+            dueDate: nextFirst
+          });
+          await recurringAssignment.save();
+          recurringAssignments.push(recurringAssignment);
+
+          nextFirst.add(1, 'week');
+        }
       }
     }
   } catch (e) {
