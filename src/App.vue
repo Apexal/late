@@ -1,79 +1,81 @@
 <template>
   <div id="app">
-    <vue-progress-bar />
-    <TheHeader ref="header" />
-    <Loading
-      :active.sync="loading"
-      :is-full-page="true"
-    />
-    <template v-if="loggedIn">
-      <CourseModal
-        :open="courseModalOpen"
-        :course="courseModalData"
+    <div id="content">
+      <vue-progress-bar />
+      <TheHeader ref="header" />
+      <Loading
+        :active.sync="loading"
+        :is-full-page="true"
       />
-    </template>
-    <template v-if="!loading">
-      <AssignmentsModalAdd
-        :open="addAssignmentModalExpanded"
-        @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-      />
-      <ExamsModalAdd
-        :open="addExamModalExpanded"
-        @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
-      />
-      <transition name="slide-fade">
-        <span
-          v-if="loggedIn && !expanded"
-          class="icon button is-dark toggle-sidebar"
-          title="Toggle sidebar."
-          @click="$store.commit('TOGGLE_SIDEBAR')"
-        >
-          <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
-        </span>
-      </transition>
-      <div
-        class="columns"
-        style="margin-right: initial;"
-      >
+      <template v-if="loggedIn">
+        <CourseModal
+          :open="courseModalOpen"
+          :course="courseModalData"
+        />
+      </template>
+      <template v-if="!loading">
+        <AssignmentsModalAdd
+          :open="addAssignmentModalExpanded"
+          @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+        />
+        <ExamsModalAdd
+          :open="addExamModalExpanded"
+          @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+        />
         <transition name="slide-fade">
-          <div
-            v-if="loggedIn && expanded"
-            id="sidebar-column"
-            class="column is-3 child-view sidebar-holder"
+          <span
+            v-if="loggedIn && !expanded"
+            class="icon button is-dark toggle-sidebar"
+            title="Toggle sidebar."
+            @click="$store.commit('TOGGLE_SIDEBAR')"
           >
-            <TheSidebar
-              ref="sidebar"
-              @sidebar-loaded="onResize"
-            />
-          </div>
+            <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
+          </span>
         </transition>
         <div
-          id="content"
-          :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
-          style="flex: 1;"
+          class="columns"
+          style="margin-right: initial;"
         >
-          <section
-            v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
-            class="section no-bottom-padding"
-          >
-            <div class="notification is-warning">
-              <b>NOTICE:</b> You will not be able to use
-              <b>LATE</b> until you have
-              <router-link to="/profile">
-                set up your account.
-              </router-link>
+          <transition name="slide-fade">
+            <div
+              v-if="loggedIn && expanded"
+              id="sidebar-column"
+              class="column is-3 child-view sidebar-holder"
+            >
+              <TheSidebar
+                ref="sidebar"
+                @sidebar-loaded="onResize"
+              />
             </div>
-          </section>
-          <transition
-            name="fade"
-            mode="out-in"
-          >
-            <router-view />
           </transition>
+          <div
+            id="content"
+            :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
+            style="flex: 1;"
+          >
+            <section
+              v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
+              class="section no-bottom-padding"
+            >
+              <div class="notification is-warning">
+                <b>NOTICE:</b> You will not be able to use
+                <b>LATE</b> until you have
+                <router-link to="/profile">
+                  set up your account.
+                </router-link>
+              </div>
+            </section>
+            <transition
+              name="fade"
+              mode="out-in"
+            >
+              <router-view />
+            </transition>
+          </div>
         </div>
-      </div>
-    </template>
-    <TheFooter />
+      </template>
+    </div>
+    <TheFooter id="footer" />
   </div>
 </template>
 <script>
@@ -185,6 +187,28 @@ export default {
 <style lang="scss">
 /* These styles will apply to the whole app. */
 @import "@/assets/bulma.scss";
+
+html,body {
+  height: 100%;
+}
+
+
+//Sticky Footer
+#app {
+  display: flex;
+  //Dynamically calculate page height - header height (3.25rem)
+  min-height: calc(100vh - 3.25rem);
+  min-height: -webkit-calc(100vh - 3.25rem);
+  flex-direction: column;
+}
+
+#content {
+  flex: 1 1 auto;
+}
+
+#footer {
+  flex: 1 0 inherit;
+}
 
 // Replace Fullcalendar ugly button style with Bulma's nice style
 .fc-button {
