@@ -46,21 +46,25 @@
       <div class="level box exam-controls">
         <div class="level-left disable-shrink">
           <div class="filters">
-            <span class="subtitle is-6">Filter Courses:</span>
+            <span
+              class="subtitle is-6"
+              style="margin-right: 5px;"
+            >Filter:</span>
             <span
               v-for="c in courses"
               :key="c.original_longname"
               class="tag is-white course-tag level-item is-unselectable"
-              :title="`Filter ${c.longname} exams`"
               :class="{ 'filtered-out filtered': isFiltered(c) }"
               :style="{ 'background-color': c.color }"
               @click="toggleFilter(c)"
             >
+              <!--Removed :title="`Filter ${c.longname} exams`" for ease of use-->
               <span>{{ c.longname }}</span>
             </span>
           </div>
         </div>
       </div>
+
 
       <transition
         name="slide-left"
@@ -146,8 +150,21 @@ span.tag.course-tag {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition-delay: 0.1s;
+    -webkit-transition-delay: 0.1s;
   }
+
+  span:hover {
+    max-width: 100vw;
+    transition: 0.4s;
+    -webkit-transition: 0.4s;
+    //transition-delay:0.3s;
+  }
+
 }
+
 
 .filtered-out {
   color: #686868 !important;

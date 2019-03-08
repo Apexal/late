@@ -40,46 +40,53 @@
       </ul>
     </div>
 
-    <div class="level assignment-controls">
+    <div class="level box assignment-controls">
       <div class="level-left disable-shrink">
-        <div class="filters has-text-centered-touch">
+        <div class="filters">
+          <span
+            class="subtitle is-6"
+            style="margin-right: 5px; width: 8em;"
+          >Filter:</span>
           <span
             v-for="c in courses"
             :key="c.original_longname"
             class="tag is-white course-tag level-item is-unselectable"
-            :title="`Filter ${c.longname} assignments`"
             :class="{ 'filtered-out filtered': isFiltered(c) }"
             :style="{ 'background-color': c.color }"
             @click="toggleFilter(c)"
-          >{{ c.longname }}</span>
+          >
+            <!--Removed :title="`Filter ${c.longname} assignments`" for ease of use-->
+            <span>{{ c.longname }}</span>
+          </span>
         </div>
       </div>
-      <div class="level-right has-text-centered">
-        <div class="box">
-          <label
-            class="checkbox is-unselectable tooltip show-completed-toggle"
-            data-tooltip="Toggle completed assignments."
-          >
-            <input
-              v-model="showCompleted"
-              type="checkbox"
-            >
-            Show Completed
-          </label>
-        </div>
-        <div
-          v-if="view === 'assignments-upcoming'"
-          class="select group-by-select"
+    </div>
+
+    <div class="level-right has-text-centered">
+      <div class="">
+        <label
+          class="checkbox is-unselectable tooltip show-completed-toggle"
+          data-tooltip="Toggle completed assignments."
         >
-          <select v-model="groupBy">
-            <option value="dueDate">
-              Group by Due Date
-            </option>
-            <option value="course">
-              Group by Course
-            </option>
-          </select>
-        </div>
+          <input
+            v-model="showCompleted"
+            type="checkbox"
+          >
+          Show Completed
+        </label>
+      </div>
+      <div
+        v-if="view === 'assignments-upcoming'"
+        class="select group-by-select"
+      >
+        <select v-model="groupBy">
+          <option value="dueDate">
+            Group by Due Date
+          </option>
+          <option value="course">
+            Group by Course
+          </option>
+        </select>
       </div>
     </div>
     <transition
@@ -222,8 +229,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tab-nav.tabs {
-  margin-bottom: 5px;
+
+.level-right {
+  margin-bottom: 1.5rem;
+}
+
+.assignment-controls {
+  padding: 10px !important;
 }
 
 span.tag.course-tag {
@@ -238,7 +250,22 @@ span.tag.course-tag {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition-delay: 0.1s;
+    -webkit-transition-delay: 0.1s;
   }
+
+  span:hover {
+    max-width: 100vw;
+    transition: 0.4s;
+    -webkit-transition: 0.4s;
+    //transition-delay:0.3s;
+  }
+}
+
+span.tag.course-tag:hover {
+  opacity: 0.8;
 }
 
 .filtered-out {
