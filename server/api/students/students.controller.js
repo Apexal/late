@@ -1,4 +1,6 @@
 const logger = require('../../modules/logger');
+const fs = require('fs').promises;
+const path = require('path');
 
 const Student = require('./students.model');
 const Assignment = require('../assignments/assignments.model');
@@ -161,6 +163,17 @@ async function getStudentCounts (ctx) {
   return ctx.ok({ waitlist, testers });
 }
 
+async function getLog (ctx) {
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
+  const log = await fs.readFile(
+    path.join(__dirname, '..', '..', '..', 'logs', 'combined.log'),
+    'utf8'
+  );
+  ctx.ok({ log });
+}
+
 module.exports = {
   loginAs,
   getUser,
@@ -168,5 +181,6 @@ module.exports = {
   editStudent,
   deleteStudent,
   getStudents,
-  getStudentCounts
+  getStudentCounts,
+  getLog
 };
