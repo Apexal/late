@@ -152,17 +152,45 @@
         Set your courses above.
       </p>
       <template v-else>
-        <h2 class="subtitle">
-          Your Courses
-          <small class="has-text-grey">{{ coursesWithoutOther.length }} total</small>
-        </h2>
-        <div class="course-list">
+        <div class="tabs">
+          <ul>
+            <li
+              :class="{'is-active': tab === 'list'}"
+              @click="tab = 'list'; destroyCalendar();"
+            >
+              <a>List</a>
+            </li>
+            <li
+              :class="{'is-active': tab === 'calendar'}"
+              @click="tab = 'calendar'"
+            >
+              <a>Calendar</a>
+            </li>
+          </ul>
+        </div>
+
+        <div
+          v-if="tab === 'list'"
+          class="course-list"
+        >
+          <h2 class="subtitle">
+            Your Courses
+            <small class="has-text-grey">{{ coursesWithoutOther.length }} total</small>
+          </h2>
           <ProfileCourse
             v-for="c in coursesWithoutOther"
             :key="c.crn"
             :course="c"
             @update-course="updatedCourse"
           />
+        </div>
+        <div
+          v-else-if="tab === 'calendar'"
+          class="course-calendar"
+        >
+          <p class="has-text-centered has-text-grey">
+            Coming soon...
+          </p>
         </div>
       </template>
       <hr>
@@ -178,19 +206,33 @@
 </template>
 
 <script>
+import { FullCalendar } from 'vue-full-calendar';
+import 'fullcalendar/dist/fullcalendar.css';
+
 import ProfileCourse from '@/views/components/profile/ProfileCourse';
 
 export default {
   name: 'ProfileSetupCourseSchedule',
-  components: { ProfileCourse },
+  components: { ProfileCourse, FullCalendar },
   data () {
     return {
+      tab: 'list',
       saved: false,
       loading: false,
       method: 'sis',
       pin: '',
       crns: '',
-      iCalFile: null
+      iCalFile: null,
+      calendar: {
+        allDaySlot: false,
+        minTime: '08:00:00',
+        maxTime: '20:00:00',
+        header: {
+          left: '',
+          center: '',
+          right: ''
+        }
+      }
     };
   },
   computed: {
@@ -214,6 +256,9 @@ export default {
     },
     coursesWithoutOther () {
       return this.courses.filter(c => c.summary !== 'OTHER');
+    },
+    courseEvents () {
+      return this.$store.getters.getCourseScheduleAsEvents;
     }
   },
   created () {
@@ -222,6 +267,9 @@ export default {
   methods: {
     async iCalFileChange (file) {
       this.iCalFile = file;
+    },
+    destroyCalendar () {
+      // this.$refs.calendar.fireMethod('destroy');
     },
     async updatedCourse (updatedCourse) {
       this.loading = true;
