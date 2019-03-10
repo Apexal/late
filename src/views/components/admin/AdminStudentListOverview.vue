@@ -125,6 +125,13 @@
           >
             Delete Account
           </button>
+
+          <button
+            class="button is-success is-small"
+            @click="updateStudent({ admin: !student.admin })"
+          >
+            {{ student.admin ? 'Remove' : 'Make' }} Admin
+          </button>
         </template>
       </div>
     </div>
