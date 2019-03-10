@@ -12,41 +12,40 @@
         >
           {{ title }}
         </h1>
-        <li>
-          <router-link
-            class
-            to="/assignments/upcoming"
-            title="Switch to view upcoming assignments"
-          >
-            Upcoming
-          </router-link>
-        </li>
-        <li>
-          <router-link
-            to="/assignments/past"
-            title="Switch to view past assignments"
-          >
-            Previous
-          </router-link>
-        </li>
-        <li>
-          <router-link
-            to="/assignments/calendar"
-            title="Switch to view your assignment calendar"
-          >
-            Calendar
-          </router-link>
-        </li>
+
+        <router-link
+          tag="li"
+          to="/assignments/upcoming"
+          title="Switch to view upcoming assignments"
+        >
+          <a>Upcoming</a>
+        </router-link>
+        <router-link
+          tag="li"
+          to="/assignments/past"
+          title="Switch to view past assignments"
+        >
+          <a>Previous</a>
+        </router-link>
+
+        <router-link
+          tag="li"
+          to="/assignments/calendar"
+          title="Switch to view your assignment calendar"
+        >
+          <a>Calendar</a>
+        </router-link>
       </ul>
     </div>
 
     <AssessmentsFilter
       :filter="filter"
+      :show-show-completed="true"
       :show-completed="showCompleted"
       :show-group-by="view === 'assignments-upcoming'"
       :group-by="groupBy"
-      @toggle-show-completed="showCompleted = !showCompleted"
       @toggle-filter="toggleFilter"
+      @toggle-show-completed="showCompleted = !showCompleted"
       @change-group-by="groupBy = $event"
     />
 
@@ -191,10 +190,6 @@ export default {
   flex-shrink: initial;
 }
 
-.group-by-select {
-  margin-left: 10px;
-}
-
 @media only screen and (max-width: 768px) {
   .buttons.assignment-view-buttons {
     float: unset !important;
@@ -209,10 +204,6 @@ export default {
   margin-bottom: 0;
   .title {
     margin: 0;
-  }
-  .is-active {
-    border-bottom-color: #3273dc;
-    color: #3273dc;
   }
 }
 </style>

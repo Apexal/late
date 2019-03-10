@@ -18,6 +18,7 @@
       </span>
     </div>
     <label
+      v-if="showShowCompleted"
       class="checkbox is-unselectable tooltip show-completed-toggle"
       data-tooltip="Toggle completed assignments."
     >
@@ -56,6 +57,11 @@ export default {
     filter: {
       type: Array,
       required: true
+    },
+    showShowCompleted: {
+      type: Boolean,
+      default: false,
+      required: false
     },
     showCompleted: {
       type: Boolean,

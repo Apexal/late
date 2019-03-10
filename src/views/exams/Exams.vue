@@ -13,58 +13,37 @@
           >
             {{ title }}
           </h1>
-          <li>
-            <router-link
-              class
-              to="/exams/upcoming"
-              title="Switch to view upcoming exams"
-            >
-              Upcoming
-            </router-link>
-          </li>
-          <li>
-            <router-link
-              class
-              to="/exams/past"
-              title="Switch to view past exams"
-            >
-              Previous
-            </router-link>
-          </li>
-          <li>
-            <router-link
-              class
-              to="/exams/calendar"
-              title="Switch to view your exam calendar"
-            >
-              Calendar
-            </router-link>
-          </li>
+
+          <router-link
+            tag="li"
+            to="/exams/upcoming"
+            title="Switch to view upcoming exams"
+          >
+            <a>Upcoming</a>
+          </router-link>
+
+          <router-link
+            tag="li"
+            to="/exams/past"
+            title="Switch to view past exams"
+          >
+            <a>Previous</a>
+          </router-link>
+
+          <router-link
+            tag="li"
+            to="/exams/calendar"
+            title="Switch to view your exam calendar"
+          >
+            <a>Calendar</a>
+          </router-link>
         </ul>
       </div>
 
-      <div class="level box exam-controls">
-        <div class="level-left disable-shrink">
-          <div class="filters">
-            <span
-              class="subtitle is-6"
-              style="margin-right: 5px;"
-            >Filter:</span>
-            <span
-              v-for="c in courses"
-              :key="c.original_longname"
-              class="tag is-white course-tag level-item is-unselectable"
-              :class="{ 'filtered-out filtered': isFiltered(c) }"
-              :style="{ 'background-color': c.color }"
-              @click="toggleFilter(c)"
-            >
-              <!--Removed :title="`Filter ${c.longname} exams`" for ease of use-->
-              <span>{{ c.longname }}</span>
-            </span>
-          </div>
-        </div>
-      </div>
-
+      <AssessmentsFilter
+        :filter="filter"
+        @toggle-filter="toggleFilter"
+      />
 
       <transition
         name="slide-left"
@@ -88,8 +67,11 @@
 </template>
 
 <script>
+import AssessmentsFilter from '@/views/components/assessment/AssessmentsFilter';
+
 export default {
   name: 'Exams',
+  components: { AssessmentsFilter },
   data () {
     return {
       filter: []
@@ -162,9 +144,7 @@ span.tag.course-tag {
     -webkit-transition: 0.4s;
     //transition-delay:0.3s;
   }
-
 }
-
 
 .filtered-out {
   color: #686868 !important;
@@ -194,12 +174,9 @@ span.dot.course-dot {
 }
 
 .tab-nav {
+  margin-bottom: 0;
   .title {
     margin: 0;
-  }
-  .is-active {
-    border-bottom-color: #3273dc;
-    color: #3273dc;
   }
 }
 </style>
