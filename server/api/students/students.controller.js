@@ -167,10 +167,12 @@ async function getLog (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!');
   }
-  const log = await fs.readFile(
+  const log = (await fs.readFile(
     path.join(__dirname, '..', '..', '..', 'logs', 'combined.log'),
     'utf8'
-  );
+  ))
+    .toString()
+    .split('\n');
   ctx.ok({ log });
 }
 
