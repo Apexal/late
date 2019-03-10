@@ -40,55 +40,16 @@
       </ul>
     </div>
 
-    <div class="level box assignment-controls">
-      <div class="level-left disable-shrink">
-        <div class="filters">
-          <span
-            class="subtitle is-6"
-            style="margin-right: 5px; width: 8em;"
-          >Filter:</span>
-          <span
-            v-for="c in courses"
-            :key="c.original_longname"
-            class="tag is-white course-tag level-item is-unselectable"
-            :class="{ 'filtered-out filtered': isFiltered(c) }"
-            :style="{ 'background-color': c.color }"
-            @click="toggleFilter(c)"
-          >
-            <!--Removed :title="`Filter ${c.longname} assignments`" for ease of use-->
-            <span>{{ c.longname }}</span>
-          </span>
-        </div>
-      </div>
-    </div>
+    <AssessmentsFilter
+      :filter="filter"
+      :show-completed="showCompleted"
+      :show-group-by="view === 'assignments-upcoming'"
+      :group-by="groupBy"
+      @toggle-show-completed="showCompleted = !showCompleted"
+      @toggle-filter="toggleFilter"
+      @change-group-by="groupBy = $event"
+    />
 
-    <div class="level-right has-text-centered">
-      <div class="">
-        <label
-          class="checkbox is-unselectable tooltip show-completed-toggle"
-          data-tooltip="Toggle completed assignments."
-        >
-          <input
-            v-model="showCompleted"
-            type="checkbox"
-          >
-          Show Completed
-        </label>
-      </div>
-      <div
-        v-if="view === 'assignments-upcoming'"
-        class="select group-by-select"
-      >
-        <select v-model="groupBy">
-          <option value="dueDate">
-            Group by Due Date
-          </option>
-          <option value="course">
-            Group by Course
-          </option>
-        </select>
-      </div>
-    </div>
     <transition
       name="slide-left"
       mode="out-in"
@@ -113,8 +74,11 @@
 </template>
 
 <script>
+import AssessmentsFilter from '@/views/components/assessment/AssessmentsFilter';
+
 export default {
   name: 'Assignments',
+  components: { AssessmentsFilter },
   data () {
     return {
       groupBy: 'dueDate',
@@ -128,9 +92,6 @@ export default {
     },
     title () {
       return this.$route.meta.title;
-    },
-    courses () {
-      return this.$store.getters.current_schedule;
     }
   },
   watch: {
@@ -202,9 +163,6 @@ export default {
         return this.$toasted.error(e.response.data.message);
       }
     },
-    isFiltered (c) {
-      return this.filter.includes(c.crn);
-    },
     toggleFilter (c) {
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
@@ -229,62 +187,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.level-right {
-  margin-bottom: 1.5rem;
-}
-
-.assignment-controls {
-  padding: 10px !important;
-}
-
-span.tag.course-tag {
-  cursor: pointer;
-  //font-weight: bold;
-  margin: 0;
-  margin-left: 2px;
-  margin-right: 2px;
-  color: white;
-  span {
-    max-width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: 0.3s;
-    -webkit-transition: 0.3s;
-    transition-delay: 0.1s;
-    -webkit-transition-delay: 0.1s;
-  }
-
-  span:hover {
-    max-width: 100vw;
-    transition: 0.4s;
-    -webkit-transition: 0.4s;
-    //transition-delay:0.3s;
-  }
-}
-
-span.tag.course-tag:hover {
-  opacity: 0.8;
-}
-
-.filtered-out {
-  color: #686868 !important;
-  background-color: rgb(214, 214, 214) !important;
-}
-
-span.dot.course-dot {
-  margin-right: 2px;
-}
-
 .level .disable-shrink {
   flex-shrink: initial;
-}
-
-.level-right .box {
-  padding: 5px;
-  margin: 0;
-  display: inline-block;
 }
 
 .group-by-select {
@@ -302,6 +206,7 @@ span.dot.course-dot {
 }
 
 .tab-nav {
+  margin-bottom: 0;
   .title {
     margin: 0;
   }
