@@ -45,6 +45,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
     jar,
     uri: SIS_LOGIN_URL,
     method: 'POST',
+    rejectUnauthorized: false,
     form: {
       sid: RIN,
       PIN
@@ -66,6 +67,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
   // Submit schedule form choosing the right term
   $ = await request({
     uri: SIS_SCHEDULE_URL,
+    rejectUnauthorized: false,
     method: 'POST',
     form: {
       term_in: term
@@ -176,6 +178,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
 async function scrapePeriodTypesFromCRNs (termCode, courses) {
   const uri = PERIOD_LIST_URL_BASE + termCode + '.htm';
   const $ = await request({
+    rejectUnauthorized: false,
     uri,
     transform: body => cheerio.load(body)
   });

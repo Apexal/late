@@ -70,6 +70,9 @@ async function setCourseSchedule (ctx) {
         ctx.session.currentTerm.code
       );
     } catch (e) {
+      logger.error(
+        `Failed to scrape SIS cours schedule for ${ctx.state.user.rcs_id}: ${e}`
+      );
       return ctx.badRequest('Invalid SIS credentials!');
     }
   } else if (method === 'crn') {
@@ -91,7 +94,19 @@ async function setCourseSchedule (ctx) {
   courseSchedule = courseSchedule.filter(course => !!course);
 
   // Set course types for each course
-  await scrapePeriodTypesFromCRNs(ctx.session.currentTerm.code, courseSchedule);
+  try {
+    await scrapePeriodTypesFromCRNs(
+      ctx.session.currentTerm.code,
+      courseSchedule
+    );
+  } catch (e) {
+    logger.error(
+      `Failed to scrape period types for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    ctx.internalServerError(
+      'There was an error getting the proper period types for your schedule. Please manually set them below.'
+    );
+  }
 
   // "Other" course
   courseSchedule.push({
