@@ -50,6 +50,7 @@ const Student = require('./api/students/students.model');
 const Term = require('./api/terms/terms.model');
 app.use(async (ctx, next) => {
   ctx.state.env = process.env.NODE_ENV;
+  ctx.state.isAPI = ctx.request.url.startsWith('/api');
 
   if (ctx.session.cas_user) {
     ctx.state.user = await Student.findOne()
@@ -64,8 +65,19 @@ app.use(async (ctx, next) => {
       moment().isBetween(moment(t.start), moment(t.end))
     );
   }
+  try {
+    await next();
+  } catch (e) {
+    ctx.status = e.status || 500;
+    logger.error(e);
 
-  await next();
+    ctx.send(
+      ctx.status,
+      ctx.state.env === 'development'
+        ? e.message
+        : 'An error occurred. Please try again later.'
+    );
+  }
 });
 
 /* Router setup */
@@ -73,26 +85,13 @@ require('./routes')(router);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-/* Route all non api calls and non-static files (already handled above) to index.html so Vue takse over */
+/* Route all non api calls and non-static files (already handled above) to index.html so Vue takes over */
 app.use(async ctx => {
-  await Send(ctx, 'dist/index.html');
-});
-
-/* Error handling */
-app.use(async (ctx, next) => {
-  try {
-    await next();
-    if (ctx.status === 404) ctx.throw(404, 'Page Not Found');
-  } catch (err) {
-    if (ctx.request.url.startsWith('/api/')) {
-      return ctx.notFound('API path not found.');
-    }
-
-    ctx.status = err.status || 500;
-    logger.error(err);
-
-    ctx.send(err.status, err);
+  if (ctx.state.isAPI) {
+    logger.error('API endpoint not found.');
+    return ctx.notFound('API endpoint not found.');
   }
+  await Send(ctx, 'dist/index.html');
 });
 
 module.exports = app;
