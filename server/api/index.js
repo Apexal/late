@@ -9,6 +9,7 @@ router.use('/integrations', require('./integrations'));
 router.use('/students', require('./students'));
 router.use('/terms', require('./terms'));
 router.use('/blocks', require('./blocks'));
+router.use('/todos', require('./todos'));
 // router.use('/blockify', require('./blockify'));
 
 module.exports = router.routes();
