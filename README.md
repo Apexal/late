@@ -37,3 +37,11 @@ To run the project in development mode, you must run the API server in one termi
 - `$ npm run frontend` to run the hot-reloading Vue server (in one terminal)
 - `$ npm run backend` to run the API server (in another terminal)
 - Go to url `http://localhost:8080` (whatever `$ npm run frontend` tells you go to) in your browser
+
+#### Overview
+Seamlessly integrate SMS/email reminders:
+![alt text](https://github.com/Apexal/late/blob/dev/public/Notification_Preferences_README.png "Notification Preferences")
+
+Conveniently view your assignments for the near future:
+![alt text](https://github.com/Apexal/late/blob/dev/public/Upcoming_assignments_README.png "Upcoming Assignments")
+
