@@ -73,7 +73,10 @@
         On Break
       </h2>
     </template>
-    <template v-else>
+    <div
+      v-else
+      id="calendar-holder"
+    >
       <FullCalendar
         ref="calendar"
         :events="events"
@@ -82,7 +85,13 @@
         :header="calendar.header"
         :config="calendar.config"
       />
-    </template>
+      <button
+        class="button"
+        @click="toggleFullscreen"
+      >
+        Fullscreen
+      </button>
+    </div>
   </section>
 </template>
 
@@ -123,7 +132,7 @@ export default {
             start: this.$store.getters.currentTerm.start,
             end: this.$store.getters.currentTerm.end
           },
-          height: 700,
+          height: 'parent',
           dayCount: 5,
           allDayText: 'Due',
           // minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
@@ -176,6 +185,9 @@ export default {
     };
   },
   computed: {
+    isFullscreen () {
+      return document.fullscreenElement !== null;
+    },
     onBreak () {
       return this.$store.getters.onBreak;
     },
@@ -272,6 +284,14 @@ export default {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     },
+    toggleFullscreen () {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        let div = document.getElementById('calendar-holder');
+        div.requestFullscreen();
+      }
+    },
     select (start, end, jsEvent, view) {
       // this.$toasted.show(
       //   'You will be able to schedule work blocks by selecting soon.'
@@ -302,7 +322,9 @@ export default {
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {
-        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: calEvent.start });
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+          dueDate: calEvent.start
+        });
         this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
       } else if (calEvent.eventType === 'assignment') {
         this.$router.push({
@@ -413,5 +435,23 @@ export default {
 .fc-right .fc-button-group {
   border-left: 1px solid #dbdbdb;
   margin-left: 5px;
+}
+
+#calendar-holder {
+  height: 500px;
+  .show-fullscreen {
+    display: none;
+  }
+  &:fullscreen {
+    padding: 15px;
+    background-color: white;
+    height: 95%;
+    .show-fullscreen {
+      display: initial;
+    }
+    .hide-fullscreen {
+      display: none;
+    }
+  }
 }
 </style>
