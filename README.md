@@ -39,9 +39,14 @@ To run the project in development mode, you must run the API server in one termi
 - Go to url `http://localhost:8080` (whatever `$ npm run frontend` tells you go to) in your browser
 
 #### Overview
+Easily access daily classes and work blocks, pressing assignments, upcoming exams, and To-Do List:
+![alt text](https://github.com/Apexal/late/blob/dev/public/Day_Overview_README.png "Daily Agenda")
+
+Add and edit work blocks via the Dashboard:
+![alt text](https://github.com/Apexal/late/blob/dev/public/Dashboard_README.png =600x300 "Dashboard")
+
+Conveniently view assignments for the near future:
+![alt text](https://github.com/Apexal/late/blob/dev/public/Upcoming_assignments_README.png =600x300 "Upcoming Assignments")
+
 Seamlessly integrate SMS/email reminders:
-![alt text](https://github.com/Apexal/late/blob/dev/public/Notification_Preferences_README.png "Notification Preferences")
-
-Conveniently view your assignments for the near future:
-![alt text](https://github.com/Apexal/late/blob/dev/public/Upcoming_assignments_README.png "Upcoming Assignments")
-
+![alt text](https://github.com/Apexal/late/blob/dev/public/Notification_Preferences_README.png  =250x250 "Notification Preferences")
