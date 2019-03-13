@@ -20,7 +20,7 @@
         No assignments or exams are open to work on at that time.
       </div>
       <div
-        v-for="assessment in assessments"
+        v-for="assessment in limitedAssessments"
         :key="assessment._id"
         class="panel-block is-flex"
         @click="$emit('add-work-block', assessment)"
@@ -40,6 +40,40 @@
           due {{ formatDate(assessment.dueDate || assessment.date) }}
         </span>
       </div>
+      <template v-if="hasExtra">
+        <div v-if="showingExtra">
+          <div
+
+            v-for="assessment in extraAssessments"
+            :key="assessment._id"
+            class="panel-block is-flex"
+            @click="$emit('add-work-block', assessment)"
+          >
+            <span style="flex: 1">
+              <span
+                class="tag assessment-type-tag"
+                :style="{ 'background-color': course(assessment.courseCRN).color }"
+              >
+                {{ assessment.assessmentType }}
+              </span>
+              {{ assessment.title }}
+            </span>
+            <span
+              class="has-text-grey is-pulled-right"
+            >
+              due {{ formatDate(assessment.dueDate || assessment.date) }}
+            </span>
+          </div>
+        </div>
+        <div
+          class="panel-block has-text-grey has-text-centered"
+          @click="showingExtra = !showingExtra"
+        >
+          <span class="is-full-width">
+            {{ showingExtra ? 'Hide' : 'Show' }} Extra ({{ extraAssessments.length }})
+          </span>
+        </div>
+      </template>
     </div>
     <button
       class="modal-close is-large"
@@ -72,6 +106,12 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      limit: 10,
+      showingExtra: false
+    };
+  },
   computed: {
     dateStrs () {
       if (this.start.isSame(this.end, 'day')) {
@@ -85,6 +125,16 @@ export default {
           end: this.end.format('M/D/YY h:mm a')
         };
       }
+    },
+    limitedAssessments () {
+      return this.assessments.slice(0, this.limit);
+    },
+    extraAssessments () {
+      if (!this.hasExtra) return [];
+      return this.assessments.slice(this.limit, this.assessments.length);
+    },
+    hasExtra () {
+      return this.assessments.length > this.limit;
     }
   },
   methods: {
