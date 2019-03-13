@@ -1,50 +1,5 @@
 <template>
   <section class="section dasboard">
-    <div
-      :class="{'is-active': selectModal.open}"
-      class="modal dashboard-calendar-select-modal"
-    >
-      <div
-        class="modal-background"
-        @click="selectModal.open = !selectModal.open"
-      />
-      <div class="modal-content panel">
-        <p class="panel-heading">
-          Schedule
-          <b>{{ selectModalDateStrs.start }}</b> to
-          <b>{{ selectModalDateStrs.end }}</b>
-        </p>
-        <div
-          v-if="filteredUpcomingAssessments.length === 0"
-          class="panel-block has-text-grey"
-        >
-          No assignments or exams are open to work on at that time.
-        </div>
-        <div
-          v-for="assessment in filteredUpcomingAssessments"
-          :key="assessment._id"
-          class="panel-block is-flex"
-          @click="addWorkBlock(assessment)"
-        >
-          <span style="flex: 1">
-            <span
-              class="tag assessment-type-tag"
-              :style="{ 'background-color': course(assessment.courseCRN).color }"
-            >{{ assessment.assessmentType }}</span>
-            {{ assessment.title }}
-          </span>
-          <span
-            class="has-text-grey is-pulled-right"
-          >due {{ formatDate(assessment.dueDate || assessment.date) }}</span>
-        </div>
-      </div>
-      <button
-        class="modal-close is-large"
-        aria-label="close"
-        @click="selectModal.open = !selectModal.open"
-      />
-    </div>
-
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
       The Dashboard
     </h1>
@@ -77,6 +32,51 @@
       v-else
       id="calendar-holder"
     >
+      <div
+        :class="{'is-active': selectModal.open}"
+        class="modal dashboard-calendar-select-modal"
+      >
+        <div
+          class="modal-background"
+          @click="selectModal.open = !selectModal.open"
+        />
+        <div class="modal-content panel">
+          <p class="panel-heading">
+            Schedule
+            <b>{{ selectModalDateStrs.start }}</b> to
+            <b>{{ selectModalDateStrs.end }}</b>
+          </p>
+          <div
+            v-if="filteredUpcomingAssessments.length === 0"
+            class="panel-block has-text-grey"
+          >
+            No assignments or exams are open to work on at that time.
+          </div>
+          <div
+            v-for="assessment in filteredUpcomingAssessments"
+            :key="assessment._id"
+            class="panel-block is-flex"
+            @click="addWorkBlock(assessment)"
+          >
+            <span style="flex: 1">
+              <span
+                class="tag assessment-type-tag"
+                :style="{ 'background-color': course(assessment.courseCRN).color }"
+              >{{ assessment.assessmentType }}</span>
+              {{ assessment.title }}
+            </span>
+            <span
+              class="has-text-grey is-pulled-right"
+            >due {{ formatDate(assessment.dueDate || assessment.date) }}</span>
+          </div>
+        </div>
+        <button
+          class="modal-close is-large"
+          aria-label="close"
+          @click="selectModal.open = !selectModal.open"
+        />
+      </div>
+
       <FullCalendar
         ref="calendar"
         :events="events"
