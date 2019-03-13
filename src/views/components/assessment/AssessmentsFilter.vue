@@ -98,6 +98,7 @@ export default {
   label {
     flex: 1;
     padding: 0 10px;
+    text-align: right;
   }
   padding: 10px;
   margin: 0;
