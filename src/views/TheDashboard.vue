@@ -1,10 +1,5 @@
 <template>
   <section class="section dasboard">
-    <v-tour
-      name="dashboard-tour"
-      :steps="tour"
-    />
-
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
       The Dashboard
     </h1>

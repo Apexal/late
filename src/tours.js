@@ -16,7 +16,17 @@ export default {
 
   ],
   'upcoming-assignments': [
-
+    {
+      target: '#calendar-holder', // We're using document.querySelector() under the hood
+      content: '[ FILL ME OUT ]',
+      params: {
+        placement: 'top'
+      }
+    },
+    {
+      target: '#fullscreen-button', // We're using document.querySelector() under the hood
+      content: '[ FILL ME OUT ]'
+    }
   ],
   'upcoming-exams': [
 
