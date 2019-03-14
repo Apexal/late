@@ -142,9 +142,6 @@ export default {
     };
   },
   computed: {
-    isAuthenticated () {
-      return this.$store.state.auth.isAuthenticated;
-    },
     user () {
       return this.$store.state.auth.user;
     }
