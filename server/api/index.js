@@ -10,6 +10,9 @@ router.use('/students', require('./students'));
 router.use('/terms', require('./terms'));
 router.use('/blocks', require('./blocks'));
 
-router.use('/google', require('./google'));
+router.use('/google', async (ctx, next) => {
+  if (!ctx.session.googleAuthToken) return ctx.badRequest('Google account not authenticated!');
+  await next();
+}, require('./google'));
 
 module.exports = router.routes();
