@@ -11,6 +11,9 @@ import Toasted from 'vue-toasted';
 import 'bulma-tooltip';
 
 import VueProgressBar from 'vue-progressbar';
+import VueTour from 'vue-tour';
+
+Vue.use(VueTour);
 
 const options = {
   color: '#70cad1',
