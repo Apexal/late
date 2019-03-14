@@ -10,13 +10,20 @@ async function googleAuthMiddleware (ctx, next) {
 }
 
 async function listCalendars (ctx) {
-  const calendar = google.apis.calendar({ version: 'v3', auth: ctx.state.googleAuth });
+  const calendar = google.apis.calendar({
+    version: 'v3',
+    auth: ctx.state.googleAuth
+  });
   let request;
   try {
-    request = await calendar.calendarList.list();
+    request = await calendar.calendarList.list(ctx.request.query);
   } catch (e) {
-    logger.error(`Failed to get GCal calendar list for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.internalServerError('There was an error getting your calendars from Google!');
+    logger.error(
+      `Failed to get GCal calendar list for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.internalServerError(
+      'There was an error getting your calendars from Google!'
+    );
   }
   ctx.ok({
     calendars: request.data.items
