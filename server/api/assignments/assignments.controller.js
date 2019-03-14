@@ -335,7 +335,7 @@ async function toggleAssignment (ctx) {
   try {
     await ctx.state.assignment.save();
   } catch (e) {
-    logger.error(`Failed to toggle assignment with ID ${assignmentID}.`);
+    logger.error(`Failed to toggle assignment with ID ${assignmentID}: ${e}`);
     return ctx.badRequest('There was an error toggling the assignment.');
   }
 
