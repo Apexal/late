@@ -270,7 +270,8 @@ export default {
         title: '',
         description: '',
         timeEstimate: 1.0,
-        priority: 3
+        priority: 3,
+        isRecurring: false
       });
 
       this.loading = false;
