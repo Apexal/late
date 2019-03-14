@@ -1,5 +1,10 @@
 <template>
   <section class="section dasboard">
+    <v-tour
+      name="dashboard-tour"
+      :steps="tour"
+    />
+
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
       The Dashboard
     </h1>
@@ -51,6 +56,7 @@
         :config="calendar.config"
       />
       <button
+        id="fullscreen-button"
         class="button"
         @click="toggleFullscreen"
       >
@@ -67,6 +73,8 @@ import 'fullcalendar/dist/fullcalendar.css';
 import moment from 'moment';
 
 import DashboardCalendarSelectModal from '@/views/components/dashboard/DashboardCalendarSelectModal';
+
+import tours from '@/tours';
 
 export default {
   name: 'TheDashboard',
@@ -102,8 +110,6 @@ export default {
           height: 'parent',
           dayCount: 5,
           allDayText: 'Due',
-          // minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
-          // maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
           businessHours: {
             dow: [0, 1, 2, 3, 4, 5, 6],
             start: this.$store.state.auth.user.earliestWorkTime,
@@ -219,6 +225,9 @@ export default {
       }
 
       return earliest;
+    },
+    tour () {
+      return tours.dashboard;
     }
   },
   watch: {
@@ -234,6 +243,14 @@ export default {
   created () {
     this.calendar.config.scrollTime = this.earliest;
   },
+  mounted () {
+    // let alreadySeenTours = localStorage.getItem('tours') ? JSON.parse(localStorage.getItem('tours')) : [];
+    // if (!alreadySeenTours.includes('dashboard-tour')) {
+    //   alreadySeenTours.push('dashboard-tour');
+    //   localStorage.setItem('tours', JSON.stringify(alreadySeenTours));
+    //   this.$tours['dashboard-tour'].start();
+    // }
+  },
   methods: {
     toggleFullscreen () {
       if (document.fullscreenElement) {
@@ -244,9 +261,6 @@ export default {
       }
     },
     select (start, end, jsEvent, view) {
-      // this.$toasted.show(
-      //   'You will be able to schedule work blocks by selecting soon.'
-      // );
       this.selectModal.open = true;
       this.selectModal.start = start;
       this.selectModal.end = end;
