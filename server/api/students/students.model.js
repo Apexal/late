@@ -102,6 +102,9 @@ const schema = new Schema(
         verified: { type: Boolean, default: false },
         verificationCode: { type: String, minlength: 1 },
         userID: { type: String }
+      },
+      google: {
+        verified: { type: Boolean, default: false }
       }
     },
     setup: {
@@ -120,7 +123,11 @@ const schema = new Schema(
       integrations: {
         type: Boolean,
         default: false
-      } // when the student has setup (or chosen not to setup) integrations
+      }, // when the student has setup (or chosen not to setup) integrations
+      google: {
+        type: Boolean,
+        default: false
+      } // when the student has connected their Google account
     },
     joined_date: {
       type: Date,
