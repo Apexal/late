@@ -2,7 +2,7 @@ const logger = require('./logger');
 const request = require('request-promise');
 
 module.exports = {
-  async sendWebhookMessage (content) {
+  async sendDiscordWebhookMessage (content) {
     try {
       if (!process.env.DISCORD_WEBHOOK_URL) throw new Error('DISCORD_WEBHOOK_URL is not set in the .env file!');
       logger.info(`Sending Discord Webhook Message "${content}".`);
