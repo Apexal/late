@@ -77,7 +77,7 @@ export default {
         {
           label: 'Google Calendar',
           link: '/profile/googlecalendar',
-          setup_check: 'integrations'
+          setup_check: 'google'
         }
       ]
     };
