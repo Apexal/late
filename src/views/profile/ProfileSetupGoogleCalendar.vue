@@ -1,7 +1,7 @@
 <template>
   <div class="google-calendar-setup">
     <h2 class="is-size-4 integration-note">
-      Connect to Google Calendar <span class="has-text-grey">optional</span>
+      Connect to your Google Calendar <span class="has-text-grey">(optional)</span>
     </h2>
   </div>
 </template>
