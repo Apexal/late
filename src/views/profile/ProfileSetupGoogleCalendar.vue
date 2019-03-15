@@ -10,6 +10,9 @@
         class="button is-primary"
       >Login with Google</a>
     </div>
+    <h2 class="subtitle">
+      Choose a Calendar
+    </h2>
     <div
       v-if="calendarID === ''"
       class="calendar-list columns is-multiline"
@@ -17,7 +20,7 @@
       <div
         v-for="calendar in calendars"
         :key="calendar.id"
-        class="column is-half"
+        class="column is-one-third"
       >
         <div
           class="box calendar"

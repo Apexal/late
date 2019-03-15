@@ -104,7 +104,7 @@ const schema = new Schema(
         userID: { type: String }
       },
       google: {
-        verified: { type: Boolean, default: false }
+        accessTokens: { type: Object }
       }
     },
     setup: {
