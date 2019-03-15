@@ -36,10 +36,13 @@ async function createEvent (ctx) {
     auth: ctx.state.googleAuth
   });
 
-  // const { calendarID, start, end, summary, description, location, extendedProperties } = ctx.request.body;
-
   let request;
-  request = await calendar.events.insert(ctx.request.body);
+  try {
+    request = await calendar.events.insert({ calendarId: ctx.request.body.calendarId, resource: ctx.request.body });
+  } catch (e) {
+    logger.error(`Failed to create GCal event for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.badRequest('There was an error creating a new Google Calendar event.');
+  }
 
   logger.info(`Added GCal event for ${ctx.state.user.rcs_id}`);
 
