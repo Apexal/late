@@ -4,32 +4,34 @@
       Connect to your Google Calendar
       <span class="has-text-grey">(optional)</span>
     </h2>
-    <div v-if="!verified">
+    <div v-if="!setup">
       <a
         href="/auth/google"
         class="button is-primary"
       >Login with Google</a>
     </div>
-    <h2 class="subtitle">
-      Choose a Calendar
-    </h2>
-    <div
-      v-if="calendarID === ''"
-      class="calendar-list columns is-multiline"
-    >
+    <div v-else>
+      <h2 class="subtitle">
+        Choose a Calendar
+      </h2>
       <div
-        v-for="calendar in calendars"
-        :key="calendar.id"
-        class="column is-one-third"
+        v-if="calendarID === ''"
+        class="calendar-list columns is-multiline"
       >
         <div
-          class="box calendar"
-          :style="{ 'background-color': calendar.backgroundColor }"
-          @click="calendarID = calendar.id"
+          v-for="calendar in calendars"
+          :key="calendar.id"
+          class="column is-one-third"
         >
-          <h2 class="subtitle">
-            {{ calendar.summary }}
-          </h2>
+          <div
+            class="box calendar"
+            :style="{ 'background-color': calendar.backgroundColor }"
+            @click="calendarID = calendar.id"
+          >
+            <h2 class="subtitle">
+              {{ calendar.summary }}
+            </h2>
+          </div>
         </div>
       </div>
     </div>
@@ -47,8 +49,8 @@ export default {
     };
   },
   computed: {
-    verified () {
-      return false;
+    setup () {
+      return this.$store.getters.userSetup.google;
     },
     user () {
       return this.$store.state.auth.user;

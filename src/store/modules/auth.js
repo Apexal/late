@@ -12,7 +12,8 @@ const getters = {
         personal_info: false,
         course_schedule: false,
         unavailability: false,
-        integrations: false
+        integrations: false,
+        google: false
       };
     }
     return {
@@ -23,7 +24,8 @@ const getters = {
       unavailability: state.user.setup.unavailability.includes(
         rootGetters.currentTerm.code
       ),
-      integrations: state.user.setup.integrations
+      integrations: state.user.setup.integrations,
+      google: state.user.setup.google
     };
   },
   isUserSetup: (state, getters) => {

@@ -45,6 +45,8 @@ module.exports = router => {
     const { tokens } = await googleAuth.getToken(code);
 
     ctx.state.user.integrations.google.accessTokens = tokens;
+    ctx.state.user.setup.google = true;
+
     await ctx.state.user.save();
 
     ctx.redirect('/profile/setup/google');
