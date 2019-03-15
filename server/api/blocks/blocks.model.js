@@ -31,4 +31,18 @@ schema.virtual('duration').get(function () {
   return moment(this.endTime).diff(this.startTime, 'minutes');
 });
 
+schema.virtual('asGoogleCalendarEvent').get(function () {
+  return {
+    id: this._id,
+    start: {
+      dateTime: this.startTime,
+      timezone: 'America/New_York'
+    },
+    end: {
+      dateTime: this.endTime,
+      timezone: 'America/New_York'
+    }
+  };
+});
+
 module.exports = mongoose.model('Block', schema);
