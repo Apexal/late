@@ -195,7 +195,7 @@ const actions = {
     commit('SET_UPCOMING_EXAMS', exams);
   },
   async ADD_WORK_BLOCK (
-    { commit, getters },
+    { commit, getters, dispatch, rootState },
     { assessmentType, assessment, start, end }
   ) {
     const request = await axios.post(
@@ -203,6 +203,18 @@ const actions = {
       { startTime: start, endTime: end }
     );
     const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+
+    if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
+      try {
+        await dispatch('ADD_GCAL_EVENT_FOR_WORK_BLOCK', {
+          assessmentType,
+          assessment,
+          block: request.data.createdBlock
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
     if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
       commit(
