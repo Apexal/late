@@ -225,7 +225,10 @@ const actions = {
 
     return request.data['updated' + capitalized];
   },
-  async EDIT_WORK_BLOCK ({ commit, getters }, { blockID, start, end }) {
+  async EDIT_WORK_BLOCK (
+    { commit, getters, rootState, dispatch },
+    { blockID, start, end }
+  ) {
     const block = getters.getWorkBlocksAsEvents.find(
       b => b.blockID === blockID
     );
@@ -233,6 +236,26 @@ const actions = {
       `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`,
       { startTime: start, endTime: end, assessmentType: block.assessmentType }
     );
+
+    if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
+      try {
+        await dispatch('UPDATE_GCAL_EVENT', {
+          calendarId:
+            rootState.auth.user.integrations.google.calendarIDs.workBlocks,
+          eventId: blockID,
+          updates: {
+            start: {
+              dateTime: start
+            },
+            end: {
+              dateTime: end
+            }
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
@@ -246,7 +269,10 @@ const actions = {
 
     return request.data['updated' + capitalized];
   },
-  async REMOVE_WORK_BLOCK ({ commit, getters, rootState, dispatch }, { blockID }) {
+  async REMOVE_WORK_BLOCK (
+    { commit, getters, rootState, dispatch },
+    { blockID }
+  ) {
     const block = getters.getWorkBlocksAsEvents.find(
       b => b.blockID === blockID
     );
