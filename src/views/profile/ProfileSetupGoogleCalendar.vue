@@ -11,32 +11,51 @@
       >Login with Google</a>
     </div>
     <div v-else>
-      <h2 class="subtitle">
-        Choose a Calendar
-      </h2>
+      <div class="tabs">
+        <ul>
+          <li
+            :class="{ 'is-active': tab === 'courseSchedule' }"
+            @click="tab = 'courseSchedule'"
+          >
+            <a>Course Schedule</a>
+          </li>
+          <li
+            :class="{ 'is-active': tab === 'workBlocks' }"
+            @click="tab = 'workBlocks'"
+          >
+            <a>Work Blocks</a>
+          </li>
+        </ul>
+      </div>
       <div
-        v-if="calendarID === ''"
-        class="calendar-list columns is-multiline"
+        v-if="tab === 'workBlocks'"
+        class="work-block-calendar"
       >
+        <h2 class="subtitle">
+          Choose a Calendar
+        </h2>
         <div
-          v-for="calendar in calendars"
-          :key="calendar.id"
-          class="column is-one-third"
+          class="calendar-list columns is-multiline"
         >
           <div
-            class="box calendar"
-            :style="{ 'background-color': calendar.backgroundColor }"
-            @click="calendarID = calendar.id"
+            v-for="calendar in calendars"
+            :key="calendar.id"
+            class="column is-one-third"
           >
-            <h2 class="subtitle">
-              <div
-                v-if="calendar.id === calendar.summary"
-                class="tag is-white"
-              >
-                Primary
-              </div>
-              {{ calendar.summary }}
-            </h2>
+            <div
+              class="box calendar"
+              :style="{ 'background-color': calendar.backgroundColor }"
+            >
+              <h2 class="subtitle">
+                <div
+                  v-if="calendar.id === calendar.summary"
+                  class="tag is-white"
+                >
+                  Primary
+                </div>
+                {{ calendar.summary }}
+              </h2>
+            </div>
           </div>
         </div>
       </div>
@@ -50,7 +69,8 @@ export default {
   data () {
     return {
       loading: false,
-      calendarID: '',
+      tab: 'workBlocks',
+      calendarIDs: Object.assign({}, this.$store.state.auth.user.integrations.google.calendarIDs),
       calendars: []
     };
   },

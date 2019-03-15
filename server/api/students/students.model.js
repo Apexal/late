@@ -104,7 +104,10 @@ const schema = new Schema(
         userID: { type: String }
       },
       google: {
-        accessTokens: { type: Object }
+        accessTokens: { type: Object },
+        calendarIDs: {
+          workBlocks: { type: String, default: '' }
+        }
       }
     },
     setup: {
