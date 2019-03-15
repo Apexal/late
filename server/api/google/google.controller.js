@@ -52,8 +52,32 @@ async function createEvent (ctx) {
   });
 }
 
+async function deleteEvent (ctx) {
+  const calendar = google.apis.calendar({
+    version: 'v3',
+    auth: ctx.state.googleAuth
+  });
+
+  const { calendarId, eventId } = ctx.request.body;
+  // TODO: make sure event was scheduled by LATE
+  let request;
+  try {
+    request = await calendar.events.delete({ calendarId, eventId });
+  } catch (e) {
+    logger.error(`Failed to delete GCal event ${eventId} for ${ctx.state.user.rcs_id}: ${e.error}`);
+    return ctx.badRequest('There was an error deleting the Google Calendar event.');
+  }
+
+  logger.info(`Deleted GCal event for ${ctx.state.user.rcs_id}.`);
+
+  return ctx.ok({
+    deletedEvent: request.data
+  });
+}
+
 module.exports = {
   googleAuthMiddleware,
   listCalendars,
-  createEvent
+  createEvent,
+  deleteEvent
 };
