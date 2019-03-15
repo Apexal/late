@@ -8,14 +8,13 @@ function createConnection () {
   );
 }
 
-
 function createUrl (auth) {
   return auth.generateAuthUrl({
     access_type: 'offline',
     scope: scopes
   });
 }
-const scopes = ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/calendar.settings.readonly'];
+const scopes = ['https://www.googleapis.com/auth/calendar.readonly'];
 
 module.exports = {
   apis: google,

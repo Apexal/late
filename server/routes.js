@@ -38,7 +38,7 @@ module.exports = router => {
     ctx.redirect(google.createUrl(googleAuth));
   });
 
-  router.get('/google/auth/callback', async ctx => {
+  router.get('/auth/google/callback', async ctx => {
     const googleAuth = google.createConnection();
 
     const { code } = ctx.query;
