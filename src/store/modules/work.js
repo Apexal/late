@@ -204,18 +204,6 @@ const actions = {
     );
     const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    // if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
-    //   try {
-    //     await dispatch('ADD_GCAL_EVENT_FOR_WORK_BLOCK', {
-    //       assessmentType,
-    //       assessment,
-    //       block: request.data.createdBlock
-    //     });
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // }
-
     if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
       commit(
         `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
@@ -225,10 +213,7 @@ const actions = {
 
     return request.data['updated' + capitalized];
   },
-  async EDIT_WORK_BLOCK (
-    { commit, getters, rootState, dispatch },
-    { blockID, start, end }
-  ) {
+  async EDIT_WORK_BLOCK ({ commit, getters }, { blockID, start, end }) {
     const block = getters.getWorkBlocksAsEvents.find(
       b => b.blockID === blockID
     );
@@ -236,26 +221,6 @@ const actions = {
       `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`,
       { startTime: start, endTime: end, assessmentType: block.assessmentType }
     );
-
-    // if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
-    //   try {
-    //     await dispatch('UPDATE_GCAL_EVENT', {
-    //       calendarId:
-    //         rootState.auth.user.integrations.google.calendarIDs.workBlocks,
-    //       eventId: blockID,
-    //       updates: {
-    //         start: {
-    //           dateTime: start
-    //         },
-    //         end: {
-    //           dateTime: end
-    //         }
-    //       }
-    //     });
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // }
 
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
@@ -269,26 +234,13 @@ const actions = {
 
     return request.data['updated' + capitalized];
   },
-  async REMOVE_WORK_BLOCK (
-    { commit, getters, rootState, dispatch },
-    { blockID }
-  ) {
+  async REMOVE_WORK_BLOCK ({ commit, getters }, { blockID }) {
     const block = getters.getWorkBlocksAsEvents.find(
       b => b.blockID === blockID
     );
     const request = await axios.delete(
       `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`
     );
-
-    // if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
-    //   try {
-    //     await dispatch('DELETE_GCAL_EVENT_FOR_WORK_BLOCK', {
-    //       blockID
-    //     });
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // }
 
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
