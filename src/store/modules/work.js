@@ -280,15 +280,15 @@ const actions = {
       `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`
     );
 
-    if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
-      try {
-        await dispatch('DELETE_GCAL_EVENT_FOR_WORK_BLOCK', {
-          blockID
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
+    // if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
+    //   try {
+    //     await dispatch('DELETE_GCAL_EVENT_FOR_WORK_BLOCK', {
+    //       blockID
+    //     });
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+    // }
 
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';

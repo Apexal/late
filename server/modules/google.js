@@ -60,6 +60,21 @@ const actions = {
 
     logger.info(`Added GCal event for ${ctx.state.user.rcs_id}.`);
     return request.data;
+  },
+  async deleteEventFromWorkBlock (ctx, blockID) {
+    const calendar = google.calendar({
+      version: 'v3',
+      auth: ctx.state.googleAuth
+    });
+
+    let request = await calendar.events.delete({
+      calendarId: ctx.state.user.integrations.google.calendarIDs.workBlocks,
+      eventId: blockID
+    });
+
+    logger.info(`Deleted work block GCal event for ${ctx.state.user.rcs_id}.`);
+
+    return request.data;
   }
 };
 

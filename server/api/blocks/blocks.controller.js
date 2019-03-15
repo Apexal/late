@@ -201,6 +201,18 @@ async function removeWorkBlock (ctx) {
 
   logger.info(`Removed work block for ${ctx.state.user.rcs_id}`);
 
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.deleteEventFromWorkBlock(ctx, blockID);
+    } catch (e) {
+      logger.error(
+        `Failed to delete GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
+
   return ctx.ok({
     // eslint-disable-next-line standard/computed-property-even-spacing
     ['updated' +
