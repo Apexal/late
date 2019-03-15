@@ -249,6 +249,7 @@ async function setGoogle (ctx) {
   const { calendarIDs } = ctx.request.body;
 
   Object.assign(ctx.state.user.integrations.google.calendarIDs, calendarIDs);
+
   try {
     await ctx.state.user.save();
   } catch (e) {

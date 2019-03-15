@@ -30,7 +30,26 @@ async function listCalendars (ctx) {
   });
 }
 
+async function createEvent (ctx) {
+  const calendar = google.apis.calendar({
+    version: 'v3',
+    auth: ctx.state.googleAuth
+  });
+
+  // const { calendarID, start, end, summary, description, location, extendedProperties } = ctx.request.body;
+
+  let request;
+  request = await calendar.events.insert(ctx.request.body);
+
+  logger.info(`Added GCal event for ${ctx.state.user.rcs_id}`);
+
+  ctx.ok({
+    event: request.data
+  });
+}
+
 module.exports = {
   googleAuthMiddleware,
-  listCalendars
+  listCalendars,
+  createEvent
 };

@@ -135,6 +135,22 @@ export default {
         request = await this.$http.post('/setup/google', {
           calendarIDs: this.calendarIDs
         });
+        // await this.$http.post('/google/calendars/events', {
+        //   calendarID: this.calendarIDs.workBlocks,
+        //   start: {
+
+        //   },
+        //   end: {
+
+        //   },
+        //   summary: 'Work on WebAssign S11.1',
+        //   description: 'Thing thing thing',
+        //   extendedProperties: {
+        //     private: {
+        //       workBlockID: '00000'
+        //     }
+        //   }
+        // });
       } catch (e) {
         this.loading = false;
         return this.$toasted.error(e.response.data.message);
