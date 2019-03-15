@@ -37,11 +37,10 @@ async function createEvent (ctx) {
   });
 
   let request;
-  console.log(ctx.request.body);
   try {
     request = await calendar.events.insert({ calendarId: ctx.request.body.calendarId, resource: ctx.request.body });
   } catch (e) {
-    logger.error(`Failed to create GCal event for ${ctx.state.user.rcs_id}: ${e.error}`);
+    logger.error(`Failed to create GCal event for ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.badRequest('There was an error creating a new Google Calendar event.');
   }
 
@@ -58,13 +57,13 @@ async function deleteEvent (ctx) {
     auth: ctx.state.googleAuth
   });
 
-  const { calendarId, eventId } = ctx.request.body;
+  const { calendarId, eventId } = ctx.params;
   // TODO: make sure event was scheduled by LATE
   let request;
   try {
     request = await calendar.events.delete({ calendarId, eventId });
   } catch (e) {
-    logger.error(`Failed to delete GCal event ${eventId} for ${ctx.state.user.rcs_id}: ${e.error}`);
+    logger.error(`Failed to delete GCal event ${eventId} for ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.badRequest('There was an error deleting the Google Calendar event.');
   }
 

@@ -25,6 +25,11 @@ const actions = {
     });
 
     return request.data;
+  },
+  async DELETE_GCAL_EVENT_FOR_WORK_BLOCK ({ rootState }, { blockID }) {
+    let request = await axios.delete(`/google/calendars/events/${rootState.auth.user.integrations.google.calendarIDs.workBlocks}/${blockID}`);
+
+    return request.data;
   }
 };
 
