@@ -29,6 +29,12 @@
             @click="calendarID = calendar.id"
           >
             <h2 class="subtitle">
+              <div
+                v-if="calendar.id === calendar.summary"
+                class="tag is-white"
+              >
+                Primary
+              </div>
               {{ calendar.summary }}
             </h2>
           </div>
