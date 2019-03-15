@@ -106,6 +106,7 @@ const schema = new Schema(
       google: {
         accessTokens: { type: Object },
         calendarIDs: {
+          courseSchedule: { type: String, default: '' },
           workBlocks: { type: String, default: '' }
         }
       }
