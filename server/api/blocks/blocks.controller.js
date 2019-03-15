@@ -3,6 +3,7 @@ const Assignment = require('../assignments/assignments.model');
 const Exam = require('../exams/exams.model');
 
 const logger = require('../../modules/logger');
+const google = require('../../modules/google');
 
 /**
  * Add a work block to a specific assignment and have the updated
@@ -69,6 +70,23 @@ async function addWorkBlock (ctx) {
   }
 
   logger.info(`Adding work block for ${ctx.state.user.rcs_id}`);
+
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.createEventFromWorkBlock(
+        ctx,
+        assessment,
+        assessmentType,
+        newBlock
+      );
+    } catch (e) {
+      logger.error(
+        `Failed to add GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
 
   return ctx.ok({
     createdBlock: newBlock,

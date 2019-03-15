@@ -204,17 +204,17 @@ const actions = {
     );
     const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
-      try {
-        await dispatch('ADD_GCAL_EVENT_FOR_WORK_BLOCK', {
-          assessmentType,
-          assessment,
-          block: request.data.createdBlock
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
+    // if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
+    //   try {
+    //     await dispatch('ADD_GCAL_EVENT_FOR_WORK_BLOCK', {
+    //       assessmentType,
+    //       assessment,
+    //       block: request.data.createdBlock
+    //     });
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+    // }
 
     if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
       commit(

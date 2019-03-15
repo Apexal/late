@@ -9,10 +9,11 @@ const Body = require('koa-body');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
 
+const google = require('./modules/google');
 const moment = require('moment');
 
 // Start the Discord bot
-require('./integrations/discord');
+// require('./integrations/discord');
 
 const logger = require('./modules/logger');
 
@@ -58,12 +59,25 @@ app.use(async (ctx, next) => {
       .exec();
 
     // If first request, get terms
-    /* if (!ctx.session.terms) */ ctx.session.terms = await Term.find().exec();
+    if (!ctx.session.terms) ctx.session.terms = await Term.find().exec();
+
+    console.log(ctx.session.terms);
 
     // Calculate current term on each request in case it changes (very unlikely but possible)
-    ctx.session.currentTerm = ctx.session.terms.find(t =>
-      moment().isBetween(moment(t.start), moment(t.end))
-    );
+    if (
+      ctx.session.currentTerm &&
+      moment().isAfter(ctx.session.currentTerm.end)
+    ) {
+      ctx.session.currentTerm = ctx.session.terms.find(t =>
+        moment().isBetween(moment(t.start), moment(t.end))
+      );
+    }
+
+    if (ctx.state.user.setup.google) {
+      const auth = google.createConnection();
+      auth.setCredentials(ctx.state.user.integrations.google.accessTokens);
+      ctx.state.googleAuth = auth;
+    }
   }
   try {
     await next();
