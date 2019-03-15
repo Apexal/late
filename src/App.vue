@@ -2,10 +2,7 @@
   <div id="app">
     <div id="content">
       <vue-progress-bar />
-      <v-tour
-        name="page-tour"
-        :steps="tourSteps"
-      />
+
       <TheHeader ref="header" />
       <Loading
         :active.sync="loading"
@@ -93,8 +90,6 @@ import CourseModal from '@/views/components/courses/CourseModal';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
-import tours from '@/tours';
-
 export default {
   name: 'LATE',
   components: {
@@ -136,13 +131,7 @@ export default {
     },
     isSetup () {
       return this.$store.getters.isUserSetup;
-    },
-    tourSteps () {
-      return this.$route.meta.tour && this.$route.meta.tour in tours ? tours[this.$route.meta.tour] : [];
     }
-  },
-  watch: {
-    '$route': 'tour'
   },
   async mounted () {
     if (typeof window.orientation === 'undefined') {
@@ -174,15 +163,8 @@ export default {
     }
 
     this.loading = false;
-
-    this.tour();
   },
   methods: {
-    tour () {
-      this.$nextTick(function () {
-        this.$tours['page-tour'].start();
-      });
-    },
     resizeThrottler () {
       // ignore resize events as long as an actualResizeHandler execution is in the queue
       if (!this.resizeTimeout) {
@@ -207,10 +189,10 @@ export default {
 /* These styles will apply to the whole app. */
 @import "@/assets/bulma.scss";
 
-html,body {
+html,
+body {
   height: 100%;
 }
-
 
 //Sticky Footer
 #app {

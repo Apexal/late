@@ -1,5 +1,10 @@
 <template>
   <section class="section dasboard">
+    <v-tour
+      name="dashboard"
+      :steps="tour"
+    />
+
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
       The Dashboard
     </h1>
@@ -13,9 +18,7 @@
           Your Dashboard
         </h1>
         <li>
-          <a title="View your weekly schedule">
-            Your Week
-          </a>
+          <a title="View your weekly schedule">Your Week</a>
         </li>
         <li
           class="is-active"
@@ -153,6 +156,9 @@ export default {
     };
   },
   computed: {
+    tour () {
+      return tours.dashboard;
+    },
     isFullscreen () {
       return document.fullscreenElement !== null;
     },
@@ -220,9 +226,6 @@ export default {
       }
 
       return earliest;
-    },
-    tour () {
-      return tours.dashboard;
     }
   },
   watch: {
@@ -239,12 +242,14 @@ export default {
     this.calendar.config.scrollTime = this.earliest;
   },
   mounted () {
-    // let alreadySeenTours = localStorage.getItem('tours') ? JSON.parse(localStorage.getItem('tours')) : [];
-    // if (!alreadySeenTours.includes('dashboard-tour')) {
-    //   alreadySeenTours.push('dashboard-tour');
-    //   localStorage.setItem('tours', JSON.stringify(alreadySeenTours));
-    //   this.$tours['dashboard-tour'].start();
-    // }
+    let alreadySeenTours = localStorage.getItem('tours')
+      ? JSON.parse(localStorage.getItem('tours'))
+      : [];
+    if (!alreadySeenTours.includes('dashboard')) {
+      alreadySeenTours.push('dashboard');
+      localStorage.setItem('tours', JSON.stringify(alreadySeenTours));
+      this.$tours.dashboard.start();
+    }
   },
   methods: {
     toggleFullscreen () {

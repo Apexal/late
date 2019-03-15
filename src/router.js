@@ -26,8 +26,7 @@ const router = new Router({
       name: 'home',
       component: () => import('@/views/TheHomePage.vue'),
       meta: {
-        title: 'Home',
-        tour: 'dashboard'
+        title: 'Home'
       }
     },
     {
@@ -54,7 +53,6 @@ const router = new Router({
           path: 'calendar',
           name: 'assignments-calendar',
           meta: {
-
             title: 'Assignment Calendar'
           },
           component: () => import('@/views/assignments/AssignmentsCalendar.vue')
@@ -63,7 +61,6 @@ const router = new Router({
           path: 'upcoming',
           name: 'assignments-upcoming',
           meta: {
-            tour: 'upcoming-assignments',
             title: 'Upcoming Assignments'
           },
           component: () => import('@/views/assignments/AssignmentsUpcoming.vue')
