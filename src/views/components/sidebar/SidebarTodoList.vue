@@ -73,12 +73,7 @@ export default {
       let response;
       try {
         response = await this.$store.dispatch('ADD_TODO', todo);
-        this.$toasted.show(`Added to-do '${this.newTodo}'.`, {
-          icon: 'list-ol',
-          action: {
-            text: 'Undo'
-          }
-        });
+        this.$toasted.show(`Added to-do '${this.newTodo}'.`);
         this.newTodo = '';
       } catch (e) {
         this.$toasted.error(e.response.data.message);
@@ -89,21 +84,7 @@ export default {
 
       // TODO
       return false;
-
-      // this.todos.splice(this.todos.indexOf(todo), 1);
-      // this.saveTodos();
-      // this.$toasted.show(`Completed to-do '${todo.text}'.`, {
-      //   icon: 'times',
-      //   action: {
-      //     text: 'Undo'
-      //   }
-      // });
-    } // ,
-    // saveTodos () {
-    //   // const parsed = JSON.stringify(this.todos);
-    //   // localStorage.setItem('todos', parsed);
-    //   // this.$emit('update-count', { tab: 'todos', count: this.todos.length });
-    // }
+    }
   }
 };
 </script>
