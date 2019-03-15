@@ -16,6 +16,10 @@ const actions = {
   async GET_TODOS ({ commit }) {
     const response = await axios.get('/todos');
     commit('SET_TODOS', response.data);
+  },
+  async REMOVE_TODO ({ commit }, todo) {
+    await axios.post('/todos/remove', todo._id);
+    commit('REMOVE_TODO', todo);
   }
 };
 
@@ -25,6 +29,9 @@ const mutations = {
   },
   SET_TODOS: (state, todos) => {
     state.todos = todos;
+  },
+  REMOVE_TODO: (state, todo) => {
+    state.todos = state.todos.splice(state.todos.indexOf(todo), 1);
   }
 };
 

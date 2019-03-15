@@ -36,7 +36,20 @@ async function saveTodo (ctx) {
   }
 }
 
+/**
+ * Removes the given todo.
+ * Request parameters:
+ *  - id: the todo ID
+ * @param {Koa context} ctx
+ */
+async function removeTodo (ctx) {
+  // TODO: validate that this is this student's todo.
+  const { id } = ctx.request.body;
+  await Todo.findById(id).remove().exec();
+}
+
 module.exports = {
   getTodosByName,
-  saveTodo
+  saveTodo,
+  removeTodo
 };
