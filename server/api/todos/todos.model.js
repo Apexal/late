@@ -19,8 +19,10 @@ schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });
 
 // use to get todos by user
-schema.query.byUsername = function (rcsID) {
+schema.query.byUsername = function (user) {
   return this.where({
-    /* ... */
+    _student: user
   });
 };
+
+module.exports = mongoose.model('Todo', schema);

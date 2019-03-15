@@ -9,7 +9,7 @@ const logger = require('../../modules/logger');
 async function getTodosByName (ctx) {
   const user = ctx.state.user;
   const todos = await Todo.find()
-    .byUsername(user.rcs_id)
+    .byUsername(user)
     .exec();
   return ctx.ok(todos.map(todo => todo.toJSON()));
 }
@@ -21,15 +21,22 @@ async function getTodosByName (ctx) {
  * @param {Koa context} ctx
  */
 async function saveTodo (ctx) {
-  const { text } = ctx.request.body;
-  const todo = new Todo({
+  const { text, addedAt } = ctx.request.body;
+  const todo = Todo({
     _student: ctx.state.user._id,
-    text
+    text,
+    addedAt
   });
   try {
     await todo.save();
+    return ctx.created();
   } catch (e) {
     logger.error(`Failed to save new todo for ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.badRequest('There was an error scheduling todo.');
   }
 }
+
+module.exports = {
+  getTodosByName,
+  saveTodo
+};

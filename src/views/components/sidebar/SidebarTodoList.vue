@@ -52,49 +52,58 @@ export default {
       return this.$store.state.now;
     }
   },
-  mounted () {
-    if (localStorage.getItem('todos')) {
-      try {
-        this.todos = JSON.parse(localStorage.getItem('todos'));
-      } catch (e) {
-        localStorage.removeItem('todos');
-      }
-    }
+  async created () {
+    await this.$store.dispatch('GET_TODOS');
+    this.todos = this.$store.getters.todos;
+  },
+  updated () {
+    this.todos = this.$store.getters.todos;
   },
   methods: {
     fromNow (date) {
       return moment(date).from(this.now);
     },
-    addTodo () {
+    async addTodo () {
       if (!this.newTodo) return;
 
-      this.todos.push({ text: this.newTodo, addedAt: new Date() });
-      this.saveTodos();
-      this.$toasted.show(`Added to-do '${this.newTodo}'.`, {
-        icon: 'list-ol',
-        action: {
-          text: 'Undo'
-        }
-      });
-      this.newTodo = '';
+      const todo = {
+        text: this.newTodo,
+        addedAt: new Date()
+      };
+      let response;
+      try {
+        response = await this.$store.dispatch('ADD_TODO', todo);
+        this.$toasted.show(`Added to-do '${this.newTodo}'.`, {
+          icon: 'list-ol',
+          action: {
+            text: 'Undo'
+          }
+        });
+        this.newTodo = '';
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+      }
     },
     removeTodo (todo) {
       if (!confirm(`Done with '${todo.text}'?`)) return;
 
-      this.todos.splice(this.todos.indexOf(todo), 1);
-      this.saveTodos();
-      this.$toasted.show(`Completed to-do '${todo.text}'.`, {
-        icon: 'times',
-        action: {
-          text: 'Undo'
-        }
-      });
-    },
-    saveTodos () {
-      const parsed = JSON.stringify(this.todos);
-      localStorage.setItem('todos', parsed);
-      this.$emit('update-count', { tab: 'todos', count: this.todos.length });
-    }
+      // TODO
+      return false;
+
+      // this.todos.splice(this.todos.indexOf(todo), 1);
+      // this.saveTodos();
+      // this.$toasted.show(`Completed to-do '${todo.text}'.`, {
+      //   icon: 'times',
+      //   action: {
+      //     text: 'Undo'
+      //   }
+      // });
+    } // ,
+    // saveTodos () {
+    //   // const parsed = JSON.stringify(this.todos);
+    //   // localStorage.setItem('todos', parsed);
+    //   // this.$emit('update-count', { tab: 'todos', count: this.todos.length });
+    // }
   }
 };
 </script>
