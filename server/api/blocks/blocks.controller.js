@@ -71,6 +71,7 @@ async function addWorkBlock (ctx) {
   logger.info(`Adding work block for ${ctx.state.user.rcs_id}`);
 
   return ctx.ok({
+    createdBlock: newBlock,
     // eslint-disable-next-line standard/computed-property-even-spacing
     ['updated' +
     (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
