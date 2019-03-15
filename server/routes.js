@@ -49,6 +49,6 @@ module.exports = router => {
 
     await ctx.state.user.save();
 
-    ctx.redirect('/profile/setup/google');
+    ctx.redirect('/profile/googlecalendar');
   });
 };
