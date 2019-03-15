@@ -150,6 +150,25 @@ async function editWorkBlock (ctx) {
 
   logger.info(`Edited work block for ${ctx.state.user.rcs_id}`);
 
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.patchEventFromWorkBlock(ctx, blockID, {
+        start: {
+          dateTime: startTime
+        },
+        end: {
+          dateTime: endTime
+        }
+      });
+    } catch (e) {
+      logger.error(
+        `Failed to patch GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
+
   return ctx.ok({
     // eslint-disable-next-line standard/computed-property-even-spacing
     ['updated' +

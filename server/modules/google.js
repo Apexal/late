@@ -61,6 +61,19 @@ const actions = {
     logger.info(`Added GCal event for ${ctx.state.user.rcs_id}.`);
     return request.data;
   },
+  async patchEventFromWorkBlock (ctx, blockID, updates) {
+    const calendar = google.calendar({
+      version: 'v3',
+      auth: ctx.state.googleAuth
+    });
+    let request = await calendar.events.patch({
+      calendarId: ctx.state.user.integrations.google.calendarIDs.workBlocks,
+      eventId: blockID,
+      requestBody: updates
+    });
+
+    return request.data;
+  },
   async deleteEventFromWorkBlock (ctx, blockID) {
     const calendar = google.calendar({
       version: 'v3',

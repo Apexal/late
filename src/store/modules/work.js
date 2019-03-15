@@ -237,25 +237,25 @@ const actions = {
       { startTime: start, endTime: end, assessmentType: block.assessmentType }
     );
 
-    if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
-      try {
-        await dispatch('UPDATE_GCAL_EVENT', {
-          calendarId:
-            rootState.auth.user.integrations.google.calendarIDs.workBlocks,
-          eventId: blockID,
-          updates: {
-            start: {
-              dateTime: start
-            },
-            end: {
-              dateTime: end
-            }
-          }
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
+    // if (rootState.auth.user.integrations.google.calendarIDs.workBlocks) {
+    //   try {
+    //     await dispatch('UPDATE_GCAL_EVENT', {
+    //       calendarId:
+    //         rootState.auth.user.integrations.google.calendarIDs.workBlocks,
+    //       eventId: blockID,
+    //       updates: {
+    //         start: {
+    //           dateTime: start
+    //         },
+    //         end: {
+    //           dateTime: end
+    //         }
+    //       }
+    //     });
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+    // }
 
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
