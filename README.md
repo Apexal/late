@@ -39,14 +39,14 @@ To run the project in development mode, you must run the API server in one termi
 - Go to url `http://localhost:8080` (whatever `$ npm run frontend` tells you go to) in your browser
 
 #### Overview
-Easily access daily classes and work blocks, pressing assignments, upcoming exams, and To-Do List:
-![alt text](https://github.com/Apexal/late/blob/dev/public/Day_Overview_README.png "Daily Agenda")
+Easily access daily classes and work blocks, pressing assignments, upcoming exams, and To-Do List:<br/>
+<img src="https://github.com/Apexal/late/blob/dev/public/Day_Overview_README.png" width="250" height="380"> 
 
-Add and edit work blocks via the Dashboard:
-![alt text](https://github.com/Apexal/late/blob/dev/public/Dashboard_README.png =600x300 "Dashboard")
+Add and edit work blocks via the Dashboard:<br/>
+<img src="https://github.com/Apexal/late/blob/dev/public/Dashboard_README.png" width="600" height="300">
 
-Conveniently view assignments for the near future:
-![alt text](https://github.com/Apexal/late/blob/dev/public/Upcoming_assignments_README.png =600x300 "Upcoming Assignments")
+Conveniently view assignments for the near future:<br/>
+<img src="https://github.com/Apexal/late/blob/dev/public/Upcoming_assignments_README.png" width="600" height="300"> 
 
-Seamlessly integrate SMS/email reminders:
-![alt text](https://github.com/Apexal/late/blob/dev/public/Notification_Preferences_README.png  =250x250 "Notification Preferences")
+Seamlessly integrate SMS/email reminders:<br/>
+<img src= "https://github.com/Apexal/late/blob/dev/public/Notification_Preferences_README.png" width="250" height="250">
