@@ -6,6 +6,7 @@ const Ctrl = require('./google.controller');
 router.use(Ctrl.googleAuthMiddleware);
 router.get('/calendars', Ctrl.listCalendars);
 router.post('/calendars/events', Ctrl.createEvent);
+router.patch('/calendars/events/:calendarId/:eventId', Ctrl.patchEvent);
 router.delete('/calendars/events/:calendarId/:eventId', Ctrl.deleteEvent);
 
 module.exports = router.routes();
