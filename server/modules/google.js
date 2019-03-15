@@ -14,7 +14,7 @@ function createUrl (auth) {
     scope: scopes
   });
 }
-const scopes = ['https://www.googleapis.com/auth/calendar.readonly'];
+const scopes = ['https://www.googleapis.com/auth/calendar'];
 
 module.exports = {
   apis: google,
