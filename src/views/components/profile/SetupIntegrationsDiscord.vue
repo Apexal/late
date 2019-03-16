@@ -2,55 +2,40 @@
   <div class="discord-setup">
     <div
       v-if="verified"
-      class="discord-verify"
+      class="has-text-centered"
     >
-      <label
-        for="discord-id"
-        class="label"
+      <a
+        class="button discord-button is-large"
+        href="/auth/discord"
       >
-        Your Discord ID
-      </label>
-      <div class="field has-addons">
-        <div class="control">
-          <input
-            id="discord-id"
-            class="input"
-            type="text"
-            :value="discordID"
-            disabled
-          >
-        </div>
-        <div class="control">
-          <button
-            class="button is-danger"
-            @click="disable"
-          >
-            Disable
-          </button>
-        </div>
-      </div>
+        <img
+          src="https://discordapp.com/assets/28174a34e77bb5e5310ced9f95cb480b.png"
+          alt=""
+        >
+        Connect to Discord
+      </a>
     </div>
     <div v-else>
-      <button
-        v-if="!verifying"
-        class="button is-warning"
-        @click="startVerify"
+      <h2
+        v-if="loading"
+        class="subtitle has-text-grey has-text-centered"
       >
-        Link Discord Account
-      </button>
-      <div v-else>
-        <p>
-          Direct message
-          <b>LATE bot</b>
-          <code>.verify {{ verificationCode }}</code> to link your account!
-        </p>
-        <br>
-        <button
-          class="button is-info"
-          @click="refresh"
+        Loading your Discord Info...
+      </h2>
+      <div
+        v-else
+        class="box is-flex discord-user"
+      >
+        <img
+          :src="discordAvatarURL"
+          alt="Your Avatar"
         >
-          I verified
-        </button>
+        <b class="is-size-3">{{ discordUser.username }} <span class="has-text-grey">#{{ discordUser.discriminator }}</span></b>
+        <div class="right">
+          <button class="button">
+            Disconnect
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -61,75 +46,39 @@ export default {
   name: 'SetupIntegrationsDiscord',
   data () {
     return {
-      loading: false,
-      verifying: false,
-      verificationCode: ''
+      loading: true,
+      discordUser: {
+        username: '',
+        avatar: '',
+        discriminator: '',
+        id: ''
+      }
     };
   },
   computed: {
-    discordID () {
-      return this.$store.state.auth.user.integrations.discord.userID;
-    },
     verified () {
       return this.$store.state.auth.user.integrations.discord.verified;
     },
-    saved () {
-      return (
-        JSON.stringify(this.preferences) ===
-        JSON.stringify(
-          this.$store.state.auth.user.integrations.discord.preferences
-        )
-      );
+    discordAvatarURL () {
+      return `https://cdn.discordapp.com/avatars/${this.discordUser.id}/${this.discordUser.avatar}.png`;
+    },
+    token () {
+      return this.$store.state.auth.user.integrations.discord.tokens.accessToken;
     }
   },
+  mounted () {
+    this.getDiscordUser();
+  },
   methods: {
-    async startVerify () {
-      let request;
-      request = await this.$http.get('/integrations/discord/startverify');
-
-      this.verificationCode = request.data.verificationCode;
-      this.verifying = true;
-    },
-    async updatePreferences () {
+    async getDiscordUser () {
       this.loading = true;
+      let request = await this.$http.get('https://discordapp.com/api/users/@me', {
+        headers: {
+          Authorization: `Bearer ${this.token}`
+        }
+      });
 
-      let request;
-      try {
-        request = await this.$http.post(
-          '/integrations/discord/preferences',
-          this.preferences
-        );
-      } catch (e) {
-        this.loading = false;
-        return this.$toasted.error(e.response.data.message);
-      }
-
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$toasted.success('Successfully updated your Discord preferences!');
-
-      this.loading = false;
-    },
-    async refresh () {
-      await this.$store.dispatch('GET_USER');
-    },
-    async disable () {
-      if (!confirm('Are you sure you want to disable Discord integration?')) {
-        return;
-      }
-
-      this.loading = true;
-
-      let request;
-      try {
-        request = await this.$http.delete('/integrations/discord');
-      } catch (e) {
-        this.loading = false;
-        return this.$toasted.error(e.response.data.message);
-      }
-
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$toasted.success('Successfully disabled Discord integration!');
-
+      this.discordUser = request.data;
       this.loading = false;
     }
   }
@@ -137,4 +86,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.discord-button  {
+  background-color: #7289DA;
+  color: white;
+  img {
+    height: 30px;
+    margin-right: 10px;
+  }
+}
+.box.discord-user {
+  align-items: center;
+  background-color: #99AAB5;
+  color: #2C2F33;
+  img {
+    height: 75px;
+    border-radius: 100%;
+    border: 2px solid white;
+    background-color: white;
+  }
+  b {
+    margin: 0 20px;
+  }
+
+  .right {
+    flex: 1;
+    text-align: right;
+  }
+}
 </style>

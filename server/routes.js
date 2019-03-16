@@ -77,22 +77,6 @@ module.exports = router => {
 
     await ctx.state.user.save();
 
-    ctx.ok(tokens);
-  });
-
-  router.get('/auth/discord/user', async ctx => {
-    const token = ctx.session.discord_tokens.access_token;
-    let who = await request({
-      uri: 'https://discordapp.com/api/users/@me',
-      query: {
-        'client_secret': process.env.DISCORD_CLIENT_SECRET
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      json: true
-    });
-
-    ctx.ok(who);
+    ctx.redirect('/profile/integrations#discord');
   });
 };
