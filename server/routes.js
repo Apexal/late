@@ -48,4 +48,12 @@ module.exports = router => {
 
     ctx.ok(tokens);
   });
+
+  router.get('/auth/discord', ctx => {
+    ctx.redirect(process.env.DISCORD_REDIRECT_URL);
+  });
+
+  router.get('/auth/discord/callback', async ctx => {
+    ctx.ok(ctx.request);
+  });
 };
