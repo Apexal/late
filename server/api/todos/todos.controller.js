@@ -46,7 +46,7 @@ async function removeTodo (ctx) {
   // TODO: validate that this is this student's todo.
   const { id } = ctx.request.body;
   await Todo.findById(id).deleteOne().exec();
-  return ctx.ok();
+  ctx.status = 204; // no content
 }
 
 module.exports = {

@@ -19,7 +19,7 @@ const actions = {
   },
   async REMOVE_TODO ({ commit }, todo) {
     commit('REMOVE_TODO', todo);
-    await axios.post('/todos/remove', { id: todo._id });
+    await axios.delete('/todos/remove', { id: todo._id });
   }
 };
 
