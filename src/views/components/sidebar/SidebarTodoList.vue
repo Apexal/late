@@ -56,9 +56,6 @@ export default {
     await this.$store.dispatch('GET_TODOS');
     this.todos = this.$store.getters.todos;
   },
-  updated () {
-    this.todos = this.$store.getters.todos;
-  },
   methods: {
     fromNow (date) {
       return moment(date).from(this.now);
@@ -70,6 +67,7 @@ export default {
         text: this.newTodo,
         addedAt: new Date()
       };
+      this.todos.push(todo);
       let response;
       try {
         response = await this.$store.dispatch('ADD_TODO', todo);
@@ -79,11 +77,16 @@ export default {
         this.$toasted.error(e.response.data.message);
       }
     },
-    removeTodo (todo) {
+    async removeTodo (todo) {
       if (!confirm(`Done with '${todo.text}'?`)) return;
 
-      // TODO
-      return false;
+      this.todos.splice(this.todos.indexOf(todo), 1);
+      try {
+        await this.$store.dispatch('REMOVE_TODO', todo);
+        this.$toasted.show(`Deleted to-do '${todo.text}'.`);
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+      }
     }
   }
 };

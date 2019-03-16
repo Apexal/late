@@ -18,8 +18,8 @@ const actions = {
     commit('SET_TODOS', response.data);
   },
   async REMOVE_TODO ({ commit }, todo) {
-    await axios.post('/todos/remove', todo._id);
     commit('REMOVE_TODO', todo);
+    await axios.post('/todos/remove', { id: todo._id });
   }
 };
 
