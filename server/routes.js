@@ -1,6 +1,7 @@
 const { loginStudent, cas } = require('./modules/auth');
-
+const request = require('request-promise');
 const google = require('./modules/google');
+const btoa = require('btoa');
 
 module.exports = router => {
   // router.use(path, router);
@@ -54,6 +55,35 @@ module.exports = router => {
   });
 
   router.get('/auth/discord/callback', async ctx => {
-    ctx.ok(ctx.request);
+    const { code } = ctx.request.query;
+    const creds = btoa(`${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`);
+    const tokens = await request({
+      uri: `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${process.env.DISCORD_CALLBACK_URL}`,
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${creds}`
+      },
+      json: true
+    });
+
+    ctx.session.discord_tokens = tokens;
+
+    ctx.ok(tokens);
+  });
+
+  router.get('/auth/discord/user', async ctx => {
+    const token = ctx.session.discord_tokens.access_token;
+    let who = await request({
+      uri: 'https://discordapp.com/api/users/@me',
+      query: {
+        'client_secret': process.env.DISCORD_CLIENT_SECRET
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      json: true
+    });
+
+    ctx.ok(who);
   });
 };
