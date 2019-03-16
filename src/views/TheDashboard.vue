@@ -1,50 +1,5 @@
 <template>
   <section class="section dasboard">
-    <div
-      :class="{'is-active': selectModal.open}"
-      class="modal dashboard-calendar-select-modal"
-    >
-      <div
-        class="modal-background"
-        @click="selectModal.open = !selectModal.open"
-      />
-      <div class="modal-content panel">
-        <p class="panel-heading">
-          Schedule
-          <b>{{ selectModalDateStrs.start }}</b> to
-          <b>{{ selectModalDateStrs.end }}</b>
-        </p>
-        <div
-          v-if="filteredUpcomingAssessments.length === 0"
-          class="panel-block has-text-grey"
-        >
-          No assignments or exams are open to work on at that time.
-        </div>
-        <div
-          v-for="assessment in filteredUpcomingAssessments"
-          :key="assessment._id"
-          class="panel-block is-flex"
-          @click="addWorkBlock(assessment)"
-        >
-          <span style="flex: 1">
-            <span
-              class="tag assessment-type-tag"
-              :style="{ 'background-color': course(assessment.courseCRN).color }"
-            >{{ assessment.assessmentType }}</span>
-            {{ assessment.title }}
-          </span>
-          <span
-            class="has-text-grey is-pulled-right"
-          >due {{ formatDate(assessment.dueDate || assessment.date) }}</span>
-        </div>
-      </div>
-      <button
-        class="modal-close is-large"
-        aria-label="close"
-        @click="selectModal.open = !selectModal.open"
-      />
-    </div>
-
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
       The Dashboard
     </h1>
@@ -58,7 +13,9 @@
           Your Dashboard
         </h1>
         <li>
-          <a title="View your weekly schedule">Your Week</a>
+          <a title="View your weekly schedule">
+            Your Week
+          </a>
         </li>
         <li
           class="is-active"
@@ -73,7 +30,18 @@
         On Break
       </h2>
     </template>
-    <template v-else>
+    <div
+      v-else
+      id="calendar-holder"
+    >
+      <DashboardCalendarSelectModal
+        :open="selectModal.open"
+        :start="selectModal.start"
+        :end="selectModal.end"
+        :assessments="filteredUpcomingAssessments"
+        @add-work-block="addWorkBlock"
+        @close-modal="selectModal.open = false"
+      />
       <FullCalendar
         ref="calendar"
         :events="events"
@@ -82,7 +50,13 @@
         :header="calendar.header"
         :config="calendar.config"
       />
-    </template>
+      <button
+        class="button"
+        @click="toggleFullscreen"
+      >
+        Fullscreen
+      </button>
+    </div>
   </section>
 </template>
 
@@ -92,9 +66,11 @@ import 'fullcalendar/dist/fullcalendar.css';
 
 import moment from 'moment';
 
+import DashboardCalendarSelectModal from '@/views/components/dashboard/DashboardCalendarSelectModal';
+
 export default {
   name: 'TheDashboard',
-  components: { FullCalendar },
+  components: { DashboardCalendarSelectModal, FullCalendar },
   data () {
     return {
       selectModal: {
@@ -123,7 +99,7 @@ export default {
             start: this.$store.getters.currentTerm.start,
             end: this.$store.getters.currentTerm.end
           },
-          height: 700,
+          height: 'parent',
           dayCount: 5,
           allDayText: 'Due',
           // minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
@@ -176,24 +152,14 @@ export default {
     };
   },
   computed: {
+    isFullscreen () {
+      return document.fullscreenElement !== null;
+    },
     onBreak () {
       return this.$store.getters.onBreak;
     },
     term () {
       return this.$store.getters.currentTerm;
-    },
-    selectModalDateStrs () {
-      if (this.selectModal.start.isSame(this.selectModal.end, 'day')) {
-        return {
-          start: this.selectModal.start.format('M/D/YY h:mm a'),
-          end: this.selectModal.end.format('h:mm a')
-        };
-      } else {
-        return {
-          start: this.selectModal.start.format('M/D/YY h:mm a'),
-          end: this.selectModal.end.format('M/D/YY h:mm a')
-        };
-      }
     },
     filteredUpcomingAssessments () {
       return this.$store.state.work.upcomingAssignments
@@ -269,8 +235,13 @@ export default {
     this.calendar.config.scrollTime = this.earliest;
   },
   methods: {
-    course (crn) {
-      return this.$store.getters.getCourseFromCRN(crn);
+    toggleFullscreen () {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        let div = document.getElementById('calendar-holder');
+        div.requestFullscreen();
+      }
     },
     select (start, end, jsEvent, view) {
       // this.$toasted.show(
@@ -302,7 +273,9 @@ export default {
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {
-        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: calEvent.start });
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+          dueDate: calEvent.start
+        });
         this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
       } else if (calEvent.eventType === 'assignment') {
         this.$router.push({
@@ -358,9 +331,6 @@ export default {
         fullWidth: false,
         position: 'top-right'
       });
-    },
-    formatDate (date) {
-      return moment(date).format('M/D/YY h:mm A');
     }
   }
 };
@@ -413,5 +383,23 @@ export default {
 .fc-right .fc-button-group {
   border-left: 1px solid #dbdbdb;
   margin-left: 5px;
+}
+
+#calendar-holder {
+  height: 700px;
+  .show-fullscreen {
+    display: none;
+  }
+  &:fullscreen {
+    padding: 15px;
+    background-color: white;
+    height: 95%;
+    .show-fullscreen {
+      display: initial;
+    }
+    .hide-fullscreen {
+      display: none;
+    }
+  }
 }
 </style>

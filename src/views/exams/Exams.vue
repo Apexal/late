@@ -98,7 +98,7 @@ export default {
     toggleFilter (c) {
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
-        this.$toasted.info(`Now including '${c.longname}' exams.`, {
+        this.$toasted.info(`Showing '${c.longname}' exams.`, {
           icon: 'plus',
           position: 'top-right',
           fullWidth: false,
@@ -106,7 +106,7 @@ export default {
         });
       } else {
         this.filter.push(c.crn);
-        this.$toasted.error(`No longer showing '${c.longname}' exams.`, {
+        this.$toasted.error(`Hiding '${c.longname}' exams.`, {
           icon: 'minus',
           position: 'top-right',
           fullWidth: false,

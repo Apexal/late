@@ -229,8 +229,8 @@ export default {
 
   .tab-count {
     margin-left: 3px;
-    font-size: 70%;
-    padding: 5px;
+    transform: scale(0.8);
+    //padding: 5px;
   }
   .local-toggle-sidebar {
     width: 2.5em;
