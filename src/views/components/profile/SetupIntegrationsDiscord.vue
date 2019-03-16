@@ -1,7 +1,7 @@
 <template>
   <div class="discord-setup">
     <div
-      v-if="verified"
+      v-if="!verified"
       class="has-text-centered"
     >
       <a
