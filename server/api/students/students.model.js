@@ -100,8 +100,10 @@ const schema = new Schema(
       },
       discord: {
         verified: { type: Boolean, default: false },
-        verificationCode: { type: String, minlength: 1 },
-        userID: { type: String }
+        tokens: {
+          accessToken: String,
+          refreshToken: String
+        }
       }
     },
     setup: {

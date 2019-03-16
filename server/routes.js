@@ -67,6 +67,15 @@ module.exports = router => {
     });
 
     ctx.session.discord_tokens = tokens;
+    ctx.state.user.integrations.discord = {
+      verified: true,
+      tokens: {
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token
+      }
+    };
+
+    await ctx.state.user.save();
 
     ctx.ok(tokens);
   });
