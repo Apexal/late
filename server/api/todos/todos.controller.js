@@ -2,7 +2,7 @@ const Todo = require('./todos.model');
 const logger = require('../../modules/logger');
 
 /**
- * Fetches a list of todos for the given user.
+ * Fetches a list of todos for the current user.
  * @param {Koa context} ctx
  * @retuns A JSON list of todos
  */
@@ -14,8 +14,8 @@ async function getTodosByName (ctx) {
 }
 
 /**
- * Saves the given todo.
- * Request parameters:
+ * Saves a new todo.
+ * Request body:
  *  - text: the todo text
  * @param {Koa context} ctx
  */
@@ -38,16 +38,21 @@ async function saveTodo (ctx) {
 }
 
 /**
- * Removes the given todo.
+ * Removes a todo given its ID.
  * Request parameters:
- *  - id: the todo ID
+ *  - todoID: the todo ID
  * @param {Koa context} ctx
  */
 async function removeTodo (ctx) {
-  // TODO: validate that this is this student's todo.
-  const { id } = ctx.request.body;
-  await Todo.findById(id).deleteOne().exec();
-  ctx.status = 204; // no content
+  const { todoID } = ctx.params;
+  const deletedTodo = await Todo.findOne({
+    _id: todoID,
+    _student: ctx.state.user._id
+  });
+  
+  deletedTodo.remove();
+  
+  ctx.ok({ deletedTodo });
 }
 
 module.exports = {
