@@ -4,14 +4,10 @@ const state = {
   todos: []
 };
 
-const getters = {
-  todos: state => state.todos.slice()
-};
-
 const actions = {
   async ADD_TODO ({ commit }, newTodo) {
     commit('ADD_TODO', newTodo);
-    await axios.post('/todos/save', newTodo);
+    await axios.post('/todos', newTodo);
   },
   async GET_TODOS ({ commit }) {
     const response = await axios.get('/todos');
@@ -19,7 +15,7 @@ const actions = {
   },
   async REMOVE_TODO ({ commit }, todo) {
     commit('REMOVE_TODO', todo);
-    await axios.delete('/todos/remove', { id: todo._id });
+    await axios.delete('/todos/' + todo._id);
   }
 };
 
@@ -37,7 +33,6 @@ const mutations = {
 
 export default {
   state,
-  getters,
   actions,
   mutations
 };
