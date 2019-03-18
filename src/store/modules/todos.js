@@ -6,12 +6,12 @@ const state = {
 
 const actions = {
   async ADD_TODO ({ commit }, newTodo) {
-    commit('ADD_TODO', newTodo);
-    await axios.post('/todos', newTodo);
+    const response = await axios.post('/todos', newTodo);
+    commit('ADD_TODO', response.data.createdTodo);
   },
   async GET_TODOS ({ commit }) {
     const response = await axios.get('/todos');
-    commit('SET_TODOS', response.data);
+    commit('SET_TODOS', response.data.todos);
   },
   async REMOVE_TODO ({ commit }, todo) {
     commit('REMOVE_TODO', todo);
