@@ -43,18 +43,19 @@ export default {
   name: 'SidebarTodoList',
   data () {
     return {
-      newTodo: '',
-      todos: []
+      newTodo: ''
     };
   },
   computed: {
     now () {
       return this.$store.state.now;
+    },
+    todos () {
+      return this.$store.state.todos.todos;
     }
   },
   async created () {
     await this.$store.dispatch('GET_TODOS');
-    this.todos = this.$store.getters.todos;
   },
   methods: {
     fromNow (date) {
@@ -63,14 +64,9 @@ export default {
     async addTodo () {
       if (!this.newTodo) return;
 
-      const todo = {
-        text: this.newTodo,
-        addedAt: new Date()
-      };
-      this.todos.push(todo);
       let response;
       try {
-        response = await this.$store.dispatch('ADD_TODO', todo);
+        response = await this.$store.dispatch('ADD_TODO', this.newTodo);
         this.$toasted.show(`Added to-do '${this.newTodo}'.`);
         this.newTodo = '';
       } catch (e) {
@@ -80,7 +76,6 @@ export default {
     async removeTodo (todo) {
       if (!confirm(`Done with '${todo.text}'?`)) return;
 
-      this.todos.splice(this.todos.indexOf(todo), 1);
       try {
         await this.$store.dispatch('REMOVE_TODO', todo);
         this.$toasted.show(`Deleted to-do '${todo.text}'.`);
