@@ -7,10 +7,10 @@ const logger = require('../../modules/logger');
  * @retuns A JSON list of todos
  */
 async function getTodosByName (ctx) {
-  const user = ctx.state.user;
-  const todos = await Todo.find()
-    .byUsername(user);
-  return ctx.ok(todos);
+  const todos = await Todo.find({
+    _student: ctx.state.user._id
+  });
+  return ctx.ok({ todos });
 }
 
 /**
@@ -20,11 +20,11 @@ async function getTodosByName (ctx) {
  * @param {Koa context} ctx
  */
 async function saveTodo (ctx) {
-  const { text, addedAt } = ctx.request.body;
+  const { text } = ctx.request.body;
   const todo = Todo({
     _student: ctx.state.user._id,
     text,
-    addedAt
+    addedAt: new Date()
   });
   try {
     await todo.save();
@@ -52,6 +52,7 @@ async function removeTodo (ctx) {
   
   deletedTodo.remove();
   
+  logger.info(`Removed todo for ${ctx.state.user.rcs_id}`);
   ctx.ok({ deletedTodo });
 }
 
