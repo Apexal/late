@@ -9,9 +9,8 @@ const logger = require('../../modules/logger');
 async function getTodosByName (ctx) {
   const user = ctx.state.user;
   const todos = await Todo.find()
-    .byUsername(user)
-    .exec();
-  return ctx.ok(todos.map(todo => todo.toJSON()));
+    .byUsername(user);
+  return ctx.ok(todos);
 }
 
 /**
@@ -29,11 +28,13 @@ async function saveTodo (ctx) {
   });
   try {
     await todo.save();
-    return ctx.created();
   } catch (e) {
     logger.error(`Failed to save new todo for ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.badRequest('There was an error scheduling todo.');
   }
+  
+  logger.info(`Added todo for ${ctx.state.user.rcs_id}`);
+  return ctx.created({ createdTodo: todo });
 }
 
 /**
