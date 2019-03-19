@@ -13,9 +13,7 @@
           Your Dashboard
         </h1>
         <li>
-          <a title="View your weekly schedule">
-            Your Week
-          </a>
+          <a title="View your weekly schedule">Your Week</a>
         </li>
         <li
           class="is-active"
@@ -83,6 +81,7 @@ export default {
           center: 'agendaThreeDay, agendaFiveDay, agendaWeek'
         },
         config: {
+          displayEventTime: true,
           views: {
             agendaThreeDay: {
               type: 'agenda',
@@ -119,6 +118,10 @@ export default {
           snapDuration: '00:15',
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
           eventRender: (event, el) => {
+            el.attr(
+              'title',
+              event.period ? event.period.location : event.title
+            );
             if (event.eventType === 'course') {
               if (event.period.type === 'TES') {
                 return !!this.$store.state.work.upcomingExams.find(
@@ -132,6 +135,7 @@ export default {
               if (moment(event.start).isAfter(this.term.classesEnd)) {
                 return false;
               }
+            } else {
             }
           },
           buttonText: {
