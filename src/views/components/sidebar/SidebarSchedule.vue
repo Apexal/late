@@ -18,7 +18,7 @@
     >
       <div v-if="filteredTodaysAgenda.length === 0">
         <div class="panel-block has-text-grey">
-          No courses or scheduled work today!
+          Nothing scheduled for the {{ todaysAgenda.length === filteredTodaysAgenda.length ? '' : 'rest of the ' }}day!
         </div>
       </div>
       <div
@@ -39,7 +39,10 @@
           :title="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
         >
           <template v-if="event.eventType === 'period'">
-            <b class="period-longname">{{ event.course.longname }}</b>
+            <b
+              class="period-longname"
+              @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
+            >{{ event.course.longname }}</b>
             <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
           </template>
           <template v-else-if="event.eventType === 'work-block'">
@@ -193,6 +196,7 @@ export default {
     margin-right: 3px;
   }
   .period-longname {
+    cursor: pointer;
     margin-right: 3px;
   }
 }
