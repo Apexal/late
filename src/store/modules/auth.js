@@ -96,7 +96,7 @@ const actions = {
 
     // call API
     const request = await axios.post('/setup/courses', {
-      courses: rootGetters.current_schedule
+      courses: rootGetters.current_schedule_all
     });
 
     commit('SET_USER', request.data.updatedUser);
