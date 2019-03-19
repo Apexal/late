@@ -47,9 +47,6 @@ export default new Vuex.Store({
         })
         .map(p => ({
           eventType: 'period',
-          title: `${
-            getters.getCourseFromPeriod(p).longname
-          } ${getters.periodType(p.type)}`,
           course: getters.getCourseFromPeriod(p),
           period: p,
           start: moment(p.start, 'Hmm', true),
@@ -60,9 +57,8 @@ export default new Vuex.Store({
             .filter(e => moment(e.start).isSame(state.now, 'day'))
             .map(e => ({
               eventType: 'work-block',
-              title: `${
-                e.assessmentType === 'exam' ? 'Study for' : 'Work on'
-              } ${e.assessment.title}`,
+              assessmentType: e.assessmentType,
+              assessment: e.assessment,
               course: getters.getCourseFromCRN(e.assessment.courseCRN),
               start: moment(e.start),
               end: moment(e.end),

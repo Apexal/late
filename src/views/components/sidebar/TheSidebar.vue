@@ -45,6 +45,7 @@
       >
         <Component
           :is="current_tab.component"
+          class="is-unselectable"
           :upcoming="upcomingExamsOneMonth"
           :pressing="pressingAssignments"
           @toggle-modal="toggleModal"
@@ -187,7 +188,7 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 #sidebar {
   .panel {
     background-color: white;
