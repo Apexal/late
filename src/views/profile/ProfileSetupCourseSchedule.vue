@@ -252,7 +252,7 @@ export default {
       return this.$store.state.auth.user;
     },
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_schedule_all;
     },
     coursesWithoutOther () {
       return this.courses.filter(c => c.summary !== 'OTHER');
@@ -262,7 +262,7 @@ export default {
     }
   },
   created () {
-    this.crns = this.$store.getters.current_schedule.map(c => c.crn).join(',');
+    this.crns = this.$store.getters.current_schedule_all.map(c => c.crn).join(',');
   },
   methods: {
     async iCalFileChange (file) {

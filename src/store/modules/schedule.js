@@ -19,7 +19,7 @@ const getters = {
   currentTerm: (state, getters, rootState) =>
     state.terms.find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
     {},
-  current_schedule: (state, getters, rootState) => {
+  current_schedule_all: (state, getters, rootState) => {
     if (!getters.userSetup.course_schedule) return [];
 
     if (rootState.auth.isAuthenticated && getters.currentTerm) {
@@ -27,6 +27,9 @@ const getters = {
     } else {
       return [];
     }
+  },
+  current_schedule: (state, getters) => {
+    return getters.current_schedule_all.filter(course => !course.hidden);
   },
   current_unavailability: (state, getters, rootState) => {
     if (!getters.userSetup.unavailability) return [];
