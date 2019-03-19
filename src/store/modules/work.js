@@ -72,9 +72,9 @@ const getters = {
   incompleteUpcomingAssignments: state =>
     state.upcomingAssignments.filter(a => !a.completed),
   getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>
-    rootGetters.current_schedule.find(c => c.crn === crn) || removedCourse,
+    rootGetters.current_schedule_all.find(c => c.crn === crn) || removedCourse,
   getCourseFromPeriod: (state, getters, rootState, rootGetters) => period =>
-    rootGetters.current_schedule.find(c =>
+    rootGetters.current_schedule_all.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
   getUpcomingAssigmentsAsEvents: (state, getters) =>
