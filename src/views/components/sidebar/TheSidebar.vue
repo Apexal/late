@@ -13,6 +13,13 @@
           <i class="fas fa-arrow-left" />
         </span>
         {{ onBreak ? 'On Break' : currentTerm.name }}
+
+        <span
+          v-if="currentEvent"
+          class="tag is-info is-pulled-right tab-count countdown"
+          :style="{ 'background-color': currentEvent.course.color }"
+          :title="'Until end of ' + (currentEvent.eventType === 'period' ? 'class' : 'work block')"
+        >{{ countdown }}</span>
       </p>
 
       <p class="panel-tabs is-unselectable">
@@ -25,15 +32,8 @@
           @click="tab = name"
         >
           <i :class="t.icon" />
-
           <span
-            v-if="name === 'schedule' && currentEvent"
-            class="tag is-info is-pulled-right tab-count"
-            :style="{ 'background-color': currentEvent.course.color }"
-            :title="'Until end of ' + (currentEvent.eventType === 'period' ? 'class' : 'work block')"
-          >{{ countdown }}</span>
-          <span
-            v-else-if="counts[name]"
+            v-if="counts[name]"
             class="tab-count tag is-small"
             :class="'is-' + t.tagColor"
           >{{ counts[name] }}</span>
@@ -208,7 +208,9 @@ export default {
     a {
       text-align: center;
       flex: 1;
+      color: black;
     }
+    a.is-active { color:#3273dc; }
   }
 
   .tab-count {
@@ -218,6 +220,13 @@ export default {
   .local-toggle-sidebar {
     width: 2.5em;
     height: 1.5em;
+  }
+  .countdown {
+    height: 2.5em;
+    width: 6em;
+    margin-top: -3px;
+    font-weight: 400;
+    padding: 2px;
   }
 }
 </style>
