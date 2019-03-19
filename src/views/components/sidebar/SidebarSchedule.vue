@@ -56,7 +56,7 @@
     </div>
     <div class="controls panel-block has-background-white-ter has-text-centered">
       <label
-        class="is-full-width has-text-centered"
+        class="is-full-width has-text-centered togglePassed"
         for="agenda-show-passed"
       >
         Show Passed
@@ -196,6 +196,18 @@ export default {
     margin-right: 3px;
   }
 }
+
+
+//Hover styling for previous toggle
+.controls {
+  padding: 0;
+}
+
+.togglePassed {
+  cursor: pointer;
+  padding: 0.5em 0.75em;
+}
+.togglePassed:hover { background-color: #e7e7e7}
 
 .agenda-show-passed {
   font-weight: 100;

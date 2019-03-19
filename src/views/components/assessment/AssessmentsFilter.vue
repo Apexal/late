@@ -106,6 +106,7 @@ export default {
     flex: 1;
     padding: 0 10px;
     text-align: right;
+    margin-right: 10px;
   }
   padding: 10px;
   margin: 0;
