@@ -5,7 +5,6 @@ const btoa = require('btoa');
 
 module.exports = router => {
   // router.use(path, router);
-
   router.use(
     '/api',
     async function (ctx, next) {
@@ -70,6 +69,7 @@ module.exports = router => {
       json: true
     });
 
+    // Get info on user (mainly to get their user ID)
     const me = await request({
       uri: 'https://discordapp.com/api/users/@me',
       method: 'GET',
