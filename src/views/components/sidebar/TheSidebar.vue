@@ -30,7 +30,7 @@
             v-if="name === 'schedule' && currentEvent"
             class="tag is-info is-pulled-right tab-count"
             :style="{ 'background-color': currentEvent.course.color }"
-            :title="'Until end of ' + currentEvent.title"
+            :title="'Until end of ' + (currentEvent.eventType === 'period' ? 'class' : 'work block')"
           >{{ countdown }}</span>
           <span
             v-else-if="counts[name]"
@@ -48,6 +48,7 @@
           class="is-unselectable"
           :upcoming="upcomingExamsOneMonth"
           :pressing="pressingAssignments"
+          :todos="todos"
           @toggle-modal="toggleModal"
           @update-count="updatedCount"
           @update-current-event="currentEvent = arguments[0]"
@@ -102,9 +103,6 @@ export default {
           icon: 'fas fa-check',
           tagColor: 'info'
         }
-      },
-      externalCounts: {
-        todos: 0
       }
     };
   },
@@ -120,7 +118,7 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assignments: this.pressingAssignments.length,
         exams: this.upcomingExamsOneMonth.length,
-        todos: this.externalCounts.todos
+        todos: this.todos.length
       };
     },
     current_tab () {
@@ -154,18 +152,13 @@ export default {
         moment(this.currentEvent.end).diff(this.now)
       );
       return `${diff.hours()}h ${diff.minutes()}m left`;
+    },
+    todos () {
+      return this.$store.state.todos.todos;
     }
   },
   mounted () {
     this.$emit('sidebar-loaded');
-    if (localStorage.getItem('todos')) {
-      try {
-        const todos = JSON.parse(localStorage.getItem('todos'));
-        this.updatedCount({ tab: 'todos', count: todos.length });
-      } catch (e) {
-        localStorage.removeItem('todos');
-      }
-    }
   },
   methods: {
     updatedCount ({ tab, count }) {

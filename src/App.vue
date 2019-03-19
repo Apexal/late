@@ -158,6 +158,7 @@ export default {
       await this.$store.dispatch('GET_TERMS');
       await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
       await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
+      await this.$store.dispatch('GET_TODOS');
       await this.$store.dispatch('AUTO_UPDATE_NOW');
     }
 
@@ -188,10 +189,10 @@ export default {
 /* These styles will apply to the whole app. */
 @import "@/assets/bulma.scss";
 
-html,body {
+html,
+body {
   height: 100%;
 }
-
 
 //Sticky Footer
 #app {

@@ -1,44 +1,34 @@
 <template>
   <div class="todos">
-    <template v-if="loading">
-      <div
-        v-if="todos.length === 0"
-        class="panel-block has-text-grey-light has-text-centered"
-      >
-        Loading to-dos...
+    <form @submit.prevent="addTodo">
+      <div class="control panel-block">
+        <input
+          v-model.trim="newTodo"
+          class="input is-small"
+          type="text"
+          placeholder="Add to-do"
+          required
+        >
       </div>
-    </template>
-    <template v-else>
-      <form @submit.prevent="addTodo">
-        <div class="control panel-block">
-          <input
-            v-model.trim="newTodo"
-            class="input is-small"
-            type="text"
-            placeholder="Add to-do"
-            required
-          >
-        </div>
-      </form>
-      <div
-        v-for="(t, index) in todos"
-        :key="index"
-        class="panel-block todo"
-        title="Click to mark completed."
-        @click="removeTodo(t)"
-      >
-        <span class="is-full-width">
-          <small class="todo-time is-pulled-right has-text-grey is-size-7">{{ fromNow(t.addedAt) }}</small>
-          {{ t.text }}
-        </span>
-      </div>
-      <div
-        v-if="todos.length === 0"
-        class="panel-block has-text-grey-light"
-      >
-        No to-dos saved yet.
-      </div>
-    </template>
+    </form>
+    <div
+      v-for="(t, index) in todos"
+      :key="index"
+      class="panel-block todo"
+      title="Click to mark completed."
+      @click="removeTodo(t)"
+    >
+      <span class="is-full-width">
+        <small class="todo-time is-pulled-right has-text-grey is-size-7">{{ fromNow(t.addedAt) }}</small>
+        {{ t.text }}
+      </span>
+    </div>
+    <div
+      v-if="todos.length === 0"
+      class="panel-block has-text-grey-light"
+    >
+      No to-dos saved yet.
+    </div>
   </div>
 </template>
 
@@ -47,24 +37,18 @@ import moment from 'moment';
 
 export default {
   name: 'SidebarTodoList',
+  props: {
+    todos: { type: Array, required: true }
+  },
   data () {
     return {
-      loading: true,
       newTodo: ''
     };
   },
   computed: {
     now () {
       return this.$store.state.now;
-    },
-    todos () {
-      return this.$store.state.todos.todos;
     }
-  },
-  async mounted () {
-    this.loading = true;
-    await this.$store.dispatch('GET_TODOS');
-    this.loading = false;
   },
   methods: {
     fromNow (date) {
