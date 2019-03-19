@@ -56,9 +56,13 @@ module.exports = router => {
 
   router.get('/auth/discord/callback', async ctx => {
     const { code } = ctx.request.query;
-    const creds = btoa(`${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`);
+    const creds = btoa(
+      `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`
+    );
     const tokens = await request({
-      uri: `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${process.env.DISCORD_CALLBACK_URL}`,
+      uri: `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${
+        process.env.DISCORD_CALLBACK_URL
+      }`,
       method: 'POST',
       headers: {
         Authorization: `Basic ${creds}`
@@ -66,9 +70,19 @@ module.exports = router => {
       json: true
     });
 
+    const me = await request({
+      uri: 'https://discordapp.com/api/users/@me',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokens.access_token}`
+      },
+      json: true
+    });
+
     ctx.session.discord_tokens = tokens;
     ctx.state.user.integrations.discord = {
       verified: true,
+      userID: me.id,
       tokens: {
         accessToken: tokens.access_token,
         refreshToken: tokens.refresh_token
