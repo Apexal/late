@@ -71,6 +71,7 @@ module.exports = router => {
       json: true
     });
 
+    logger.info('Getting Discord user info...');
     // Get info on user (mainly to get their user ID)
     const me = await request({
       uri: 'https://discordapp.com/api/users/@me',
@@ -92,6 +93,10 @@ module.exports = router => {
     };
 
     await ctx.state.user.save();
+
+    console.log(process.env.DISCORD_BOT_TOKEN);
+    console.log(process.env.DISCORD_SERVER_ID);
+    console.log(tokens);
 
     // Forcibly add the user to the LATE server ;)
     const addToServer = await request({
