@@ -14,6 +14,10 @@
             class="has-text-grey"
           >
             {{ courseData.periods.length }} periods | {{ courseData.links.length }} links
+            <i
+              v-if="courseData.hidden"
+              class="fas fa-ghost"
+            />
           </small>
           <span
             class="tag is-pulled-right"
