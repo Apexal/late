@@ -75,7 +75,7 @@ const actions = {
   },
   UPDATE_SCHEDULE ({ commit, getters, rootState }) {
     // Reset all state values
-    const semesterSchedule = getters.current_schedule;
+    const semesterSchedule = getters.current_schedule_all;
 
     const now = moment(); // moment('1430', 'Hmm');
     const dateStr = now.format('YYYY-MM-DD');
