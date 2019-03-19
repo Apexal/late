@@ -1,17 +1,25 @@
 <template>
   <div class="todos">
-    <form @submit.prevent="addTodo">
-      <div class="control panel-block">
-        <input
-          v-model.trim="newTodo"
-          class="input is-small"
-          type="text"
-          placeholder="Add to-do"
-          required
-        >
+    <template v-if="loading">
+      <div
+        v-if="todos.length === 0"
+        class="panel-block has-text-grey-light has-text-centered"
+      >
+        Loading to-dos...
       </div>
-    </form>
-    <div class="sidebar-body">
+    </template>
+    <template v-else>
+      <form @submit.prevent="addTodo">
+        <div class="control panel-block">
+          <input
+            v-model.trim="newTodo"
+            class="input is-small"
+            type="text"
+            placeholder="Add to-do"
+            required
+          >
+        </div>
+      </form>
       <div
         v-for="(t, index) in todos"
         :key="index"
@@ -20,19 +28,17 @@
         @click="removeTodo(t)"
       >
         <span class="is-full-width">
-          <small class="todo-time is-pulled-right has-text-grey is-size-7">
-            {{ fromNow(t.addedAt) }}
-          </small>
+          <small class="todo-time is-pulled-right has-text-grey is-size-7">{{ fromNow(t.addedAt) }}</small>
           {{ t.text }}
         </span>
       </div>
-    </div>
-    <div
-      v-if="todos.length === 0"
-      class="panel-block has-text-grey-light"
-    >
-      No to-dos saved on this device yet.
-    </div>
+      <div
+        v-if="todos.length === 0"
+        class="panel-block has-text-grey-light"
+      >
+        No to-dos saved yet.
+      </div>
+    </template>
   </div>
 </template>
 
@@ -43,6 +49,7 @@ export default {
   name: 'SidebarTodoList',
   data () {
     return {
+      loading: true,
       newTodo: ''
     };
   },
@@ -54,8 +61,10 @@ export default {
       return this.$store.state.todos.todos;
     }
   },
-  async created () {
+  async mounted () {
+    this.loading = true;
     await this.$store.dispatch('GET_TODOS');
+    this.loading = false;
   },
   methods: {
     fromNow (date) {
@@ -64,9 +73,8 @@ export default {
     async addTodo () {
       if (!this.newTodo) return;
 
-      let response;
       try {
-        response = await this.$store.dispatch('ADD_TODO', this.newTodo);
+        await this.$store.dispatch('ADD_TODO', this.newTodo);
         this.$toasted.show(`Added to-do '${this.newTodo}'.`);
         this.newTodo = '';
       } catch (e) {
@@ -97,13 +105,8 @@ export default {
     top: -8px;
   }
 
-  .hover-check {
-    padding-left: -5px;
-    visibility: hidden;
-  }
   &:hover {
     background-color: hsl(0, 0%, 96%);
-
     text-decoration: line-through;
   }
 }

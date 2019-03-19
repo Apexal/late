@@ -6,7 +6,7 @@ const logger = require('../../modules/logger');
  * @param {Koa context} ctx
  * @retuns A JSON list of todos
  */
-async function getTodosByName (ctx) {
+async function getTodos (ctx) {
   const todos = await Todo.find({
     _student: ctx.state.user._id
   });
@@ -19,7 +19,7 @@ async function getTodosByName (ctx) {
  *  - text: the todo text
  * @param {Koa context} ctx
  */
-async function saveTodo (ctx) {
+async function createTodo (ctx) {
   const { text } = ctx.request.body;
   const todo = Todo({
     _student: ctx.state.user._id,
@@ -30,9 +30,9 @@ async function saveTodo (ctx) {
     await todo.save();
   } catch (e) {
     logger.error(`Failed to save new todo for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.badRequest('There was an error scheduling todo.');
+    return ctx.badRequest('There was an error adding the todo.');
   }
-  
+
   logger.info(`Added todo for ${ctx.state.user.rcs_id}`);
   return ctx.created({ createdTodo: todo });
 }
@@ -49,15 +49,15 @@ async function removeTodo (ctx) {
     _id: todoID,
     _student: ctx.state.user._id
   });
-  
+
   deletedTodo.remove();
-  
+
   logger.info(`Removed todo for ${ctx.state.user.rcs_id}`);
   ctx.ok({ deletedTodo });
 }
 
 module.exports = {
-  getTodosByName,
-  saveTodo,
+  getTodos,
+  createTodo,
   removeTodo
 };

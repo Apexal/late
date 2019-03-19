@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 const Schema = mongoose.Schema;
 
 const schema = new Schema(
@@ -17,12 +16,5 @@ const schema = new Schema(
 
 schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });
-
-// use to get todos by user
-schema.query.byUsername = function (user) {
-  return this.where({
-    _student: user
-  });
-};
 
 module.exports = mongoose.model('Todo', schema);

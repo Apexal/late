@@ -6,7 +6,7 @@ const state = {
 
 const actions = {
   async ADD_TODO ({ commit }, newTodo) {
-    const response = await axios.post('/todos', newTodo);
+    const response = await axios.post('/todos', { text: newTodo });
     commit('ADD_TODO', response.data.createdTodo);
   },
   async GET_TODOS ({ commit }) {
@@ -27,7 +27,7 @@ const mutations = {
     state.todos = todos;
   },
   REMOVE_TODO: (state, todo) => {
-    state.todos = state.todos.splice(state.todos.indexOf(todo), 1);
+    state.todos = state.todos.filter(t => t._id !== todo._id);
   }
 };
 
