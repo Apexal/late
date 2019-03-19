@@ -39,21 +39,17 @@
           >{{ counts[name] }}</span>
         </a>
       </p>
-      <transition
-        name="fade"
-        mode="out-in"
-      >
-        <Component
-          :is="current_tab.component"
-          class="is-unselectable"
-          :upcoming="upcomingExamsOneMonth"
-          :pressing="pressingAssignments"
-          :todos="todos"
-          @toggle-modal="toggleModal"
-          @update-count="updatedCount"
-          @update-current-event="currentEvent = arguments[0]"
-        />
-      </transition>
+
+      <Component
+        :is="current_tab.component"
+        class="is-unselectable"
+        :upcoming="upcomingExamsOneMonth"
+        :pressing="pressingAssignments"
+        :todos="todos"
+        @toggle-modal="toggleModal"
+        @update-count="updatedCount"
+        @update-current-event="currentEvent = arguments[0]"
+      />
     </div>
   </aside>
 </template>
