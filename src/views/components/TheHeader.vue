@@ -173,6 +173,7 @@
                     class="fas"
                     :title="user.admin ? 'You are an administrator!' : ''"
                     :class="[ user.admin ? 'fa-star' : 'fa-user-circle' ]"
+                    :style="user.admin ? 'color:#e5c100' : 'color:#ffffff'"
                   />
                 </span>
                 {{ user.display_name }}
