@@ -10,6 +10,7 @@
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
     "axios": "^0.18.0",
+    "btoa": "^1.2.1",
     "bulma": "^0.7.4",
     "bulma-steps": "^2.2.1",
     "bulma-switch": "^2.0.0",
