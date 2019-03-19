@@ -41,14 +41,14 @@
       </p>
 
       <Component
-        :is="current_tab.component"
+        :is="currentTab.component"
         class="is-unselectable"
+        :todays-agenda="todaysAgenda"
         :upcoming="upcomingExamsOneMonth"
         :pressing="pressingAssignments"
         :todos="todos"
         @toggle-modal="toggleModal"
         @update-count="updatedCount"
-        @update-current-event="currentEvent = arguments[0]"
       />
     </div>
   </aside>
@@ -73,7 +73,6 @@ export default {
   data () {
     return {
       tab: 'schedule',
-      currentEvent: false,
       tabs: {
         schedule: {
           component: SidebarSchedule,
@@ -117,7 +116,7 @@ export default {
         todos: this.todos.length
       };
     },
-    current_tab () {
+    currentTab () {
       return this.tabs[this.tab];
     },
     pressingAssignments () {
@@ -135,11 +134,11 @@ export default {
     upcomingExams () {
       return this.$store.getters.pendingUpcomingExams;
     },
-    schedule () {
-      return this.$store.state.schedule;
+    todaysAgenda () {
+      return this.$store.getters.todaysAgenda;
     },
-    inClass () {
-      return this.$store.getters.inClass;
+    currentEvent () {
+      return this.todaysAgenda.find(this.isCurrentEvent);
     },
     countdown () {
       if (!this.currentEvent);
@@ -151,6 +150,9 @@ export default {
     },
     todos () {
       return this.$store.state.todos.todos;
+    },
+    now () {
+      return this.$store.state.now;
     }
   },
   mounted () {
@@ -169,6 +171,9 @@ export default {
         this.$store.commit('TOGGLE_ADD_EXAM_MODAL');
         break;
       }
+    },
+    isCurrentEvent (event) {
+      return moment(this.now).isBetween(event.start, event.end);
     },
     periodType (p) {
       return this.$store.getters.periodType(p.type);

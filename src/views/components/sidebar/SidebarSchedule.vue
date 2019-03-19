@@ -77,6 +77,9 @@ import 'bulma-switch';
 
 export default {
   name: 'SidebarSchedule',
+  props: {
+    todaysAgenda: { type: Array, required: true }
+  },
   data () {
     return {
       showPassed: true
@@ -90,9 +93,6 @@ export default {
       return this.showPassed
         ? this.todaysAgenda
         : this.todaysAgenda.filter(e => !this.hasPassed(e.end));
-    },
-    todaysAgenda () {
-      return this.$store.getters.todaysAgenda;
     },
     currentTerm () {
       return this.$store.getters.currentTerm;
@@ -126,9 +126,6 @@ export default {
     }
   },
   watch: {
-    currentEvent (newCurrentEvent) {
-      this.$emit('update-current-event', newCurrentEvent);
-    },
     showPassed (sP) {
       localStorage.setItem('agendaShowPassed', sP);
     }

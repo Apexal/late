@@ -48,6 +48,7 @@
               />
             </div>
           </transition>
+
           <div
             id="content"
             :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
