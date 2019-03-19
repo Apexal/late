@@ -31,16 +31,12 @@
             class="tag is-info is-pulled-right tab-count"
             :style="{ 'background-color': currentEvent.course.color }"
             :title="'Until end of ' + currentEvent.title"
-          >
-            {{ countdown }}
-          </span>
+          >{{ countdown }}</span>
           <span
             v-else-if="counts[name]"
             class="tab-count tag is-small"
             :class="'is-' + t.tagColor"
-          >
-            {{ counts[name] }}
-          </span>
+          >{{ counts[name] }}</span>
         </a>
       </p>
       <transition
@@ -49,6 +45,7 @@
       >
         <Component
           :is="current_tab.component"
+          class="is-unselectable"
           :upcoming="upcomingExamsOneMonth"
           :pressing="pressingAssignments"
           @toggle-modal="toggleModal"
@@ -220,17 +217,9 @@ export default {
     }
   }
 
-  .panel-block {
-    transition: 0.3s;
-    &:hover {
-      background-color: rgb(250, 250, 250);
-    }
-  }
-
   .tab-count {
     margin-left: 3px;
     transform: scale(0.8);
-    //padding: 5px;
   }
   .local-toggle-sidebar {
     width: 2.5em;

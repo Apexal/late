@@ -24,47 +24,49 @@
       <div
         v-for="event in filteredTodaysAgenda"
         :key="event.title + '-' + event.start.toString()"
-        class="panel-block event is-size-7"
-        :class="{ 'passed': hasPassed(event.end), 'has-background-success': isCurrentEvent(event), 'clickable': event.link }"
+        class="panel-block event is-size-7 is-flex"
+        :class="{ 'is-active': isCurrentEvent(event), 'passed': hasPassed(event.end), 'clickable': event.link }"
         @click="eventClicked(event)"
       >
-        <span class="is-full-width">
-          <span
-            class="course-dot dot"
-            :style="'background-color: ' + event.course.color"
-            @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
-          />
-          <span
-            class="event-title tooltip is-tooltip-right"
-            :data-tooltip="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
-          >
-            {{ event.title }}
-          </span>
-          <div
-            class="event-times is-pulled-right has-text-grey tooltip is-tooltip-left"
-            :data-tooltip="duration(event) + ' minutes'"
-          >
-            <span>{{ timeFormat(event.start) }}</span>
-            <span>{{ timeFormat(event.end) }}</span>
-          </div>
+        <span
+          class="course-dot dot"
+          :style="{ 'background-color': event.course.color }"
+          @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
+        />
+        <span
+          class="event-title"
+          style="flex: 1"
+          :title="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
+        >
+          <template v-if="event.eventType === 'period'">
+            <b class="period-longname">{{ event.course.longname }}</b>
+            <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
+          </template>
+          <template v-else-if="event.eventType === 'work-block'">
+            <span>{{ event.assessmentType === 'assignment' ? 'Work on ' : 'Study for ' }}</span>
+            <b>{{ event.assessment.title }}</b>
+          </template>
         </span>
+
+        <span
+          class="event-times is-pulled-right has-text-grey tooltip is-tooltip-left"
+          :data-tooltip="duration(event) + ' minutes'"
+        >{{ timeFormat(event.start) }}</span>
       </div>
     </div>
-    <div class="controls panel-block">
-      <span class="is-full-width">
-        <div class="field">
-          <input
-            id="agenda-show-passed"
-            v-model="showPassed"
-            type="checkbox"
-            class="switch"
-            title="Show your completed courses"
-          >
-          <label for="agenda-show-passed">
-            Show Previous
-          </label>
-        </div>
-      </span>
+    <div class="controls panel-block has-background-white-ter has-text-centered">
+      <label
+        class="is-full-width has-text-centered"
+        for="agenda-show-passed"
+      >
+        Show Passed
+        <input
+          id="agenda-show-passed"
+          v-model="showPassed"
+          type="checkbox"
+          title="Show your completed courses"
+        >
+      </label>
     </div>
   </div>
 </template>
@@ -147,6 +149,9 @@ export default {
     openCourseModal (course) {
       this.$store.commit('OPEN_COURSE_MODAL', course);
     },
+    periodType (type) {
+      return this.$store.getters.periodType(type);
+    },
     eventClicked (event) {
       if (event.link) this.$router.push(event.link);
     },
@@ -170,6 +175,7 @@ export default {
 
 <style lang='scss' scoped>
 .event {
+  padding: 10px;
   &.clickable {
     cursor: pointer;
   }
@@ -187,17 +193,10 @@ export default {
   }
 
   .course-dot {
-    margin-right: 5px;
+    margin-right: 3px;
   }
-
-  .event-times {
-    line-height: 11px;
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    span {
-      line-height: 1.3em; //Makes course timing more readable
-    }
+  .period-longname {
+    margin-right: 3px;
   }
 }
 
