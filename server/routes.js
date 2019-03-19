@@ -2,6 +2,7 @@ const { loginStudent, cas } = require('./modules/auth');
 const request = require('request-promise');
 const google = require('./modules/google');
 const btoa = require('btoa');
+const logger = require('./modules/logger');
 
 module.exports = router => {
   // router.use(path, router);
@@ -58,6 +59,7 @@ module.exports = router => {
     const creds = btoa(
       `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`
     );
+    logger.info(`Authenticating ${ctx.state.user.rcs_id} through Discord...`);
     const tokens = await request({
       uri: `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${
         process.env.DISCORD_CALLBACK_URL
@@ -91,6 +93,27 @@ module.exports = router => {
 
     await ctx.state.user.save();
 
+    // Forcibly add the user to the LATE server ;)
+    const addToServer = await request({
+      uri: `https://discordapp.com/api/guilds/${
+        process.env.DISCORD_SERVER_ID
+      }/members/${me.id}`,
+      method: 'PUT',
+      headers: {
+        Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`
+      },
+      body: {
+        access_token: tokens.access_token,
+        nick: ctx.state.user.display_name,
+        roles: [process.env.DISCORD_USER_ROLE_ID]
+      },
+      json: true
+    });
+    logger.info(
+      `Added ${ctx.state.user.rcs_id} to the LATE Discord server as @${
+        ctx.state.user.display_name
+      }`
+    );
     ctx.redirect('/profile/integrations#discord');
   });
 };
