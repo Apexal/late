@@ -10,9 +10,9 @@
         style="font-style:inherit"
       >matching your filters.</i>
       <i
-        v-if="filter.length <= 0"
+        v-else-if="filter.length <= 0"
         style="font-style:inherit"
-      >this month!</i>
+      >for the next 2 weeks!</i>
     </p>
     <div
       v-else
@@ -49,11 +49,11 @@
         </div>
       </div>
     </div>
-    <hr>
     <div
       v-if="farFutureUpcomingAssignments.length > 0"
       class="far-future-assignments"
     >
+      <hr>
       <p class="has-text-centered has-text-grey">
         {{ farFutureUpcomingAssignments.length }} far future assignments {{ showingFutureAssignments ? 'shown' : 'hidden' }}
         <a
