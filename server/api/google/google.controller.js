@@ -4,7 +4,7 @@ const google = require('../../modules/google');
 
 async function googleAuthMiddleware (ctx, next) {
   const auth = google.createConnection();
-  auth.setCredentials(ctx.state.user.integrations.google.accessTokens);
+  auth.setCredentials(ctx.state.user.integrations.google.tokens);
   ctx.state.googleAuth = auth;
   await next();
 }

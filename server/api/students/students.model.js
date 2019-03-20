@@ -99,7 +99,11 @@ const schema = new Schema(
         phoneNumber: { type: String, minlength: 10, maxlength: 10 }
       },
       google: {
-        accessTokens: { type: Object },
+        tokens: {
+          refresh_token: String,
+          access_token: String,
+          expiry_date: Number
+        },
         calendarIDs: {
           courseSchedule: { type: String, default: '' },
           workBlocks: { type: String, default: '' }

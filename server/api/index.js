@@ -14,7 +14,7 @@ router.use('/todos', require('./todos'));
 router.use(
   '/google',
   async (ctx, next) => {
-    if (!ctx.state.user.integrations.google.accessTokens) {
+    if (!ctx.state.user.integrations.google.tokens) {
       return ctx.badRequest('Google account not authenticated!');
     }
     await next();
