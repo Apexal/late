@@ -30,7 +30,41 @@ async function listCalendars (ctx) {
   });
 }
 
+async function createCalendar (ctx) {
+  const calendar = google.apis.calendar({
+    version: 'v3',
+    auth: ctx.state.googleAuth
+  });
+
+  const { calendarType, summary, description } = ctx.request.body;
+
+  let request;
+  try {
+    request = await calendar.calendars.insert({
+      requestBody: {
+        summary,
+        description,
+        timeZone: 'America/New_York',
+        location: 'RPI'
+      }
+    });
+  } catch (e) {
+    logger.error(
+      `Failed to create new calendar for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return CryptoKey.badRequest('Failed to create new Google Calendar.');
+  }
+  console.log(request.data);
+
+  ctx.state.user.integrations.google.calendarIDs[calendarType] =
+    request.data.id;
+  await ctx.state.user.save();
+
+  ctx.ok(request.data);
+}
+
 module.exports = {
   googleAuthMiddleware,
-  listCalendars
+  listCalendars,
+  createCalendar
 };
