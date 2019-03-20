@@ -48,6 +48,18 @@ async function createCalendar (ctx) {
         location: 'RPI'
       }
     });
+
+    await calendar.calendarList.patch({
+      calendarId: request.data.id,
+      requestBody: {
+        defaultReminders: [
+          {
+            method: 'popup',
+            minutes: 15
+          }
+        ]
+      }
+    });
   } catch (e) {
     logger.error(
       `Failed to create new calendar for ${ctx.state.user.rcs_id}: ${e}`

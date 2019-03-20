@@ -129,7 +129,7 @@ export default {
       this.calendars.push(request.data);
       this.calendarIDs.workBlocks = request.data.id;
 
-      this.toasted.success('Added \'LATE Study/Work\' to your Google Calendar!');
+      this.$toasted.success('Added \'LATE Study/Work\' to your Google Calendar!');
 
       this.loading = false;
     },
