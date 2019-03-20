@@ -24,8 +24,9 @@ const actions = {
       auth: ctx.state.googleAuth
     });
 
-    const assessmentURL = `https://rpi-late.herokuapp.com/${assessmentType +
-      's'}/${assessment._id}`;
+    const assessmentURL = `${process.env.BASE_URL}/${assessmentType + 's'}/${
+      assessment._id
+    }`;
     const course = ctx.state.user.courseFromCRN(
       ctx.session.currentTerm.code,
       assessment.courseCRN

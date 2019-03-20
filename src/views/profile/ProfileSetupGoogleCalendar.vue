@@ -4,6 +4,7 @@
       Connect to your Google Calendar
       <span class="has-text-grey">(optional)</span>
     </h2>
+
     <div v-if="!setup">
       <a
         href="/auth/google"
@@ -11,73 +12,56 @@
       >Login with Google</a>
     </div>
     <div v-else>
-      <div class="tabs">
-        <ul>
-          <li
-            :class="{ 'is-active': tab === 'courseSchedule' }"
-            @click="tab = 'courseSchedule'"
-          >
-            <a>Course Schedule</a>
-          </li>
-          <li
-            :class="{ 'is-active': tab === 'workBlocks' }"
-            @click="tab = 'workBlocks'"
-          >
-            <a>Work Blocks</a>
-          </li>
-        </ul>
+      <div v-if="loading">
+        <p class="has-text-grey has-text-centered">
+          Grabbing your Google Calendar data...
+        </p>
       </div>
-      <div
-        v-if="tab === 'workBlocks'"
-        class="work-block-calendar"
-      >
-        <div v-if="calendarIDs.workBlocks !== ''">
-          <b>Chosen Calendar:</b>
-          <span>{{ getCalendarById(calendarIDs.workBlocks).summary }}</span>
-          <button
-            class="button is-warning"
-            @click="calendarIDs.workBlocks = ''"
-          >
-            Change
-          </button>
-        </div>
-        <div v-else>
-          <h2 class="subtitle">
-            Choose a Calendar
-          </h2>
-          <div class="calendar-list columns is-multiline">
-            <div
-              v-for="calendar in calendars"
-              :key="calendar.id"
-              class="column is-one-third"
+      <div v-else>
+        <div class="tabs">
+          <ul>
+            <li
+              :class="{ 'is-active': tab === 'courseSchedule' }"
+              @click="tab = 'courseSchedule'"
             >
-              <div
-                class="box calendar"
-                :style="{ 'background-color': calendar.backgroundColor }"
-                @click="calendarIDs.workBlocks = calendar.id"
-              >
-                <h2 class="subtitle">
-                  <div
-                    v-if="calendar.id === calendar.summary"
-                    class="tag is-white"
-                  >
-                    Primary
-                  </div>
-                  {{ calendar.summary }}
-                </h2>
-              </div>
-            </div>
+              <a>Course Schedule</a>
+            </li>
+            <li
+              :class="{ 'is-active': tab === 'workBlocks' }"
+              @click="tab = 'workBlocks'"
+            >
+              <a>Work Blocks</a>
+            </li>
+          </ul>
+        </div>
+        <div
+          v-if="tab === 'workBlocks'"
+          class="work-block-calendar"
+        >
+          <div v-if="calendarIDs.workBlocks !== ''">
+            <b>Created Calendar:</b>
+            <span>{{ getCalendarById(calendarIDs.workBlocks).summary }}</span>
+          </div>
+          <div v-else>
+            <button
+              class="button is-danger"
+              :class="{ 'is-loading': loading }"
+              :disabled="loading"
+              @click="createWorkBlockCalendar"
+            >
+              Create Calendar for Work Blocks
+            </button>
           </div>
         </div>
+        <hr>
+        <button
+          class="button is-primary"
+          :disabled="saved"
+          @click="save"
+        >
+          Save
+        </button>
       </div>
-      <hr>
-      <button
-        class="button is-primary"
-        :disabled="saved"
-        @click="save"
-      >
-        Save
-      </button>
     </div>
   </div>
 </template>
@@ -89,11 +73,11 @@ export default {
     return {
       loading: false,
       tab: 'workBlocks',
+      calendars: [],
       calendarIDs: Object.assign(
         {},
         this.$store.state.auth.user.integrations.google.calendarIDs
-      ),
-      calendars: []
+      )
     };
   },
   computed: {
@@ -111,21 +95,45 @@ export default {
       return this.$store.state.auth.user;
     }
   },
-  async created () {
-    this.getCalendars();
+  async mounted () {
+    if (this.setup) this.getCalendars();
   },
   methods: {
+    async createWorkBlockCalendar () {
+      if (
+        !confirm(
+          'This will create a new calendar specifically for work blocks.'
+        )
+      ) {
+        return;
+      }
+      this.loading = true;
+      let request;
+      request = await this.$http.post('/google/calendars', {
+        calendarType: 'workBlocks',
+        summary: 'LATE Study/Work',
+        description: 'This calender was created by LATE.'
+      });
+
+      this.calendars.push(request.data);
+      this.calendarIDs.workBlocks = request.data.id;
+
+      this.toasted.success('Added \'LATE Study/Work\' to your Google Calendar!');
+
+      this.loading = false;
+    },
     getCalendarById (id) {
       return this.calendars.find(c => c.id === id);
     },
     async getCalendars () {
+      this.loading = true;
       let request = await this.$http.get('/google/calendars', {
         params: {
           minAccessRole: 'owner'
         }
       });
-
       this.calendars = request.data.calendars;
+      this.loading = false;
     },
     async save () {
       this.loading = true;
