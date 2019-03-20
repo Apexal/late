@@ -195,7 +195,7 @@ const actions = {
     commit('SET_UPCOMING_EXAMS', exams);
   },
   async ADD_WORK_BLOCK (
-    { commit, getters },
+    { commit, getters, dispatch, rootState },
     { assessmentType, assessment, start, end }
   ) {
     const request = await axios.post(
@@ -241,6 +241,7 @@ const actions = {
     const request = await axios.delete(
       `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`
     );
+
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
