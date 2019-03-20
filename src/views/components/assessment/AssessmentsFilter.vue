@@ -23,11 +23,18 @@
       data-tooltip="Toggle completed assignments."
     >
       <input
+        id="assessment-show-completed"
         :checked="showCompleted"
         type="checkbox"
+        class="switch"
         @change="$emit('toggle-show-completed')"
       >
-      Show Completed
+      <label
+        for="assessment-show-completed"
+        style="padding: 3px 0px 0px 56px;; margin: 0 10px;"
+      >
+        Show Completed
+      </label>
     </label>
     <select
       v-if="showGroupBy"
@@ -99,6 +106,7 @@ export default {
     flex: 1;
     padding: 0 10px;
     text-align: right;
+    margin-right: 10px;
   }
   padding: 10px;
   margin: 0;

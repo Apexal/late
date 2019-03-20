@@ -13,6 +13,13 @@
           <i class="fas fa-arrow-left" />
         </span>
         {{ onBreak ? 'On Break' : currentTerm.name }}
+
+        <span
+          v-if="currentEvent"
+          class="tag is-info is-pulled-right tab-count countdown"
+          :style="{ 'background-color': currentEvent.course.color }"
+          :title="'Until end of ' + (currentEvent.eventType === 'period' ? 'class' : 'work block')"
+        >{{ countdown }}</span>
       </p>
 
       <p class="panel-tabs is-unselectable">
@@ -25,37 +32,24 @@
           @click="tab = name"
         >
           <i :class="t.icon" />
-
           <span
-            v-if="name === 'schedule' && currentEvent"
-            class="tag is-info is-pulled-right tab-count"
-            :style="{ 'background-color': currentEvent.course.color }"
-            :title="'Until end of ' + currentEvent.title"
-          >
-            {{ countdown }}
-          </span>
-          <span
-            v-else-if="counts[name]"
+            v-if="counts[name]"
             class="tab-count tag is-small"
             :class="'is-' + t.tagColor"
-          >
-            {{ counts[name] }}
-          </span>
+          >{{ counts[name] }}</span>
         </a>
       </p>
-      <transition
-        name="fade"
-        mode="out-in"
-      >
-        <Component
-          :is="current_tab.component"
-          :upcoming="upcomingExamsOneMonth"
-          :pressing="pressingAssignments"
-          @toggle-modal="toggleModal"
-          @update-count="updatedCount"
-          @update-current-event="currentEvent = arguments[0]"
-        />
-      </transition>
+
+      <Component
+        :is="currentTab.component"
+        class="is-unselectable"
+        :todays-agenda="todaysAgenda"
+        :upcoming="upcomingExamsOneMonth"
+        :pressing="pressingAssignments"
+        :todos="todos"
+        @toggle-modal="toggleModal"
+        @update-count="updatedCount"
+      />
     </div>
   </aside>
 </template>
@@ -79,7 +73,6 @@ export default {
   data () {
     return {
       tab: 'schedule',
-      currentEvent: false,
       tabs: {
         schedule: {
           component: SidebarSchedule,
@@ -105,9 +98,6 @@ export default {
           icon: 'fas fa-check',
           tagColor: 'info'
         }
-      },
-      externalCounts: {
-        todos: 0
       }
     };
   },
@@ -123,10 +113,10 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assignments: this.pressingAssignments.length,
         exams: this.upcomingExamsOneMonth.length,
-        todos: this.externalCounts.todos
+        todos: this.todos.length
       };
     },
-    current_tab () {
+    currentTab () {
       return this.tabs[this.tab];
     },
     pressingAssignments () {
@@ -144,11 +134,11 @@ export default {
     upcomingExams () {
       return this.$store.getters.pendingUpcomingExams;
     },
-    schedule () {
-      return this.$store.state.schedule;
+    todaysAgenda () {
+      return this.$store.getters.todaysAgenda;
     },
-    inClass () {
-      return this.$store.getters.inClass;
+    currentEvent () {
+      return this.todaysAgenda.find(this.isCurrentEvent);
     },
     countdown () {
       if (!this.currentEvent);
@@ -157,18 +147,16 @@ export default {
         moment(this.currentEvent.end).diff(this.now)
       );
       return `${diff.hours()}h ${diff.minutes()}m left`;
+    },
+    todos () {
+      return this.$store.state.todos.todos;
+    },
+    now () {
+      return this.$store.state.now;
     }
   },
   mounted () {
     this.$emit('sidebar-loaded');
-    if (localStorage.getItem('todos')) {
-      try {
-        const todos = JSON.parse(localStorage.getItem('todos'));
-        this.updatedCount({ tab: 'todos', count: todos.length });
-      } catch (e) {
-        localStorage.removeItem('todos');
-      }
-    }
   },
   methods: {
     updatedCount ({ tab, count }) {
@@ -183,6 +171,9 @@ export default {
         this.$store.commit('TOGGLE_ADD_EXAM_MODAL');
         break;
       }
+    },
+    isCurrentEvent (event) {
+      return moment(this.now).isBetween(event.start, event.end);
     },
     periodType (p) {
       return this.$store.getters.periodType(p.type);
@@ -217,24 +208,25 @@ export default {
     a {
       text-align: center;
       flex: 1;
+      color: black;
     }
-  }
-
-  .panel-block {
-    transition: 0.3s;
-    &:hover {
-      background-color: rgb(250, 250, 250);
-    }
+    a.is-active { color:#3273dc; }
   }
 
   .tab-count {
     margin-left: 3px;
-    font-size: 70%;
-    padding: 5px;
+    transform: scale(0.8);
   }
   .local-toggle-sidebar {
     width: 2.5em;
     height: 1.5em;
+  }
+  .countdown {
+    height: 2.5em;
+    width: 6em;
+    margin-top: -3px;
+    font-weight: 400;
+    padding: 2px;
   }
 }
 </style>

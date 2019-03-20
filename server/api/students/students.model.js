@@ -98,16 +98,19 @@ const schema = new Schema(
         verificationCode: { type: String, minlength: 1 },
         phoneNumber: { type: String, minlength: 10, maxlength: 10 }
       },
-      discord: {
-        verified: { type: Boolean, default: false },
-        verificationCode: { type: String, minlength: 1 },
-        userID: { type: String }
-      },
       google: {
         accessTokens: { type: Object },
         calendarIDs: {
           courseSchedule: { type: String, default: '' },
           workBlocks: { type: String, default: '' }
+        }
+      },
+      discord: {
+        verified: { type: Boolean, default: false },
+        userID: String,
+        tokens: {
+          accessToken: String,
+          refreshToken: String
         }
       }
     },

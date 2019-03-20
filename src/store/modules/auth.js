@@ -50,9 +50,9 @@ const getters = {
     });
   },
   getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
-    if (!rootGetters.current_schedule) return [];
+    if (!rootGetters.current_schedule_all) return [];
     // Turn periods into this week's schedule...
-    const events = rootGetters.current_schedule
+    const events = rootGetters.current_schedule_all
       .map(c =>
         c.periods.map(p => {
           let start = moment(p.start, 'Hmm', true).format('HH:mm');
@@ -98,7 +98,7 @@ const actions = {
 
     // call API
     const request = await axios.post('/setup/courses', {
-      courses: rootGetters.current_schedule
+      courses: rootGetters.current_schedule_all
     });
 
     commit('SET_USER', request.data.updatedUser);
