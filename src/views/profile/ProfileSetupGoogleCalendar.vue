@@ -53,6 +53,11 @@
             </button>
           </div>
         </div>
+        <div v-else-if="tab === 'courseSchedule'">
+          <p class="has-text-grey has-text-centered">
+            Coming soon...
+          </p>
+        </div>
         <hr>
         <button
           class="button is-primary"
@@ -109,11 +114,17 @@ export default {
       }
       this.loading = true;
       let request;
-      request = await this.$http.post('/google/calendars', {
-        calendarType: 'workBlocks',
-        summary: 'LATE Study/Work',
-        description: 'This calender was created by LATE.'
-      });
+      try {
+        request = await this.$http.post('/google/calendars', {
+          calendarType: 'workBlocks',
+          summary: 'LATE Study/Work',
+          description: 'This calender was created by LATE.'
+        });
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.loading = false;
+        return;
+      }
 
       this.calendars.push(request.data);
       this.calendarIDs.workBlocks = request.data.id;

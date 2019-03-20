@@ -52,9 +52,8 @@ async function createCalendar (ctx) {
     logger.error(
       `Failed to create new calendar for ${ctx.state.user.rcs_id}: ${e}`
     );
-    return CryptoKey.badRequest('Failed to create new Google Calendar.');
+    return ctx.badRequest('Failed to create new Google Calendar.');
   }
-  console.log(request.data);
 
   ctx.state.user.integrations.google.calendarIDs[calendarType] =
     request.data.id;
