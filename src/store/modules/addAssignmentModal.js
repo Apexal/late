@@ -12,7 +12,6 @@ const state = {
   isRecurring: false,
   recurringDays: []
 };
-const getters = {};
 const actions = {
   COPY_ASSIGNMENT_TO_MODAL ({ commit }, assignment) {
     commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
@@ -38,7 +37,6 @@ const mutations = {
 
 export default {
   state,
-  getters,
   actions,
   mutations
 };
