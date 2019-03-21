@@ -95,22 +95,6 @@ export default {
   },
   watch: {
     showCompleted (nowShowing) {
-      if (nowShowing) {
-        this.$toasted.info('Now including completed assignments.', {
-          icon: 'toggle-on',
-          duration: 1000,
-          fullWidth: false,
-          position: 'top-right'
-        });
-      } else {
-        this.$toasted.error('Now excluding completed assignments.', {
-          icon: 'toggle-off',
-          duration: 1000,
-          fullWidth: false,
-          position: 'top-right'
-        });
-      }
-
       localStorage.setItem('assignmentsShowCompleted', nowShowing);
     },
     groupBy (newGroupBy) {
@@ -148,16 +132,21 @@ export default {
           'TOGGLE_UPCOMING_ASSIGNMENT',
           assignmentID
         );
-        this.$toasted.show(`Toggled assignment '${toggledAssignment.title}'.`, {
-          icon: toggledAssignment.completed ? 'check-circle' : 'circle',
-          action: {
-            text: 'View',
-            push: {
-              name: 'assignments-overview',
-              params: { assignmentID }
+        this.$toasted[toggledAssignment.completed ? 'success' : 'show'](
+          `Marked '${toggledAssignment.title}' as ${
+            toggledAssignment.completed ? 'complete' : 'incomplete'
+          }!`,
+          {
+            icon: toggledAssignment.completed ? 'check-circle' : 'circle',
+            action: {
+              text: 'View',
+              push: {
+                name: 'assignments-overview',
+                params: { assignmentID }
+              }
             }
           }
-        });
+        );
       } catch (e) {
         return this.$toasted.error(e.response.data.message);
       }
