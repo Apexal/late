@@ -1,102 +1,64 @@
 <template>
   <div class="past-exams">
-    <div class="columns">
-      <div class="column is-narrow">
-        <button
-          class="button"
-          :disabled="!canGoPrev"
-          :class="{ 'is-loading': loading }"
-          @click="prevMonth"
-        >
-          <span class="icon">
-            <i class="fas fa-chevron-left" />
-          </span>
-        </button>
-      </div>
+    <div class="is-flex">
+      <button
+        class="button"
+        :disabled="!canGoPrev"
+        :class="{ 'is-loading': loading }"
+        @click="prevMonth"
+      >
+        <span class="icon">
+          <i class="fas fa-chevron-left" />
+        </span>
+      </button>
 
-      <div class="column">
-        <h2 class="subtitle has-text-centered">
-          Month of {{ monthOf }}
-        </h2>
-      </div>
+      <h2
+        style="flex: 1"
+        class="subtitle has-text-centered"
+      >
+        Month of {{ monthOf }}
+      </h2>
 
-      <div class="column is-narrow">
-        <button
-          class="button"
-          :disabled="!canGoNext"
-          :class="{ 'is-loading': loading }"
-          @click="nextMonth"
-        >
-          <span class="icon">
-            <i class="fas fa-chevron-right" />
-          </span>
-        </button>
-      </div>
+      <button
+        class="button"
+        :disabled="!canGoNext"
+        :class="{ 'is-loading': loading }"
+        @click="nextMonth"
+      >
+        <span class="icon">
+          <i class="fas fa-chevron-right" />
+        </span>
+      </button>
     </div>
 
-    <table class="exam-table table is-full-width">
-      <thead>
-        <tr>
-          <th>When</th>
-          <th class="is-hidden-mobile">
-            Course
-          </th>
-          <th>Title</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="ex in filtered"
-          :key="ex._id"
-        >
-          <td
-            class="tooltip"
-            :data-tooltip="fromNow(ex.date)"
-          >
-            {{ toDateShorterString(ex.date) }}
-          </td>
-          <td
-            class="exam-course is-hidden-mobile"
-            @click="$store.commit('OPEN_COURSE_MODAL', course(ex))"
-          >
-            <span
-              class="dot"
-              :title="course(ex).longname"
-              :style="'background-color: ' + course(ex).color"
-            />
-            {{ course(ex).longname }}
-          </td>
-          <router-link
-            tag="td"
-            class="exam-link"
-            :title="ex.description.substring(0, 500)"
-            :to="{ name: 'exams-overview', params: { examID: ex._id }}"
-          >
-            <span
-              class="dot is-hidden-tablet"
-              :title="course(ex).longname"
-              :style="'background-color: ' + course(ex).color"
-              @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(ex))"
-            />
-            {{ ex.title }}
-          </router-link>
-        </tr>
-      </tbody>
-    </table>
+    <ExamsTable
+      v-if="filtered.length > 0"
+      :exams="filtered"
+    />
     <p
-      v-if="filtered.length === 0"
+      v-else
       class="has-text-grey has-text-centered"
     >
-      No tests this month recorded!
+      No exams
+      <i
+        v-if="filter.length > 0"
+        style="font-style:inherit"
+      >matching your filters.</i>
+      <i
+        v-if="filter.length <= 0"
+        style="font-style:inherit"
+      >this month!</i>
     </p>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+import ExamsTable from '@/views/components/exams/ExamsTable.vue';
 
 export default {
   name: 'ExamsPastList',
+  components: { ExamsTable },
   props: {
     filter: {
       type: Array,
@@ -185,22 +147,10 @@ export default {
 
       this.currentExams = request.data.exams.filter(e => e.passed); // Only get passed exams
       this.loading = false;
-    },
-    fromNow (date) {
-      return moment(date).from(this.now);
-    },
-    toDateShorterString: date => moment(date).format('dddd [the] Do')
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.exam-course {
-  font-weight: 600;
-  cursor: pointer;
-}
-.exam-link {
-  color: inherit;
-  cursor: pointer;
-}
 </style>

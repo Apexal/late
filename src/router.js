@@ -175,10 +175,19 @@ const router = new Router({
           path: 'integrations',
           name: 'setup-integrations',
           meta: {
-            title: 'Integrations'
+            title: 'Notifications'
           },
           component: () =>
             import('@/views/profile/ProfileSetupIntegrations.vue')
+        },
+        {
+          path: 'googlecalendar',
+          name: 'setup-google-calendar',
+          meta: {
+            title: 'Google Calendar'
+          },
+          component: () =>
+            import('@/views/profile/ProfileSetupGoogleCalendar.vue')
         }
       ]
     },

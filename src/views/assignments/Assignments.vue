@@ -1,81 +1,54 @@
 <template>
   <section class="section assignment-list">
-    <div class="assignment-view-buttons buttons has-addons is-pulled-right">
-      <router-link
-        class="button tooltip"
-        to="/assignments/upcoming"
-        data-tooltip="Switch to view upcoming assignments."
-      >
-        Upcoming
-      </router-link>
-      <router-link
-        class="button tooltip"
-        to="/assignments/past"
-        data-tooltip="Switch to view past assignments."
-      >
-        Past
-      </router-link>
-      <router-link
-        class="button tooltip"
-        to="/assignments/calendar"
-        data-tooltip="Switch to view your assignment calendar."
-      >
-        Calendar
-      </router-link>
-    </div>
-    <h1 class="title">
+    <h1 class="is-hidden-desktop has-text-centered is-marginless title">
       {{ title }}
     </h1>
 
-    <div class="level box assignment-controls">
-      <div class="level-left disable-shrink">
-        <div class="filters">
-          <span class="subtitle is-6">
-            Filter Courses
-          </span>
-          <span
-            v-for="c in courses"
-            :key="c.original_longname"
-            class="tag is-white course-tag level-item is-unselectable"
-            :title="`Click to toggle filtering out ${c.longname} assignments.`"
-            :class="{ 'has-text-grey-light filtered': isFiltered(c) }"
-            @click="toggleFilter(c)"
-          >
-            <span
-              class="dot course-dot"
-              :style="{ 'background-color': c.color }"
-              @click.prevent="$store.commit('OPEN_COURSE_MODAL', c)"
-            />
-            {{ c.longname }}
-          </span>
-        </div>
-      </div>
-      <div class="level-right">
-        <label
-          class="checkbox is-unselectable tooltip"
-          data-tooltip="Toggle completed assignments."
+    <div class="tab-nav tabs is-centered">
+      <ul>
+        <h1
+          class="is-hidden-touch title"
+          style="flex: 1"
         >
-          <input
-            v-model="showCompleted"
-            type="checkbox"
-          >
-          Show Completed
-        </label>
-        <div
-          v-if="view === 'assignments-upcoming'"
-          class="select group-by-select"
+          {{ title }}
+        </h1>
+
+        <router-link
+          tag="li"
+          to="/assignments/upcoming"
+          title="Switch to view upcoming assignments"
         >
-          <select v-model="groupBy">
-            <option value="dueDate">
-              Group by Due Date
-            </option>
-            <option value="course">
-              Group by Course
-            </option>
-          </select>
-        </div>
-      </div>
+          <a>Upcoming</a>
+        </router-link>
+        <router-link
+          tag="li"
+          to="/assignments/past"
+          title="Switch to view past assignments"
+        >
+          <a>Previous</a>
+        </router-link>
+
+        <router-link
+          tag="li"
+          to="/assignments/calendar"
+          title="Switch to view your assignment calendar"
+        >
+          <a>Calendar</a>
+        </router-link>
+      </ul>
     </div>
+
+    <AssessmentsFilter
+      :filter="filter"
+      :show-show-completed="true"
+      :show-completed="showCompleted"
+      :show-group-by="view === 'assignments-upcoming'"
+      :group-by="groupBy"
+      @toggle-filter="toggleFilter"
+      @toggle-show-completed="showCompleted = !showCompleted"
+      @change-group-by="groupBy = $event"
+    />
+
     <transition
       name="slide-left"
       mode="out-in"
@@ -91,22 +64,20 @@
     <hr>
     <button
       class="button is-dark"
+      title="Add an upcoming assignment"
       @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     >
       Add Assignment
-    </button>
-    <button
-      class="button is-dark is-outlined is-pulled-right"
-      @click="exportAssignments"
-    >
-      Export Assignments
     </button>
   </section>
 </template>
 
 <script>
+import AssessmentsFilter from '@/views/components/assessment/AssessmentsFilter';
+
 export default {
   name: 'Assignments',
+  components: { AssessmentsFilter },
   data () {
     return {
       groupBy: 'dueDate',
@@ -120,9 +91,6 @@ export default {
     },
     title () {
       return this.$route.meta.title;
-    },
-    courses () {
-      return this.$store.getters.current_schedule;
     }
   },
   watch: {
@@ -194,20 +162,10 @@ export default {
         return this.$toasted.error(e.response.data.message);
       }
     },
-    exportAssignments () {
-      this.$toasted.error('Coming soon!', {
-        icon: 'frown',
-        duration: 1000,
-        fullWidth: false
-      });
-    },
-    isFiltered (c) {
-      return this.filter.includes(c.crn);
-    },
     toggleFilter (c) {
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
-        this.$toasted.info(`Now including '${c.longname}' assignments.`, {
+        this.$toasted.info(`Showing '${c.longname}' assignments.`, {
           icon: 'plus',
           position: 'top-right',
           fullWidth: false,
@@ -215,7 +173,7 @@ export default {
         });
       } else {
         this.filter.push(c.crn);
-        this.$toasted.error(`No longer showing '${c.longname}' assignments.`, {
+        this.$toasted.error(`Hiding '${c.longname}' assignments.`, {
           icon: 'minus',
           position: 'top-right',
           fullWidth: false,
@@ -228,27 +186,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-span.tag.course-tag {
-  cursor: pointer;
-  font-weight: bold;
-  margin: 0;
-  padding-right: 0;
-}
-
-span.dot.course-dot {
-  margin-right: 2px;
-}
-
 .level .disable-shrink {
   flex-shrink: initial;
-}
-
-.assignment-controls {
-  padding: 10px !important;
-}
-
-.group-by-select {
-  margin-left: 10px;
 }
 
 @media only screen and (max-width: 768px) {
@@ -258,6 +197,13 @@ span.dot.course-dot {
 
   .level-left + .level-right {
     margin-top: 5px !important;
+  }
+}
+
+.tab-nav {
+  margin-bottom: 0;
+  .title {
+    margin: 0;
   }
 }
 </style>

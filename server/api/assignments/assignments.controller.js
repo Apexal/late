@@ -53,7 +53,9 @@ async function getAssignments (ctx) {
   try {
     assignments = await ctx.state.user.getAssignments(
       ctx.query.start,
-      ctx.query.end
+      ctx.query.end,
+      ctx.query.title,
+      ctx.query.courseCRN
     );
   } catch (e) {
     logger.error(
@@ -113,8 +115,7 @@ async function createAssignment (ctx) {
       'You cannot add an assignment due outisde of this semester.'
     );
   }
-
-  const newAssignment = new Assignment({
+  const assignmentData = {
     _student: ctx.state.user._id,
     title: body.title,
     description: body.description,
@@ -122,8 +123,10 @@ async function createAssignment (ctx) {
     courseCRN: body.courseCRN,
     timeEstimate: body.timeEstimate,
     timeRemaining: body.timeEstimate,
-    priority: parseInt(body.priority, 10)
-  });
+    priority: parseInt(body.priority, 10),
+    isRecurring: body.isRecurring
+  };
+  const newAssignment = new Assignment(assignmentData);
 
   // AUTO WORK-BLOCK ALLOCATION
   // const openSchedule = compileWeeklyOpenSchedule(
@@ -165,9 +168,35 @@ async function createAssignment (ctx) {
   //   }
   // }
   // --------------------------
-
+  let recurringAssignments = [];
   try {
     await newAssignment.save();
+
+    if (body.isRecurring) {
+      // Create all assignments every week up until end of classes in current semester
+      logger.info('Creating recurring assignments...');
+
+      // For other days of the week
+      for (let dayIndex of body.recurringDays) {
+        const nextFirst = moment(due).add(1, 'day');
+        while (nextFirst.day() !== dayIndex) {
+          nextFirst.add(1, 'day');
+        }
+
+        // For day of week of actual assignment
+        while (nextFirst.isBefore(ctx.session.currentTerm.classesEnd)) {
+          const recurringAssignment = new Assignment({
+            ...assignmentData,
+            recurringOriginal: newAssignment._id,
+            dueDate: nextFirst
+          });
+          await recurringAssignment.save();
+          recurringAssignments.push(recurringAssignment);
+
+          nextFirst.add(1, 'week');
+        }
+      }
+    }
   } catch (e) {
     // mapping schema fields to form fields
     const errMap = {
@@ -200,7 +229,8 @@ async function createAssignment (ctx) {
   );
 
   ctx.created({
-    createdAssignment: newAssignment
+    createdAssignment: newAssignment,
+    recurringAssignments
   });
 }
 
@@ -295,14 +325,17 @@ async function toggleAssignment (ctx) {
     : null;
 
   // Readjust time estimate if completed
-  ctx.state.assignment.timeEstimate = ctx.state.assignment._blocks
-    .filter(b => b.endTime <= ctx.state.assignment.completedAt)
-    .reduce((acc, b) => acc + b.duration, 0);
+  if (ctx.state.assignment.completed) {
+    ctx.state.assignment.timeEstimate =
+      ctx.state.assignment._blocks
+        .filter(b => b.endTime <= ctx.state.assignment.completedAt)
+        .reduce((acc, b) => acc + b.duration, 0) / 60; // MUST BE IN HOURS
+  }
 
   try {
     await ctx.state.assignment.save();
   } catch (e) {
-    logger.error(`Failed to toggle assignment with ID ${assignmentID}.`);
+    logger.error(`Failed to toggle assignment with ID ${assignmentID}: ${e}`);
     return ctx.badRequest('There was an error toggling the assignment.');
   }
 

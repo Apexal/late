@@ -20,49 +20,30 @@
       v-else
       class="section"
     >
-      <div class="is-clearfix">
-        <ExamOverviewActionButtons
-          :exam="exam"
-          :loading="loading"
-          @toggle-editing="toggleEditing"
-        />
-
-        <span
-          class="tag is-medium course-tag"
-          :style="{ 'background-color': course.color }"
-          @click="$store.commit('OPEN_COURSE_MODAL', course)"
-        >
-          <b class="course-longname">
-            {{ course.longname }}
-          </b>
-          {{ exam.passed ? 'Past ': '' }}Exam
-        </span>
-
-        <h1 class="title">
-          {{ exam.title }}
-        </h1>
-        <h2 class="subtitle has-text-grey due-title">
-          {{ isPast ? 'Was on' : 'On' }}
-          <b>{{ shortDateTimeString(exam.date) }}</b>
-        </h2>
-      </div>
+      <AssessmentOverviewTitle
+        :assessment-type="'exam'"
+        :assessment="exam"
+      />
 
       <ExamOverviewStats :exam="exam" />
 
-      <div class="content exam-description">
-        <blockquote>
-          <VueMarkdown
-            v-if="exam.description.length > 0"
-            :source="exam.description"
-            :html="false"
-            :emoji="true"
-            :anchor-attributes="{target: '_blank'}"
-          />
-          <i v-else>
-            No description given.
-          </i>
-        </blockquote>
-      </div>
+      <AssessmentOverviewActionButtons
+        :assessment-type="'exam'"
+        :assessment="exam"
+        :loading="loading"
+        :description-expanded="descriptionExpanded"
+        @toggle-description="descriptionExpanded = !descriptionExpanded"
+        @toggle-editing="toggleEditing"
+      />
+      <AssessmentOverviewDescription
+        v-if="descriptionExpanded"
+        :assessment-type="'exam'"
+        :assessment="exam"
+        :expanded="descriptionExpanded"
+        @update-assessment="updatedExam"
+      />
+
+      <hr v-else>
 
       <ExamOverviewTabs
         :tab="tab"
@@ -78,24 +59,29 @@
 <script>
 import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
-import ExamsModalEdit from '@/components/exams/ExamsModalEdit';
+import ExamsModalEdit from '@/views/components/exams/ExamsModalEdit';
 
-import ExamOverviewStats from '@/components/exams/overview/ExamOverviewStats';
-import ExamOverviewActionButtons from '@/components/exams/overview/ExamOverviewActionButtons';
-import ExamOverviewTabs from '@/components/exams/overview/ExamOverviewTabs';
+import AssessmentOverviewDescription from '@/views/components/assessment/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/views/components/assessment/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/views/components/assessment/AssessmentOverviewTitle';
+import ExamOverviewStats from '@/views/components/exams/overview/ExamOverviewStats';
+import ExamOverviewTabs from '@/views/components/exams/overview/ExamOverviewTabs';
 
 export default {
   name: 'ExamsOverview',
   components: {
+    AssessmentOverviewDescription,
+    AssessmentOverviewTitle,
     VueMarkdown,
     ExamsModalEdit,
     ExamOverviewStats,
-    ExamOverviewActionButtons,
+    AssessmentOverviewActionButtons,
     ExamOverviewTabs
   },
   data () {
     return {
       tab: 'schedule',
+      descriptionExpanded: true,
       commentLoading: false,
       loading: true,
       isUpcoming: false,
@@ -115,10 +101,30 @@ export default {
     }
   },
   watch: {
-    $route: 'getExam'
+    $route: 'getExam',
+    exam (newExam) {
+      document.title = `${newExam.title} | LATE`;
+    },
+    descriptionExpanded (newDescriptionExpanded) {
+      localStorage.setItem(
+        'assessmentOverviewDescriptionExpanded',
+        newDescriptionExpanded
+      );
+    }
   },
   created () {
     this.getExam();
+  },
+  mounted () {
+    if (localStorage.getItem('assessmentOverviewDescriptionExpanded')) {
+      try {
+        this.descriptionExpanded = JSON.parse(
+          localStorage.getItem('assessmentOverviewDescriptionExpanded')
+        );
+      } catch (e) {
+        localStorage.removeItem('assessmentOverviewDescriptionExpanded');
+      }
+    }
   },
   methods: {
     tabChanged (newTab) {
@@ -130,7 +136,6 @@ export default {
     updatedExam (newExam) {
       this.exam = newExam;
     },
-
     async getExam () {
       // If its an upcoming exam, we already have the data on it
       if (this.$store.getters.getUpcomingExamById(this.$route.params.examID)) {
@@ -205,14 +210,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.course-tag {
-  cursor: pointer;
-  color: white;
-
-  .course-longname {
-    margin-right: 5px;
-  }
-
-  margin-bottom: 10px;
-}
 </style>

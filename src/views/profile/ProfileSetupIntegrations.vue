@@ -49,10 +49,10 @@
 </template>
 
 <script>
-import SetupIntegrationsPreferences from '@/components/profile/SetupIntegrationsPreferences';
-import SetupIntegrationsSMS from '@/components/profile/SetupIntegrationsSMS';
-import SetupIntegrationsEmail from '@/components/profile/SetupIntegrationsEmail';
-import SetupIntegrationsDiscord from '@/components/profile/SetupIntegrationsDiscord';
+import SetupIntegrationsPreferences from '@/views/components/profile/SetupIntegrationsPreferences';
+import SetupIntegrationsSMS from '@/views/components/profile/SetupIntegrationsSMS';
+import SetupIntegrationsEmail from '@/views/components/profile/SetupIntegrationsEmail';
+import SetupIntegrationsDiscord from '@/views/components/profile/SetupIntegrationsDiscord';
 
 export default {
   name: 'IntegrationsSetup',
@@ -65,10 +65,6 @@ export default {
   data () {
     return {
       currentTab: 'SetupIntegrationsSMS',
-      discordVerificationCode: Math.random()
-        .toString(36)
-        .replace(/[^a-z]+/g, '')
-        .substr(0, 8),
       map: {
         sms: 'SetupIntegrationsSMS',
         email: 'SetupIntegrationsEmail',

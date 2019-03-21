@@ -10,6 +10,23 @@ import Toasted from 'vue-toasted';
 
 import 'bulma-tooltip';
 
+import VueProgressBar from 'vue-progressbar';
+
+const options = {
+  color: '#70cad1',
+  failedColor: '#874b4b',
+  thickness: '5px',
+  transition: {
+    speed: '0.2s',
+    opacity: '0.6s',
+    termination: 300
+  },
+  autoRevert: true,
+  location: 'top',
+  inverse: false
+};
+Vue.use(VueProgressBar, options);
+
 Vue.use(FullCalendar);
 Vue.use(KnobControl);
 Vue.use(Toasted, {
@@ -24,8 +41,10 @@ Vue.config.productionTip = false;
 
 Vue.prototype.$http = Api;
 
-new Vue({
+const app = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app');
+
+export default app;

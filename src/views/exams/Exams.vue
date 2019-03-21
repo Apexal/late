@@ -1,57 +1,50 @@
 <template>
   <div class="exams">
     <section class="section exam-list">
-      <div class="exam-view-buttons buttons has-addons is-pulled-right">
-        <router-link
-          class="button tooltip"
-          to="/exams/upcoming"
-          data-tooltip="Switch to view upcoming exams."
-        >
-          Upcoming
-        </router-link>
-        <router-link
-          class="button tooltip"
-          to="/exams/past"
-          data-tooltip="Switch to view past exams."
-        >
-          Past
-        </router-link>
-        <router-link
-          class="button tooltip"
-          to="/exams/calendar"
-          data-tooltip="Switch to view your exam calendar."
-        >
-          Calendar
-        </router-link>
-      </div>
-      <h1 class="title">
+      <h1 class="is-hidden-desktop has-text-centered is-marginless title">
         {{ title }}
       </h1>
 
-      <div class="level box exam-controls">
-        <div class="level-left disable-shrink">
-          <div class="filters">
-            <span class="subtitle is-6">
-              Filter Courses
-            </span>
-            <span
-              v-for="c in courses"
-              :key="c.original_longname"
-              class="tag is-white course-tag level-item is-unselectable"
-              :title="`Click to toggle filtering out ${c.longname} exam.`"
-              :class="{ 'has-text-grey-light filtered': isFiltered(c) }"
-              @click="toggleFilter(c)"
-            >
-              <span
-                class="dot course-dot"
-                :style="{ 'background-color': c.color }"
-              />
-              {{ c.longname }}
-            </span>
-          </div>
-        </div>
+      <div class="tab-nav tabs is-centered">
+        <ul>
+          <h1
+            class="is-hidden-touch title"
+            style="flex: 1"
+          >
+            {{ title }}
+          </h1>
+
+          <router-link
+            tag="li"
+            to="/exams/upcoming"
+            title="Switch to view upcoming exams"
+          >
+            <a>Upcoming</a>
+          </router-link>
+
+          <router-link
+            tag="li"
+            to="/exams/past"
+            title="Switch to view past exams"
+          >
+            <a>Previous</a>
+          </router-link>
+
+          <router-link
+            tag="li"
+            to="/exams/calendar"
+            title="Switch to view your exam calendar"
+          >
+            <a>Calendar</a>
+          </router-link>
+        </ul>
       </div>
-      <hr>
+
+      <AssessmentsFilter
+        :filter="filter"
+        @toggle-filter="toggleFilter"
+      />
+
       <transition
         name="slide-left"
         mode="out-in"
@@ -64,23 +57,21 @@
       <hr>
       <button
         class="button is-dark"
+        title="Add an upcoming exam"
         @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
       >
         Add Exam
-      </button>
-      <button
-        class="button is-dark is-outlined is-pulled-right"
-        @click="exportExams"
-      >
-        Export Exams
       </button>
     </section>
   </div>
 </template>
 
 <script>
+import AssessmentsFilter from '@/views/components/assessment/AssessmentsFilter';
+
 export default {
   name: 'Exams',
+  components: { AssessmentsFilter },
   data () {
     return {
       filter: []
@@ -98,13 +89,6 @@ export default {
     }
   },
   methods: {
-    exportExams () {
-      this.$toasted.error('Coming soon!', {
-        icon: 'frown',
-        duration: 1000,
-        fullWidth: false
-      });
-    },
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN);
     },
@@ -114,7 +98,7 @@ export default {
     toggleFilter (c) {
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
-        this.$toasted.info(`Now including '${c.longname}' exams.`, {
+        this.$toasted.info(`Showing '${c.longname}' exams.`, {
           icon: 'plus',
           position: 'top-right',
           fullWidth: false,
@@ -122,7 +106,7 @@ export default {
         });
       } else {
         this.filter.push(c.crn);
-        this.$toasted.error(`No longer showing '${c.longname}' exams.`, {
+        this.$toasted.error(`Hiding '${c.longname}' exams.`, {
           icon: 'minus',
           position: 'top-right',
           fullWidth: false,
@@ -137,9 +121,34 @@ export default {
 <style lang="scss" scoped>
 span.tag.course-tag {
   cursor: pointer;
-  font-weight: bold;
+  //font-weight: bold;
   margin: 0;
-  padding-right: 0;
+  margin-left: 2px;
+  margin-right: 2px;
+  color: white;
+
+  span {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition-delay: 0.1s;
+    -webkit-transition-delay: 0.1s;
+  }
+
+  span:hover {
+    max-width: 100vw;
+    transition: 0.4s;
+    -webkit-transition: 0.4s;
+    //transition-delay:0.3s;
+  }
+}
+
+.filtered-out {
+  color: #686868 !important;
+  background-color: rgb(214, 214, 214) !important;
 }
 
 span.dot.course-dot {
@@ -161,6 +170,13 @@ span.dot.course-dot {
 
   .level-left + .level-right {
     margin-top: 5px !important;
+  }
+}
+
+.tab-nav {
+  margin-bottom: 0;
+  .title {
+    margin: 0;
   }
 }
 </style>

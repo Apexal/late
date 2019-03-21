@@ -55,7 +55,8 @@ export default {
               return false;
             }
           },
-          timezone: 'local'
+          timezone: 'local',
+          dayClick: this.dayClick
         }
       }
     };
@@ -95,6 +96,12 @@ export default {
         }));
 
       callback(events);
+    },
+    dayClick (date) {
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: date });
+      this.$store.commit(
+        'TOGGLE_ADD_ASSIGNMENT_MODAL'
+      );
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);

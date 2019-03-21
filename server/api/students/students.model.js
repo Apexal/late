@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const moment = require('moment');
 
-require('../blocks/blocks.model');
+const Block = require('../blocks/blocks.model');
+const Assignment = require('../assignments/assignments.model');
+const Exam = require('../exams/exams.model');
 
 // const rpiValidator = require('rpi-validator');
 
@@ -96,10 +98,24 @@ const schema = new Schema(
         verificationCode: { type: String, minlength: 1 },
         phoneNumber: { type: String, minlength: 10, maxlength: 10 }
       },
+      google: {
+        tokens: {
+          refresh_token: String,
+          access_token: String,
+          expiry_date: Number
+        },
+        calendarIDs: {
+          courseSchedule: { type: String, default: '' },
+          workBlocks: { type: String, default: '' }
+        }
+      },
       discord: {
         verified: { type: Boolean, default: false },
-        verificationCode: { type: String, minlength: 1 },
-        userID: { type: String }
+        userID: String,
+        tokens: {
+          accessToken: String,
+          refreshToken: String
+        }
       }
     },
     setup: {
@@ -118,7 +134,11 @@ const schema = new Schema(
       integrations: {
         type: Boolean,
         default: false
-      } // when the student has setup (or chosen not to setup) integrations
+      }, // when the student has setup (or chosen not to setup) integrations
+      google: {
+        type: Boolean,
+        default: false
+      } // when the student has connected their Google account
     },
     joined_date: {
       type: Date,
@@ -153,7 +173,7 @@ schema.methods.courseFromCRN = function (currentTermCode, crn) {
   return this.semester_schedules[currentTermCode].find(c => c.crn === crn);
 };
 
-schema.methods.getAssignments = function (start, end) {
+schema.methods.getAssignments = function (start, end, title, courseCRN) {
   let query = {
     _student: this._id
   };
@@ -168,6 +188,14 @@ schema.methods.getAssignments = function (start, end) {
     query.dueDate['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate();
   }
 
+  if (title) {
+    query.title = new RegExp('^' + title + '$', 'i');
+  }
+
+  if (courseCRN) {
+    query.courseCRN = courseCRN;
+  }
+
   return this.model('Assignment')
     .find(query)
     .populate('_blocks')
@@ -176,7 +204,7 @@ schema.methods.getAssignments = function (start, end) {
     .exec();
 };
 
-schema.methods.getExams = function (start, end) {
+schema.methods.getExams = function (start, end, title, courseCRN) {
   let query = {
     _student: this._id
   };
@@ -189,6 +217,14 @@ schema.methods.getExams = function (start, end) {
   if (end) {
     query.date = query.date || {};
     query.date['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate();
+  }
+
+  if (title) {
+    query.title = new RegExp('^' + title + '$', 'i');
+  }
+
+  if (courseCRN) {
+    query.courseCRN = courseCRN;
   }
 
   return this.model('Exam')
@@ -237,6 +273,19 @@ schema.virtual('grade_name').get(function () {
 schema.pre('save', function () {
   this.setup.course_schedule = [...new Set(this.setup.course_schedule)];
   this.setup.unavailability = [...new Set(this.setup.unavailability)];
+});
+
+schema.pre('remove', async function () {
+  // Delete all work blocks, exams, and assignments from this student
+  await Block.deleteMany({
+    _student: this._id
+  });
+  await Assignment.deleteMany({
+    _student: this._id
+  });
+  await Exam.deleteMany({
+    _student: this._id
+  });
 });
 
 module.exports = mongoose.model('Student', schema);

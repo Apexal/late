@@ -12,7 +12,8 @@ const getters = {
         personal_info: false,
         course_schedule: false,
         unavailability: false,
-        integrations: false
+        integrations: false,
+        google: false
       };
     }
     return {
@@ -23,7 +24,8 @@ const getters = {
       unavailability: state.user.setup.unavailability.includes(
         rootGetters.currentTerm.code
       ),
-      integrations: state.user.setup.integrations
+      integrations: state.user.setup.integrations,
+      google: state.user.setup.google
     };
   },
   isUserSetup: (state, getters) => {
@@ -37,9 +39,10 @@ const getters = {
     return rootGetters.current_unavailability.map(p => {
       return {
         id: 'unavailable',
-        title: 'Busy',
+        title: p.title || 'Busy',
         editable: false,
         eventType: 'unavailability',
+        color: 'black',
         start: p.start,
         end: p.end,
         dow: p.dow
@@ -47,9 +50,9 @@ const getters = {
     });
   },
   getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
-    if (!rootGetters.current_schedule) return [];
+    if (!rootGetters.current_schedule_all) return [];
     // Turn periods into this week's schedule...
-    const events = rootGetters.current_schedule
+    const events = rootGetters.current_schedule_all
       .map(c =>
         c.periods.map(p => {
           let start = moment(p.start, 'Hmm', true).format('HH:mm');
@@ -95,7 +98,7 @@ const actions = {
 
     // call API
     const request = await axios.post('/setup/courses', {
-      courses: rootGetters.current_schedule
+      courses: rootGetters.current_schedule_all
     });
 
     commit('SET_USER', request.data.updatedUser);
