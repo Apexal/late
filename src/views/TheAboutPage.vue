@@ -24,7 +24,7 @@
           <h1 class="title is-4">
             The Team
           </h1>
-          <h4 class="subtitle">
+          <h4 class="subtitle has-text-grey">
             Project Contributors
           </h4>
           <ul>
@@ -38,6 +38,21 @@
         </div>
       </div>
     </section>
+    <section>
+      <h1 class="title">
+        Project Status Updates
+      </h1>
+      <iframe
+        v-for="url in statusUpdateURLs"
+        :key="url"
+        width="600"
+        height="700"
+        :src="url"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      />
+    </section>
   </div>
 </template>
 
@@ -46,20 +61,24 @@ export default {
   name: 'TheAboutPage',
   data () {
     return {
+      statusUpdateURLs: [
+        'https://www.youtube.com/embed/FhRSjxgsArA',
+        'https://www.youtube.com/embed/aB93j7LUK0w',
+        'https://www.youtube.com/embed/aB93j7LUK0w'
+      ],
       contributors: [
         'Frank Matranga',
         'Zach Love',
         'Abigail Medina',
         'Christie Nero',
         'Tyler Machado',
-        'Jose A Figueroa',
         'Alexandra Rachiele',
-        'Anglea Lopez',
-        'Henry Heffernan',
         'Colton Zecca',
-        'Alex Ford',
+        'Anglea Lopez',
+        'Sam Fawcett',
         'Jose Deantes',
-        'Sam Fawcett'
+        'Gabe Benelli',
+        'Henry Heffernan'
       ]
     };
   }
@@ -67,4 +86,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+iframe {
+  min-height: 300px;
+  height: 100%;
+  max-height: 500px;
+
+  margin-bottom: 20px;
+}
 </style>

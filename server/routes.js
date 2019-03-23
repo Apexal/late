@@ -39,15 +39,19 @@ module.exports = router => {
     ctx.redirect(google.createUrl(googleAuth));
   });
 
-  router.get('/google/auth/callback', async ctx => {
+  router.get('/auth/google/callback', async ctx => {
     const googleAuth = google.createConnection();
 
     const { code } = ctx.query;
     const { tokens } = await googleAuth.getToken(code);
+    console.log(tokens);
 
-    ctx.session.googleAuthToken = tokens;
+    Object.assign(ctx.state.user.integrations.google.tokens, tokens);
+    ctx.state.user.setup.google = true;
 
-    ctx.ok(tokens);
+    await ctx.state.user.save();
+
+    ctx.redirect('/profile/googlecalendar');
   });
 
   router.get('/auth/discord', ctx => {

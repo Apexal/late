@@ -131,7 +131,17 @@
             >
           </div>
         </div>
-
+        <div>
+          <label :for="'course-hidden-' + elementID">
+            Mark as hidden
+          </label>
+          <input
+            :id="'course-links-' + elementID"
+            v-model="courseData.hidden"
+            type="checkbox"
+            title="Hidden courses will not show in the course selection list"
+          >
+        </div>
         <label :for="'course-links-' + elementID">
           Links
         </label>

@@ -192,6 +192,27 @@
             Coming soon...
           </p>
         </div>
+
+        <hr>
+        <h2
+          class="subtitle"
+          title="These courses won't show up on any course list or on your schedule."
+        >
+          Hidden Courses
+          <small class="has-text-grey">{{ hiddenCourses.length }} total</small>
+        </h2>
+        <ProfileCourse
+          v-for="c in hiddenCourses"
+          :key="c.crn"
+          :course="c"
+          @update-course="updatedCourse"
+        />
+        <p
+          v-if="hiddenCourses.length === 0"
+          class="has-text-grey has-text-centered"
+        >
+          You have not hidden any courses.
+        </p>
       </template>
       <hr>
       <router-link
@@ -257,12 +278,15 @@ export default {
     coursesWithoutOther () {
       return this.courses.filter(c => c.summary !== 'OTHER');
     },
+    hiddenCourses () {
+      return this.$store.getters.current_schedule_all.filter(c => c.summary !== 'OTHER' && c.hidden);
+    },
     courseEvents () {
       return this.$store.getters.getCourseScheduleAsEvents;
     }
   },
   created () {
-    this.crns = this.$store.getters.current_schedule.map(c => c.crn).join(',');
+    this.crns = this.$store.getters.current_schedule_all.map(c => c.crn).join(',');
   },
   methods: {
     async iCalFileChange (file) {

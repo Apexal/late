@@ -11,4 +11,15 @@ router.use('/terms', require('./terms'));
 router.use('/blocks', require('./blocks'));
 router.use('/todos', require('./todos'));
 
+router.use(
+  '/google',
+  async (ctx, next) => {
+    if (!ctx.state.user.integrations.google.tokens) {
+      return ctx.badRequest('Google account not authenticated!');
+    }
+    await next();
+  },
+  require('./google')
+);
+
 module.exports = router.routes();

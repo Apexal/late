@@ -72,9 +72,9 @@ const getters = {
   incompleteUpcomingAssignments: state =>
     state.upcomingAssignments.filter(a => !a.completed),
   getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>
-    rootGetters.current_schedule.find(c => c.crn === crn) || removedCourse,
+    rootGetters.current_schedule_all.find(c => c.crn === crn) || removedCourse,
   getCourseFromPeriod: (state, getters, rootState, rootGetters) => period =>
-    rootGetters.current_schedule.find(c =>
+    rootGetters.current_schedule_all.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
   getUpcomingAssigmentsAsEvents: (state, getters) =>
@@ -195,7 +195,7 @@ const actions = {
     commit('SET_UPCOMING_EXAMS', exams);
   },
   async ADD_WORK_BLOCK (
-    { commit, getters },
+    { commit, getters, dispatch, rootState },
     { assessmentType, assessment, start, end }
   ) {
     const request = await axios.post(
@@ -241,6 +241,7 @@ const actions = {
     const request = await axios.delete(
       `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`
     );
+
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 

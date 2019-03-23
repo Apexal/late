@@ -18,7 +18,7 @@
     >
       <div v-if="filteredTodaysAgenda.length === 0">
         <div class="panel-block has-text-grey">
-          No courses or scheduled work today!
+          Nothing scheduled for the {{ todaysAgenda.length === filteredTodaysAgenda.length ? '' : 'rest of the ' }}day!
         </div>
       </div>
       <div
@@ -39,7 +39,10 @@
           :title="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
         >
           <template v-if="event.eventType === 'period'">
-            <b class="period-longname">{{ event.course.longname }}</b>
+            <b
+              class="period-longname"
+              @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
+            >{{ event.course.longname }}</b>
             <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
           </template>
           <template v-else-if="event.eventType === 'work-block'">
@@ -56,7 +59,7 @@
     </div>
     <div class="controls panel-block has-background-white-ter has-text-centered">
       <label
-        class="is-full-width has-text-centered"
+        class="is-full-width has-text-centered togglePassed"
         for="agenda-show-passed"
       >
         Show Passed
@@ -193,9 +196,22 @@ export default {
     margin-right: 3px;
   }
   .period-longname {
+    cursor: pointer;
     margin-right: 3px;
   }
 }
+
+
+//Hover styling for previous toggle
+.controls {
+  padding: 0;
+}
+
+.togglePassed {
+  cursor: pointer;
+  padding: 0.5em 0.75em;
+}
+.togglePassed:hover { background-color: #e7e7e7}
 
 .agenda-show-passed {
   font-weight: 100;

@@ -3,6 +3,7 @@ const Assignment = require('../assignments/assignments.model');
 const Exam = require('../exams/exams.model');
 
 const logger = require('../../modules/logger');
+const google = require('../../modules/google');
 
 /**
  * Add a work block to a specific assignment and have the updated
@@ -70,7 +71,25 @@ async function addWorkBlock (ctx) {
 
   logger.info(`Adding work block for ${ctx.state.user.rcs_id}`);
 
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.createEventFromWorkBlock(
+        ctx,
+        assessment,
+        assessmentType,
+        newBlock
+      );
+    } catch (e) {
+      logger.error(
+        `Failed to add GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
+
   return ctx.ok({
+    createdBlock: newBlock,
     // eslint-disable-next-line standard/computed-property-even-spacing
     ['updated' +
     (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
@@ -131,6 +150,25 @@ async function editWorkBlock (ctx) {
 
   logger.info(`Edited work block for ${ctx.state.user.rcs_id}`);
 
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.patchEventFromWorkBlock(ctx, blockID, {
+        start: {
+          dateTime: startTime
+        },
+        end: {
+          dateTime: endTime
+        }
+      });
+    } catch (e) {
+      logger.error(
+        `Failed to patch GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
+
   return ctx.ok({
     // eslint-disable-next-line standard/computed-property-even-spacing
     ['updated' +
@@ -181,6 +219,18 @@ async function removeWorkBlock (ctx) {
   }
 
   logger.info(`Removed work block for ${ctx.state.user.rcs_id}`);
+
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.deleteEventFromWorkBlock(ctx, blockID);
+    } catch (e) {
+      logger.error(
+        `Failed to delete GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
 
   return ctx.ok({
     // eslint-disable-next-line standard/computed-property-even-spacing
