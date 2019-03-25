@@ -63,7 +63,7 @@
           Back to Top
         </button>
         <router-link
-          to="/exams"
+          to="/exams/upcoming"
           class="button"
         >
           All Exams

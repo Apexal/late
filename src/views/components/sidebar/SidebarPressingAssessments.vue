@@ -41,7 +41,7 @@
       <div class="panel-block has-background-white-ter has-text-centered controls">
         <div class="buttons">
           <button
-            class="button is-small"
+            class="button is-primary is-small"
             title="Add a new assignment."
             @click="$emit('toggle-modal', 'assignment')"
           >
@@ -51,7 +51,7 @@
             Assignment
           </button>
           <button
-            class="button is-small"
+            class="button is-primary is-small"
             title="Add a new exam."
             @click="$emit('toggle-modal', 'exam')"
           >
