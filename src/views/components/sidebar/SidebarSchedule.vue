@@ -17,14 +17,16 @@
       class="sidebar-body agenda"
     >
       <div v-if="filteredTodaysAgenda.length === 0">
-        <div class="panel-block has-text-grey">
+        <div
+          class="panel-block has-text-grey"
+        >
           Nothing scheduled for the {{ todaysAgenda.length === filteredTodaysAgenda.length ? '' : 'rest of the ' }}day!
         </div>
       </div>
       <div
         v-for="event in filteredTodaysAgenda"
         :key="event.title + '-' + event.start.toString()"
-        class="panel-block event is-size-7 is-flex"
+        class="panel-block event is-flex"
         :class="{ 'is-active': isCurrentEvent(event), 'passed': hasPassed(event.end), 'clickable': event.link }"
         @click="eventClicked(event)"
       >
@@ -201,7 +203,6 @@ export default {
   }
 }
 
-
 //Hover styling for previous toggle
 .controls {
   padding: 0;
@@ -211,7 +212,9 @@ export default {
   cursor: pointer;
   padding: 0.5em 0.75em;
 }
-.togglePassed:hover { background-color: #e7e7e7}
+.togglePassed:hover {
+  background-color: #e7e7e7;
+}
 
 .agenda-show-passed {
   font-weight: 100;

@@ -41,7 +41,7 @@
 
       <Component
         :is="currentTab.component"
-        class="is-unselectable"
+        class="is-unselectable is-size-7"
         :todays-agenda="todaysAgenda"
         :pressing="pressingAssessments"
         :todos="todos"

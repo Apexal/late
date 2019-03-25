@@ -100,6 +100,7 @@ export default {
 
 <style lang="scss" scoped>
 .assessment {
+  padding: 10px;
   cursor: pointer;
 
   .assessment-link {
