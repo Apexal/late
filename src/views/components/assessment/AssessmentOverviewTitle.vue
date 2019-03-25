@@ -16,18 +16,23 @@
     >
       {{ assessment.title }}
     </h1>
-    <span
+    <div
       v-if="assessmentType === 'assignment'"
-      :title="`This assignment is ${assessment.completed ? 'completed' : 'incomplete'}!`"
-      :style="{ 'color': course.color }"
-      class="icon toggle-complete"
-      @click="$emit('toggle-completed')"
+      class="has-text-centered-mobile"
     >
-      <i
-        class="fa"
-        :class="[assessment.completed ? 'fa-check-circle' : 'fa-times-circle']"
-      />
-    </span>
+      <button
+        :title="`This assignment is ${assessment.completed ? 'completed' : 'incomplete'}!`"
+        class="button is-success toggle-complete"
+        :class="{ 'is-outlined': !assessment.completed }"
+        @click="$emit('toggle-completed')"
+      >
+        <i
+          class="fa-check-square"
+          :class="[assessment.completed ? 'fas' : 'far']"
+        />
+        {{ assessment.completed ? 'Completed' : 'Incomplete' }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -65,8 +70,12 @@ export default {
 }
 
 .toggle-complete {
-  cursor: pointer;
-  font-size: 2em;
+  i {
+    margin-right: 5px;
+  }
+  @media only screen and (max-width: 768px) {
+    margin-top: 5px;
+  }
 }
 
 .course-tag {
@@ -78,8 +87,5 @@ export default {
   }
 
   margin-right: 10px;
-  // @media only screen and (max-width: 768px) {
-  //   margin-top: 10px;
-  // }
 }
 </style>
