@@ -1,23 +1,5 @@
 <template>
-  <div class="is-flex-tablet">
-    <h1
-      class="title assessment-title has-text-centered-mobile"
-      style="flex: 1"
-    >
-      <span
-        v-if="assessmentType === 'assignment'"
-        :title="`This assignment is ${assessment.completed ? 'completed' : 'incomplete'}!`"
-        :style="{ 'color': course.color }"
-        class="icon toggle-complete"
-        @click="$emit('toggle-completed')"
-      >
-        <i
-          class="fa"
-          :class="[assessment.completed ? 'fa-check-circle' : 'fa-times-circle']"
-        />
-      </span>
-      {{ assessment.title }}
-    </h1>
+  <div class="assessment-overview-title is-flex-tablet">
     <div class="has-text-centered-mobile">
       <span
         class="tag is-medium course-tag"
@@ -28,6 +10,24 @@
         {{ assessment.passed ? 'Past ': '' }}{{ assessmentType === 'assignment' && assessment.isRecurring ? 'Recurring ' : '' }}{{ capitalizedAssessmentType }}
       </span>
     </div>
+    <h1
+      class="title assessment-title has-text-centered-mobile"
+      style="flex: 1"
+    >
+      {{ assessment.title }}
+    </h1>
+    <span
+      v-if="assessmentType === 'assignment'"
+      :title="`This assignment is ${assessment.completed ? 'completed' : 'incomplete'}!`"
+      :style="{ 'color': course.color }"
+      class="icon toggle-complete"
+      @click="$emit('toggle-completed')"
+    >
+      <i
+        class="fa"
+        :class="[assessment.completed ? 'fa-check-circle' : 'fa-times-circle']"
+      />
+    </span>
   </div>
 </template>
 
@@ -56,12 +56,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.assessment-overview-title {
+  align-items: center;
+}
+
 .assessment-title {
   margin-bottom: 0;
 }
 
 .toggle-complete {
   cursor: pointer;
+  font-size: 2em;
 }
 
 .course-tag {
@@ -72,9 +77,9 @@ export default {
     margin-right: 5px;
   }
 
-  margin-bottom: 10px;
-  @media only screen and (max-width: 768px) {
-    margin-top: 10px;
-  }
+  margin-right: 10px;
+  // @media only screen and (max-width: 768px) {
+  //   margin-top: 10px;
+  // }
 }
 </style>
