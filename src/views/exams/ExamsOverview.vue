@@ -27,14 +27,14 @@
 
       <ExamOverviewStats :exam="exam" />
 
-      <AssessmentOverviewActionButtons
+      <!-- <AssessmentOverviewActionButtons
         :assessment-type="'exam'"
         :assessment="exam"
         :loading="loading"
         :description-expanded="descriptionExpanded"
         @toggle-description="descriptionExpanded = !descriptionExpanded"
         @toggle-editing="toggleEditing"
-      />
+      />-->
       <AssessmentOverviewDescription
         v-if="descriptionExpanded"
         :assessment-type="'exam'"

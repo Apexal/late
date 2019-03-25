@@ -1,5 +1,5 @@
 <template>
-  <nav class="box level assignment-stats">
+  <nav class="box level assignment-stats has-background-dark has-text-white">
     <div class="level-item has-text-centered">
       <div>
         <p class="heading">
@@ -137,8 +137,14 @@ export default {
 }
 
 .level.assignment-stats {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   margin-top: 20px;
   margin-bottom: 0;
   padding: 10px;
+
+  .level-item .subtitle {
+    color: white;
+  }
 }
 </style>
