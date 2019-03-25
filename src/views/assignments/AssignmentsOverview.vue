@@ -31,25 +31,12 @@
         @not-fully-scheduled-click="notFullyScheduledClick"
       />
 
-      <AssessmentOverviewActionButtons
-        :assessment-type="'assignment'"
-        :assessment="assignment"
-        :loading="loading || toggleLoading"
-        :description-expanded="descriptionExpanded"
-        @toggle-description="descriptionExpanded = !descriptionExpanded"
-        @toggle-completed="toggleCompleted"
-        @toggle-editing="toggleEditing"
-      />
-
       <AssessmentOverviewDescription
-        v-if="descriptionExpanded"
         :assessment-type="'assignment'"
         :assessment="assignment"
         :expanded="descriptionExpanded"
         @update-assessment="updatedAssignment"
       />
-
-      <hr v-else>
 
       <AssignmentOverviewTabs
         ref="tabs"
@@ -67,6 +54,16 @@
         >
           Back to Top
         </button>
+
+        <router-link
+          :to="`/assignments/upcoming`"
+          class="button is-link tooltip"
+          data-tooltip="Browse all assignments."
+        >
+          <i class="fas fa-angle-left" />Browse
+          <span class="is-hidden-touch">Assignments</span>
+        </router-link>
+
         <button
           class="button is-pulled-right is-warning"
           @click="copyAssignment"
@@ -107,7 +104,6 @@ export default {
       toggleLoading: false,
       loading: true,
       isUpcoming: false,
-      descriptionExpanded: true,
       assignment: {},
       editing: false,
       confetti: null,
@@ -141,27 +137,11 @@ export default {
     $route: 'getAssignment',
     assignment (newAssignment) {
       document.title = `${newAssignment.title} | LATE`;
-    },
-    descriptionExpanded (newDescriptionExpanded) {
-      localStorage.setItem(
-        'assessmentOverviewDescriptionExpanded',
-        newDescriptionExpanded
-      );
     }
   },
   mounted () {
     // eslint-disable-next-line no-undef
     this.confetti = new ConfettiGenerator(this.confettiSettings);
-
-    if (localStorage.getItem('assessmentOverviewDescriptionExpanded')) {
-      try {
-        this.descriptionExpanded = JSON.parse(
-          localStorage.getItem('assessmentOverviewDescriptionExpanded')
-        );
-      } catch (e) {
-        localStorage.removeItem('assessmentOverviewDescriptionExpanded');
-      }
-    }
   },
   created () {
     this.getAssignment();

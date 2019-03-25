@@ -52,6 +52,29 @@
         @set-tab="tabChanged"
         @update-assessment="updatedExam"
       />
+
+      <hr>
+
+      <div class="bottom-actions clearfix">
+        <button
+          class="button"
+          @click="scrollToTop"
+        >
+          Back to Top
+        </button>
+        <router-link
+          to="/exams"
+          class="button"
+        >
+          All Exams
+        </router-link>
+        <button
+          class="button is-pulled-right is-warning"
+          @click="copyExam"
+        >
+          Copy Exam
+        </button>
+      </div>
     </section>
   </div>
 </template>
@@ -133,8 +156,17 @@ export default {
     toggleEditing () {
       this.editing = !this.editing;
     },
+    scrollToTop () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    },
     updatedExam (newExam) {
       this.exam = newExam;
+    },
+    copyExam () {
+      this.$toasted.info('Coming soon...');
     },
     async getExam () {
       // If its an upcoming exam, we already have the data on it
