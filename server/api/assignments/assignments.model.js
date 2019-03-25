@@ -90,6 +90,10 @@ schema.statics.getAllUpcomingAssignments = function () {
     .exec();
 };
 
+schema.virtual('assessmentType').get(function () {
+  return 'assignment';
+});
+
 schema.virtual('passed').get(function () {
   return moment(this.dueDate).isBefore(new Date());
 });
