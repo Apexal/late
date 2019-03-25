@@ -72,14 +72,14 @@ export default {
       tabs: {
         schedule: {
           component: SidebarSchedule,
-          name: 'Daily Agenda',
+          name: 'Today\'s Agenda',
           icon: 'far fa-clock',
           tagColor: 'info'
         },
         assessments: {
           component: SidebarPressingAssessments,
           name: 'Pressing Assignments/Exams',
-          icon: 'fas fa-exclamation',
+          icon: 'fas fa-list-ul',
           tagColor: 'warning'
         },
         todos: {
