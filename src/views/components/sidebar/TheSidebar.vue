@@ -110,7 +110,7 @@ export default {
     },
     pressingAssessments () {
       return this.pressingAssignments
-        .concat(this.upcomingExams)
+        .concat(this.upcomingExamsTwoWeeks)
         .sort((a, b) => {
           const aDate = a.dueDate || a.date;
           const bDate = b.dueDate || b.date;
@@ -125,6 +125,12 @@ export default {
       return this.$store.getters.incompleteUpcomingAssignments
         .filter(a => a.priority > 1)
         .slice(0, 5);
+    },
+    upcomingExamsTwoWeeks () {
+      const twoWeeksFromNow = moment().add(2, 'weeks');
+      return this.upcomingExams.filter(ex =>
+        moment(ex.date).isSameOrBefore(twoWeeksFromNow)
+      );
     },
     upcomingExams () {
       return this.$store.getters.pendingUpcomingExams;
