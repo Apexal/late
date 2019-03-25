@@ -1,5 +1,5 @@
 <template>
-  <nav class="level box exam-stats has-background-dark has-text-white">
+  <nav class="level box exam-stats has-background-grey-darker has-text-white">
     <div class="level-item has-text-centered">
       <div>
         <p class="heading">
@@ -100,7 +100,7 @@ export default {
 
   margin-top: 20px;
   margin-bottom: 0;
-  padding: 10px;
+  padding: 5px;
 
   .level-item .subtitle {
     color: white;
