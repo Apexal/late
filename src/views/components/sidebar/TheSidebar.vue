@@ -10,11 +10,9 @@
           title="Toggle sidebar."
           @click="$store.commit('TOGGLE_SIDEBAR')"
         >
-
           <i class="fas fa-chevron-up fa-rotate-270" />
         </span>
         {{ onBreak ? 'On Break' : currentTerm.name }}
-
         <span
           v-if="currentEvent"
           class="tag is-info is-pulled-right tab-count countdown"
@@ -45,8 +43,7 @@
         :is="currentTab.component"
         class="is-unselectable"
         :todays-agenda="todaysAgenda"
-        :upcoming="upcomingExamsOneMonth"
-        :pressing="pressingAssignments"
+        :pressing="pressingAssessments"
         :todos="todos"
         @toggle-modal="toggleModal"
         @update-count="updatedCount"
@@ -59,17 +56,15 @@
 import moment from 'moment';
 
 import SidebarSchedule from '@/views/components/sidebar/SidebarSchedule';
-import SidebarPressingAssignments from '@/views/components/sidebar/SidebarPressingAssignments';
-import SidebarUpcomingExamsList from '@/views/components/sidebar/SidebarUpcomingExamsList';
+import SidebarPressingAssessments from '@/views/components/sidebar/SidebarPressingAssessments';
 import SidebarTodoList from '@/views/components/sidebar/SidebarTodoList';
 
 export default {
   name: 'TheSidebar',
   components: {
-    SidebarPressingAssignments,
+    SidebarPressingAssessments,
     SidebarSchedule,
-    SidebarTodoList,
-    SidebarUpcomingExamsList
+    SidebarTodoList
   },
   data () {
     return {
@@ -81,17 +76,11 @@ export default {
           icon: 'far fa-clock',
           tagColor: 'info'
         },
-        assignments: {
-          component: SidebarPressingAssignments,
-          name: 'Pressing Assignments',
-          icon: 'fas fa-clipboard-list',
+        assessments: {
+          component: SidebarPressingAssessments,
+          name: 'Pressing Assignments/Exams',
+          icon: 'fas fa-exclamation',
           tagColor: 'warning'
-        },
-        exams: {
-          component: SidebarUpcomingExamsList,
-          name: 'Upcoming Exams',
-          icon: 'fas fa-file-alt',
-          tagColor: 'danger'
         },
         todos: {
           component: SidebarTodoList,
@@ -112,25 +101,30 @@ export default {
     counts () {
       return {
         schedule: this.$store.getters.todaysAgenda.length,
-        assignments: this.pressingAssignments.length,
-        exams: this.upcomingExamsOneMonth.length,
+        assessments: this.pressingAssessments.length,
         todos: this.todos.length
       };
     },
     currentTab () {
       return this.tabs[this.tab];
     },
+    pressingAssessments () {
+      return this.pressingAssignments
+        .concat(this.upcomingExams)
+        .sort((a, b) => {
+          const aDate = a.dueDate || a.date;
+          const bDate = b.dueDate || b.date;
+
+          if (aDate > bDate) return 1;
+          if (aDate < bDate) return -1;
+          return 0;
+        });
+    },
     pressingAssignments () {
       // This filters out optional assignments
       return this.$store.getters.incompleteUpcomingAssignments
         .filter(a => a.priority > 1)
         .slice(0, 5);
-    },
-    upcomingExamsOneMonth () {
-      const monthFromNow = moment().add(1, 'month');
-      return this.upcomingExams.filter(ex =>
-        moment(ex.date).isSameOrBefore(monthFromNow)
-      );
     },
     upcomingExams () {
       return this.$store.getters.pendingUpcomingExams;
@@ -163,12 +157,12 @@ export default {
     updatedCount ({ tab, count }) {
       this.externalCounts[tab] = count;
     },
-    toggleModal () {
-      switch (this.tab) {
-      case 'assignments':
+    toggleModal (assessmentType) {
+      switch (assessmentType) {
+      case 'assignment':
         this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
         break;
-      case 'exams':
+      case 'exam':
         this.$store.commit('TOGGLE_ADD_EXAM_MODAL');
         break;
       }
@@ -211,7 +205,9 @@ export default {
       flex: 1;
       color: black;
     }
-    a.is-active { color:#3273dc; }
+    a.is-active {
+      color: #3273dc;
+    }
   }
 
   .tab-count {
