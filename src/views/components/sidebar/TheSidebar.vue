@@ -84,7 +84,7 @@ export default {
         },
         todos: {
           component: SidebarTodoList,
-          name: 'To Do\'s',
+          name: 'To-Do List',
           icon: 'fas fa-check',
           tagColor: 'info'
         }
@@ -189,6 +189,11 @@ export default {
     background-color: white;
   }
 
+  .panel * {
+    transition: 0.15s;
+    -webkit-transition: 0.15s;
+  }
+
   .sidebar-body {
     overflow-x: hidden;
     overflow-y: auto;
@@ -214,6 +219,13 @@ export default {
     a.is-active {
       color: #3273dc;
     }
+    a:hover {
+      border-bottom: 1px solid black;
+    }
+  }
+
+  .panel-block:not(.is-active):hover {
+    background-color: #f3f3f3;
   }
 
   .tab-count {

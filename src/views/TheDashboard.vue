@@ -1,7 +1,7 @@
 <template>
   <section class="section dasboard">
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
-      The Dashboard
+      Your Dashboard
     </h1>
 
     <div class="tabs is-centered">
