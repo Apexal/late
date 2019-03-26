@@ -189,7 +189,7 @@ export default {
       };
     },
     start () {
-      return moment(this.assessment.createdAt).startOf('day');
+      return moment(this.$store.getters.currentTerm.start).startOf('day');
     },
     end () {
       return moment(this.assessmentDate).endOf('day');
