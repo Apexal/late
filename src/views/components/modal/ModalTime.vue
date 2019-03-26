@@ -6,7 +6,7 @@
           <label
             class="label"
             for="time"
-          >When is it due?</label>
+          >When is it {{ assessmentType === 'assignment' ? 'due' : 'happening' }}?</label>
           <div class="control">
             <input
               id="time"
@@ -178,13 +178,21 @@ export default {
       }[this.priority];
     },
     priorityString () {
-      return {
-        1: 'Optional',
-        2: 'Low',
-        3: 'Normal',
-        4: 'High',
-        5: '𝙊𝙃 𝙂𝙊𝘿'
-      }[this.priority];
+      if (this.assessmentType === 'assignment') {
+        return {
+          1: 'Optional',
+          2: 'Low',
+          3: 'Normal',
+          4: 'High',
+          5: '𝙊𝙃 𝙂𝙊𝘿'
+        }[this.priority];
+      } else {
+        return {
+          1: 'Low',
+          2: 'Normal',
+          3: 'High'
+        }[this.priority];
+      }
     },
     datePeriodStart () {
       if (!this.datePeriod) return '00:00';
