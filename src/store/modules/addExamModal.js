@@ -2,7 +2,7 @@ const moment = require('moment');
 
 const state = {
   expanded: false,
-  courseCRN: '00000',
+  courseCRN: '',
   date: null,
   time: '08:00',
   title: '',
