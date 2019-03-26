@@ -48,12 +48,27 @@ export default {
   },
   computed: {
     selectedCourseScheduleEvents () {
-      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents
-        .filter(ev => ev.period.type !== 'TES')
+      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents
+        .filter(
+          ev =>
+            (this.assessmentType === 'assignment'
+              ? ev.period.type !== 'TES'
+              : ev.period.type === 'TES') && ev.course.crn === this.courseCRN
+        )
         .map(ev =>
           Object.assign({}, ev, { title: this.periodType(ev.period) })
         );
-      return courseSchedule.filter(ev => ev.course.crn === this.courseCRN);
+
+      // If course does not have TEST blocks, just show all periods
+      if (courseSchedule.length === 0) {
+        courseSchedule = this.$store.getters.getCourseScheduleAsEvents
+          .filter(ev => ev.course.crn === this.courseCRN)
+          .map(ev =>
+            Object.assign({}, ev, { title: this.periodType(ev.period) })
+          );
+      }
+
+      return courseSchedule;
     }
   },
   watch: {
@@ -87,7 +102,7 @@ export default {
         moment(date)
           .endOf('day')
           .isBefore(moment().startOf('day')) &&
-        !confirm('Add this assignment to the past?')
+        !confirm(`Add this ${this.assessmentType} to the past?`)
       ) {
         return;
       }
