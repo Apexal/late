@@ -1,41 +1,26 @@
 <template>
-  <div class="buttons assessment-actions has-addons is-full-width is-flex">
-    <button
-      v-if="assessmentType === 'assignment'"
-      class="button is-success tooltip"
-      :data-tooltip="'Mark this assignment as ' + (assessment.completed ? 'incomplete.' : 'finished.')"
-      @click="$emit('toggle-completed')"
-    >
-      <i class="fas fa-check-square" />
-      {{ assessment.completed ? 'Undo' : 'Mark Done' }}
-    </button>
-    <button
-      class="button is-warning tooltip"
-      :data-tooltip="`Change this ${assessmentType}'s info.`"
-      @click="$emit('toggle-editing')"
-    >
-      <i class="fas fa-pencil-alt" />Edit
-      <span class="is-hidden-touch">Details</span>
-    </button>
-    <button
-      class="button is-info tooltip"
-      data-tooltip="Toggle description."
-      @click="$emit('toggle-description')"
-    >
-      <i
-        class="fas"
-        :class="[descriptionExpanded ? 'fa-angle-down' : 'fa-angle-up']"
-      />
-      {{ descriptionExpanded ? 'Showing': 'Hiding' }} Description
-    </button>
+  <div class="assessment-actions clearfix">
     <router-link
-      :to="`/${assessmentType}s`"
+      :to="`/${assessmentType}s/upcoming`"
       class="button is-link tooltip"
       :data-tooltip="`Browse all ${assessmentType}s.`"
     >
-      <i class="fas fa-angle-left" />Browse
-      <span class="is-hidden-touch">{{ assessmentType }}s</span>
+      <i class="fas fa-angle-left" />
+      Browse {{ assessmentTypeCaps }}s
     </router-link>
+    <button
+      class="button is-warning"
+      @click="$emit('toggle-editing')"
+    >
+      <i class="fas fa-edit" />
+      Edit {{ assessmentTypeCaps }}
+    </button>
+    <button
+      class="button is-pulled-right"
+      @click="$emit('copy-'+assessmentType)"
+    >
+      Copy {{ assessmentTypeCaps }}
+    </button>
   </div>
 </template>
 
@@ -59,26 +44,19 @@ export default {
       type: Boolean,
       required: true
     }
+  },
+  computed: {
+    assessmentTypeCaps () {
+      return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .assessment-actions {
-  margin-bottom: 0;
-
-  .button {
-    flex: 1;
-    margin-bottom: 0;
-    text-transform: capitalize;
-
-    i.fas {
-      margin-right: 5px;
-    }
-
-    .is-hidden-touch {
-      margin-left: 3px;
-    }
+  i {
+    margin-right: 5px;
   }
 }
 </style>

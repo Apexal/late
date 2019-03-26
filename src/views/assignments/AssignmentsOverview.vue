@@ -46,31 +46,16 @@
         @set-tab="tabChanged"
         @update-assessment="updatedAssignment"
       />
+
       <hr>
-      <div class="bottom-actions clearfix">
-        <button
-          class="button"
-          @click="scrollToTop"
-        >
-          Back to Top
-        </button>
 
-        <router-link
-          :to="`/assignments/upcoming`"
-          class="button is-link tooltip"
-          data-tooltip="Browse all assignments."
-        >
-          <i class="fas fa-angle-left" />Browse
-          <span class="is-hidden-touch">Assignments</span>
-        </router-link>
-
-        <button
-          class="button is-pulled-right is-warning"
-          @click="copyAssignment"
-        >
-          Copy Assignment
-        </button>
-      </div>
+      <AssessmentOverviewActionButtons
+        :assessment-type="'assignment'"
+        :assessment="assignment"
+        :loading="loading"
+        @toggle-editing="toggleEditing"
+        @copy-assignment="copyAssignment"
+      />
     </section>
   </div>
 </template>
@@ -159,12 +144,6 @@ export default {
     notFullyScheduledClick () {
       this.tab = 'schedule';
       this.$refs.tabs.scrollTo();
-    },
-    scrollToTop () {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
     },
     copyAssignment () {
       this.$store.dispatch('COPY_ASSIGNMENT_TO_MODAL', this.assignment);

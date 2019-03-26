@@ -139,7 +139,7 @@ export default {
 .level.assignment-stats {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  margin-top: 10px;
+  margin-top: 20px;
   margin-bottom: 0;
   padding: 5px;
 

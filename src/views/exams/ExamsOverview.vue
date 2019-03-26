@@ -27,14 +27,6 @@
 
       <ExamOverviewStats :exam="exam" />
 
-      <!-- <AssessmentOverviewActionButtons
-        :assessment-type="'exam'"
-        :assessment="exam"
-        :loading="loading"
-        :description-expanded="descriptionExpanded"
-        @toggle-description="descriptionExpanded = !descriptionExpanded"
-        @toggle-editing="toggleEditing"
-      />-->
       <AssessmentOverviewDescription
         v-if="descriptionExpanded"
         :assessment-type="'exam'"
@@ -55,26 +47,13 @@
 
       <hr>
 
-      <div class="bottom-actions clearfix">
-        <button
-          class="button"
-          @click="scrollToTop"
-        >
-          Back to Top
-        </button>
-        <router-link
-          to="/exams/upcoming"
-          class="button"
-        >
-          All Exams
-        </router-link>
-        <button
-          class="button is-pulled-right is-warning"
-          @click="copyExam"
-        >
-          Copy Exam
-        </button>
-      </div>
+      <AssessmentOverviewActionButtons
+        :assessment-type="'exam'"
+        :assessment="exam"
+        :loading="loading"
+        @toggle-editing="toggleEditing"
+        @copy-exam="copyExam"
+      />
     </section>
   </div>
 </template>
