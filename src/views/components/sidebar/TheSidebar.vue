@@ -224,7 +224,7 @@ export default {
     }
   }
 
-  .panel-block:not(.is-active):hover {
+  .panel-block:not(.is-active):not(.control):hover {
     background-color: #f3f3f3;
   }
 
