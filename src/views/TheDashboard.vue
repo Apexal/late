@@ -13,7 +13,10 @@
           Your Dashboard
         </h1>
         <li>
-          <a title="View your weekly schedule">Your Week</a>
+          <a
+            title="(WIP) View your weekly schedule"
+            style="cursor: not-allowed;"
+          >Your Week</a>
         </li>
         <li
           class="is-active"

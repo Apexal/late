@@ -309,7 +309,7 @@ export default {
 }
 
 .navbar-brand:hover .beta-tag {
-  background-color: #84edf5 !important;
+  background-color: #73dee6 !important;
   transition: 0.2s;
 }
 
