@@ -18,7 +18,7 @@
           :open="addAssignmentModalExpanded"
           @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
         />
-        <ExamsModalAdd
+        <ExamsModalAddRedux
           :open="addExamModalExpanded"
           @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
         />
@@ -84,7 +84,7 @@ import TheHeader from '@/views/components/TheHeader';
 import TheFooter from '@/views/components/TheFooter';
 import TheSidebar from '@/views/components/sidebar/TheSidebar';
 import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
-import ExamsModalAdd from '@/views/components/exams/ExamsModalAdd';
+import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
 import CourseModal from '@/views/components/courses/CourseModal';
 
 import Loading from 'vue-loading-overlay';
@@ -99,7 +99,7 @@ export default {
     TheSidebar,
     TheFooter,
     AssignmentsModalAdd,
-    ExamsModalAdd
+    ExamsModalAddRedux
   },
   data () {
     return {

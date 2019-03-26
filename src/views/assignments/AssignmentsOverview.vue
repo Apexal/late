@@ -34,7 +34,6 @@
       <AssessmentOverviewDescription
         :assessment-type="'assignment'"
         :assessment="assignment"
-        :expanded="descriptionExpanded"
         @update-assessment="updatedAssignment"
       />
 

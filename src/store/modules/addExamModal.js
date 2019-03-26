@@ -2,22 +2,36 @@ const moment = require('moment');
 
 const state = {
   expanded: false,
-  date: moment().add(7, 'days'),
-  courseCRN: '00000'
+  courseCRN: '',
+  date: null,
+  time: '08:00',
+  title: '',
+  description: '',
+  timeEstimate: 5.0,
+  priority: 2
 };
-const getters = {
-  addExamModalDateString: state => state.date.format('YYYY-MM-DD'),
-  addExamModalTimeString: state => state.date.format('HH:mm')
+const actions = {
+  COPY_EXAM_TO_MODAL ({ commit }, exam) {
+    commit('SET_ADD_EXAM_MODAL_VALUES', {
+      courseCRN: exam.courseCRN,
+      date: moment(exam.date),
+      time: moment(exam.date).format('HH:mm'),
+      title: exam.title,
+      description: exam.description,
+      timeEstimate: exam.timeEstimate,
+      priority: exam.priority
+    });
+  }
 };
 const mutations = {
-  SET_ADD_EXAM_MODAL_DATE: (state, date) => (state.date = date),
-  SET_ADD_EXAM_MODAL_COURSE_CRN: (state, courseCRN) =>
-    (state.courseCRN = courseCRN),
+  SET_ADD_EXAM_MODAL_VALUES: (state, updates) => {
+    return Object.assign(state, updates);
+  },
   TOGGLE_ADD_EXAM_MODAL: state => (state.expanded = !state.expanded)
 };
 
 export default {
   state,
-  getters,
+  actions,
   mutations
 };

@@ -36,10 +36,6 @@ export default {
       type: Object,
       required: true
     },
-    descriptionExpanded: {
-      type: Boolean,
-      required: true
-    },
     loading: {
       type: Boolean,
       required: true

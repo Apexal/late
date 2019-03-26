@@ -21,7 +21,7 @@ export default {
   components: {
     FullCalendar
   },
-  props: ['dueDate', 'courseCRN'],
+  props: ['date', 'courseCRN'],
   data () {
     return {
       calendar: {
@@ -48,12 +48,27 @@ export default {
   },
   computed: {
     selectedCourseScheduleEvents () {
-      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents
-        .filter(ev => ev.period.type !== 'TES')
+      let courseSchedule = this.$store.getters.getCourseScheduleAsEvents
+        .filter(
+          ev =>
+            (this.assessmentType === 'assignment'
+              ? ev.period.type !== 'TES'
+              : ev.period.type === 'TES') && ev.course.crn === this.courseCRN
+        )
         .map(ev =>
           Object.assign({}, ev, { title: this.periodType(ev.period) })
         );
-      return courseSchedule.filter(ev => ev.course.crn === this.courseCRN);
+
+      // If course does not have TEST blocks, just show all periods
+      if (courseSchedule.length === 0) {
+        courseSchedule = this.$store.getters.getCourseScheduleAsEvents
+          .filter(ev => ev.course.crn === this.courseCRN)
+          .map(ev =>
+            Object.assign({}, ev, { title: this.periodType(ev.period) })
+          );
+      }
+
+      return courseSchedule;
     }
   },
   watch: {
@@ -61,7 +76,7 @@ export default {
       this.$refs.calendar.fireMethod('prev');
       this.$refs.calendar.fireMethod('next');
     },
-    dueDate () {
+    date () {
       this.$refs.calendar.fireMethod('prev');
       this.$refs.calendar.fireMethod('next');
     }
@@ -71,11 +86,11 @@ export default {
       return this.$store.getters.getCourseFromCRN(crn);
     },
     eventClick (calEvent, jsEvent, view) {
-      this.$emit('update-due-time', moment(calEvent.start).format('HH:mm'));
+      this.$emit('update-time', moment(calEvent.start).format('HH:mm'));
       this.updateDate(moment(calEvent.start).startOf('day'));
     },
     dayRender (date, cell) {
-      if (moment(date).isSame(this.dueDate, 'day')) {
+      if (moment(date).isSame(this.date, 'day')) {
         cell.css('background-color', this.course(this.courseCRN).color);
       }
     },
@@ -87,7 +102,7 @@ export default {
         moment(date)
           .endOf('day')
           .isBefore(moment().startOf('day')) &&
-        !confirm('Add this assignment to the past?')
+        !confirm(`Add this ${this.assessmentType} to the past?`)
       ) {
         return;
       }

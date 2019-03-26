@@ -28,14 +28,10 @@
       <ExamOverviewStats :exam="exam" />
 
       <AssessmentOverviewDescription
-        v-if="descriptionExpanded"
         :assessment-type="'exam'"
         :assessment="exam"
-        :expanded="descriptionExpanded"
         @update-assessment="updatedExam"
       />
-
-      <hr v-else>
 
       <ExamOverviewTabs
         :tab="tab"
@@ -83,7 +79,6 @@ export default {
   data () {
     return {
       tab: 'schedule',
-      descriptionExpanded: true,
       commentLoading: false,
       loading: true,
       isUpcoming: false,
@@ -106,28 +101,12 @@ export default {
     $route: 'getExam',
     exam (newExam) {
       document.title = `${newExam.title} | LATE`;
-    },
-    descriptionExpanded (newDescriptionExpanded) {
-      localStorage.setItem(
-        'assessmentOverviewDescriptionExpanded',
-        newDescriptionExpanded
-      );
     }
   },
   created () {
     this.getExam();
   },
-  mounted () {
-    if (localStorage.getItem('assessmentOverviewDescriptionExpanded')) {
-      try {
-        this.descriptionExpanded = JSON.parse(
-          localStorage.getItem('assessmentOverviewDescriptionExpanded')
-        );
-      } catch (e) {
-        localStorage.removeItem('assessmentOverviewDescriptionExpanded');
-      }
-    }
-  },
+  mounted () {},
   methods: {
     tabChanged (newTab) {
       this.tab = newTab;
@@ -145,7 +124,8 @@ export default {
       this.exam = newExam;
     },
     copyExam () {
-      this.$toasted.info('Coming soon...');
+      this.$store.dispatch('COPY_EXAM_TO_MODAL', this.exam);
+      this.$store.commit('TOGGLE_ADD_EXAM_MODAL');
     },
     async getExam () {
       // If its an upcoming exam, we already have the data on it

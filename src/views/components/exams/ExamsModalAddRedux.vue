@@ -1,7 +1,7 @@
 <template>
   <div
     :class="{'is-active': open}"
-    class="add-assignment-modal modal"
+    class="add-exam-modal modal"
   >
     <div
       class="modal-background"
@@ -10,7 +10,7 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
-          Add Assignment
+          Add Exam
         </p>
       </header>
 
@@ -48,29 +48,25 @@
           <Component
             :is="currentStep.component"
             class="component"
-            :assessment-type="'assignment'"
+            :assessment-type="'exam'"
             :courses="courses"
             :course-c-r-n="courseCRN"
             :title="title"
             :description="description"
-            :title-placeholder="'Assignment Title - Keep it concise!'"
-            :description-placeholder="'(optional) Long description of the assignment here! You can use Markdown!'"
-            :date="dueDate"
-            :time="dueTime"
+            :title-placeholder="'Exam Title - Keep it concise!'"
+            :description-placeholder="'(optional) Long description of the exam here! You can use Markdown!'"
+            :date="date"
+            :time="time"
             :time-estimate="timeEstimate"
-            :priority-max="5"
+            :priority-max="3"
             :priority="priority"
-            :is-recurring="isRecurring"
-            :recurring-days="recurringDays"
             @update-crn="setValue('courseCRN', $event)"
-            @update-date="setValue('dueDate', $event); nextStep();"
-            @update-time="setValue('dueTime', $event.trim())"
+            @update-date="setValue('date', $event); nextStep();"
+            @update-time="setValue('time', $event.trim())"
             @update-title="setValue('title', $event.trim())"
             @update-description="setValue('description', $event.trim())"
             @update-time-estimate="setValue('timeEstimate', $event)"
             @update-priority="setValue('priority', $event)"
-            @update-is-recurring="setValue('isRecurring', $event)"
-            @update-recurring-days="setValue('recurringDays', $event)"
             @next-step="nextStep()"
           />
         </transition>
@@ -94,7 +90,7 @@
           class="modal-nav-button save"
           @click="save()"
         >
-          <h1>Create Assignment</h1>
+          <h1>Add Exam</h1>
         </div>
         <div
           v-if="step !== steps.length - 1"
@@ -111,15 +107,13 @@
 <script>
 import moment from 'moment';
 
-import 'bulma-steps';
-
 import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
 import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
 import ModalCalendar from '@/views/components/modal/ModalCalendar';
 import ModalTime from '@/views/components/modal/ModalTime';
 
 export default {
-  name: 'AssignmentsModalAdd',
+  name: 'ExamsModalAddRedux',
   components: {
     ModalSelectCourse,
     ModalTitleAndDescription,
@@ -148,7 +142,7 @@ export default {
           component: 'ModalTitleAndDescription'
         },
         {
-          label: 'Due Date',
+          label: 'Date',
           completed: false,
           component: 'ModalCalendar'
         },
@@ -165,40 +159,34 @@ export default {
       return this.steps[this.step];
     },
     isComplete () {
-      if (!this.courseCRN || !this.title || !this.dueTime || !this.dueDate) {
+      if (!this.courseCRN || !this.title || !this.time || !this.date) {
         return false;
       }
       return true;
     },
     courseCRN () {
-      return this.$store.state.addAssignmentModal.courseCRN;
+      return this.$store.state.addExamModal.courseCRN;
     },
     course () {
       return this.$store.getters.getCourseFromCRN(this.courseCRN);
     },
-    dueDate () {
-      return this.$store.state.addAssignmentModal.dueDate;
+    date () {
+      return this.$store.state.addExamModal.date;
     },
-    dueTime () {
-      return this.$store.state.addAssignmentModal.dueTime;
+    time () {
+      return this.$store.state.addExamModal.time;
     },
     title () {
-      return this.$store.state.addAssignmentModal.title;
+      return this.$store.state.addExamModal.title;
     },
     description () {
-      return this.$store.state.addAssignmentModal.description;
+      return this.$store.state.addExamModal.description;
     },
     timeEstimate () {
-      return this.$store.state.addAssignmentModal.timeEstimate;
+      return this.$store.state.addExamModal.timeEstimate;
     },
     priority () {
-      return this.$store.state.addAssignmentModal.priority;
-    },
-    isRecurring () {
-      return this.$store.state.addAssignmentModal.isRecurring;
-    },
-    recurringDays () {
-      return this.$store.state.addAssignmentModal.recurringDays;
+      return this.$store.state.addExamModal.priority;
     },
     courses () {
       return this.$store.getters.current_schedule;
@@ -207,7 +195,7 @@ export default {
       return {
         ModalSelectCourse: this.courseCRN.length > 0,
         ModalTitleAndDescription: this.title.length > 0,
-        ModalCalendar: !!this.dueDate,
+        ModalCalendar: !!this.date,
         ModalTime: true
       };
     }
@@ -220,7 +208,7 @@ export default {
       this.step -= 1;
     },
     setValue (property, value) {
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
         [property]: value
       });
     },
@@ -234,23 +222,21 @@ export default {
 
       let request;
       try {
-        request = await this.$http.post('/assignments', {
+        request = await this.$http.post('/exams', {
           title: this.title,
           description: this.description,
-          dueDate: moment(
-            this.dueDate.format('YYYY-MM-DD') + ' ' + this.dueTime,
+          date: moment(
+            this.date.format('YYYY-MM-DD') + ' ' + this.time,
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),
           courseCRN: this.courseCRN,
-          timeEstimate: this.timeEstimate,
           priority: this.priority,
-          isRecurring: this.isRecurring,
-          recurringDays: this.isRecurring ? this.recurringDays : undefined
+          timeEstimate: this.timeEstimate
         });
       } catch (e) {
         this.$toasted.error(
-          'There was an error adding the assignment. Please try again later.'
+          'There was an error adding the exam. Please try again later.'
         );
         this.loading = false;
         return;
@@ -258,65 +244,46 @@ export default {
 
       // Update global state if they are not in the past
       if (
-        moment(request.data.createdAssignment.dueDate).isAfter(
+        moment(request.data.createdExam.dueDate).isAfter(
           moment().startOf('day')
         )
       ) {
-        this.$store.dispatch(
-          'ADD_UPCOMING_ASSIGNMENT',
-          request.data.createdAssignment
-        );
-
-        if (request.data.recurringAssignments.length > 0) {
-          for (let a of request.data.recurringAssignments) {
-            this.$store.dispatch('ADD_UPCOMING_ASSIGNMENT', a);
-          }
-        }
+        this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
       }
 
       // Reset important fields
       this.step = 1;
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
         dueTime: '08:00',
         title: '',
         description: '',
-        timeEstimate: 1.0,
-        priority: 3,
-        isRecurring: false
+        timeEstimate: 5.0,
+        priority: 2
       });
 
       this.loading = false;
 
-      // Close modal
       this.$emit('toggle-modal');
 
-      // Notify user
-      this.$toasted.success(
-        `Added assignment '${
-          request.data.createdAssignment.title
-        }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}${
-          request.data.recurringAssignments.length > 0
-            ? ' and ' +
-              request.data.recurringAssignments.length +
-              ' recurring assignments'
-            : ''
-        }.`,
-        {
-          icon: 'plus',
-          action: {
-            text: 'View',
-            push: {
-              name: 'assignments-overview',
-              params: { assignmentID: request.data.createdAssignment._id }
-            }
+      const options = {
+        action: {
+          text: 'View',
+          push: {
+            name: 'exams-overview',
+            params: { examID: request.data.createdExam._id }
           }
         }
-      );
+      };
+
+      const message = `Added exam '${request.data.createdExam.title}' ${moment(
+        request.data.createdExam.date
+      ).fromNow()}.`;
+
+      this.$toasted.success(message, options);
     }
   }
 };
 </script>
-
 
 <style lang="scss" scoped>
 .modal-card-body {
@@ -395,8 +362,8 @@ export default {
   flex-direction: row;
 }
 
-.add-assignment-modal {
-  #add-assignment-description {
+.add-exam-modal {
+  #add-exam-description {
     width: 100%;
     min-width: 100%;
     max-width: 500px;
@@ -407,7 +374,7 @@ export default {
   }
 
   transition: height 1s ease-in-out, left 0.5s ease-in-out;
-  #add-assignment-time-estimate {
+  #add-exam-time-estimate {
     width: 150px;
   }
 }
