@@ -226,13 +226,13 @@ export default {
     },
     async save () {
       this.loading = true;
-      let request;
 
       if (!this.isComplete) {
         this.$toasted.error('Make sure you complete every step!');
         return;
       }
 
+      let request;
       try {
         request = await this.$http.post('/assignments', {
           title: this.title,

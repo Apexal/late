@@ -105,6 +105,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
 import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
 import ModalCalendar from '@/views/components/modal/ModalCalendar';
@@ -209,6 +211,75 @@ export default {
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
         [property]: value
       });
+    },
+    async save () {
+      this.loading = true;
+
+      if (!this.isComplete) {
+        this.$toasted.error('Make sure you complete every step!');
+        return;
+      }
+
+      let request;
+      try {
+        request = await this.$http.post('/exams', {
+          title: this.title,
+          description: this.description,
+          date: moment(
+            this.date.format('YYYY-MM-DD') + ' ' + this.time,
+            'YYYY-MM-DD HH:mm',
+            true
+          ).toDate(),
+          courseCRN: this.courseCRN,
+          priority: this.priority,
+          timeEstimate: this.timeEstimate
+        });
+      } catch (e) {
+        this.$toasted.error(
+          'There was an error adding the exam. Please try again later.'
+        );
+        this.loading = false;
+        return;
+      }
+
+      // Update global state if they are not in the past
+      if (
+        moment(request.data.createdExam.dueDate).isAfter(
+          moment().startOf('day')
+        )
+      ) {
+        this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
+      }
+
+      // Reset important fields
+      this.step = 1;
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
+        dueTime: '08:00',
+        title: '',
+        description: '',
+        timeEstimate: 5.0,
+        priority: 2
+      });
+
+      this.loading = false;
+
+      this.$emit('toggle-modal');
+
+      const options = {
+        action: {
+          text: 'View',
+          push: {
+            name: 'exams-overview',
+            params: { examID: request.data.createdExam._id }
+          }
+        }
+      };
+
+      const message = `Added exam '${request.data.createdExam.title}' ${moment(
+        request.data.createdExam.date
+      ).fromNow()}.`;
+
+      this.$toasted.success(message, options);
     }
   }
 };
