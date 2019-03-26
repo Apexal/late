@@ -98,6 +98,17 @@ const schema = new Schema(
         verificationCode: { type: String, minlength: 1 },
         phoneNumber: { type: String, minlength: 10, maxlength: 10 }
       },
+      google: {
+        tokens: {
+          refresh_token: String,
+          access_token: String,
+          expiry_date: Number
+        },
+        calendarIDs: {
+          courseSchedule: { type: String, default: '' },
+          workBlocks: { type: String, default: '' }
+        }
+      },
       discord: {
         verified: { type: Boolean, default: false },
         userID: String,
@@ -123,7 +134,11 @@ const schema = new Schema(
       integrations: {
         type: Boolean,
         default: false
-      } // when the student has setup (or chosen not to setup) integrations
+      }, // when the student has setup (or chosen not to setup) integrations
+      google: {
+        type: Boolean,
+        default: false
+      } // when the student has connected their Google account
     },
     joined_date: {
       type: Date,

@@ -74,7 +74,9 @@ export default {
       );
     },
     toDateShortString () {
-      if (moment(this.assignment.dueDate).isSame(moment(), 'day')) { return 'Today'; }
+      if (moment(this.assignment.dueDate).isSame(moment(), 'day')) {
+        return 'Today';
+      }
       if (
         moment(this.assignment.dueDate).isSame(moment().add(1, 'day'), 'day')
       ) {
@@ -98,10 +100,12 @@ export default {
       if (this.assignment.completed) return 0;
       if (this.assignment.scheduledTime === 0) return 1;
       if (this.assignment.timeEstimate === 0) return 0;
-      if (this.assignment.timeEstimate === this.assignment.scheduledTime) { return 0; }
+      if (this.assignment.timeEstimate === this.assignment.scheduledTime) {
+        return 0;
+      }
 
       return (
-        this.assignment.scheduledTime / (this.assignment.timeEstimate * 60)
+        1 - this.assignment.scheduledTime / (this.assignment.timeEstimate * 60)
       );
     }
   },

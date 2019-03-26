@@ -31,25 +31,12 @@
         @not-fully-scheduled-click="notFullyScheduledClick"
       />
 
-      <AssessmentOverviewActionButtons
-        :assessment-type="'assignment'"
-        :assessment="assignment"
-        :loading="loading || toggleLoading"
-        :description-expanded="descriptionExpanded"
-        @toggle-description="descriptionExpanded = !descriptionExpanded"
-        @toggle-completed="toggleCompleted"
-        @toggle-editing="toggleEditing"
-      />
-
       <AssessmentOverviewDescription
-        v-if="descriptionExpanded"
         :assessment-type="'assignment'"
         :assessment="assignment"
         :expanded="descriptionExpanded"
         @update-assessment="updatedAssignment"
       />
-
-      <hr v-else>
 
       <AssignmentOverviewTabs
         ref="tabs"
@@ -59,21 +46,16 @@
         @set-tab="tabChanged"
         @update-assessment="updatedAssignment"
       />
+
       <hr>
-      <div class="bottom-actions clearfix">
-        <button
-          class="button"
-          @click="scrollToTop"
-        >
-          Back to Top
-        </button>
-        <button
-          class="button is-pulled-right is-warning"
-          @click="copyAssignment"
-        >
-          Copy Assignment
-        </button>
-      </div>
+
+      <AssessmentOverviewActionButtons
+        :assessment-type="'assignment'"
+        :assessment="assignment"
+        :loading="loading"
+        @toggle-editing="toggleEditing"
+        @copy-assignment="copyAssignment"
+      />
     </section>
   </div>
 </template>
@@ -107,7 +89,6 @@ export default {
       toggleLoading: false,
       loading: true,
       isUpcoming: false,
-      descriptionExpanded: true,
       assignment: {},
       editing: false,
       confetti: null,
@@ -141,27 +122,11 @@ export default {
     $route: 'getAssignment',
     assignment (newAssignment) {
       document.title = `${newAssignment.title} | LATE`;
-    },
-    descriptionExpanded (newDescriptionExpanded) {
-      localStorage.setItem(
-        'assessmentOverviewDescriptionExpanded',
-        newDescriptionExpanded
-      );
     }
   },
   mounted () {
     // eslint-disable-next-line no-undef
     this.confetti = new ConfettiGenerator(this.confettiSettings);
-
-    if (localStorage.getItem('assessmentOverviewDescriptionExpanded')) {
-      try {
-        this.descriptionExpanded = JSON.parse(
-          localStorage.getItem('assessmentOverviewDescriptionExpanded')
-        );
-      } catch (e) {
-        localStorage.removeItem('assessmentOverviewDescriptionExpanded');
-      }
-    }
   },
   created () {
     this.getAssignment();
@@ -179,12 +144,6 @@ export default {
     notFullyScheduledClick () {
       this.tab = 'schedule';
       this.$refs.tabs.scrollTo();
-    },
-    scrollToTop () {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
     },
     copyAssignment () {
       this.$store.dispatch('COPY_ASSIGNMENT_TO_MODAL', this.assignment);

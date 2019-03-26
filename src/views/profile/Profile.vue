@@ -2,7 +2,7 @@
   <div id="profile">
     <section class="section">
       <h1 class="title">
-        Your Profile
+        Your Account
       </h1>
 
       <div class="steps">
@@ -73,6 +73,11 @@ export default {
           label: 'Notifications',
           link: '/profile/integrations',
           setup_check: 'integrations'
+        },
+        {
+          label: 'Google Calendar',
+          link: '/profile/googlecalendar',
+          setup_check: 'google'
         }
       ]
     };

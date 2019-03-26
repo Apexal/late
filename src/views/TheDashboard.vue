@@ -172,13 +172,10 @@ export default {
             moment(this.selectModal.end).isBefore(assignment.dueDate) &&
             !assignment.completed
         )
-        .map(assignment =>
-          Object.assign({}, assignment, { assessmentType: 'assignment' })
-        )
         .concat(
-          this.$store.state.work.upcomingExams
-            .filter(exam => this.selectModal.end < exam.date)
-            .map(exam => Object.assign({}, exam, { assessmentType: 'exam' }))
+          this.$store.state.work.upcomingExams.filter(
+            exam => this.selectModal.end < exam.date
+          )
         );
     },
     events () {

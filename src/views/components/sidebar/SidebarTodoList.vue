@@ -19,7 +19,7 @@
       @click="removeTodo(t)"
     >
       <span class="is-full-width">
-        <small class="todo-time is-pulled-right has-text-grey is-size-7">{{ fromNow(t.addedAt) }}</small>
+        <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.addedAt) }}</small>
         {{ t.text }}
       </span>
     </div>
@@ -82,6 +82,7 @@ export default {
 <style lang="scss" scoped>
 .todo {
   cursor: pointer;
+  padding: 10px;
 
   .todo-time {
     position: relative;

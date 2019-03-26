@@ -179,6 +179,15 @@ const router = new Router({
           },
           component: () =>
             import('@/views/profile/ProfileSetupIntegrations.vue')
+        },
+        {
+          path: 'googlecalendar',
+          name: 'setup-google-calendar',
+          meta: {
+            title: 'Google Calendar'
+          },
+          component: () =>
+            import('@/views/profile/ProfileSetupGoogleCalendar.vue')
         }
       ]
     },

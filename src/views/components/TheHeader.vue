@@ -13,16 +13,14 @@
           id="logo"
           class="navbar-item"
           to="/dashboard"
-          active-class=""
-          exact-active-class=""
+          active-class
+          exact-active-class
         >
           LATE
           <span
             class="tag is-primary beta-tag"
             title="LATE is still in active development!"
-          >
-            BETA
-          </span>
+          >BETA</span>
         </router-link>
         <a
           :class="{'is-active': navbarExpanded}"
@@ -68,9 +66,7 @@
                 <span
                   v-if="assignmentCount > 0"
                   class="tag is-warning assignment-count"
-                >
-                  {{ assignmentCount }}
-                </span>
+                >{{ assignmentCount }}</span>
               </a>
 
               <div class="navbar-dropdown">
@@ -121,9 +117,7 @@
                 <span
                   v-if="examCount > 0"
                   class="tag is-danger exam-count"
-                >
-                  {{ examCount }}
-                </span>
+                >{{ examCount }}</span>
               </a>
 
               <div class="navbar-dropdown">
@@ -222,9 +216,8 @@
 
                 <a
                   class="navbar-item"
-                  href="https://discord.gg/MnSmCde"
-                  target="none"
-                  title="Join the testing Discord server"
+                  href="/auth/discord"
+                  title="Join the LATE Discord server"
                 >
                   <span class="icon">
                     <i
@@ -306,7 +299,9 @@ export default {
   line-height: 1.2em;
 }
 
-.has-dropdown .navbar-link::after { transition: 0.2s; }
+.has-dropdown .navbar-link::after {
+  transition: 0.2s;
+}
 
 .has-dropdown:hover .navbar-link::after {
   transition: 0.2s;
@@ -314,7 +309,7 @@ export default {
 }
 
 .navbar-brand:hover .beta-tag {
-  background-color: #84edf5!important;
+  background-color: #84edf5 !important;
   transition: 0.2s;
 }
 
@@ -344,5 +339,4 @@ export default {
     margin-left: 7px;
   }
 }
-
 </style>

@@ -1,0 +1,186 @@
+<template>
+  <div class="google-calendar-setup">
+    <h2 class="is-size-4 integration-note">
+      Connect to your Google Calendar
+      <span class="has-text-grey">(optional)</span>
+    </h2>
+
+    <div v-if="!setup">
+      <a
+        href="/auth/google"
+        class="button is-primary"
+      >Login with Google</a>
+    </div>
+    <div v-else>
+      <div v-if="loading">
+        <p class="has-text-grey has-text-centered">
+          Grabbing your Google Calendar data...
+        </p>
+      </div>
+      <div v-else>
+        <div class="tabs">
+          <ul>
+            <li
+              :class="{ 'is-active': tab === 'courseSchedule' }"
+              @click="tab = 'courseSchedule'"
+            >
+              <a>Course Schedule</a>
+            </li>
+            <li
+              :class="{ 'is-active': tab === 'workBlocks' }"
+              @click="tab = 'workBlocks'"
+            >
+              <a>Work Blocks</a>
+            </li>
+          </ul>
+        </div>
+        <div
+          v-if="tab === 'workBlocks'"
+          class="work-block-calendar"
+        >
+          <div v-if="calendarIDs.workBlocks !== ''">
+            <b>Created Calendar:</b>
+            <span>{{ getCalendarById(calendarIDs.workBlocks).summary }}</span>
+          </div>
+          <div v-else>
+            <button
+              class="button is-danger"
+              :class="{ 'is-loading': loading }"
+              :disabled="loading"
+              @click="createWorkBlockCalendar"
+            >
+              Create Calendar for Work Blocks
+            </button>
+          </div>
+        </div>
+        <div v-else-if="tab === 'courseSchedule'">
+          <p class="has-text-grey has-text-centered">
+            Coming soon...
+          </p>
+        </div>
+        <hr>
+        <button
+          class="button is-primary"
+          :disabled="saved"
+          @click="save"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ProfileSetupGoogleCalendar',
+  data () {
+    return {
+      loading: false,
+      tab: 'workBlocks',
+      calendars: [],
+      calendarIDs: Object.assign(
+        {},
+        this.$store.state.auth.user.integrations.google.calendarIDs
+      )
+    };
+  },
+  computed: {
+    saved () {
+      return (
+        JSON.stringify(
+          this.$store.state.auth.user.integrations.google.calendarIDs
+        ) === JSON.stringify(this.calendarIDs)
+      );
+    },
+    setup () {
+      return this.$store.getters.userSetup.google;
+    },
+    user () {
+      return this.$store.state.auth.user;
+    }
+  },
+  async mounted () {
+    if (this.setup) this.getCalendars();
+  },
+  methods: {
+    async createWorkBlockCalendar () {
+      if (
+        !confirm(
+          'This will create a new calendar specifically for work blocks.'
+        )
+      ) {
+        return;
+      }
+      this.loading = true;
+      let request;
+      try {
+        request = await this.$http.post('/google/calendars', {
+          calendarType: 'workBlocks',
+          summary: 'LATE Study/Work',
+          description: 'This calender was created by LATE.'
+        });
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.loading = false;
+        return;
+      }
+
+      this.calendars.push(request.data);
+      this.calendarIDs.workBlocks = request.data.id;
+
+      this.$toasted.success('Added \'LATE Study/Work\' to your Google Calendar!');
+
+      this.loading = false;
+    },
+    getCalendarById (id) {
+      return this.calendars.find(c => c.id === id);
+    },
+    async getCalendars () {
+      this.loading = true;
+      let request = await this.$http.get('/google/calendars', {
+        params: {
+          minAccessRole: 'owner'
+        }
+      });
+      this.calendars = request.data.calendars;
+      this.loading = false;
+    },
+    async save () {
+      this.loading = true;
+
+      let request;
+      try {
+        request = await this.$http.post('/setup/google', {
+          calendarIDs: this.calendarIDs
+        });
+      } catch (e) {
+        this.loading = false;
+        return this.$toasted.error(e.response.data.message);
+      }
+
+      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+
+      // Notify user of success
+      this.$toasted.show('Saved Google Calendar settings!');
+
+      this.loading = false;
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
+}
+
+.box.calendar {
+  cursor: pointer;
+  transition: opacity 0.3s;
+  &:hover {
+    opacity: 0.9;
+  }
+}
+</style>

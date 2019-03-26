@@ -27,14 +27,6 @@
 
       <ExamOverviewStats :exam="exam" />
 
-      <AssessmentOverviewActionButtons
-        :assessment-type="'exam'"
-        :assessment="exam"
-        :loading="loading"
-        :description-expanded="descriptionExpanded"
-        @toggle-description="descriptionExpanded = !descriptionExpanded"
-        @toggle-editing="toggleEditing"
-      />
       <AssessmentOverviewDescription
         v-if="descriptionExpanded"
         :assessment-type="'exam'"
@@ -51,6 +43,16 @@
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
         @update-assessment="updatedExam"
+      />
+
+      <hr>
+
+      <AssessmentOverviewActionButtons
+        :assessment-type="'exam'"
+        :assessment="exam"
+        :loading="loading"
+        @toggle-editing="toggleEditing"
+        @copy-exam="copyExam"
       />
     </section>
   </div>
@@ -133,8 +135,17 @@ export default {
     toggleEditing () {
       this.editing = !this.editing;
     },
+    scrollToTop () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    },
     updatedExam (newExam) {
       this.exam = newExam;
+    },
+    copyExam () {
+      this.$toasted.info('Coming soon...');
     },
     async getExam () {
       // If its an upcoming exam, we already have the data on it

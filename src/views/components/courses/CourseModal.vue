@@ -29,9 +29,7 @@
         >
           {{ course.longname }}
           <br>
-          <small class="has-text-grey course-summary">
-            {{ course.summary }}
-          </small>
+          <small class="has-text-grey course-summary">{{ course.summary }}</small>
         </h2>
 
         <div class="tabs is-centered">
@@ -48,9 +46,7 @@
                   />
                 </span>
                 <span>Upcoming</span>
-                <span class="tag">
-                  {{ upcomingAssessments.length }}
-                </span>
+                <span class="tag">{{ upcomingAssessments.length }}</span>
               </a>
             </li>
             <li
@@ -66,9 +62,7 @@
                   />
                 </span>
                 <span>Schedule</span>
-                <span class="tag">
-                  {{ course.periods.length }}
-                </span>
+                <span class="tag">{{ course.periods.length }}</span>
               </a>
             </li>
             <li
@@ -83,9 +77,7 @@
                   />
                 </span>
                 <span>Links</span>
-                <span class="tag">
-                  {{ links.length }}
-                </span>
+                <span class="tag">{{ links.length }}</span>
               </a>
             </li>
           </ul>
@@ -128,19 +120,13 @@ export default {
   computed: {
     upcomingAssessments () {
       const limit = moment().add(1, 'week');
-      const assignments = this.$store.state.work.upcomingAssignments
-        .filter(
-          a => moment(a.date).isBefore(limit) && a.courseCRN === this.course.crn
-        )
-        .map(a => Object.assign({ assessmentType: 'assignment' }, a));
-
-      const exams = this.$store.state.work.upcomingExams
-        .filter(
-          ex =>
-            moment(ex.date).isBefore(limit) && ex.courseCRN === this.course.crn
-        )
-        .map(ex => Object.assign({ assessmentType: 'exam' }, ex));
-
+      const assignments = this.$store.state.work.upcomingAssignments.filter(
+        a => moment(a.date).isBefore(limit) && a.courseCRN === this.course.crn
+      );
+      const exams = this.$store.state.work.upcomingExams.filter(
+        ex =>
+          moment(ex.date).isBefore(limit) && ex.courseCRN === this.course.crn
+      );
       return exams.concat(assignments);
     },
     links () {
@@ -151,7 +137,9 @@ export default {
     addAssessment (assessmentType) {
       this.$store.commit('CLOSE_COURSE_MODAL');
       if (assessmentType === 'assignment') {
-        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { courseCRN: this.course.crn });
+        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+          courseCRN: this.course.crn
+        });
       } else {
         this.$store.commit(
           'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_COURSE_CRN',

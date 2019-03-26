@@ -29,7 +29,7 @@
             title="Toggle sidebar."
             @click="$store.commit('TOGGLE_SIDEBAR')"
           >
-            <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
+            <i :class="'fas ' + (expanded ? 'fas fa-chevron-up fa-rotate-270' : 'fas fa-chevron-up fa-rotate-90')" />
           </span>
         </transition>
         <div
