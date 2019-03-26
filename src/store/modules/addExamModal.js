@@ -11,15 +11,15 @@ const state = {
   priority: 2
 };
 const actions = {
-  COPY_EXAM_TO_MODAL ({ commit }, assignment) {
-    commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-      courseCRN: assignment.courseCRN,
-      date: moment(assignment.date),
-      time: moment(assignment.date).format('HH:mm'),
-      title: assignment.title,
-      description: assignment.description,
-      timeEstimate: assignment.timeEstimate,
-      priority: assignment.priority
+  COPY_EXAM_TO_MODAL ({ commit }, exam) {
+    commit('SET_ADD_EXAM_MODAL_VALUES', {
+      courseCRN: exam.courseCRN,
+      date: moment(exam.date),
+      time: moment(exam.date).format('HH:mm'),
+      title: exam.title,
+      description: exam.description,
+      timeEstimate: exam.timeEstimate,
+      priority: exam.priority
     });
   }
 };

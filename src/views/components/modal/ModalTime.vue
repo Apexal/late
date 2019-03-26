@@ -5,35 +5,35 @@
         <div class="field">
           <label
             class="label"
-            for="time-due"
+            for="time"
           >When is it due?</label>
           <div class="control">
             <input
-              id="time-due"
+              id="time"
               class="input"
               type="time"
-              :value="dueTime"
-              @change="$emit('update-due-time', $event.target.value)"
+              :value="time"
+              @change="$emit('update-time', $event.target.value)"
             >
           </div>
         </div>
         <div class="buttons has-addons is-centered">
           <span
             class="button is-small"
-            :class="{ 'is-active': dueTime === dueDatePeriodStart}"
-            :disabled="!dueDatePeriod"
-            @click="dueDatePeriod && $emit('update-due-time', dueDatePeriodStart)"
+            :class="{ 'is-active': time === datePeriodStart}"
+            :disabled="!datePeriod"
+            @click="datePeriod && $emit('update-time', datePeriodStart)"
           >Start of Class</span>
           <span
             class="button is-small"
-            :class="{ 'is-active': dueTime === '23:59'}"
-            @click="$emit('update-due-time', '23:59')"
+            :class="{ 'is-active': time === '23:59'}"
+            @click="$emit('update-time', '23:59')"
           >Midnight</span>
           <span
             class="button is-small"
-            :class="{ 'is-active': dueTime === dueDatePeriodEnd}"
-            :disabled="!dueDatePeriod"
-            @click="dueDatePeriod && $emit('update-due-time', dueDatePeriodEnd)"
+            :class="{ 'is-active': time === datePeriodEnd}"
+            :disabled="!datePeriod"
+            @click="datePeriod && $emit('update-time', datePeriodEnd)"
           >End of Class</span>
         </div>
       </div>
@@ -56,9 +56,9 @@
             class="is-fullwidth"
             step="1"
             min="1"
-            max="5"
+            :max="priorityMax"
             required
-            @change="$emit('update-priority', $event.target.value)"
+            @change="$emit('update-priority', parseInt($event.target.value))"
           >
         </div>
         <div class="time-estimate-input">
@@ -78,10 +78,13 @@
             min="0.5"
             max="10"
             required
-            @change="$emit('update-time-estimate', $event.target.value)"
+            @change="$emit('update-time-estimate', parseFloat($event.target.value))"
           >
         </div>
-        <div class="recurring">
+        <div
+          v-if="assessmentType === 'assignment'"
+          class="recurring"
+        >
           <label
             class="label"
             for="is-recurring"
@@ -103,7 +106,7 @@
                 v-for="(day, index) in dayNames"
                 :key="index"
                 class="button"
-                :class="{ 'is-primary': index === dueDate.day(), 'is-active': recurringDays.includes(index) }"
+                :class="{ 'is-primary': index === date.day(), 'is-active': recurringDays.includes(index) }"
                 :title="`Repeat this assignment every ${day} each week.`"
                 @click="recurringDayClick(index)"
               >{{ day.charAt(0) }}</a>
@@ -124,15 +127,46 @@ import moment from 'moment';
 
 export default {
   name: 'ModalTime',
-  props: [
-    'courseCRN',
-    'dueDate',
-    'dueTime',
-    'priority',
-    'timeEstimate',
-    'isRecurring',
-    'recurringDays'
-  ],
+  props: {
+    assessmentType: {
+      type: String,
+      required: true
+    },
+    courseCRN: {
+      type: String,
+      required: true
+    },
+    date: {
+      type: Object, // Moment
+      required: true
+    },
+    time: {
+      type: String,
+      required: true
+    },
+    priorityMax: {
+      type: Number,
+      required: true
+    },
+    priority: {
+      type: Number,
+      required: true
+    },
+    timeEstimate: {
+      type: Number,
+      required: true
+    },
+    isRecurring: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
+    recurringDays: {
+      type: Array,
+      default: () => [],
+      required: false
+    }
+  },
   computed: {
     prioritySliderClass () {
       return {
@@ -152,22 +186,22 @@ export default {
         5: '𝙊𝙃 𝙂𝙊𝘿'
       }[this.priority];
     },
-    dueDatePeriodStart () {
-      if (!this.dueDatePeriod) return '00:00';
-      const time = moment(this.dueDatePeriod.start, 'Hmm', true);
+    datePeriodStart () {
+      if (!this.datePeriod) return '00:00';
+      const time = moment(this.datePeriod.start, 'Hmm', true);
       return time.format('HH:mm');
     },
-    dueDatePeriodEnd () {
-      if (!this.dueDatePeriod) return '00:00';
-      const time = moment(this.dueDatePeriod.end, 'Hmm', true);
+    datePeriodEnd () {
+      if (!this.datePeriod) return '00:00';
+      const time = moment(this.datePeriod.end, 'Hmm', true);
       return time.format('HH:mm');
     },
-    dueDatePeriod () {
+    datePeriod () {
       if (!this.courseCRN) return false;
       let course = this.$store.getters.current_schedule.find(
         course => course.crn === this.courseCRN
       );
-      return course.periods.find(p => p.day === moment(this.dueDate).day());
+      return course.periods.find(p => p.day === moment(this.date).day());
     },
     dayNames () {
       return [
@@ -184,7 +218,7 @@ export default {
   methods: {
     recurringDayClick (index) {
       if (this.recurringDays.includes(index)) {
-        if (index === this.dueDate.day()) return;
+        if (index === this.date.day()) return;
 
         this.$emit(
           'update-recurring-days',

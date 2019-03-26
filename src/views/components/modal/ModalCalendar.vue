@@ -21,7 +21,7 @@ export default {
   components: {
     FullCalendar
   },
-  props: ['dueDate', 'courseCRN'],
+  props: ['date', 'courseCRN'],
   data () {
     return {
       calendar: {
@@ -61,7 +61,7 @@ export default {
       this.$refs.calendar.fireMethod('prev');
       this.$refs.calendar.fireMethod('next');
     },
-    dueDate () {
+    date () {
       this.$refs.calendar.fireMethod('prev');
       this.$refs.calendar.fireMethod('next');
     }
@@ -71,11 +71,11 @@ export default {
       return this.$store.getters.getCourseFromCRN(crn);
     },
     eventClick (calEvent, jsEvent, view) {
-      this.$emit('update-due-time', moment(calEvent.start).format('HH:mm'));
+      this.$emit('update-time', moment(calEvent.start).format('HH:mm'));
       this.updateDate(moment(calEvent.start).startOf('day'));
     },
     dayRender (date, cell) {
-      if (moment(date).isSame(this.dueDate, 'day')) {
+      if (moment(date).isSame(this.date, 'day')) {
         cell.css('background-color', this.course(this.courseCRN).color);
       }
     },

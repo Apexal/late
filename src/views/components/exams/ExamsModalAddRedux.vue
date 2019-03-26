@@ -42,6 +42,7 @@
           <Component
             :is="currentStep.component"
             class="component"
+            :assessment-type="'exam'"
             :courses="courses"
             :course-c-r-n="courseCRN"
             :title="title"
@@ -51,6 +52,7 @@
             :date="date"
             :time="time"
             :time-estimate="timeEstimate"
+            :priority-max="3"
             :priority="priority"
             @update-crn="setValue('courseCRN', $event)"
             @update-date="setValue('date', $event); nextStep();"
@@ -186,10 +188,22 @@ export default {
         ModalTime: true
       };
     }
+  },
+  methods: {
+    nextStep () {
+      this.step += 1;
+    },
+    lastStep () {
+      this.step -= 1;
+    },
+    setValue (property, value) {
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
+        [property]: value
+      });
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
 </style>
