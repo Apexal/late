@@ -66,8 +66,10 @@
             class="label"
             for="time-estimate"
           >
-            Time Estimate
-            <span class="tag">{{ timeEstimate }} hours</span>
+            {{ assessmentType === 'assignment' ? 'Work' : 'Study' }} Time Estimate
+            <span
+              class="tag"
+            >{{ timeEstimate }} hours</span>
           </label>
           <input
             id="time-estimate"

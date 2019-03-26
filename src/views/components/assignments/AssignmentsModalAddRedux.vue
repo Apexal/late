@@ -24,6 +24,12 @@
               @click="step = index"
             >
               <a>
+                <span
+                  v-if="courseCRN && s.label === 'Course'"
+                  class="dot course-dot"
+                  :title="course.longname"
+                  :style="'background-color: ' + course.color"
+                />
                 {{ s.label }}
                 <span
                   v-if="completedChecks[s.component]"
@@ -166,6 +172,9 @@ export default {
     },
     courseCRN () {
       return this.$store.state.addAssignmentModal.courseCRN;
+    },
+    course () {
+      return this.$store.getters.getCourseFromCRN(this.courseCRN);
     },
     dueDate () {
       return this.$store.state.addAssignmentModal.dueDate;
@@ -314,6 +323,10 @@ export default {
   padding-top: 0;
 }
 
+.course-dot {
+  margin-right: 5px;
+}
+
 .step-marker {
   cursor: pointer;
 }
@@ -392,10 +405,7 @@ export default {
     height: 200px;
     max-height: 500px;
   }
-  -moz-transition: height 1s ease-in-out, left 0.5s ease-in-out;
-  -webkit-transition: height 1s ease-in-out, left 0.5s ease-in-out;
-  -moz-transition: height 1s ease-in-out, left 0.5s ease-in-out;
-  -o-transition: height 1s ease-in-out, left 0.5s ease-in-out;
+
   transition: height 1s ease-in-out, left 0.5s ease-in-out;
   #add-assignment-time-estimate {
     width: 150px;

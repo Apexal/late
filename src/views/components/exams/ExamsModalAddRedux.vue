@@ -24,6 +24,12 @@
               @click="step = index"
             >
               <a>
+                <span
+                  v-if="courseCRN && s.label === 'Course'"
+                  class="dot course-dot"
+                  :title="course.longname"
+                  :style="'background-color: ' + course.color"
+                />
                 {{ s.label }}
                 <span
                   v-if="completedChecks[s.component]"
@@ -159,6 +165,9 @@ export default {
     courseCRN () {
       return this.$store.state.addExamModal.courseCRN;
     },
+    course () {
+      return this.$store.getters.getCourseFromCRN(this.courseCRN);
+    },
     date () {
       return this.$store.state.addExamModal.date;
     },
@@ -206,4 +215,96 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.modal-card-body {
+  padding-top: 0;
+}
+
+.course-dot {
+  margin-right: 5px;
+}
+
+.step-marker {
+  cursor: pointer;
+}
+//Makes the hovered step icon appear more dynamic
+.step-marker:hover {
+  background-color: #5b9ba0 !important;
+}
+
+//Makes the current step bold
+.steps .step-item .step-details .step-title {
+  font-weight: inherit;
+}
+.steps .is-active .step-details {
+  font-weight: 600 !important;
+}
+
+.modal-nav-button {
+  cursor: pointer;
+  text-align: center;
+  flex-grow: 1;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  transition: 0.12s;
+}
+.cancel {
+  &:hover {
+    background-color: #dbdbdb;
+  }
+}
+
+.back {
+  &:hover {
+    background-color: #dbdbdb;
+    border-bottom-left-radius: 6px;
+  }
+  flex-grow: 0;
+  width: 100px;
+  border-right: 1px solid #dbdbdb;
+  float: left;
+}
+
+.save {
+  &:hover {
+    background-color: #62b1b7;
+  }
+  border-bottom-right-radius: 6px;
+  background-color: #66c6ce;
+  color: white;
+}
+
+.next {
+  &:hover {
+    background-color: #dbdbdb;
+    border-bottom-right-radius: 6px;
+  }
+  flex-grow: 0;
+  width: 100px;
+  border-left: 1px solid #dbdbdb;
+  float: right;
+}
+
+.modal-nav {
+  padding: 0px;
+  font-size: 16px;
+  display: flex;
+  flex-direction: row;
+}
+
+.add-exam-modal {
+  #add-exam-description {
+    width: 100%;
+    min-width: 100%;
+    max-width: 500px;
+
+    min-height: 100px;
+    height: 200px;
+    max-height: 500px;
+  }
+
+  transition: height 1s ease-in-out, left 0.5s ease-in-out;
+  #add-exam-time-estimate {
+    width: 150px;
+  }
+}
 </style>
