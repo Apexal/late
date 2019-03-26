@@ -49,10 +49,11 @@
         :config="calendar.config"
       />
       <button
+        title="Toggle Fullscreen"
         class="button fullscreenToggle"
         @click="toggleFullscreen"
       >
-        <i class="fas fa-arrows-alt" />
+        <i class="fas fa-expand-arrows-alt" />
       </button>
     </div>
   </section>
