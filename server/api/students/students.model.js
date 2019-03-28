@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const moment = require('moment');
 
 const Block = require('../blocks/blocks.model');
+const Unavailabiliy = require('../unavailability/unavailability.model');
 const Assignment = require('../assignments/assignments.model');
 const Exam = require('../exams/exams.model');
 
@@ -232,6 +233,12 @@ schema.methods.getExams = function (start, end, title, courseCRN) {
     .populate('_blocks')
     .sort('date')
     .sort('-timeRemaining')
+    .exec();
+};
+
+schema.methods.getUnavailabilityForTerm = function (termCode) {
+  return this.model('Unavailabiliy')
+    .find({ termCode })
     .exec();
 };
 
