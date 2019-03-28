@@ -8,6 +8,7 @@ const schema = new Schema(
       ref: 'Student',
       required: true
     },
+    termCode: { type: String, required: true }, // code for semester, e.g. '201901'
     title: { type: String, required: true }, // title for event
     dow: { type: Array, required: true }, // Days of week this occurs on e.g. [3, 5]
     start: { type: String, required: true }, // HH:mm
