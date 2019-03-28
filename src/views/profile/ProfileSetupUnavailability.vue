@@ -140,7 +140,7 @@ export default {
     },
     allEvents () {
       return this.$store.getters.getCourseScheduleAsEvents.concat(
-        this.calendar.events
+        this.$store.getters.getUnavailabilityAsEvents
       );
     },
     fixedLatest () {
@@ -182,13 +182,7 @@ export default {
       if (!calEvent.eventType === 'unavailability') return;
 
       this.saved = false;
-      this.calendar.events = this.calendar.events.filter(
-        e =>
-          !(
-            e.dow[0] === calEvent.start.day() &&
-            calEvent.start.format('HH:mm') === e.start
-          )
-      );
+      this.removeUnavailability(calEvent);
     },
     eventResized (calEvent) {
       this.saved = false;
@@ -199,18 +193,45 @@ export default {
     },
     select (start, end) {
       let promptedTitle = prompt('What is it?').trim();
-      const eventData = {
-        id: 'unavailable',
-        eventType: 'unavailability',
+      const unavailability = {
         title: promptedTitle || 'Busy',
         start: start.format('HH:mm'),
-        editable: false,
         end: end.format('HH:mm'),
-        dow: [start.day()]
+        dow: [start.day()],
+        isOneTime: false
       };
-      this.calendar.events.push(eventData);
+
+      this.addUnavailability(unavailability);
       this.$refs.calendar.fireMethod('unselect');
       this.saved = false;
+    },
+    async addUnavailability (unavailability) {
+      let request;
+      try {
+        request = await this.$store.dispatch(
+          'ADD_UNAVAILABILITY',
+          unavailability
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        return;
+      }
+
+      this.$toasted.success('Added busy block. YEET');
+    },
+    async removeUnavailability (unavailability) {
+      let request;
+      try {
+        request = await this.$store.dispatch(
+          'REMOVE_UNAVAILABILITY',
+          unavailability
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        return;
+      }
+
+      this.$toasted.success('Removed busy block. YEET');
     },
     async save () {
       this.loading = true;

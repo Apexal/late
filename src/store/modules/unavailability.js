@@ -5,22 +5,18 @@ const state = {
 };
 
 const getters = {
-  current_unavailability: (state) => {
+  current_unavailability: state => {
     return state.unavailabilities;
   },
-  getUnavailabilityAsEvents: (state) => {
-    return state.unavailabilities.map(p => {
-      return {
-        id: 'unavailable',
-        title: p.title || 'Busy',
+  getUnavailabilityAsEvents: state => {
+    return state.unavailabilities.map(p =>
+      Object.assign({}, p, {
+        id: p._id,
         editable: false,
         eventType: 'unavailability',
-        color: 'black',
-        start: p.start,
-        end: p.end,
-        dow: p.dow
-      };
-    });
+        color: 'black'
+      })
+    );
   }
 };
 
@@ -47,7 +43,9 @@ const mutations = {
     state.unavailabilities = unavailabilities;
   },
   REMOVE_UNAVAILABILITY: (state, unavailability) => {
-    state.unavailabilities = state.unavailabilities.filter(u => u._id !== unavailability._id);
+    state.unavailabilities = state.unavailabilities.filter(
+      u => u._id !== unavailability._id
+    );
   }
 };
 

@@ -34,21 +34,6 @@ const getters = {
     }
     return true;
   },
-  // getUnavailabilityAsEvents: (state, getters, rootState, rootGetters) => {
-  //   if (!rootGetters.current_unavailability) return [];
-  //   return rootGetters.current_unavailability.map(p => {
-  //     return {
-  //       id: 'unavailable',
-  //       title: p.title || 'Busy',
-  //       editable: false,
-  //       eventType: 'unavailability',
-  //       color: 'black',
-  //       start: p.start,
-  //       end: p.end,
-  //       dow: p.dow
-  //     };
-  //   });
-  // },
   getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
     if (!rootGetters.current_schedule_all) return [];
     // Turn periods into this week's schedule...
