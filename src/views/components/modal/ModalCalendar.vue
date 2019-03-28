@@ -21,7 +21,7 @@ export default {
   components: {
     FullCalendar
   },
-  props: ['date', 'courseCRN'],
+  props: ['assessmentType', 'date', 'courseCRN'],
   data () {
     return {
       calendar: {
