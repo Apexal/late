@@ -15,7 +15,7 @@
       <div class="box">
         <form
           id="time-preferences"
-          @submit.prevent="save"
+          @submit.prevent="saveTimePreferences"
         >
           <div class="columns">
             <div class="column field">
@@ -181,15 +181,10 @@ export default {
     eventClick (calEvent, jsEvent, view) {
       if (!calEvent.eventType === 'unavailability') return;
 
-      this.saved = false;
       this.removeUnavailability(calEvent);
     },
     eventResized (calEvent) {
-      this.saved = false;
-      this.calendar.events.find(e =>
-        moment(e.start).isSame(moment(calEvent.start))
-      ).end =
-        calEvent.end;
+      // TODO: can do
     },
     select (start, end) {
       let promptedTitle = prompt('What is it?').trim();
@@ -233,15 +228,14 @@ export default {
 
       this.$toasted.success('Removed busy block. YEET');
     },
-    async save () {
+    async saveTimePreferences () {
       this.loading = true;
 
       let request;
       try {
-        request = await this.$http.post('/setup/unavailability', {
+        request = await this.$http.post('/setup/timepreference', {
           earliest: this.earliest,
-          latest: this.fixedLatest,
-          events: this.calendar.events
+          latest: this.fixedLatest
         });
       } catch (e) {
         this.loading = false;
@@ -251,9 +245,7 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.show(
-        'Your study/work unvailability schedule has been saved.'
-      );
+      this.$toasted.show('Your study/work time limits have been saved.');
 
       this.$router.push({ name: 'setup-integrations' });
 

@@ -12,7 +12,7 @@ const getters = {
     return state.unavailabilities.map(p =>
       Object.assign({}, p, {
         id: p._id,
-        editable: false,
+        editable: false, // TODO: https://github.com/fullcalendar/fullcalendar/issues/4127
         eventType: 'unavailability',
         color: 'black'
       })
@@ -21,13 +21,20 @@ const getters = {
 };
 
 const actions = {
+  async GET_UNAVAILABILITIES ({ commit }) {
+    const response = await axios.get('/unavailabilities');
+    commit('SET_UNAVAILABILITIES', response.data.unavailabilities);
+  },
   async ADD_UNAVAILABILITY ({ commit }, newUnavailability) {
     const response = await axios.post('/unavailabilities', newUnavailability);
     commit('ADD_UNAVAILABILITY', response.data.createdUnavailability);
   },
-  async GET_UNAVAILABILITIES ({ commit }) {
-    const response = await axios.get('/unavailabilities');
-    commit('SET_UNAVAILABILITIES', response.data.unavailabilities);
+  async UPDATE_UNAVAILABILITY ({ commit }, updatedUnavailability) {
+    commit('UPDATE_UNAVAILABILITY', updatedUnavailability);
+    await axios.patch(
+      '/unavailabilities/' + updatedUnavailability._id,
+      updatedUnavailability
+    );
   },
   async REMOVE_UNAVAILABILITY ({ commit }, unavailability) {
     commit('REMOVE_UNAVAILABILITY', unavailability);
@@ -41,6 +48,12 @@ const mutations = {
   },
   SET_UNAVAILABILITIES: (state, unavailabilities) => {
     state.unavailabilities = unavailabilities;
+  },
+  UPDATE_UNAVAILABILITY: (state, updatedUnavailability) => {
+    Object.assign(
+      state.unavailabilities.find(u => u._id === updatedUnavailability._id),
+      updatedUnavailability
+    );
   },
   REMOVE_UNAVAILABILITY: (state, unavailability) => {
     state.unavailabilities = state.unavailabilities.filter(
