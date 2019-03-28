@@ -13,7 +13,7 @@
       @click="$emit('toggle-editing')"
     >
       <i class="fas fa-edit" />
-      Edit {{ assessmentTypeCaps }}
+      Edit Info
     </button>
     <button
       class="button is-pulled-right"

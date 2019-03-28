@@ -138,7 +138,7 @@ export default {
       this.editing = !this.editing;
     },
     updatedAssignment (newAssignment) {
-      this.assignment = newAssignment;
+      Object.assign(this.assignment, newAssignment);
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
