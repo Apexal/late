@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const moment = require('moment');
 
 const Block = require('../blocks/blocks.model');
-const Unavailabiliy = require('../unavailability/unavailability.model');
+const Unavailability = require('../unavailabilities/unavailabilities.model');
 const Assignment = require('../assignments/assignments.model');
 const Exam = require('../exams/exams.model');
 

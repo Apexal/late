@@ -1,4 +1,4 @@
-const Unavailability = require('./unavailability.model');
+const Unavailability = require('./unavailabilities.model');
 const logger = require('../../modules/logger');
 
 /**
@@ -6,7 +6,7 @@ const logger = require('../../modules/logger');
  * @param {Koa context} ctx
  * @retuns A JSON list of unavailability blocks
  */
-async function getUnavailability (ctx) {
+async function getUnavailabilities (ctx) {
   const unavailabilities = await Unavailability.find({
     _student: ctx.state.user._id
   });
@@ -65,7 +65,7 @@ async function removeUnavailability (ctx) {
 }
 
 module.exports = {
-  getUnavailability,
+  getUnavailabilities,
   createUnavailability,
   removeUnavailability
 };

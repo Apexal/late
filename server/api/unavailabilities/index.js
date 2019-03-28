@@ -1,9 +1,9 @@
 const Router = require('koa-router');
 const router = new Router();
 
-const Ctrl = require('./unavailability.controller');
+const Ctrl = require('./unavailabilities.controller');
 
-router.get('/', Ctrl.getUnavailability);
+router.get('/', Ctrl.getUnavailabilities);
 router.post('/', Ctrl.createUnavailability);
 router.delete('/:unavailabilityID', Ctrl.removeUnavailability);
 
