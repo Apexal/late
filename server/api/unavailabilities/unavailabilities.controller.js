@@ -37,12 +37,49 @@ async function createUnavailability (ctx) {
   try {
     await unavailability.save();
   } catch (e) {
-    logger.error(`Failed to save new unavailability for ${ctx.state.user.rcs_id}: ${e}`);
+    logger.error(
+      `Failed to save new unavailability block for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    );
     return ctx.badRequest('There was an error adding the unavailability.');
   }
 
-  logger.info(`Added unavailability for ${ctx.state.user.rcs_id}`);
+  logger.info(`Added unavailability block for ${ctx.state.user.rcs_id}`);
   return ctx.created({ createdUnavailability: unavailability });
+}
+
+/**
+ * Update an unavailability block.
+ * Request body:
+ *  - any properties to patch the block with (excluding _id)
+ * @param {Koa context} ctx
+ */
+async function updateUnavailability (ctx) {
+  if ('_id' in ctx.request.body || '_student' in ctx.request.body) {
+    return ctx.badRequest();
+  }
+  const { unavailabilityID } = ctx.params;
+
+  let updatedUnavailability;
+  try {
+    updatedUnavailability = await Unavailability.findOne({
+      _id: unavailabilityID,
+      _student: ctx.state.user._id
+    });
+
+    updateUnavailability.set(ctx.request.body);
+
+    await updatedUnavailability.save();
+  } catch (e) {
+    logger.error(
+      `Failed to update unavailability block for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('There was an error updating your unavailability.');
+  }
+
+  logger.info(`Updated unavailability block for ${ctx.state.user.rcs_id}`);
+  return ctx.created({ updatedUnavailability });
 }
 
 /**
@@ -60,12 +97,13 @@ async function removeUnavailability (ctx) {
 
   deletedUnavailability.remove();
 
-  logger.info(`Removed unavailability for ${ctx.state.user.rcs_id}`);
+  logger.info(`Removed unavailability block for ${ctx.state.user.rcs_id}`);
   ctx.ok({ deletedUnavailability });
 }
 
 module.exports = {
   getUnavailabilities,
   createUnavailability,
+  updateUnavailability,
   removeUnavailability
 };
