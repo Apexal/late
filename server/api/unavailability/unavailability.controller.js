@@ -24,11 +24,12 @@ async function getUnavailability (ctx) {
  * @param {Koa context} ctx
  */
 async function createUnavailability (ctx) {
-  const { title, start, end, isOneTime } = ctx.request.body;
+  const { title, start, end, dow, isOneTime } = ctx.request.body;
   const unavailability = Unavailability({
     _student: ctx.state.user._id,
     termCode: ctx.session.currentTerm.code,
     title,
+    dow,
     start,
     end,
     isOneTime

@@ -8,6 +8,7 @@ router.use('/setup', require('./setup'));
 router.use('/integrations', require('./integrations'));
 router.use('/students', require('./students'));
 router.use('/terms', require('./terms'));
+router.use('/unavailability', require('./unavailability'));
 router.use('/blocks', require('./blocks'));
 router.use('/todos', require('./todos'));
 
