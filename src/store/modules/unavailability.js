@@ -24,21 +24,23 @@ const actions = {
   async GET_UNAVAILABILITIES ({ commit }) {
     const response = await axios.get('/unavailabilities');
     commit('SET_UNAVAILABILITIES', response.data.unavailabilities);
+    return response;
   },
   async ADD_UNAVAILABILITY ({ commit }, newUnavailability) {
     const response = await axios.post('/unavailabilities', newUnavailability);
     commit('ADD_UNAVAILABILITY', response.data.createdUnavailability);
+    return response;
   },
   async UPDATE_UNAVAILABILITY ({ commit }, updatedUnavailability) {
     commit('UPDATE_UNAVAILABILITY', updatedUnavailability);
-    await axios.patch(
+    return axios.patch(
       '/unavailabilities/' + updatedUnavailability._id,
       updatedUnavailability
     );
   },
   async REMOVE_UNAVAILABILITY ({ commit }, unavailability) {
     commit('REMOVE_UNAVAILABILITY', unavailability);
-    await axios.delete('/unavailabilities/' + unavailability._id);
+    return axios.delete('/unavailabilities/' + unavailability._id);
   }
 };
 

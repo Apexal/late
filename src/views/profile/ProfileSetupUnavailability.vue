@@ -212,7 +212,11 @@ export default {
         return;
       }
 
-      this.$toasted.success('Added busy block. YEET');
+      this.$toasted.success(
+        `Added "${
+          request.data.createdUnavailability.title
+        }" to your unavailability.`
+      );
     },
     async removeUnavailability (unavailability) {
       let request;
@@ -226,7 +230,11 @@ export default {
         return;
       }
 
-      this.$toasted.success('Removed busy block. YEET');
+      this.$toasted.success(
+        `Removed "${
+          request.data.deletedUnavailability.title
+        }" from your unavailability.`
+      );
     },
     async saveTimePreferences () {
       this.loading = true;

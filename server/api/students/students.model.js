@@ -69,7 +69,7 @@ const schema = new Schema(
       maxlength: 5,
       default: '23:00'
     },
-    unavailability_schedules: { type: Object, default: {} },
+    // unavailability_schedules: { type: Object, default: {} },
     admin: { type: Boolean, default: false },
     notificationPreferences: {
       preWorkBlockReminders: {
