@@ -12,6 +12,11 @@
           :open="courseModalOpen"
           :course="courseModalData"
         />
+        <AnnouncementsModal
+          :open="announcementsModalOpen"
+          :announcements="announcements"
+          @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
+        />
       </template>
       <template v-if="!loading">
         <AssignmentsModalAdd
@@ -88,6 +93,7 @@ import TheSidebar from '@/views/components/sidebar/TheSidebar';
 import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
 import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
 import CourseModal from '@/views/components/courses/CourseModal';
+import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
@@ -101,7 +107,8 @@ export default {
     TheSidebar,
     TheFooter,
     AssignmentsModalAdd,
-    ExamsModalAddRedux
+    ExamsModalAddRedux,
+    AnnouncementsModal
   },
   data () {
     return {
@@ -116,11 +123,17 @@ export default {
     courseModalOpen () {
       return this.$store.state.courseModal.open;
     },
+    announcementsModalOpen () {
+      return this.$store.state.announcements.modalOpen;
+    },
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
     courses () {
       return this.$store.getters.current_schedule;
+    },
+    announcements () {
+      return this.$store.getters.allAnnouncements;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
