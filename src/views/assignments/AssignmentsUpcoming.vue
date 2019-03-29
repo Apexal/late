@@ -31,7 +31,7 @@
             <span
               class="tag is-pulled-right"
               :class="progressClass(key)"
-              :title="`You are ${percentDone(key)}% complete with these assignments.`"
+              :title="`Your assignments for this day are ${percentDone(key)}% complete`"
             >{{ percentDone(key) }}%</span>
             <span
               class="key"
@@ -106,8 +106,8 @@ export default {
     },
     headerTitle () {
       return this.groupBy === 'course'
-        ? 'Open course modal.'
-        : 'Add assignment to this day.';
+        ? 'Open course modal'
+        : 'Add assignment to this day';
     },
     filtered () {
       const filtered = {};
