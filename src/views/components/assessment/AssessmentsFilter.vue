@@ -20,7 +20,7 @@
     <label
       v-if="showShowCompleted"
       class="checkbox is-unselectable tooltip show-completed-toggle"
-      data-tooltip="Toggle completed assignments."
+      data-tooltip="Toggle completed assignments"
     >
       <input
         id="assessment-show-completed"
