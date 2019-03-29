@@ -12,18 +12,56 @@
         <p class="modal-card-title">
           {{ addingAnnouncement ? 'Add Announcement' : 'Announcements' }}
         </p>
-        <button
-          class="delete"
-          aria-label="close"
-          @click="$emit('close-modal')"
-        />
       </header>
       <section class="modal-card-body">
         <template v-if="addingAnnouncement">
           <form
             class="add-announcement-form"
             @submit.prevent="addAnnouncement"
-          />
+          >
+            <div class="field">
+              <label
+                for="new-announcement-title"
+                class="label"
+              >Title</label>
+              <div class="control">
+                <input
+                  id="new-announcement-title"
+                  v-model="newAnnouncement.title"
+                  class="input"
+                  type="text"
+                  placeholder="Announcement Title"
+                >
+              </div>
+            </div>
+
+            <div class="field">
+              <label
+                for="new-announcement-body"
+                class="label"
+              >Body</label>
+              <div class="control">
+                <textarea
+                  id="new-announcement-body"
+                  v-model="newAnnouncement.body"
+                  class="textarea"
+                  placeholder="Announcement text."
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="control">
+                <label class="checkbox">
+                  <input
+                    v-model="newAnnouncement.isPinned"
+                    type="checkbox"
+                  >
+                  Pin Announcement
+                </label>
+              </div>
+            </div>
+          </form>
         </template>
         <template v-else>
           <article
@@ -54,15 +92,15 @@
           v-if="user.admin"
           class="button is-success"
           :class="{ 'is-loading': loading }"
-          @click="addingAnnouncement = !addingAnnouncement"
+          @click="buttonClick"
         >
           {{ addingAnnouncement ? 'Save' : 'New Announcement' }}
         </button>
         <button
           class="button"
-          @click="$emit('close-modal')"
+          @click="cancelButtonClick"
         >
-          Close
+          {{ addingAnnouncement ? 'Cancel' : 'Close' }}
         </button>
       </footer>
     </div>
@@ -85,7 +123,7 @@ export default {
     return {
       addingAnnouncement: false,
       loading: false,
-      newModal: {
+      newAnnouncement: {
         title: '',
         body: '',
         isPinned: false
@@ -104,8 +142,35 @@ export default {
     fromNow (date) {
       return moment(date).fromNow();
     },
+    buttonClick () {
+      if (this.addingAnnouncement) return this.addAnnouncement();
+      else this.addingAnnouncement = true;
+    },
+    cancelButtonClick () {
+      if (this.addingAnnouncement) this.addingAnnouncement = false;
+      else this.addingAnnouncement = this.$emit('close-modal');
+    },
     async addAnnouncement () {
-      alert('wee woo');
+      this.loading = true;
+
+      let request;
+      try {
+        request = await this.$http.post('/announcements', this.newAnnouncement);
+      } catch (e) {
+        this.$toasted.error(e.request.data.message);
+        this.loading = false;
+        return;
+      }
+
+      this.$store.commit('ADD_ANNOUNCEMENT', request.data.createdAnnouncement);
+      this.$toasted.success('Posted new announcement.');
+
+      this.addingAnnouncement = {
+        title: '',
+        body: '',
+        isPinned: false
+      };
+      this.loading = false;
     }
   }
 };

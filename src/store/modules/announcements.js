@@ -20,6 +20,14 @@ const mutations = {
   },
   SET_ANNOUNCEMENTS: (state, announcements) => {
     state.announcements = announcements;
+  },
+  ADD_ANNOUNCEMENT: (state, announcement) => {
+    state.announcements.push(announcement);
+    state.announcements = state.announcements.sort((a, b) => {
+      if (a.createdAt < b.createdAt) return 1;
+      if (a.createdAt > b.createdAt) return -1;
+      return 0;
+    });
   }
 };
 
