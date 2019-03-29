@@ -62,11 +62,11 @@
                 <span class="icon">
                   <i class="fas fa-clipboard-list" />
                 </span>
-                Assignments
+                Assessments
                 <span
-                  v-if="assignmentCount > 0"
+                  v-if="assessmentCount > 0"
                   class="tag is-warning assignment-count"
-                >{{ assignmentCount }}</span>
+                >{{ assessmentCount }}</span>
               </a>
 
               <div class="navbar-dropdown">
@@ -276,8 +276,9 @@ export default {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
-    assignmentCount () {
-      return this.$store.getters.incompleteUpcomingAssignments.length;
+    assessmentCount () {
+      return this.$store.getters.incompleteUpcomingAssignments.length +
+        this.$store.state.work.upcomingExams.length;
     },
     examCount () {
       return this.$store.state.work.upcomingExams.length;
