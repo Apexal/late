@@ -9,7 +9,7 @@ const logger = require('../../modules/logger');
 async function getAnnouncements (ctx) {
   const announcements = await Announcement.find()
     .populate('_student')
-    .sort('createdAt');
+    .sort('-createdAt');
   return ctx.ok({ announcements });
 }
 
@@ -22,6 +22,10 @@ async function getAnnouncements (ctx) {
  * @param {Koa context} ctx
  */
 async function createAnnouncement (ctx) {
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
+
   const { title, body, isPinned } = ctx.request.body;
   const createdAnnouncement = Announcement({
     _student: ctx.state.user._id,
@@ -49,6 +53,9 @@ async function createAnnouncement (ctx) {
  * @param {Koa context} ctx
  */
 async function removeAnnouncement (ctx) {
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
   const { announcementID } = ctx.params;
   const deletedAnnouncement = await Announcement.findOne({
     _id: announcementID,
