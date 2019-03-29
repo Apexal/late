@@ -29,7 +29,9 @@
             title="Toggle sidebar."
             @click="$store.commit('TOGGLE_SIDEBAR')"
           >
-            <i :class="'fas ' + (expanded ? 'fas fa-chevron-up fa-rotate-270' : 'fas fa-chevron-up fa-rotate-90')" />
+            <i
+              :class="'fas ' + (expanded ? 'fas fa-chevron-up fa-rotate-270' : 'fas fa-chevron-up fa-rotate-90')"
+            />
           </span>
         </transition>
         <div
@@ -160,6 +162,7 @@ export default {
       await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
       await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
       await this.$store.dispatch('GET_TODOS');
+      await this.$store.dispatch('GET_ANNOUNCEMENTS');
       await this.$store.dispatch('AUTO_UPDATE_NOW');
     }
 

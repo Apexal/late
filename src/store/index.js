@@ -10,6 +10,7 @@ import addAssignmentModal from './modules/addAssignmentModal';
 import addExamModal from './modules/addExamModal';
 import courseModal from './modules/courseModal';
 import todos from './modules/todos';
+import announcements from './modules/announcements';
 
 Vue.use(Vuex);
 
@@ -23,7 +24,8 @@ export default new Vuex.Store({
     addAssignmentModal,
     addExamModal,
     courseModal,
-    todos
+    todos,
+    announcements
   },
   state: {
     navbarExpanded: false,
