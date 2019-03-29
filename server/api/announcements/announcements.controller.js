@@ -7,7 +7,9 @@ const logger = require('../../modules/logger');
  * @retuns A JSON list of announcements
  */
 async function getAnnouncements (ctx) {
-  const announcements = await Announcement.find().sort('createdAt');
+  const announcements = await Announcement.find()
+    .populate('_student')
+    .sort('createdAt');
   return ctx.ok({ announcements });
 }
 
