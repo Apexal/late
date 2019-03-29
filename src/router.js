@@ -38,10 +38,10 @@ const router = new Router({
       component: () => import('@/views/TheAboutPage.vue')
     },
     {
-      path: '/assignments',
-      component: () => import('@/views/assignments/Assignments.vue'),
+      path: '/assessments',
+      component: () => import('@/views/assessments/Assessments.vue'),
       meta: {
-        title: 'Assignments',
+        title: 'Assessments',
         requiresAuth: true
       },
       children: [
@@ -51,25 +51,25 @@ const router = new Router({
         },
         {
           path: 'calendar',
-          name: 'assignments-calendar',
+          name: 'assessments-calendar',
           meta: {
-            title: 'Assignment Calendar'
+            title: 'Assessment Calendar'
           },
-          component: () => import('@/views/assignments/AssignmentsCalendar.vue')
+          component: () => import('@/views/assessments/AssessmentsCalendar.vue')
         },
         {
           path: 'upcoming',
-          name: 'assignments-upcoming',
+          name: 'assessments-upcoming',
           meta: {
-            title: 'Upcoming Assignments'
+            title: 'Upcoming Assessments'
           },
           component: () => import('@/views/assignments/AssignmentsUpcoming.vue')
         },
         {
           path: 'past',
-          name: 'past-assignments',
+          name: 'past-assessments',
           meta: {
-            title: 'Past Assignments'
+            title: 'Past Assessments'
           },
           component: () => import('@/views/assignments/AssignmentsPastList.vue')
         }

@@ -72,29 +72,29 @@
               <div class="navbar-dropdown">
                 <router-link
                   class="navbar-item"
-                  to="/assignments/upcoming"
-                  title="View upcoming assignments"
+                  to="/assessments/upcoming"
+                  title="View upcoming assessments"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assignments/past"
-                  title="Browse all past assignments"
+                  to="/assessments/past"
+                  title="Browse all past assessments"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assignments/calendar"
-                  title="View a calendar of all your assignment due dates"
+                  to="/assessments/calendar"
+                  title="View a calendar of all your assessment due dates"
                 >
                   Calendar
                 </router-link>
                 <hr class="navbar-divider">
                 <a
                   class="navbar-item"
-                  title="Add a new assignment"
+                  title="Add a new assessment"
                   @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                 >
                   <span class="icon">

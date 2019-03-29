@@ -30,7 +30,7 @@
 
         <router-link
           tag="li"
-          to="/assessment/calendar"
+          to="/assessments/calendar"
           title="Switch to view your assessment calendar"
         >
           <a>Calendar</a>
@@ -233,7 +233,7 @@ span.dot.course-dot {
   .buttons.exam-view-buttons {
     float: unset !important;
   }
-TODO^^
+// TODO^^
 
   .level-left + .level-right {
     margin-top: 5px !important;
