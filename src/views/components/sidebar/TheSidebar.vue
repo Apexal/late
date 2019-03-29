@@ -24,7 +24,7 @@
       <div class="panel-block has-background-white-ter has-text-centered controls">
         <a
           class=""
-          title="Add a new assignment."
+          title="Add a new assignment"
           @click="toggleModal('assignment')"
         >
           <span class="icon">
@@ -34,7 +34,7 @@
         </a>
         <a
           class="s"
-          title="Add a new exam."
+          title="Add a new exam"
           @click="toggleModal('exam')"
         >
           <span class="icon">
