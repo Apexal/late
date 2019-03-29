@@ -1,6 +1,7 @@
 import axios from '@/api';
 
 const state = {
+  modalOpen: false,
   announcements: []
 };
 const getters = {
@@ -14,6 +15,9 @@ const actions = {
   }
 };
 const mutations = {
+  SET_ANNOUNCEMENTS_MODEL_OPEN: (state, isOpen) => {
+    state.modalOpen = isOpen;
+  },
   SET_ANNOUNCEMENTS: (state, announcements) => {
     state.announcements = announcements;
   }
