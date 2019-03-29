@@ -45,17 +45,12 @@ export default {
           defaultView: 'month',
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
-            if (calEvent.assignment) {
-              this.$router.push(`/assignment/${calEvent.assignment._id}`);
-            } if (calEvent.exam) {
-              this.$router.push(`/exams/${calEvent.exam._id}`);
-            }
+            this.$router.push(`/${calEvent.type}s/${calEvent.assignment._id}`);
           },
           eventRender: (event) => {
             if (
               this.filter.includes(event.assignment.courseCRN) ||
-              (!this.showCompleted && event.assignment.completed) ||
-              (this.filter.includes(event.exam.courseCRN))
+              (!this.showCompleted && event.assignment.completed)
             ) {
               return false;
             }
@@ -93,6 +88,7 @@ export default {
       const assignmentEvents = assignments
         .filter(a => (this.showCompleted ? true : !a.completed))
         .map(a => ({
+          type: 'assignment',
           title: a.title,
           start: a.dueDate,
           color: this.course(a).color,
@@ -110,10 +106,11 @@ export default {
       const exams = request.data.exams;
       const examEvents = exams
         .map(e => ({
+          type: 'exam',
           title: e.title,
           start: e.date,
           color: this.course(e).color,
-          exam: e
+          assignment: e
         }));
       const events = examEvents.concat(assignmentEvents);
 
