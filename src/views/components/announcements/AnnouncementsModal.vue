@@ -64,6 +64,12 @@
           </form>
         </template>
         <template v-else>
+          <p
+            v-if="announcements.length === 0"
+            class="has-text-centered has-tex"
+          >
+            No announcements have been posted by admins yet!
+          </p>
           <article
             v-for="announcement in announcements"
             :key="announcement._id"
@@ -148,7 +154,7 @@ export default {
     },
     cancelButtonClick () {
       if (this.addingAnnouncement) this.addingAnnouncement = false;
-      else this.addingAnnouncement = this.$emit('close-modal');
+      else this.$emit('close-modal');
     },
     async addAnnouncement () {
       this.loading = true;
