@@ -73,6 +73,22 @@
                 </router-link>
               </div>
             </section>
+            <section
+              v-if="pinnedAnnouncements.length > 0"
+              class="section pinned-announcements"
+            >
+              <details
+                v-for="ann in pinnedAnnouncements"
+                :key="ann._id"
+                class="notification pinned-announcement is-primary"
+              >
+                <summary>
+                  <i class="fas fa-thumbtack" />
+                  <strong>{{ ann.title }}</strong>
+                </summary>
+                {{ ann.body }}
+              </details>
+            </section>
             <transition
               name="fade"
               mode="out-in"
@@ -134,6 +150,9 @@ export default {
     },
     announcements () {
       return this.$store.getters.allAnnouncements;
+    },
+    pinnedAnnouncements () {
+      return this.$store.getters.pinnedAnnouncements;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
@@ -218,6 +237,16 @@ body {
   min-height: calc(100vh - 3.25rem);
   min-height: -webkit-calc(100vh - 3.25rem);
   flex-direction: column;
+}
+.pinned-announcements {
+  padding-bottom: 0;
+
+  .pinned-announcement {
+    padding: 10px;
+    .fas.fa-thumbtack {
+      margin-right: 5px;
+    }
+  }
 }
 
 #content {
