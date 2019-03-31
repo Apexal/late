@@ -10,6 +10,7 @@ import addAssignmentModal from './modules/addAssignmentModal';
 import addExamModal from './modules/addExamModal';
 import courseModal from './modules/courseModal';
 import todos from './modules/todos';
+import unavailability from './modules/unavailability';
 import announcements from './modules/announcements';
 
 Vue.use(Vuex);
@@ -25,6 +26,7 @@ export default new Vuex.Store({
     addExamModal,
     courseModal,
     todos,
+    unavailability,
     announcements
   },
   state: {
