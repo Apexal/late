@@ -26,7 +26,7 @@ export default new Vuex.Store({
     addExamModal,
     courseModal,
     todos,
-    unavailability
+    unavailability,
     announcements
   },
   state: {
