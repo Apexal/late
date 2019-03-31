@@ -10,7 +10,7 @@
     <div class="modal-content">
       <div class="box">
         <router-link
-          title="Edit course info and links."
+          title="Edit course info and links"
           :to="{ name: 'setup-course-schedule' }"
           class="button is-small margin-left is-pulled-right"
         >

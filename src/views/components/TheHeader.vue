@@ -54,6 +54,7 @@
               </span>
               Dashboard
             </router-link>
+
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
@@ -155,6 +156,19 @@
                 </a>
               </div>
             </div>
+            <a
+              class="navbar-item"
+              @click="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true)"
+            >
+              <span class="icon">
+                <i class="fas fa-bullhorn" />
+              </span>
+              Announcements
+              <span
+                v-if="announcementsCount > 0"
+                class="tag is-primary announcement-count"
+              >{{ announcementsCount }}</span>
+            </a>
           </template>
         </div>
 
@@ -264,6 +278,9 @@ export default {
     return {};
   },
   computed: {
+    announcementsCount () {
+      return this.$store.getters.allAnnouncements.length;
+    },
     onBreak () {
       return this.$store.getters.onBreak;
     },
@@ -333,7 +350,8 @@ export default {
   }
 
   span.tag.assignment-count,
-  span.tag.exam-count {
+  span.tag.exam-count,
+  span.tag.announcement-count {
     padding-left: 5px;
     padding-right: 5px;
     margin-left: 7px;

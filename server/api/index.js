@@ -11,6 +11,7 @@ router.use('/terms', require('./terms'));
 router.use('/unavailabilities', require('./unavailabilities'));
 router.use('/blocks', require('./blocks'));
 router.use('/todos', require('./todos'));
+router.use('/announcements', require('./announcements'));
 
 router.use(
   '/google',
