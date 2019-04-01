@@ -1,5 +1,5 @@
 <template>
-  <div class="box assessments-filter is-flex">
+  <div class="assessments-filter is-flex">
     <div class="courses">
       <span
         class="subtitle is-6"
