@@ -32,9 +32,7 @@
       <label
         for="assessment-show-completed"
         style="padding: 3px 0px 0px 56px;; margin: 0 10px;"
-      >
-        Show Completed
-      </label>
+      >Show Completed</label>
     </label>
     <select
       v-if="showGroupBy"
@@ -117,18 +115,20 @@ span.tag.course-tag {
   margin: 0 2px;
   color: white;
 
+  transition: opacity 0.1s ease-out;
+
   span {
     max-width: 150px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: all 0.3s ease-out;
   }
   &.filtered-out {
-    color: #686868 !important;
-    background-color: rgb(214, 214, 214) !important;
+    opacity: 0.3;
+    //color: #686868 !important;
+    //background-color: rgb(214, 214, 214) !important;
   }
-  &:hover {
+  &:hover:not(.filtered-out) {
     opacity: 0.8;
   }
 }
