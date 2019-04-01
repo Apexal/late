@@ -45,7 +45,7 @@
                   id="new-announcement-body"
                   v-model="newAnnouncement.body"
                   class="textarea"
-                  placeholder="Announcement text."
+                  placeholder="Announcement text. Markdown is supported!"
                 />
               </div>
             </div>
@@ -83,9 +83,13 @@
               />
               {{ announcement.title }}
             </strong>
-            <div class="announcement-body content">
-              <p>{{ announcement.body }}</p>
-            </div>
+            <VueMarkdown
+              class="announcement-body"
+              :source="announcement.body"
+              :html="false"
+              :emoji="true"
+              :anchor-attributes="{target: '_blank'}"
+            />
             <small
               :data-tooltip="formatDate(announcement.createdAt)"
               class="tooltip has-text-grey"
@@ -114,10 +118,12 @@
 </template>
 
 <script>
+import VueMarkdown from 'vue-markdown';
 import moment from 'moment';
 
 export default {
   name: 'AnnouncementsModal',
+  components: { VueMarkdown },
   props: {
     open: { type: Boolean, required: true },
     announcements: {
