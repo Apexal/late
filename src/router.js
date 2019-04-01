@@ -63,7 +63,7 @@ const router = new Router({
           meta: {
             title: 'Upcoming Assessments'
           },
-          component: () => import('@/views/assignments/AssignmentsUpcoming.vue')
+          component: () => import('@/views/assessments/AssessmentsUpcoming.vue')
         },
         {
           path: 'past',
