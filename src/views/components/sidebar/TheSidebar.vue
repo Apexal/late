@@ -23,7 +23,7 @@
 
       <div class="panel-block has-background-white-ter has-text-centered controls">
         <a
-          class=""
+          class
           title="Add a new assignment"
           @click="toggleModal('assignment')"
         >
@@ -270,7 +270,7 @@ export default {
 .controls {
   display: flex;
   justify-content: space-around;
-  padding: 0px!important;
+  padding: 0px !important;
 
   a:first-child {
     border-right: 1px solid #dbdbdb;
@@ -278,9 +278,9 @@ export default {
   a {
     flex: 0 0 50%;
     color: #4a4a4a;
-    padding: 7px;
+    padding: 5px;
     span.icon {
-      margin-right: 0;
+      margin: 0;
     }
   }
   a:hover {
