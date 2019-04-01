@@ -158,7 +158,7 @@
             </div>
             <a
               class="navbar-item"
-              @click="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true)"
+              @click="openAnnouncementsModal"
             >
               <span class="icon">
                 <i class="fas fa-bullhorn" />
@@ -274,12 +274,14 @@
 <script>
 export default {
   name: 'TheHeader',
-  data () {
-    return {};
-  },
   computed: {
+    seenAnnouncementIDs () {
+      return this.$store.state.announcements.seenIDs;
+    },
     announcementsCount () {
-      return this.$store.getters.allAnnouncements.length;
+      return this.$store.getters.allAnnouncements.filter(
+        a => !this.seenAnnouncementIDs.includes(a._id)
+      ).length;
     },
     onBreak () {
       return this.$store.getters.onBreak;
@@ -298,6 +300,22 @@ export default {
     },
     examCount () {
       return this.$store.state.work.upcomingExams.length;
+    }
+  },
+  methods: {
+    openAnnouncementsModal () {
+      // Mark all announcements as seen
+      localStorage.setItem(
+        'seenAnnouncementIDs',
+        JSON.stringify(this.$store.getters.allAnnouncements.map(ann => ann._id))
+      );
+
+      this.$store.commit(
+        'SET_SEEN_ANNOUNCEMENT_IDS',
+        this.$store.getters.allAnnouncements.map(ann => ann._id)
+      );
+
+      this.$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true);
     }
   }
 };

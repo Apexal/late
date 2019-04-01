@@ -85,6 +85,10 @@
                 <summary>
                   <i class="fas fa-thumbtack" />
                   <strong>{{ ann.title }}</strong>
+                  <a
+                    class="delete is-pulled-right"
+                    @click="dismissPinnedAnnouncement(ann._id)"
+                  />
                 </summary>
                 {{ ann.body }}
               </details>
@@ -133,6 +137,9 @@ export default {
     };
   },
   computed: {
+    dismissedAnnouncementIDs () {
+      return this.$store.state.announcements.dismissedIDs;
+    },
     courseModalData () {
       return this.$store.state.courseModal.current;
     },
@@ -202,6 +209,17 @@ export default {
     this.loading = false;
   },
   methods: {
+    dismissPinnedAnnouncement (id) {
+      localStorage.setItem(
+        'dismissedAnnouncementIDs',
+        JSON.stringify(this.dismissedAnnouncementIDs.concat(id))
+      );
+
+      this.$store.commit(
+        'SET_DISMISSED_ANNOUNCEMENT_IDS',
+        this.dismissedAnnouncementIDs.concat(id)
+      );
+    },
     resizeThrottler () {
       // ignore resize events as long as an actualResizeHandler execution is in the queue
       if (!this.resizeTimeout) {

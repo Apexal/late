@@ -2,19 +2,51 @@ import axios from '@/api';
 
 const state = {
   modalOpen: false,
-  announcements: []
+  announcements: [],
+  seenIDs: [],
+  dismissedIDs: []
 };
 const getters = {
   allAnnouncements: state => state.announcements,
-  pinnedAnnouncements: state => state.announcements.filter(a => a.isPinned)
+  pinnedAnnouncements: state =>
+    state.announcements.filter(
+      a => !state.dismissedIDs.includes(a._id) && a.isPinned
+    )
 };
 const actions = {
   async GET_ANNOUNCEMENTS ({ commit }) {
     const response = await axios.get('/announcements');
     commit('SET_ANNOUNCEMENTS', response.data.announcements);
+
+    if (localStorage.getItem('seenAnnouncementIDs')) {
+      try {
+        commit(
+          'SET_SEEN_ANNOUNCEMENT_IDS',
+          JSON.parse(localStorage.getItem('seenAnnouncementIDs'))
+        );
+      } catch (e) {
+        localStorage.removeItem('seenAnnouncementIDs');
+      }
+    }
+    if (localStorage.getItem('dismissedAnnouncementIDs')) {
+      try {
+        commit(
+          'SET_DISMISSED_ANNOUNCEMENT_IDS',
+          JSON.parse(localStorage.getItem('dismissedAnnouncementIDs'))
+        );
+      } catch (e) {
+        localStorage.removeItem('dismissedAnnouncementIDs');
+      }
+    }
   }
 };
 const mutations = {
+  SET_SEEN_ANNOUNCEMENT_IDS: (state, ids) => {
+    state.seenIDs = ids;
+  },
+  SET_DISMISSED_ANNOUNCEMENT_IDS: (state, ids) => {
+    state.dismissedIDs = ids;
+  },
   SET_ANNOUNCEMENTS_MODEL_OPEN: (state, isOpen) => {
     state.modalOpen = isOpen;
   },
