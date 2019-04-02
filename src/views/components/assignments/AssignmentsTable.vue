@@ -42,7 +42,7 @@
           <router-link
             class="assignment-link"
             :title="a.description.substring(0, 500)"
-            :to="{name: 'assignments-overview', params: { assignmentID: a._id }}"
+            :to="{name: 'assessments-overview', params: { assessmentID: a._id }}"
           >
             {{ a.title }}
           </router-link>

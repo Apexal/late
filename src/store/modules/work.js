@@ -14,14 +14,31 @@ const removedCourse = {
 };
 
 const state = {
+  upcomingAssessments: [],
   upcomingAssignments: [],
   upcomingExams: []
 };
 
 const getters = {
+  limitedUpcomingAssessments: (state, getters, rootState) =>
+    state.upcomingAssessments.filter(a =>
+      moment(a.dueDate).isBefore(
+        moment(rootState.now)
+          .add(UPCOMING_ASSIGNMENTS_WEEK_CUTOFF, 'weeks')
+          .startOf('day')
+      )
+    ),
   limitedUpcomingAssignments: (state, getters, rootState) =>
     state.upcomingAssignments.filter(a =>
       moment(a.dueDate).isBefore(
+        moment(rootState.now)
+          .add(UPCOMING_ASSIGNMENTS_WEEK_CUTOFF, 'weeks')
+          .startOf('day')
+      )
+    ),
+  farFutureUpcomingAssessments: (state, getters, rootState) =>
+    state.upcomingAssessments.filter(a =>
+      moment(a.dueDate).isAfter(
         moment(rootState.now)
           .add(UPCOMING_ASSIGNMENTS_WEEK_CUTOFF, 'weeks')
           .startOf('day')
@@ -43,6 +60,19 @@ const getters = {
   },
   getUpcomingAssignmentById: state => assignmentID => {
     return state.upcomingAssignments.find(a => a._id === assignmentID);
+  },
+  upcomingAssessmentsGroupedByDueDate: (state, getters) => {
+    const grouped = {};
+    for (const a of getters.limitedUpcomingAssessments) {
+      const day = moment(a.dueDate)
+        .startOf('day')
+        .toDate();
+      if (!grouped[day]) {
+        grouped[day] = [];
+      }
+      grouped[day].push(a);
+    }
+    return grouped;
   },
   upcomingAssignmentsGroupedByDueDate: (state, getters) => {
     const grouped = {};
@@ -151,9 +181,11 @@ const getters = {
 
 const actions = {
   async AUTO_GET_UPCOMING_WORK ({ dispatch }) {
+    await dispatch('GET_UPCOMING_ASSESSMENTS');
     await dispatch('GET_UPCOMING_ASSIGNMENTS');
     await dispatch('GET_UPCOMING_EXAMS');
     setTimeout(() => {
+      dispatch('GET_UPCOMING_ASSESSMENTS');
       dispatch('GET_UPCOMING_ASSIGNMENTS');
       dispatch('GET_UPCOMING_EXAMS');
     }, 1000 * 60 * 60);
@@ -171,6 +203,20 @@ const actions = {
     commit('UPDATE_UPCOMING_ASSIGNMENT', request.data.updatedAssignment);
     commit('SORT_UPCOMING_ASSIGNMENTS');
     return request.data.updatedAssignment;
+  },
+  async GET_UPCOMING_ASSESSMENTS ({ commit }) {
+    const start = moment().format('YYYY-MM-DD');
+    let response = await axios.get('/assignments', {
+      params: { start }
+    });
+    const assignments = response.data.assignments;
+    response = await axios.get('/exams', {
+      params: { start }
+    });
+    const exams = response.data.exams;
+    assignments.forEach(a => { a.type = 'assignment'; });
+    exams.forEach(a => { a.type = 'exam'; a.dueDate = a.date; delete a.date; });
+    commit('SET_UPCOMING_ASSESSMENTS', assignments.concat(exams));
   },
   async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
     const response = await axios.get('/assignments', {
@@ -265,6 +311,9 @@ const actions = {
 };
 
 const mutations = {
+  SET_UPCOMING_ASSESSMENTS: (state, assessments) => {
+    state.upcomingAssessments = assessments;
+  },
   SET_UPCOMING_ASSIGNMENTS: (state, assignments) => {
     state.upcomingAssignments = assignments;
   },

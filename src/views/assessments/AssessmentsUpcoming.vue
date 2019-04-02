@@ -50,12 +50,12 @@
       </div>
     </div>
     <div
-      v-if="farFutureUpcomingAssignments.length > 0"
+      v-if="farFutureUpcomingAssessments.length > 0"
       class="far-future-assignments"
     >
       <hr>
       <p class="has-text-centered has-text-grey">
-        {{ farFutureUpcomingAssignments.length }} far future assignments {{ showingFutureAssignments ? 'shown' : 'hidden' }}
+        {{ farFutureUpcomingAssessments.length }} far future assignments {{ showingFutureAssignments ? 'shown' : 'hidden' }}
         <a
           @click="showingFutureAssignments = !showingFutureAssignments"
         >Toggle</a>
@@ -111,8 +111,8 @@ export default {
     },
     filtered () {
       const filtered = {};
-      for (let key in this.groupedAssignments) {
-        filtered[key] = this.groupedAssignments[key].filter(a => {
+      for (let key in this.groupedAssessments) {
+        filtered[key] = this.groupedAssessments[key].filter(a => {
           if (!this.showCompleted && a.completed) return false;
           return !this.filter.includes(a.courseCRN);
         });
@@ -122,21 +122,21 @@ export default {
       return filtered;
     },
     filteredFarFuture () {
-      return this.farFutureUpcomingAssignments.filter(a => {
+      return this.farFutureUpcomingAssessments.filter(a => {
         if (!this.showCompleted && a.completed) return false;
         return !this.filter.includes(a.courseCRN);
       });
     },
-    groupedAssignments () {
+    groupedAssessments () {
       return this.groupBy === 'course'
         ? this.upcomingAssignmentsGroupedByCourse
-        : this.upcomingAssignmentsGroupedByDueDate;
+        : this.upcomingAssessmentsGroupedByDueDate;
     },
-    farFutureUpcomingAssignments () {
-      return this.$store.getters.farFutureUpcomingAssignments;
+    farFutureUpcomingAssessments () {
+      return this.$store.getters.farFutureUpcomingAssessments;
     },
-    upcomingAssignmentsGroupedByDueDate () {
-      return this.$store.getters.upcomingAssignmentsGroupedByDueDate;
+    upcomingAssessmentsGroupedByDueDate () {
+      return this.$store.getters.upcomingAssessmentsGroupedByDueDate;
     },
     upcomingAssignmentsGroupedByCourse () {
       return this.$store.getters.upcomingAssignmentsGroupedByCourse;
@@ -188,7 +188,7 @@ export default {
       );
     },
     percentDone (key) {
-      const assignments = this.groupedAssignments[key];
+      const assignments = this.groupedAssessments[key];
       return Math.round(
         (assignments.filter(a => a.completed).length / assignments.length) * 100
       );

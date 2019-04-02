@@ -134,23 +134,23 @@ export default {
     }
   },
   methods: {
-    async toggleAssignment (assignmentID) {
+    async toggleAssessment (assessmentID) {
       try {
-        const toggledAssignment = await this.$store.dispatch(
+        const toggledAssessment = await this.$store.dispatch(
           'TOGGLE_UPCOMING_ASSIGNMENT',
-          assignmentID
+          assessmentID
         );
-        this.$toasted[toggledAssignment.completed ? 'success' : 'show'](
-          `Marked '${toggledAssignment.title}' as ${
-            toggledAssignment.completed ? 'complete' : 'incomplete'
+        this.$toasted[toggledAssessment.completed ? 'success' : 'show'](
+          `Marked '${toggledAssessment.title}' as ${
+            toggledAssessment.completed ? 'complete' : 'incomplete'
           }!`,
           {
-            icon: toggledAssignment.completed ? 'check-circle' : 'circle',
+            icon: toggledAssessment.completed ? 'check-circle' : 'circle',
             action: {
               text: 'View',
               push: {
-                name: 'assignments-overview',
-                params: { assignmentID }
+                name: 'assessments-overview',
+                params: { assessmentID }
               }
             }
           }
