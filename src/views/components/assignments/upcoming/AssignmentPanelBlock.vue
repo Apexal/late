@@ -2,7 +2,7 @@
   <div class="assignment panel-block">
     <span class="is-full-width">
       <span
-        class="icon toggle-assignment"
+        id="toggle-group-assignments" class="icon toggle-assignment"
         @click="$emit('toggle-assignment', assignment._id)"
       >
         <span
