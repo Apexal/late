@@ -57,12 +57,20 @@ const getters = {
       grouped[day].push(a);
     }
 
+    for (let a of state.upcomingExams) {
+      const day = moment(a.date)
+        .startOf('day')
+        .toDate();
+      if (!grouped[day]) grouped[day] = [];
+      grouped[day].push(a);
+    }
+
     return grouped;
   },
   upcomingAssignmentsGroupedByCourse: (state, getters) => {
     const grouped = {};
 
-    for (let a of getters.limitedUpcomingAssignments) {
+    for (let a of getters.limitedUpcomingAssignments.concat(state.upcomingExams)) {
       if (!grouped[a.courseCRN]) grouped[a.courseCRN] = [];
       grouped[a.courseCRN].push(a);
     }

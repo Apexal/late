@@ -42,7 +42,7 @@
       :filter="filter"
       :show-show-completed="true"
       :show-completed="showCompleted"
-      :show-group-by="view === 'assignments-upcoming'"
+      :show-group-by="view === 'assessments-upcoming'"
       :group-by="groupBy"
       @toggle-filter="toggleFilter"
       @toggle-show-completed="showCompleted = !showCompleted"

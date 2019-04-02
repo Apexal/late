@@ -4,7 +4,7 @@
       v-if="none"
       class="has-text-centered has-text-grey"
     >
-      No upcoming assignments
+      No upcoming assessments
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
@@ -19,7 +19,7 @@
       class="columns is-multiline"
     >
       <div
-        v-for="(assignments, key) in filtered"
+        v-for="(assessments, key) in filtered"
         :key="key"
         class="column is-one-third-desktop is-half-tablet"
       >
@@ -31,7 +31,7 @@
             <span
               class="tag is-pulled-right"
               :class="progressClass(key)"
-              :title="`You are ${percentDone(key)}% complete with these assignments.`"
+              :title="`Your assessments for this day are ${percentDone(key)}% complete`"
             >{{ percentDone(key) }}%</span>
             <span
               class="key"
@@ -40,7 +40,7 @@
             >{{ headerText(key) }}</span>
           </p>
           <AssignmentPanelBlock
-            v-for="a in assignments"
+            v-for="a in assessments"
             :key="a._id"
             :group-by="groupBy"
             :assignment="a"
@@ -76,7 +76,7 @@ import AssignmentPanelBlock from '@/views/components/assignments/upcoming/Assign
 import AssignmentsTable from '@/views/components/assignments/AssignmentsTable.vue';
 
 export default {
-  name: 'AssignmentsUpcoming',
+  name: 'AssessmentsUpcoming',
   components: { AssignmentsTable, AssignmentPanelBlock },
   props: {
     showCompleted: {
@@ -106,8 +106,8 @@ export default {
     },
     headerTitle () {
       return this.groupBy === 'course'
-        ? 'Open course modal.'
-        : 'Add assignment to this day.';
+        ? 'Open course modal'
+        : 'Add assignment to this day';
     },
     filtered () {
       const filtered = {};
