@@ -88,27 +88,9 @@
       </button>
     </div>
 
-    <ExamsTable
+    <AssessmentsTable
       v-if="filtered.length > 0"
-      :exams="filtered"
-    />
-    <p
-      v-else
-      class="has-text-centered has-text-grey"
-    >
-      No exams
-      <i
-        v-if="filter.length > 0 || !showCompleted"
-        style="font-style:inherit"
-      >matching your filters.</i>
-      <i
-        v-if="filter.length <= 0"
-        style="font-style:inherit"
-      >this month!</i>
-    </p>
-    <AssignmentsTable
-      v-if="filtered.length > 0"
-      :assignments="filtered"
+      :assessments="filtered"
       :show-remove-button="true"
       @remove-assignment="removeAssignment"
     />
@@ -116,7 +98,7 @@
       v-else
       class="has-text-centered has-text-grey"
     >
-      No assignments
+      No Assessments
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
@@ -131,12 +113,11 @@
 
 <script>
 import moment from 'moment';
-import AssignmentsTable from '@/views/components/assignments/AssignmentsTable';
-import ExamsTable from '@/views/components/exams/ExamsTable.vue';
+import AssessmentsTable from '@/views/components/assessments/AssessmentsTable';
 
 export default {
   name: 'AssessmentsPastList',
-  components: { AssignmentsTable, ExamsTable },
+  components: { AssessmentsTable },
   props: {
     showCompleted: {
       type: Boolean,
@@ -202,7 +183,9 @@ export default {
         }
         return !this.filter.includes(this.course(a).crn);
       });
-      return filteredExams.concat(filteredAssignments);
+      const assessments = filteredExams.concat(filteredAssignments);
+      console.log(assessments);
+      return assessments;
     }
   },
   watch: {
