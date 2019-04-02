@@ -335,8 +335,14 @@ export default {
 }
 
 .has-dropdown .navbar-link::after {
-  transition: 0.2s;
+  transition: 0.1s;
 }
+
+.has-dropdown:hover .navbar-link::after {
+  transform: translateY(3px) rotate(135deg);
+  transition: 0.05s;
+  -webkit-transition: 0.05s;
+  }
 
 .has-dropdown:hover .navbar-link::after {
   transition: 0.2s;

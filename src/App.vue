@@ -262,9 +262,18 @@ body {
 
   .pinned-announcement {
     padding: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
     .fas.fa-thumbtack {
       margin-right: 5px;
     }
+  }
+
+  .pinned-announcement:hover {
+    background-color: #6abfc5;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
   }
 }
 
