@@ -14,7 +14,7 @@
       <router-link
         class="assignment-link"
         :title="(assignment.priority === 1 ? '(OPTIONAL) ' : '') + assignment.description.substring(0, 500)"
-        :to="{ name: 'assignments-overview', params: { assignmentID: assignment._id }}"
+        :to="{ name: 'assessments-overview', params: { assessmentID: assignment._id }}"
         :class="{ 'priority': assignment.priority > 3, 'has-text-grey is-italic': assignment.priority === 1 }"
       >
         <b class="course-title is-hidden-tablet">{{ course.longname }}</b>

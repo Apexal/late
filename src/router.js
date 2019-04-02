@@ -76,6 +76,14 @@ const router = new Router({
       ]
     },
     {
+      path: '/assessments/:assessmentID',
+      name: 'assessments-overview',
+      component: () => import('@/views/assessments/AssessmentsOverview.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/assignments/:assignmentID',
       name: 'assignments-overview',
       component: () => import('@/views/assignments/AssignmentsOverview.vue'),
