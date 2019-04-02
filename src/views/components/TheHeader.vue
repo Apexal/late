@@ -60,7 +60,7 @@
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
-              <a class="navbar-link">
+              <a id="navbar-assignments-and-exams" class="navbar-link">
                 <span class="icon">
                   <i class="fas fa-clipboard-list" />
                 </span>
