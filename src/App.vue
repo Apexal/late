@@ -76,6 +76,7 @@
             <section
               v-if="pinnedAnnouncements.length > 0"
               class="section pinned-announcements"
+              title="Pinned announcement"
             >
               <details
                 v-for="ann in pinnedAnnouncements"
@@ -84,7 +85,7 @@
               >
                 <summary>
                   <i class="fas fa-thumbtack" />
-                  <strong>{{ ann.title }}</strong>
+                  <strong>Pinned Announcement: </strong>{{ ann.title }}
                   <a
                     class="delete is-pulled-right"
                     @click="dismissPinnedAnnouncement(ann._id)"
@@ -262,12 +263,12 @@ body {
 
   .pinned-announcement {
     padding: 10px;
-    cursor: pointer;
     transition: 0.2s;
     -webkit-transition: 0.2s;
     .fas.fa-thumbtack {
       margin-right: 5px;
     }
+    summary { cursor: pointer; }
   }
 
   .pinned-announcement:hover {
