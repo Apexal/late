@@ -15,7 +15,7 @@
         {{ onBreak ? 'On Break' : currentTerm.name }}
       </p>
 
-      <p class="panel-tabs is-unselectable">
+      <p id="sidebar-tabs-panel" class="panel-tabs is-unselectable">
         <a
           v-for="(t, name) in tabs"
           :key="name"
