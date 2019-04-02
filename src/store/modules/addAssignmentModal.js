@@ -1,6 +1,7 @@
 const moment = require('moment');
 
 const state = {
+  modalStep: 0,
   expanded: false,
   courseCRN: '',
   dueDate: null,
@@ -27,6 +28,9 @@ const actions = {
   }
 };
 const mutations = {
+  SET_ADD_ASSIGNMENT_MODAL_STEP: (state, step) => {
+    state.modalStep = step;
+  },
   SET_ADD_ASSIGNMENT_MODAL_VALUES: (state, updates) => {
     if ('dueDate' in updates) updates.recurringDays = [updates.dueDate.day()];
 
