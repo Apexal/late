@@ -243,11 +243,12 @@ const actions = {
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    commit(
-      `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
-      request.data['updated' + capitalized]
-    );
-
+    if (getters['getUpcoming' + capitalized + 'ById'](block.assessment._id)) {
+      commit(
+        `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
+        request.data['updated' + capitalized]
+      );
+    }
     return request.data['updated' + capitalized];
   }
 };

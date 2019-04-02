@@ -231,13 +231,19 @@ export default {
       );
     },
     workBlockEvents () {
-      return this.assessment._blocks.map(block =>
-        this.$store.getters.mapWorkBlockToEvent(
-          this.assessmentType,
-          this.assessment,
-          block
+      return this.assessment._blocks
+        .map(block =>
+          this.$store.getters.mapWorkBlockToEvent(
+            this.assessmentType,
+            this.assessment,
+            block
+          )
         )
-      );
+        .concat(
+          this.$store.getters.getWorkBlocksAsEvents
+            .filter(ev => ev.assessment._id !== this.assessment._id)
+            .map(ev => Object.assign({ rendering: 'background' }, ev))
+        );
     },
     totalEvents () {
       // Render work blocks for other assessments in the background
