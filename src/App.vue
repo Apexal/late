@@ -12,6 +12,11 @@
           :open="courseModalOpen"
           :course="courseModalData"
         />
+        <AnnouncementsModal
+          :open="announcementsModalOpen"
+          :announcements="announcements"
+          @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
+        />
       </template>
       <template v-if="!loading">
         <AssignmentsModalAdd
@@ -29,7 +34,9 @@
             title="Toggle sidebar."
             @click="$store.commit('TOGGLE_SIDEBAR')"
           >
-            <i :class="'fas ' + (expanded ? 'fas fa-chevron-up fa-rotate-270' : 'fas fa-chevron-up fa-rotate-90')" />
+            <i
+              :class="'fas ' + (expanded ? 'fas fa-chevron-up fa-rotate-270' : 'fas fa-chevron-up fa-rotate-90')"
+            />
           </span>
         </transition>
         <div
@@ -66,6 +73,26 @@
                 </router-link>
               </div>
             </section>
+            <section
+              v-if="pinnedAnnouncements.length > 0"
+              class="section pinned-announcements"
+            >
+              <details
+                v-for="ann in pinnedAnnouncements"
+                :key="ann._id"
+                class="notification pinned-announcement is-primary"
+              >
+                <summary>
+                  <i class="fas fa-thumbtack" />
+                  <strong>{{ ann.title }}</strong>
+                  <a
+                    class="delete is-pulled-right"
+                    @click="dismissPinnedAnnouncement(ann._id)"
+                  />
+                </summary>
+                {{ ann.body }}
+              </details>
+            </section>
             <transition
               name="fade"
               mode="out-in"
@@ -86,6 +113,7 @@ import TheSidebar from '@/views/components/sidebar/TheSidebar';
 import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
 import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
 import CourseModal from '@/views/components/courses/CourseModal';
+import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
@@ -99,7 +127,8 @@ export default {
     TheSidebar,
     TheFooter,
     AssignmentsModalAdd,
-    ExamsModalAddRedux
+    ExamsModalAddRedux,
+    AnnouncementsModal
   },
   data () {
     return {
@@ -108,17 +137,29 @@ export default {
     };
   },
   computed: {
+    dismissedAnnouncementIDs () {
+      return this.$store.state.announcements.dismissedIDs;
+    },
     courseModalData () {
       return this.$store.state.courseModal.current;
     },
     courseModalOpen () {
       return this.$store.state.courseModal.open;
     },
+    announcementsModalOpen () {
+      return this.$store.state.announcements.modalOpen;
+    },
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
     courses () {
       return this.$store.getters.current_schedule;
+    },
+    announcements () {
+      return this.$store.getters.allAnnouncements;
+    },
+    pinnedAnnouncements () {
+      return this.$store.getters.pinnedAnnouncements;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
@@ -157,15 +198,28 @@ export default {
     await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
+      await this.$store.dispatch('GET_UNAVAILABILITIES');
       await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
       await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
       await this.$store.dispatch('GET_TODOS');
+      await this.$store.dispatch('GET_ANNOUNCEMENTS');
       await this.$store.dispatch('AUTO_UPDATE_NOW');
     }
 
     this.loading = false;
   },
   methods: {
+    dismissPinnedAnnouncement (id) {
+      localStorage.setItem(
+        'dismissedAnnouncementIDs',
+        JSON.stringify(this.dismissedAnnouncementIDs.concat(id))
+      );
+
+      this.$store.commit(
+        'SET_DISMISSED_ANNOUNCEMENT_IDS',
+        this.dismissedAnnouncementIDs.concat(id)
+      );
+    },
     resizeThrottler () {
       // ignore resize events as long as an actualResizeHandler execution is in the queue
       if (!this.resizeTimeout) {
@@ -202,6 +256,16 @@ body {
   min-height: calc(100vh - 3.25rem);
   min-height: -webkit-calc(100vh - 3.25rem);
   flex-direction: column;
+}
+.pinned-announcements {
+  padding-bottom: 0;
+
+  .pinned-announcement {
+    padding: 10px;
+    .fas.fa-thumbtack {
+      margin-right: 5px;
+    }
+  }
 }
 
 #content {

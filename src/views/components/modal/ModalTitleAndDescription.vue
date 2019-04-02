@@ -34,6 +34,10 @@
 export default {
   name: 'ModalTitleAndDescription',
   props: {
+    assessmentType: {
+      type: String,
+      required: true
+    },
     title: {
       type: String,
       required: true

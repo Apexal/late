@@ -206,6 +206,9 @@ export default {
 //Hover styling for previous toggle
 .controls {
   padding: 0;
+  label {
+    padding: 10px;
+  }
 }
 
 .togglePassed {

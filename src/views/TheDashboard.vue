@@ -13,7 +13,10 @@
           Your Dashboard
         </h1>
         <li>
-          <a title="View your weekly schedule">Your Week</a>
+          <a
+            title="(WIP) View your weekly schedule"
+            style="cursor: not-allowed;"
+          >Your Week</a>
         </li>
         <li
           class="is-active"
@@ -49,10 +52,11 @@
         :config="calendar.config"
       />
       <button
+        title="Toggle Fullscreen"
         class="button fullscreenToggle"
         @click="toggleFullscreen"
       >
-        <i class="fas fa-arrows-alt" />
+        <i class="fas fa-expand-arrows-alt" />
       </button>
     </div>
   </section>

@@ -200,23 +200,14 @@ async function setCourses (ctx) {
 }
 
 /**
- * Set the study/work unavailability schedule of the logged in user.
+ * Set the study/work time preference of the logged in user.
  *
  * Body:
  * - events
  * @param {Koa context} ctx
  */
-async function setUnavailability (ctx) {
+async function setTimePreference (ctx) {
   const body = ctx.request.body;
-  const events = body.events;
-
-  // Remove dates, split times
-  const unavailabilityPeriods = events.map(e => ({
-    dow: e.dow,
-    title: e.title,
-    start: e.start,
-    end: e.end
-  }));
 
   ctx.state.user.earliestWorkTime = body.earliest;
   ctx.state.user.latestWorkTime = body.latest;
@@ -224,24 +215,17 @@ async function setUnavailability (ctx) {
   ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code);
 
   try {
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ctx.state.user.unavailability_schedules[
-      ctx.session.currentTerm.code
-    ] = unavailabilityPeriods;
-    ctx.state.user.markModified('unavailability_schedules');
     await ctx.state.user.save();
   } catch (e) {
     logger.error(
-      `Failed to set work/study unavailability schedule for ${
+      `Failed to set work/study time preference schedule for ${
         ctx.state.user.rcs_id
       }: ${e}`
     );
-    return ctx.badRequest('Failed to set work/study unavailability schedule.');
+    return ctx.badRequest('Failed to set work/study time preference schedule.');
   }
 
-  logger.info(
-    `Set work/study unavailability periods for ${ctx.state.user.rcs_id}`
-  );
+  logger.info(`Set work/study time preference for ${ctx.state.user.rcs_id}`);
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
@@ -269,6 +253,6 @@ module.exports = {
   setPersonalInfo,
   setCourseSchedule,
   setCourses,
-  setUnavailability,
+  setTimePreference,
   setGoogle
 };

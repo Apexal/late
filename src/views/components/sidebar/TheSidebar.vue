@@ -7,7 +7,7 @@
       <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         <span
           class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
-          title="Toggle sidebar."
+          title="Toggle sidebar"
           @click="$store.commit('TOGGLE_SIDEBAR')"
         >
           <i class="fas fa-chevron-up fa-rotate-270" />
@@ -20,6 +20,29 @@
           :title="'Until end of ' + (currentEvent.eventType === 'period' ? 'class' : 'work block')"
         >{{ countdown }}</span>
       </p>
+
+      <div class="panel-block has-background-white-ter has-text-centered controls">
+        <a
+          class
+          title="Add a new assignment"
+          @click="toggleModal('assignment')"
+        >
+          <span class="icon">
+            <i class="fa fa-plus" />
+          </span>
+          Assignment
+        </a>
+        <a
+          class="s"
+          title="Add a new exam"
+          @click="toggleModal('exam')"
+        >
+          <span class="icon">
+            <i class="fa fa-plus" />
+          </span>
+          Exam
+        </a>
+      </div>
 
       <p class="panel-tabs is-unselectable">
         <a
@@ -45,7 +68,6 @@
         :todays-agenda="todaysAgenda"
         :pressing="pressingAssessments"
         :todos="todos"
-        @toggle-modal="toggleModal"
         @update-count="updatedCount"
       />
     </div>
@@ -224,7 +246,7 @@ export default {
     }
   }
 
-  .panel-block:not(.is-active):hover {
+  .panel-block:not(.is-active):not(.control):hover {
     background-color: #f3f3f3;
   }
 
@@ -242,6 +264,27 @@ export default {
     margin-top: -3px;
     font-weight: 400;
     padding: 2px;
+  }
+}
+
+.controls {
+  display: flex;
+  justify-content: space-around;
+  padding: 0px !important;
+
+  a:first-child {
+    border-right: 1px solid #dbdbdb;
+  }
+  a {
+    flex: 0 0 50%;
+    color: #4a4a4a;
+    padding: 5px;
+    span.icon {
+      margin: 0;
+    }
+  }
+  a:hover {
+    background-color: #dbdbdb;
   }
 }
 </style>

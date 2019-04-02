@@ -38,29 +38,26 @@
           >{{ fromNow(assessment.dueDate || assessment.date) }}</small>
         </span>
       </router-link>
+
       <div class="panel-block has-background-white-ter has-text-centered controls">
-        <div class="buttons">
-          <button
-            class="button is-primary is-small"
-            title="Add a new assignment."
-            @click="$emit('toggle-modal', 'assignment')"
-          >
-            <span class="icon">
-              <i class="fa fa-plus" />
-            </span>
-            Assignment
-          </button>
-          <button
-            class="button is-primary is-small"
-            title="Add a new exam."
-            @click="$emit('toggle-modal', 'exam')"
-          >
-            <span class="icon">
-              <i class="fa fa-plus" />
-            </span>
-            Exam
-          </button>
-        </div>
+        <router-link
+          to="/assignments/upcoming"
+          title="Browse assignments"
+        >
+          <span class="icon">
+            <i class="fas fa-clipboard-list" />
+          </span>
+          Assignments
+        </router-link>
+        <router-link
+          to="/exams/upcoming"
+          title="Browse exam"
+        >
+          <span class="icon">
+            <i class="fas fa-file-alt" />
+          </span>
+          Exams
+        </router-link>
       </div>
     </template>
   </div>
@@ -113,14 +110,6 @@ export default {
 
   &.exam {
     font-weight: bolder;
-  }
-}
-
-.controls {
-  .button {
-    span.icon {
-      margin-right: 0;
-    }
   }
 }
 </style>

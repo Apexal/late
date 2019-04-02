@@ -54,6 +54,7 @@
               </span>
               Dashboard
             </router-link>
+
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
@@ -155,6 +156,19 @@
                 </a>
               </div>
             </div>
+            <a
+              class="navbar-item"
+              @click="openAnnouncementsModal"
+            >
+              <span class="icon">
+                <i class="fas fa-bullhorn" />
+              </span>
+              Announcements
+              <span
+                v-if="announcementsCount > 0"
+                class="tag is-primary announcement-count"
+              >{{ announcementsCount }}</span>
+            </a>
           </template>
         </div>
 
@@ -260,10 +274,15 @@
 <script>
 export default {
   name: 'TheHeader',
-  data () {
-    return {};
-  },
   computed: {
+    seenAnnouncementIDs () {
+      return this.$store.state.announcements.seenIDs;
+    },
+    announcementsCount () {
+      return this.$store.getters.allAnnouncements.filter(
+        a => !this.seenAnnouncementIDs.includes(a._id)
+      ).length;
+    },
     onBreak () {
       return this.$store.getters.onBreak;
     },
@@ -282,6 +301,22 @@ export default {
     },
     examCount () {
       return this.$store.state.work.upcomingExams.length;
+    }
+  },
+  methods: {
+    openAnnouncementsModal () {
+      // Mark all announcements as seen
+      localStorage.setItem(
+        'seenAnnouncementIDs',
+        JSON.stringify(this.$store.getters.allAnnouncements.map(ann => ann._id))
+      );
+
+      this.$store.commit(
+        'SET_SEEN_ANNOUNCEMENT_IDS',
+        this.$store.getters.allAnnouncements.map(ann => ann._id)
+      );
+
+      this.$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true);
     }
   }
 };
@@ -310,7 +345,7 @@ export default {
 }
 
 .navbar-brand:hover .beta-tag {
-  background-color: #84edf5 !important;
+  background-color: #73dee6 !important;
   transition: 0.2s;
 }
 
@@ -334,7 +369,8 @@ export default {
   }
 
   span.tag.assignment-count,
-  span.tag.exam-count {
+  span.tag.exam-count,
+  span.tag.announcement-count {
     padding-left: 5px;
     padding-right: 5px;
     margin-left: 7px;

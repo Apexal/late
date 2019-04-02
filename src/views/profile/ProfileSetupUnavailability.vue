@@ -15,7 +15,7 @@
       <div class="box">
         <form
           id="time-preferences"
-          @submit.prevent="save"
+          @submit.prevent="saveTimePreferences"
         >
           <div class="columns">
             <div class="column field">
@@ -140,7 +140,7 @@ export default {
     },
     allEvents () {
       return this.$store.getters.getCourseScheduleAsEvents.concat(
-        this.calendar.events
+        this.$store.getters.getUnavailabilityAsEvents
       );
     },
     fixedLatest () {
@@ -181,46 +181,69 @@ export default {
     eventClick (calEvent, jsEvent, view) {
       if (!calEvent.eventType === 'unavailability') return;
 
-      this.saved = false;
-      this.calendar.events = this.calendar.events.filter(
-        e =>
-          !(
-            e.dow[0] === calEvent.start.day() &&
-            calEvent.start.format('HH:mm') === e.start
-          )
-      );
+      this.removeUnavailability(calEvent);
     },
     eventResized (calEvent) {
-      this.saved = false;
-      this.calendar.events.find(e =>
-        moment(e.start).isSame(moment(calEvent.start))
-      ).end =
-        calEvent.end;
+      // TODO: can do
     },
     select (start, end) {
       let promptedTitle = prompt('What is it?').trim();
-      const eventData = {
-        id: 'unavailable',
-        eventType: 'unavailability',
+      const unavailability = {
         title: promptedTitle || 'Busy',
         start: start.format('HH:mm'),
-        editable: false,
         end: end.format('HH:mm'),
-        dow: [start.day()]
+        dow: [start.day()],
+        isOneTime: false
       };
-      this.calendar.events.push(eventData);
+
+      this.addUnavailability(unavailability);
       this.$refs.calendar.fireMethod('unselect');
       this.saved = false;
     },
-    async save () {
+    async addUnavailability (unavailability) {
+      let request;
+      try {
+        request = await this.$store.dispatch(
+          'ADD_UNAVAILABILITY',
+          unavailability
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        return;
+      }
+
+      this.$toasted.success(
+        `Added "${
+          request.data.createdUnavailability.title
+        }" to your unavailability.`
+      );
+    },
+    async removeUnavailability (unavailability) {
+      let request;
+      try {
+        request = await this.$store.dispatch(
+          'REMOVE_UNAVAILABILITY',
+          unavailability
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        return;
+      }
+
+      this.$toasted.success(
+        `Removed "${
+          request.data.deletedUnavailability.title
+        }" from your unavailability.`
+      );
+    },
+    async saveTimePreferences () {
       this.loading = true;
 
       let request;
       try {
-        request = await this.$http.post('/setup/unavailability', {
+        request = await this.$http.post('/setup/timepreference', {
           earliest: this.earliest,
-          latest: this.fixedLatest,
-          events: this.calendar.events
+          latest: this.fixedLatest
         });
       } catch (e) {
         this.loading = false;
@@ -230,9 +253,7 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.show(
-        'Your study/work unvailability schedule has been saved.'
-      );
+      this.$toasted.show('Your study/work time limits have been saved.');
 
       this.$router.push({ name: 'setup-integrations' });
 

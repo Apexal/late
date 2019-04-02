@@ -26,7 +26,7 @@
 <script>
 export default {
   name: 'ModalSelectCourse',
-  props: ['courses', 'courseCRN'],
+  props: ['assessmentType', 'courses', 'courseCRN'],
   methods: {
     isActive (crn) {
       return this.courseCRN === crn ? 'active' : '';
