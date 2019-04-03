@@ -1,6 +1,7 @@
 const moment = require('moment');
 
 const state = {
+  modalStep: 0,
   expanded: false,
   courseCRN: '',
   date: null,

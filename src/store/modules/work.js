@@ -249,7 +249,7 @@ const actions = {
     commit('SET_UPCOMING_EXAMS', exams);
   },
   async ADD_WORK_BLOCK (
-    { commit, getters, dispatch, rootState },
+    { commit, getters },
     { assessmentType, assessment, start, end }
   ) {
     const request = await axios.post(
@@ -279,12 +279,10 @@ const actions = {
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    if (getters['getUpcoming' + capitalized + 'ById'](block.assessment._id)) {
-      commit(
-        `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
-        request.data['updated' + capitalized]
-      );
-    }
+    commit(
+      `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
+      request.data['updated' + capitalized]
+    );
 
     return request.data['updated' + capitalized];
   },
@@ -305,7 +303,6 @@ const actions = {
         request.data['updated' + capitalized]
       );
     }
-
     return request.data['updated' + capitalized];
   }
 };

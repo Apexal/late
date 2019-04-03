@@ -21,7 +21,7 @@
               v-for="(s, index) in steps"
               :key="index"
               :class="{'is-active': index === step}"
-              @click="step = index"
+              @click="setStep(index)"
             >
               <a>
                 <span
@@ -129,7 +129,6 @@ export default {
   data () {
     return {
       loading: false,
-      step: 0,
       steps: [
         {
           label: 'Course',
@@ -155,6 +154,9 @@ export default {
     };
   },
   computed: {
+    step () {
+      return this.$store.state.addExamModal.modalStep;
+    },
     currentStep () {
       return this.steps[this.step];
     },
@@ -202,10 +204,19 @@ export default {
   },
   methods: {
     nextStep () {
-      this.step += 1;
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
+        modalStep: this.step + 1
+      });
     },
     lastStep () {
-      this.step -= 1;
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
+        modalStep: this.step - 1
+      });
+    },
+    setStep (modalStep) {
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
+        modalStep
+      });
     },
     setValue (property, value) {
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
@@ -252,8 +263,9 @@ export default {
       }
 
       // Reset important fields
-      this.step = 1;
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
+        modalStep: 0,
+        courseCRN: '',
         dueTime: '08:00',
         title: '',
         description: '',
