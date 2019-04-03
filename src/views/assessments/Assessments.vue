@@ -64,14 +64,14 @@
     <hr>
     <button
       class="button is-dark"
-      title="Add an upcoming assignment"
+      title="Add an assignment"
       @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
     >
       Add Assignment
     </button>
     <button
       class="button is-dark"
-      title="Add an upcoming exam"
+      title="Add an exam"
       @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
     >
       Add Exam
@@ -99,7 +99,6 @@ export default {
     title () {
       return this.$route.meta.title;
     }
-
   },
   watch: {
     showCompleted (nowShowing) {
@@ -122,35 +121,34 @@ export default {
     if (localStorage.getItem('assignmentsGroupBy')) {
       try {
         this.groupBy = localStorage.getItem('assignmentsGroupBy');
-        if (this.groupBy !== 'course' && this.groupBy !== 'dueDate') {
+        if (this.groupBy !== 'courseCRN' && this.groupBy !== 'date') {
           throw new Error(
             'Invalid value for assignmentsGroupBy in localStorage'
           );
         }
       } catch (e) {
-        alert(e);
         localStorage.removeItem('assignmentsGroupBy');
       }
     }
   },
   methods: {
-    async toggleAssessment (assessmentID) {
+    async toggleAssignment (assignmentID) {
       try {
-        const toggledAssessment = await this.$store.dispatch(
+        const toggledAssignment = await this.$store.dispatch(
           'TOGGLE_UPCOMING_ASSIGNMENT',
-          assessmentID
+          assignmentID
         );
-        this.$toasted[toggledAssessment.completed ? 'success' : 'show'](
-          `Marked '${toggledAssessment.title}' as ${
-            toggledAssessment.completed ? 'complete' : 'incomplete'
+        this.$toasted[toggledAssignment.completed ? 'success' : 'show'](
+          `Marked '${toggledAssignment.title}' as ${
+            toggledAssignment.completed ? 'complete' : 'incomplete'
           }!`,
           {
-            icon: toggledAssessment.completed ? 'check-circle' : 'circle',
+            icon: toggledAssignment.completed ? 'check-circle' : 'circle',
             action: {
               text: 'View',
               push: {
                 name: 'assessments-overview',
-                params: { assessmentID }
+                params: { assignmentID }
               }
             }
           }
@@ -217,7 +215,6 @@ span.tag.course-tag {
   }
 }
 
-
 span.dot.course-dot {
   margin-right: 2px;
 }
@@ -233,7 +230,7 @@ span.dot.course-dot {
   .buttons.exam-view-buttons {
     float: unset !important;
   }
-// TODO^^
+  // TODO^^
 
   .level-left + .level-right {
     margin-top: 5px !important;

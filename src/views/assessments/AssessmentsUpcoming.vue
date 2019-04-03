@@ -1,5 +1,5 @@
 <template>
-  <div class="assignments-upcoming">
+  <div class="assessments-upcoming">
     <p
       v-if="none"
       class="has-text-centered has-text-grey"
@@ -19,7 +19,7 @@
       class="columns is-multiline"
     >
       <div
-        v-for="(assessments, key) in filtered"
+        v-for="(assessments, key) in groupedFilteredLimitedAssessments"
         :key="key"
         class="column is-one-third-desktop is-half-tablet"
       >
@@ -39,11 +39,11 @@
               @click="headerClick(key)"
             >{{ headerText(key) }}</span>
           </p>
-          <AssignmentPanelBlock
+          <AssessmentPanelBlock
             v-for="a in assessments"
             :key="a._id"
             :group-by="groupBy"
-            :assignment="a"
+            :assessment="a"
             @toggle-assignment="$emit('toggle-assignment', arguments[0])"
           />
         </div>
@@ -72,12 +72,12 @@
 <script>
 import moment from 'moment';
 
-import AssignmentPanelBlock from '@/views/components/assignments/upcoming/AssignmentPanelBlock';
+import AssessmentPanelBlock from '@/views/components/assessment/upcoming/AssessmentPanelBlock';
 import AssignmentsTable from '@/views/components/assignments/AssignmentsTable.vue';
 
 export default {
   name: 'AssessmentsUpcoming',
-  components: { AssignmentsTable, AssignmentPanelBlock },
+  components: { AssignmentsTable, AssessmentPanelBlock },
   props: {
     showCompleted: {
       type: Boolean,
@@ -102,44 +102,32 @@ export default {
       return this.$store.state.now;
     },
     none () {
-      return Object.keys(this.filtered).length === 0;
+      return Object.keys(this.filteredLimitedAssessments).length === 0;
     },
     headerTitle () {
-      return this.groupBy === 'course'
+      return this.groupBy === 'courseCRN'
         ? 'Open course modal'
         : 'Add assignment to this day';
     },
-    filtered () {
-      const filtered = {};
-      for (let key in this.groupedAssessments) {
-        filtered[key] = this.groupedAssessments[key].filter(a => {
-          if (!this.showCompleted && a.completed) return false;
-          return !this.filter.includes(a.courseCRN);
-        });
-        if (filtered[key].length === 0) delete filtered[key];
-      }
-
-      return filtered;
+    filteredLimitedAssessments () {
+      return this.$store.getters.limitedUpcomingAssessments.filter(
+        assessment => {
+          if (assessment.assessmentType === 'assignment') {
+            if (!this.showCompleted && assessment.completed) return false;
+          } else {
+            return !this.filter.includes(assessment.courseCRN);
+          }
+        }
+      );
     },
-    filteredFarFuture () {
-      return this.farFutureUpcomingAssessments.filter(a => {
-        if (!this.showCompleted && a.completed) return false;
-        return !this.filter.includes(a.courseCRN);
-      });
-    },
-    groupedAssessments () {
-      return this.groupBy === 'course'
-        ? this.upcomingAssignmentsGroupedByCourse
-        : this.upcomingAssessmentsGroupedByDueDate;
+    groupedFilteredLimitedAssessments () {
+      return this.$store.getters.groupAssessments(
+        this.groupBy,
+        this.filteredLimitedAssessments
+      );
     },
     farFutureUpcomingAssessments () {
       return this.$store.getters.farFutureUpcomingAssessments;
-    },
-    upcomingAssessmentsGroupedByDueDate () {
-      return this.$store.getters.upcomingAssessmentsGroupedByDueDate;
-    },
-    upcomingAssignmentsGroupedByCourse () {
-      return this.$store.getters.upcomingAssignmentsGroupedByCourse;
     }
   },
   methods: {
@@ -147,24 +135,24 @@ export default {
       return this.$store.getters.getCourseFromCRN(crn);
     },
     headerText (key) {
-      return this.groupBy === 'course'
+      return this.groupBy === 'courseCRN'
         ? this.course(key).longname
         : this.toDateShortString(key);
     },
     headerStyle (key) {
-      if (this.groupBy === 'dueDate') return {};
+      if (this.groupBy === 'date') return {};
       let color = this.course(key).color;
       if (color.length < 5) {
         color += color.slice(1);
       }
       return {
         'background-color':
-          this.groupBy === 'course' ? this.course(key).color : 'inherit',
+          this.groupBy === 'courseCRN' ? this.course(key).color : 'inherit',
         color: color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
       };
     },
     headerClick (key) {
-      if (this.groupBy === 'course') {
+      if (this.groupBy === 'courseCRN') {
         this.$store.commit('OPEN_COURSE_MODAL', this.course(key));
       } else {
         this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {

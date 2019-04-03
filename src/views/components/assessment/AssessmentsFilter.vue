@@ -40,14 +40,14 @@
       @change="$emit('change-group-by', $event.target.value)"
     >
       <option
-        value="dueDate"
-        :selected="groupBy === 'dueDate'"
+        value="date"
+        :selected="groupBy === 'date'"
       >
         Group by Due Date
       </option>
       <option
-        value="course"
-        :selected="groupBy === 'course'"
+        value="courseCRN"
+        :selected="groupBy === 'courseCRN'"
       >
         Group by Course
       </option>
