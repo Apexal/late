@@ -115,25 +115,21 @@
                 </a>
               </div>
             </div>
-
-            <a
-              class="navbar-item"
-              @click="openAnnouncementsModal"
-            >
-              <span class="icon">
-                <i class="fas fa-bullhorn" />
-              </span>
-              Announcements
-              <span
-                v-if="announcementsCount > 0"
-                class="tag is-primary announcement-count"
-              >{{ announcementsCount }}</span>
-            </a>
           </template>
         </div>
 
         <div class="navbar-end">
           <template v-if="loggedIn">
+            <a
+              class="navbar-item"
+              :title="announcementsCount + ' new announcements'"
+              @click="openAnnouncementsModal"
+            >
+              <i
+                class="fa-bell"
+                :class="[ announcementsCount === 0 ? 'far' : 'fas' ]"
+              />
+            </a>
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
                 <span class="icon">
