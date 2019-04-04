@@ -71,7 +71,7 @@ const router = new Router({
           meta: {
             title: 'Past Assessments'
           },
-          component: () => import('@/views/assignments/AssignmentsPastList.vue')
+          component: () => import('@/views/assessments/AssessmentsPastList.vue')
         }
       ]
     },
