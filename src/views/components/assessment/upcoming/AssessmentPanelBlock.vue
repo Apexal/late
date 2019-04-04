@@ -14,7 +14,9 @@
       </span>
       <span
         v-else
-        class="icon"
+        :style="{ 'color': course.color }"
+        class="icon exam-icon"
+        :title="`${course.longname} Exam`"
       >
         <i class="fas fa-file-alt" />
       </span>
@@ -28,8 +30,9 @@
         {{ assessment.title }}
       </router-link>
       <span
-        class="tooltip is-tooltip-left icon has-text-danger is-pulled-right"
-        :data-tooltip="`You've only scheduled ${assessment.scheduledTime} out of ${assessment.timeEstimate * 60} min to work on this.`"
+        class="is-tooltip-left icon has-text-danger is-pulled-right"
+        :class="{ 'tooltip': assessmentType === 'exam' || (assessmentType === 'assignment' && !assessment.completed) }"
+        :data-tooltip="scheduleWarningTitle"
       >
         <i
           :style="{ opacity: assessmentTimeWarningOpacity }"
@@ -73,12 +76,17 @@ export default {
     toggleAssignmentTitle () {
       return (
         this.course.longname +
+        ' Assignment' +
         (this.assessment.completedAt
           ? ` | Completed ${moment(this.assessment.completedAt).format(
             'M/DD/YY h:mma'
           )}`
           : '')
       );
+    },
+    scheduleWarningTitle () {
+      return `${this.assessment.scheduledTime}/${this.assessment.timeEstimate *
+        60} min scheduled`;
     },
     assessmentType () {
       return this.assessment.assessmentType;
