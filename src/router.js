@@ -41,7 +41,7 @@ const router = new Router({
       path: '/assessments',
       component: () => import('@/views/assessments/Assessments.vue'),
       meta: {
-        title: 'Assessments',
+        title: 'Coursework',
         requiresAuth: true
       },
       children: [
@@ -53,7 +53,7 @@ const router = new Router({
           path: 'calendar',
           name: 'assessments-calendar',
           meta: {
-            title: 'Assessment Calendar'
+            title: 'Coursework Calendar'
           },
           component: () => import('@/views/assessments/AssessmentsCalendar.vue')
         },
@@ -61,7 +61,7 @@ const router = new Router({
           path: 'upcoming',
           name: 'assessments-upcoming',
           meta: {
-            title: 'Upcoming Assessments'
+            title: 'Upcoming Coursework'
           },
           component: () => import('@/views/assessments/AssessmentsUpcoming.vue')
         },
@@ -69,7 +69,7 @@ const router = new Router({
           path: 'past',
           name: 'past-assessments',
           meta: {
-            title: 'Past Assessments'
+            title: 'Past Coursework'
           },
           component: () => import('@/views/assessments/AssessmentsPastList.vue')
         }

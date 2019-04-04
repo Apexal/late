@@ -59,11 +59,14 @@
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
-              <a class="navbar-link">
+              <a
+                class="navbar-link"
+                title="Manage your assignments and exams!"
+              >
                 <span class="icon">
-                  <i class="fas fa-clipboard-list" />
+                  <i class="fas fa-graduation-cap" />
                 </span>
-                Assessments
+                Coursework
                 <span
                   v-if="assessmentCount > 0"
                   class="tag is-warning assignment-count"
@@ -162,7 +165,6 @@
                   title="Edit your profile"
                 >
                   <i
-                    data-v-203ae283
                     class="fas fa-pencil-alt"
                     style="margin-right: 10px"
                   />
@@ -182,20 +184,6 @@
                     />
                   </span>
                   Report a bug
-                </a>
-
-                <a
-                  class="navbar-item"
-                  href="/auth/discord"
-                  title="Join the LATE Discord server"
-                >
-                  <span class="icon">
-                    <i
-                      class="fas fa-comment"
-                      style="margin-right: 5px"
-                    />
-                  </span>
-                  Join Discord
                 </a>
 
                 <hr class="navbar-divider">

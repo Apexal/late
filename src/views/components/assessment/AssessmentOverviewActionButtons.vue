@@ -3,17 +3,17 @@
     <router-link
       :to="`/assessments/upcoming`"
       class="button is-link tooltip"
-      :data-tooltip="`Browse all assessments.`"
+      :data-tooltip="`Browse all course work.`"
     >
       <i class="fas fa-angle-left" />
-      Browse {{ assessmentTypeCaps }}s
+      All Coursework
     </router-link>
     <button
       class="button is-warning"
       @click="$emit('toggle-editing')"
     >
       <i class="fas fa-edit" />
-      Edit Info
+      Edit {{ assessmentTypeCaps }}
     </button>
     <button
       class="button is-pulled-right"

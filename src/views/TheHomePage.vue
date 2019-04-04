@@ -11,7 +11,9 @@
         class="notification is-info"
       >
         <b>WAIT LIST</b> You are currently on the wait list and will be notified by email once LATE opens to the student body. Reach out to the
-        <a href="mailto:matraf@rpi.edu">project lead</a> if you have any questions, or join the
+        <a
+          href="mailto:matraf@rpi.edu"
+        >project lead</a> if you have any questions, or join the
         <a
           target="_blank"
           href="https://discord.gg/2GUKcHg"
@@ -113,12 +115,10 @@
         </div>
         <div class="column is-third">
           <h2 class="is-size-3 title">
-            Add, edit, and remove assignments.
+            Add, edit, and remove assignments and exams.
           </h2>
-          <h3
-            class="is-size-6 tagline"
-          >
-            Quickly edit and remove assignments and assessments from your calendar.
+          <h3 class="is-size-6 tagline">
+            Quickly edit and remove assessments from your calendar.
           </h3>
           <img
             class="example"

@@ -23,7 +23,7 @@
       <router-link
         class="assessment-link"
         :title="(assessment.priority === 1 ? '(OPTIONAL) ' : '') + assessment.description.substring(0, 500)"
-        :to="{ name: 'assessments-overview', params: { assessmentID: assessment._id }}"
+        :to="linkToParams"
         :class="{ 'priority': assessment.priority > 3, 'has-text-grey is-italic': assessment.priority === 1 }"
       >
         <b class="course-title is-hidden-tablet">{{ course.longname }}</b>
@@ -67,6 +67,9 @@ export default {
     }
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     now () {
       return this.$store.state.now;
     },
@@ -87,9 +90,6 @@ export default {
     scheduleWarningTitle () {
       return `${this.assessment.scheduledTime}/${this.assessment.timeEstimate *
         60} min scheduled`;
-    },
-    assessmentType () {
-      return this.assessment.assessmentType;
     },
     assessmentDate () {
       return this.assessmentType === 'assignment'
@@ -130,6 +130,12 @@ export default {
       return (
         1 - this.assessment.scheduledTime / (this.assessment.timeEstimate * 60)
       );
+    },
+    linkToParams () {
+      return {
+        name: this.assessmentType + 's-overview',
+        params: { [this.assessmentType + 'ID']: this.assessment._id }
+      };
     }
   },
   watch: {

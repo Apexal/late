@@ -100,7 +100,7 @@ export default {
         },
         assessments: {
           component: SidebarPressingAssessments,
-          name: 'Pressing Assignments/Exams',
+          name: 'Pressing Coursework',
           icon: 'fas fa-list-ul',
           tagColor: 'warning'
         },
