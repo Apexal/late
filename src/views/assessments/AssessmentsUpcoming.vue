@@ -29,11 +29,6 @@
             :style="headerStyle(key)"
           >
             <span
-              class="tag is-pulled-right"
-              :class="progressClass(key)"
-              :title="`Your assessments for this day are ${percentDone(key)}% complete`"
-            >{{ percentDone(key) }}%</span>
-            <span
               class="key"
               :title="headerTitle"
               @click="headerClick(key)"
@@ -185,19 +180,6 @@ export default {
           ? ` | Completed ${moment(a.completedAt).format('M/DD/YY h:mma')}`
           : '')
       );
-    },
-    percentDone (key) {
-      const assignments = this.groupedFilteredLimitedAssessments[key];
-      return Math.round(
-        (assignments.filter(a => a.completed).length / assignments.length) * 100
-      );
-    },
-    progressClass (key) {
-      const percentDone = this.percentDone(key);
-      if (percentDone === 100) return 'is-success';
-      if (percentDone >= 50) return 'is-warning';
-      if (percentDone > 0) return 'is-danger';
-      return 'is-white';
     },
     toDateShortString (dueDate) {
       if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
