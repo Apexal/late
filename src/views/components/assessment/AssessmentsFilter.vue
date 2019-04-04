@@ -1,58 +1,65 @@
 <template>
-  <div class="assessments-filter is-flex">
-    <div class="courses">
-      <span
-        class="subtitle is-6"
-        style="margin-right: 5px"
-      >Filter</span>
-      <span
-        v-for="c in courses"
-        :key="c.crn"
-        class="tag is-white course-tag level-item is-unselectable"
-        :class="{ 'filtered-out': filter.includes(c.crn) }"
-        :style="{ 'background-color': c.color }"
-        :title="c.longname"
-        @click="$emit('toggle-filter', c)"
-      >
-        <span>{{ c.longname }}</span>
-      </span>
+  <details class="assessments-filter has-background-light box">
+    <summary class="has-text-centered">
+      Filters
+    </summary>
+    <div class="filters-body has-background-white">
+      <div class="is-flex">
+        <div class="courses">
+          <label
+            class
+            style="margin-right: 5px"
+          >Hide Courses</label>
+          <span
+            v-for="c in courses"
+            :key="c.crn"
+            class="tag is-white course-tag level-item is-unselectable"
+            :class="{ 'filtered-out': filter.includes(c.crn) }"
+            :style="{ 'background-color': c.color }"
+            :title="c.longname"
+            @click="$emit('toggle-filter', c)"
+          >
+            <span>{{ c.longname }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="is-flex">
+        <div class="field">
+          <input
+            id="show-completed-assignmemts"
+            type="checkbox"
+            class="switch is-thin"
+            :checked="showCompleted"
+            @change="$emit('toggle-show-completed')"
+          >
+          <label for="show-completed-assignmemts">Show Completed Assignments</label>
+        </div>
+        <div
+          v-if="showGroupBy"
+          class="field"
+        >
+          <label for="group-by-select">Group Items by</label>
+          <select
+            id="group-by-select"
+            @change="$emit('change-group-by', $event.target.value)"
+          >
+            <option
+              value="date"
+              :selected="groupBy === 'date'"
+            >
+              Date
+            </option>
+            <option
+              value="courseCRN"
+              :selected="groupBy === 'courseCRN'"
+            >
+              Course
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
-    <label
-      v-if="showShowCompleted"
-      class="checkbox is-unselectable tooltip show-completed-toggle"
-      data-tooltip="Toggle completed assignments"
-    >
-      <input
-        id="assessment-show-completed"
-        :checked="showCompleted"
-        type="checkbox"
-        class="switch"
-        @change="$emit('toggle-show-completed')"
-      >
-      <label
-        for="assessment-show-completed"
-        style="padding: 3px 0px 0px 56px;; margin: 0 10px;"
-      >Show Completed</label>
-    </label>
-    <select
-      v-if="showGroupBy"
-      class="group-by-select"
-      @change="$emit('change-group-by', $event.target.value)"
-    >
-      <option
-        value="date"
-        :selected="groupBy === 'date'"
-      >
-        Group by Due Date
-      </option>
-      <option
-        value="courseCRN"
-        :selected="groupBy === 'courseCRN'"
-      >
-        Group by Course
-      </option>
-    </select>
-  </div>
+  </details>
 </template>
 
 <script>
@@ -62,11 +69,6 @@ export default {
     filter: {
       type: Array,
       required: true
-    },
-    showShowCompleted: {
-      type: Boolean,
-      default: false,
-      required: false
     },
     showCompleted: {
       type: Boolean,
@@ -94,21 +96,38 @@ export default {
 
 <style lang="scss" scoped>
 .assessments-filter {
-  align-items: center;
-  justify-content: center;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 20px;
+
+  .filters-body {
+    padding: 10px;
+  }
+  .is-flex {
+    align-items: center;
+    justify-content: center;
+
+    &:not(:first-child) {
+      padding-top: 10px;
+    }
+  }
+
+  .field {
+    margin: 0;
+    padding: 0px 30px;
+  }
 
   .subtitle {
     margin: 0;
   }
+
   label {
-    flex: 1;
-    padding: 0 10px;
-    text-align: right;
-    margin-right: 10px;
+    font-weight: 500;
   }
-  padding: 10px;
-  margin: 0;
-  margin-bottom: 20px;
+
+  #group-by-select {
+    margin-left: 5px;
+  }
 }
 span.tag.course-tag {
   cursor: pointer;
