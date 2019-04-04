@@ -193,9 +193,9 @@ export default {
       }
 
       // This handles the API call and state update
-      if (assessment.assessmentType === 'assignments') {
+      if (assessment.assessmentType === 'assignment') {
         await this.$http.delete(`/assignments/a/${assessment._id}`);
-      } else await this.$http.delete(`/exams/ex/${assessment._id}`);
+      } else await this.$http.delete(`/exams/e/${assessment._id}`);
 
       this.currentAssessments = this.currentAssessments.filter(
         as => as._id !== assessment._id
