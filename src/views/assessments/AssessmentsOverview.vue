@@ -28,64 +28,51 @@
       v-else
       class="section"
     >
-      ${this.$route.params.assignmentID}?
-      (<AssessmentOverviewTitle
+      <AssessmentOverviewTitle
         :assessment-type="'assignment'"
         :assessment="assignment"
         @toggle-completed="toggleCompleted"
       />
+
+      <AssignmentOverviewStats
+        v-if="assessmentType === 'assignment'"
+        :assignment="assessment"
+        @not-fully-scheduled-click="notFullyScheduledClick"
+      />
+
+      <ExamOverviewStats
+        v-else
+        :exam="assessment"
+      />
+
       <AssessmentOverviewDescription
-        :assessment-type="'assignment'"
         :assessment="assignment"
         @update-assessment="updatedAssignment"
       />
       <AssignmentOverviewTabs
         ref="tabs"
         :tab="tab"
-        :assignment="assignment"
+        :assignment="assessment"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
-        @update-assessment="updatedAssignment"
-      />):
-      (<AssessmentOverviewTitle
-        :assessment-type="'exam'"
-        :assessment="exam"
+        @update-assessment="updatedAssessment"
       />
-      <AssessmentOverviewDescription
-        :assessment-type="'exam'"
-        :assessment="exam"
-        @update-assessment="updatedExam"
-      />
+
       <ExamOverviewTabs
         :tab="tab"
-        :exam="exam"
+        :exam="assessment"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
-        @update-assessment="updatedExam"
-      />)
-
-      ${this.$route.params.assignmentID}?
-      (<AssignmentOverviewStats
-        :assignment="assignment"
-        @not-fully-scheduled-click="notFullyScheduledClick"
-      />):(<ExamOverviewStats :exam="exam" />)
-
+        @update-assessment="updatedAssessment"
+      />
 
       <hr>
-      ${this.$route.params.assignmentID}?
-      (<AssessmentOverviewActionButtons
-        :assessment-type="'assignment'"
-        :assessment="assignment"
-        :loading="loading"
-        @toggle-editing="toggleEditing"
-        @copy-assignment="copyAssignment"
-      />):(
+
       <AssessmentOverviewActionButtons
-        :assessment-type="'exam'"
-        :assessment="exam"
+        :assessment="assessment"
         :loading="loading"
         @toggle-editing="toggleEditing"
-        @copy-exam="copyExam"
+        @copy-assessment="copyAssessment"
       />
     </section>
   </div>
@@ -97,15 +84,17 @@ import 'confetti-js';
 import VueMarkdown from 'vue-markdown';
 
 // Page components
-import ExamOverviewStats from '@/views/components/exams/overview/ExamOverviewStats';
 import AssignmentOverviewStats from '@/views/components/assignments/overview/AssignmentOverviewStats';
 import AssessmentOverviewDescription from '@/views/components/assessment/AssessmentOverviewDescription';
 import AssessmentOverviewActionButtons from '@/views/components/assessment/AssessmentOverviewActionButtons';
 import AssessmentOverviewTitle from '@/views/components/assessment/AssessmentOverviewTitle';
-import ExamsModalEdit from '@/views/components/exams/ExamsModalEdit';
-import ExamOverviewTabs from '@/views/components/exams/overview/ExamOverviewTabs';
-import AssignmentsModalEdit from '@/views/components/assignments/AssignmentsModalEdit';
+
 import AssignmentOverviewTabs from '@/views/components/assignments/overview/AssignmentOverviewTabs';
+import AssignmentsModalEdit from '@/views/components/assignments/AssignmentsModalEdit';
+
+import ExamsModalEdit from '@/views/components/exams/ExamsModalEdit';
+import ExamOverviewStats from '@/views/components/exams/overview/ExamOverviewStats';
+import ExamOverviewTabs from '@/views/components/exams/overview/ExamOverviewTabs';
 
 export default {
   name: 'AssessmentsOverview',
@@ -120,6 +109,12 @@ export default {
     AssignmentsModalEdit,
     AssignmentOverviewTabs,
     AssignmentOverviewStats
+  },
+  props: {
+    assessmentType: {
+      type: String,
+      required: true
+    }
   },
   data () {
     return {
@@ -142,38 +137,33 @@ export default {
       return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
     },
     lastEdited () {
-      return moment(this.assignment.createdAt).isSame(this.assignment.updatedAt)
+      return moment(this.assessment.createdAt).isSame(this.assessment.updatedAt)
         ? 'never'
-        : moment(this.assignment.updatedAt).format('M/DD/YY h:mma');
+        : moment(this.assessment.updatedAt).format('M/DD/YY h:mma');
     },
     isPast () {
       return this.assessment.passed;
     },
     toggleButtonTitle () {
-      return this.assignment.completed
-        ? `Completed ${moment(this.assignment.completedAt).format(
+      return this.assessment.completed
+        ? `Completed ${moment(this.assessment.completedAt).format(
           'M/DD/YY h:mma'
         )}`
         : 'Click to mark as completed.';
     }
   },
   watch: {
-    $route: 'getAssignment',
-    assignment (newAssignment) {
-      document.title = `${newAssignment.title} | LATE`;
+    $route: 'getAssessment',
+    assessment (newAssessment) {
+      document.title = `${newAssessment.title} | LATE`;
     }
-    // $route: 'getExam',
-    // exam (newExam) {
-    //   document.title = `${newExam.title} | LATE`;
-    // }
   },
   mounted () {
     // eslint-disable-next-line no-undef
     this.confetti = new ConfettiGenerator(this.confettiSettings);
   },
   created () {
-    this.$route.params.assignmentID
-      ? this.getAssignment() : this.getExam();
+    this.getAssessment();
   },
   methods: {
     tabChanged (newTab) {
@@ -188,29 +178,30 @@ export default {
         behavior: 'smooth'
       });
     },
-    updatedExam (newExam) {
-      this.exam = newExam;
-    },
-    updatedAssignment (newAssignment) {
-      this.assignment = newAssignment;
+    updatedAssessment (newAssessment) {
+      // eslint-disable-next-line
+      Vue.set(this.assessment, newAssessment);
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
       this.$refs.tabs.scrollTo();
     },
-    copyExam () {
-      this.$store.dispatch('COPY_EXAM_TO_MODAL', this.exam);
-      this.$store.commit('TOGGLE_ADD_EXAM_MODAL');
-    },
-    copyAssignment () {
-      this.$store.dispatch('COPY_ASSIGNMENT_TO_MODAL', this.assignment);
-      this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+    copyAssessment () {
+      this.$store.dispatch(
+        'COPY_' + this.assessmentType.toUpperCase() + '_TO_MODAL',
+        this.exam
+      );
+      this.$store.commit(
+        'TOGGLE_ADD_' + this.assessmentType.toUpperCase() + '_MODAL'
+      );
     },
     async toggleCompleted () {
+      if (this.assessmentType !== 'assignment') return;
+
       if (
         !confirm(
-          `Are you sure you want to mark this assignment as ${
-            this.assignment.completed ? 'incomplete' : 'complete'
+          `Are you sure you want to mark this ${this.assessmentType} as ${
+            this.assessment.completed ? 'incomplete' : 'complete'
           }?`
         )
       ) {
@@ -221,33 +212,33 @@ export default {
       // If upcoming assignment, let store handle it
       try {
         if (
-          this.$store.getters.getUpcomingAssignmentById(this.assignment._id)
+          this.$store.getters.getUpcomingAssignmentById(this.assessment._id)
         ) {
           await this.$store.dispatch(
             'TOGGLE_UPCOMING_ASSIGNMENT',
-            this.assignment._id
+            this.assessment._id
           );
-          await this.getAssignment();
+          await this.getAssessment();
         } else {
           const request = await this.$http.post(
-            `/assignments/a/${this.assignment._id}/toggle`
+            `/assignments/a/${this.assessment._id}/toggle`
           );
 
-          this.updatedAssignment(request.data.updatedAssignment);
+          this.updatedAssessment(request.data.updatedAssignment);
         }
-        this.$toasted[this.assignment.completed ? 'success' : 'show'](
-          this.assignment.completed
+        this.$toasted[this.assessment.completed ? 'success' : 'show'](
+          this.assessment.completed
             ? 'Marked assignment as completed! Nice job!'
             : 'Marked assignment as incomplete.',
           {
-            icon: this.assignment.completed ? 'check-circle' : 'circle',
+            icon: this.assessment.completed ? 'check-circle' : 'circle',
             action: {
               text: 'Undo'
             }
           }
         );
 
-        if (this.assignment.completed) {
+        if (this.assessment.completed) {
           this.confetti.render();
           setTimeout(() => this.confetti.clear(), 2000);
         }
@@ -257,45 +248,7 @@ export default {
 
       this.toggleLoading = false;
     },
-    async getExam () {
-      // If its an upcoming exam, we already have the data on it
-      if (this.$store.getters.getUpcomingExamById(this.$route.params.examID)) {
-        this.exam = this.$store.getters.getUpcomingExamById(
-          this.$route.params.examID
-        );
-        this.loading = false;
-        this.isUpcoming = true;
-
-        if ((this.assessment.completed) || (this.passed)) this.tab = 'comments';
-        return;
-      }
-
-      this.tab = 'comments';
-
-      this.loading = true;
-      this.isUpcoming = false;
-
-      let request;
-      try {
-        request = await this.$route.params.assignmentID
-          ? this.$http.get(`/assignments/a/${this.$route.params.assignmentID}`) : this.$http.get(`/exams/e/${this.$route.params.examID}`);
-      } catch (e) {
-        this.loading = false;
-        this.$route.params.assignmentID ? this.$router.push('/assignments') : this.$router.push('/exams');
-
-        return this.$toasted.error(e.response.data.message);
-      }
-      if (this.$route.params.assignmentID) {
-        this.assignment = request.data.assignment;
-        this.editedDescription = this.assignment.description;
-      } else {
-        this.exam = request.data.exam;
-        document.title = `${this.exam.title} | LATE`;
-      }
-
-      this.loading = false;
-    },
-    async getAssignment () {
+    async getAssessment () {
       // If its an upcoming assignment, we already have the data on it
       if (
         this.$store.getters.getUpcomingAssignmentById(
@@ -305,12 +258,12 @@ export default {
         this.assignment = this.$store.getters.getUpcomingAssignmentById(
           this.$route.params.assignmentID
         );
-        this.editedDescription = this.assignment.description;
+        this.editedDescription = this.assessment.description;
 
         this.loading = false;
         this.isUpcoming = true;
 
-        if ((this.assessment.completed) || (this.passed)) this.tab = 'comments';
+        if (this.assessment.completed || this.passed) this.tab = 'comments';
         return;
       }
 
@@ -321,19 +274,20 @@ export default {
 
       let request;
       try {
-        request = await this.$route.params.assignmentID
+        request = (await this.$route.params.assignmentID)
           ? this.$http.get(`/assignments/a/${this.$route.params.assignmentID}`)
           : this.$http.get(`/exams/e/${this.$route.params.examID}`);
       } catch (e) {
         this.loading = false;
         this.$route.params.assignmentID
-          ? this.$router.push('/assignments') : this.$router.push('/exams');
+          ? this.$router.push('/assignments')
+          : this.$router.push('/exams');
 
         return this.$toasted.error(e.response.data.message);
       }
       if (this.$route.params.assignmentID) {
         this.assignment = request.data.assignment;
-        this.editedDescription = this.assignment.description;
+        this.editedDescription = this.assessment.description;
       } else {
         this.exam = request.data.exam;
         document.title = `${this.exam.title} | LATE`;
@@ -373,7 +327,6 @@ export default {
       const assessmentID = this.assessment._id;
       this.dispatchOrDelete(assessmentID);
 
-
       // Notify user of success
       this.$toasted.success(
         `Successfully removed assessment '${assessmentTitle}'.`,
@@ -382,7 +335,8 @@ export default {
           action: {
             text: 'Undo'
           }
-        });
+        }
+      );
     },
     shortDateTimeString: date =>
       moment(date).format('dddd, MMM Do YYYY [@] h:mma'),
