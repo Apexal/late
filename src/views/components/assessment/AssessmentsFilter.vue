@@ -1,5 +1,9 @@
 <template>
-  <details class="assessments-filter has-background-light box">
+  <details
+    class="assessments-filter has-background-light box"
+    :open="expanded"
+    @toggle="toggleExpanded"
+  >
     <summary class="has-text-centered">
       Filters
     </summary>
@@ -86,9 +90,34 @@ export default {
       required: false
     }
   },
+  data () {
+    return {
+      expanded: false
+    };
+  },
   computed: {
     courses () {
       return this.$store.getters.current_schedule;
+    }
+  },
+  mounted () {
+    if (localStorage.getItem('assessmentsShowFilters')) {
+      try {
+        this.expanded = JSON.parse(
+          localStorage.getItem('assessmentsShowFilters')
+        );
+      } catch (e) {
+        localStorage.removeItem('assessmentsShowFilters');
+      }
+    }
+  },
+  methods: {
+    toggleExpanded (event) {
+      this.expanded = event.target.open;
+      localStorage.setItem(
+        'assessmentsShowFilters',
+        JSON.stringify(this.expanded)
+      );
     }
   }
 };
