@@ -95,7 +95,7 @@
                 <hr class="navbar-divider">
                 <a
                   class="navbar-item"
-                  title="Add a new assessment"
+                  title="Add a new assignment"
                   @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                 >
                   <span class="icon">
@@ -103,47 +103,6 @@
                   </span>
                   Add Assignment
                 </a>
-              </div>
-            </div>
-
-            <div
-              v-if="!onBreak"
-              class="navbar-item has-dropdown is-hoverable"
-            >
-              <a class="navbar-link">
-                <span class="icon">
-                  <i class="fas fa-file-alt" />
-                </span>
-                Exams
-                <span
-                  v-if="examCount > 0"
-                  class="tag is-danger exam-count"
-                >{{ examCount }}</span>
-              </a>
-
-              <div class="navbar-dropdown">
-                <router-link
-                  class="navbar-item"
-                  to="/exams/upcoming"
-                  title="View upcoming exams"
-                >
-                  <b>Upcoming</b>
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/exams/past"
-                  title="Browse all past exams"
-                >
-                  Previous
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/exams/calendar"
-                  title="View a calendar of all your exams"
-                >
-                  Calendar
-                </router-link>
-                <hr class="navbar-divider">
                 <a
                   class="navbar-item"
                   title="Add a new exam"
@@ -156,6 +115,7 @@
                 </a>
               </div>
             </div>
+
             <a
               class="navbar-item"
               @click="openAnnouncementsModal"
@@ -296,8 +256,7 @@ export default {
       return this.$store.state.auth.isAuthenticated;
     },
     assessmentCount () {
-      return this.$store.getters.incompleteUpcomingAssignments.length +
-        this.$store.state.work.upcomingExams.length;
+      return this.$store.getters.limitedUpcomingAssessments.length;
     },
     examCount () {
       return this.$store.state.work.upcomingExams.length;
@@ -343,7 +302,7 @@ export default {
   transform: translateY(3px) rotate(135deg);
   transition: 0.05s;
   -webkit-transition: 0.05s;
-  }
+}
 
 .has-dropdown:hover .navbar-link::after {
   transition: 0.2s;
