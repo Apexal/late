@@ -3,7 +3,7 @@
     <h2 class="subtitle">
       Week of {{ weekOf }}
     </h2>
-    <div class="is-flex">
+    <div class="is-flex-tablet">
       <button
         class="button"
         :disabled="!canGoPrev"

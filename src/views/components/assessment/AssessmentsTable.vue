@@ -32,10 +32,11 @@
             :style="'background-color: ' + course(assessment).color"
           />
           <b
-            class="course-title"
-          >{{ course(assessment).longname }} {{ assessment.assessmentType === 'assignment' ? 'Assignment' : 'Exam' }}</b>
+            class="assessment-type"
+            :title="course(assessment).longname"
+          >{{ assessment.assessmentType === 'assignment' ? 'Assignment' : 'Exam' }}</b>
+
           <router-link
-            tag="td"
             class="assessment-link"
             :title="assessment.description.substring(0, 500)"
             :to="{ name: 'assessment-overview', params: { id: assessment._id }}"
@@ -104,9 +105,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.assessment-link {
+.assessment-link,
+.assessment-type {
   color: inherit;
   cursor: pointer;
+}
+.assessment-type {
+  margin-right: 5px;
 }
 .course-dot {
   margin-right: 5px;
