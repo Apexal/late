@@ -47,10 +47,11 @@ export default {
           eventClick: (calEvent, jsEvent, view) => {
             this.$router.push(`/${calEvent.type}s/${calEvent.assignment._id}`);
           },
-          eventRender: (event) => {
+          eventRender: event => {
             if (
-              this.filter.includes(event.assignment.courseCRN) ||
-              (!this.showCompleted && event.assignment.completed)
+              this.filter.includes(event.assessment.courseCRN) ||
+              (event.type === 'assignment' &&
+              (!this.showCompleted && event.assignment.completed))
             ) {
               return false;
             }
@@ -66,7 +67,7 @@ export default {
       this.$refs.calendar.fireMethod('rerenderEvents');
     },
     showCompleted () {
-      this.$refs.calendar.fireMethod('refetchEvents');
+      this.$refs.calendar.fireMethod('rerenderEvents');
     }
   },
   methods: {
@@ -85,42 +86,45 @@ export default {
       }
 
       const assignments = request.data.assignments;
-      const assignmentEvents = assignments
-        .filter(a => (this.showCompleted ? true : !a.completed))
-        .map(a => ({
-          type: 'assignment',
-          title: a.title,
-          start: a.dueDate,
-          color: this.course(a).color,
-          assignment: a
-        }));
+      const assignmentEvents = assignments.map(a => ({
+        type: 'assignment',
+        title: a.title,
+        start: a.dueDate,
+        color: this.course(a).color,
+        assessment: a,
+        assignment: a
+      }));
       try {
-        request = await this.$http.get(
-          '/exams', { params: { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') } }
-        );
+        request = await this.$http.get('/exams', {
+          params: {
+            start: start.format('YYYY-MM-DD'),
+            end: end.format('YYYY-MM-DD')
+          }
+        });
       } catch (e) {
         this.events = [];
         return this.$toasted.error(e.response.data.message);
       }
 
       const exams = request.data.exams;
-      const examEvents = exams
-        .map(e => ({
-          type: 'exam',
-          title: e.title,
-          start: e.date,
-          color: this.course(e).color,
-          assignment: e
-        }));
+      const examEvents = exams.map(e => ({
+        type: 'exam',
+        title: e.title,
+        start: e.date,
+        color: this.course(e).color,
+        assessment: e,
+        assignment: e
+      }));
       const events = examEvents.concat(assignmentEvents);
-
 
       callback(events);
     },
-    dayClick (date) { // TODO added TOGGLE_ADD_ASSESSMENT_MODAL. add logic to receive this
+    dayClick (date) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: date });
-      this.$store.commit(
-        'TOGGLE_ADD_ASSESSMENT_MODAL'
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', { date });
+
+      this.$toasted.info(
+        'Date set. Add a new assignment or exam with the buttons below the calendar!'
       );
     },
     course (a) {
