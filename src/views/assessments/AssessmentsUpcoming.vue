@@ -109,11 +109,8 @@ export default {
         assessment => {
           if (assessment.assessmentType === 'assignment') {
             if (!this.showCompleted && assessment.completed) return false;
-          } else {
-            return !this.filter.includes(assessment.courseCRN);
           }
-
-          return true;
+          return !this.filter.includes(assessment.courseCRN);
         }
       );
     },
@@ -130,9 +127,8 @@ export default {
       return this.farFutureUpcomingAssessments.filter(assessment => {
         if (assessment.assessmentType === 'assignment') {
           if (!this.showCompleted && assessment.completed) return false;
-        } else {
-          return !this.filter.includes(assessment.courseCRN);
         }
+        return !this.filter.includes(assessment.courseCRN);
       });
     }
   },
