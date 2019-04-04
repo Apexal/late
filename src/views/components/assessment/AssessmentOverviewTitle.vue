@@ -40,16 +40,15 @@
 export default {
   name: 'AssessmentOverviewTitle',
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
     }
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
     },

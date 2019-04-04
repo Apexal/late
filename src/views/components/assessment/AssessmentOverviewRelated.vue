@@ -32,10 +32,6 @@ export default {
   name: 'AssessmentOverviewRelated',
   components: { AssignmentsTable, ExamsTable },
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -46,6 +42,11 @@ export default {
       loading: true,
       related: []
     };
+  },
+  computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    }
   },
   watch: {
     assessment: 'getRelatedAssessments'

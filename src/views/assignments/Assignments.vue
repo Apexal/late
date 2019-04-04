@@ -15,7 +15,7 @@
 
         <router-link
           tag="li"
-          to="/assignments/upcoming"
+          to="/assessments/upcoming"
           title="Switch to view upcoming assignments"
         >
           <a>Upcoming</a>

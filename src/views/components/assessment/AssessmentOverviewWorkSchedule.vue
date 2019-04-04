@@ -73,10 +73,6 @@ export default {
   name: 'AsessmentOverviewTabsWorkSchedule',
   components: { FullCalendar },
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -88,6 +84,9 @@ export default {
     };
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     assessmentTypeCapitalized () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     },

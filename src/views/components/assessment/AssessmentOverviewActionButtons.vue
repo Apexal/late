@@ -1,9 +1,9 @@
 <template>
   <div class="assessment-actions clearfix">
     <router-link
-      :to="`/${assessmentType}s/upcoming`"
+      :to="`/assessments/upcoming`"
       class="button is-link tooltip"
-      :data-tooltip="`Browse all ${assessmentType}s.`"
+      :data-tooltip="`Browse all assessments.`"
     >
       <i class="fas fa-angle-left" />
       Browse {{ assessmentTypeCaps }}s
@@ -28,10 +28,6 @@
 export default {
   name: 'AssessmentOverviewActionButtons',
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -42,6 +38,9 @@ export default {
     }
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     assessmentTypeCaps () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     }

@@ -77,10 +77,6 @@ export default {
   name: 'AssessmentOverviewComments',
   components: { VueMarkdown },
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -93,6 +89,9 @@ export default {
     };
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     capitalizedAssessmentType () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     }

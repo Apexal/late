@@ -2,26 +2,27 @@
   <div class="assessment-overview">
     <canvas id="confetti-canvas" />
     <AssignmentsModalEdit
+      v-if="assessmentType === 'assignment'"
       :open="editing"
-      :initial-assignment="assignment"
+      :initial-assignment="assessment"
       @toggle-modal="editing = !editing"
-      @edit-assignment="updatedAssignment"
-      @remove-assignment="remove"
+      @edit-assignment="updatedAssessment"
+      @remove-assignment="removeAssessment"
     />
     <ExamsModalEdit
-      v-if="!isPast"
+      v-else-if="assessmentType === 'exam'"
       :open="editing"
-      :initial-exam="exam"
+      :initial-exam="assessment"
       @toggle-modal="editing = !editing"
-      @edit-exam="updatedExam"
-      @remove-exam="remove"
+      @edit-exam="updatedAssessment"
+      @remove-exam="removeAssessment"
     />
     <section
       v-if="loading"
       class="section"
     >
       <h1 class="title has-text-grey">
-        Loading Assessment...
+        Loading {{ assessmentType }}...
       </h1>
     </section>
     <section
@@ -30,7 +31,7 @@
     >
       <AssessmentOverviewTitle
         :assessment-type="'assignment'"
-        :assessment="assignment"
+        :assessment="assessment"
         @toggle-completed="toggleCompleted"
       />
 
@@ -46,10 +47,11 @@
       />
 
       <AssessmentOverviewDescription
-        :assessment="assignment"
-        @update-assessment="updatedAssignment"
+        :assessment="assessment"
+        @update-assessment="updatedAssessment"
       />
       <AssignmentOverviewTabs
+        v-if="assessmentType === 'assignment'"
         ref="tabs"
         :tab="tab"
         :assignment="assessment"
@@ -59,6 +61,7 @@
       />
 
       <ExamOverviewTabs
+        v-else
         :tab="tab"
         :exam="assessment"
         :loading="loading || commentLoading"
@@ -130,6 +133,11 @@ export default {
     };
   },
   computed: {
+    assessmentID () {
+      return this.assessmentType === 'assignment'
+        ? this.$route.params.assignmentID
+        : this.$route.params.examID;
+    },
     now () {
       return this.$store.state.now;
     },
@@ -180,7 +188,7 @@ export default {
     },
     updatedAssessment (newAssessment) {
       // eslint-disable-next-line
-      Vue.set(this.assessment, newAssessment);
+      this.assessment = newAssessment;
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
@@ -250,48 +258,66 @@ export default {
     },
     async getAssessment () {
       // If its an upcoming assignment, we already have the data on it
-      if (
-        this.$store.getters.getUpcomingAssignmentById(
-          this.$route.params.assignmentID
-        )
-      ) {
-        this.assignment = this.$store.getters.getUpcomingAssignmentById(
-          this.$route.params.assignmentID
-        );
-        this.editedDescription = this.assessment.description;
+      if (this.assessmentType === 'assignment') {
+        if (
+          this.$store.getters.getUpcomingAssignmentById(
+            this.$route.params.assignmentID
+          )
+        ) {
+          this.updatedAssessment(
+            this.$store.getters.getUpcomingAssignmentById(
+              this.$route.params.assignmentID
+            )
+          );
 
-        this.loading = false;
-        this.isUpcoming = true;
+          this.editedDescription = this.assessment.description;
+          document.title = `${this.assessment.title} | LATE`;
+          this.loading = false;
+          this.isUpcoming = true;
 
-        if (this.assessment.completed || this.passed) this.tab = 'comments';
-        return;
+          if (this.assessment.completed || this.passed) this.tab = 'comments';
+          return;
+        }
+      } else if (this.assessmentType === 'exam') {
+        if (
+          this.$store.getters.getUpcomingExamById(this.$route.params.examID)
+        ) {
+          // eslint-disable-next-line
+          this.updatedAssessment(
+            this.$store.getters.getUpcomingExamById(this.$route.params.examID)
+          );
+          this.loading = false;
+          this.isUpcoming = true;
+          document.title = `${this.assessment.title} | LATE`;
+
+          if (this.passed) this.tab = 'comments';
+
+          return;
+        }
       }
 
-      this.tab = 'comments';
+      // Not an upcoming assessment
 
+      this.tab = 'comments';
       this.loading = true;
       this.isUpcoming = false;
 
       let request;
+      let apiURL =
+        this.assessmentType === 'assignment' ? '/assignments/a/' : '/exams/e/';
       try {
-        request = (await this.$route.params.assignmentID)
-          ? this.$http.get(`/assignments/a/${this.$route.params.assignmentID}`)
-          : this.$http.get(`/exams/e/${this.$route.params.examID}`);
+        request = await this.$http.get(apiURL + this.assessmentID);
       } catch (e) {
         this.loading = false;
-        this.$route.params.assignmentID
-          ? this.$router.push('/assignments')
-          : this.$router.push('/exams');
+        this.router.push('/assessments');
 
         return this.$toasted.error(e.response.data.message);
       }
-      if (this.$route.params.assignmentID) {
-        this.assignment = request.data.assignment;
-        this.editedDescription = this.assessment.description;
-      } else {
-        this.exam = request.data.exam;
-        document.title = `${this.exam.title} | LATE`;
-      }
+
+      this.updatedAssessment(request.data[this.assessmentType]);
+      this.editedDescription = this.assessment.description;
+      document.title = `${this.assessment.title} | LATE`;
+
       this.loading = false;
     },
     async dispatchOrDelete (assessmentID) {
@@ -313,7 +339,7 @@ export default {
         await this.$http.delete(deleteStr);
       }
     },
-    async remove () {
+    async removeAssessment () {
       // Confirm user wants to remove assessment
       if (
         !confirm(
