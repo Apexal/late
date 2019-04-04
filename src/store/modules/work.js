@@ -51,6 +51,11 @@ const getters = {
           .startOf('day')
       )
     ),
+  farFutureUpcomingAssessments: (state, getters) => {
+    return getters.farFutureUpcomingAssignments.concat(
+      getters.farFutureUpcomingExams
+    );
+  },
   limitedUpcomingAssessments: (state, getters) => {
     return getters.limitedUpcomingAssignments.concat(
       getters.limitedUpcomingExams
@@ -68,8 +73,14 @@ const getters = {
   groupAssessments: (state, getters) => (groupBy, assessments) => {
     const grouped = {};
     for (let assessment of assessments) {
-      if (!grouped[assessment[groupBy]]) grouped[assessment[groupBy]] = [];
-      grouped[assessment[groupBy]].push(assessment);
+      const key =
+        groupBy === 'courseCRN'
+          ? assessment.courseCRN
+          : moment(assessment.dueDate || assessment.date)
+            .startOf('day')
+            .toDate();
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(assessment);
     }
     return grouped;
   },

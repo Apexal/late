@@ -63,7 +63,7 @@
 
       <AssignmentsTable
         v-if="showingFutureAssignments"
-        :assignments="filteredFarFuture"
+        :assignments="filteredFarFutureAssessments"
       />
     </div>
   </div>
@@ -117,6 +117,8 @@ export default {
           } else {
             return !this.filter.includes(assessment.courseCRN);
           }
+
+          return true;
         }
       );
     },
@@ -128,6 +130,15 @@ export default {
     },
     farFutureUpcomingAssessments () {
       return this.$store.getters.farFutureUpcomingAssessments;
+    },
+    filteredFarFutureAssessments () {
+      return this.farFutureUpcomingAssessments.filter(assessment => {
+        if (assessment.assessmentType === 'assignment') {
+          if (!this.showCompleted && assessment.completed) return false;
+        } else {
+          return !this.filter.includes(assessment.courseCRN);
+        }
+      });
     }
   },
   methods: {
@@ -176,7 +187,7 @@ export default {
       );
     },
     percentDone (key) {
-      const assignments = this.groupedAssessments[key];
+      const assignments = this.groupedFilteredLimitedAssessments[key];
       return Math.round(
         (assignments.filter(a => a.completed).length / assignments.length) * 100
       );
