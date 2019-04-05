@@ -80,13 +80,15 @@ import moment from 'moment';
 import SidebarSchedule from '@/views/components/sidebar/SidebarSchedule';
 import SidebarPressingAssessments from '@/views/components/sidebar/SidebarPressingAssessments';
 import SidebarTodoList from '@/views/components/sidebar/SidebarTodoList';
+import SidebarCourseList from '@/views/components/sidebar/SidebarCourseList';
 
 export default {
   name: 'TheSidebar',
   components: {
     SidebarPressingAssessments,
     SidebarSchedule,
-    SidebarTodoList
+    SidebarTodoList,
+    SidebarCourseList
   },
   data () {
     return {
@@ -104,11 +106,17 @@ export default {
           icon: 'fas fa-list-ul',
           tagColor: 'warning'
         },
+        courseList: {
+          component: SidebarCourseList,
+          name: 'Your Courses',
+          icon: 'fas fa-graduation-cap',
+          tagColor: 'link'
+        },
         todos: {
           component: SidebarTodoList,
           name: 'To-Do List',
           icon: 'fas fa-check',
-          tagColor: 'info'
+          tagColor: 'success'
         }
       }
     };
@@ -124,6 +132,7 @@ export default {
       return {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
+        courseList: this.$store.getters.current_schedule.length,
         todos: this.todos.length
       };
     },
