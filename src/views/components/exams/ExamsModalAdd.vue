@@ -279,7 +279,7 @@ export default {
           moment().startOf('day')
         )
       ) {
-        this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
+        this.$store.commit('ADD_UPCOMING_ASSESSMENT', request.data.createdExam);
       }
 
       this.title = '';

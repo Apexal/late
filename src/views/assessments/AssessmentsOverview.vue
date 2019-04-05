@@ -220,7 +220,7 @@ export default {
       // If upcoming assignment, let store handle it
       try {
         if (
-          this.$store.getters.getUpcomingAssignmentById(this.assessment._id)
+          this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
         ) {
           await this.$store.dispatch(
             'TOGGLE_UPCOMING_ASSIGNMENT',
@@ -260,12 +260,12 @@ export default {
       // If its an upcoming assignment, we already have the data on it
       if (this.assessmentType === 'assignment') {
         if (
-          this.$store.getters.getUpcomingAssignmentById(
+          this.$store.getters.getUpcomingAssessmentById(
             this.$route.params.assignmentID
           )
         ) {
           this.updatedAssessment(
-            this.$store.getters.getUpcomingAssignmentById(
+            this.$store.getters.getUpcomingAssessmentById(
               this.$route.params.assignmentID
             )
           );

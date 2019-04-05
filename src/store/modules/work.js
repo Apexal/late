@@ -19,7 +19,9 @@ const state = {
 
 const getters = {
   getUpcomingAssessmentById: state => assessmentID =>
-    state.find(assessment => assessment._id === assessmentID),
+    state.upcomingAssessments.find(
+      assessment => assessment._id === assessmentID
+    ),
   limitedUpcomingAssessments: (state, getters) => {
     const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days');
     return state.upcomingAssessments.filter(assessment =>

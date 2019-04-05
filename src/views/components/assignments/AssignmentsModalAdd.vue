@@ -276,7 +276,7 @@ export default {
 
       // Update global state
       this.$store.dispatch(
-        'ADD_UPCOMING_ASSIGNMENT',
+        'ADD_UPCOMING_ASSESSMENT',
         request.data.createdAssignment
       );
 

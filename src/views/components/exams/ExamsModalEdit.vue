@@ -284,7 +284,7 @@ export default {
         )
       ) {
         // Past assignment was moved to the future
-        this.$store.commit('ADD_UPCOMING_EXAM', request.data.updatedExam);
+        this.$store.commit('ADD_UPCOMING_ASSESSMENT', request.data.updatedExam);
       }
       this.$emit('edit-exam', this.exam);
 

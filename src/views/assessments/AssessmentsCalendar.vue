@@ -45,7 +45,10 @@ export default {
           defaultView: 'month',
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
-            this.$router.push(`/${calEvent.type}s/${calEvent.assignment._id}`);
+            this.$router.push({
+              name: calEvent.type + '-overview',
+              params: { [calEvent.type + 'ID']: calEvent.assessment._id }
+            });
           },
           eventRender: event => {
             if (
@@ -73,6 +76,7 @@ export default {
   methods: {
     async events (start, end, tz, callback) {
       let request;
+      const assessments = [];
       try {
         request = await this.$http.get('/assignments', {
           params: {
@@ -81,19 +85,10 @@ export default {
           }
         });
       } catch (e) {
-        this.events = [];
         return this.$toasted.error(e.response.data.message);
       }
+      assessments.push(...request.data.assignments);
 
-      const assignments = request.data.assignments;
-      const assignmentEvents = assignments.map(a => ({
-        type: 'assignment',
-        title: a.title,
-        start: a.dueDate,
-        color: this.course(a).color,
-        assessment: a,
-        assignment: a
-      }));
       try {
         request = await this.$http.get('/exams', {
           params: {
@@ -102,21 +97,21 @@ export default {
           }
         });
       } catch (e) {
-        this.events = [];
         return this.$toasted.error(e.response.data.message);
       }
 
-      const exams = request.data.exams;
-      const examEvents = exams.map(e => ({
-        type: 'exam',
-        title: e.title,
-        start: e.date,
-        color: this.course(e).color,
-        assessment: e,
-        assignment: e
-      }));
-      const events = examEvents.concat(assignmentEvents);
+      assessments.push(...request.data.exams);
 
+      const events = assessments.map(assessment => ({
+        type: assessment.assessmentType,
+        title: assessment.title,
+        start: assessment.dueDate || assessment.date,
+        color: this.course(assessment).color,
+        assessment,
+        [assessment.assessmentType]: assessment
+      }));
+
+      this.events = events;
       callback(events);
     },
     dayClick (date) {

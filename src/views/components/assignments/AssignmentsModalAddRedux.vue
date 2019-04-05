@@ -274,13 +274,13 @@ export default {
         )
       ) {
         this.$store.dispatch(
-          'ADD_UPCOMING_ASSIGNMENT',
+          'ADD_UPCOMING_ASSESSMENT',
           request.data.createdAssignment
         );
 
         if (request.data.recurringAssignments.length > 0) {
           for (let a of request.data.recurringAssignments) {
-            this.$store.dispatch('ADD_UPCOMING_ASSIGNMENT', a);
+            this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', a);
           }
         }
       }
