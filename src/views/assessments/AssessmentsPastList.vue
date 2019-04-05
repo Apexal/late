@@ -220,7 +220,7 @@ export default {
         .subtract('1', 'week')
         .format('YYYY-MM-DD');
 
-      this.getAssignments();
+      this.getAssessments();
     },
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN);
@@ -233,7 +233,7 @@ export default {
         .add(amount, 'days')
         .format('YYYY-MM-DD');
 
-      this.getAssignments();
+      this.getAssessments();
     },
     async getAssessments () {
       this.loading = true;

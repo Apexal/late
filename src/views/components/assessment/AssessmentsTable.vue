@@ -22,24 +22,23 @@
             class="has-text-grey"
           >{{ toTimeString(assessmentDate(assessment)) }}</span>
         </td>
-        <td
-          class="exam-course"
-          @click="$store.commit('OPEN_COURSE_MODAL', course(assessment))"
-        >
-          <span
-            class="dot course-dot"
-            :title="course(assessment).longname"
-            :style="'background-color: ' + course(assessment).color"
-          />
-          <b
-            class="assessment-type"
-            :title="course(assessment).longname"
-          >{{ assessment.assessmentType === 'assignment' ? 'Assignment' : 'Exam' }}</b>
+        <td class="exam-course">
+          <span @click="$store.commit('OPEN_COURSE_MODAL', course(assessment))">
+            <span
+              class="dot course-dot"
+              :title="course(assessment).longname"
+              :style="'background-color: ' + course(assessment).color"
+            />
+            <b
+              class="assessment-type"
+              :title="course(assessment).longname"
+            >{{ assessment.assessmentType === 'assignment' ? 'Assignment' : 'Exam' }}</b>
+          </span>
 
           <router-link
             class="assessment-link"
             :title="assessment.description.substring(0, 500)"
-            :to="{ name: 'assessment-overview', params: { id: assessment._id }}"
+            :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
           >
             {{ assessment.title }}
           </router-link>

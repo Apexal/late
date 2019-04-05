@@ -12,20 +12,20 @@
           :style="{ 'color': course.color }"
         />
       </span>
-      <span
-        v-else
-        :style="{ 'color': course.color }"
-        class="icon exam-icon"
-        :title="`${course.longname} Exam`"
-      >
-        <i class="fas fa-file-alt" />
-      </span>
       <router-link
         class="assessment-link"
         :title="(assessment.priority === 1 ? '(OPTIONAL) ' : '') + assessment.description.substring(0, 500)"
         :to="linkToParams"
         :class="{ 'priority': assessment.priority > 3, 'has-text-grey is-italic': assessment.priority === 1 }"
       >
+        <span
+          v-if="assessmentType === 'exam'"
+          :style="{ 'color': course.color }"
+          class="icon exam-icon"
+          :title="`${course.longname} Exam`"
+        >
+          <i class="fas fa-file-alt" />
+        </span>
         <b class="course-title is-hidden-tablet">{{ course.longname }}</b>
         {{ assessment.title }}
       </router-link>
