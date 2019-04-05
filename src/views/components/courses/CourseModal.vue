@@ -120,14 +120,12 @@ export default {
   computed: {
     upcomingAssessments () {
       const limit = moment().add(1, 'week');
-      const assignments = this.$store.state.work.upcomingAssignments.filter(
-        a => moment(a.date).isBefore(limit) && a.courseCRN === this.course.crn
+      const assessments = this.$store.state.work.upcomingAssessments.filter(
+        assessment =>
+          moment(assessment.dueDate || assessment.date).isBefore(limit) &&
+          assessment.courseCRN === this.course.crn
       );
-      const exams = this.$store.state.work.upcomingExams.filter(
-        ex =>
-          moment(ex.date).isBefore(limit) && ex.courseCRN === this.course.crn
-      );
-      return exams.concat(assignments);
+      return assessments;
     },
     links () {
       return this.course.links || [];

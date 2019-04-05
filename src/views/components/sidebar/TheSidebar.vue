@@ -140,31 +140,15 @@ export default {
       return this.tabs[this.tab];
     },
     pressingAssessments () {
-      return this.pressingAssignments
-        .concat(this.upcomingExamsTwoWeeks)
-        .sort((a, b) => {
-          const aDate = a.dueDate || a.date;
-          const bDate = b.dueDate || b.date;
-
-          if (aDate > bDate) return 1;
-          if (aDate < bDate) return -1;
-          return 0;
-        });
-    },
-    pressingAssignments () {
-      // This filters out optional assignments
-      return this.$store.getters.incompleteUpcomingAssignments
-        .filter(a => a.priority > 1)
+      return this.$store.getters.limitedUpcomingAssessments
+        .filter(
+          assessment =>
+            assessment.assessmentType === 'exam' ||
+            (assessment.assessmentType === 'assignment' &&
+            assessment.priority > 0 &&
+            !assessment.completed)
+        )
         .slice(0, 5);
-    },
-    upcomingExamsTwoWeeks () {
-      const twoWeeksFromNow = moment().add(2, 'weeks');
-      return this.upcomingExams.filter(ex =>
-        moment(ex.date).isSameOrBefore(twoWeeksFromNow)
-      );
-    },
-    upcomingExams () {
-      return this.$store.getters.pendingUpcomingExams;
     },
     todaysAgenda () {
       return this.$store.getters.todaysAgenda;
