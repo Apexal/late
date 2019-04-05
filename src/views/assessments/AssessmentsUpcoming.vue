@@ -26,6 +26,7 @@
         <div class="panel">
           <p
             class="panel-heading is-unselectable key-heading"
+            :class="{ 'has-background-dark has-text-white' : groupBy === 'date' }"
             :style="headerStyle(key)"
           >
             <span
@@ -33,6 +34,7 @@
               :title="headerTitle"
               @click="headerClick(key)"
             >{{ headerText(key) }}</span>
+            <!-- <span class="tag is-danger is-pulled-right day-weight-tag">Light</span> -->
           </p>
           <AssessmentPanelBlock
             v-for="a in assessments"
@@ -102,7 +104,7 @@ export default {
     headerTitle () {
       return this.groupBy === 'courseCRN'
         ? 'Open course modal'
-        : 'Add assignment to this day';
+        : 'Open day modal';
     },
     filteredLimitedAssessments () {
       return this.$store.getters.limitedUpcomingAssessments.filter(
@@ -157,10 +159,11 @@ export default {
       if (this.groupBy === 'courseCRN') {
         this.$store.commit('OPEN_COURSE_MODAL', this.course(key));
       } else {
-        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-          dueDate: moment(key)
-        });
-        this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+        // TODO: this will open DayModal
+        // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+        //   dueDate: moment(key)
+        // });
+        // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
       }
     },
     clickDateHeading (date) {

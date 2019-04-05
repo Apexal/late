@@ -10,9 +10,7 @@
         v-if="upcoming.length == 0"
         class="panel-block has-text-grey"
       >
-        <span class="has-text-centered">
-          No upcoming exams within the next month!
-        </span>
+        <span class="has-text-centered">No upcoming exams within the next month!</span>
       </div>
       <transition-group
         name="list"
@@ -34,16 +32,12 @@
               :style="'background-color: ' + course(ex).color"
               @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(ex))"
             />
-            <b class="course-title is-hidden-tablet">
-              {{ course(ex).longname }}
-            </b>
+            <b class="course-title is-hidden-tablet">{{ course(ex).longname }}</b>
             {{ ex.title }}
             <small
               class="has-text-grey is-pulled-right tooltip is-tooltip-left"
               :data-tooltip="toFullDateTimeString(ex.date)"
-            >
-              {{ fromNow(ex.date) }}
-            </small>
+            >{{ fromNow(ex.date) }}</small>
           </span>
         </router-link>
       </transition-group>
@@ -64,9 +58,7 @@
             class="button is-link is-small is-outlined is-pulled-right"
             to="/exams"
             title="View all upcoming exams"
-          >
-            View Exams
-          </router-link>
+          >View Exams</router-link>
         </span>
       </div>
     </template>
