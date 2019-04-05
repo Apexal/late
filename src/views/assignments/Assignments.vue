@@ -98,7 +98,7 @@ export default {
       localStorage.setItem('assignmentsShowCompleted', nowShowing);
     },
     groupBy (newGroupBy) {
-      localStorage.setItem('assignmentsGroupBy', newGroupBy);
+      localStorage.setItem('assessmentsGroupBy', newGroupBy);
     }
   },
   mounted () {
@@ -111,17 +111,17 @@ export default {
         localStorage.removeItem('assignmentsShowCompleted');
       }
     }
-    if (localStorage.getItem('assignmentsGroupBy')) {
+    if (localStorage.getItem('assessmentsGroupBy')) {
       try {
-        this.groupBy = localStorage.getItem('assignmentsGroupBy');
+        this.groupBy = localStorage.getItem('assessmentsGroupBy');
         if (this.groupBy !== 'course' && this.groupBy !== 'dueDate') {
           throw new Error(
-            'Invalid value for assignmentsGroupBy in localStorage'
+            'Invalid value for assessmentsGroupBy in localStorage'
           );
         }
       } catch (e) {
         alert(e);
-        localStorage.removeItem('assignmentsGroupBy');
+        localStorage.removeItem('assessmentsGroupBy');
       }
     }
   },

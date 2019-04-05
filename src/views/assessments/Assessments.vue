@@ -89,7 +89,7 @@ export default {
   components: { AssessmentsFilter },
   data () {
     return {
-      groupBy: 'dueDate',
+      groupBy: 'date',
       showCompleted: true,
       filter: []
     };
@@ -107,7 +107,7 @@ export default {
       localStorage.setItem('assignmentsShowCompleted', nowShowing);
     },
     groupBy (newGroupBy) {
-      localStorage.setItem('assignmentsGroupBy', newGroupBy);
+      localStorage.setItem('assessmentsGroupBy', newGroupBy);
     }
   },
   mounted () {
@@ -120,16 +120,16 @@ export default {
         localStorage.removeItem('assignmentsShowCompleted');
       }
     }
-    if (localStorage.getItem('assignmentsGroupBy')) {
+    if (localStorage.getItem('assessmentsGroupBy')) {
       try {
-        this.groupBy = localStorage.getItem('assignmentsGroupBy');
+        this.groupBy = localStorage.getItem('assessmentsGroupBy') || 'date';
         if (this.groupBy !== 'courseCRN' && this.groupBy !== 'date') {
           throw new Error(
-            'Invalid value for assignmentsGroupBy in localStorage'
+            'Invalid value for assessmentsGroupBy in localStorage'
           );
         }
       } catch (e) {
-        localStorage.removeItem('assignmentsGroupBy');
+        localStorage.removeItem('assessmentsGroupBy');
       }
     }
   },
