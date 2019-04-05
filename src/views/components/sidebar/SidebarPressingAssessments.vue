@@ -20,7 +20,7 @@
         tag="div"
         class="assessment assessment-link panel-block"
         :title="assessment.description.substring(0, 500) || `No description for this ${assessment.assessmentType} given.`"
-        :to="{ name: assessment.assessmentType + 's-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
+        :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
         :class="{ [assessment.assessmentType]: true, 'priority': assessment.priority > 3 }"
       >
         <span class="is-full-width">

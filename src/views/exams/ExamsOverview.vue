@@ -1,5 +1,5 @@
 <template>
-  <div class="exams-overview">
+  <div class="exam-overview">
     <ExamsModalEdit
       v-if="!isPast"
       :open="editing"

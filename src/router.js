@@ -77,7 +77,7 @@ const router = new Router({
     },
     {
       path: '/assessments/a/:assignmentID',
-      name: 'assignments-overview',
+      name: 'assignment-overview',
       component: () => import('@/views/assessments/AssessmentsOverview.vue'),
       props: { assessmentType: 'assignment' },
       meta: {
@@ -86,7 +86,7 @@ const router = new Router({
     },
     {
       path: '/assessments/e/:examID',
-      name: 'exams-overview',
+      name: 'exam-overview',
       component: () => import('@/views/assessments/AssessmentsOverview.vue'),
       props: { assessmentType: 'exam' },
       meta: {

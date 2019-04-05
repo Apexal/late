@@ -1,5 +1,5 @@
 <template>
-  <div class="assignments-overview">
+  <div class="assignment-overview">
     <canvas id="confetti-canvas" />
     <AssignmentsModalEdit
       :open="editing"

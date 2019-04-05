@@ -26,7 +26,7 @@
         <div class="upcoming-exam">
           <router-link
             tag="h2"
-            :to="{ name: 'exams-overview', params: { examID: ex._id }}"
+            :to="{ name: 'exam-overview', params: { examID: ex._id }}"
             class="exam-title subtitle"
             title="Click to open overview."
           >

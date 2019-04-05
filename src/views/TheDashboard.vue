@@ -284,23 +284,23 @@ export default {
         this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
       } else if (calEvent.eventType === 'assignment') {
         this.$router.push({
-          name: 'assignments-overview',
+          name: 'assignment-overview',
           params: { assignmentID: calEvent.assignment._id }
         });
       } else if (calEvent.eventType === 'exam') {
         this.$router.push({
-          name: 'exams-overview',
+          name: 'exam-overview',
           params: { examID: calEvent.exam._id }
         });
       } else if (calEvent.eventType === 'work-block') {
         if (calEvent.assessmentType === 'assignment') {
           this.$router.push({
-            name: 'assignments-overview',
+            name: 'assignment-overview',
             params: { assignmentID: calEvent.assignment._id }
           });
         } else if (calEvent.assessmentType === 'exam') {
           this.$router.push({
-            name: 'exams-overview',
+            name: 'exam-overview',
             params: { examID: calEvent.exam._id }
           });
         }

@@ -35,7 +35,7 @@
           tag="td"
           class="exam-link"
           :title="ex.description.substring(0, 500)"
-          :to="{ name: 'exams-overview', params: { examID: ex._id }}"
+          :to="{ name: 'exam-overview', params: { examID: ex._id }}"
         >
           <span
             class="dot is-hidden-tablet"

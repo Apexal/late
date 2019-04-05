@@ -133,7 +133,7 @@ export default {
     },
     linkToParams () {
       return {
-        name: this.assessmentType + 's-overview',
+        name: this.assessmentType + '-overview',
         params: { [this.assessmentType + 'ID']: this.assessment._id }
       };
     }

@@ -67,7 +67,7 @@ export default new Vuex.Store({
               start: moment(e.start),
               end: moment(e.end),
               link: {
-                name: `${e.assessmentType}s-overview`,
+                name: `${e.assessmentType}-overview`,
                 params: { [`${e.assessmentType}ID`]: e.assessment._id }
               }
             }))

@@ -25,7 +25,7 @@
           tag="div"
           class="exam exam-link panel-block"
           :title="ex.description.substring(0, 500)"
-          :to="{ name: 'exams-overview', params: { examID: ex._id }}"
+          :to="{ name: 'exam-overview', params: { examID: ex._id }}"
         >
           <span class="is-full-width">
             <span

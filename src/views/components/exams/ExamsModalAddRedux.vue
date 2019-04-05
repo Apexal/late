@@ -281,7 +281,7 @@ export default {
         action: {
           text: 'View',
           push: {
-            name: 'exams-overview',
+            name: 'exam-overview',
             params: { examID: request.data.createdExam._id }
           }
         }

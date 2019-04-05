@@ -26,9 +26,7 @@
                 <label
                   for="add-exam-course-id"
                   class="label"
-                >
-                  Course
-                </label>
+                >Course</label>
                 <div class="control">
                   <select
                     id="add-exam-course-id"
@@ -53,9 +51,7 @@
                 <label
                   for="add-exam-title"
                   class="label"
-                >
-                  Exam Title
-                </label>
+                >Exam Title</label>
                 <div class="control">
                   <input
                     id="add-exam-title"
@@ -75,9 +71,7 @@
                 <label
                   for="add-exam-description"
                   class="label"
-                >
-                  Description
-                </label>
+                >Description</label>
                 <div class="control">
                   <textarea
                     id="add-exam-description"
@@ -98,9 +92,7 @@
                 <label
                   for="add-exam-date"
                   class="label"
-                >
-                  When
-                </label>
+                >When</label>
                 <div class="control">
                   <input
                     id="add-exam-date"
@@ -126,9 +118,7 @@
                 <label
                   for="add-exam-time-estimate"
                   class="label"
-                >
-                  Time Estimate (hrs)
-                </label>
+                >Time Estimate (hrs)</label>
                 <input
                   id="add-exam-time-estimate"
                   v-model.number="timeEstimate"
@@ -145,9 +135,7 @@
                 <label
                   for="add-exam-priority"
                   class="label"
-                >
-                  Priority
-                </label>
+                >Priority</label>
                 <input
                   id="add-exam-priority"
                   v-model.number="priority"
@@ -291,10 +279,7 @@ export default {
           moment().startOf('day')
         )
       ) {
-        this.$store.commit(
-          'ADD_UPCOMING_EXAM',
-          request.data.createdExam
-        );
+        this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
       }
 
       this.title = '';
@@ -310,7 +295,7 @@ export default {
         action: {
           text: 'View',
           push: {
-            name: 'exams-overview',
+            name: 'exam-overview',
             params: { examID: request.data.createdExam._id }
           }
         }
