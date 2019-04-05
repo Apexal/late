@@ -280,11 +280,15 @@ export default {
         }
       } else if (this.assessmentType === 'exam') {
         if (
-          this.$store.getters.getUpcomingExamById(this.$route.params.examID)
+          this.$store.getters.getUpcomingAssessmentById(
+            this.$route.params.examID
+          )
         ) {
           // eslint-disable-next-line
           this.updatedAssessment(
-            this.$store.getters.getUpcomingExamById(this.$route.params.examID)
+            this.$store.getters.getUpcomingAssessmentById(
+              this.$route.params.examID
+            )
           );
           this.loading = false;
           this.isUpcoming = true;

@@ -129,8 +129,10 @@ export default {
     },
     async getExam () {
       // If its an upcoming exam, we already have the data on it
-      if (this.$store.getters.getUpcomingExamById(this.$route.params.examID)) {
-        this.exam = this.$store.getters.getUpcomingExamById(
+      if (
+        this.$store.getters.getUpcomingAssessmentById(this.$route.params.examID)
+      ) {
+        this.exam = this.$store.getters.getUpcomingAssessmentById(
           this.$route.params.examID
         );
         this.loading = false;
