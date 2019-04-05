@@ -39,15 +39,13 @@
         </span>
       </router-link>
 
-      <div class="panel-block has-background-white-ter has-text-centered controls">
+      <div class="panel-block has-background-light">
         <router-link
           to="/assessments/upcoming"
+          class="button is-fullwidth"
           title="Browse assessments"
         >
-          <span class="icon">
-            <i class="fas fa-clipboard-list" />
-          </span>
-          Assessments
+          Browse Assessments
         </router-link>
       </div>
     </template>
