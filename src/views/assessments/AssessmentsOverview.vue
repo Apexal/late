@@ -258,46 +258,19 @@ export default {
     },
     async getAssessment () {
       // If its an upcoming assignment, we already have the data on it
-      if (this.assessmentType === 'assignment') {
-        if (
-          this.$store.getters.getUpcomingAssessmentById(
-            this.$route.params.assignmentID
-          )
-        ) {
-          this.updatedAssessment(
-            this.$store.getters.getUpcomingAssessmentById(
-              this.$route.params.assignmentID
-            )
-          );
+      const assessmentID = this.$route.params[this.assessmentType + 'ID'];
+      if (this.$store.getters.getUpcomingAssessmentById(assessmentID)) {
+        this.updatedAssessment(
+          this.$store.getters.getUpcomingAssessmentById(assessmentID)
+        );
 
-          this.editedDescription = this.assessment.description;
-          document.title = `${this.assessment.title} | LATE`;
-          this.loading = false;
-          this.isUpcoming = true;
+        this.editedDescription = this.assessment.description;
+        document.title = `${this.assessment.title} | LATE`;
+        this.loading = false;
+        this.isUpcoming = true;
 
-          if (this.assessment.completed || this.passed) this.tab = 'comments';
-          return;
-        }
-      } else if (this.assessmentType === 'exam') {
-        if (
-          this.$store.getters.getUpcomingAssessmentById(
-            this.$route.params.examID
-          )
-        ) {
-          // eslint-disable-next-line
-          this.updatedAssessment(
-            this.$store.getters.getUpcomingAssessmentById(
-              this.$route.params.examID
-            )
-          );
-          this.loading = false;
-          this.isUpcoming = true;
-          document.title = `${this.assessment.title} | LATE`;
-
-          if (this.passed) this.tab = 'comments';
-
-          return;
-        }
+        if (this.assessment.completed || this.passed) this.tab = 'comments';
+        return;
       }
 
       // Not an upcoming assessment
@@ -325,23 +298,17 @@ export default {
       this.loading = false;
     },
     async dispatchOrDelete (assessmentID) {
-      var dispatchStr = '';
-      var deleteStr = '';
-      if (this.$route.params.assignmentID) {
-        this.$router.push('/assignments');
-        dispatchStr = 'REMOVE_UPCOMING_ASSIGNMENT';
-        deleteStr = `/assignment/a/${assessmentID}`;
-      } else {
-        this.$router.push('/exams');
-        dispatchStr = 'REMOVE_UPCOMING_EXAM';
-        deleteStr = `/exams/e/${assessmentID}`;
-      }
       // This handles the API call and state update
       if (this.isUpcoming) {
-        await this.$store.dispatch(dispatchStr, assessmentID);
+        await this.$store.dispatch('REMOVE_UPCOMING_ASSESSMENT', assessmentID);
       } else {
-        await this.$http.delete(deleteStr);
+        await this.$http.delete(
+          (this.assessmentType === 'assignment'
+            ? '/assignments/a/'
+            : '/exams/e/') + assessmentID
+        );
       }
+      this.$router.push('/assessments');
     },
     async removeAssessment () {
       // Confirm user wants to remove assessment
