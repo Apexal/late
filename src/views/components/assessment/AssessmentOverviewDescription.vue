@@ -3,6 +3,7 @@
     <blockquote>
       <textarea
         v-if="editing"
+        ref="textarea"
         v-model.trim="edited"
         class="edited-description"
       />
@@ -78,10 +79,10 @@ export default {
         // Calls API and updates state
         if (
           // eslint-disable-next-line
-          this.$store.getters.getUpcomingAssessmentsById(this.assessment._id)
+          this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
         ) {
           this.$store.dispatch(
-            'UPDATE_UPCOMING_ASSESSMENTS',
+            'UPDATE_UPCOMING_ASSESSMENT',
             request.data[`updated${this.capitalizedAssessmentType}`]
           );
         } else {
