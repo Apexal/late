@@ -277,7 +277,12 @@ export default {
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {
         this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-          dueDate: calEvent.start
+          dueDate: calEvent.start,
+          dueTime: moment(calEvent.start).format('HH:mm')
+        });
+        this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
+          dueDate: calEvent.start,
+          time: moment(calEvent.start).format('HH:mm')
         });
         this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
       } else if (calEvent.eventType === 'assignment') {
