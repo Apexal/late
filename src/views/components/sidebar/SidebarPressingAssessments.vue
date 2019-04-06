@@ -24,10 +24,11 @@
         :class="{ [assessment.assessmentType]: true, 'priority': assessment.priority > 3 }"
       >
         <span class="is-full-width">
-          <span
-            class="dot course-dot"
-            :title="course(assessment).longname"
-            :style="'background-color: ' + course(assessment).color"
+          <i
+            class="fas"
+            :class="[ assessment.assessmentType === 'assignment' ? 'fas fa-clipboard-check' : 'fas fa-file-alt' ]"
+            :title="course(assessment).longname + ' ' + assessment.assessmentType"
+            :style="'color: ' + course(assessment).color"
             @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(assessment))"
           />
           <b class="course-title is-hidden-tablet">{{ course(assessment).longname }}</b>
@@ -85,6 +86,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fa-clipboard-list {}
 .assessment {
   padding: 10px;
   cursor: pointer;
