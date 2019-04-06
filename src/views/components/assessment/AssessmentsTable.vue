@@ -25,18 +25,16 @@
         <td class="exam-course">
           <span @click="$store.commit('OPEN_COURSE_MODAL', course(assessment))">
             <span
-              class="dot course-dot"
+              class="assessment-icon fas"
+              :class="[ assessment.assessmentType === 'assignment' ? 'fa-clipboard-check' : 'fa-file-alt' ]"
               :title="course(assessment).longname"
-              :style="'background-color: ' + course(assessment).color"
+              :style="'color: ' + course(assessment).color"
             />
-            <b
-              class="assessment-type"
-              :title="course(assessment).longname"
-            >{{ assessment.assessmentType === 'assignment' ? 'Assignment' : 'Exam' }}</b>
           </span>
 
           <router-link
             class="assessment-link"
+            :class="assessment.assessmentType"
             :title="assessment.description.substring(0, 500)"
             :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
           >
@@ -108,6 +106,10 @@ export default {
 .assessment-type {
   color: inherit;
   cursor: pointer;
+
+  &.exam {
+    font-weight: 500;
+  }
 }
 .assessment-type {
   margin-right: 5px;

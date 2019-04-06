@@ -102,7 +102,7 @@
                   @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-plus" />
+                    <i class="fas fa-clipboard-check" />
                   </span>
                   Add Assignment
                 </a>
@@ -112,7 +112,7 @@
                   @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-plus" />
+                    <i class="fas fa-file-alt" />
                   </span>
                   Add Exam
                 </a>
