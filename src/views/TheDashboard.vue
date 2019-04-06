@@ -281,7 +281,7 @@ export default {
           dueTime: moment(calEvent.start).format('HH:mm')
         });
         this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
-          dueDate: calEvent.start,
+          date: calEvent.start,
           time: moment(calEvent.start).format('HH:mm')
         });
         this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
