@@ -89,8 +89,8 @@
     </div>
 
     <AssessmentsTable
-      v-if="currentAssessments.length > 0"
-      :assessments="currentAssessments"
+      v-if="filteredAssessments.length > 0"
+      :assessments="filteredAssessments"
       :show-remove-button="true"
       @remove-assessment="removeAssessment"
     />
@@ -142,6 +142,14 @@ export default {
     };
   },
   computed: {
+    filteredAssessments () {
+      return this.currentAssessments.filter(assessment => {
+        if (assessment.assessmentType === 'assignment') {
+          if (!this.showCompleted && assessment.completed) return false;
+        }
+        return !this.filter.includes(assessment.courseCRN);
+      });
+    },
     currentTerm () {
       return this.$store.getters.currentTerm;
     },
