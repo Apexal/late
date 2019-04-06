@@ -321,7 +321,6 @@ export default {
     },
     async addWorkBlock (start, end) {
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessmentType: this.assessmentType,
         assessment: this.assessment,
         start,
         end

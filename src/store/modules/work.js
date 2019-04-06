@@ -98,7 +98,7 @@ const getters = {
   getWorkBlocksAsEvents: (state, getters) => {
     const assessmentWorkBlocks = state.upcomingAssessments.map(assessment =>
       assessment._blocks.map(b =>
-        getters.mapWorkBlockToEvent('assignment', assessment, b)
+        getters.mapWorkBlockToEvent(assessment.assessmentType, assessment, b)
       )
     );
 
@@ -152,15 +152,13 @@ const actions = {
         : '/exams/e/';
     const request = await axios.delete(apiURL + assessmentID);
   },
-  async ADD_WORK_BLOCK (
-    { commit, getters },
-    { assessmentType, assessment, start, end }
-  ) {
+  async ADD_WORK_BLOCK ({ commit, getters }, { assessment, start, end }) {
     const request = await axios.post(
-      `/blocks/${assessmentType}/${assessment._id}`,
+      `/blocks/${assessment.assessmentType}/${assessment._id}`,
       { startTime: start, endTime: end }
     );
-    const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    const capitalized =
+      assessment.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
       commit(
@@ -176,7 +174,9 @@ const actions = {
       b => b.blockID === blockID
     );
     const request = await axios.patch(
-      `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`,
+      `/blocks/${block.assessment.assessmentType}/${
+        block.assessment._id
+      }/${blockID}`,
       { startTime: start, endTime: end, assessmentType: block.assessmentType }
     );
 

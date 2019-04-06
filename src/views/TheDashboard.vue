@@ -251,16 +251,15 @@ export default {
       // this.$toasted.show(
       //   'You will be able to schedule work blocks by selecting soon.'
       // );
-      this.selectModal.open = true;
       this.selectModal.start = start;
       this.selectModal.end = end;
+      this.selectModal.open = true;
     },
     async addWorkBlock (assessment) {
       if (!assessment || !this.selectModal.open) return;
 
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessmentType: assessment.assessmentType,
-        assessment: assessment,
+        assessment,
         start: this.selectModal.start,
         end: this.selectModal.end
       });
