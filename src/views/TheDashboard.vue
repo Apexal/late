@@ -130,7 +130,7 @@ export default {
               if (event.period.type === 'TES') {
                 return !!this.$store.state.work.upcomingAssessments.find(
                   assessment =>
-                    assessment.assignmentType === 'exam' &&
+                    assessment.assessmentType === 'exam' &&
                     assessment.courseCRN === event.course.crn &&
                     moment(assessment.date).isSame(event.start, 'day')
                 );
@@ -176,7 +176,7 @@ export default {
           moment(this.selectModal.end).isBefore(
             assessment.dueDate || assessment.date
           ) &&
-          (assessment.assignmentType === 'exam' ||
+          (assessment.assessmentType === 'exam' ||
           (assessment.assessmentType === 'assignment' &&
           !assessment.completed))
       );
