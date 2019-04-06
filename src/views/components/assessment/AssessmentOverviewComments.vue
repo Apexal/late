@@ -106,13 +106,9 @@ export default {
     },
     async updateAssessmentFromRequest (request) {
       // Calls API and updates state
-      if (
-        this.$store.getters[`getUpcoming${this.capitalizedAssessmentType}ById`](
-          this.assessment._id
-        )
-      ) {
+      if (this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
         this.$store.dispatch(
-          `UPDATE_UPCOMING_${this.assessmentType.toUpperCase()}`,
+          'UPDATE_UPCOMING_ASSESSMENT',
           request.data[`updated${this.capitalizedAssessmentType}`]
         );
       } else {

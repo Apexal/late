@@ -241,9 +241,6 @@ export default {
     },
     assessmentCount () {
       return this.$store.getters.limitedUpcomingAssessments.length;
-    },
-    examCount () {
-      return this.$store.state.work.upcomingExams.length;
     }
   },
   methods: {

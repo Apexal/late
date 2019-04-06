@@ -43,10 +43,11 @@ export default new Vuex.Store({
           if (p.type !== 'TES') return true;
 
           // Check if there is a test scheduled this day
-          return !!state.work.upcomingExams.find(
-            ex =>
-              ex.courseCRN === getters.getCourseFromPeriod(p).crn &&
-              moment(ex.date).isSame(moment(), 'day')
+          return !!state.work.upcomingAssessments.find(
+            assessment =>
+              assessment.assessmentType === 'exam' &&
+              assessment.courseCRN === getters.getCourseFromPeriod(p).crn &&
+              moment(assessment.date).isSame(moment(), 'day')
           );
         })
         .map(p => ({

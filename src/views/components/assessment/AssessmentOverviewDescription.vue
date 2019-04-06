@@ -78,12 +78,10 @@ export default {
         // Calls API and updates state
         if (
           // eslint-disable-next-line
-          this.$store.getters[
-            `getUpcoming${this.capitalizedAssessmentType}ById`
-          ](this.assessment._id)
+          this.$store.getters.getUpcomingAssessmentsById(this.assessment._id)
         ) {
           this.$store.dispatch(
-            `UPDATE_UPCOMING_${this.assessmentType.toUpperCase()}`,
+            'UPDATE_UPCOMING_ASSESSMENTS',
             request.data[`updated${this.capitalizedAssessmentType}`]
           );
         } else {

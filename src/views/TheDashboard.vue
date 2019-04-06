@@ -128,10 +128,11 @@ export default {
             );
             if (event.eventType === 'course') {
               if (event.period.type === 'TES') {
-                return !!this.$store.state.work.upcomingExams.find(
-                  ex =>
-                    ex.courseCRN === event.course.crn &&
-                    moment(ex.date).isSame(event.start, 'day')
+                return !!this.$store.state.work.upcomingAssessments.find(
+                  assessment =>
+                    assessment.assignmentType === 'exam' &&
+                    assessment.courseCRN === event.course.crn &&
+                    moment(assessment.date).isSame(event.start, 'day')
                 );
               }
 
@@ -170,38 +171,36 @@ export default {
       return this.$store.getters.currentTerm;
     },
     filteredUpcomingAssessments () {
-      return this.$store.state.work.upcomingAssignments
-        .filter(
-          assignment =>
-            moment(this.selectModal.end).isBefore(assignment.dueDate) &&
-            !assignment.completed
-        )
-        .concat(
-          this.$store.state.work.upcomingExams.filter(
-            exam => this.selectModal.end < exam.date
-          )
-        );
+      return this.$store.state.work.upcomingAssessments.filter(
+        assessment =>
+          moment(this.selectModal.end).isBefore(
+            assessment.dueDate || assessment.date
+          ) &&
+          (assessment.assignmentType === 'exam' ||
+          (assessment.assessmentType === 'assignment' &&
+          !assessment.completed))
+      );
     },
     events () {
       const courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
 
-      const incompleteUpcomingAssignments = this.$store.getters.getUpcomingAssigmentsAsEvents.filter(
-        c => !c.assignment.completed
-      );
-
       const unavailabilitySchedule = this.$store.getters
         .getUnavailabilityAsEvents;
 
-      const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
-
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
-        Object.assign({}, e)
+      const upcomingAssessments = this.$store.getters.getUpcomingAssessmentsAsEvents.filter(
+        event => {
+          if (event.eventType === 'assignment') {
+            return !event.assignment.completed;
+          }
+          return true;
+        }
       );
 
+      const workBlocks = this.$store.getters.getWorkBlocksAsEvents;
+
       return courseSchedule
-        .concat(incompleteUpcomingAssignments)
+        .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
-        .concat(upcomingExams)
         .concat(workBlocks);
     },
     earliest () {
