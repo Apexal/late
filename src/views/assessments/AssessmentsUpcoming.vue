@@ -31,10 +31,22 @@
           >
             <span
               class="key"
-              :title="headerTitle"
+              :title="headerTitle(key)"
               @click="headerClick(key)"
             >{{ headerText(key) }}</span>
             <!-- <span class="tag is-danger is-pulled-right day-weight-tag">Light</span> -->
+            <span class="is-pulled-right add-assessment-buttons">
+              <i
+                class="has-text-white fas fa-clipboard-check"
+                :title="addAssessmentTitle(key, 'assignment')"
+                @click="addAssessmentClick(key, 'assignment')"
+              />
+              <i
+                class="has-text-white fas fa-file-alt"
+                @click="addAssessmentClick(key, 'exam')"
+              />
+
+            </span>
           </p>
           <AssessmentPanelBlock
             v-for="a in assessments"
@@ -101,11 +113,6 @@ export default {
     none () {
       return Object.keys(this.filteredLimitedAssessments).length === 0;
     },
-    headerTitle () {
-      return this.groupBy === 'courseCRN'
-        ? 'Open course modal'
-        : 'Open day modal';
-    },
     filteredLimitedAssessments () {
       return this.$store.getters.limitedUpcomingAssessments.filter(
         assessment => {
@@ -138,6 +145,11 @@ export default {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     },
+    headerTitle (key) {
+      return this.groupBy === 'courseCRN'
+        ? 'Open course modal'
+        : moment(key).format('M/D/YY');
+    },
     headerText (key) {
       return this.groupBy === 'courseCRN'
         ? this.course(key).longname
@@ -165,6 +177,15 @@ export default {
         // });
         // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
       }
+    },
+    addAssessmentClick (date, assessmentType) {
+      this.$store.commit('SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_VALUES', {
+        [assessmentType === 'assignment' ? 'dueDate' : 'date']: moment(date)
+      });
+      this.$store.commit('TOGGLE_ADD_' + assessmentType.toUpperCase() + '_MODAL');
+    },
+    addAssessmentTitle (date, assessmentType) {
+      return `Add new ${assessmentType} on ${moment(date).format('M/D/YY')}`;
     },
     clickDateHeading (date) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
@@ -204,6 +225,22 @@ export default {
 .key-heading {
   span.key {
     cursor: pointer;
+  }
+
+  .add-assessment-buttons {
+    @media only screen and (min-width: 768px) {
+      display: none;
+    }
+    i {
+      cursor: pointer;
+      padding-left: 10px;
+    }
+  }
+
+  &:hover {
+    .add-assessment-buttons {
+      display: block;
+    }
   }
 }
 
