@@ -239,8 +239,9 @@ export default {
   }
 
   .add-assessment-buttons {
+    transition: opacity 0.1s;
     @media only screen and (min-width: 768px) {
-      display: none;
+      opacity: 0;
     }
     i {
       cursor: pointer;
@@ -250,7 +251,7 @@ export default {
 
   &:hover {
     .add-assessment-buttons {
-      display: block;
+      opacity: 1;
     }
   }
 }
