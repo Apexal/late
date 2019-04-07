@@ -43,9 +43,9 @@
               />
               <i
                 class="has-text-white fas fa-file-alt"
+                :title="addAssessmentTitle(key, 'exam')"
                 @click="addAssessmentClick(key, 'exam')"
               />
-
             </span>
           </p>
           <AssessmentPanelBlock
@@ -178,20 +178,31 @@ export default {
         // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
       }
     },
-    addAssessmentClick (date, assessmentType) {
-      this.$store.commit('SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_VALUES', {
-        [assessmentType === 'assignment' ? 'dueDate' : 'date']: moment(date)
-      });
-      this.$store.commit('TOGGLE_ADD_' + assessmentType.toUpperCase() + '_MODAL');
+    addAssessmentClick (key, assessmentType) {
+      let updates = {};
+      if (this.groupBy === 'courseCRN') {
+        updates.courseCRN = key;
+        updates.modalStep = 1;
+      } else {
+        updates[assessmentType === 'assignment' ? 'dueDate' : 'date'] = moment(
+          key
+        );
+        updates.modalStep = 0;
+      }
+      this.$store.commit(
+        'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_VALUES',
+        updates
+      );
+      this.$store.commit(
+        'TOGGLE_ADD_' + assessmentType.toUpperCase() + '_MODAL'
+      );
     },
-    addAssessmentTitle (date, assessmentType) {
-      return `Add new ${assessmentType} on ${moment(date).format('M/D/YY')}`;
-    },
-    clickDateHeading (date) {
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-        dueDate: moment(date)
-      });
-      this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
+    addAssessmentTitle (key, assessmentType) {
+      if (this.groupBy === 'courseCRN') {
+        return `Add new ${this.course(key).longname} ${assessmentType}`;
+      } else {
+        return `Add new ${assessmentType} on ${moment(key).format('M/D/YY')}`;
+      }
     },
     toggleAssignmentTitle (a) {
       return (
