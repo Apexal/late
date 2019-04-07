@@ -197,7 +197,7 @@ export default {
     copyAssessment () {
       this.$store.dispatch(
         'COPY_' + this.assessmentType.toUpperCase() + '_TO_MODAL',
-        this.exam
+        this.assessment
       );
       this.$store.commit(
         'TOGGLE_ADD_' + this.assessmentType.toUpperCase() + '_MODAL'

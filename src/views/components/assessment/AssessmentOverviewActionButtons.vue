@@ -17,7 +17,7 @@
     </button>
     <button
       class="button is-pulled-right"
-      @click="$emit('copy-'+assessmentType)"
+      @click="$emit('copy-assessment')"
     >
       Copy {{ assessmentTypeCaps }}
     </button>
