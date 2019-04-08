@@ -264,7 +264,7 @@ export default {
         )
       ) {
         this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSIGNMENT',
+          'UPDATE_UPCOMING_ASSESSMENT',
           request.data.updatedAssignment
         );
       } else if (
