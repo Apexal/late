@@ -217,10 +217,6 @@ span.tag.course-tag {
   }
 }
 
-span.dot.course-dot {
-  margin-right: 2px;
-}
-
 .level .disable-shrink {
   flex-shrink: initial;
 }
