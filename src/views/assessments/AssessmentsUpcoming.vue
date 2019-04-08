@@ -148,7 +148,7 @@ export default {
     headerTitle (key) {
       return this.groupBy === 'courseCRN'
         ? 'Open course modal'
-        : moment(key).format('M/D/YY');
+        : moment(key).format('M/DD/YY');
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
@@ -201,7 +201,7 @@ export default {
       if (this.groupBy === 'courseCRN') {
         return `Add new ${this.course(key).longname} ${assessmentType}`;
       } else {
-        return `Add new ${assessmentType} on ${moment(key).format('M/D/YY')}`;
+        return `Add new ${assessmentType} on ${moment(key).format('M/DD/YY')}`;
       }
     },
     toggleAssignmentTitle (a) {
