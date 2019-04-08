@@ -102,14 +102,7 @@ export default {
 
       assessments.push(...request.data.exams);
 
-      const events = assessments.map(assessment => ({
-        type: assessment.assessmentType,
-        title: assessment.title,
-        start: assessment.dueDate || assessment.date,
-        color: this.course(assessment).color,
-        assessment,
-        [assessment.assessmentType]: assessment
-      }));
+      const events = assessments.map(this.$store.getters.mapAssessmentToEvent);
 
       this.events = events;
       callback(events);
