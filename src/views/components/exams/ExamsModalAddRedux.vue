@@ -259,7 +259,7 @@ export default {
           moment().startOf('day')
         )
       ) {
-        this.$store.commit('ADD_UPCOMING_ASSESSMENT', request.data.createdExam);
+        this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', request.data.createdExam);
       }
 
       // Reset important fields
