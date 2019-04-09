@@ -106,7 +106,7 @@
       <i
         v-if="filter.length <= 0"
         style="font-style:inherit"
-      >this month!</i>
+      >this week!</i>
     </p>
   </div>
 </template>
