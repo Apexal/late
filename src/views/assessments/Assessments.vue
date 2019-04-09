@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import AssessmentsFilter from '@/views/components/assessment/AssessmentsFilter';
+import AssessmentsFilter from '@/views/components/assessments/AssessmentsFilter';
 
 export default {
   name: 'Assessments',
@@ -215,10 +215,6 @@ span.tag.course-tag {
     -webkit-transition: 0.4s;
     //transition-delay:0.3s;
   }
-}
-
-span.dot.course-dot {
-  margin-right: 2px;
 }
 
 .level .disable-shrink {

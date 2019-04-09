@@ -59,20 +59,19 @@ const getters = {
     rootGetters.current_schedule_all.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
+  mapAssessmentToEvent: (state, getters) => assessment => ({
+    eventType: assessment.assessmentType,
+    title: assessment.title,
+    start: assessment.dueDate || assessment.date,
+    allDay: true,
+    editable: false,
+    color: getters.getCourseFromCRN(assessment.courseCRN).color,
+    [assessment.assessmentType]: assessment,
+    borderColor: assessment.assessmentType === 'exam' ? 'black' : '',
+    assessment
+  }),
   getUpcomingAssessmentsAsEvents: (state, getters) =>
-    state.upcomingAssessments.map(assessment => {
-      return {
-        eventType: assessment.assessmentType,
-        title: assessment.title,
-        start: assessment.dueDate || assessment.date,
-        allDay: true,
-        editable: false,
-        color: getters.getCourseFromCRN(assessment.courseCRN).color,
-        [assessment.assessmentType]: assessment,
-        borderColor: assessment.assessmentType === 'exam' ? 'black' : '',
-        assessment
-      };
-    }),
+    state.upcomingAssessments.map(getters.mapAssessmentToEvent),
   mapWorkBlockToEvent: (state, getters) => (type, assessment, b) => ({
     blockID: b._id,
     eventType: 'work-block',

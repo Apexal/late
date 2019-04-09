@@ -20,12 +20,11 @@
 </template>
 
 <script>
-import AssessmentsTable from '@/views/components/assessment/AssessmentsTable';
-import ExamsTable from '@/views/components/exams/ExamsTable';
+import AssessmentsTable from '@/views/components/assessments/AssessmentsTable';
 
 export default {
   name: 'AssessmentOverviewRelated',
-  components: { AssessmentsTable, ExamsTable },
+  components: { AssessmentsTable },
   props: {
     assessment: {
       type: Object,

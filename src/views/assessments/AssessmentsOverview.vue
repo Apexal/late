@@ -88,9 +88,9 @@ import VueMarkdown from 'vue-markdown';
 
 // Page components
 import AssignmentOverviewStats from '@/views/components/assignments/overview/AssignmentOverviewStats';
-import AssessmentOverviewDescription from '@/views/components/assessment/AssessmentOverviewDescription';
-import AssessmentOverviewActionButtons from '@/views/components/assessment/AssessmentOverviewActionButtons';
-import AssessmentOverviewTitle from '@/views/components/assessment/AssessmentOverviewTitle';
+import AssessmentOverviewDescription from '@/views/components/assessments/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/views/components/assessments/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/views/components/assessments/AssessmentOverviewTitle';
 
 import AssignmentOverviewTabs from '@/views/components/assignments/overview/AssignmentOverviewTabs';
 import AssignmentsModalEdit from '@/views/components/assignments/AssignmentsModalEdit';

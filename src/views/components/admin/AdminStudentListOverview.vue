@@ -177,7 +177,7 @@ export default {
   },
   methods: {
     joinedDateString (date) {
-      return moment(date).format('M/D/YY h:mm a');
+      return moment(date).format('M/DD/YY h:mm a');
     },
     async getStats () {
       let request;

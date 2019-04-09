@@ -64,15 +64,15 @@
     >
       <hr>
       <p class="has-text-centered has-text-grey">
-        {{ farFutureUpcomingAssessments.length }} far future assignments {{ showingFutureAssignments ? 'shown' : 'hidden' }}
+        {{ farFutureUpcomingAssessments.length }} far future assignments {{ showingFutureAssessments ? 'shown' : 'hidden' }}
         <a
-          @click="showingFutureAssignments = !showingFutureAssignments"
+          @click="showingFutureAssessments = !showingFutureAssessments"
         >Toggle</a>
       </p>
 
-      <AssignmentsTable
-        v-if="showingFutureAssignments"
-        :assignments="filteredFarFutureAssessments"
+      <AssessmentsTable
+        v-if="showingFutureAssessments"
+        :assessments="filteredFarFutureAssessments"
       />
     </div>
   </div>
@@ -81,12 +81,12 @@
 <script>
 import moment from 'moment';
 
-import AssessmentPanelBlock from '@/views/components/assessment/upcoming/AssessmentPanelBlock';
-import AssignmentsTable from '@/views/components/assignments/AssignmentsTable.vue';
+import AssessmentPanelBlock from '@/views/components/assessments/upcoming/AssessmentPanelBlock';
+import AssessmentsTable from '@/views/components/assessments/AssessmentsTable.vue';
 
 export default {
   name: 'AssessmentsUpcoming',
-  components: { AssignmentsTable, AssessmentPanelBlock },
+  components: { AssessmentsTable, AssessmentPanelBlock },
   props: {
     showCompleted: {
       type: Boolean,
@@ -103,7 +103,7 @@ export default {
   },
   data () {
     return {
-      showingFutureAssignments: false
+      showingFutureAssessments: false
     };
   },
   computed: {
@@ -148,7 +148,7 @@ export default {
     headerTitle (key) {
       return this.groupBy === 'courseCRN'
         ? 'Open course modal'
-        : moment(key).format('M/D/YY');
+        : moment(key).format('M/DD/YY');
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
@@ -201,7 +201,7 @@ export default {
       if (this.groupBy === 'courseCRN') {
         return `Add new ${this.course(key).longname} ${assessmentType}`;
       } else {
-        return `Add new ${assessmentType} on ${moment(key).format('M/D/YY')}`;
+        return `Add new ${assessmentType} on ${moment(key).format('M/DD/YY')}`;
       }
     },
     toggleAssignmentTitle (a) {
