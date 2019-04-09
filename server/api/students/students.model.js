@@ -74,7 +74,7 @@ const schema = new Schema(
     notificationPreferences: {
       preWorkBlockReminders: {
         type: String,
-        enum: ['', 'sms', 'discord'],
+        enum: ['', 'google calendar', 'sms', 'discord'],
         default: ''
       },
       postWorkBlockReminders: {
@@ -82,14 +82,14 @@ const schema = new Schema(
         enum: ['', 'sms', 'discord'],
         default: ''
       },
-      morningReports: {
+      weeklyReports: {
         type: String,
         enum: ['', 'email', 'discord'],
         default: ''
       },
-      addAssignmentReminders: {
+      examReminder: {
         type: String,
-        enum: ['', 'sms', 'discord'],
+        enum: ['', 'email', 'sms', 'discord'],
         default: ''
       }
     },

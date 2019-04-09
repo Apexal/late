@@ -19,11 +19,12 @@
         <p class="help">
           {{ notification.description }}
         </p>
-        <div class="control">
+        <div class="select">
           <select
             :id="key"
             v-model="preferences[key]"
             class="input"
+            :disabled="saved && preferences[key] === 'google calendar'"
           >
             <option
               v-for="integration in enabledIntegrations[key]"
@@ -58,7 +59,10 @@ export default {
       if (!value) return '';
       if (value === 'sms') return 'SMS';
       value = value.toString();
-      return value.charAt(0).toUpperCase() + value.slice(1);
+      return value
+        .split(' ')
+        .map(s => s.charAt(0).toUpperCase() + s.slice(1))
+        .join(' ');
     }
   },
   data () {
@@ -82,20 +86,17 @@ export default {
     user () {
       return this.$store.state.auth.user;
     },
-    possibleIntegrations () {
-      return {
-        preWorkBlockReminders: ['sms', 'discord'],
-        postWorkBlockReminders: ['sms', 'discord'],
-        morningReports: ['email', 'discord'],
-        addAssignmentReminders: ['sms', 'email', 'discord']
-      };
-    },
     enabledIntegrations () {
       const enabled = {};
-      for (let key in this.possibleIntegrations) {
-        enabled[key] = this.possibleIntegrations[key].filter(i => {
+      for (let key in this.notifications) {
+        enabled[key] = this.notifications[key].integrations.filter(i => {
           if (i === 'email') return true;
-          if (this.user.integrations[i].verified) return true;
+          if (
+            !this.user.integrations[i] ||
+            this.user.integrations[i].verified
+          ) {
+            return true;
+          }
           return false;
         });
       }
@@ -105,19 +106,27 @@ export default {
       return {
         preWorkBlockReminders: {
           name: 'Remind Before Work Blocks',
-          description: 'Enables notifications before each scheduled work block.'
+          description:
+            'Receive reminders 15 minutes before you are schedule to work on an assignment or study for an exam.',
+          integrations: ['google calendar', 'sms', 'discord']
         },
-        postWorkBlockReminders: {
-          name: 'Remind After Work Blocks',
-          description: 'Enables notifications after completing a scheduled work block.'
+        // postWorkBlockReminders: {
+        //   name: 'Remind After Work Blocks',
+        //   description:
+        //     'Enables notifications after completing a scheduled work block.',
+        //   integrations: []
+        // },
+        weeklyReports: {
+          name: 'End-of-Week Reports',
+          description:
+            'Receive a weekly report at the end of the week summarizing your school week comparing it to previous weeks.',
+          integrations: ['email']
         },
-        morningReports: {
-          name: 'Daily Morning Reports',
-          description: 'Enables work summary notifications every morning.'
-        },
-        addAssignmentReminders: {
-          name: 'Assignment Reminders',
-          description: 'Enables notifications about incomplete assignments'
+        examReminder: {
+          name: 'Exam Reminder',
+          description:
+            'Receive a reminder 1 week before an exam to remind you that its coming!',
+          integrations: ['email', 'sms', 'discord']
         }
       };
     }
