@@ -64,7 +64,7 @@
     >
       <hr>
       <p class="has-text-centered has-text-grey">
-        {{ farFutureUpcomingAssessments.length }} far future assignments {{ showingFutureAssessments ? 'shown' : 'hidden' }}
+        {{ farFutureUpcomingAssessments.length }} far future items {{ showingFutureAssessments ? 'shown' : 'hidden' }}
         <a
           @click="showingFutureAssessments = !showingFutureAssessments"
         >Toggle</a>
