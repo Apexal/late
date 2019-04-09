@@ -124,6 +124,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.assessments-filter:hover { cursor: pointer; }
 .assessments-filter {
   padding: 0;
   margin: 0;

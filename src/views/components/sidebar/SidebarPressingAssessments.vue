@@ -43,7 +43,7 @@
       <div class="panel-block has-background-light">
         <router-link
           to="/assessments/upcoming"
-          class="button is-fullwidth"
+          class="button is-fullwidth browseAssessmentsButton"
           title="Browse assessments"
         >
           Browse Assessments
@@ -102,5 +102,14 @@ export default {
   &.exam {
     font-weight: bolder;
   }
+}
+
+.browseAssessmentsButton:hover {
+    background-color:#f5efef;
+}
+.browseAssessmentsButton:focus {
+  border-color: black;
+  box-shadow: none!important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 </style>
