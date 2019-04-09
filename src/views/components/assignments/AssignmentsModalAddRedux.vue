@@ -222,7 +222,7 @@ export default {
         '/assignments?courseCRN=' + newCourse.crn
       );
 
-      this.oldTitles = request.data.assignments.reverse().slice(0, 5).map(a => a.title);
+      this.oldTitles = new Set(request.data.assignments.reverse().slice(0, 5).map(a => a.title));
     }
   },
   methods: {

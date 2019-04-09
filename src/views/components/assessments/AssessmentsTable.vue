@@ -127,4 +127,13 @@ export default {
     color: red;
   }
 }
+
+.assessment-table {
+  th, td {
+    width: 40%;
+    &:nth-child(3) {
+      width: 20%;
+    }
+  }
+}
 </style>
