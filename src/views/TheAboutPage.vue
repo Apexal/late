@@ -62,8 +62,9 @@ export default {
   data () {
     return {
       statusUpdateURLs: [
+        'https://www.youtube.com/embed/E3RLHVNB81w',
         'https://www.youtube.com/embed/FhRSjxgsArA',
-        'https://www.youtube.com/embed/aB93j7LUK0w',
+        'https://www.youtube.com/embed/YaydQTjpBZE',
         'https://www.youtube.com/embed/aB93j7LUK0w'
       ],
       contributors: [
