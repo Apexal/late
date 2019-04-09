@@ -59,12 +59,12 @@
       </div>
     </div>
     <div
-      v-if="farFutureUpcomingAssessments.length > 0"
+      v-if="filteredFarFutureAssessments.length > 0"
       class="far-future-assignments"
     >
       <hr>
       <p class="has-text-centered has-text-grey">
-        {{ farFutureUpcomingAssessments.length }} far future items {{ showingFutureAssessments ? 'shown' : 'hidden' }}
+        {{ filteredFarFutureAssessments.length }} far future items {{ showingFutureAssessments ? 'shown' : 'hidden' }}
         <a
           @click="showingFutureAssessments = !showingFutureAssessments"
         >Toggle</a>
