@@ -96,6 +96,14 @@
                   Calendar
                 </router-link>
                 <hr class="navbar-divider">
+                <router-link
+                  class="navbar-item"
+                  to="/assessments/stats"
+                  title="View stats on your coursework"
+                >
+                  Stats
+                </router-link>
+                <hr class="navbar-divider">
                 <a
                   class="navbar-item"
                   title="Add a new assignment"
