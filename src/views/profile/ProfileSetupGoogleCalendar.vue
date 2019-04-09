@@ -125,11 +125,16 @@ export default {
         this.loading = false;
         return;
       }
+      const createdCalendar = request.data.createdCalendar;
 
-      this.calendars.push(request.data);
-      this.calendarIDs.workBlocks = request.data.id;
+      this.calendars.push(createdCalendar);
+      this.calendarIDs.workBlocks = createdCalendar.id;
 
-      this.$toasted.success('Added \'LATE Study/Work\' to your Google Calendar!');
+      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+
+      this.$toasted.success(
+        `Added '${createdCalendar.summary}' to your Google Calendar!`
+      );
 
       this.loading = false;
     },
