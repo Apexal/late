@@ -6,8 +6,8 @@
         to="/about"
         title="View project proposal and contributors"
       >
-        RCOS project
-      </router-link>!
+        RCOS project!
+      </router-link>
     </h1>
     <div class="content has-text-centered columns">
       <p class="column">
