@@ -5,6 +5,8 @@
         v-if="editing"
         v-model.trim="edited"
         class="edited-description"
+        autofocus
+        @blur="toggleEditing"
       />
       <template v-else>
         <VueMarkdown
@@ -110,6 +112,7 @@ export default {
   position: relative;
 
   .edited-description {
+    font-size: 1em;
     max-width: 600px;
     min-width: 100%;
 
