@@ -102,7 +102,7 @@
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
-      >matching your filters.</i>
+      >matching your filters </i>
       <i
         v-if="filter.length <= 0"
         style="font-style:inherit"
