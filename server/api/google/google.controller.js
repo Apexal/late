@@ -69,9 +69,13 @@ async function createCalendar (ctx) {
 
   ctx.state.user.integrations.google.calendarIDs[calendarType] =
     request.data.id;
+  if (calendarType === 'workBlocks') {
+    ctx.state.user.notificationPreferences.preWorkBlockReminders =
+      'google calendar';
+  }
   await ctx.state.user.save();
 
-  ctx.ok(request.data);
+  ctx.ok({ createdCalendar: request.data, updatedUser: ctx.state.user });
 }
 
 module.exports = {

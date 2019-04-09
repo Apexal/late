@@ -160,7 +160,7 @@ export default {
     },
     setupCheckNames () {
       return {
-        personal_info: 'Personal Info',
+        personal_info: 'Account Info',
         course_schedule: 'Course Schedule',
         unavailability: 'Unavailability',
         integrations: 'Notifications'

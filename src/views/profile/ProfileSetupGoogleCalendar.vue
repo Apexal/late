@@ -39,8 +39,27 @@
           class="work-block-calendar"
         >
           <div v-if="calendarIDs.workBlocks !== ''">
-            <b>Created Calendar:</b>
-            <span>{{ getCalendarById(calendarIDs.workBlocks).summary }}</span>
+            <b>LATE</b> has created the
+            <b
+              :title="getCalendarById(calendarIDs.workBlocks).summary"
+              class="tag has-text-white google-calendar-tag"
+              :style="{ 'background-color': getCalendarById(calendarIDs.workBlocks).backgroundColor }"
+            >{{ getCalendarById(calendarIDs.workBlocks).summary }}</b> calendar in your Google Calendar that will sync with your work schedule in
+            <b>LATE</b>.
+            <br>It gets automatically updated when you:
+            <ul class="points">
+              <li>create a work block on LATE</li>
+              <li>resize/move a work block on LATE</li>
+              <li>delete a work block on LATE</li>
+            </ul>
+            <br>
+            <button
+              title="Remove calendar and reset"
+              class="is-danger button"
+              @click="reset('workBlocks')"
+            >
+              Reset
+            </button>
           </div>
           <div v-else>
             <button
@@ -125,11 +144,16 @@ export default {
         this.loading = false;
         return;
       }
+      const createdCalendar = request.data.createdCalendar;
 
-      this.calendars.push(request.data);
-      this.calendarIDs.workBlocks = request.data.id;
+      this.calendars.push(createdCalendar);
+      this.calendarIDs.workBlocks = createdCalendar.id;
 
-      this.$toasted.success('Added \'LATE Study/Work\' to your Google Calendar!');
+      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+
+      this.$toasted.success(
+        `Added '${createdCalendar.summary}' to your Google Calendar!`
+      );
 
       this.loading = false;
     },
@@ -165,6 +189,9 @@ export default {
       this.$toasted.show('Saved Google Calendar settings!');
 
       this.loading = false;
+    },
+    async reset (calendarType) {
+      this.$toasted.show('Coming soon...');
     }
   }
 };
@@ -182,5 +209,10 @@ export default {
   &:hover {
     opacity: 0.9;
   }
+}
+
+ul.points {
+  list-style-type: initial;
+  padding-left: 20px;
 }
 </style>

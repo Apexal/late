@@ -112,7 +112,7 @@ const router = new Router({
           path: 'personalinfo',
           name: 'setup-personal-info',
           meta: {
-            title: 'Personal Info'
+            title: 'Account Info'
           },
           component: () =>
             import('@/views/profile/ProfileSetupPersonalInfo.vue')
