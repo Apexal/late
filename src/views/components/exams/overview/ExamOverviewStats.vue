@@ -1,5 +1,5 @@
 <template>
-  <nav class="level box exam-stats">
+  <nav class="level box exam-stats has-background-grey-darker has-text-white">
     <div class="level-item has-text-centered">
       <div>
         <p class="heading">
@@ -95,8 +95,15 @@ export default {
 }
 
 .exam-stats {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+
   margin-top: 20px;
   margin-bottom: 0;
-  padding: 10px;
+  padding: 5px;
+
+  .level-item .subtitle {
+    color: white;
+  }
 }
 </style>

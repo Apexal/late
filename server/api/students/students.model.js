@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const moment = require('moment');
 
 const Block = require('../blocks/blocks.model');
+const Unavailability = require('../unavailabilities/unavailabilities.model');
 const Assignment = require('../assignments/assignments.model');
 const Exam = require('../exams/exams.model');
 
@@ -68,12 +69,12 @@ const schema = new Schema(
       maxlength: 5,
       default: '23:00'
     },
-    unavailability_schedules: { type: Object, default: {} },
+    // unavailability_schedules: { type: Object, default: {} },
     admin: { type: Boolean, default: false },
     notificationPreferences: {
       preWorkBlockReminders: {
         type: String,
-        enum: ['', 'sms', 'discord'],
+        enum: ['', 'google calendar', 'sms', 'discord'],
         default: ''
       },
       postWorkBlockReminders: {
@@ -81,14 +82,14 @@ const schema = new Schema(
         enum: ['', 'sms', 'discord'],
         default: ''
       },
-      morningReports: {
+      weeklyReports: {
         type: String,
         enum: ['', 'email', 'discord'],
         default: ''
       },
-      addAssignmentReminders: {
+      examReminder: {
         type: String,
-        enum: ['', 'sms', 'discord'],
+        enum: ['', 'email', 'sms', 'discord'],
         default: ''
       }
     },
@@ -232,6 +233,12 @@ schema.methods.getExams = function (start, end, title, courseCRN) {
     .populate('_blocks')
     .sort('date')
     .sort('-timeRemaining')
+    .exec();
+};
+
+schema.methods.getUnavailabilityForTerm = function (termCode) {
+  return this.model('Unavailabiliy')
+    .find({ termCode })
     .exec();
 };
 

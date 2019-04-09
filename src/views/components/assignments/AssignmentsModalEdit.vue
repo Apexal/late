@@ -30,8 +30,8 @@
                 <div class="control">
                   <select
                     id="edit-assignment-course-id"
-                    v-model="assignment.courseCRN"
-                    :placeholder="assignment.courseCRN"
+                    v-model="courseCRN"
+                    :placeholder="courseCRN"
                     name="course_crn"
                     class="input"
                   >
@@ -39,7 +39,7 @@
                       v-for="c in courses"
                       :key="c.crn"
                       :value="c.crn"
-                      :selected="c.crn === assignment.courseCRN"
+                      :selected="c.crn === courseCRN"
                     >
                       {{ c.longname }}
                     </option>
@@ -57,31 +57,12 @@
                 <div class="control">
                   <input
                     id="edit-assignment-title"
-                    v-model="assignment.title"
+                    v-model="title"
                     name="title"
                     type="text"
                     class="input"
                     maxlength="200"
                   >
-                </div>
-              </div>
-            </div>
-
-            <div class="column">
-              <div class="field">
-                <label
-                  for="edit-assignment-description"
-                  class="label"
-                >Description</label>
-                <div class="control">
-                  <textarea
-                    id="edit-assignment-description"
-                    v-model="assignment.description"
-                    name="description"
-                    cols="30"
-                    rows="10"
-                    class="input"
-                  />
                 </div>
               </div>
             </div>
@@ -97,7 +78,7 @@
                 <div class="control">
                   <input
                     id="edit-assignment-due-date"
-                    v-model="assignment.dueDate"
+                    v-model="dueDate"
                     :min="today"
                     :max="maxDate"
                     type="date"
@@ -107,7 +88,7 @@
                 <div class="control">
                   <input
                     id="edit-assignment-time"
-                    v-model="assignment.time"
+                    v-model="dueTime"
                     type="time"
                     name="time"
                   >
@@ -123,7 +104,7 @@
                 >Time Estimate (hrs)</label>
                 <input
                   id="edit-assignment-time-estimate"
-                  v-model.number="assignment.timeEstimate"
+                  v-model.number="timeEstimate"
                   type="number"
                   name="time-estimate"
                   min="0.5"
@@ -140,7 +121,7 @@
                 >Priority</label>
                 <input
                   id="edit-assignment-priority"
-                  v-model.number="assignment.priority"
+                  v-model.number="priority"
                   list="priorities"
                   type="range"
                   min="1"
@@ -194,7 +175,6 @@
             form="edit-assignment-form"
             class="button is-success"
             :class="{'is-loading': loading}"
-            :disabled="saved"
           >Save</button>
         </span>
       </footer>
@@ -214,24 +194,18 @@ export default {
     },
     initialAssignment: {
       type: Object,
-      default: () => ({
-        courseCRN: '',
-        title: '',
-        description: '',
-        dueDate: moment()
-          .add(1, 'days')
-          .format('YYYY-MM-DD'),
-        time: '08:00', // HH:mm
-        timeEstimate: 1,
-        priority: 3
-      }),
       required: true
     }
   },
   data () {
     return {
       loading: false,
-      assignment: this.convertAssignment(this.initialAssignment)
+      courseCRN: '',
+      title: '',
+      dueDate: null,
+      dueTime: '',
+      timeEstimate: 0,
+      priority: 0
     };
   },
   computed: {
@@ -244,49 +218,53 @@ export default {
     courses () {
       return this.$store.getters.current_schedule;
     },
-    saved () {
-      return (
-        JSON.stringify(this.convertAssignment(this.initialAssignment)) ===
-        JSON.stringify(this.assignment)
-      );
-    },
     today: () => moment().format('YYYY-MM-DD')
   },
   watch: {
-    initialAssignment (newA, oldA) {
-      this.assignment = this.convertAssignment(newA);
+    initialAssignment (newA) {
+      this.convertAssignment(newA);
     }
   },
+  mounted () {
+    this.convertAssignment(this.initialAssignment);
+  },
   methods: {
-    convertAssignment (assignment) {
-      const data = Object.assign({}, assignment);
-      data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD');
-      data.time = moment(assignment.dueDate).format('HH:mm');
-      return data;
+    convertAssignment (newA) {
+      this.courseCRN = newA.courseCRN;
+      this.title = newA.title;
+      this.timeEstimate = newA.timeEstimate;
+      this.priority = newA.priority;
+
+      // special case
+      this.dueDate = moment(newA.dueDate).format('YYYY-MM-DD');
+      this.dueTime = moment(newA.dueDate).format('HH:mm');
     },
     async save () {
       this.loading = true;
 
       const request = await this.$http.patch(
-        `/assignments/a/${this.assignment._id}`,
+        `/assignments/a/${this.initialAssignment._id}`,
         {
-          title: this.assignment.title,
-          description: this.assignment.description,
+          title: this.title,
           dueDate: moment(
-            this.assignment.dueDate + ' ' + this.assignment.time,
+            this.dueDate + ' ' + this.dueTime,
             'YYYY-MM-DD HH:mm',
             true
           ).toDate(),
-          courseCRN: this.assignment.courseCRN,
-          timeEstimate: this.assignment.timeEstimate,
-          priority: this.assignment.priority
+          courseCRN: this.courseCRN,
+          timeEstimate: this.timeEstimate,
+          priority: this.priority
         }
       );
 
       // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+      if (
+        this.$store.getters.getUpcomingAssessmentById(
+          this.initialAssignment._id
+        )
+      ) {
         this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSIGNMENT',
+          'UPDATE_UPCOMING_ASSESSMENT',
           request.data.updatedAssignment
         );
       } else if (
@@ -296,11 +274,11 @@ export default {
       ) {
         // Past assignment was moved to the future
         this.$store.dispatch(
-          'ADD_UPCOMING_ASSIGNMENT',
+          'ADD_UPCOMING_ASSESSMENT',
           request.data.updatedAssignment
         );
       }
-      this.$emit('edit-assignment', this.assignment);
+      this.$emit('edit-assignment', request.data.updatedAssignment);
 
       this.loading = false;
 
@@ -326,16 +304,6 @@ export default {
 
 <style lang="scss" scoped>
 .edit-assignment-modal {
-  #edit-assignment-description {
-    width: 100%;
-    min-width: 100%;
-    max-width: 500px;
-
-    min-height: 100px;
-    height: 200px;
-    max-height: 500px;
-  }
-
   #edit-assignment-time-estimate {
     width: 150px;
   }

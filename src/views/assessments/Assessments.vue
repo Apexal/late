@@ -1,5 +1,5 @@
 <template>
-  <section class="section assignment-list">
+  <section class="section assessment-list">
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
       {{ title }}
     </h1>
@@ -15,23 +15,23 @@
 
         <router-link
           tag="li"
-          to="/assignments/upcoming"
-          title="Switch to view upcoming assignments"
+          to="/assessments/upcoming"
+          title="Switch to view upcoming assessments"
         >
           <a>Upcoming</a>
         </router-link>
         <router-link
           tag="li"
-          to="/assignments/past"
-          title="Switch to view past assignments"
+          to="/assessments/past"
+          title="Switch to view past assessments"
         >
           <a>Previous</a>
         </router-link>
 
         <router-link
           tag="li"
-          to="/assignments/calendar"
-          title="Switch to view your assignment calendar"
+          to="/assessments/calendar"
+          title="Switch to view your assessment calendar"
         >
           <a>Calendar</a>
         </router-link>
@@ -42,7 +42,7 @@
       :filter="filter"
       :show-show-completed="true"
       :show-completed="showCompleted"
-      :show-group-by="view === 'assignments-upcoming'"
+      :show-group-by="view === 'assessments-upcoming'"
       :group-by="groupBy"
       @toggle-filter="toggleFilter"
       @toggle-show-completed="showCompleted = !showCompleted"
@@ -62,25 +62,34 @@
       />
     </transition>
     <hr>
-    <button
-      class="button is-dark"
-      title="Add an upcoming assignment"
-      @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-    >
-      Add Assignment
-    </button>
+    <div class="buttons">
+      <button
+        class="button is-dark"
+        title="Add an assignment"
+        @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+      >
+        Add Assignment
+      </button>
+      <button
+        class="button is-dark"
+        title="Add an exam"
+        @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+      >
+        Add Exam
+      </button>
+    </div>
   </section>
 </template>
 
 <script>
-import AssessmentsFilter from '@/views/components/assessment/AssessmentsFilter';
+import AssessmentsFilter from '@/views/components/assessments/AssessmentsFilter';
 
 export default {
-  name: 'Assignments',
+  name: 'Assessments',
   components: { AssessmentsFilter },
   data () {
     return {
-      groupBy: 'dueDate',
+      groupBy: 'date',
       showCompleted: true,
       filter: []
     };
@@ -95,26 +104,10 @@ export default {
   },
   watch: {
     showCompleted (nowShowing) {
-      if (nowShowing) {
-        this.$toasted.info('Now including completed assignments.', {
-          icon: 'toggle-on',
-          duration: 1000,
-          fullWidth: false,
-          position: 'top-right'
-        });
-      } else {
-        this.$toasted.error('Now excluding completed assignments.', {
-          icon: 'toggle-off',
-          duration: 1000,
-          fullWidth: false,
-          position: 'top-right'
-        });
-      }
-
       localStorage.setItem('assignmentsShowCompleted', nowShowing);
     },
     groupBy (newGroupBy) {
-      localStorage.setItem('assignmentsGroupBy', newGroupBy);
+      localStorage.setItem('assessmentsGroupBy', newGroupBy);
     }
   },
   mounted () {
@@ -127,17 +120,16 @@ export default {
         localStorage.removeItem('assignmentsShowCompleted');
       }
     }
-    if (localStorage.getItem('assignmentsGroupBy')) {
+    if (localStorage.getItem('assessmentsGroupBy')) {
       try {
-        this.groupBy = localStorage.getItem('assignmentsGroupBy');
-        if (this.groupBy !== 'course' && this.groupBy !== 'dueDate') {
+        this.groupBy = localStorage.getItem('assessmentsGroupBy') || 'date';
+        if (this.groupBy !== 'courseCRN' && this.groupBy !== 'date') {
           throw new Error(
-            'Invalid value for assignmentsGroupBy in localStorage'
+            'Invalid value for assessmentsGroupBy in localStorage'
           );
         }
       } catch (e) {
-        alert(e);
-        localStorage.removeItem('assignmentsGroupBy');
+        localStorage.removeItem('assessmentsGroupBy');
       }
     }
   },
@@ -148,24 +140,36 @@ export default {
           'TOGGLE_UPCOMING_ASSIGNMENT',
           assignmentID
         );
-        this.$toasted.show(`Toggled assignment '${toggledAssignment.title}'.`, {
-          icon: toggledAssignment.completed ? 'check-circle' : 'circle',
-          action: {
-            text: 'View',
-            push: {
-              name: 'assignments-overview',
-              params: { assignmentID }
+        this.$toasted[toggledAssignment.completed ? 'success' : 'show'](
+          `Marked '${toggledAssignment.title}' as ${
+            toggledAssignment.completed ? 'complete' : 'incomplete'
+          }!`,
+          {
+            icon: toggledAssignment.completed ? 'check-circle' : 'circle',
+            action: {
+              text: 'View',
+              push: {
+                name: 'assignment-overview',
+                params: { assignmentID }
+              }
             }
           }
-        });
+        );
       } catch (e) {
         return this.$toasted.error(e.response.data.message);
       }
     },
+    course (ex) {
+      return this.$store.getters.getCourseFromCRN(ex.courseCRN);
+    },
+    isFiltered (c) {
+      return this.filter.includes(c.crn);
+    },
     toggleFilter (c) {
+      // TODO change word assessments to exam or assignment depending on type
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
-        this.$toasted.info(`Showing '${c.longname}' assignments.`, {
+        this.$toasted.info(`Showing '${c.longname}' assessments.`, {
           icon: 'plus',
           position: 'top-right',
           fullWidth: false,
@@ -173,7 +177,7 @@ export default {
         });
       } else {
         this.filter.push(c.crn);
-        this.$toasted.error(`Hiding '${c.longname}' assignments.`, {
+        this.$toasted.error(`Hiding '${c.longname}' assessments.`, {
           icon: 'minus',
           position: 'top-right',
           fullWidth: false,
@@ -186,6 +190,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+span.tag.course-tag {
+  cursor: pointer;
+  //font-weight: bold;
+  margin: 0;
+  margin-left: 2px;
+  margin-right: 2px;
+  color: white;
+
+  span {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition-delay: 0.1s;
+    -webkit-transition-delay: 0.1s;
+  }
+
+  span:hover {
+    max-width: 100vw;
+    transition: 0.4s;
+    -webkit-transition: 0.4s;
+    //transition-delay:0.3s;
+  }
+}
+
 .level .disable-shrink {
   flex-shrink: initial;
 }
@@ -194,6 +225,10 @@ export default {
   .buttons.assignment-view-buttons {
     float: unset !important;
   }
+  .buttons.exam-view-buttons {
+    float: unset !important;
+  }
+  // TODO^^
 
   .level-left + .level-right {
     margin-top: 5px !important;

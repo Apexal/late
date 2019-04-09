@@ -1,10 +1,13 @@
 <template>
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">
-      An <a
-        href="/about"
+      An
+      <router-link
+        to="/about"
         title="View project proposal and contributors"
-      >RCOS project</a>!
+      >
+        RCOS project!
+      </router-link>
     </h1>
     <div class="content has-text-centered columns">
       <p class="column">
@@ -18,9 +21,7 @@
           href="https://github.com/Apexal/old-ontrac/"
           target="_blank"
           title="View the project that inspired LATE"
-        >
-          OnTrac.
-        </a>
+        >OnTrac.</a>
       </p>
       <p class="column">
         <span class="icon">
@@ -31,9 +32,7 @@
           href="https://opensource.org/licenses/mit-license.php"
           target="_blank"
           title="View source code license"
-        >
-          MIT.
-        </a>
+        >MIT.</a>
       </p>
       <p class="column">
         <span class="icon">
@@ -44,9 +43,7 @@
           href="https://github.com/Apexal/late/"
           target="_blank"
           title="View repository"
-        >
-          Github.
-        </a>
+        >Github.</a>
       </p>
       <p class="column">
         <span class="icon">
@@ -57,9 +54,7 @@
           href="https://rcos.io/projects/apexal/late/profile"
           target="_blank"
           title="View RCOS project listing"
-        >
-          Observatory.
-        </a>
+        >Observatory.</a>
       </p>
     </div>
   </footer>

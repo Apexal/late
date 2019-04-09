@@ -55,8 +55,8 @@
     <FullCalendar
       ref="calendar"
       :events="totalEvents"
-      :editable="editable"
-      :selectable="editable"
+      :editable="true"
+      :selectable="true"
       :header="calendar.header"
       :config="calendar.config"
     />
@@ -73,10 +73,6 @@ export default {
   name: 'AsessmentOverviewTabsWorkSchedule',
   components: { FullCalendar },
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -84,11 +80,16 @@ export default {
   },
   data () {
     return {
-      workBlocks: [],
       saved: true
     };
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
+    assessmentTypeCapitalized () {
+      return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    },
     locked () {
       if (this.assessmentType === 'assignment') {
         return this.assessment.completed || this.assessment.passed;
@@ -189,7 +190,7 @@ export default {
       };
     },
     start () {
-      return moment(this.assessment.createdAt).startOf('day');
+      return moment(this.$store.getters.currentTerm.start).startOf('day');
     },
     end () {
       return moment(this.assessmentDate).endOf('day');
@@ -229,41 +230,36 @@ export default {
       );
     },
     workBlockEvents () {
-      return this.$store.getters.getWorkBlocksAsEvents.map(e => {
-        if (e.assessment._id !== this.assessment._id) {
-          return Object.assign({}, e, {
-            rendering: 'background'
-          });
-        }
-        return e;
-      });
+      return this.assessment._blocks
+        .map(block =>
+          this.$store.getters.mapWorkBlockToEvent(
+            this.assessmentType,
+            this.assessment,
+            block
+          )
+        )
+        .concat(
+          this.$store.getters.getWorkBlocksAsEvents
+            .filter(ev => ev.assessment._id !== this.assessment._id)
+            .map(ev => Object.assign({ rendering: 'background' }, ev))
+        );
     },
     totalEvents () {
       // Render work blocks for other assessments in the background
 
-      return this.workBlocks
+      return this.workBlockEvents
         .concat(this.courseScheduleEvents)
         .concat(this.unavailabilitySchedule)
         .concat([this.dueDateEvent]);
     }
   },
   watch: {
-    workBlockEvents () {
-      this.workBlocks = this.workBlockEvents.slice(0);
-    },
-    editable (newVal) {
-      this.$refs.calendar.fireMethod('option', 'selectable', newVal);
-      this.$refs.calendar.fireMethod('option', 'editable', newVal);
-    },
     end (newEnd) {
       this.$refs.calendar.fireMethod('option', 'validRange', {
         start: this.start,
         end: newEnd
       });
     }
-  },
-  created () {
-    this.workBlocks = this.workBlockEvents.slice(0);
   },
   methods: {
     async select (start, end) {
@@ -279,8 +275,6 @@ export default {
           return this.$refs.calendar.fireMethod('unselect');
         }
       }
-
-      this.saved = false;
 
       this.addWorkBlock(start, end);
     },
@@ -307,8 +301,6 @@ export default {
       }
 
       this.removeWorkBlock(calEvent.blockID);
-
-      this.saved = false;
     },
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
       // Update work block on server
@@ -329,19 +321,12 @@ export default {
     },
     async addWorkBlock (start, end) {
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessmentType: this.assessmentType,
         assessment: this.assessment,
         start,
         end
       });
-      const capitalized =
-        this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-      if (
-        !this.$store.getters['getUpcoming' + capitalized + 'ById'](
-          this.assessment._id
-        )
-      ) {
+      if (!this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
         // Updated past assessment, send up to parent overview
         this.$emit('update-assessment', updatedAssessment);
       }
@@ -356,24 +341,36 @@ export default {
       this.$refs.calendar.fireMethod('unselect');
     },
     async editWorkBlock (blockID, start, end) {
-      const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
-        blockID,
-        start,
-        end
-      });
+      let updatedAssessment;
+      let message = 'Rescheduled work block!';
 
-      const capitalized =
-        this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
       if (
-        !this.$store.getters['getUpcoming' + capitalized + 'ById'](
-          this.assessment._id
-        )
+        // eslint-disable-next-line
+        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
       ) {
+        updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+          blockID,
+          start,
+          end
+        });
+      } else {
+        const request = await this.$http.patch(
+          `/blocks/${this.assessmentType}/${this.assessment._id}/${blockID}`,
+          {
+            startTime: start,
+            endTime: end,
+            assessmentType: this.assessmentType
+          }
+        );
+
+        updatedAssessment =
+          request.data['updated' + this.assessmentTypeCapitalized];
+        message = 'Edited past work block!';
         // Updated past assessment, send up to parent overview
         this.$emit('update-assessment', updatedAssessment);
       }
 
-      this.$toasted.show('Rescheduled work block!', {
+      this.$toasted.show(message, {
         icon: 'clock',
         duration: 2000,
         fullWidth: false,
@@ -381,25 +378,32 @@ export default {
       });
     },
     async removeWorkBlock (blockID) {
-      const updatedAssessment = await this.$store.dispatch(
-        'REMOVE_WORK_BLOCK',
-        {
-          blockID
-        }
-      );
-      const capitalized =
-        this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+      // if upcoming, use Vuex, else directly call API
+      const block = this.assessment._blocks.find(b => b._id === blockID);
+      if (!block) return;
+
+      let updatedAssessment;
+      let message = 'Removed work block from your schedule!';
 
       if (
-        !this.$store.getters['getUpcoming' + capitalized + 'ById'](
-          this.assessment._id
-        )
+        // eslint-disable-next-line
+        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
       ) {
+        updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
+          blockID
+        });
         // Updated past assessment, send up to parent overview
+      } else {
+        const request = await this.$http.delete(
+          `/blocks/${this.assessmentType}/${this.assessment._id}/${blockID}`
+        );
+        updatedAssessment =
+          request.data['updated' + this.assessmentTypeCapitalized];
+        message = 'Removed work block from your past schedule!';
         this.$emit('update-assessment', updatedAssessment);
       }
 
-      this.$toasted.error('Removed work block from your schedule!', {
+      this.$toasted.error(message, {
         icon: 'clock',
         duration: 2000,
         fullWidth: false,

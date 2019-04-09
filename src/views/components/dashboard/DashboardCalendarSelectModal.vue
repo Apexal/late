@@ -116,13 +116,13 @@ export default {
     dateStrs () {
       if (this.start.isSame(this.end, 'day')) {
         return {
-          start: this.start.format('M/D/YY h:mm a'),
+          start: this.start.format('M/DD/YY h:mm a'),
           end: this.end.format('h:mm a')
         };
       } else {
         return {
-          start: this.start.format('M/D/YY h:mm a'),
-          end: this.end.format('M/D/YY h:mm a')
+          start: this.start.format('M/DD/YY h:mm a'),
+          end: this.end.format('M/DD/YY h:mm a')
         };
       }
     },
@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     formatDate (date) {
-      return moment(date).format('M/D/YY h:mm A');
+      return moment(date).format('M/DD/YY h:mm A');
     },
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);

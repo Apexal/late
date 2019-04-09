@@ -55,7 +55,7 @@ export default {
     return {
       setups: [
         {
-          label: 'Personal Info',
+          label: 'Account Info',
           link: '/profile/personalinfo',
           setup_check: 'personal_info'
         },
@@ -100,7 +100,7 @@ export default {
 }
 //Makes the hovered step icon appear more dynamic
 .step-marker:hover {
-  background-color: #5b9ba0!important;
+  background-color: #5b9ba0 !important;
 }
 
 //Makes the current step bold
@@ -108,7 +108,6 @@ export default {
   font-weight: inherit;
 }
 .steps .is-active .step-details {
-    font-weight: 600!important;
+  font-weight: 600 !important;
 }
-
 </style>

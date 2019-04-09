@@ -276,15 +276,15 @@ export default {
       });
 
       // Calls API and updates state
-      if (this.$store.getters.getUpcomingExamById(this.exam._id)) {
-        this.$store.dispatch('UPDATE_UPCOMING_EXAM', request.data.updatedExam);
+      if (this.$store.getters.getUpcomingAssessmentById(this.exam._id)) {
+        this.$store.dispatch('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedExam);
       } else if (
         moment(request.data.updatedExam.dueDate).isAfter(
           moment().startOf('day')
         )
       ) {
         // Past assignment was moved to the future
-        this.$store.commit('ADD_UPCOMING_EXAM', request.data.updatedExam);
+        this.$store.commit('ADD_UPCOMING_ASSESSMENT', request.data.updatedExam);
       }
       this.$emit('edit-exam', this.exam);
 

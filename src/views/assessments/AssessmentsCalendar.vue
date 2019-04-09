@@ -1,5 +1,5 @@
 <template>
-  <div class="assignment-calendar">
+  <div class="assessment-calendar">
     <FullCalendar
       ref="calendar"
       :editable="false"
@@ -15,7 +15,7 @@ import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.css';
 
 export default {
-  name: 'AssignmentsCalendar',
+  name: 'AssessmentsCalendar',
   components: { FullCalendar },
   props: {
     showCompleted: {
@@ -45,12 +45,16 @@ export default {
           defaultView: 'month',
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
-            this.$router.push(`/assignments/${calEvent.assignment._id}`);
+            this.$router.push({
+              name: calEvent.type + '-overview',
+              params: { [calEvent.type + 'ID']: calEvent.assessment._id }
+            });
           },
-          eventRender: (event, el) => {
+          eventRender: event => {
             if (
-              this.filter.includes(event.assignment.courseCRN) ||
-              (!this.showCompleted && event.assignment.completed)
+              this.filter.includes(event.assessment.courseCRN) ||
+              (event.type === 'assignment' &&
+              (!this.showCompleted && event.assignment.completed))
             ) {
               return false;
             }
@@ -66,13 +70,13 @@ export default {
       this.$refs.calendar.fireMethod('rerenderEvents');
     },
     showCompleted () {
-      this.$refs.calendar.fireMethod('refetchEvents');
+      this.$refs.calendar.fireMethod('rerenderEvents');
     }
   },
   methods: {
     async events (start, end, tz, callback) {
       let request;
-
+      const assessments = [];
       try {
         request = await this.$http.get('/assignments', {
           params: {
@@ -81,26 +85,34 @@ export default {
           }
         });
       } catch (e) {
-        this.events = [];
+        return this.$toasted.error(e.response.data.message);
+      }
+      assessments.push(...request.data.assignments);
+
+      try {
+        request = await this.$http.get('/exams', {
+          params: {
+            start: start.format('YYYY-MM-DD'),
+            end: end.format('YYYY-MM-DD')
+          }
+        });
+      } catch (e) {
         return this.$toasted.error(e.response.data.message);
       }
 
-      const assignments = request.data.assignments;
-      const events = assignments
-        .filter(a => (this.showCompleted ? true : !a.completed))
-        .map(a => ({
-          title: a.title,
-          start: a.dueDate,
-          color: this.course(a).color,
-          assignment: a
-        }));
+      assessments.push(...request.data.exams);
 
+      const events = assessments.map(this.$store.getters.mapAssessmentToEvent);
+
+      this.events = events;
       callback(events);
     },
     dayClick (date) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: date });
-      this.$store.commit(
-        'TOGGLE_ADD_ASSIGNMENT_MODAL'
+      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', { date });
+
+      this.$toasted.info(
+        'Date set. Add a new assignment or exam with the buttons below the calendar!'
       );
     },
     course (a) {

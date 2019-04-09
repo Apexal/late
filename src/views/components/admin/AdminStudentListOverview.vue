@@ -160,7 +160,7 @@ export default {
     },
     setupCheckNames () {
       return {
-        personal_info: 'Personal Info',
+        personal_info: 'Account Info',
         course_schedule: 'Course Schedule',
         unavailability: 'Unavailability',
         integrations: 'Notifications'
@@ -177,7 +177,7 @@ export default {
   },
   methods: {
     joinedDateString (date) {
-      return moment(date).format('M/D/YY h:mm a');
+      return moment(date).format('M/DD/YY h:mm a');
     },
     async getStats () {
       let request;

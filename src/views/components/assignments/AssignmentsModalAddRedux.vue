@@ -21,9 +21,15 @@
               v-for="(s, index) in steps"
               :key="index"
               :class="{'is-active': index === step}"
-              @click="step = index"
+              @click="setStep(index)"
             >
               <a>
+                <span
+                  v-if="courseCRN && s.label === 'Course'"
+                  class="dot course-dot"
+                  :title="course.longname"
+                  :style="'background-color: ' + course.color"
+                />
                 {{ s.label }}
                 <span
                   v-if="completedChecks[s.component]"
@@ -42,21 +48,24 @@
           <Component
             :is="currentStep.component"
             class="component"
+            :assessment-type="'assignment'"
             :courses="courses"
             :course-c-r-n="courseCRN"
             :title="title"
             :description="description"
             :title-placeholder="'Assignment Title - Keep it concise!'"
             :description-placeholder="'(optional) Long description of the assignment here! You can use Markdown!'"
-            :due-date="dueDate"
-            :due-time="dueTime"
+            :date="dueDate"
+            :time="dueTime"
             :time-estimate="timeEstimate"
+            :priority-max="5"
             :priority="priority"
             :is-recurring="isRecurring"
             :recurring-days="recurringDays"
+            :old-titles="oldTitles"
             @update-crn="setValue('courseCRN', $event)"
             @update-date="setValue('dueDate', $event); nextStep();"
-            @update-due-time="setValue('dueTime', $event.trim())"
+            @update-time="setValue('dueTime', $event.trim())"
             @update-title="setValue('title', $event.trim())"
             @update-description="setValue('description', $event.trim())"
             @update-time-estimate="setValue('timeEstimate', $event)"
@@ -127,7 +136,7 @@ export default {
   data () {
     return {
       loading: false,
-      step: 0,
+      oldTitles: [],
       steps: [
         {
           label: 'Course',
@@ -153,6 +162,9 @@ export default {
     };
   },
   computed: {
+    step () {
+      return this.$store.state.addAssignmentModal.modalStep;
+    },
     currentStep () {
       return this.steps[this.step];
     },
@@ -164,6 +176,9 @@ export default {
     },
     courseCRN () {
       return this.$store.state.addAssignmentModal.courseCRN;
+    },
+    course () {
+      return this.$store.getters.getCourseFromCRN(this.courseCRN);
     },
     dueDate () {
       return this.$store.state.addAssignmentModal.dueDate;
@@ -201,12 +216,30 @@ export default {
       };
     }
   },
+  watch: {
+    async course (newCourse) {
+      const request = await this.$http.get(
+        '/assignments?courseCRN=' + newCourse.crn
+      );
+
+      this.oldTitles = new Set(request.data.assignments.reverse().slice(0, 5).map(a => a.title));
+    }
+  },
   methods: {
     nextStep () {
-      this.step += 1;
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+        modalStep: this.step + 1
+      });
     },
     lastStep () {
-      this.step -= 1;
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+        modalStep: this.step - 1
+      });
+    },
+    setStep (modalStep) {
+      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+        modalStep
+      });
     },
     setValue (property, value) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
@@ -215,13 +248,13 @@ export default {
     },
     async save () {
       this.loading = true;
-      let request;
 
       if (!this.isComplete) {
         this.$toasted.error('Make sure you complete every step!');
         return;
       }
 
+      let request;
       try {
         request = await this.$http.post('/assignments', {
           title: this.title,
@@ -252,20 +285,21 @@ export default {
         )
       ) {
         this.$store.dispatch(
-          'ADD_UPCOMING_ASSIGNMENT',
+          'ADD_UPCOMING_ASSESSMENT',
           request.data.createdAssignment
         );
 
         if (request.data.recurringAssignments.length > 0) {
           for (let a of request.data.recurringAssignments) {
-            this.$store.dispatch('ADD_UPCOMING_ASSIGNMENT', a);
+            this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', a);
           }
         }
       }
 
       // Reset important fields
-      this.step = 1;
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
+        modalStep: 0,
+        courseCRN: '',
         dueTime: '08:00',
         title: '',
         description: '',
@@ -295,7 +329,7 @@ export default {
           action: {
             text: 'View',
             push: {
-              name: 'assignments-overview',
+              name: 'assignment-overview',
               params: { assignmentID: request.data.createdAssignment._id }
             }
           }
@@ -310,6 +344,10 @@ export default {
 <style lang="scss" scoped>
 .modal-card-body {
   padding-top: 0;
+}
+
+.course-dot {
+  margin-right: 5px;
 }
 
 .step-marker {
@@ -390,10 +428,7 @@ export default {
     height: 200px;
     max-height: 500px;
   }
-  -moz-transition: height 1s ease-in-out, left 0.5s ease-in-out;
-  -webkit-transition: height 1s ease-in-out, left 0.5s ease-in-out;
-  -moz-transition: height 1s ease-in-out, left 0.5s ease-in-out;
-  -o-transition: height 1s ease-in-out, left 0.5s ease-in-out;
+
   transition: height 1s ease-in-out, left 0.5s ease-in-out;
   #add-assignment-time-estimate {
     width: 150px;

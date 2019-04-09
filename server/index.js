@@ -63,8 +63,8 @@ app.use(async (ctx, next) => {
 
     // Calculate current term on each request in case it changes (very unlikely but possible)
     if (
-      ctx.session.currentTerm &&
-      moment().isAfter(ctx.session.currentTerm.end)
+      !ctx.session.currentTerm ||
+      (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
     ) {
       ctx.session.currentTerm = ctx.session.terms.find(t =>
         moment().isBetween(moment(t.start), moment(t.end))

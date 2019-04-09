@@ -12,13 +12,18 @@
           :open="courseModalOpen"
           :course="courseModalData"
         />
+        <AnnouncementsModal
+          :open="announcementsModalOpen"
+          :announcements="announcements"
+          @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
+        />
       </template>
       <template v-if="!loading">
         <AssignmentsModalAdd
           :open="addAssignmentModalExpanded"
           @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
         />
-        <ExamsModalAdd
+        <ExamsModalAddRedux
           :open="addExamModalExpanded"
           @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
         />
@@ -29,7 +34,9 @@
             title="Toggle sidebar."
             @click="$store.commit('TOGGLE_SIDEBAR')"
           >
-            <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
+            <i
+              :class="'fas ' + (expanded ? 'fas fa-chevron-up fa-rotate-270' : 'fas fa-chevron-up fa-rotate-90')"
+            />
           </span>
         </transition>
         <div
@@ -66,6 +73,27 @@
                 </router-link>
               </div>
             </section>
+            <section
+              v-if="pinnedAnnouncements.length > 0"
+              class="section pinned-announcements"
+              title="Pinned announcement"
+            >
+              <details
+                v-for="ann in pinnedAnnouncements"
+                :key="ann._id"
+                class="notification pinned-announcement is-primary"
+              >
+                <summary>
+                  <i class="fas fa-thumbtack" />
+                  <strong>Pinned Announcement: </strong>{{ ann.title }}
+                  <a
+                    class="delete is-pulled-right"
+                    @click="dismissPinnedAnnouncement(ann._id)"
+                  />
+                </summary>
+                {{ ann.body }}
+              </details>
+            </section>
             <transition
               name="fade"
               mode="out-in"
@@ -84,8 +112,9 @@ import TheHeader from '@/views/components/TheHeader';
 import TheFooter from '@/views/components/TheFooter';
 import TheSidebar from '@/views/components/sidebar/TheSidebar';
 import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
-import ExamsModalAdd from '@/views/components/exams/ExamsModalAdd';
+import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
 import CourseModal from '@/views/components/courses/CourseModal';
+import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
@@ -99,7 +128,8 @@ export default {
     TheSidebar,
     TheFooter,
     AssignmentsModalAdd,
-    ExamsModalAdd
+    ExamsModalAddRedux,
+    AnnouncementsModal
   },
   data () {
     return {
@@ -108,17 +138,29 @@ export default {
     };
   },
   computed: {
+    dismissedAnnouncementIDs () {
+      return this.$store.state.announcements.dismissedIDs;
+    },
     courseModalData () {
       return this.$store.state.courseModal.current;
     },
     courseModalOpen () {
       return this.$store.state.courseModal.open;
     },
+    announcementsModalOpen () {
+      return this.$store.state.announcements.modalOpen;
+    },
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
     courses () {
       return this.$store.getters.current_schedule;
+    },
+    announcements () {
+      return this.$store.getters.allAnnouncements;
+    },
+    pinnedAnnouncements () {
+      return this.$store.getters.pinnedAnnouncements;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
@@ -157,15 +199,28 @@ export default {
     await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
+      await this.$store.dispatch('GET_UNAVAILABILITIES');
       await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
       await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
       await this.$store.dispatch('GET_TODOS');
+      await this.$store.dispatch('GET_ANNOUNCEMENTS');
       await this.$store.dispatch('AUTO_UPDATE_NOW');
     }
 
     this.loading = false;
   },
   methods: {
+    dismissPinnedAnnouncement (id) {
+      localStorage.setItem(
+        'dismissedAnnouncementIDs',
+        JSON.stringify(this.dismissedAnnouncementIDs.concat(id))
+      );
+
+      this.$store.commit(
+        'SET_DISMISSED_ANNOUNCEMENT_IDS',
+        this.dismissedAnnouncementIDs.concat(id)
+      );
+    },
     resizeThrottler () {
       // ignore resize events as long as an actualResizeHandler execution is in the queue
       if (!this.resizeTimeout) {
@@ -203,6 +258,25 @@ body {
   min-height: -webkit-calc(100vh - 3.25rem);
   flex-direction: column;
 }
+.pinned-announcements {
+  padding-bottom: 0;
+
+  .pinned-announcement {
+    padding: 10px;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+    .fas.fa-thumbtack {
+      margin-right: 5px;
+    }
+    summary { cursor: pointer; }
+  }
+
+  .pinned-announcement:hover {
+    background-color: #6abfc5;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+  }
+}
 
 #content {
   flex: 1 1 auto;
@@ -223,6 +297,8 @@ body {
 //Removes annoying outline around elements when clicked.
 *:focus {
   outline: none;
+  box-shadow: none!important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 
 .is-full-width {

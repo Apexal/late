@@ -17,14 +17,16 @@
       class="sidebar-body agenda"
     >
       <div v-if="filteredTodaysAgenda.length === 0">
-        <div class="panel-block has-text-grey">
+        <div
+          class="panel-block has-text-grey"
+        >
           Nothing scheduled for the {{ todaysAgenda.length === filteredTodaysAgenda.length ? '' : 'rest of the ' }}day!
         </div>
       </div>
       <div
         v-for="event in filteredTodaysAgenda"
         :key="event.title + '-' + event.start.toString()"
-        class="panel-block event is-size-7 is-flex"
+        class="panel-block event is-flex"
         :class="{ 'is-active': isCurrentEvent(event), 'passed': hasPassed(event.end), 'clickable': event.link }"
         @click="eventClicked(event)"
       >
@@ -57,8 +59,19 @@
         >{{ timeFormat(event.start) }}</span>
       </div>
     </div>
-    <div class="controls panel-block has-background-white-ter has-text-centered">
-      <label
+    <div class="panel-block has-background-light has-text-centered">
+      <button
+        :class="{ 'is-active': showPassed }"
+        class="button is-fullwidth showPassedButton"
+        @click="showPassed = !showPassed"
+      >
+        <i
+          class="show-passed-icon far"
+          :class="[ showPassed ? 'fa-eye' : 'fa-eye-slash' ]"
+        />
+        {{ showPassed ? 'Showing' : 'Hiding' }} Passed
+      </button>
+      <!-- <label
         class="is-full-width has-text-centered togglePassed"
         for="agenda-show-passed"
       >
@@ -69,7 +82,7 @@
           type="checkbox"
           title="Show your completed courses"
         >
-      </label>
+      </label> -->
     </div>
   </div>
 </template>
@@ -201,19 +214,16 @@ export default {
   }
 }
 
-
-//Hover styling for previous toggle
-.controls {
-  padding: 0;
+.showPassedButton:hover {
+    background-color:#f5efef;
+}
+.showPassedButton:focus {
+  border-color: black;
+  box-shadow: none!important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 
-.togglePassed {
-  cursor: pointer;
-  padding: 0.5em 0.75em;
-}
-.togglePassed:hover { background-color: #e7e7e7}
-
-.agenda-show-passed {
-  font-weight: 100;
+.show-passed-icon {
+  margin-right: 5px;
 }
 </style>

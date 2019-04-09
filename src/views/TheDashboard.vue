@@ -1,7 +1,7 @@
 <template>
   <section class="section dasboard">
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
-      The Dashboard
+      Your Dashboard
     </h1>
 
     <div class="tabs is-centered">
@@ -13,7 +13,10 @@
           Your Dashboard
         </h1>
         <li>
-          <a title="View your weekly schedule">Your Week</a>
+          <a
+            title="(WIP) View your weekly schedule"
+            style="cursor: not-allowed;"
+          >Your Week</a>
         </li>
         <li
           class="is-active"
@@ -49,10 +52,11 @@
         :config="calendar.config"
       />
       <button
+        title="Toggle Fullscreen"
         class="button fullscreenToggle"
         @click="toggleFullscreen"
       >
-        <i class="fas fa-arrows-alt" />
+        <i class="fas fa-expand-arrows-alt" />
       </button>
     </div>
   </section>
@@ -124,10 +128,11 @@ export default {
             );
             if (event.eventType === 'course') {
               if (event.period.type === 'TES') {
-                return !!this.$store.state.work.upcomingExams.find(
-                  ex =>
-                    ex.courseCRN === event.course.crn &&
-                    moment(ex.date).isSame(event.start, 'day')
+                return !!this.$store.state.work.upcomingAssessments.find(
+                  assessment =>
+                    assessment.assessmentType === 'exam' &&
+                    assessment.courseCRN === event.course.crn &&
+                    moment(assessment.date).isSame(event.start, 'day')
                 );
               }
 
@@ -166,41 +171,36 @@ export default {
       return this.$store.getters.currentTerm;
     },
     filteredUpcomingAssessments () {
-      return this.$store.state.work.upcomingAssignments
-        .filter(
-          assignment =>
-            moment(this.selectModal.end).isBefore(assignment.dueDate) &&
-            !assignment.completed
-        )
-        .map(assignment =>
-          Object.assign({}, assignment, { assessmentType: 'assignment' })
-        )
-        .concat(
-          this.$store.state.work.upcomingExams
-            .filter(exam => this.selectModal.end < exam.date)
-            .map(exam => Object.assign({}, exam, { assessmentType: 'exam' }))
-        );
+      return this.$store.state.work.upcomingAssessments.filter(
+        assessment =>
+          moment(this.selectModal.end).isBefore(
+            assessment.dueDate || assessment.date
+          ) &&
+          (assessment.assessmentType === 'exam' ||
+          (assessment.assessmentType === 'assignment' &&
+          !assessment.completed))
+      );
     },
     events () {
       const courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
 
-      const incompleteUpcomingAssignments = this.$store.getters.getUpcomingAssigmentsAsEvents.filter(
-        c => !c.assignment.completed
-      );
-
       const unavailabilitySchedule = this.$store.getters
         .getUnavailabilityAsEvents;
 
-      const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
-
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
-        Object.assign({}, e)
+      const upcomingAssessments = this.$store.getters.getUpcomingAssessmentsAsEvents.filter(
+        event => {
+          if (event.eventType === 'assignment') {
+            return !event.assignment.completed;
+          }
+          return true;
+        }
       );
 
+      const workBlocks = this.$store.getters.getWorkBlocksAsEvents;
+
       return courseSchedule
-        .concat(incompleteUpcomingAssignments)
+        .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
-        .concat(upcomingExams)
         .concat(workBlocks);
     },
     earliest () {
@@ -251,16 +251,15 @@ export default {
       // this.$toasted.show(
       //   'You will be able to schedule work blocks by selecting soon.'
       // );
-      this.selectModal.open = true;
       this.selectModal.start = start;
       this.selectModal.end = end;
+      this.selectModal.open = true;
     },
     async addWorkBlock (assessment) {
       if (!assessment || !this.selectModal.open) return;
 
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessmentType: assessment.assessmentType,
-        assessment: assessment,
+        assessment,
         start: this.selectModal.start,
         end: this.selectModal.end
       });
@@ -278,28 +277,33 @@ export default {
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {
         this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-          dueDate: calEvent.start
+          dueDate: calEvent.start,
+          dueTime: moment(calEvent.start).format('HH:mm')
+        });
+        this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
+          date: calEvent.start,
+          time: moment(calEvent.start).format('HH:mm')
         });
         this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
       } else if (calEvent.eventType === 'assignment') {
         this.$router.push({
-          name: 'assignments-overview',
+          name: 'assignment-overview',
           params: { assignmentID: calEvent.assignment._id }
         });
       } else if (calEvent.eventType === 'exam') {
         this.$router.push({
-          name: 'exams-overview',
+          name: 'exam-overview',
           params: { examID: calEvent.exam._id }
         });
       } else if (calEvent.eventType === 'work-block') {
         if (calEvent.assessmentType === 'assignment') {
           this.$router.push({
-            name: 'assignments-overview',
+            name: 'assignment-overview',
             params: { assignmentID: calEvent.assignment._id }
           });
         } else if (calEvent.assessmentType === 'exam') {
           this.$router.push({
-            name: 'exams-overview',
+            name: 'exam-overview',
             params: { examID: calEvent.exam._id }
           });
         }

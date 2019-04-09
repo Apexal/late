@@ -13,16 +13,14 @@
           id="logo"
           class="navbar-item"
           to="/dashboard"
-          active-class=""
-          exact-active-class=""
+          active-class
+          exact-active-class
         >
           LATE
           <span
             class="tag is-primary beta-tag"
             title="LATE is still in active development!"
-          >
-            BETA
-          </span>
+          >BETA</span>
         </router-link>
         <a
           :class="{'is-active': navbarExpanded}"
@@ -56,42 +54,44 @@
               </span>
               Dashboard
             </router-link>
+
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
-              <a class="navbar-link">
+              <a
+                class="navbar-link"
+                title="Manage your assignments and exams!"
+              >
                 <span class="icon">
-                  <i class="fas fa-clipboard-list" />
+                  <i class="fas fa-graduation-cap" />
                 </span>
-                Assignments
+                Coursework
                 <span
-                  v-if="assignmentCount > 0"
+                  v-if="assessmentCount > 0"
                   class="tag is-warning assignment-count"
-                >
-                  {{ assignmentCount }}
-                </span>
+                >{{ assessmentCount }}</span>
               </a>
 
               <div class="navbar-dropdown">
                 <router-link
                   class="navbar-item"
-                  to="/assignments/upcoming"
-                  title="View upcoming assignments"
+                  to="/assessments/upcoming"
+                  title="View upcoming assessments"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assignments/past"
-                  title="Browse all past assignments"
+                  to="/assessments/past"
+                  title="Browse all past assessments"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assignments/calendar"
-                  title="View a calendar of all your assignment due dates"
+                  to="/assessments/calendar"
+                  title="View a calendar of all your assessment due dates"
                 >
                   Calendar
                 </router-link>
@@ -102,60 +102,17 @@
                   @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-plus" />
+                    <i class="fas fa-clipboard-check" />
                   </span>
                   Add Assignment
                 </a>
-              </div>
-            </div>
-
-            <div
-              v-if="!onBreak"
-              class="navbar-item has-dropdown is-hoverable"
-            >
-              <a class="navbar-link">
-                <span class="icon">
-                  <i class="fas fa-file-alt" />
-                </span>
-                Exams
-                <span
-                  v-if="examCount > 0"
-                  class="tag is-danger exam-count"
-                >
-                  {{ examCount }}
-                </span>
-              </a>
-
-              <div class="navbar-dropdown">
-                <router-link
-                  class="navbar-item"
-                  to="/exams/upcoming"
-                  title="View upcoming exams"
-                >
-                  <b>Upcoming</b>
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/exams/past"
-                  title="Browse all past exams"
-                >
-                  Previous
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/exams/calendar"
-                  title="View a calendar of all your exams"
-                >
-                  Calendar
-                </router-link>
-                <hr class="navbar-divider">
                 <a
                   class="navbar-item"
                   title="Add a new exam"
                   @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-plus" />
+                    <i class="fas fa-exclamation-triangle" />
                   </span>
                   Add Exam
                 </a>
@@ -166,6 +123,16 @@
 
         <div class="navbar-end">
           <template v-if="loggedIn">
+            <a
+              class="navbar-item"
+              :title="announcementsCount + ' new announcements'"
+              @click="openAnnouncementsModal"
+            >
+              <i
+                class="fa-bell"
+                :class="[ announcementsCount === 0 ? 'far' : 'fas' ]"
+              />
+            </a>
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
                 <span class="icon">
@@ -198,7 +165,6 @@
                   title="Edit your profile"
                 >
                   <i
-                    data-v-203ae283
                     class="fas fa-pencil-alt"
                     style="margin-right: 10px"
                   />
@@ -218,21 +184,6 @@
                     />
                   </span>
                   Report a bug
-                </a>
-
-                <a
-                  class="navbar-item"
-                  href="https://discord.gg/MnSmCde"
-                  target="none"
-                  title="Join the testing Discord server"
-                >
-                  <span class="icon">
-                    <i
-                      class="fas fa-comment"
-                      style="margin-right: 5px"
-                    />
-                  </span>
-                  Join Discord
                 </a>
 
                 <hr class="navbar-divider">
@@ -267,10 +218,15 @@
 <script>
 export default {
   name: 'TheHeader',
-  data () {
-    return {};
-  },
   computed: {
+    seenAnnouncementIDs () {
+      return this.$store.state.announcements.seenIDs;
+    },
+    announcementsCount () {
+      return this.$store.getters.allAnnouncements.filter(
+        a => !this.seenAnnouncementIDs.includes(a._id)
+      ).length;
+    },
     onBreak () {
       return this.$store.getters.onBreak;
     },
@@ -283,11 +239,24 @@ export default {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
-    assignmentCount () {
-      return this.$store.getters.incompleteUpcomingAssignments.length;
-    },
-    examCount () {
-      return this.$store.state.work.upcomingExams.length;
+    assessmentCount () {
+      return this.$store.getters.limitedUpcomingAssessments.length;
+    }
+  },
+  methods: {
+    openAnnouncementsModal () {
+      // Mark all announcements as seen
+      localStorage.setItem(
+        'seenAnnouncementIDs',
+        JSON.stringify(this.$store.getters.allAnnouncements.map(ann => ann._id))
+      );
+
+      this.$store.commit(
+        'SET_SEEN_ANNOUNCEMENT_IDS',
+        this.$store.getters.allAnnouncements.map(ann => ann._id)
+      );
+
+      this.$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true);
     }
   }
 };
@@ -306,7 +275,15 @@ export default {
   line-height: 1.2em;
 }
 
-.has-dropdown .navbar-link::after { transition: 0.2s; }
+.has-dropdown .navbar-link::after {
+  transition: 0.1s;
+}
+
+.has-dropdown:hover .navbar-link::after {
+  transform: translateY(3px) rotate(135deg);
+  transition: 0.05s;
+  -webkit-transition: 0.05s;
+}
 
 .has-dropdown:hover .navbar-link::after {
   transition: 0.2s;
@@ -314,7 +291,7 @@ export default {
 }
 
 .navbar-brand:hover .beta-tag {
-  background-color: #84edf5!important;
+  background-color: #73dee6 !important;
   transition: 0.2s;
 }
 
@@ -338,11 +315,11 @@ export default {
   }
 
   span.tag.assignment-count,
-  span.tag.exam-count {
+  span.tag.exam-count,
+  span.tag.announcement-count {
     padding-left: 5px;
     padding-right: 5px;
     margin-left: 7px;
   }
 }
-
 </style>

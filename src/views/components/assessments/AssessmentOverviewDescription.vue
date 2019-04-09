@@ -3,8 +3,11 @@
     <blockquote>
       <textarea
         v-if="editing"
+        ref="textarea"
         v-model.trim="edited"
         class="edited-description"
+        autofocus
+        @blur="toggleEditing"
       />
       <template v-else>
         <VueMarkdown
@@ -34,10 +37,6 @@ export default {
   name: 'AssessmentOverviewDescription',
   components: { VueMarkdown },
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -50,6 +49,9 @@ export default {
     };
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     capitalizedAssessmentType () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     }
@@ -79,12 +81,10 @@ export default {
         // Calls API and updates state
         if (
           // eslint-disable-next-line
-          this.$store.getters[
-            `getUpcoming${this.capitalizedAssessmentType}ById`
-          ](this.assessment._id)
+          this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
         ) {
           this.$store.dispatch(
-            `UPDATE_UPCOMING_${this.assessmentType.toUpperCase()}`,
+            'UPDATE_UPCOMING_ASSESSMENT',
             request.data[`updated${this.capitalizedAssessmentType}`]
           );
         } else {
@@ -110,6 +110,7 @@ export default {
   position: relative;
 
   .edited-description {
+    font-size: 1em;
     max-width: 600px;
     min-width: 100%;
 

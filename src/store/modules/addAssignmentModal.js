@@ -1,6 +1,7 @@
 const moment = require('moment');
 
 const state = {
+  modalStep: 0,
   expanded: false,
   courseCRN: '',
   dueDate: null,
@@ -12,7 +13,6 @@ const state = {
   isRecurring: false,
   recurringDays: []
 };
-const getters = {};
 const actions = {
   COPY_ASSIGNMENT_TO_MODAL ({ commit }, assignment) {
     commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
@@ -28,6 +28,9 @@ const actions = {
   }
 };
 const mutations = {
+  SET_ADD_ASSIGNMENT_MODAL_STEP: (state, step) => {
+    state.modalStep = step;
+  },
   SET_ADD_ASSIGNMENT_MODAL_VALUES: (state, updates) => {
     if ('dueDate' in updates) updates.recurringDays = [updates.dueDate.day()];
 
@@ -38,7 +41,6 @@ const mutations = {
 
 export default {
   state,
-  getters,
   actions,
   mutations
 };
