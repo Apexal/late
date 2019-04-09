@@ -112,7 +112,7 @@
                   @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-file-alt" />
+                    <i class="fas fa-exclamation-triangle" />
                   </span>
                   Add Exam
                 </a>

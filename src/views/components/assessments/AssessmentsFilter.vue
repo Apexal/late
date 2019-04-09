@@ -128,6 +128,7 @@ export default {
   padding: 0;
   margin: 0;
   margin-bottom: 20px;
+  margin-top: 10px;
 
   .filters-body {
     padding: 10px;

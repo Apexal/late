@@ -62,7 +62,7 @@
     <div class="panel-block has-background-light has-text-centered">
       <button
         :class="{ 'is-active': showPassed }"
-        class="button is-fullwidth"
+        class="button is-fullwidth showPassedButton"
         @click="showPassed = !showPassed"
       >
         <i
@@ -212,6 +212,15 @@ export default {
     cursor: pointer;
     margin-right: 3px;
   }
+}
+
+.showPassedButton:hover {
+    background-color:#f5efef;
+}
+.showPassedButton:focus {
+  border-color: black;
+  box-shadow: none!important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 
 .show-passed-icon {

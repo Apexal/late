@@ -26,7 +26,7 @@
         <span class="is-full-width">
           <i
             class="fas"
-            :class="[ assessment.assessmentType === 'assignment' ? 'fas fa-clipboard-check' : 'fas fa-file-alt' ]"
+            :class="[ assessment.assessmentType === 'assignment' ? 'fas fa-clipboard-check' : 'fas fa-exclamation-triangle' ]"
             :title="course(assessment).longname + ' ' + assessment.assessmentType"
             :style="'color: ' + course(assessment).color"
             @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(assessment))"

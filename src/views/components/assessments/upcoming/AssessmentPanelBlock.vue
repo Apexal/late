@@ -24,7 +24,7 @@
           class="icon exam-icon"
           :title="`${course.longname} Exam`"
         >
-          <i class="fas fa-file-alt" />
+          <i class="fas fa-exclamation-triangle" />
         </span>
         <b class="course-title is-hidden-tablet">{{ course.longname }}</b>
         {{ assessment.title }}
