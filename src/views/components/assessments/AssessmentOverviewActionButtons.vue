@@ -1,23 +1,23 @@
 <template>
   <div class="assessment-actions clearfix">
     <router-link
-      :to="`/${assessmentType}s/upcoming`"
+      :to="`/assessments/upcoming`"
       class="button is-link tooltip"
-      :data-tooltip="`Browse all ${assessmentType}s.`"
+      :data-tooltip="`Browse all course work.`"
     >
       <i class="fas fa-angle-left" />
-      Browse {{ assessmentTypeCaps }}s
+      All Coursework
     </router-link>
     <button
       class="button is-warning"
       @click="$emit('toggle-editing')"
     >
       <i class="fas fa-edit" />
-      Edit Info
+      Edit {{ assessmentTypeCaps }}
     </button>
     <button
       class="button is-pulled-right"
-      @click="$emit('copy-'+assessmentType)"
+      @click="$emit('copy-assessment')"
     >
       Copy {{ assessmentTypeCaps }}
     </button>
@@ -28,10 +28,6 @@
 export default {
   name: 'AssessmentOverviewActionButtons',
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -42,6 +38,9 @@ export default {
     }
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     assessmentTypeCaps () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     }

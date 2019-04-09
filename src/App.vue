@@ -297,6 +297,8 @@ body {
 //Removes annoying outline around elements when clicked.
 *:focus {
   outline: none;
+  box-shadow: none!important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 
 .is-full-width {

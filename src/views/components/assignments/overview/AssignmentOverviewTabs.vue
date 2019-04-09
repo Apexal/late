@@ -58,9 +58,9 @@
 
 <script>
 // Tabs
-import AssessmentOverviewComments from '@/views/components/assessment/AssessmentOverviewComments';
-import AssessmentOverviewWorkSchedule from '@/views/components/assessment/AssessmentOverviewWorkSchedule';
-import AssessmentOverviewRelated from '@/views/components/assessment/AssessmentOverviewRelated';
+import AssessmentOverviewComments from '@/views/components/assessments/AssessmentOverviewComments';
+import AssessmentOverviewWorkSchedule from '@/views/components/assessments/AssessmentOverviewWorkSchedule';
+import AssessmentOverviewRelated from '@/views/components/assessments/AssessmentOverviewRelated';
 
 export default {
   name: 'AssignmentOverviewTabs',

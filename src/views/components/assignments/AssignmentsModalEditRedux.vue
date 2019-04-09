@@ -310,9 +310,9 @@ export default {
       );
 
       // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssignmentById(this.assignment._id)) {
+      if (this.$store.getters.getUpcomingAssessmentById(this.assignment._id)) {
         this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSIGNMENT',
+          'UPDATE_UPCOMING_ASSESSMENT',
           request.data.updatedAssignment
         );
       }

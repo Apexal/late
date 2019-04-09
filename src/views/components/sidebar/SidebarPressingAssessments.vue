@@ -20,14 +20,15 @@
         tag="div"
         class="assessment assessment-link panel-block"
         :title="assessment.description.substring(0, 500) || `No description for this ${assessment.assessmentType} given.`"
-        :to="{ name: assessment.assessmentType + 's-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
+        :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
         :class="{ [assessment.assessmentType]: true, 'priority': assessment.priority > 3 }"
       >
         <span class="is-full-width">
-          <span
-            class="dot course-dot"
-            :title="course(assessment).longname"
-            :style="'background-color: ' + course(assessment).color"
+          <i
+            class="fas"
+            :class="[ assessment.assessmentType === 'assignment' ? 'fas fa-clipboard-check' : 'fas fa-exclamation-triangle' ]"
+            :title="course(assessment).longname + ' ' + assessment.assessmentType"
+            :style="'color: ' + course(assessment).color"
             @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(assessment))"
           />
           <b class="course-title is-hidden-tablet">{{ course(assessment).longname }}</b>
@@ -39,24 +40,13 @@
         </span>
       </router-link>
 
-      <div class="panel-block has-background-white-ter has-text-centered controls">
+      <div class="panel-block has-background-light">
         <router-link
-          to="/assignments/upcoming"
-          title="Browse assignments"
+          to="/assessments/upcoming"
+          class="button is-fullwidth browseAssessmentsButton"
+          title="Browse assessments"
         >
-          <span class="icon">
-            <i class="fas fa-clipboard-list" />
-          </span>
-          Assignments
-        </router-link>
-        <router-link
-          to="/exams/upcoming"
-          title="Browse exam"
-        >
-          <span class="icon">
-            <i class="fas fa-file-alt" />
-          </span>
-          Exams
+          Browse Assessments
         </router-link>
       </div>
     </template>
@@ -96,6 +86,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fa-clipboard-list {}
 .assessment {
   padding: 10px;
   cursor: pointer;
@@ -111,5 +102,14 @@ export default {
   &.exam {
     font-weight: bolder;
   }
+}
+
+.browseAssessmentsButton:hover {
+    background-color:#f5efef;
+}
+.browseAssessmentsButton:focus {
+  border-color: black;
+  box-shadow: none!important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 </style>

@@ -258,9 +258,13 @@ export default {
       );
 
       // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssignmentById(this.initialAssignment._id)) {
+      if (
+        this.$store.getters.getUpcomingAssessmentById(
+          this.initialAssignment._id
+        )
+      ) {
         this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSIGNMENT',
+          'UPDATE_UPCOMING_ASSESSMENT',
           request.data.updatedAssignment
         );
       } else if (
@@ -270,7 +274,7 @@ export default {
       ) {
         // Past assignment was moved to the future
         this.$store.dispatch(
-          'ADD_UPCOMING_ASSIGNMENT',
+          'ADD_UPCOMING_ASSESSMENT',
           request.data.updatedAssignment
         );
       }

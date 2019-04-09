@@ -6,14 +6,9 @@
     >
       Loading {{ assessmentType }}s...
     </p>
-    <AssignmentsTable
-      v-if="!loading && assessmentType === 'assignment'"
-      :assignments="related"
-    />
-    <ExamsTable
-      v-if="!loading && assessmentType === 'exam'"
-      :exams="related"
-      :date-format="'M/D/YY h:mm a'"
+    <AssessmentsTable
+      v-else
+      :assessments="related"
     />
     <p
       v-if="!loading && related.length === 0"
@@ -25,17 +20,12 @@
 </template>
 
 <script>
-import AssignmentsTable from '@/views/components/assignments/AssignmentsTable';
-import ExamsTable from '@/views/components/exams/ExamsTable';
+import AssessmentsTable from '@/views/components/assessments/AssessmentsTable';
 
 export default {
   name: 'AssessmentOverviewRelated',
-  components: { AssignmentsTable, ExamsTable },
+  components: { AssessmentsTable },
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -46,6 +36,11 @@ export default {
       loading: true,
       related: []
     };
+  },
+  computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    }
   },
   watch: {
     assessment: 'getRelatedAssessments'

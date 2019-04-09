@@ -62,6 +62,7 @@
             :priority="priority"
             :is-recurring="isRecurring"
             :recurring-days="recurringDays"
+            :old-titles="oldTitles"
             @update-crn="setValue('courseCRN', $event)"
             @update-date="setValue('dueDate', $event); nextStep();"
             @update-time="setValue('dueTime', $event.trim())"
@@ -135,6 +136,7 @@ export default {
   data () {
     return {
       loading: false,
+      oldTitles: [],
       steps: [
         {
           label: 'Course',
@@ -214,6 +216,15 @@ export default {
       };
     }
   },
+  watch: {
+    async course (newCourse) {
+      const request = await this.$http.get(
+        '/assignments?courseCRN=' + newCourse.crn
+      );
+
+      this.oldTitles = new Set(request.data.assignments.reverse().slice(0, 5).map(a => a.title));
+    }
+  },
   methods: {
     nextStep () {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
@@ -274,13 +285,13 @@ export default {
         )
       ) {
         this.$store.dispatch(
-          'ADD_UPCOMING_ASSIGNMENT',
+          'ADD_UPCOMING_ASSESSMENT',
           request.data.createdAssignment
         );
 
         if (request.data.recurringAssignments.length > 0) {
           for (let a of request.data.recurringAssignments) {
-            this.$store.dispatch('ADD_UPCOMING_ASSIGNMENT', a);
+            this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', a);
           }
         }
       }
@@ -318,7 +329,7 @@ export default {
           action: {
             text: 'View',
             push: {
-              name: 'assignments-overview',
+              name: 'assignment-overview',
               params: { assignmentID: request.data.createdAssignment._id }
             }
           }

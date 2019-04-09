@@ -259,7 +259,7 @@ export default {
           moment().startOf('day')
         )
       ) {
-        this.$store.commit('ADD_UPCOMING_EXAM', request.data.createdExam);
+        this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', request.data.createdExam);
       }
 
       // Reset important fields
@@ -281,7 +281,7 @@ export default {
         action: {
           text: 'View',
           push: {
-            name: 'exams-overview',
+            name: 'exam-overview',
             params: { examID: request.data.createdExam._id }
           }
         }

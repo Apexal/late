@@ -29,7 +29,7 @@
       class="panel-block has-background-light"
     >
       <router-link
-        class="button edit-button is-fullwidth"
+        class="button edit-button is-fullwidth editCoursesButton"
         to="/profile/courseschedule"
         title="Edit your courses"
       >
@@ -62,5 +62,14 @@ export default {
   .course-dot {
     margin-right: 5px;
   }
+}
+
+.editCoursesButton:hover {
+    background-color:#f5efef;
+}
+.editCoursesButton:focus {
+  border-color: black;
+  box-shadow: none!important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 </style>

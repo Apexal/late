@@ -1,7 +1,7 @@
 import axios from '@/api';
 import moment from 'moment';
 
-const UPCOMING_ASSIGNMENTS_WEEK_CUTOFF = 2;
+const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14;
 
 const removedCourse = {
   listing_id: '000',
@@ -14,98 +14,64 @@ const removedCourse = {
 };
 
 const state = {
-  upcomingAssignments: [],
-  upcomingExams: []
+  upcomingAssessments: []
 };
 
 const getters = {
-  limitedUpcomingAssignments: (state, getters, rootState) =>
-    state.upcomingAssignments.filter(a =>
-      moment(a.dueDate).isBefore(
-        moment(rootState.now)
-          .add(UPCOMING_ASSIGNMENTS_WEEK_CUTOFF, 'weeks')
-          .startOf('day')
-      )
+  getUpcomingAssessmentById: state => assessmentID =>
+    state.upcomingAssessments.find(
+      assessment => assessment._id === assessmentID
     ),
-  farFutureUpcomingAssignments: (state, getters, rootState) =>
-    state.upcomingAssignments.filter(a =>
-      moment(a.dueDate).isAfter(
-        moment(rootState.now)
-          .add(UPCOMING_ASSIGNMENTS_WEEK_CUTOFF, 'weeks')
-          .startOf('day')
-      )
-    ),
-  getUpcomingAssigmentsDueOn: state => date => {
-    return state.upcomingAssignments.filter(a => a.dueDate === date);
+  limitedUpcomingAssessments: (state, getters) => {
+    const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days');
+    return state.upcomingAssessments.filter(assessment =>
+      moment(assessment.dueDate || assessment.date).isBefore(cutoff)
+    );
   },
-  getUpcomingAssigmentsDueBy: state => date => {
-    return state.upcomingAssignments.filter(a => a.dueDate <= date);
+  farFutureUpcomingAssessments: (state, getters) => {
+    const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days');
+    return state.upcomingAssessments.filter(assessment =>
+      moment(assessment.dueDate || assessment.date).isAfter(cutoff)
+    );
   },
-  getUpcomingAssignmentById: state => assignmentID => {
-    return state.upcomingAssignments.find(a => a._id === assignmentID);
-  },
-  upcomingAssignmentsGroupedByDueDate: (state, getters) => {
+  groupAssessments: (state, getters) => (groupBy, assessments) => {
     const grouped = {};
-
-    for (let a of getters.limitedUpcomingAssignments) {
-      const day = moment(a.dueDate)
-        .startOf('day')
-        .toDate();
-
-      if (!grouped[day]) grouped[day] = [];
-
-      grouped[day].push(a);
+    for (let assessment of assessments) {
+      const key =
+        groupBy === 'courseCRN'
+          ? assessment.courseCRN
+          : moment(assessment.dueDate || assessment.date)
+            .startOf('day')
+            .toDate();
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(assessment);
     }
-
-    return grouped;
-  },
-  upcomingAssignmentsGroupedByCourse: (state, getters) => {
-    const grouped = {};
-
-    for (let a of getters.limitedUpcomingAssignments) {
-      if (!grouped[a.courseCRN]) grouped[a.courseCRN] = [];
-      grouped[a.courseCRN].push(a);
-    }
-
     return grouped;
   },
   incompleteUpcomingAssignments: state =>
-    state.upcomingAssignments.filter(a => !a.completed),
+    state.upcomingAssessments.filter(
+      assessment =>
+        assessment.assessmentType === 'assignment' && !assessment.completed
+    ),
   getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>
     rootGetters.current_schedule_all.find(c => c.crn === crn) || removedCourse,
   getCourseFromPeriod: (state, getters, rootState, rootGetters) => period =>
     rootGetters.current_schedule_all.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
-  getUpcomingAssigmentsAsEvents: (state, getters) =>
-    state.upcomingAssignments.map(a => {
-      return {
-        eventType: 'assignment',
-        title: a.title,
-        start: a.dueDate,
-        allDay: true,
-        editable: false,
-        color: getters.getCourseFromCRN(a.courseCRN).color,
-        assignment: a
-      };
-    }),
-  getUpcomingExamsAsEvents: (state, getters) =>
-    state.upcomingExams.map(ex => {
-      return {
-        eventType: 'exam',
-        title: ex.title,
-        start: ex.date,
-        allDay: true,
-        editable: false,
-        color: getters.getCourseFromCRN(ex.courseCRN).color,
-        exam: ex,
-        borderColor: 'black'
-      };
-    }),
-  pendingUpcomingExams: state => state.upcomingExams.filter(ex => !ex.passed),
-  getUpcomingExamById: state => examID => {
-    return state.upcomingExams.find(ex => ex._id === examID);
-  },
+  mapAssessmentToEvent: (state, getters) => assessment => ({
+    eventType: assessment.assessmentType,
+    title: assessment.title,
+    start: assessment.dueDate || assessment.date,
+    allDay: true,
+    editable: false,
+    color: getters.getCourseFromCRN(assessment.courseCRN).color,
+    [assessment.assessmentType]: assessment,
+    borderColor: assessment.assessmentType === 'exam' ? 'black' : '',
+    assessment
+  }),
+  getUpcomingAssessmentsAsEvents: (state, getters) =>
+    state.upcomingAssessments.map(getters.mapAssessmentToEvent),
   mapWorkBlockToEvent: (state, getters) => (type, assessment, b) => ({
     blockID: b._id,
     eventType: 'work-block',
@@ -124,89 +90,78 @@ const getters = {
     [type]: assessment
   }),
   getWorkBlocks: state => {
-    return state.upcomingAssignments
-      .map(a => a._blocks)
-      .concat(state.upcomingExams.map(ex => ex._blocks))
+    return state.upcomingAssessments
+      .map(assessment => assessment._blocks)
       .flat();
   },
   getWorkBlocksAsEvents: (state, getters) => {
-    const assignmentWorkBlocks = state.upcomingAssignments.map(a =>
-      a._blocks.map(b => getters.mapWorkBlockToEvent('assignment', a, b))
-    );
-    const examWorkBlocks = state.upcomingExams.map(ex =>
-      ex._blocks.map(b => getters.mapWorkBlockToEvent('exam', ex, b))
+    const assessmentWorkBlocks = state.upcomingAssessments.map(assessment =>
+      assessment._blocks.map(b =>
+        getters.mapWorkBlockToEvent(assessment.assessmentType, assessment, b)
+      )
     );
 
-    return assignmentWorkBlocks.concat(examWorkBlocks).flat();
+    return assessmentWorkBlocks.flat();
   }
 };
 
 const actions = {
   async AUTO_GET_UPCOMING_WORK ({ dispatch }) {
-    await dispatch('GET_UPCOMING_ASSIGNMENTS');
-    await dispatch('GET_UPCOMING_EXAMS');
+    await dispatch('GET_UPCOMING_ASSESSMENTS');
     setTimeout(() => {
-      dispatch('GET_UPCOMING_ASSIGNMENTS');
-      dispatch('GET_UPCOMING_EXAMS');
+      dispatch('GET_UPCOMING_ASSESSMENTS');
     }, 1000 * 60 * 60);
   },
-  async ADD_UPCOMING_ASSIGNMENT ({ commit }, newAssignment) {
-    commit('ADD_UPCOMING_ASSIGNMENT', newAssignment);
-    commit('SORT_UPCOMING_ASSIGNMENTS');
+  async ADD_UPCOMING_ASSESSMENT ({ commit }, newAssessment) {
+    commit('ADD_UPCOMING_ASSESSMENT', newAssessment);
+    commit('SORT_UPCOMING_ASSESSMENTS');
   },
-  async UPDATE_UPCOMING_ASSIGNMENT ({ commit }, updatedAssignment) {
-    commit('UPDATE_UPCOMING_ASSIGNMENT', updatedAssignment);
-    commit('SORT_UPCOMING_ASSIGNMENTS');
+  async UPDATE_UPCOMING_ASSESSMENT ({ commit }, updatedAssessment) {
+    commit('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
+    commit('SORT_UPCOMING_ASSESSMENTS');
   },
   async TOGGLE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
     const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
-    commit('UPDATE_UPCOMING_ASSIGNMENT', request.data.updatedAssignment);
-    commit('SORT_UPCOMING_ASSIGNMENTS');
+    commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssignment);
+    commit('SORT_UPCOMING_ASSESSMENTS');
     return request.data.updatedAssignment;
   },
-  async GET_UPCOMING_ASSIGNMENTS ({ commit }) {
-    const response = await axios.get('/assignments', {
+  async GET_UPCOMING_ASSESSMENTS ({ commit }) {
+    let response = await axios.get('/assignments', {
       params: { start: moment().format('YYYY-MM-DD') }
     });
     const assignments = response.data.assignments;
-    commit('SET_UPCOMING_ASSIGNMENTS', assignments);
-  },
-  async REMOVE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
-    commit('REMOVE_UPCOMING_ASSIGNMENT', assignmentID); // It shows up as removed before it actually is ;)
-    const request = await axios.delete(`/assignments/a/${assignmentID}`);
-  },
-  async ADD_UPCOMING_EXAM ({ commit }, updatedExam) {
-    commit('ADD_UPCOMING_EXAM', updatedExam);
-    commit('SORT_UPCOMING_EXAMS');
-  },
-  async UPDATE_UPCOMING_EXAM ({ commit }, updatedExam) {
-    commit('UPDATE_UPCOMING_EXAM', updatedExam);
-    commit('SORT_UPCOMING_EXAMS');
-  },
-  async REMOVE_UPCOMING_EXAM ({ commit }, examID) {
-    commit('REMOVE_UPCOMING_EXAM', examID); // It shows up as removed before it actually is ;)
-    const request = await axios.delete(`/exams/e/${examID}`);
-  },
-  async GET_UPCOMING_EXAMS ({ commit }) {
-    const response = await axios.get('/exams', {
+
+    response = await axios.get('/exams', {
       params: { start: moment().format('YYYY-MM-DD') }
     });
     const exams = response.data.exams;
-    commit('SET_UPCOMING_EXAMS', exams);
+
+    commit('SET_UPCOMING_ASSESSMENTS', assignments.concat(exams));
+    commit('SORT_UPCOMING_ASSESSMENTS');
   },
-  async ADD_WORK_BLOCK (
-    { commit, getters },
-    { assessmentType, assessment, start, end }
-  ) {
+  async REMOVE_UPCOMING_ASSESSMENT ({ state, commit }, assessmentID) {
+    const assessmentToRemove = state.upcomingAssessments.find(
+      assessment => assessment._id === assessmentID
+    );
+    commit('REMOVE_UPCOMING_ASSESSMENT', assessmentID); // It shows up as removed before it actually is ;)
+    let apiURL =
+      assessmentToRemove.assessmentType === 'assignment'
+        ? '/assignments/a/'
+        : '/exams/e/';
+    const request = await axios.delete(apiURL + assessmentID);
+  },
+  async ADD_WORK_BLOCK ({ commit, getters }, { assessment, start, end }) {
     const request = await axios.post(
-      `/blocks/${assessmentType}/${assessment._id}`,
+      `/blocks/${assessment.assessmentType}/${assessment._id}`,
       { startTime: start, endTime: end }
     );
-    const capitalized = assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    const capitalized =
+      assessment.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    if (getters['getUpcoming' + capitalized + 'ById'](assessment._id)) {
+    if (getters.getUpcomingAssessmentById(assessment._id)) {
       commit(
-        `UPDATE_UPCOMING_${assessmentType.toUpperCase()}`,
+        'UPDATE_UPCOMING_ASSESSMENT',
         request.data['updated' + capitalized]
       );
     }
@@ -218,17 +173,16 @@ const actions = {
       b => b.blockID === blockID
     );
     const request = await axios.patch(
-      `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`,
+      `/blocks/${block.assessment.assessmentType}/${
+        block.assessment._id
+      }/${blockID}`,
       { startTime: start, endTime: end, assessmentType: block.assessmentType }
     );
 
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    commit(
-      `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
-      request.data['updated' + capitalized]
-    );
+    commit('UPDATE_UPCOMING_ASSESSMENT', request.data['updated' + capitalized]);
 
     return request.data['updated' + capitalized];
   },
@@ -243,9 +197,9 @@ const actions = {
     const capitalized =
       block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-    if (getters['getUpcoming' + capitalized + 'ById'](block.assessment._id)) {
+    if (getters.getUpcomingAssessmentById(block.assessment._id)) {
       commit(
-        `UPDATE_UPCOMING_${block.assessmentType.toUpperCase()}`,
+        'UPDATE_UPCOMING_ASSESSMENT',
         request.data['updated' + capitalized]
       );
     }
@@ -254,57 +208,37 @@ const actions = {
 };
 
 const mutations = {
-  SET_UPCOMING_ASSIGNMENTS: (state, assignments) => {
-    state.upcomingAssignments = assignments;
+  SET_UPCOMING_ASSESSMENTS: (state, assessments) => {
+    state.upcomingAssessments = assessments;
   },
-  SORT_UPCOMING_ASSIGNMENTS: () => {
-    state.upcomingAssignments.sort((a, b) => {
-      if (a.dueDate > b.dueDate) {
+  SORT_UPCOMING_ASSESSMENTS: () => {
+    state.upcomingAssessments.sort((a, b) => {
+      let aDate = a.dueDate || a.date;
+      let bDate = b.dueDate || b.date;
+
+      if (aDate > bDate) {
         return 1;
-      } else if (a.dueDate < b.dueDate) {
+      } else if (aDate < bDate) {
         return -1;
       }
       return 0;
     });
   },
-  ADD_UPCOMING_ASSIGNMENT: (state, assignment) => {
-    state.upcomingAssignments.push(assignment);
+  ADD_UPCOMING_ASSESSMENT: (state, assignment) => {
+    state.upcomingAssessments.push(assignment);
   },
-  UPDATE_UPCOMING_ASSIGNMENT: (state, updatedAssignment) => {
+  UPDATE_UPCOMING_ASSESSMENT: (state, updatedAssessment) => {
     Object.assign(
-      state.upcomingAssignments.find(a => a._id === updatedAssignment._id),
-      updatedAssignment
+      state.upcomingAssessments.find(
+        assessment => assessment._id === updatedAssessment._id
+      ),
+      updatedAssessment
     );
   },
-  REMOVE_UPCOMING_ASSIGNMENT: (state, assignmentID) => {
-    state.upcomingAssignments = state.upcomingAssignments.filter(
-      a => a._id !== assignmentID
+  REMOVE_UPCOMING_ASSESSMENT: (state, assessmentID) => {
+    state.upcomingAssessments = state.upcomingAssessments.filter(
+      assessment => assessment._id !== assessmentID
     );
-  },
-  SET_UPCOMING_EXAMS: (state, exams) => {
-    state.upcomingExams = exams;
-  },
-  SORT_UPCOMING_EXAMS: () => {
-    state.upcomingExams.sort((a, b) => {
-      if (a.date > b.date) {
-        return 1;
-      } else if (a.date < b.date) {
-        return -1;
-      }
-      return 0;
-    });
-  },
-  ADD_UPCOMING_EXAM: (state, exam) => {
-    state.upcomingExams.push(exam);
-  },
-  UPDATE_UPCOMING_EXAM: (state, updatedExam) => {
-    Object.assign(
-      state.upcomingExams.find(ex => ex._id === updatedExam._id),
-      updatedExam
-    );
-  },
-  REMOVE_UPCOMING_EXAM: (state, examID) => {
-    state.upcomingExams = state.upcomingExams.filter(ex => ex._id !== examID);
   }
 };
 

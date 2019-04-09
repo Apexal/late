@@ -38,10 +38,10 @@ const router = new Router({
       component: () => import('@/views/TheAboutPage.vue')
     },
     {
-      path: '/assignments',
-      component: () => import('@/views/assignments/Assignments.vue'),
+      path: '/assessments',
+      component: () => import('@/views/assessments/Assessments.vue'),
       meta: {
-        title: 'Assignments',
+        title: 'Coursework',
         requiresAuth: true
       },
       children: [
@@ -51,80 +51,44 @@ const router = new Router({
         },
         {
           path: 'calendar',
-          name: 'assignments-calendar',
+          name: 'assessments-calendar',
           meta: {
-            title: 'Assignment Calendar'
+            title: 'Coursework Calendar'
           },
-          component: () => import('@/views/assignments/AssignmentsCalendar.vue')
+          component: () => import('@/views/assessments/AssessmentsCalendar.vue')
         },
         {
           path: 'upcoming',
-          name: 'assignments-upcoming',
+          name: 'assessments-upcoming',
           meta: {
-            title: 'Upcoming Assignments'
+            title: 'Upcoming Coursework'
           },
-          component: () => import('@/views/assignments/AssignmentsUpcoming.vue')
+          component: () => import('@/views/assessments/AssessmentsUpcoming.vue')
         },
         {
           path: 'past',
-          name: 'past-assignments',
+          name: 'past-assessments',
           meta: {
-            title: 'Past Assignments'
+            title: 'Past Coursework'
           },
-          component: () => import('@/views/assignments/AssignmentsPastList.vue')
+          component: () => import('@/views/assessments/AssessmentsPastList.vue')
         }
       ]
     },
     {
-      path: '/assignments/:assignmentID',
-      name: 'assignments-overview',
-      component: () => import('@/views/assignments/AssignmentsOverview.vue'),
+      path: '/assessments/a/:assignmentID',
+      name: 'assignment-overview',
+      component: () => import('@/views/assessments/AssessmentsOverview.vue'),
+      props: { assessmentType: 'assignment' },
       meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/exams',
-      component: () => import('@/views/exams/Exams.vue'),
-      meta: {
-        title: 'Exams',
-        requiresAuth: true
-      },
-      children: [
-        {
-          path: '',
-          redirect: 'upcoming'
-        },
-        {
-          path: 'upcoming',
-          name: 'exams-upcoming',
-          meta: {
-            title: 'Upcoming Exams'
-          },
-          component: () => import('@/views/exams/ExamsUpcoming.vue')
-        },
-        {
-          path: 'calendar',
-          name: 'exams-calendar',
-          meta: {
-            title: 'Exam Calendar'
-          },
-          component: () => import('@/views/exams/ExamsCalendar.vue')
-        },
-        {
-          path: 'past',
-          name: 'past-exams',
-          meta: {
-            title: 'Past Exams'
-          },
-          component: () => import('@/views/exams/ExamsPastList.vue')
-        }
-      ]
-    },
-    {
-      path: '/exams/:examID',
-      name: 'exams-overview',
-      component: () => import('@/views/exams/ExamsOverview.vue'),
+      path: '/assessments/e/:examID',
+      name: 'exam-overview',
+      component: () => import('@/views/assessments/AssessmentsOverview.vue'),
+      props: { assessmentType: 'exam' },
       meta: {
         requiresAuth: true
       }

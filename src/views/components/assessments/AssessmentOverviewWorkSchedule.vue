@@ -73,10 +73,6 @@ export default {
   name: 'AsessmentOverviewTabsWorkSchedule',
   components: { FullCalendar },
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -88,6 +84,9 @@ export default {
     };
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     assessmentTypeCapitalized () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     },
@@ -322,19 +321,12 @@ export default {
     },
     async addWorkBlock (start, end) {
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessmentType: this.assessmentType,
         assessment: this.assessment,
         start,
         end
       });
-      const capitalized =
-        this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
-      if (
-        !this.$store.getters['getUpcoming' + capitalized + 'ById'](
-          this.assessment._id
-        )
-      ) {
+      if (!this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
         // Updated past assessment, send up to parent overview
         this.$emit('update-assessment', updatedAssessment);
       }
@@ -354,9 +346,7 @@ export default {
 
       if (
         // eslint-disable-next-line
-        this.$store.getters[
-          'getUpcoming' + this.assessmentTypeCapitalized + 'ById'
-        ](this.assessment._id)
+        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
       ) {
         updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
           blockID,
@@ -397,9 +387,7 @@ export default {
 
       if (
         // eslint-disable-next-line
-        this.$store.getters[
-          'getUpcoming' + this.assessmentTypeCapitalized + 'ById'
-        ](this.assessment._id)
+        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
       ) {
         updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
           blockID

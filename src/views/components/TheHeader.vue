@@ -59,36 +59,39 @@
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
-              <a class="navbar-link">
+              <a
+                class="navbar-link"
+                title="Manage your assignments and exams!"
+              >
                 <span class="icon">
-                  <i class="fas fa-clipboard-list" />
+                  <i class="fas fa-graduation-cap" />
                 </span>
-                Assignments
+                Coursework
                 <span
-                  v-if="assignmentCount > 0"
+                  v-if="assessmentCount > 0"
                   class="tag is-warning assignment-count"
-                >{{ assignmentCount }}</span>
+                >{{ assessmentCount }}</span>
               </a>
 
               <div class="navbar-dropdown">
                 <router-link
                   class="navbar-item"
-                  to="/assignments/upcoming"
-                  title="View upcoming assignments"
+                  to="/assessments/upcoming"
+                  title="View upcoming assessments"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assignments/past"
-                  title="Browse all past assignments"
+                  to="/assessments/past"
+                  title="Browse all past assessments"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assignments/calendar"
-                  title="View a calendar of all your assignment due dates"
+                  to="/assessments/calendar"
+                  title="View a calendar of all your assessment due dates"
                 >
                   Calendar
                 </router-link>
@@ -99,81 +102,37 @@
                   @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-plus" />
+                    <i class="fas fa-clipboard-check" />
                   </span>
                   Add Assignment
                 </a>
-              </div>
-            </div>
-
-            <div
-              v-if="!onBreak"
-              class="navbar-item has-dropdown is-hoverable"
-            >
-              <a class="navbar-link">
-                <span class="icon">
-                  <i class="fas fa-file-alt" />
-                </span>
-                Exams
-                <span
-                  v-if="examCount > 0"
-                  class="tag is-danger exam-count"
-                >{{ examCount }}</span>
-              </a>
-
-              <div class="navbar-dropdown">
-                <router-link
-                  class="navbar-item"
-                  to="/exams/upcoming"
-                  title="View upcoming exams"
-                >
-                  <b>Upcoming</b>
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/exams/past"
-                  title="Browse all past exams"
-                >
-                  Previous
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/exams/calendar"
-                  title="View a calendar of all your exams"
-                >
-                  Calendar
-                </router-link>
-                <hr class="navbar-divider">
                 <a
                   class="navbar-item"
                   title="Add a new exam"
                   @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-plus" />
+                    <i class="fas fa-exclamation-triangle" />
                   </span>
                   Add Exam
                 </a>
               </div>
             </div>
-            <a
-              class="navbar-item"
-              @click="openAnnouncementsModal"
-            >
-              <span class="icon">
-                <i class="fas fa-bullhorn" />
-              </span>
-              Announcements
-              <span
-                v-if="announcementsCount > 0"
-                class="tag is-primary announcement-count"
-              >{{ announcementsCount }}</span>
-            </a>
           </template>
         </div>
 
         <div class="navbar-end">
           <template v-if="loggedIn">
+            <a
+              class="navbar-item"
+              :title="announcementsCount + ' new announcements'"
+              @click="openAnnouncementsModal"
+            >
+              <i
+                class="fa-bell"
+                :class="[ announcementsCount === 0 ? 'far' : 'fas' ]"
+              />
+            </a>
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
                 <span class="icon">
@@ -206,7 +165,6 @@
                   title="Edit your profile"
                 >
                   <i
-                    data-v-203ae283
                     class="fas fa-pencil-alt"
                     style="margin-right: 10px"
                   />
@@ -226,20 +184,6 @@
                     />
                   </span>
                   Report a bug
-                </a>
-
-                <a
-                  class="navbar-item"
-                  href="/auth/discord"
-                  title="Join the LATE Discord server"
-                >
-                  <span class="icon">
-                    <i
-                      class="fas fa-comment"
-                      style="margin-right: 5px"
-                    />
-                  </span>
-                  Join Discord
                 </a>
 
                 <hr class="navbar-divider">
@@ -295,11 +239,8 @@ export default {
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
     },
-    assignmentCount () {
-      return this.$store.getters.incompleteUpcomingAssignments.length;
-    },
-    examCount () {
-      return this.$store.state.work.upcomingExams.length;
+    assessmentCount () {
+      return this.$store.getters.limitedUpcomingAssessments.length;
     }
   },
   methods: {
@@ -342,7 +283,7 @@ export default {
   transform: translateY(3px) rotate(135deg);
   transition: 0.05s;
   -webkit-transition: 0.05s;
-  }
+}
 
 .has-dropdown:hover .navbar-link::after {
   transition: 0.2s;

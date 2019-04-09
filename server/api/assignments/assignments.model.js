@@ -94,6 +94,10 @@ schema.virtual('assessmentType').get(function () {
   return 'assignment';
 });
 
+schema.virtual('date').get(function () {
+  return this.dueDate;
+});
+
 schema.virtual('passed').get(function () {
   return moment(this.dueDate).isBefore(new Date());
 });

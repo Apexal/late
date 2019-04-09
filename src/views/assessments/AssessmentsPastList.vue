@@ -1,12 +1,12 @@
 <template>
-  <div class="past-assignments">
+  <div class="past-assessments">
     <h2 class="subtitle">
       Week of {{ weekOf }}
     </h2>
-
     <div class="is-flex-tablet">
       <button
         class="button"
+        :disabled="!canGoPrev"
         :class="{ 'is-loading': loading }"
         @click="shiftDates(-7)"
       >
@@ -88,17 +88,17 @@
       </button>
     </div>
 
-    <AssignmentsTable
-      :assignments="filtered"
+    <AssessmentsTable
+      v-if="filteredAssessments.length > 0"
+      :assessments="filteredAssessments"
       :show-remove-button="true"
-      @remove-assignment="removeAssignment"
+      @remove-assessment="removeAssessment"
     />
-
     <p
-      v-if="filtered.length === 0"
+      v-else
       class="has-text-centered has-text-grey"
     >
-      No assignments
+      No Coursework
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
@@ -106,19 +106,18 @@
       <i
         v-if="filter.length <= 0"
         style="font-style:inherit"
-      >this month!</i>
+      >this week!</i>
     </p>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
-
-import AssignmentsTable from '@/views/components/assignments/AssignmentsTable';
+import AssessmentsTable from '@/views/components/assessments/AssessmentsTable';
 
 export default {
-  name: 'AssignmentsPastList',
-  components: { AssignmentsTable },
+  name: 'AssessmentsPastList',
+  components: { AssessmentsTable },
   props: {
     showCompleted: {
       type: Boolean,
@@ -139,12 +138,28 @@ export default {
           .subtract(7, 'days')
           .format('YYYY-MM-DD'),
       endDate: this.$route.query.end || moment().format('YYYY-MM-DD'),
-      currentAssignments: []
+      currentAssessments: []
     };
   },
   computed: {
+    filteredAssessments () {
+      return this.currentAssessments.filter(assessment => {
+        if (assessment.assessmentType === 'assignment') {
+          if (!this.showCompleted && assessment.completed) return false;
+        }
+        return !this.filter.includes(assessment.courseCRN);
+      });
+    },
+    currentTerm () {
+      return this.$store.getters.currentTerm;
+    },
     canGoForward () {
       return this.endMoment.isBefore(moment().startOf('day'));
+    },
+    canGoPrev () {
+      return moment(this.startMoment)
+        .subtract(1, 'week')
+        .isSameOrAfter(this.currentTerm.start, 'week');
     },
     startMoment () {
       return moment(this.startDate, 'YYYY-MM-DD', true);
@@ -168,44 +183,37 @@ export default {
     yesterday: () =>
       moment()
         .subtract(1, 'days')
-        .format('YYYY-MM-DD'),
-    filtered () {
-      return this.currentAssignments.filter(a => {
-        if (!this.showCompleted && a.completed) return false;
-        if (this.assignmentFilter.length > 0) {
-          return (
-            !this.filter.includes(this.course(a).crn) &&
-            a.title.toLowerCase().includes(this.assignmentFilter.toLowerCase())
-          );
-        }
-        return !this.filter.includes(this.course(a).crn);
-      });
+        .format('YYYY-MM-DD')
+  },
+  watch: {
+    startDate () {
+      this.getAssessments();
     }
   },
   created () {
-    this.getAssignments();
+    this.getAssessments();
   },
   methods: {
-    async removeAssignment (assignment) {
+    async removeAssessment (assessment) {
       // Confirm user wants to remove assignment
-      if (
-        !confirm(
-          `Are you sure you want to remove assignment ${assignment.title}?`
-        )
-      ) {
+      if (!confirm(`Are you sure you want to remove ${assessment.title}?`)) {
         return;
       }
 
       // This handles the API call and state update
-      await this.$http.delete(`/assignments/a/${assignment._id}`);
+      if (assessment.assessmentType === 'assignment') {
+        await this.$http.delete(`/assignments/a/${assessment._id}`);
+      } else await this.$http.delete(`/exams/e/${assessment._id}`);
 
-      this.currentAssignments = this.currentAssignments.filter(
-        a => a._id !== assignment._id
+      this.currentAssessments = this.currentAssessments.filter(
+        as => as._id !== assessment._id
       );
 
       // Notify user of success
       this.$toasted.success(
-        `Successfully removed assignment past '${assignment.title}'.`,
+        `Successfully removed past ${assessment.assessmentType} '${
+          assessment.title
+        }'.`,
         {
           icon: 'times',
           action: {
@@ -220,7 +228,10 @@ export default {
         .subtract('1', 'week')
         .format('YYYY-MM-DD');
 
-      this.getAssignments();
+      this.getAssessments();
+    },
+    course (ex) {
+      return this.$store.getters.getCourseFromCRN(ex.courseCRN);
     },
     shiftDates (amount) {
       this.startDate = moment(this.startDate, 'YYYY-MM-DD', true)
@@ -230,27 +241,52 @@ export default {
         .add(amount, 'days')
         .format('YYYY-MM-DD');
 
-      this.getAssignments();
+      this.getAssessments();
     },
-    async getAssignments () {
+    async getAssessments () {
       this.loading = true;
       let request;
-
       try {
-        request = await this.$http.get('/assignments', {
-          params: { start: this.startDate, end: this.endDate }
+        request = await this.$http.get('/exams', {
+          params: {
+            start: this.startMoment.format('YYYY-MM-DD'),
+            end: this.endMoment.format('YYYY-MM-DD')
+          }
         });
       } catch (e) {
         this.loading = false;
-        this.currentAssignments = [];
+        this.currentAssessments = [];
+        return this.$toasted.error(e.response.data.message);
+      }
+      let currentExams = request.data.exams.filter(e => e.passed); // Only get passed exams
+
+      try {
+        request = await this.$http.get('/assignments', {
+          params: {
+            start: this.startMoment.format('YYYY-MM-DD'),
+            end: this.endMoment.format('YYYY-MM-DD')
+          }
+        });
+      } catch (e) {
+        this.loading = false;
+        this.currentAssessments = [];
         return this.$toasted.error(e.response.data.message);
       }
 
-      this.currentAssignments = request.data.assignments;
+      let currentAssignments = request.data.assignments.filter(e => e.passed); // Only get passed exams
+
+      this.currentAssessments = currentAssignments
+        .concat(currentExams)
+        .sort((a, b) => {
+          const aDate = a.dueDate || a.date;
+          const bDate = b.dueDate || b.date;
+
+          if (aDate > bDate) return 1;
+          if (aDate < bDate) return -1;
+          return 0;
+        });
+
       this.loading = false;
-    },
-    course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },
     toFullDateTimeString: dueDate =>
       moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),

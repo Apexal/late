@@ -77,10 +77,6 @@ export default {
   name: 'AssessmentOverviewComments',
   components: { VueMarkdown },
   props: {
-    assessmentType: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
@@ -93,6 +89,9 @@ export default {
     };
   },
   computed: {
+    assessmentType () {
+      return this.assessment.assessmentType;
+    },
     capitalizedAssessmentType () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     }
@@ -107,13 +106,9 @@ export default {
     },
     async updateAssessmentFromRequest (request) {
       // Calls API and updates state
-      if (
-        this.$store.getters[`getUpcoming${this.capitalizedAssessmentType}ById`](
-          this.assessment._id
-        )
-      ) {
+      if (this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
         this.$store.dispatch(
-          `UPDATE_UPCOMING_${this.assessmentType.toUpperCase()}`,
+          'UPDATE_UPCOMING_ASSESSMENT',
           request.data[`updated${this.capitalizedAssessmentType}`]
         );
       } else {
