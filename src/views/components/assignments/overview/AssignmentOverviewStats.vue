@@ -11,7 +11,15 @@
           :class="{ 'has-text-grey': assignment.priority === 1 }"
           :style="{ 'font-weight': fontWeight }"
         >
-          {{ priorityString }}
+          <i
+            v-show="assignment.priority > 1"
+            class="fas fa-minus has-text-grey decrease-priority"
+            @click="changePriority(-1)"
+          /> {{ priorityString }} <i
+            v-show="assignment.priority < 5"
+            class="fas fa-plus has-text-grey increase-priority"
+            @click="changePriority(1)"
+          />
         </p>
       </div>
     </div>
@@ -120,6 +128,38 @@ export default {
     }
   },
   methods: {
+    async changePriority (change) {
+      if (this.assignment.priority + change < 1 || this.assignment.priority + change > 5) { return; }
+
+      let request;
+      try {
+        request = await this.$http.patch(
+          `/assignments/a/${
+            this.assignment._id
+          }`,
+          { priority: this.assignment.priority + change }
+        );
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        return;
+      }
+
+      // Calls API and updates state
+      if (
+        // eslint-disable-next-line
+        this.$store.getters.getUpcomingAssessmentById(this.assignment._id)
+      ) {
+        this.$store.dispatch(
+          'UPDATE_UPCOMING_ASSESSMENT',
+          request.data.updatedAssignment
+        );
+      } else {
+        this.$emit(
+          'update-assessment',
+          request.data.updatedAssignment
+        );
+      }
+    },
     shortDateTimeString: dueDate =>
       moment(dueDate).format('ddd, MMM Do YY [@] h:mma'),
     toFullDateTimeString: dueDate =>
@@ -146,5 +186,19 @@ export default {
   .level-item .subtitle {
     color: white;
   }
+
+  .decrease-priority, .increase-priority {
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  &:hover {
+    .decrease-priority, .increase-priority {
+
+      opacity: 1;
+    }
+  }
 }
+
 </style>

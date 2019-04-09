@@ -39,11 +39,13 @@
         v-if="assessmentType === 'assignment'"
         :assignment="assessment"
         @not-fully-scheduled-click="notFullyScheduledClick"
+        @update-assessment="updatedAssessment"
       />
 
       <ExamOverviewStats
         v-else
         :exam="assessment"
+        @not-fully-scheduled-click="notFullyScheduledClick"
       />
 
       <AssessmentOverviewDescription
