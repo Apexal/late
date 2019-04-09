@@ -8,9 +8,18 @@
         class="input is-medium"
         maxlength="75"
         :placeholder="titlePlaceholder"
+        list="new-assessment-title-old-titles"
+        autocomplete="off"
         @change="$emit('update-title', $event.target.value)"
         @keyup.enter="$emit('next-step')"
       >
+      <datalist id="new-assessment-title-old-titles">
+        <option
+          v-for="(oldTitle, index) in oldTitles"
+          :key="index"
+          :value="oldTitle"
+        />
+      </datalist>
     </div>
     <div class="field">
       <div class="control">
@@ -53,6 +62,10 @@ export default {
     descriptionPlaceholder: {
       type: String,
       default: ''
+    },
+    oldTitles: {
+      type: Array,
+      default: () => []
     }
   }
 };

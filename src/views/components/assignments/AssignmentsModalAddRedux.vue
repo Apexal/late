@@ -62,6 +62,7 @@
             :priority="priority"
             :is-recurring="isRecurring"
             :recurring-days="recurringDays"
+            :old-titles="oldTitles"
             @update-crn="setValue('courseCRN', $event)"
             @update-date="setValue('dueDate', $event); nextStep();"
             @update-time="setValue('dueTime', $event.trim())"
@@ -135,6 +136,7 @@ export default {
   data () {
     return {
       loading: false,
+      oldTitles: [],
       steps: [
         {
           label: 'Course',
@@ -212,6 +214,15 @@ export default {
         ModalCalendar: !!this.dueDate,
         ModalTime: true
       };
+    }
+  },
+  watch: {
+    async course (newCourse) {
+      const request = await this.$http.get(
+        '/assignments?courseCRN=' + newCourse.crn
+      );
+
+      this.oldTitles = request.data.assignments.slice(0, 5).map(a => a.title);
     }
   },
   methods: {
