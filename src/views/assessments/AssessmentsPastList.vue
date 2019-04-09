@@ -98,7 +98,7 @@
       v-else
       class="has-text-centered has-text-grey"
     >
-      No Assessments
+      No Coursework
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
