@@ -85,7 +85,8 @@
               >
                 <summary>
                   <i class="fas fa-thumbtack" />
-                  <strong>Pinned Announcement: </strong>{{ ann.title }}
+                  <strong>Pinned Announcement:</strong>
+                  {{ ann.title }}
                   <a
                     class="delete is-pulled-right"
                     @click="dismissPinnedAnnouncement(ann._id)"
@@ -268,7 +269,9 @@ body {
     .fas.fa-thumbtack {
       margin-right: 5px;
     }
-    summary { cursor: pointer; }
+    summary {
+      cursor: pointer;
+    }
   }
 
   .pinned-announcement:hover {
@@ -297,7 +300,7 @@ body {
 //Removes annoying outline around elements when clicked.
 *:focus {
   outline: none;
-  box-shadow: none!important;
+  box-shadow: none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 

@@ -15,9 +15,23 @@ instance.interceptors.request.use(config => {
   return config;
 });
 
-instance.interceptors.response.use(response => {
-  app.$Progress.finish(); // finish when a response is received
-  return response;
-});
+instance.interceptors.response.use(
+  response => {
+    app.$Progress.finish(); // finish when a response is received
+    return response;
+  },
+  error => {
+    if (
+      error.response.status === 401 &&
+      error.response.config.url !== '/api/students/user' &&
+      error.response.config.url !== '/api/students/loginas'
+    ) {
+      alert('Your session has expired! Refreshing...');
+      location.reload();
+      return;
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default instance;
