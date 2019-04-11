@@ -101,6 +101,9 @@
                   to="/assessments/stats"
                   title="View stats on your coursework"
                 >
+                  <span class="icon">
+                    <i class="fas fa-chart-bar" />
+                  </span>
                   Stats
                 </router-link>
                 <hr class="navbar-divider">
@@ -137,8 +140,8 @@
               @click="openAnnouncementsModal"
             >
               <i
-                class="fa-bell"
-                :class="[ announcementsCount === 0 ? 'far' : 'fas' ]"
+                class="fa-bell announcement-bell-icon"
+                :class="[ announcementsCount === 0 ? 'far' : 'fas new-announcements' ]"
               />
             </a>
             <div class="navbar-item has-dropdown is-hoverable">
@@ -281,6 +284,24 @@ export default {
   background-color: #70cad1;
   color: white;
   line-height: 1.2em;
+}
+
+@keyframes bellshake {
+  0% { transform: rotate(0); }
+  10% { transform: rotate(5deg); }
+  25% { transform: rotate(-5deg); }
+  40% { transform: rotate(4deg); }
+  55% { transform: rotate(-4deg); }
+  70% { transform: rotate(2deg); }
+  80% { transform: rotate(-2deg); }
+  87% { transform: rotate(1deg); }
+  95% { transform: rotate(0); }
+  100% { transform: rotate(0); }
+}
+
+.announcement-bell-icon.new-announcements {
+  animation: bellshake 1s cubic-bezier(.36,.07,.19,.97) both;
+  animation-iteration-count: infinite;
 }
 
 .has-dropdown .navbar-link::after {
