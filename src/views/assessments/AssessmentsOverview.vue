@@ -33,6 +33,7 @@
         :assessment-type="'assignment'"
         :assessment="assessment"
         @toggle-completed="toggleCompleted"
+        @update-assessment="updatedAssessment"
       />
 
       <AssignmentOverviewStats
@@ -54,7 +55,7 @@
       />
       <AssignmentOverviewTabs
         v-if="assessmentType === 'assignment'"
-        ref="tabs"
+        ref="assignment-tabs"
         :tab="tab"
         :assignment="assessment"
         :loading="loading || commentLoading"
@@ -64,6 +65,7 @@
 
       <ExamOverviewTabs
         v-else
+        ref="exam-tabs"
         :tab="tab"
         :exam="assessment"
         :loading="loading || commentLoading"
@@ -189,12 +191,13 @@ export default {
       });
     },
     updatedAssessment (newAssessment) {
-      // eslint-disable-next-line
       this.assessment = newAssessment;
+      this.editedDescription = newAssessment.description;
+      document.title = `${newAssessment.title} | LATE`;
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
-      this.$refs.tabs.scrollTo();
+      this.$refs[this.assessmentType + '-tabs'].scrollTo();
     },
     copyAssessment () {
       this.$store.dispatch(
@@ -265,9 +268,6 @@ export default {
         this.updatedAssessment(
           this.$store.getters.getUpcomingAssessmentById(assessmentID)
         );
-
-        this.editedDescription = this.assessment.description;
-        document.title = `${this.assessment.title} | LATE`;
         this.loading = false;
         this.isUpcoming = true;
 

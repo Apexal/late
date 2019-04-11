@@ -45,7 +45,7 @@
             type="time"
           >
           <i
-            class="fas fa-check has-text-grey save-due-date"
+            class="fas fa-check has-text-success save-due-date"
             title="Save new due date and time."
             @click="updateDueDate"
           />
