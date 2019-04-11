@@ -42,7 +42,7 @@
                 @click="addAssessmentClick(key, 'assignment')"
               />
               <i
-                class="has-text-white fas fa-file-alt"
+                class="has-text-white fas fa-exclamation-triangle"
                 :title="addAssessmentTitle(key, 'exam')"
                 @click="addAssessmentClick(key, 'exam')"
               />

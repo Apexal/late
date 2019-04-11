@@ -50,7 +50,7 @@
         class="button is-outlined is-info"
         @click="$emit('add-assessment', 'exam')"
       >
-        <i class="fa fa-file-alt" />
+        <i class="fa fa-exclamation-triangle" />
         Add Exam
       </button>
     </div>

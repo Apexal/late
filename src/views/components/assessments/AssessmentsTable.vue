@@ -26,7 +26,7 @@
           <span @click="$store.commit('OPEN_COURSE_MODAL', course(assessment))">
             <span
               class="assessment-icon fas"
-              :class="[ assessment.assessmentType === 'assignment' ? 'fa-clipboard-check' : 'fa-file-alt' ]"
+              :class="[ assessment.assessmentType === 'assignment' ? 'fa-clipboard-check' : 'fa-exclamation-triangle' ]"
               :title="course(assessment).longname"
               :style="'color: ' + course(assessment).color"
             />
@@ -102,17 +102,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.assessment-link,
-.assessment-type {
+.assessment-link {
   color: inherit;
   cursor: pointer;
 
   &.exam {
     font-weight: 500;
   }
-}
-.assessment-type {
-  margin-right: 5px;
 }
 .course-dot {
   margin-right: 5px;
@@ -127,9 +123,16 @@ export default {
     color: red;
   }
 }
+.assessment-icon {
+  cursor: pointer;
+  width: 20px;
+  text-align: center;
+  margin-right: 5px;
+}
 
 .assessment-table {
-  th, td {
+  th,
+  td {
     width: 40%;
     &:nth-child(3) {
       width: 20%;
