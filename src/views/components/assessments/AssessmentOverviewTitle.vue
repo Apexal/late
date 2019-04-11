@@ -116,6 +116,7 @@ export default {
     async save () {
       if (this.tempCourseCRN === this.assessment.courseCRN && this.tempTitle === this.assessment.title) {
         this.editing = false;
+        return;
       }
 
       let request;
