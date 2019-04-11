@@ -41,8 +41,7 @@ const getters = {
         groupBy === 'courseCRN'
           ? assessment.courseCRN
           : moment(assessment.dueDate || assessment.date)
-            .startOf('day')
-            .toDate();
+            .format('YYYY-MM-DD');
       if (!grouped[key]) grouped[key] = [];
       grouped[key].push(assessment);
     }

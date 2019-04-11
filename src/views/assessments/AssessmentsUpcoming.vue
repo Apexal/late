@@ -148,12 +148,12 @@ export default {
     headerTitle (key) {
       return this.groupBy === 'courseCRN'
         ? 'Open course modal'
-        : moment(key).format('M/DD/YY');
+        : 'Coursework due on ' + moment(key, 'YYYY-MM-DD', true).format('M/DD/YY');
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
         ? this.course(key).longname
-        : this.toDateShortString(key);
+        : this.toDateShortString(moment(key, 'YYYY-MM-DD', true));
     },
     headerStyle (key) {
       if (this.groupBy === 'date') return {};
@@ -201,7 +201,7 @@ export default {
       if (this.groupBy === 'courseCRN') {
         return `Add new ${this.course(key).longname} ${assessmentType}`;
       } else {
-        return `Add new ${assessmentType} on ${moment(key).format('M/DD/YY')}`;
+        return `Add new ${assessmentType} on ${moment(key, 'YYYY-MM-DD', true).format('M/DD/YY')}`;
       }
     },
     toggleAssignmentTitle (a) {
