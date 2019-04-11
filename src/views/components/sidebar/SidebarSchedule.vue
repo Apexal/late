@@ -25,7 +25,7 @@
       </div>
       <div
         v-for="event in filteredTodaysAgenda"
-        :key="event.title + '-' + event.start.toString()"
+        :key="event.course.crn + '-' + event.start.toString() + event.end.toString()"
         class="panel-block event is-flex"
         :class="{ 'is-active': isCurrentEvent(event), 'passed': hasPassed(event.end), 'clickable': event.link }"
         @click="eventClicked(event)"
@@ -71,18 +71,6 @@
         />
         {{ showPassed ? 'Showing' : 'Hiding' }} Passed
       </button>
-      <!-- <label
-        class="is-full-width has-text-centered togglePassed"
-        for="agenda-show-passed"
-      >
-        Show Passed
-        <input
-          id="agenda-show-passed"
-          v-model="showPassed"
-          type="checkbox"
-          title="Show your completed courses"
-        >
-      </label> -->
     </div>
   </div>
 </template>
