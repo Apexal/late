@@ -38,6 +38,12 @@
               {{ child.text }}
             </label>
           </li>
+          <li>
+            <input
+              type="text is-full-width"
+              :placeholder="'Add checkpoint to ' + item.text"
+            >
+          </li>
         </ol>
       </li>
     </ol>
