@@ -8,6 +8,7 @@
     >
       {{ completedPercent }}%
     </progress>
+    <hr>
     <ol class="columns is-multiline">
       <li
         v-for="(item, index) in studyPlan"
@@ -23,6 +24,10 @@
           >
           {{ item.text }}
         </label>
+        <span
+          class="delete delete-item"
+          @click="deleteCategory(index)"
+        />
         <ol v-if="item.children">
           <li
             v-for="(child, childIndex) in item.children"
@@ -37,11 +42,16 @@
               >
               {{ child.text }}
             </label>
+            <span
+              class="delete delete-item"
+              @click="deleteChildItem(index, childIndex)"
+            />
           </li>
           <li>
             <form @submit.prevent="addChildItem(index, $event)">
               <input
                 type="text is-full-width"
+                class="input"
                 name="child-item-name"
                 :placeholder="'Add checkpoint to ' + item.text"
               >
@@ -49,11 +59,11 @@
           </li>
         </ol>
       </li>
-      <li>
+      <li class="column is-half">
         <form @submit.prevent="addCategory">
           <input
             v-model="newCategory"
-            class="new-checkpoint-input"
+            class="input new-checkpoint-input"
             type="text is-full-width"
             placeholder="Add new category, e.g 'Chapter 1''"
           >
@@ -150,6 +160,18 @@ export default {
 
       await this.updateStudyPlan(studyPlan);
     },
+    async deleteCategory (itemIndex) {
+      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
+      studyPlan.splice(itemIndex, 1);
+
+      await this.updateStudyPlan(studyPlan);
+    },
+    async deleteChildItem (itemIndex, childIndex) {
+      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
+      studyPlan[itemIndex].children.splice(childIndex, 1);
+
+      await this.updateStudyPlan(studyPlan);
+    },
     async updateStudyPlan (studyPlan) {
       this.loading = true;
 
@@ -189,14 +211,31 @@ export default {
   .new-checkpoint-input {
     font-size: 1em;
   }
+
   ul,
   ol {
     list-style-type: none;
   }
+
+
   li > ol {
     padding-left: 20px;
     > li {
       font-size: 0.8em;
+    }
+  }
+
+  li {
+    > .delete-item {
+      opacity: 0;
+      transition: opacity 0.2s;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      > .delete-item {
+        opacity: 1;
+      }
     }
   }
 }
