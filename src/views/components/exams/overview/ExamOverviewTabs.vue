@@ -41,6 +41,12 @@
         >
           <a>Related Exams</a>
         </li>
+        <li
+          :class="{ 'is-active': tab === 'studyPlan' }"
+          @click="$emit('set-tab', 'studyPlan')"
+        >
+          <a>Study Plan</a>
+        </li>
       </ul>
     </div>
 
@@ -59,13 +65,15 @@
 import AssessmentOverviewWorkSchedule from '@/views/components/assessments/AssessmentOverviewWorkSchedule';
 import AssessmentOverviewComments from '@/views/components/assessments/AssessmentOverviewComments';
 import AssessmentOverviewRelated from '@/views/components/assessments/AssessmentOverviewRelated';
+import ExamOverviewStudyPlan from '@/views/components/exams/overview/ExamOverviewStudyPlan';
 
 export default {
   name: 'ExamOverviewTabs',
   components: {
     AssessmentOverviewComments,
     AssessmentOverviewWorkSchedule,
-    AssessmentOverviewRelated
+    AssessmentOverviewRelated,
+    ExamOverviewStudyPlan
   },
   props: {
     tab: {
@@ -98,7 +106,8 @@ export default {
       return {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule',
-        related: 'AssessmentOverviewRelated'
+        related: 'AssessmentOverviewRelated',
+        studyPlan: 'ExamOverviewStudyPlan'
       }[this.tab];
     }
   }
