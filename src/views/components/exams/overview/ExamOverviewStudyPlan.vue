@@ -1,9 +1,10 @@
 <template>
   <div class="exam-overview-study-plan">
-    <ol>
+    <ol class="columns is-multiline">
       <li
         v-for="(item, index) in studyPlan"
         :key="index"
+        class="column is-half"
       >
         <label>
           <input type="checkbox">
