@@ -16,34 +16,44 @@ import Chart from 'chart.js';
 
 export default {
   name: 'AssessmentsStats',
-  mounted () {
-    var myChart = new Chart('chart', {
-      type: 'bar',
+  computed: {
+    courses () {
+      return this.$store.getters.current_schedule;
+    }
+  },
+  async mounted () {
+    let request = await this.$http.get('/assignments');
+    const assignments = request.data.assignments;
+    /*
+      [
+        {
+          longname: 'Calculus II',
+          color: 'red'
+        },
+        {
+          longname: 'Physics II',
+          color: 'blue'
+        }
+      ]
+    */
+
+    // for assignment in assignments:
+    // dictionary[course] = assignment
+
+    const myChart = new Chart('chart', {
+      type: 'doughnut',
       data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: this.courses.map(course => course.longname), // ['Calculus II', 'RCOS', etc]
         datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
+          label: '# of assignments and exams',
+          data: this.courses.map(course => assignments.filter(assignment => assignment.courseCRN === course.crn).length),
+          backgroundColor: this.courses.map(course => course.color),
+          borderColor: 'white', // this.courses.map(course => course.color),
           borderWidth: 1
         }]
       },
       options: {
+        /*
         scales: {
           yAxes: [{
             ticks: {
@@ -51,6 +61,7 @@ export default {
             }
           }]
         }
+        */
       }
     });
   }
@@ -58,5 +69,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+#chart {
+  width: 50%
+}
 </style>
