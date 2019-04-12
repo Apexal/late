@@ -32,7 +32,7 @@
           <input
             id="show-completed-assignmemts"
             type="checkbox"
-            class="switch is-thin"
+            class="switch is-rounded is-link"
             :checked="showCompleted"
             @change="$emit('toggle-show-completed')"
           >
