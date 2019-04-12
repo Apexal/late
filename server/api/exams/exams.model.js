@@ -24,6 +24,13 @@ const schema = new Schema(
         body: { type: String, minlength: 1, maxlength: 2000, required: true }
       }
     ],
+    studyPlan: [
+      {
+        text: String, // Markdown
+        children: Array, // nested objects
+        completed: Boolean
+      }
+    ],
     _blocks: [
       {
         type: mongoose.Schema.Types.ObjectId,
