@@ -1,5 +1,11 @@
 <template>
   <div class="exam-overview-study-plan">
+    <p
+      v-if="totalItemCount === 0 && !editing"
+      class="has-text-grey has-text-centered"
+    >
+      You have not made a study plan yet!
+    </p>
     <ol class="columns is-multiline">
       <li
         v-for="(item, index) in studyPlan"
@@ -61,22 +67,20 @@
           </li>
         </ol>
       </li>
-      <li
-        v-if="editing"
-        class="column is-half"
-      >
-        <form @submit.prevent="addCategory">
-          <input
-            v-model="newCategory"
-            class="input new-checkpoint-input"
-            type="text is-full-width"
-            placeholder="Add new category, e.g 'Chapter 1''"
-            maxlength="200"
-            required
-          >
-        </form>
-      </li>
     </ol>
+    <form
+      v-if="editing"
+      @submit.prevent="addCategory"
+    >
+      <input
+        v-model="newCategory"
+        class="input new-checkpoint-input"
+        type="text is-full-width"
+        placeholder="Add new category, e.g 'Chapter 1'"
+        maxlength="200"
+        required
+      >
+    </form>
     <hr>
     <span
       class="is-flex"
