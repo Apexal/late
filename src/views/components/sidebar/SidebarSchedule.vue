@@ -55,7 +55,7 @@
 
         <span
           class="event-times is-pulled-right has-text-grey tooltip is-tooltip-left"
-          :data-tooltip="duration(event) + ' minutes'"
+          :data-tooltip="timeFormat(event.start) + ' - ' + timeFormat(event.end)"
         >{{ timeFormat(event.start) }}</span>
       </div>
     </div>
