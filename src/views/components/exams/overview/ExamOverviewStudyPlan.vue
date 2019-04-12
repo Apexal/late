@@ -16,7 +16,7 @@
           <input
             type="checkbox"
             :checked="item.completed"
-            :disabled="loading"
+            :disabled="loading || editing"
             @change="setItemCompleted(index, !item.completed)"
           >
           {{ item.text }}
@@ -39,7 +39,7 @@
               <input
                 type="checkbox"
                 :checked="child.completed"
-                :disabled="loading"
+                :disabled="loading || editing"
                 @change="setChildCompleted(index, childIndex, !child.completed)"
               >
               {{ child.text }}
