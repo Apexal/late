@@ -24,6 +24,12 @@
           </a>
         </li>
         <li
+          :class="{ 'is-active': tab === 'studyPlan' }"
+          @click="$emit('set-tab', 'studyPlan')"
+        >
+          <a>Study Plan</a>
+        </li>
+        <li
           :class="{ 'is-active': tab === 'comments' }"
           @click="$emit('set-tab', 'comments')"
         >
@@ -40,12 +46,6 @@
           @click="$emit('set-tab', 'related')"
         >
           <a>Related Exams</a>
-        </li>
-        <li
-          :class="{ 'is-active': tab === 'studyPlan' }"
-          @click="$emit('set-tab', 'studyPlan')"
-        >
-          <a>Study Plan</a>
         </li>
       </ul>
     </div>

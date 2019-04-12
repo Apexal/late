@@ -1,21 +1,12 @@
 <template>
   <div class="exam-overview-study-plan">
-    <progress
-      class="progress is-success is-tooltip-bottom"
-      :value="completedCount"
-      :title="completedPercent + '%'"
-      :max="totalItemCount"
-    >
-      {{ completedPercent }}%
-    </progress>
-    <hr>
     <ol class="columns is-multiline">
       <li
         v-for="(item, index) in studyPlan"
         :key="index"
-        class="column is-half"
+        class="column is-half category"
       >
-        <label>
+        <label class="category-label">
           <input
             type="checkbox"
             :checked="item.completed"
@@ -25,10 +16,15 @@
           {{ item.text }}
         </label>
         <span
+          v-if="editing"
           class="delete delete-item"
+          title="Remove this category"
           @click="deleteCategory(index)"
         />
-        <ol v-if="item.children">
+        <ol
+          v-if="item.children"
+          class="category-children"
+        >
           <li
             v-for="(child, childIndex) in item.children"
             :key="childIndex"
@@ -43,33 +39,64 @@
               {{ child.text }}
             </label>
             <span
+              v-if="editing"
               class="delete delete-item"
+              title="Remove this item"
               @click="deleteChildItem(index, childIndex)"
             />
           </li>
-          <li>
+          <li
+            v-if="editing"
+            class="add-child-item"
+          >
             <form @submit.prevent="addChildItem(index, $event)">
               <input
                 type="text is-full-width"
                 class="input"
                 name="child-item-name"
+                maxlength="200"
                 :placeholder="'Add checkpoint to ' + item.text"
               >
             </form>
           </li>
         </ol>
       </li>
-      <li class="column is-half">
+      <li
+        v-if="editing"
+        class="column is-half"
+      >
         <form @submit.prevent="addCategory">
           <input
             v-model="newCategory"
             class="input new-checkpoint-input"
             type="text is-full-width"
             placeholder="Add new category, e.g 'Chapter 1''"
+            maxlength="200"
+            required
           >
         </form>
       </li>
     </ol>
+    <hr>
+    <span
+      class="is-flex"
+      :style="{ 'align-items': 'center' }"
+    >
+      <button
+        class="button is-warning edit-study-plan"
+        @click="editing = !editing"
+      >
+        {{ editing ? 'Save Plan' : 'Edit Plan' }}
+      </button>
+      <progress
+        class="progress is-success is-tooltip-bottom"
+        :value="completedCount"
+        :title="completedPercent + '%'"
+        :max="totalItemCount"
+      >
+        {{ completedPercent }}%
+      </progress>
+    </span>
   </div>
 </template>
 
@@ -85,6 +112,7 @@ export default {
   data () {
     return {
       loading: false,
+      editing: false,
       newCategory: ''
     };
   },
@@ -106,8 +134,12 @@ export default {
       );
     },
     completedPercent () {
+      if (this.totalItemCount === 0) return 0;
       return Math.round((this.completedCount / this.totalItemCount) * 100);
     }
+  },
+  mounted () {
+    this.editing = this.totalItemCount === 0;
   },
   methods: {
     async addCategory (event) {
@@ -208,8 +240,17 @@ export default {
 <style lang="scss" scoped>
 .exam-overview-study-plan {
   font-size: 1.5em;
+
+  .edit-study-plan {
+    margin-right: 10px;
+  }
+
   .new-checkpoint-input {
     font-size: 1em;
+  }
+
+  .delete-item {
+    vertical-align: middle;
   }
 
   ul,
@@ -225,18 +266,8 @@ export default {
     }
   }
 
-  li {
-    > .delete-item {
-      opacity: 0;
-      transition: opacity 0.2s;
-      vertical-align: middle;
-    }
-
-    &:hover {
-      > .delete-item {
-        opacity: 1;
-      }
-    }
+  label.category-label {
+    font-weight: 500;
   }
 }
 </style>
