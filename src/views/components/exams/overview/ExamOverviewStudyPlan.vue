@@ -39,12 +39,25 @@
             </label>
           </li>
           <li>
-            <input
-              type="text is-full-width"
-              :placeholder="'Add checkpoint to ' + item.text"
-            >
+            <form @submit.prevent="addChildItem(index, $event)">
+              <input
+                type="text is-full-width"
+                name="child-item-name"
+                :placeholder="'Add checkpoint to ' + item.text"
+              >
+            </form>
           </li>
         </ol>
+      </li>
+      <li>
+        <form @submit.prevent="addCategory">
+          <input
+            v-model="newCategory"
+            class="new-checkpoint-input"
+            type="text is-full-width"
+            placeholder="Add new category, e.g 'Chapter 1''"
+          >
+        </form>
       </li>
     </ol>
   </div>
@@ -61,7 +74,8 @@ export default {
   },
   data () {
     return {
-      loading: false
+      loading: false,
+      newCategory: ''
     };
   },
   computed: {
@@ -86,6 +100,34 @@ export default {
     }
   },
   methods: {
+    async addCategory (event) {
+      if (!this.newCategory) return;
+
+      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
+      studyPlan.push({
+        text: this.newCategory,
+        children: [],
+        completed: false
+      });
+
+      this.newCategory = '';
+
+      await this.updateStudyPlan(studyPlan);
+    },
+    async addChildItem (itemIndex, event) {
+      const text = event.target['child-item-name'].value.trim();
+      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
+
+      studyPlan[itemIndex].completed = false;
+      studyPlan[itemIndex].children.push({
+        text,
+        completed: false
+      });
+
+      event.target['child-item-name'].value = '';
+
+      await this.updateStudyPlan(studyPlan);
+    },
     async setItemCompleted (itemIndex, status) {
       const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
       studyPlan[itemIndex].completed = status;
@@ -144,6 +186,9 @@ export default {
 <style lang="scss" scoped>
 .exam-overview-study-plan {
   font-size: 1.5em;
+  .new-checkpoint-input {
+    font-size: 1em;
+  }
   ul,
   ol {
     list-style-type: none;
