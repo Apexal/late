@@ -71,7 +71,7 @@ app.use(async (ctx, next) => {
       );
     }
 
-    if (ctx.state.user.setup.google) {
+    if (ctx.state.user && ctx.state.user.setup.google) {
       const auth = google.createConnection();
       auth.setCredentials(ctx.state.user.integrations.google.tokens);
       ctx.state.googleAuth = auth;
