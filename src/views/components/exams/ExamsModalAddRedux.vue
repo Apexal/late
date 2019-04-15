@@ -116,8 +116,8 @@ export default {
   name: 'ExamsModalAddRedux',
   components: {
     ModalSelectCourse,
-    ModalTitleAndDescription,
     ModalCalendar,
+    ModalTitleAndDescription,
     ModalTime
   },
   props: {
@@ -136,14 +136,14 @@ export default {
           component: 'ModalSelectCourse'
         },
         {
-          label: 'Basic Info',
-          completed: false,
-          component: 'ModalTitleAndDescription'
-        },
-        {
           label: 'Date',
           completed: false,
           component: 'ModalCalendar'
+        },
+        {
+          label: 'Basic Info',
+          completed: false,
+          component: 'ModalTitleAndDescription'
         },
         {
           label: 'Time',
@@ -196,8 +196,8 @@ export default {
     completedChecks () {
       return {
         ModalSelectCourse: this.courseCRN.length > 0,
-        ModalTitleAndDescription: this.title.length > 0,
         ModalCalendar: !!this.date,
+        ModalTitleAndDescription: this.title.length > 0,
         ModalTime: true
       };
     }

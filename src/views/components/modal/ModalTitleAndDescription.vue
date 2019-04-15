@@ -64,7 +64,7 @@ export default {
       default: ''
     },
     oldTitles: {
-      type: Array,
+      type: Set,
       default: () => []
     }
   }

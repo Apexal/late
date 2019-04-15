@@ -36,6 +36,20 @@ const mutations = {
 
     return Object.assign(state, updates);
   },
+  RESET_ADD_ASSIGNMENT_MODAL_VALUES: state => {
+    Object.assign(state, {
+      modalStep: 0,
+      courseCRN: '',
+      dueDate: null,
+      dueTime: '08:00',
+      title: '',
+      description: '',
+      timeEstimate: 1.0,
+      priority: 3,
+      isRecurring: false,
+      recurringDays: []
+    });
+  },
   TOGGLE_ADD_ASSIGNMENT_MODAL: state => (state.expanded = !state.expanded)
 };
 

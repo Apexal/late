@@ -86,7 +86,7 @@
         </div>
         <div
           class="modal-nav-button cancel"
-          @click="$emit('toggle-modal')"
+          @click="cancelClicked"
         >
           <h1>Cancel</h1>
         </div>
@@ -115,16 +115,16 @@ import moment from 'moment';
 import 'bulma-steps';
 
 import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
-import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
 import ModalCalendar from '@/views/components/modal/ModalCalendar';
+import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
 import ModalTime from '@/views/components/modal/ModalTime';
 
 export default {
   name: 'AssignmentsModalAdd',
   components: {
     ModalSelectCourse,
-    ModalTitleAndDescription,
     ModalCalendar,
+    ModalTitleAndDescription,
     ModalTime
   },
   props: {
@@ -136,7 +136,7 @@ export default {
   data () {
     return {
       loading: false,
-      oldTitles: [],
+      oldTitles: new Set(),
       steps: [
         {
           label: 'Course',
@@ -144,14 +144,14 @@ export default {
           component: 'ModalSelectCourse'
         },
         {
-          label: 'Basic Info',
-          completed: false,
-          component: 'ModalTitleAndDescription'
-        },
-        {
           label: 'Due Date',
           completed: false,
           component: 'ModalCalendar'
+        },
+        {
+          label: 'Basic Info',
+          completed: false,
+          component: 'ModalTitleAndDescription'
         },
         {
           label: 'Time',
@@ -210,8 +210,8 @@ export default {
     completedChecks () {
       return {
         ModalSelectCourse: this.courseCRN.length > 0,
-        ModalTitleAndDescription: this.title.length > 0,
         ModalCalendar: !!this.dueDate,
+        ModalTitleAndDescription: this.title.length > 0,
         ModalTime: true
       };
     }
@@ -226,6 +226,10 @@ export default {
     }
   },
   methods: {
+    cancelClicked () {
+      this.$store.commit('RESET_ADD_ASSIGNMENT_MODAL_VALUES');
+      this.$emit('toggle-modal');
+    },
     nextStep () {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
         modalStep: this.step + 1

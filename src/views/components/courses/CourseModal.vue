@@ -137,7 +137,6 @@ export default {
       this.$store.commit(
         'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_VALUES',
         {
-          modalStep: 1,
           courseCRN: this.course.crn
         }
       );
