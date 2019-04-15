@@ -34,7 +34,15 @@
             <span>
               Study Plan
             </span>
-            <span class="tag is-success">{{ studyPlanCompletedPercent }}%</span>
+            <span
+              v-if="studyPlanMade"
+              class="tag is-success"
+            >{{ studyPlanCompletedPercent }}%</span>
+            <span
+              v-else
+              data-tooltip="You have not made a study plan for this exam yet!"
+              class="tag is-danger tooltip is-tooltip-right"
+            >!</span>
           </a>
         </li>
         <li
@@ -104,6 +112,9 @@ export default {
     },
     studyPlan () {
       return this.exam.studyPlan;
+    },
+    studyPlanMade () {
+      return Object.keys(this.studyPlan).length > 0;
     },
     studyPlanCompletedPercent () {
       const totalItemCount = this.studyPlan.reduce(
