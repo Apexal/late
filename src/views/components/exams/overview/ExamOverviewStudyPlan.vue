@@ -6,7 +6,13 @@
     >
       You have not made a study plan yet!
     </p>
-    <ol class="columns is-multiline">
+    <Draggable
+      v-model="studyPlan"
+      tag="ol"
+      class="columns is-multiline"
+      group="categories"
+      @change="orderChanged"
+    >
       <li
         v-for="(item, index) in studyPlan"
         :key="index"
@@ -31,26 +37,33 @@
           v-if="item.children"
           class="category-children"
         >
-          <li
-            v-for="(child, childIndex) in item.children"
-            :key="childIndex"
+          <Draggable
+            v-model="item.children"
+            :group="item.text + '-children'"
+            @change="orderChanged"
           >
-            <label>
-              <input
-                type="checkbox"
-                :checked="child.completed"
-                :disabled="loading || editing"
-                @change="setChildCompleted(index, childIndex, !child.completed)"
-              >
-              {{ child.text }}
-            </label>
-            <span
-              v-if="editing"
-              class="delete delete-item"
-              title="Remove this item"
-              @click="deleteChildItem(index, childIndex)"
-            />
-          </li>
+            <li
+              v-for="(child, childIndex) in item.children"
+              :key="childIndex"
+              class="child-item"
+            >
+              <label>
+                <input
+                  type="checkbox"
+                  :checked="child.completed"
+                  :disabled="loading || editing"
+                  @change="setChildCompleted(index, childIndex, !child.completed)"
+                >
+                {{ child.text }}
+              </label>
+              <span
+                v-if="editing"
+                class="delete delete-item"
+                title="Remove this item"
+                @click="deleteChildItem(index, childIndex)"
+              />
+            </li>
+          </Draggable>
           <li
             v-if="editing"
             class="add-child-item"
@@ -67,7 +80,7 @@
           </li>
         </ol>
       </li>
-    </ol>
+    </Draggable>
     <form
       v-if="editing"
       @submit.prevent="addCategory"
@@ -105,8 +118,13 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable';
+
 export default {
   name: 'ExamOverviewStudyPlan',
+  components: {
+    Draggable
+  },
   props: {
     assessment: {
       type: Object,
@@ -117,13 +135,11 @@ export default {
     return {
       loading: false,
       editing: false,
-      newCategory: ''
+      newCategory: '',
+      studyPlan: []
     };
   },
   computed: {
-    studyPlan () {
-      return this.assessment.studyPlan;
-    },
     completedCount () {
       return this.studyPlan.reduce(
         (acc, item) =>
@@ -142,15 +158,23 @@ export default {
       return Math.round((this.completedCount / this.totalItemCount) * 100);
     }
   },
+  watch: {
+    assessment (newAssessemnt) {
+
+    }
+  },
   mounted () {
     this.editing = this.totalItemCount === 0;
+    this.studyPlan = JSON.parse(JSON.stringify(this.assessment.studyPlan));
   },
   methods: {
+    async orderChanged () {
+      await this.updateStudyPlan(this.studyPlan);
+    },
     async addCategory (event) {
       if (!this.newCategory) return;
 
-      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
-      studyPlan.push({
+      this.studyPlan.push({
         text: this.newCategory,
         children: [],
         completed: false
@@ -158,54 +182,49 @@ export default {
 
       this.newCategory = '';
 
-      await this.updateStudyPlan(studyPlan);
+      await this.updateStudyPlan(this.studyPlan);
     },
     async addChildItem (itemIndex, event) {
       const text = event.target['child-item-name'].value.trim();
-      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
 
-      studyPlan[itemIndex].completed = false;
-      studyPlan[itemIndex].children.push({
+      this.studyPlan[itemIndex].completed = false;
+      this.studyPlan[itemIndex].children.push({
         text,
         completed: false
       });
 
       event.target['child-item-name'].value = '';
 
-      await this.updateStudyPlan(studyPlan);
+      await this.updateStudyPlan(this.studyPlan);
     },
     async setCategoryCompleted (itemIndex, status) {
-      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
-      studyPlan[itemIndex].completed = status;
+      this.studyPlan[itemIndex].completed = status;
 
-      for (const child of studyPlan[itemIndex].children) {
+      for (const child of this.studyPlan[itemIndex].children) {
         child.completed = status;
       }
 
-      await this.updateStudyPlan(studyPlan);
+      await this.updateStudyPlan(this.studyPlan);
     },
     async setChildCompleted (itemIndex, childIndex, status) {
-      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
-      studyPlan[itemIndex].children[childIndex].completed = status;
+      this.studyPlan[itemIndex].children[childIndex].completed = status;
 
       // See if all children of parent are completed
-      studyPlan[itemIndex].completed = studyPlan[itemIndex].children.every(
+      this.studyPlan[itemIndex].completed = this.studyPlan[itemIndex].children.every(
         i => i.completed
       );
 
-      await this.updateStudyPlan(studyPlan);
+      await this.updateStudyPlan(this.studyPlan);
     },
     async deleteCategory (itemIndex) {
-      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
-      studyPlan.splice(itemIndex, 1);
+      this.studyPlan.splice(itemIndex, 1);
 
-      await this.updateStudyPlan(studyPlan);
+      await this.updateStudyPlan(this.studyPlan);
     },
     async deleteChildItem (itemIndex, childIndex) {
-      const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
-      studyPlan[itemIndex].children.splice(childIndex, 1);
+      this.studyPlan[itemIndex].children.splice(childIndex, 1);
 
-      await this.updateStudyPlan(studyPlan);
+      await this.updateStudyPlan(this.studyPlan);
     },
     async updateStudyPlan (studyPlan) {
       this.loading = true;
@@ -250,6 +269,10 @@ export default {
 
   .new-checkpoint-input {
     font-size: 1em;
+  }
+
+  .child-item label {
+    cursor: move;
   }
 
   .delete-item {
