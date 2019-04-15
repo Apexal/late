@@ -127,7 +127,8 @@ async function editExam (ctx) {
     'date',
     'courseCRN',
     'timeEstimate',
-    'priority'
+    'priority',
+    'studyPlan'
   ];
 
   // Ensure no unallowed properties are passed to update

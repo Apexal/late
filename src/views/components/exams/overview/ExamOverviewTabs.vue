@@ -1,5 +1,8 @@
 <template>
-  <div class="exam-overview-tabs">
+  <div
+    id="exam-overview-tabs"
+    ref="tabs"
+  >
     <div class="tabs">
       <ul>
         <li
@@ -24,6 +27,17 @@
           </a>
         </li>
         <li
+          :class="{ 'is-active': tab === 'studyPlan' }"
+          @click="$emit('set-tab', 'studyPlan')"
+        >
+          <a>
+            <span>
+              Study Plan
+            </span>
+            <span class="tag is-success">{{ studyPlanCompletedPercent }}%</span>
+          </a>
+        </li>
+        <li
           :class="{ 'is-active': tab === 'comments' }"
           @click="$emit('set-tab', 'comments')"
         >
@@ -34,12 +48,6 @@
               class="tag is-dark comment-count"
             >{{ exam.comments.length }}</span>
           </a>
-        </li>
-        <li
-          :class="{ 'is-active': tab === 'related' }"
-          @click="$emit('set-tab', 'related')"
-        >
-          <a>Related Exams</a>
         </li>
       </ul>
     </div>
@@ -58,14 +66,14 @@
 // Tabs
 import AssessmentOverviewWorkSchedule from '@/views/components/assessments/AssessmentOverviewWorkSchedule';
 import AssessmentOverviewComments from '@/views/components/assessments/AssessmentOverviewComments';
-import AssessmentOverviewRelated from '@/views/components/assessments/AssessmentOverviewRelated';
+import ExamOverviewStudyPlan from '@/views/components/exams/overview/ExamOverviewStudyPlan';
 
 export default {
   name: 'ExamOverviewTabs',
   components: {
     AssessmentOverviewComments,
     AssessmentOverviewWorkSchedule,
-    AssessmentOverviewRelated
+    ExamOverviewStudyPlan
   },
   props: {
     tab: {
@@ -94,11 +102,29 @@ export default {
     workScheduleLocked () {
       return this.exam.passed;
     },
+    studyPlan () {
+      return this.exam.studyPlan;
+    },
+    studyPlanCompletedPercent () {
+      const totalItemCount = this.studyPlan.reduce(
+        (acc, item) => acc + 1 + item.children.length,
+        0
+      );
+      const totalCompleted = this.studyPlan.reduce(
+        (acc, item) =>
+          acc + item.completed + item.children.filter(c => c.completed).length,
+        0
+      );
+
+      if (totalItemCount === 0) return 0;
+
+      return Math.round((totalCompleted / totalItemCount) * 100);
+    },
     componentName () {
       return {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule',
-        related: 'AssessmentOverviewRelated'
+        studyPlan: 'ExamOverviewStudyPlan'
       }[this.tab];
     }
   }

@@ -46,8 +46,8 @@ export default {
           timeFormat: 'h(:mm)t',
           eventClick: (calEvent, jsEvent, view) => {
             this.$router.push({
-              name: calEvent.type + '-overview',
-              params: { [calEvent.type + 'ID']: calEvent.assessment._id }
+              name: calEvent.assessment.assessmentType + '-overview',
+              params: { [calEvent.assessment.assessmentType + 'ID']: calEvent.assessment._id }
             });
           },
           eventRender: event => {

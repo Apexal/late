@@ -137,11 +137,6 @@ export default {
         params: { [this.assessmentType + 'ID']: this.assessment._id }
       };
     }
-  },
-  watch: {
-    assessment (newA) {
-      alert(newA.completed);
-    }
   }
 };
 </script>

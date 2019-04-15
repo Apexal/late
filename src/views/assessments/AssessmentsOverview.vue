@@ -197,7 +197,6 @@ export default {
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
-      this.$refs[this.assessmentType + '-tabs'].scrollTo();
     },
     copyAssessment () {
       this.$store.dispatch(
