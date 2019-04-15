@@ -1,5 +1,8 @@
 <template>
-  <div class="exam-overview-tabs">
+  <div
+    id="exam-overview-tabs"
+    ref="tabs"
+  >
     <div class="tabs">
       <ul>
         <li

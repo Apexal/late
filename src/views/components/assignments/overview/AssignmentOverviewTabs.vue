@@ -1,7 +1,7 @@
 <template>
   <div
+    id="assignment-overview-tabs"
     ref="tabs"
-    class="assignment-overview-tabs"
   >
     <div class="tabs">
       <ul>
