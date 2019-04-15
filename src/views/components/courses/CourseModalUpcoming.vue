@@ -17,19 +17,23 @@
       >
         <router-link
           class="box assessment-box is-flex"
-          :to="`/${assessment.assessmentType}s/${assessment._id}`"
+          :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
           :title="assessmentLinkTitle(assessment)"
         >
           <span style="flex: 1">
             {{ assessment.title }}
           </span>
           <span
-            v-if="assessment.assessmentType === 'assignment'"
             class="icon"
           >
             <i
+              v-if="assessment.assessmentType === 'assignment'"
               class="fa assessment-completion-icon"
               :class="assessment.completed ? 'fa-check' : 'fa-times'"
+            />
+            <i
+              v-else
+              class="fa fa-exclamation-triangle"
             />
           </span>
         </router-link>
