@@ -17,7 +17,7 @@
             type="checkbox"
             :checked="item.completed"
             :disabled="loading || editing"
-            @change="setItemCompleted(index, !item.completed)"
+            @change="setCategoryCompleted(index, !item.completed)"
           >
           {{ item.text }}
         </label>
@@ -127,13 +127,13 @@ export default {
     completedCount () {
       return this.studyPlan.reduce(
         (acc, item) =>
-          acc + item.completed + item.children.filter(c => c.completed).length,
+          acc + (item.children.length ? item.children.filter(c => c.completed).length : item.completed),
         0
       );
     },
     totalItemCount () {
       return this.studyPlan.reduce(
-        (acc, item) => acc + 1 + item.children.length,
+        (acc, item) => acc + (item.children.length ? item.children.length : 1), // count header only if no children
         0
       );
     },
@@ -174,13 +174,12 @@ export default {
 
       await this.updateStudyPlan(studyPlan);
     },
-    async setItemCompleted (itemIndex, status) {
+    async setCategoryCompleted (itemIndex, status) {
       const studyPlan = JSON.parse(JSON.stringify(this.studyPlan));
       studyPlan[itemIndex].completed = status;
-      if (status) {
-        for (const child of studyPlan[itemIndex].children) {
-          child.completed = true;
-        }
+
+      for (const child of studyPlan[itemIndex].children) {
+        child.completed = status;
       }
 
       await this.updateStudyPlan(studyPlan);

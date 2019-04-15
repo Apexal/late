@@ -27,7 +27,12 @@ const schema = new Schema(
     studyPlan: [
       {
         text: String, // Markdown
-        children: Array, // nested objects
+        children: [
+          {
+            text: String,
+            completed: Boolean
+          }
+        ], // nested objects
         completed: Boolean
       }
     ],
