@@ -2,9 +2,36 @@
   <div
     class="assessment-overview-title is-flex-tablet"
   >
-    <div class="has-text-centered-mobile ">
+    <div
+      v-if="!editing"
+      class="has-text-centered-mobile "
+    >
+      <span
+        class="tag is-medium course-tag"
+        :style="{ 'background-color': course.color }"
+        @click="$store.commit('OPEN_COURSE_MODAL', course)"
+      >
+        <b class="course-longname">{{ course.longname }}</b>
+        {{ assessment.passed ? 'Past ': '' }}{{ assessmentType === 'assignment' && assessment.isRecurring ? 'Recurring ' : '' }}{{ capitalizedAssessmentType }}
+      </span>
+    </div>
+    <h1
+      v-if="!editing"
+      class="title assessment-title has-text-centered-mobile"
+      style="flex: 1"
+    >
+      {{ assessment.title }}
+      <i
+        class="fas fa-pencil-alt edit-title-icon has-text-grey"
+        @click="editing = true"
+      />
+    </h1>
+    <form
+      v-else
+      :style="{ flex: 1}"
+      @submit.prevent="save"
+    >
       <div
-        v-if="editing"
         class="select"
       >
         <select v-model="tempCourseCRN">
@@ -17,20 +44,6 @@
           </option>
         </select>
       </div>
-      <span
-        v-else
-        class="tag is-medium course-tag"
-        :style="{ 'background-color': course.color }"
-        @click="$store.commit('OPEN_COURSE_MODAL', course)"
-      >
-        <b class="course-longname">{{ course.longname }}</b>
-        {{ assessment.passed ? 'Past ': '' }}{{ assessmentType === 'assignment' && assessment.isRecurring ? 'Recurring ' : '' }}{{ capitalizedAssessmentType }}
-      </span>
-    </div>
-    <div
-      v-if="editing"
-      :style="{ flex: 1}"
-    >
       <input
         id="edited-assessment-title"
         v-model.trim="tempTitle"
@@ -43,18 +56,7 @@
         class="fa fa-check save-title-icon has-text-success"
         @click="save"
       />
-    </div>
-    <h1
-      v-else
-      class="title assessment-title has-text-centered-mobile"
-      style="flex: 1"
-    >
-      {{ assessment.title }}
-      <i
-        class="fas fa-pencil-alt edit-title-icon has-text-grey"
-        @click="editing = true"
-      />
-    </h1>
+    </form>
 
     <div
       v-if="assessmentType === 'assignment'"
