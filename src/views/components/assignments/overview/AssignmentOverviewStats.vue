@@ -6,7 +6,7 @@
           Priority
         </p>
         <p
-          class="subtitle"
+          class="subtitle priority"
           :class="{ 'is-italic': assignment.priority === 1 }"
           :style="{ 'font-weight': fontWeight }"
         >
@@ -30,9 +30,10 @@
         <p class="heading">
           {{ assignment.passed ? 'Was Due' : 'Due' }}
         </p>
-        <div
+        <form
           v-if="editingDueDate"
-          class="control"
+          class="control due-date"
+          @submit.prevent="updateDueDate"
         >
           <input
             v-model="tempDueDateString"
@@ -49,10 +50,10 @@
             title="Save new due date and time."
             @click="updateDueDate"
           />
-        </div>
+        </form>
         <p
           v-else
-          class="subtitle tooltip is-tooltip-bottom"
+          class="subtitle due-date tooltip is-tooltip-bottom"
           :data-tooltip="timeLeft"
         >
           {{ shortDueDateString }}
@@ -274,11 +275,16 @@ export default {
   .save-due-date {
     margin-left: 5px;
   }
-  &:hover {
-    .decrease-priority, .increase-priority, .edit-due-date, .save-due-date {
-
+  .priority:hover {
+    .decrease-priority, .increase-priority {
       opacity: 1;
     }
+  }
+
+  .due-date:hover {
+     .edit-due-date, .save-due-date {
+       opacity: 1;
+     }
   }
 }
 
