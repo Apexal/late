@@ -8,6 +8,7 @@
     </p>
     <Draggable
       v-model="studyPlan"
+      :disabled="!editing"
       tag="ol"
       class="columns is-multiline"
       group="categories"
@@ -17,12 +18,18 @@
         v-for="(item, index) in studyPlan"
         :key="index"
         class="column is-half category"
+        :class="{ draggable: editing }"
       >
         <label class="category-label">
+          <i
+            v-if="editing"
+            class="fas fa-grip-horizontal"
+          />
           <input
+            v-else
             type="checkbox"
             :checked="item.completed"
-            :disabled="loading || editing"
+            :disabled="loading"
             @change="setCategoryCompleted(index, !item.completed)"
           >
           {{ item.text }}
@@ -39,6 +46,7 @@
         >
           <Draggable
             v-model="item.children"
+            :disabled="!editing"
             :group="item.text + '-children'"
             @change="orderChanged"
           >
@@ -46,12 +54,18 @@
               v-for="(child, childIndex) in item.children"
               :key="childIndex"
               class="child-item"
+              :class="{ draggable: editing }"
             >
               <label>
+                <i
+                  v-if="editing"
+                  class="fas fa-grip-horizontal"
+                />
                 <input
+                  v-else
                   type="checkbox"
                   :checked="child.completed"
-                  :disabled="loading || editing"
+                  :disabled="loading"
                   @change="setChildCompleted(index, childIndex, !child.completed)"
                 >
                 {{ child.text }}
@@ -102,17 +116,13 @@
       <button
         class="button is-warning edit-study-plan"
         @click="editing = !editing"
-      >
-        {{ editing ? 'Save Plan' : 'Edit Plan' }}
-      </button>
+      >{{ editing ? 'Save Plan' : 'Edit Plan' }}</button>
       <progress
         class="progress is-success is-tooltip-bottom"
         :value="completedCount"
         :title="completedPercent + '%'"
         :max="totalItemCount"
-      >
-        {{ completedPercent }}%
-      </progress>
+      >{{ completedPercent }}%</progress>
     </span>
   </div>
 </template>
@@ -143,7 +153,10 @@ export default {
     completedCount () {
       return this.studyPlan.reduce(
         (acc, item) =>
-          acc + (item.children.length ? item.children.filter(c => c.completed).length : item.completed),
+          acc +
+          (item.children.length
+            ? item.children.filter(c => c.completed).length
+            : item.completed),
         0
       );
     },
@@ -209,9 +222,10 @@ export default {
       this.studyPlan[itemIndex].children[childIndex].completed = status;
 
       // See if all children of parent are completed
-      this.studyPlan[itemIndex].completed = this.studyPlan[itemIndex].children.every(
-        i => i.completed
-      );
+      // eslint-disable-next-line
+      this.studyPlan[itemIndex].completed = this.studyPlan[
+        itemIndex
+      ].children.every(i => i.completed);
 
       await this.updateStudyPlan(this.studyPlan);
     },
@@ -270,7 +284,12 @@ export default {
     font-size: 1em;
   }
 
-  .child-item label {
+  .child-item label,
+  .category label {
+    cursor: pointer;
+  }
+
+  .draggable label {
     cursor: move;
   }
 
@@ -282,7 +301,6 @@ export default {
   ol {
     list-style-type: none;
   }
-
 
   li > ol {
     padding-left: 20px;
