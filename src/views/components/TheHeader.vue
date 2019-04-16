@@ -96,17 +96,6 @@
                   Calendar
                 </router-link>
                 <hr class="navbar-divider">
-                <router-link
-                  class="navbar-item"
-                  to="/assessments/stats"
-                  title="View stats on your coursework"
-                >
-                  <span class="icon">
-                    <i class="fas fa-chart-bar" />
-                  </span>
-                  Stats
-                </router-link>
-                <hr class="navbar-divider">
                 <a
                   class="navbar-item"
                   title="Add a new assignment"
@@ -135,7 +124,7 @@
         <div class="navbar-end">
           <template v-if="loggedIn">
             <a
-              class="navbar-item"
+              class="navbar-item announcementIcon"
               :title="announcementsCount + ' new announcements'"
               @click="openAnnouncementsModal"
             >
@@ -145,7 +134,10 @@
               />
             </a>
             <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
+              <a
+                class="navbar-link"
+                style="padding-right: 3.2em;"
+              >
                 <span class="icon">
                   <i
                     class="fas"
@@ -158,6 +150,17 @@
               </a>
 
               <div class="navbar-dropdown is-right">
+                <router-link
+                  class="navbar-item"
+                  to="/assessments/stats"
+                  title="View stats on your coursework"
+                >
+                  <span class="icon">
+                    <i class="fas fa-chart-pie" />
+                  </span>
+                  Your Statistics
+                </router-link>
+                <hr class="navbar-divider">
                 <router-link
                   v-if="user.admin"
                   class="navbar-item"
@@ -175,10 +178,11 @@
                   to="/profile"
                   title="Edit your profile"
                 >
-                  <i
-                    class="fas fa-pencil-alt"
-                    style="margin-right: 10px"
-                  />
+                  <span class="icon">
+                    <i
+                      class="fas fa-pencil-alt"
+                    />
+                  </span>
                   Edit Account
                 </router-link>
 
@@ -339,7 +343,8 @@ export default {
 
   .navbar-item {
     span.icon {
-      margin-right: 3px;
+      margin-left: 3px;
+      margin-right: 5px;
     }
   }
 
