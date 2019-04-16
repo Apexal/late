@@ -160,11 +160,10 @@ export default {
   },
   watch: {
     assessment (newAssessemnt) {
-
+      this.studyPlan = JSON.parse(JSON.stringify(newAssessemnt.studyPlan));
     }
   },
   mounted () {
-    this.editing = this.totalItemCount === 0;
     this.studyPlan = JSON.parse(JSON.stringify(this.assessment.studyPlan));
   },
   methods: {
