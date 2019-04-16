@@ -260,7 +260,7 @@ export default {
 
 <style lang="scss" scoped>
 .exam-overview-study-plan {
-  font-size: 1.5em;
+  font-size: 1.3em;
 
   .edit-study-plan {
     margin-right: 10px;
