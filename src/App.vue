@@ -17,6 +17,7 @@
           :announcements="announcements"
           @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
         />
+        <SISMan />
       </template>
       <template v-if="!loading">
         <AssignmentsModalAdd
@@ -117,6 +118,8 @@ import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
 import CourseModal from '@/views/components/courses/CourseModal';
 import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
+import SISMan from '@/views/components/sisman/SISMan';
+
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
@@ -130,7 +133,8 @@ export default {
     TheFooter,
     AssignmentsModalAdd,
     ExamsModalAddRedux,
-    AnnouncementsModal
+    AnnouncementsModal,
+    SISMan
   },
   data () {
     return {
