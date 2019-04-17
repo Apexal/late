@@ -21,7 +21,7 @@
       </div>
       <p id="sis-man-holder">
         <img
-          src="https://camo.githubusercontent.com/ce3710480c5f51df1d3ac2b6c3c231b22709ead2/687474703a2f2f656e672e7270692e6564752f73697465732f64656661756c742f66696c65732f5349534d616e5f302e706e67"
+          src="/sisman.svg"
         >
       </p>
 
