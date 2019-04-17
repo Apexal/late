@@ -24,29 +24,42 @@ The target audience is college students who use tools such as Google Calendar to
 
 ### Local Setup
 
+#### Docker Container
+
+Make sure you have [Docker](https://docs.docker.com/install/) installed. WSL users should follow this guide to [install Docker on WSL](https://blog.jayway.com/2017/04/19/running-docker-on-bash-on-windows/).
+
+- Clone the repository
+- Checkout the `dev` branch with `$ git checkout dev`
+- Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables **TEAM MEMBERS:** Ask Frank for the official `.env` file
+- Run LATE with `$ ./run-hot-docker`. If you need to update backend files, pass `--build` to the command.
+- Go to url `http://localhost:8080` in your browser
+
+#### Manual Install
+
 Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with version `>= 11.0.0`.
 
 - Clone the repository
 - Checkout the `dev` branch with `$ git checkout dev`
 - `$ npm install -g @vue/cli`
 - `$ npm install`
-- Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables **TEAM MEMBERS: ** Ask Frank for the official `.env` file
+- Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables **TEAM MEMBERS:** Ask Frank for the official `.env` file
 
 To run the project in development mode, you must run the API server in one terminal and the front end hot-reloading server in another terminal:
 
+- `$ sudo npm run fix-watch` (Linux users only, may be required if Vue-cli complains about file watchers)
 - `$ npm run frontend` to run the hot-reloading Vue server (in one terminal)
 - `$ npm run backend` to run the API server (in another terminal)
 - Go to url `http://localhost:8080` (whatever `$ npm run frontend` tells you go to) in your browser
 
 #### Overview
 Easily access daily classes and work blocks, pressing assignments, upcoming exams, and To-Do List:<br/>
-<img src="https://github.com/Apexal/late/blob/dev/public/Day_Overview_README.png" width="250" height="380"> 
+<img src="https://github.com/Apexal/late/blob/dev/public/Day_Overview_README.png" width="250" height="380">
 
 Add and edit work blocks via the Dashboard:<br/>
 <img src="https://github.com/Apexal/late/blob/dev/public/Dashboard_README.png" width="600" height="300">
 
 Conveniently view assignments for the near future:<br/>
-<img src="https://github.com/Apexal/late/blob/dev/public/Upcoming_assignments_README.png" width="600" height="300"> 
+<img src="https://github.com/Apexal/late/blob/dev/public/Upcoming_assignments_README.png" width="600" height="300">
 
 Seamlessly integrate SMS/email reminders:<br/>
 <img src= "https://github.com/Apexal/late/blob/dev/public/Notification_Preferences_README.png" width="250" height="250">
