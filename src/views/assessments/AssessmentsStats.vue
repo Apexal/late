@@ -3,16 +3,12 @@
     <h1 class="has-text-centered-mobile title">
       Coursework Stats
     </h1>
-    <div class="columns is-multiline">
-      <div class="column is-half">
-        <canvas id="chart" />
-      </div>
-      <div class="column is-half">
-        <canvas id="bar-chart" />
-      </div>
-      <div class="column is-half">
-        <canvas id="line-chart" />
-      </div>
+    <div class="charts">
+      <canvas id="doughnut-chart" />
+
+      <canvas id="bar-chart" />
+
+      <canvas id="line-chart" />
     </div>
   </section>
 </template>
@@ -144,7 +140,7 @@ export default {
       .reduce((acc, duration) => acc + duration, 0)
     );
 
-    const doughnutChart = new Chart('chart', {
+    const doughnutChart = new Chart('doughnut-chart', {
       type: 'doughnut',
       data: {
         labels: this.courses.map(course => course.longname), // ['Calculus II', 'RCOS', etc]
@@ -208,7 +204,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#chart {
-  width: 50%
+.charts canvas {
+  margin-bottom: 50px;
 }
 </style>
