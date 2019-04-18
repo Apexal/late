@@ -3,6 +3,7 @@
     title="Hey there..."
     class="sis-man is-unselectable"
     :class="{ showing, hiding }"
+    :style="{ left: left + '%' }"
   >
     <!-- <div class="speech-bubble">
       <h1>Hey there</h1>
@@ -23,6 +24,7 @@
 </template>
 
 <script>
+import { setInterval, setTimeout } from 'timers';
 export default {
   name: 'SISMan',
   data () {
@@ -30,6 +32,7 @@ export default {
       line: 0,
       showing: true,
       hiding: true,
+      left: 85,
       options: [
         // {
         //   text: 'yes...',
@@ -45,6 +48,15 @@ export default {
         // }
       ]
     };
+  },
+  mounted () {
+    // setInterval(() => {
+    //   this.showing = false;
+    //   setTimeout(() => {
+    //     this.left = Math.floor(Math.random() * (85 - 10)) + 20;
+    //     this.showing = true;
+    //   }, 1000);
+    // }, 5000);
   }
 };
 </script>
@@ -93,7 +105,7 @@ export default {
   cursor: pointer;
   position: fixed;
   width: 150px;
-  right: 10px;
+
   z-index: 100;
   transition: bottom 0.5s;
   bottom: 0px;
