@@ -2,7 +2,10 @@
   <nav class="level box exam-stats has-background-grey-darker has-text-white">
     <div class="level-item has-text-centered">
       <div>
-        <p class="heading">
+        <p
+          class="heading"
+          title="The importance of this exam."
+        >
           Priority
         </p>
         <p class="subtitle">
@@ -13,7 +16,10 @@
 
     <div class="level-item has-text-centered">
       <div>
-        <p class="heading">
+        <p
+          class="heading"
+          title="When is this exam taking place?"
+        >
           {{ exam.passed ? 'Was On' : 'When' }}
         </p>
         <p

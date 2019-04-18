@@ -2,7 +2,10 @@
   <nav class="box level assignment-stats has-background-grey-darker has-text-white">
     <div class="level-item has-text-centered">
       <div>
-        <p class="heading">
+        <p
+          class="heading"
+          title="The importance of this assignment."
+        >
           Priority
         </p>
         <p
@@ -15,7 +18,9 @@
             class="fas fa-minus has-text-grey decrease-priority"
             :title="'Decrease priority to ' + priorityStrings[assignment.priority - 1]"
             @click="changePriority(-1)"
-          /> {{ priorityString }} <i
+          />
+          {{ priorityString }}
+          <i
             v-show="assignment.priority < 5"
             class="fas fa-plus has-text-grey increase-priority"
             :title="'Increase priority to ' + priorityStrings[assignment.priority + 1]"
@@ -27,7 +32,10 @@
 
     <div class="level-item has-text-centered">
       <div>
-        <p class="heading">
+        <p
+          class="heading"
+          title="When is this assignment due?"
+        >
           {{ assignment.passed ? 'Was Due' : 'Due' }}
         </p>
         <form
@@ -189,7 +197,11 @@ export default {
     async updateDueDate () {
       if (this.loading) return;
 
-      const newDueDate = moment(this.tempDueDateString + ' ' + this.tempDueTimeString, 'YYYY-MM-DD HH:mm', true);
+      const newDueDate = moment(
+        this.tempDueDateString + ' ' + this.tempDueTimeString,
+        'YYYY-MM-DD HH:mm',
+        true
+      );
       if (moment(this.assignment.dueDate).isSame(newDueDate)) {
         this.editingDueDate = false;
         return;
@@ -204,7 +216,12 @@ export default {
     async changePriority (change) {
       if (this.loading) return;
 
-      if (this.assignment.priority + change < 1 || this.assignment.priority + change > 5) { return; }
+      if (
+        this.assignment.priority + change < 1 ||
+        this.assignment.priority + change > 5
+      ) {
+        return;
+      }
       this.updateAssignment({ priority: this.assignment.priority + change });
     },
     async updateAssignment (updates) {
@@ -212,9 +229,7 @@ export default {
       let request;
       try {
         request = await this.$http.patch(
-          `/assignments/a/${
-            this.assignment._id
-          }`,
+          `/assignments/a/${this.assignment._id}`,
           updates
         );
       } catch (e) {
@@ -232,10 +247,7 @@ export default {
           request.data.updatedAssignment
         );
       } else {
-        this.$emit(
-          'update-assessment',
-          request.data.updatedAssignment
-        );
+        this.$emit('update-assessment', request.data.updatedAssignment);
       }
       this.loading = false;
       return request.data.updatedAssignment;
@@ -267,7 +279,10 @@ export default {
     color: white;
   }
 
-  .decrease-priority, .increase-priority, .edit-due-date, .save-due-date {
+  .decrease-priority,
+  .increase-priority,
+  .edit-due-date,
+  .save-due-date {
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s;
@@ -276,16 +291,17 @@ export default {
     margin-left: 5px;
   }
   .priority:hover {
-    .decrease-priority, .increase-priority {
+    .decrease-priority,
+    .increase-priority {
       opacity: 1;
     }
   }
 
   .due-date:hover {
-     .edit-due-date, .save-due-date {
-       opacity: 1;
-     }
+    .edit-due-date,
+    .save-due-date {
+      opacity: 1;
+    }
   }
 }
-
 </style>
