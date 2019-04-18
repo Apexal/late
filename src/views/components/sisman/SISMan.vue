@@ -1,10 +1,11 @@
 <template>
   <div
-    v-if="showing"
-    class="sis-man"
+    title="Hey there..."
+    class="sis-man is-unselectable"
+    :class="{ showing, hiding }"
   >
-    <div class="speech-bubble">
-      <h1>{{ message }}</h1>
+    <!-- <div class="speech-bubble">
+      <h1>Hey there</h1>
       <div class="options is-flex">
         <span
           v-for="option in options"
@@ -13,8 +14,11 @@
           @click="option.onclick"
         >{{ option.text }}</span>
       </div>
-    </div>
-    <img src="http://eng.rpi.edu/sites/default/files/SISMan_0.png">
+    </div>-->
+    <img
+      src="http://eng.rpi.edu/sites/default/files/SISMan_0.png"
+      @click="showing = !showing"
+    >
   </div>
 </template>
 
@@ -23,21 +27,22 @@ export default {
   name: 'SISMan',
   data () {
     return {
-      showing: false,
-      message: 'Don\'t forget me.',
+      line: 0,
+      showing: true,
+      hiding: true,
       options: [
-        {
-          text: 'ok...',
-          onclick () {
-            alert('Thank you for your service.');
-          }
-        },
-        {
-          text: 'back',
-          onclick () {
-            alert('you fool.');
-          }
-        }
+        // {
+        //   text: 'yes...',
+        //   onclick () {
+        //     alert('Thank you for your honesty.');
+        //   }
+        // },
+        // {
+        //   text: 'no',
+        //   onclick () {
+        //     alert('wrong.');
+        //   }
+        // }
       ]
     };
   }
@@ -46,14 +51,16 @@ export default {
 
 <style lang="scss" scoped>
 .speech-bubble {
+  display: none;
   position: relative;
-  padding: 30px;
+  padding: 15px;
   background: #2b2b2b;
-  border-radius: .4em;
-  font-family: 'Comic Sans MS';
-  font-size: 1.4em;
+  border-radius: 0.4em;
+  font-family: "Comic Sans MS";
+  font-size: 01em;
   color: white;
   opacity: 0.8;
+  margin-bottom: 10px;
 
   .options .option {
     text-align: center;
@@ -68,7 +75,7 @@ export default {
 }
 
 .speech-bubble:after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -83,11 +90,24 @@ export default {
 }
 
 .sis-man {
-  cursor: wait;
+  cursor: pointer;
   position: fixed;
-  width: 200px;
+  width: 150px;
   right: 10px;
-  bottom: 10px;
   z-index: 100;
+  transition: bottom 0.5s;
+  bottom: 0px;
+
+  &:not(.showing) {
+    bottom: -250px !important;
+  }
+
+  &.hiding {
+    bottom: -110px;
+
+    &:hover {
+      bottom: -90px;
+    }
+  }
 }
 </style>

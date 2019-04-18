@@ -53,7 +53,7 @@
       />
       <button
         title="Toggle Fullscreen"
-        class="button fullscreenToggle"
+        class="button fullscreen-toggle"
         @click="toggleFullscreen"
       >
         <i class="fas fa-expand-arrows-alt" />
@@ -412,9 +412,9 @@ export default {
     }
   }
 }
-.fullscreenToggle {
+.fullscreen-toggle {
   float: right;
   margin-top: -35px;
-  z-index: 1000;
+  z-index: 10;
 }
 </style>
