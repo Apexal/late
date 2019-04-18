@@ -275,6 +275,8 @@ export default {
     span.icon {
       margin: 0;
     }
+    //Prevents overflow but also breaks apart the longer words at lower resolution. Worth it?
+    overflow: auto;
   }
   a:hover {
     background-color: #dbdbdb;

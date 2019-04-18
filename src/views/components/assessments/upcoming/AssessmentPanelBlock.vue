@@ -149,6 +149,7 @@ export default {
 
   .assessment-link {
     color: inherit;
+    word-wrap: break-word;
   }
   .is-completed {
     text-decoration: line-through;

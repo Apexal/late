@@ -86,17 +86,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.fa-clipboard-list {}
+//.fa-clipboard-list {}
 .assessment {
   padding: 10px;
   cursor: pointer;
 
-  .assessment-link {
-    color: inherit;
-  }
-
   .course-title {
     margin-left: 5px;
+  }
+
+  .assessment-link {
+    color: inherit;
   }
 
   &.exam {
