@@ -265,6 +265,7 @@ body {
 }
 .pinned-announcements {
   padding-bottom: 0;
+  padding-top: 2em;
 
   .pinned-announcement {
     padding: 10px;
@@ -275,6 +276,8 @@ body {
     }
     summary {
       cursor: pointer;
+      font-size: 1.2em;
+      margin-bottom: 3px;
     }
   }
 

@@ -1,13 +1,5 @@
 <template>
   <div class="assessment-actions clearfix">
-    <router-link
-      :to="`/assessments/upcoming`"
-      class="button is-link tooltip"
-      :data-tooltip="`Browse all course work.`"
-    >
-      <i class="fas fa-angle-left" />
-      All Coursework
-    </router-link>
     <button
       class="button is-warning"
       @click="$emit('toggle-editing')"

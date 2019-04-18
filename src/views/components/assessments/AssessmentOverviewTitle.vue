@@ -2,6 +2,15 @@
   <div
     class="assessment-overview-title is-flex-tablet"
   >
+    <router-link
+      :to="`/assessments/upcoming`"
+      class="button is-link tooltip backButton"
+      :data-tooltip="`Browse all course work.`"
+    >
+      <i class="fas fa-angle-left" />
+      Back
+    </router-link>
+
     <div
       v-if="!editing"
       class="has-text-centered-mobile "
@@ -158,6 +167,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.backButton {
+  i {
+    margin-right: 5px;
+  }
+  height: 2em;
+  margin-right: 5px;
+}
+
 .edit-title-icon {
   opacity: 0;
   transition: opacity 0.3s;

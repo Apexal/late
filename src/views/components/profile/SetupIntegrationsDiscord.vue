@@ -96,8 +96,8 @@ export default {
 }
 .box.discord-user {
   align-items: center;
-  background-color: #99AAB5;
-  color: #2C2F33;
+  background-color: #2C2F33;
+  color: white;
   img {
     height: 75px;
     border-radius: 100%;
@@ -106,11 +106,25 @@ export default {
   }
   b {
     margin: 0 20px;
+    span {
+      margin-left: -5px;
+      font-size: 0.7em;
+    }
   }
 
   .right {
     flex: 1;
     text-align: right;
+  }
+
+  .button {
+    background-color: #7289da;
+    border-style: none;
+  }
+
+  .button:hover {
+    background-color: #677dca;
+    color: white;
   }
 }
 </style>

@@ -74,7 +74,6 @@
       />
 
       <hr>
-
       <AssessmentOverviewActionButtons
         :assessment="assessment"
         :loading="loading"
