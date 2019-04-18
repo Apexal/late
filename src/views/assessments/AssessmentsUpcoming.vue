@@ -148,7 +148,7 @@ export default {
     headerTitle (key) {
       return this.groupBy === 'courseCRN'
         ? 'Open course modal'
-        : 'Coursework due on ' + moment(key, 'YYYY-MM-DD', true).format('M/DD/YY');
+        : moment(key, 'YYYY-MM-DD', true).from(moment().startOf('day'));
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
@@ -201,7 +201,11 @@ export default {
       if (this.groupBy === 'courseCRN') {
         return `Add new ${this.course(key).longname} ${assessmentType}`;
       } else {
-        return `Add new ${assessmentType} on ${moment(key, 'YYYY-MM-DD', true).format('M/DD/YY')}`;
+        return `Add new ${assessmentType} on ${moment(
+          key,
+          'YYYY-MM-DD',
+          true
+        ).format('M/DD/YY')}`;
       }
     },
     toggleAssignmentTitle (a) {
