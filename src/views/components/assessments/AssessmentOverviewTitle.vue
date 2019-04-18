@@ -1,19 +1,18 @@
 <template>
-  <div
-    class="assessment-overview-title is-flex-tablet"
-  >
+  <div class="assessment-overview-title is-flex-tablet">
     <router-link
       :to="`/assessments/upcoming`"
       class="button is-link tooltip backButton"
       :data-tooltip="`Browse all course work.`"
     >
-      <i class="fas fa-angle-left" />
-      Back
+      <span class="icon">
+        <i class="fas fa-angle-left" />
+      </span>
     </router-link>
 
     <div
       v-if="!editing"
-      class="has-text-centered-mobile "
+      class="has-text-centered-mobile"
     >
       <span
         class="tag is-medium course-tag"
@@ -40,9 +39,7 @@
       :style="{ flex: 1}"
       @submit.prevent="save"
     >
-      <div
-        class="select"
-      >
+      <div class="select">
         <select v-model="tempCourseCRN">
           <option
             v-for="course in courses"
@@ -125,7 +122,10 @@ export default {
   },
   methods: {
     async save () {
-      if (this.tempCourseCRN === this.assessment.courseCRN && this.tempTitle === this.assessment.title) {
+      if (
+        this.tempCourseCRN === this.assessment.courseCRN &&
+        this.tempTitle === this.assessment.title
+      ) {
         this.editing = false;
         return;
       }
@@ -147,7 +147,7 @@ export default {
       // Calls API and updates state
       if (
         // eslint-disable-next-line
-          this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
+        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
       ) {
         this.$store.dispatch(
           'UPDATE_UPCOMING_ASSESSMENT',
@@ -167,11 +167,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .backButton {
-  i {
-    margin-right: 5px;
-  }
   height: 2em;
   margin-right: 5px;
 }
