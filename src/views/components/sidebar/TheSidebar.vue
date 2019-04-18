@@ -215,6 +215,11 @@ export default {
     max-height: 50vh;
   }
 
+  //Janky selector for bottom sidebar block
+  .panel .is-size-7 div:last-child:not(.control):not(.course-panel-block):not(.event) {
+    border-radius: 0px 0px 4px 4px;
+  }
+
   position: fixed;
 
   @media only screen and (max-width: 768px) {
@@ -222,7 +227,7 @@ export default {
   }
 
   z-index: 2;
-  padding: 15px;
+  padding: 19px 15px;
 
   .panel-tabs {
     display: flex;

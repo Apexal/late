@@ -372,6 +372,11 @@ export default {
   margin: 0 auto;
 }
 
+//Vertically "centers" date text w buttons
+.fc-left {
+  margin-top: 7px;
+}
+
 .fc-center,
 .fc-right {
   * {
@@ -381,6 +386,16 @@ export default {
 
   .fc-state-active {
     color: black;
+  }
+  .fc-state-active:nth-child(1) {
+    border-right: 1px solid #dbdbdb;
+  }
+  .fc-state-active:nth-child(2) {
+    border-right: 1px solid #dbdbdb;
+    border-left: 1px solid #dbdbdb;
+  }
+  .fc-state-active:nth-child(3) {
+    border-left: 1px solid #dbdbdb;
   }
 
   .fc-button:hover {
