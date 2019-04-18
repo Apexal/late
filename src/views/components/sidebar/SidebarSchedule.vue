@@ -69,7 +69,7 @@
           class="show-passed-icon far"
           :class="[ showPassed ? 'fa-eye' : 'fa-eye-slash' ]"
         />
-        {{ showPassed ? 'Showing' : 'Hiding' }} Passed
+        {{ showPassed ? 'Hide' : 'Show' }} Passed
       </button>
     </div>
   </div>

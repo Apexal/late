@@ -247,13 +247,31 @@ export default {
 </script>
 
 <style lang="scss">
+/*-------------------------------------------*/
+/*               Global Styles
 /* These styles will apply to the whole app. */
+/*-------------------------------------------*/
 @import "@/assets/bulma.scss";
+
+* {
+  word-wrap: break-word;
+}
+
+//Removes annoying outline around elements when clicked.
+*:focus {
+  outline: none;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+}
 
 html,
 body {
   height: 100%;
 }
+
+/*-------------------------------------------*/
+/*             All other styles
+/*-------------------------------------------*/
 
 //Sticky Footer
 #app {
@@ -304,12 +322,6 @@ body {
   @extend .button;
 }
 
-//Removes annoying outline around elements when clicked.
-*:focus {
-  outline: none;
-  box-shadow: none !important;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-}
 
 .is-full-width {
   width: 100%;
