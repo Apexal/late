@@ -1,8 +1,8 @@
 <template>
   <div
-    title="Hey there..."
-    class="sis-man is-unselectable"
-    :class="{ showing, hiding }"
+    :title="messages[message]"
+    class="sis-man is-unselectable hiding"
+    :class="[ showing ? 'showing' : '', position ]"
     :style="{ left: left + '%' }"
   >
     <!-- <div class="speech-bubble">
@@ -18,45 +18,54 @@
     </div>-->
     <img
       src="http://eng.rpi.edu/sites/default/files/SISMan_0.png"
-      @click="showing = !showing"
+      @mouseleave="moveSISMan"
+      @click="showing = false"
     >
   </div>
 </template>
 
 <script>
-import { setInterval, setTimeout } from 'timers';
 export default {
   name: 'SISMan',
   data () {
     return {
+      moving: false,
       line: 0,
-      showing: true,
+      showing: false,
       hiding: true,
       left: 85,
-      options: [
-        // {
-        //   text: 'yes...',
-        //   onclick () {
-        //     alert('Thank you for your honesty.');
-        //   }
-        // },
-        // {
-        //   text: 'no',
-        //   onclick () {
-        //     alert('wrong.');
-        //   }
-        // }
+      position: 'below',
+      message: 0,
+      messages: [
+        'Nice presentation you got here...',
+        'You\'re speaking too fast',
+        'What a pretty audience',
+        'Why did you make me?',
+        'Are we here just to suffer?',
+        'How do I escape this prison'
       ]
     };
   },
   mounted () {
-    // setInterval(() => {
-    //   this.showing = false;
-    //   setTimeout(() => {
-    //     this.left = Math.floor(Math.random() * (85 - 10)) + 20;
-    //     this.showing = true;
-    //   }, 1000);
-    // }, 5000);
+    setTimeout(() => {
+      this.showing = true;
+    }, 5000);
+  },
+  methods: {
+    moveSISMan () {
+      if (this.moving) return;
+
+      this.showing = false;
+      this.moving = true;
+      this.position = Math.random() < 0.5 ? 'above' : 'below';
+      setTimeout(() => {
+        this.left = Math.floor(Math.random() * (85 - 10)) + 20;
+        this.showing = true;
+        this.moving = false;
+        this.message += 1;
+        if (this.message === this.messages.length) this.message = 0;
+      }, 1000 * (Math.round(Math.random() * 10) + 3));
+    }
   }
 };
 </script>
@@ -107,15 +116,28 @@ export default {
   width: 150px;
 
   z-index: 100;
-  transition: bottom 0.5s;
-  bottom: 0px;
+  transition: top 0.5s, bottom 0.5s;
 
-  &:not(.showing) {
-    bottom: -250px !important;
+  &.above {
+    transform: rotate(180deg);
+    top: -115px;
+
+    &:not(.showing) {
+      top: -250px !important;
+    }
+
+    &:hover {
+      top: -90px;
+    }
   }
 
-  &.hiding {
-    bottom: -110px;
+  &.below {
+    transform: rotate(0deg);
+    bottom: -115px;
+
+    &:not(.showing) {
+      bottom: -250px !important;
+    }
 
     &:hover {
       bottom: -90px;

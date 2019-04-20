@@ -42,7 +42,7 @@
         class="is-size-8 has-text-centered"
         style="max-width:800px;margin:0 auto;"
       >
-        <b>LATE</b> is currently in closed BETA and is not available to the general student body yet. Interested students can be added to the wait list by logging in and will be notified as soon as the website is ready to publicly launch.
+        <b>LATE</b> is currently in closed BETA and is not available to the general student body yet. Interested students can be added to the wait list by logging in and will be notified when we publicly launch in Fall 2019.
       </p>
 
       <p class="has-text-centered">
@@ -50,7 +50,12 @@
           href="/auth/login"
           class="join-beta button is-primary is-large"
           title="Log in to LATE beta"
-        >Log in</a>
+        >Register</a>
+        <a
+          href="https://github.com/Apexal/late"
+          class="the-other-button button is-secondary is-large"
+          title="Check our our open-source repository"
+        >GitHub</a>
       </p>
       <hr>
       <div
@@ -118,7 +123,7 @@
             Add, edit, and remove assignments and exams.
           </h2>
           <h3 class="is-size-6 tagline">
-            Quickly edit and remove assessments from your calendar.
+            Quickly edit and remove your assessments and tests with the click of a button.
           </h3>
           <img
             class="example"
@@ -185,12 +190,13 @@ export default {
   text-align: center;
   img {
     width: 250px;
-  }
+    pointer-events: none;  }
 }
 
-.join-beta {
+.join-beta,.the-other-button {
   margin-top: 25px;
 }
+.join-beta { margin-right: 10px; }
 
 hr {
   margin: 3em;
