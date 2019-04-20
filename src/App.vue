@@ -62,7 +62,7 @@
             :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
             style="flex: 1;"
           >
-            <section
+            <!-- <section
               v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
               class="section no-bottom-padding"
             >
@@ -73,7 +73,7 @@
                   set up your account.
                 </router-link>
               </div>
-            </section>
+            </section>-->
             <section
               v-if="pinnedAnnouncements.length > 0"
               class="section pinned-announcements"
@@ -321,7 +321,6 @@ body {
   text-shadow: none;
   @extend .button;
 }
-
 
 .is-full-width {
   width: 100%;
