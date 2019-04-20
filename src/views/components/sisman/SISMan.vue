@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { setTimeout } from 'timers';
 export default {
   name: 'SISMan',
   data () {
@@ -50,7 +51,11 @@ export default {
       return this.$store.getters.SISManCSS;
     }
   },
-  mounted () {},
+  mounted () {
+    setTimeout(() => {
+      this.$store.dispatch('SUMMON_SISMAN', { message: 'Hey there...' });
+    }, (Math.random() * 10000) / 60);
+  },
   methods: {
     click () {
       this.$store.dispatch('DISMISS_SISMAN');

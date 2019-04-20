@@ -1,6 +1,6 @@
 const state = {
-  showing: true,
-  peeking: true,
+  showing: false,
+  peeking: false,
   moving: false,
   relativePosition: 80,
   message: 'Hey there...',
