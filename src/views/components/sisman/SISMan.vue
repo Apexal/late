@@ -54,7 +54,7 @@ export default {
   mounted () {
     setTimeout(() => {
       this.$store.dispatch('SUMMON_SISMAN', { message: 'Hey there...' });
-    }, (Math.random() * 10000) / 60);
+    }, Math.random() * 10000 * 1000);
   },
   methods: {
     click () {
