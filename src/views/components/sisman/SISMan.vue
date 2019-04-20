@@ -1,9 +1,9 @@
 <template>
   <div
-    :title="messages[message]"
-    class="sis-man is-unselectable hiding"
-    :class="[ showing ? 'showing' : '', position ]"
-    :style="{ left: left + '%' }"
+    :title="message"
+    class="sis-man is-unselectable"
+    :class="SISManCSS.classes"
+    :style="SISManCSS.style"
   >
     <!-- <div class="speech-bubble">
       <h1>Hey there</h1>
@@ -18,8 +18,7 @@
     </div>-->
     <img
       src="http://eng.rpi.edu/sites/default/files/SISMan_0.png"
-      @mouseleave="moveSISMan"
-      @click="showing = false"
+      @click="click"
     >
   </div>
 </template>
@@ -29,29 +28,33 @@ export default {
   name: 'SISMan',
   data () {
     return {
-      moving: false,
-      line: 0,
-      showing: false,
-      hiding: true,
-      left: 85,
-      position: 'below',
-      message: 0,
       messages: [
-        'Nice presentation you got here...',
-        'You\'re speaking too fast',
-        'What a pretty audience',
-        'Why did you make me?',
-        'Are we here just to suffer?',
-        'How do I escape this prison'
+        'Hey there',
+        'Who let you off the waitlist???',
+        'You better get working...',
+        'You better actually work on the stuff instead of just putting it down here',
+        'I\'ll be watching your progress.',
+        'Give me $5 and I\'ll do your homework for you',
+        'I\'ll be watching for academic integrity...',
+        'Why did they remove me...',
+        'Somebody let me out of this prison',
+        'ohhh yeah I\'m sure you\'ll get that done'
       ]
     };
   },
-  mounted () {
-    setTimeout(() => {
-      this.showing = true;
-    }, 5000);
+  computed: {
+    message () {
+      return this.$store.state.SISMan.message;
+    },
+    SISManCSS () {
+      return this.$store.getters.SISManCSS;
+    }
   },
+  mounted () {},
   methods: {
+    click () {
+      this.$store.dispatch('DISMISS_SISMAN');
+    },
     moveSISMan () {
       if (this.moving) return;
 
@@ -116,13 +119,17 @@ export default {
   width: 150px;
 
   z-index: 100;
-  transition: top 0.5s, bottom 0.5s;
+  transition: top 0.5s, bottom 0.5s, left 0.5s, right 0.5s;
 
-  &.above {
+  &:not(.showing) {
+    display: none !important;
+  }
+
+  &.top {
     transform: rotate(180deg);
     top: -115px;
 
-    &:not(.showing) {
+    &:not(.peeking) {
       top: -250px !important;
     }
 
@@ -131,16 +138,42 @@ export default {
     }
   }
 
-  &.below {
+  &.bottom {
     transform: rotate(0deg);
     bottom: -115px;
 
-    &:not(.showing) {
+    &:not(.peeking) {
       bottom: -250px !important;
     }
 
     &:hover {
       bottom: -90px;
+    }
+  }
+
+  &.left {
+    transform: rotate(90deg);
+    left: -115px;
+
+    &:not(.peeking) {
+      left: -250px !important;
+    }
+
+    &:hover {
+      left: -90px;
+    }
+  }
+
+  &.right {
+    transform: rotate(-90deg);
+    right: -115px;
+
+    &:not(.peeking) {
+      right: -250px !important;
+    }
+
+    &:hover {
+      right: -90px;
     }
   }
 }
