@@ -74,28 +74,7 @@
                 </router-link>
               </div>
             </section>-->
-            <section
-              v-if="pinnedAnnouncements.length > 0"
-              class="section pinned-announcements"
-              title="Pinned announcement"
-            >
-              <details
-                v-for="ann in pinnedAnnouncements"
-                :key="ann._id"
-                class="notification pinned-announcement is-primary"
-              >
-                <summary>
-                  <i class="fas fa-thumbtack" />
-                  <strong>Pinned Announcement:</strong>
-                  {{ ann.title }}
-                  <a
-                    class="delete is-pulled-right"
-                    @click="dismissPinnedAnnouncement(ann._id)"
-                  />
-                </summary>
-                {{ ann.body }}
-              </details>
-            </section>
+            <PinnedAnnouncements />
             <transition
               name="fade"
               mode="out-in"
@@ -116,6 +95,7 @@ import TheSidebar from '@/views/components/sidebar/TheSidebar';
 import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
 import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
 import CourseModal from '@/views/components/courses/CourseModal';
+import PinnedAnnouncements from '@/views/components/announcements/PinnedAnnouncements';
 import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
 import SISMan from '@/views/components/sisman/SISMan';
@@ -134,6 +114,7 @@ export default {
     AssignmentsModalAdd,
     ExamsModalAddRedux,
     AnnouncementsModal,
+    PinnedAnnouncements,
     SISMan
   },
   data () {
@@ -143,9 +124,6 @@ export default {
     };
   },
   computed: {
-    dismissedAnnouncementIDs () {
-      return this.$store.state.announcements.dismissedIDs;
-    },
     courseModalData () {
       return this.$store.state.courseModal.current;
     },
@@ -163,9 +141,6 @@ export default {
     },
     announcements () {
       return this.$store.getters.allAnnouncements;
-    },
-    pinnedAnnouncements () {
-      return this.$store.getters.pinnedAnnouncements;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
@@ -215,17 +190,6 @@ export default {
     this.loading = false;
   },
   methods: {
-    dismissPinnedAnnouncement (id) {
-      localStorage.setItem(
-        'dismissedAnnouncementIDs',
-        JSON.stringify(this.dismissedAnnouncementIDs.concat(id))
-      );
-
-      this.$store.commit(
-        'SET_DISMISSED_ANNOUNCEMENT_IDS',
-        this.dismissedAnnouncementIDs.concat(id)
-      );
-    },
     resizeThrottler () {
       // ignore resize events as long as an actualResizeHandler execution is in the queue
       if (!this.resizeTimeout) {
@@ -280,30 +244,6 @@ body {
   min-height: calc(100vh - 3.25rem);
   min-height: -webkit-calc(100vh - 3.25rem);
   flex-direction: column;
-}
-.pinned-announcements {
-  padding-bottom: 0;
-  padding-top: 2em;
-
-  .pinned-announcement {
-    padding: 10px;
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
-    .fas.fa-thumbtack {
-      margin-right: 5px;
-    }
-    summary {
-      cursor: pointer;
-      font-size: 1.2em;
-      margin-bottom: 3px;
-    }
-  }
-
-  .pinned-announcement:hover {
-    background-color: #6abfc5;
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
-  }
 }
 
 #content {
