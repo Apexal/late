@@ -27,7 +27,7 @@
             <span
               class="assessment-icon fas"
               :class="[ assessment.assessmentType === 'assignment' ? 'fa-clipboard-check' : 'fa-exclamation-triangle' ]"
-              :title="course(assessment).longname"
+              :title="course(assessment).longname + ' ' + assessment.assessmentType"
               :style="'color: ' + course(assessment).color"
             />
           </span>
@@ -49,13 +49,18 @@
             <i
               class="fas"
               :class="{ 'fa-check': assessment.completed, 'fa-times': !assessment.completed }"
+              :title="assessment.completed ? 'Completed on ' + toFullDateTimeString(assessment.completedAt) : 'Incomplete'"
             />
           </span>
+          <span
+            v-else
+            class="icon has-text-grey has-text-centered"
+          >-</span>
         </td>
         <td v-if="showRemoveButton">
           <a
             class="delete"
-            :title="'Delete this' + assessment.assessmentType"
+            :title="'Delete this ' + assessment.assessmentType"
             @click="$emit('remove-assessment', assessment)"
           />
         </td>

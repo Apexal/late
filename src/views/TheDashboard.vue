@@ -113,7 +113,7 @@ export default {
             end: this.$store.state.auth.user.latestWorkTime
           },
           timezone: 'local',
-          defaultView: 'agendaFiveDay',
+          defaultView: 'agendaWeek',
           eventOverlap: true,
           selectOverlap: true,
           selectHelper: true,
