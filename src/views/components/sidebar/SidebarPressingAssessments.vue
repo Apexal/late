@@ -44,9 +44,9 @@
         <router-link
           to="/assessments/upcoming"
           class="button is-fullwidth browseAssessmentsButton"
-          title="Browse assessments"
+          title="Browse your coursework"
         >
-          Browse Assessments
+          Browse Coursework
         </router-link>
       </div>
     </template>

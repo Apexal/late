@@ -31,6 +31,7 @@
           >
             <span
               class="key"
+              :class="groupBy"
               :title="headerTitle(key)"
               @click="headerClick(key)"
             >{{ headerText(key) }}</span>
@@ -146,9 +147,14 @@ export default {
       return this.$store.getters.getCourseFromCRN(crn);
     },
     headerTitle (key) {
-      return this.groupBy === 'courseCRN'
-        ? 'Open course modal'
-        : moment(key, 'YYYY-MM-DD', true).from(moment().startOf('day'));
+      if (this.groupBy === 'courseCRN') {
+        return 'Open course modal';
+      } else {
+        const today = moment().startOf('day');
+        const day = moment(key, 'YYYY-MM-DD', true);
+        if (day.diff(today, 'days') > 1) return day.from(today);
+      }
+      return '';
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
@@ -238,7 +244,7 @@ export default {
 
 <style lang="scss" scoped>
 .key-heading {
-  span.key {
+  span.key.courseCRN {
     cursor: pointer;
   }
 

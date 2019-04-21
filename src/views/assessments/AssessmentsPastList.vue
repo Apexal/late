@@ -1,6 +1,9 @@
 <template>
   <div class="past-assessments">
-    <h2 class="subtitle">
+    <h2
+      class="subtitle"
+      :title="fromNow(startDate)"
+    >
       Week of {{ weekOf }}
     </h2>
     <div class="is-flex-tablet">
@@ -232,6 +235,9 @@ export default {
     },
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN);
+    },
+    fromNow (date) {
+      return moment(date).fromNow();
     },
     shiftDates (amount) {
       this.startDate = moment(this.startDate, 'YYYY-MM-DD', true)
