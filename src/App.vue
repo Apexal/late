@@ -83,6 +83,14 @@
             </transition>
           </div>
         </div>
+
+        <div
+          id="fab"
+          class="tooltip is-tooltip-left"
+          data-tooltip="Add new assignment or exam"
+        >
+          +
+        </div>
       </template>
     </div>
     <TheFooter id="footer" />
@@ -211,6 +219,31 @@ export default {
 </script>
 
 <style lang="scss">
+#fab {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  width: 70px;
+  height: 70px;
+  color: white;
+  z-index: 50;
+  border-radius: 100%;
+  font-size: 3em;
+
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background-color: #222;
+
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+
+  &:hover {
+    box-shadow: 1px 1px 4px #444;
+    background-color: #333;
+  }
+}
+
 /*-------------------------------------------*/
 /*               Global Styles
 /* These styles will apply to the whole app. */
