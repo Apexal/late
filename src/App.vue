@@ -18,6 +18,7 @@
           @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
         />
         <SISMan />
+        <AssessmentsAddFAB />
       </template>
       <template v-if="!loading">
         <AssignmentsModalAdd
@@ -62,18 +63,6 @@
             :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
             style="flex: 1;"
           >
-            <!-- <section
-              v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
-              class="section no-bottom-padding"
-            >
-              <div class="notification is-warning">
-                <b>NOTICE:</b> You will not be able to use
-                <b>LATE</b> until you have
-                <router-link to="/profile">
-                  set up your account.
-                </router-link>
-              </div>
-            </section>-->
             <PinnedAnnouncements />
             <transition
               name="fade"
@@ -98,6 +87,8 @@ import CourseModal from '@/views/components/courses/CourseModal';
 import PinnedAnnouncements from '@/views/components/announcements/PinnedAnnouncements';
 import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
+import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB';
+
 import SISMan from '@/views/components/sisman/SISMan';
 
 import Loading from 'vue-loading-overlay';
@@ -115,6 +106,7 @@ export default {
     ExamsModalAddRedux,
     AnnouncementsModal,
     PinnedAnnouncements,
+    AssessmentsAddFAB,
     SISMan
   },
   data () {
