@@ -18,6 +18,7 @@
           @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
         />
         <SISMan />
+        <AssessmentsAddFAB />
       </template>
       <template v-if="!loading">
         <AssignmentsModalAdd
@@ -62,18 +63,6 @@
             :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
             style="flex: 1;"
           >
-            <!-- <section
-              v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
-              class="section no-bottom-padding"
-            >
-              <div class="notification is-warning">
-                <b>NOTICE:</b> You will not be able to use
-                <b>LATE</b> until you have
-                <router-link to="/profile">
-                  set up your account.
-                </router-link>
-              </div>
-            </section>-->
             <PinnedAnnouncements />
             <transition
               name="fade"
@@ -81,26 +70,6 @@
             >
               <router-view />
             </transition>
-          </div>
-        </div>
-
-        <div id="fab">
-          <p
-            class="option has-text-dark"
-            title="Add assignment"
-            @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-          >
-            <i class="fas fa-clipboard-check" />
-          </p>
-          <p
-            class="option has-text-dark"
-            title="Add exam"
-            @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
-          >
-            <i class="fas fa-exclamation-triangle" />
-          </p>
-          <div class="circle">
-            +
           </div>
         </div>
       </template>
@@ -117,6 +86,8 @@ import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
 import CourseModal from '@/views/components/courses/CourseModal';
 import PinnedAnnouncements from '@/views/components/announcements/PinnedAnnouncements';
 import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
+
+import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB';
 
 import SISMan from '@/views/components/sisman/SISMan';
 
@@ -135,6 +106,7 @@ export default {
     ExamsModalAddRedux,
     AnnouncementsModal,
     PinnedAnnouncements,
+    AssessmentsAddFAB,
     SISMan
   },
   data () {
@@ -231,58 +203,6 @@ export default {
 </script>
 
 <style lang="scss">
-#fab {
-  display: flex;
-  position: fixed;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  right: 10px;
-  bottom: 10px;
-  color: white;
-  z-index: 10;
-  text-align: center;
-  .option {
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
-    transition: opacity 0.2s;
-    color: #222;
-    font-size: 2em;
-    width: 50px;
-
-    border-radius: 100%;
-
-    cursor: pointer;
-  }
-  .circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 100%;
-    font-size: 3em;
-
-    cursor: pointer;
-    transition: background-color 0.2s;
-    background-color: #222;
-
-    line-height: 50px;
-    text-align: center;
-    vertical-align: middle;
-
-    &:hover {
-      box-shadow: 1px 1px 4px #444;
-      background-color: #333;
-    }
-  }
-
-  &:hover {
-    .option {
-      height: 50px;
-      opacity: 1;
-    }
-  }
-}
-
 /*-------------------------------------------*/
 /*               Global Styles
 /* These styles will apply to the whole app. */
