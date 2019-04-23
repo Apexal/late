@@ -31,11 +31,24 @@ const router = new Router({
     },
     {
       path: '/studytools',
-      name: 'study-tools',
       component: () => import('@/views/studytools/StudyTools.vue'),
       meta: {
         title: 'Study Tools'
-      }
+      },
+      children: [
+        {
+          path: '',
+          name: 'study-tools'
+        },
+        {
+          path: 'timer',
+          name: 'study-tools-timer',
+          meta: {
+            title: 'Study/Work Timer'
+          },
+          component: () => import('@/views/studytools/StudyToolsTimer.vue')
+        }
+      ]
     },
     {
       path: '/about',
