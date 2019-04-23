@@ -11,10 +11,13 @@ RUN npm install
 
 # update project sources
 COPY . .
+RUN npm run build
+# useful to do setup as root, but run as node
+# must create the logs directory as root
+RUN mkdir logs
 
-EXPOSE 8080
+EXPOSE 3000
 
-# increasing file watchers must be made as root
-# USER node
+USER node
 
 CMD ["npm", "start"]

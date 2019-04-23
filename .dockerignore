@@ -2,5 +2,6 @@ node_modules
 logs
 dist
 npm-debug.log*
-.git
-.gitignore
+.git*
+Dockerfile
+*.md
