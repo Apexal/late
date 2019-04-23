@@ -6,4 +6,4 @@ IF "%1" == "-build" (
   :: delete stale Docker images if they have not been deleted already
   docker rmi -f "$(docker images -q --filter 'dangling=true')"
 )
-docker run -p 3000:3000 rcos/late
+docker run -t -p 3000:3000 rcos/late
