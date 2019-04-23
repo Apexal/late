@@ -1,5 +1,5 @@
 <template>
-  <div class="fab">
+  <div class="fab is-hidden-widescreen">
     <span class="fab-action-button">
       <i class="fas fa-plus" />
     </span>
