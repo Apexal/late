@@ -1,9 +1,5 @@
 <template>
   <div class="study-tools-timer">
-    <h2 class="subtitle">
-      Study/Work Timer
-    </h2>
-
     <div
       class="timer has-background-dark has-text-white has-text-centered"
       :class="{ detached }"
@@ -50,46 +46,7 @@ export default {
   name: 'StudyToolsTimer',
   data () {
     return {
-      detached: false,
-      initialTime: 25 * 60,
-      timer: null,
-      totalTime: 5,
-      paused: true,
-      stageIndex: 0,
-      stages: [
-        {
-          title: 'Study/Work',
-          duration: 25 * 60
-        },
-        {
-          title: 'Short Break',
-          duration: 5 * 60
-        },
-        {
-          title: 'Study/Work',
-          duration: 25 * 60
-        },
-        {
-          title: 'Short Break',
-          duration: 5 * 60
-        },
-        {
-          title: 'Study/Work',
-          duration: 25 * 60
-        },
-        {
-          title: 'Short Break',
-          duration: 5 * 60
-        },
-        {
-          title: 'Study/Work',
-          duration: 25 * 60
-        },
-        {
-          title: 'Long Break',
-          duration: 15 * 60
-        }
-      ]
+      detached: false
     };
   },
   computed: {
