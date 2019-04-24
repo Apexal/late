@@ -57,9 +57,21 @@ const actions = {
 
     if (!isOpen) commit('RESET_STUDY_TOOLS_TIMER');
   },
-  STUDY_TOOLS_TIMER_COUNTDOWN ({ commit, state }) {
+  STUDY_TOOLS_TIMER_COUNTDOWN ({ commit, dispatch, state }) {
     commit('DECREMENT_STUDY_TOOLS_TIMER');
-    if (state.totalTime === 0) commit('STUDY_TOOLS_TIMER_NEXT_STAGE');
+    if (state.totalTime === 0) {
+      clearInterval(state.timer);
+      commit('SET_STUDY_TOOLS_TIMER', null);
+      const nextStageIndex =
+        state.stageIndex + 1 === state.stages.length ? 0 : state.stageIndex + 1;
+      alert(`Time's up! Next is ${state.stages[nextStageIndex].title}`);
+      commit('SET_STUDY_TOOLS_TIMER_OPEN', true);
+      commit(
+        'SET_STUDY_TOOLS_TIMER',
+        setInterval(() => dispatch('STUDY_TOOLS_TIMER_COUNTDOWN'), 1000)
+      );
+      commit('STUDY_TOOLS_TIMER_NEXT_STAGE');
+    }
   },
   TOGGLE_STUDY_TOOLS_TIMER ({ commit, state, dispatch }) {
     commit('TOGGLE_STUDY_TOOLS_TIMER');

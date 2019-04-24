@@ -4,26 +4,41 @@
     class="study-tools-timer has-background-dark has-text-white has-text-centered"
     :class="{ detached }"
   >
+    <progress
+      class="progress is-success"
+      max="8"
+      :value="stageIndex"
+    >
+      0%
+    </progress>
+
     <span
-      class="delete"
+      v-if="detached"
+      title="Dismiss the timer"
+      class="delete dismiss-timer"
       @click="$store.dispatch('SET_STUDY_TOOLS_TIMER_OPEN', false)"
     />
-    <h3>
-      {{ currentStage.title }} ({{ stageIndex + 1 }}/{{ stages.length }})
-    </h3>
-    <span class="minutes">{{ minutes }}</span>
-    <span class="separator">:</span>
-    <span class="seconds">{{ seconds }}</span>
-
+    <div class="padding">
+      <span class="stage-title">
+        {{ currentStage.title }}
+      </span>
+      <span class="minutes">{{ minutes }}</span>
+      <span class="separator">:</span>
+      <span class="seconds">{{ seconds }}</span>
+    </div>
     <div class="buttons has-addons is-flex is-fullwidth">
       <button
         class="button"
+        title="Skip to prev stage"
+        :class="{ 'is-small': detached }"
         @click="$store.commit('STUDY_TOOLS_TIMER_PREV_STAGE')"
       >
-        <i class="fas fa-chevron-left" />
+        <i class="fas fa-step-backward" />
       </button>
       <button
         class="button is-success"
+        title="Play/pause timer"
+        :class="{ 'is-small': detached }"
         @click="$store.dispatch('TOGGLE_STUDY_TOOLS_TIMER')"
       >
         <i
@@ -32,16 +47,20 @@
         />
       </button>
       <button
+        title="Reset current stage"
         class="button is-danger"
+        :class="{ 'is-small': detached }"
         @click="$store.commit('RESET_STUDY_TOOLS_TIMER')"
       >
         <i class="fas fa-history" />
       </button>
       <button
         class="button"
+        title="Skip to next stage"
+        :class="{ 'is-small': detached }"
         @click="$store.commit('STUDY_TOOLS_TIMER_NEXT_STAGE')"
       >
-        <i class="fas fa-chevron-right" />
+        <i class="fas fa-step-forward" />
       </button>
     </div>
   </div>
@@ -87,22 +106,32 @@ export default {
 .study-tools-timer {
   z-index: 30;
   border-radius: 10px;
-  padding-top: 30px;
+  padding: 0;
   width: 50%;
   margin: 0 auto;
   font-size: 5em;
-
+  .padding {
+    padding: 0 20px;
+  }
   &.detached {
     position: fixed;
-    padding-top: 10px;
     bottom: 10px;
     right: 10px;
     font-size: 2em;
-    width: 20%;
+        width: fit-content;
   }
 
   button {
     flex: 1;
+  }
+
+  progress {
+    margin-bottom: 5px;
+  }
+  .dismiss-timer {
+    position: absolute;
+    top:20px;
+    right: 5px;
   }
 }
 </style>
