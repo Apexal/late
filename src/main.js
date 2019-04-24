@@ -12,6 +12,9 @@ import 'bulma-tooltip';
 
 import VueProgressBar from 'vue-progressbar';
 
+import wysiwyg from 'vue-wysiwyg';
+Vue.use(wysiwyg, { hideModules: { image: true } });
+
 const options = {
   color: '#70cad1',
   failedColor: '#874b4b',
