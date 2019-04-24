@@ -1,12 +1,14 @@
-const STUDY_WORK_DURATION = 25 * 60;
-const SHORT_BREAK_DURATION = 5 * 60;
-const LONG_BREAK_DURATION = 15 * 60;
+const STUDY_WORK_DURATION = 5; // 25 * 60;
+const SHORT_BREAK_DURATION = 10; // 5 * 60;
+const LONG_BREAK_DURATION = 15; // 15 * 60;
+
+const padTime = time => (time < 10 ? '0' : '') + time;
 
 const state = {
+  open: false,
   initialTime: 25 * 60,
   timer: null,
   totalTime: 5,
-  open: true,
   paused: true,
   stageIndex: 0,
   stages: [
@@ -44,26 +46,69 @@ const state = {
     }
   ]
 };
-const getters = {};
-const mutations = {
-  TOGGLE_STUDY_TOOLS_TIMER: state => {
-    state.paused = !this.paused;
+const getters = {
+  studyToolsTimerCurrentStage: state => state.stages[state.stageIndex],
+  studyToolsTimerMinutes: state => padTime(Math.floor(state.totalTime / 60)),
+  studyToolsTimerSeconds: state => padTime(state.totalTime % 60)
+};
+const actions = {
+  SET_STUDY_TOOLS_TIMER_OPEN ({ commit }, isOpen) {
+    commit('SET_STUDY_TOOLS_TIMER_OPEN', isOpen);
 
-    if (state.paused) {
-      clearInterval(this.timer);
-      state.timer = null;
-    } else {
-      state.timer = setInterval(() => this.countdown(), 1000);
-    }
+    if (!isOpen) commit('RESET_STUDY_TOOLS_TIMER');
   },
-  DECREMENT_TIMER: state => {
-    if (state.totalTime === 0) { this.nextStage(); } else { state.totalTime--; }
+  STUDY_TOOLS_TIMER_COUNTDOWN ({ commit, state }) {
+    commit('DECREMENT_STUDY_TOOLS_TIMER');
+    if (state.totalTime === 0) commit('STUDY_TOOLS_TIMER_NEXT_STAGE');
+  },
+  TOGGLE_STUDY_TOOLS_TIMER ({ commit, state, dispatch }) {
+    commit('TOGGLE_STUDY_TOOLS_TIMER');
+    if (state.paused) {
+      clearInterval(state.timer);
+      commit('SET_STUDY_TOOLS_TIMER', null);
+    } else {
+      commit('SET_STUDY_TOOLS_TIMER_OPEN', true);
+      commit(
+        'SET_STUDY_TOOLS_TIMER',
+        setInterval(() => dispatch('STUDY_TOOLS_TIMER_COUNTDOWN'), 1000)
+      );
+    }
   }
-
+};
+const mutations = {
+  SET_STUDY_TOOLS_TIMER_OPEN: (state, open) => {
+    state.open = open;
+  },
+  TOGGLE_STUDY_TOOLS_TIMER: state => {
+    state.paused = !state.paused;
+  },
+  SET_STUDY_TOOLS_TIMER: (state, timer) => {
+    state.timer = timer;
+  },
+  RESET_STUDY_TOOLS_TIMER: state => {
+    state.totalTime = state.stages[state.stageIndex].duration;
+    clearInterval(state.timer);
+    state.timer = null;
+    state.paused = true;
+  },
+  STUDY_TOOLS_TIMER_PREV_STAGE: state => {
+    state.stageIndex -= 1;
+    if (state.stageIndex === -1) state.stageIndex = state.stages.length - 1;
+    state.totalTime = state.stages[state.stageIndex].duration;
+  },
+  STUDY_TOOLS_TIMER_NEXT_STAGE: state => {
+    state.stageIndex += 1;
+    if (state.stageIndex === state.stages.length) state.stageIndex = 0;
+    state.totalTime = state.stages[state.stageIndex].duration;
+  },
+  DECREMENT_STUDY_TOOLS_TIMER: state => {
+    state.totalTime--;
+  }
 };
 
 export default {
   state,
+  actions,
   getters,
   mutations
 };

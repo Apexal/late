@@ -1,42 +1,48 @@
 <template>
-  <div class="study-tools-timer">
-    <div
-      class="timer has-background-dark has-text-white has-text-centered"
-      :class="{ detached }"
-    >
-      <h3 class="has-text-grey">
-        {{ currentStage.title }} ({{ stageIndex + 1 }}/{{ stages.length }})
-      </h3>
-      <span class="minutes">{{ minutes }}</span>
-      <span class="separator">:</span>
-      <span class="seconds">{{ seconds }}</span>
+  <div
+    v-if="open"
+    class="study-tools-timer has-background-dark has-text-white has-text-centered"
+    :class="{ detached }"
+  >
+    <span
+      class="delete"
+      @click="$store.dispatch('SET_STUDY_TOOLS_TIMER_OPEN', false)"
+    />
+    <h3>
+      {{ currentStage.title }} ({{ stageIndex + 1 }}/{{ stages.length }})
+    </h3>
+    <span class="minutes">{{ minutes }}</span>
+    <span class="separator">:</span>
+    <span class="seconds">{{ seconds }}</span>
 
-      <div class="buttons has-addons is-flex is-fullwidth">
-        <button
-          class="button"
-          @click="prevStage"
-        >
-          <i class="fas fa-chevron-left" />
-        </button>
-        <button
-          class="button is-success"
-          @click="toggleTimer"
-        >
-          {{ paused ? 'Start' : 'Pause' }}
-        </button>
-        <button
-          class="button is-danger"
-          @click="resetTimer"
-        >
-          Reset
-        </button>
-        <button
-          class="button"
-          @click="nextStage"
-        >
-          <i class="fas fa-chevron-right" />
-        </button>
-      </div>
+    <div class="buttons has-addons is-flex is-fullwidth">
+      <button
+        class="button"
+        @click="$store.commit('STUDY_TOOLS_TIMER_PREV_STAGE')"
+      >
+        <i class="fas fa-chevron-left" />
+      </button>
+      <button
+        class="button is-success"
+        @click="$store.dispatch('TOGGLE_STUDY_TOOLS_TIMER')"
+      >
+        <i
+          class="fas"
+          :class="[ paused ? 'fa-play' : 'fa-pause' ]"
+        />
+      </button>
+      <button
+        class="button is-danger"
+        @click="$store.commit('RESET_STUDY_TOOLS_TIMER')"
+      >
+        <i class="fas fa-history" />
+      </button>
+      <button
+        class="button"
+        @click="$store.commit('STUDY_TOOLS_TIMER_NEXT_STAGE')"
+      >
+        <i class="fas fa-chevron-right" />
+      </button>
     </div>
   </div>
 </template>
@@ -44,62 +50,43 @@
 <script>
 export default {
   name: 'StudyToolsTimer',
-  data () {
-    return {
-      detached: false
-    };
-  },
-  computed: {
-    currentStage () {
-      return this.stages[this.stageIndex];
+  props: {
+    detached: {
+      type: Boolean,
+      default: false
     },
-    minutes () {
-      return this.padTime(Math.floor(this.totalTime / 60));
-    },
-    seconds () {
-      return this.padTime(this.totalTime % 60);
+    open: {
+      type: Boolean,
+      default: true
     }
   },
-  methods: {
-    toggleTimer () {
-      this.paused = !this.paused;
-
-      if (this.paused) {
-        clearInterval(this.timer);
-        this.timer = null;
-      } else {
-        this.timer = setInterval(() => this.countdown(), 1000);
-      }
+  computed: {
+    paused () {
+      return this.$store.state.studytoolstimer.paused;
     },
-    resetTimer: function () {
-      this.totalTime = this.initialTime;
-      clearInterval(this.timer);
-      this.timer = null;
-      this.paused = true;
+    stages () {
+      return this.$store.state.studytoolstimer.stages;
     },
-    padTime: function (time) {
-      return (time < 10 ? '0' : '') + time;
+    stageIndex () {
+      return this.$store.state.studytoolstimer.stageIndex;
     },
-    countdown: function () {
-      if (this.totalTime === 0) { this.nextStage(); } else { this.totalTime--; }
+    currentStage () {
+      return this.$store.getters.studyToolsTimerCurrentStage;
     },
-    prevStage () {
-      this.stageIndex -= 1;
-      if (this.stageIndex === -1) this.stageIndex = this.stages.length - 1;
-      this.totalTime = this.stages[this.stageIndex].duration;
+    minutes () {
+      return this.$store.getters.studyToolsTimerMinutes;
     },
-    nextStage () {
-      this.stageIndex += 1;
-      if (this.stageIndex === this.stages.length) this.stageIndex = 0;
-      this.totalTime = this.stages[this.stageIndex].duration;
+    seconds () {
+      return this.$store.getters.studyToolsTimerSeconds;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.timer {
-  border-radius: 20px;
+.study-tools-timer {
+  z-index: 30;
+  border-radius: 10px;
   padding-top: 30px;
   width: 50%;
   margin: 0 auto;

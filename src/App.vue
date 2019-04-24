@@ -21,11 +21,17 @@
         <AssessmentsAddFAB />
       </template>
       <template v-if="!loading">
+        <StudyToolsTimer
+          :detached="true"
+          :open="studyToolsTimerOpen"
+        />
         <AssignmentsModalAdd
+          v-if="loggedIn"
           :open="addAssignmentModalExpanded"
           @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
         />
         <ExamsModalAddRedux
+          v-if="loggedIn"
           :open="addExamModalExpanded"
           @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
         />
@@ -63,7 +69,7 @@
             :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
             style="flex: 1;"
           >
-            <PinnedAnnouncements />
+            <PinnedAnnouncements v-if="loggedIn" />
             <transition
               name="fade"
               mode="out-in"
@@ -87,6 +93,7 @@ import CourseModal from '@/views/components/courses/CourseModal';
 import PinnedAnnouncements from '@/views/components/announcements/PinnedAnnouncements';
 import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
+import StudyToolsTimer from '@/views/studytools/StudyToolsTimer';
 import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB';
 
 import SISMan from '@/views/components/sisman/SISMan';
@@ -107,6 +114,7 @@ export default {
     AnnouncementsModal,
     PinnedAnnouncements,
     AssessmentsAddFAB,
+    StudyToolsTimer,
     SISMan
   },
   data () {
@@ -116,6 +124,9 @@ export default {
     };
   },
   computed: {
+    studyToolsTimerOpen () {
+      return this.$store.state.studytoolstimer.open && this.$route.name !== 'study-tools-timer';
+    },
     courseModalData () {
       return this.$store.state.courseModal.current;
     },
