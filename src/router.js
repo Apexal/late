@@ -47,6 +47,14 @@ const router = new Router({
             title: 'Study/Work Timer'
           },
           component: () => import('@/views/studytools/StudyToolsTimer.vue')
+        },
+        {
+          path: 'scratchpad',
+          name: 'study-tools-scratchpad',
+          meta: {
+            title: 'Scratchpad'
+          },
+          component: () => import('@/views/studytools/StudyToolsScratchpad.vue')
         }
       ]
     },
