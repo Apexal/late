@@ -1,6 +1,6 @@
-const STUDY_WORK_DURATION = 5; // 25 * 60;
-const SHORT_BREAK_DURATION = 10; // 5 * 60;
-const LONG_BREAK_DURATION = 15; // 15 * 60;
+const STUDY_WORK_DURATION = 25 * 60;
+const SHORT_BREAK_DURATION = 5 * 60;
+const LONG_BREAK_DURATION = 15 * 60;
 
 const padTime = time => (time < 10 ? '0' : '') + time;
 
