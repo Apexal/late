@@ -1,11 +1,11 @@
 {
   "private": true,
   "name": "late",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Lazy Automatic Time Evaluator",
   "main": "index.js",
   "engines": {
-    "node": ">=11.0.0"
+    "node": "<12.0.0"
   },
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
