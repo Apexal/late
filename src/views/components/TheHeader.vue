@@ -343,8 +343,7 @@ export default {
 
   .navbar-item {
     span.icon {
-      margin-left: 3px;
-      margin-right: 5px;
+      margin-right: 3px;
     }
   }
 

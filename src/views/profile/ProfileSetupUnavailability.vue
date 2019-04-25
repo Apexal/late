@@ -9,8 +9,7 @@
     </template>
     <template v-else>
       <h2 class="is-size-4 integration-note">
-        What times outside of class are you not able to study/work for
-        <b>{{ currentTerm.name }}</b>?
+        When can't you study or work throughout the week?
       </h2>
       <div class="box">
         <form
