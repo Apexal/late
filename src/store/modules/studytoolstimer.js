@@ -8,7 +8,7 @@ const state = {
   open: false,
   initialTime: 25 * 60,
   timer: null,
-  totalTime: 5,
+  totalTime: STUDY_WORK_DURATION,
   paused: true,
   stageIndex: 0,
   stages: [

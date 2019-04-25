@@ -7,7 +7,7 @@
     <progress
       class="progress is-success"
       max="8"
-      :value="stageIndex"
+      :value="stageIndex+1"
     >
       0%
     </progress>
@@ -109,20 +109,26 @@ export default {
   padding: 0;
   width: 50%;
   margin: 0 auto;
-  font-size: 5em;
+  font-size: 5rem;
   .padding {
     padding: 0 20px;
   }
   &.detached {
     position: fixed;
     bottom: 10px;
+
     right: 10px;
-    font-size: 2em;
-        width: fit-content;
+    @media screen and (max-width: 1280px) {
+      right: unset;
+      left: 10px;
+    }
+    font-size: 2rem;
+    width: fit-content;
   }
 
   button {
     flex: 1;
+    margin: 0;
   }
 
   progress {
