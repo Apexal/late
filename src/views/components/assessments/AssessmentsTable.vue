@@ -27,15 +27,15 @@
             <span
               class="assessment-icon fas"
               :class="[ assessment.assessmentType === 'assignment' ? 'fa-clipboard-check' : 'fa-exclamation-triangle' ]"
-              :title="course(assessment).longname + ' ' + assessment.assessmentType"
+              :title="course(assessment).longname + ' ' + capitalize(assessment.assessmentType)"
               :style="'color: ' + course(assessment).color"
             />
           </span>
 
           <router-link
             class="assessment-link"
-            :class="assessment.assessmentType"
-            :title="assessment.description.substring(0, 500)"
+            :class="assessmentClasses(assessment)"
+            :title="assessmentTitle(assessment)"
             :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
           >
             {{ assessment.title }}
@@ -55,7 +55,8 @@
           <span
             v-else
             class="icon has-text-grey has-text-centered"
-          >-</span>
+            title="Not applicable."
+          >—</span>
         </td>
         <td v-if="showRemoveButton">
           <a
@@ -95,6 +96,19 @@ export default {
     assessmentDate (a) {
       return a.dueDate || a.date;
     },
+    assessmentClasses (assessment) {
+      return [assessment.assessmentType, assessment.assessmentType === 'assignment' && assessment.priority === 1 ? 'optional' : ''];
+    },
+    assessmentTitle (assessment) {
+      let title = assessment.assessmentType === 'assignment' && assessment.priority === 1 ? '(optional) ' : '';
+      let description = assessment.description.length > 500 ? (assessment.description.substring(0, 500) + '...') : assessment.description;
+
+      title += description || 'No description given.';
+      return title;
+    },
+    capitalize (str) {
+      return str.charAt(0).toUpperCase() + str.substring(1, str.length);
+    },
     fromNow (date) {
       return moment(date).from(this.now);
     },
@@ -114,9 +128,10 @@ export default {
   &.exam {
     font-weight: 500;
   }
-}
-.course-dot {
-  margin-right: 5px;
+
+  &.optional {
+    font-style: italic;
+  }
 }
 
 .fas {
@@ -132,7 +147,6 @@ export default {
   cursor: pointer;
   width: 20px;
   text-align: center;
-  margin-right: 5px;
 }
 
 .assessment-table {
