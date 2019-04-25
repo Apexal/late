@@ -16,7 +16,7 @@
         class="assessment-link"
         :title="(assessment.priority === 1 ? '(OPTIONAL) ' : '') + assessment.description.substring(0, 500)"
         :to="linkToParams"
-        :class="{ 'priority': assessment.priority > 3, 'has-text-grey is-italic': assessment.priority === 1 }"
+        :class="{ [assessment.assessmentType]: true, 'priority': assessment.priority > 3, 'has-text-grey is-italic': assessment.priority === 1 }"
       >
         <span
           v-if="assessmentType === 'exam'"
@@ -159,7 +159,7 @@ export default {
     cursor: pointer;
   }
 
-  .priority {
+  .priority, .exam {
     font-weight: 500;
   }
 }

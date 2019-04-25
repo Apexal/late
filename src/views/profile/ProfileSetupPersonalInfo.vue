@@ -1,7 +1,7 @@
 <template>
   <div class="personal-info-form">
     <h2 class="is-size-4 integration-note">
-      Please provide some basic info on yourself.
+      Tell us about yourself!
     </h2>
     <form @submit.prevent="save">
       <div class="field">

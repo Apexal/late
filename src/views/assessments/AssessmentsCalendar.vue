@@ -53,7 +53,7 @@ export default {
           eventRender: event => {
             if (
               this.filter.includes(event.assessment.courseCRN) ||
-              (event.type === 'assignment' &&
+              (event.assessment.assessmentType === 'assignment' &&
               (!this.showCompleted && event.assignment.completed))
             ) {
               return false;
