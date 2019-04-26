@@ -6,9 +6,8 @@ const padTime = time => (time < 10 ? '0' : '') + time;
 
 const state = {
   open: false,
-  initialTime: 25 * 60,
   timer: null,
-  totalTime: STUDY_WORK_DURATION,
+  totalTime: 5,
   paused: true,
   stageIndex: 0,
   stages: [
@@ -60,17 +59,21 @@ const actions = {
   STUDY_TOOLS_TIMER_COUNTDOWN ({ commit, dispatch, state }) {
     commit('DECREMENT_STUDY_TOOLS_TIMER');
     if (state.totalTime === 0) {
+      document.querySelectorAll('audio').forEach(el => el.play());
+
       clearInterval(state.timer);
       commit('SET_STUDY_TOOLS_TIMER', null);
       const nextStageIndex =
         state.stageIndex + 1 === state.stages.length ? 0 : state.stageIndex + 1;
-      alert(`Time's up! Next is ${state.stages[nextStageIndex].title}`);
-      commit('SET_STUDY_TOOLS_TIMER_OPEN', true);
-      commit(
-        'SET_STUDY_TOOLS_TIMER',
-        setInterval(() => dispatch('STUDY_TOOLS_TIMER_COUNTDOWN'), 1000)
-      );
-      commit('STUDY_TOOLS_TIMER_NEXT_STAGE');
+      setTimeout(() => {
+        alert(`Time's up for ${state.stages[state.stageIndex].title}! Next is ${state.stages[nextStageIndex].title}`);
+        commit('SET_STUDY_TOOLS_TIMER_OPEN', true);
+        commit(
+          'SET_STUDY_TOOLS_TIMER',
+          setInterval(() => dispatch('STUDY_TOOLS_TIMER_COUNTDOWN'), 1000)
+        );
+        commit('STUDY_TOOLS_TIMER_NEXT_STAGE');
+      }, 1000);
     }
   },
   TOGGLE_STUDY_TOOLS_TIMER ({ commit, state, dispatch }) {

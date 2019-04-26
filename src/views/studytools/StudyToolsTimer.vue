@@ -4,12 +4,17 @@
     class="study-tools-timer has-background-dark has-text-white has-text-centered"
     :class="{ detached }"
   >
+    <audio
+      ref="audio"
+      src="/foghorn.wav"
+    />
     <progress
       class="progress is-success"
-      max="8"
-      :value="stageIndex+1"
+      max="7"
+      :value="stageIndex"
+      :title="`Stage ${stageIndex + 1} out of 8`"
     >
-      0%
+      {{ stageIndex / 7 }}%
     </progress>
 
     <span
