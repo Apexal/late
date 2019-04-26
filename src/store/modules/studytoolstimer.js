@@ -7,12 +7,12 @@ const padTime = time => (time < 10 ? '0' : '') + time;
 const state = {
   open: false,
   timer: null,
-  totalTime: 5,
+  totalTime: STUDY_WORK_DURATION,
   paused: true,
   stageIndex: 0,
   stages: [
     {
-      title: 'Study/Work',
+      title: 'Study / Work',
       duration: STUDY_WORK_DURATION
     },
     {
@@ -20,7 +20,7 @@ const state = {
       duration: SHORT_BREAK_DURATION
     },
     {
-      title: 'Study/Work',
+      title: 'Study / Work',
       duration: STUDY_WORK_DURATION
     },
     {
@@ -28,7 +28,7 @@ const state = {
       duration: SHORT_BREAK_DURATION
     },
     {
-      title: 'Study/Work',
+      title: 'Study / Work',
       duration: STUDY_WORK_DURATION
     },
     {
@@ -36,7 +36,7 @@ const state = {
       duration: SHORT_BREAK_DURATION
     },
     {
-      title: 'Study/Work',
+      title: 'Study / Work',
       duration: STUDY_WORK_DURATION
     },
     {
@@ -66,7 +66,7 @@ const actions = {
       const nextStageIndex =
         state.stageIndex + 1 === state.stages.length ? 0 : state.stageIndex + 1;
       setTimeout(() => {
-        alert(`Time's up for ${state.stages[state.stageIndex].title}! Next is ${state.stages[nextStageIndex].title}`);
+        alert(`Next: ${state.stages[nextStageIndex].title} for ${state.stages[nextStageIndex].duration / 60} minutes.`);
         commit('SET_STUDY_TOOLS_TIMER_OPEN', true);
         commit(
           'SET_STUDY_TOOLS_TIMER',

@@ -113,6 +113,8 @@ export default {
   border-radius: 10px;
   padding: 0;
   width: 50%;
+  min-width: 300px;
+  max-width: 600px;
   margin: 0 auto;
   font-size: 5rem;
   .padding {
