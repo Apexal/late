@@ -12,15 +12,19 @@
         >
           Your Dashboard
         </h1>
-        <li>
+        <li
+          :class="{ 'is-active': tab === 'overview' }"
+          @click="tab = 'overview'"
+        >
           <a
             title="(WIP) View your weekly schedule"
             style="cursor: not-allowed;"
           >Your Week</a>
         </li>
         <li
-          class="is-active"
+          :class="{ 'is-active': tab === 'calendar' }"
           title="View calendar"
+          @click="tab = 'calendar'"
         >
           <a>Calendar</a>
         </li>
@@ -31,15 +35,22 @@
         On Break
       </h2>
     </template>
-    <DashboardCalendar />
+    <DashboardOverview v-if="tab === 'overview'" />
+    <DashboardCalendar v-else-if="tab === 'calendar'" />
   </section>
 </template>
 
 <script>
+import DashboardOverview from '@/views/dashboard/DashboardOverview';
 import DashboardCalendar from '@/views/dashboard/DashboardCalendar';
 export default {
   name: 'TheDashboard',
-  components: { DashboardCalendar },
+  components: { DashboardOverview, DashboardCalendar },
+  data () {
+    return {
+      tab: 'calendar'
+    };
+  },
   computed: {
     onBreak () {
       return this.$store.getters.onBreak;
