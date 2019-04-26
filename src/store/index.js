@@ -12,6 +12,7 @@ import courseModal from './modules/courseModal';
 import todos from './modules/todos';
 import unavailability from './modules/unavailability';
 import announcements from './modules/announcements';
+import studytoolstimer from './modules/studytoolstimer';
 import SISMan from './modules/sisman';
 
 Vue.use(Vuex);
@@ -29,6 +30,7 @@ export default new Vuex.Store({
     todos,
     unavailability,
     announcements,
+    studytoolstimer,
     SISMan
   },
   state: {

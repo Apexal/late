@@ -118,6 +118,45 @@
                 </a>
               </div>
             </div>
+
+            <div
+              v-if="!onBreak"
+              class="navbar-item has-dropdown is-hoverable"
+            >
+              <router-link
+                class="navbar-link"
+                to="/studytools"
+                title="Study tools to help you study/work!"
+              >
+                <span class="icon">
+                  <i class="fas fa-toolbox" />
+                </span>
+                Study Tools
+              </router-link>
+
+              <div class="navbar-dropdown">
+                <router-link
+                  class="navbar-item"
+                  to="/studytools/timer"
+                  title="Pace your study/work sessions with the Pomodoro timer."
+                >
+                  <span class="icon">
+                    <i class="fas fa-stopwatch" />
+                  </span>
+                  Timer
+                </router-link>
+                <router-link
+                  class="navbar-item"
+                  to="/studytools/scratchpad"
+                  title="Jot down temporary notes."
+                >
+                  <span class="icon">
+                    <i class="far fa-file" />
+                  </span>
+                  Scratchpad
+                </router-link>
+              </div>
+            </div>
           </template>
         </div>
 
