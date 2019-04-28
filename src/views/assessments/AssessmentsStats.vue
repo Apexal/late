@@ -3,7 +3,16 @@
     <h1 class="has-text-centered-mobile title">
       Coursework Stats
     </h1>
-    <div class="charts">
+    <p
+      v-if="loading"
+      class="has-text-grey has-text-centered"
+    >
+      Grabbing your stats...
+    </p>
+    <div
+      v-else
+      class="charts"
+    >
       <canvas id="doughnut-chart" />
 
       <canvas id="bar-chart" />
@@ -21,6 +30,7 @@ export default {
   name: 'AssessmentsStats',
   data () {
     return {
+      loading: true,
       assignments: [],
       exams: []
     };
@@ -30,7 +40,12 @@ export default {
       return this.$store.getters.current_schedule;
     },
     assignmentCountDataset () {
-      const data = this.courses.map(course => this.assignments.filter(assignment => assignment.courseCRN === course.crn).length);
+      const data = this.courses.map(
+        course =>
+          this.assignments.filter(
+            assignment => assignment.courseCRN === course.crn
+          ).length
+      );
 
       return {
         label: '# of assignments and exams',
@@ -41,10 +56,11 @@ export default {
       };
     },
     scheduledTimeDataSet () {
-      const data = this.courses.map(course => this.assignments
-        .filter(assignment => assignment.courseCRN === course.crn)
-        .map(assignment => assignment.scheduledTime)
-        .reduce((acc, duration) => acc + duration, 0)
+      const data = this.courses.map(course =>
+        this.assignments
+          .filter(assignment => assignment.courseCRN === course.crn)
+          .map(assignment => assignment.scheduledTime)
+          .reduce((acc, duration) => acc + duration, 0)
       );
 
       return {
@@ -75,7 +91,9 @@ export default {
       const datasets = [];
 
       for (let course of this.courses) {
-        const assignments = this.assignments.filter(assignment => assignment.courseCRN === course.crn);
+        const assignments = this.assignments.filter(
+          assignment => assignment.courseCRN === course.crn
+        );
 
         const data = [0, 0, 0, 0, 0, 0, 0]; // [ # of assignments due Sunday, # of assignments due Monday, ... ]
         for (let assignment of assignments) {
@@ -120,7 +138,9 @@ export default {
       while (current.isBefore(end)) {
         const nextWeek = moment(current).add(1, 'week');
         data.push(
-          this.assignments.filter(assignment => moment(assignment.dueDate).isBetween(current, nextWeek)).length
+          this.assignments.filter(assignment =>
+            moment(assignment.dueDate).isBetween(current, nextWeek)
+          ).length
         );
         current.add(1, 'week');
       }
@@ -134,10 +154,11 @@ export default {
   async mounted () {
     await this.getAssessments();
 
-    const workTimeData = this.courses.map(course => this.assignments
-      .filter(assignment => assignment.courseCRN === course.crn)
-      .map(assignment => assignment.scheduledTime)
-      .reduce((acc, duration) => acc + duration, 0)
+    const workTimeData = this.courses.map(course =>
+      this.assignments
+        .filter(assignment => assignment.courseCRN === course.crn)
+        .map(assignment => assignment.scheduledTime)
+        .reduce((acc, duration) => acc + duration, 0)
     );
 
     const doughnutChart = new Chart('doughnut-chart', {
@@ -157,7 +178,15 @@ export default {
     const barChart = new Chart('bar-chart', {
       type: 'bar',
       data: {
-        labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], // ['Calculus II', 'RCOS', etc]
+        labels: [
+          'Sunday',
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday'
+        ], // ['Calculus II', 'RCOS', etc]
         datasets: [...this.assignmentsOverWeekPerCourseDatasets]
       },
       options: {
@@ -166,13 +195,16 @@ export default {
           text: 'Assignments Over The Week'
         },
         scales: {
-          xAxes: [{
-
-            stacked: true
-          }],
-          yAxes: [{
-            stacked: true
-          }]
+          xAxes: [
+            {
+              stacked: true
+            }
+          ],
+          yAxes: [
+            {
+              stacked: true
+            }
+          ]
         }
       }
     });
@@ -193,11 +225,15 @@ export default {
   },
   methods: {
     async getAssessments () {
+      this.loading = true;
+
       let request = await this.$http.get('/assignments');
       this.assignments = request.data.assignments;
 
       request = await this.$http.get('/exams');
       this.exams = request.data.exams;
+
+      this.loading = false;
     }
   }
 };
