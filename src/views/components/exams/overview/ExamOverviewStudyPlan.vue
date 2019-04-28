@@ -1,5 +1,21 @@
 <template>
   <div class="exam-overview-study-plan">
+    <details
+      v-if="editing"
+      class="notification is-small is-warning"
+    >
+      <summary>
+        <span class="icon">
+          <i class="fas fa-info-circle" />
+        </span>
+        <b>Study Plan Help</b>
+      </summary>You can keep track of your plan of attack for studying for exams here. Use this to plan out categorically how you will study. You can create categories such as
+      <code>Chapter 1</code>,
+      <code>Chapter 2</code>, etc. with checkpoints for each such as
+      <code>Reread textbook</code>,
+      <code>Do pratice test</code>, etc. You can also add multiple categories/checkpoints at the same time by separating them with a semicolon, e.g.
+      <code>Chapter 1; Chapter 2</code>
+    </details>
     <p
       v-if="totalItemCount === 0 && !editing"
       class="has-text-grey has-text-centered"
@@ -88,7 +104,7 @@
                 class="input"
                 name="child-item-name"
                 maxlength="200"
-                :placeholder="'Add checkpoint to ' + item.text"
+                placeholder="New checkpoint"
               >
             </form>
           </li>
@@ -103,7 +119,7 @@
         v-model="newCategory"
         class="input new-checkpoint-input"
         type="text is-full-width"
-        placeholder="Add new category, e.g 'Chapter 1'"
+        placeholder="New Category"
         maxlength="200"
         required
       >
@@ -186,11 +202,18 @@ export default {
     async addCategory (event) {
       if (!this.newCategory) return;
 
-      this.studyPlan.push({
-        text: this.newCategory,
-        children: [],
-        completed: false
-      });
+      const items = this.newCategory
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length);
+
+      items.forEach(text =>
+        this.studyPlan.push({
+          text,
+          children: [],
+          completed: false
+        })
+      );
 
       this.newCategory = '';
 
@@ -198,11 +221,19 @@ export default {
     },
     async addChildItem (itemIndex, event) {
       const text = event.target['child-item-name'].value.trim();
+      // account for multiple items separated by semicolon
+
+      const items = text
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length);
 
       this.studyPlan[itemIndex].completed = false;
-      this.studyPlan[itemIndex].children.push({
-        text,
-        completed: false
+      items.forEach(item => {
+        this.studyPlan[itemIndex].children.push({
+          text: item,
+          completed: false
+        });
       });
 
       event.target['child-item-name'].value = '';
@@ -275,6 +306,11 @@ export default {
 <style lang="scss" scoped>
 .exam-overview-study-plan {
   font-size: 1.3em;
+
+  .notification.is-warning {
+    font-size: 0.7em;
+    padding: 10px;
+  }
 
   .edit-study-plan {
     margin-right: 10px;
