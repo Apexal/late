@@ -128,7 +128,7 @@
               <span class="icon">
                 <i class="fas fa-toolbox" />
               </span>
-              Study Tools
+              Tools
             </router-link>
           </template>
         </div>

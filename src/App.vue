@@ -22,6 +22,7 @@
       </template>
       <template v-if="!loading">
         <StudyToolsTimer
+          v-if="$route.path !='/studytools'"
           :detached="true"
           :open="studyToolsTimerOpen"
         />

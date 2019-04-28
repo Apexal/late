@@ -170,7 +170,7 @@ export default {
 }
 
 .description {
-  padding: 0px;
+  padding: 0 0 0 15px;
   margin-right: 50px;
   .instructions {
     font-size: 1.2em;
@@ -186,6 +186,8 @@ export default {
 }
 
 .tools-container {
+  padding-top: 0;
+  padding-right: 15px;
   .study-tools-timer {
     display: block;
     z-index: 30;
@@ -216,6 +218,7 @@ export default {
     button {
       flex: 1;
       margin: 0;
+      border-radius: 0px!important;
     }
 
     button:nth-child(1),button:last-child {
@@ -240,8 +243,11 @@ export default {
   }
 
   .study-tools-scratchpad {
+    width: 100%;
+    min-width: 300px;
+    max-width: 600px;
     display: block;
-    margin: 5px;
+    margin: 0 auto;
   }
 }
 </style>

@@ -119,7 +119,7 @@ export default {
   margin: 0 auto;
   font-size: 5rem;
   .padding {
-    padding: 0 35px 0px 10px;
+    padding: 0 35px 0px 15px;
   }
   &.detached {
     position: fixed;
@@ -149,7 +149,7 @@ export default {
     position: absolute;
     height: 100%;
     top: 0px;
-    bottom: 5px;
+    bottom: 8px;
     right: 10px;
     margin: auto;
   }
