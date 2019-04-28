@@ -109,8 +109,9 @@ export default {
 
 <style lang="scss" scoped>
 .study-tools-timer {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   z-index: 30;
-  border-radius: 10px;
+  border-radius: 10px 0px 0px 0px;
   padding: 0;
   width: 50%;
   min-width: 300px;
@@ -118,13 +119,13 @@ export default {
   margin: 0 auto;
   font-size: 5rem;
   .padding {
-    padding: 0 20px;
+    padding: 0 35px 0px 10px;
   }
   &.detached {
     position: fixed;
-    bottom: 10px;
+    bottom: 8px;
 
-    right: 10px;
+    right: 0px;
     @media screen and (max-width: 1280px) {
       right: unset;
       left: 10px;
@@ -136,15 +137,29 @@ export default {
   button {
     flex: 1;
     margin: 0;
+    border-radius: 0px;
   }
 
   progress {
     margin-bottom: 5px;
+    height: 5px;
+    border-radius: 10px 0px 0px 0px;
   }
   .dismiss-timer {
     position: absolute;
-    top:20px;
-    right: 5px;
+    height: 100%;
+    top: 0px;
+    bottom: 5px;
+    right: 10px;
+    margin: auto;
+  }
+
+  div span:not(.stage-title) {
+    font-weight: 100;
+  }
+
+  .stage-title:after {
+    content: "- ";
   }
 }
 </style>

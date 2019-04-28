@@ -93,7 +93,7 @@ import CourseModal from '@/views/components/courses/CourseModal';
 import PinnedAnnouncements from '@/views/components/announcements/PinnedAnnouncements';
 import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
-import StudyToolsTimer from '@/views/studytools/StudyToolsTimer';
+import StudyToolsTimer from '@/views/studytools/StudyToolsTimerOverlay';
 import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB';
 
 import SISMan from '@/views/components/sisman/SISMan';
