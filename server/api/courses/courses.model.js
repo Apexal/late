@@ -9,6 +9,7 @@ const schema = new Schema(
       required: true
     },
     originalTitle: { type: String, required: true }, // Remains the same so student can change name but not forget what it originally was
+    sectionId: { type: Number, required: true }, // e.g. 11
     title: { type: String, required: true }, // e.g. FOUNDATIONS OF COMPUTER SCIENCE
     termCode: { type: String, required: true }, // e.g. 201901
     startDate: { type: Date, required: true }, // usually start of semester unless weird summer course
