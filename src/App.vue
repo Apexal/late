@@ -3,9 +3,10 @@
     <div id="content">
       <vue-progress-bar />
       <TheHeader ref="header" />
-      <Loading
-        :active.sync="loading"
+      <b-loading
         :is-full-page="true"
+        :active.sync="loading"
+        :can-cancel="false"
       />
       <template v-if="loggedIn">
         <CourseModal
@@ -99,13 +100,9 @@ import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB'
 
 import SISMan from '@/views/components/sisman/SISMan';
 
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
-
 export default {
   name: 'LATE',
   components: {
-    Loading,
     CourseModal,
     TheHeader,
     TheSidebar,
