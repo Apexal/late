@@ -9,11 +9,10 @@
       User List
       <small class="is-pulled-right has-text-grey">
         {{ students.length }} total
-        <button
-          class="button"
-          :class="{ 'is-loading': loading }"
+        <b-button
+          :loading="loading"
           @click="$emit('refresh-students')"
-        >Refresh</button>
+        >Refresh</b-button>
       </small>
     </h2>
 

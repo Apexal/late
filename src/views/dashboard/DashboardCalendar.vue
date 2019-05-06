@@ -18,13 +18,13 @@
       :header="calendar.header"
       :config="calendar.config"
     />
-    <button
+    <b-button
       title="Toggle Fullscreen"
-      class="button fullscreen-toggle"
+      class="fullscreen-toggle"
       @click="toggleFullscreen"
     >
       <i class="fas fa-expand-arrows-alt" />
-    </button>
+    </b-button>
   </div>
 </template>
 

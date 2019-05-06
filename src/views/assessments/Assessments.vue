@@ -63,20 +63,20 @@
     </transition>
     <hr>
     <div class="buttons">
-      <button
-        class="button is-dark"
+      <b-button
+        type="is-dark"
         title="Add an assignment"
         @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
       >
         Add Assignment
-      </button>
-      <button
-        class="button is-dark"
+      </b-button>
+      <b-button
+        type="is-dark"
         title="Add an exam"
         @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
       >
         Add Exam
-      </button>
+      </b-button>
     </div>
   </section>
 </template>

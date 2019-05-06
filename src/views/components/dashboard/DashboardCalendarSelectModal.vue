@@ -72,11 +72,6 @@
         </div>
       </template>
     </div>
-    <button
-      class="modal-close is-large"
-      aria-label="close"
-      @click="$emit('close-modal')"
-    />
   </b-modal>
 </template>
 

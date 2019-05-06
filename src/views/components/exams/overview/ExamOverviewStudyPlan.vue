@@ -132,10 +132,11 @@
       class="is-flex"
       :style="{ 'align-items': 'center' }"
     >
-      <button
-        class="button is-warning edit-study-plan"
+      <b-button
+        type="is-warning"
+        class="edit-study-plan"
         @click="editing = !editing"
-      >{{ editing ? 'Save Plan' : 'Edit Plan' }}</button>
+      >{{ editing ? 'Save Plan' : 'Edit Plan' }}</b-button>
       <progress
         class="progress is-success is-tooltip-bottom"
         :value="completedCount"

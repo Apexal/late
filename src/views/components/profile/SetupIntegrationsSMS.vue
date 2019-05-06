@@ -29,12 +29,12 @@
           <button class="button is-warning" @click="resetPhoneNumber">Change</button>
         </div>-->
         <div class="control">
-          <button
-            class="button is-danger"
+          <b-button
+            type="is-danger"
             @click="disable"
           >
             Disable
-          </button>
+          </b-button>
         </div>
       </div>
     </div>
@@ -71,12 +71,12 @@
             >
           </div>
           <div class="control">
-            <button
-              :class="{ 'is-loading': loading }"
-              class="button is-info"
+            <b-button
+              :loading="loading"
+              type="is-info"
             >
               Submit
-            </button>
+            </b-button>
           </div>
         </div>
       </form>
@@ -103,12 +103,12 @@
             >
           </div>
           <div class="control">
-            <button
-              :class="{ 'is-loading': loading }"
-              class="button is-danger"
+            <b-button
+              :loading="loading"
+              type="is-danger"
             >
               Verify
-            </button>
+            </b-button>
           </div>
         </div>
       </form>

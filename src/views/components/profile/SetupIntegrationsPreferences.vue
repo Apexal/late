@@ -40,13 +40,13 @@
         </div>
       </div>
 
-      <button
-        class="button is-primary"
-        :class="{ 'is-loading': loading }"
+      <b-button
+        type="is-primary"
+        :loading="loading"
         :disabled="saved"
       >
         Save
-      </button>
+      </b-button>
     </form>
   </div>
 </template>

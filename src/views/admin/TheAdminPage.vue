@@ -42,13 +42,13 @@
       <h2 class="subtitle">
         Server Log
       </h2>
-      <button
-        class="button is-pulled-right"
-        :class="{ 'is-loading': loadingLog }"
+      <b-button
+        class="is-pulled-right"
+        :loading="loadingLog"
         @click="getLog"
       >
         Refresh
-      </button>
+      </b-button>
       <blockquote>
         <b-loading
           :is-full-page="false"

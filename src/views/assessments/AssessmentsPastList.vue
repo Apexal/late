@@ -7,16 +7,15 @@
       Week of {{ weekOf }}
     </h2>
     <div class="is-flex-tablet">
-      <button
-        class="button"
+      <b-button
         :disabled="!canGoPrev"
-        :class="{ 'is-loading': loading }"
+        :loading="loading"
         @click="shiftDates(-7)"
       >
         <span class="icon">
           <i class="fas fa-chevron-left" />
         </span>
-      </button>
+      </b-button>
       <div class="field is-horizontal">
         <div class="field-body">
           <div class="control">
@@ -53,13 +52,13 @@
             </div>
           </div>
 
-          <button
-            class="button is-primary"
+          <b-button
+            type="is-primary"
             :disabled="isLastWeek"
             @click="gotoLastWeek"
           >
             Last Week
-          </button>
+          </b-button>
         </div>
       </div>
 
@@ -79,16 +78,15 @@
         </div>
       </div>
 
-      <button
-        class="button"
-        :class="{ 'is-loading': loading }"
+      <b-button
+        :loading="loading"
         :disabled="!canGoForward"
         @click="shiftDates(7)"
       >
         <span class="icon">
           <i class="fas fa-chevron-right" />
         </span>
-      </button>
+      </b-button>
     </div>
 
     <AssessmentsTable

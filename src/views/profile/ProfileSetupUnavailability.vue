@@ -70,14 +70,14 @@
         @event-resize="eventResized"
       />
       <hr>
-      <button
+      <b-button
         form="time-preferences"
-        class="button is-primary"
-        :class="{'is-loading': loading}"
+        type="is-primary"
+        :leading="loading"
         :disabled="saved"
       >
         Save and Continue
-      </button>
+      </b-button>
     </template>
   </div>
 </template>

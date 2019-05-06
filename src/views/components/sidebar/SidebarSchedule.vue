@@ -56,9 +56,9 @@
       </div>
     </div>
     <div class="panel-block has-background-light has-text-centered">
-      <button
+      <b-button
         :class="{ 'is-active': showPassed }"
-        class="button is-fullwidth showPassedButton"
+        class="is-fullwidth showPassedButton"
         @click="showPassed = !showPassed"
       >
         <i
@@ -66,7 +66,7 @@
           :class="[ showPassed ? 'fa-eye' : 'fa-eye-slash' ]"
         />
         {{ showPassed ? 'Hide' : 'Show' }} Passed
-      </button>
+      </b-button>
     </div>
   </div>
 </template>

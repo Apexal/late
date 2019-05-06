@@ -282,19 +282,18 @@
           </table>
         </div>
 
-        <button
-          type="button"
-          class="button is-warning"
+        <b-button
+          type="is-warning"
           @click="cancel"
         >
           Cancel
-        </button>
-        <button
+        </b-button>
+        <b-button
           :disabled="saved"
-          class="button is-primary"
+          type="is-primary"
         >
           Save
-        </button>
+        </b-button>
       </form>
     </template>
   </div>

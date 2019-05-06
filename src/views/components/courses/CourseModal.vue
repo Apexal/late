@@ -1,7 +1,6 @@
 <template>
   <b-modal
     class="course-modal"
-    scroll="keep"
     :active="open"
     :width="800"
     @close="$store.commit('CLOSE_COURSE_MODAL')"

@@ -90,20 +90,19 @@
         </template>
       </section>
       <footer class="modal-card-foot">
-        <button
+        <b-button
           v-if="user.admin"
-          class="button is-success"
-          :class="{ 'is-loading': loading }"
+          type="is-success"
+          :loading="loading"
           @click="buttonClick"
         >
           {{ addingAnnouncement ? 'Save' : 'New Announcement' }}
-        </button>
-        <button
-          class="button"
+        </b-button>
+        <b-button
           @click="cancelButtonClick"
         >
           {{ addingAnnouncement ? 'Cancel' : 'Close' }}
-        </button>
+        </b-button>
       </footer>
     </div>
   </b-modal>

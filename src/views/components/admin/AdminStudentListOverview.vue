@@ -98,40 +98,47 @@
     <div class="student-actions">
       <hr>
       <div class="buttons has-addons">
-        <button class="button is-small">
+        <b-button size="is-small">
           Email
-        </button>
-        <button class="button is-info is-small">
+        </b-button>
+        <b-button
+          type="is-info"
+          size="is-small"
+        >
           View Profile
-        </button>
-        <button
-          class="button is-warning is-small"
+        </b-button>
+        <b-button
+          type="is-warning"
+          size="is-small"
           @click="updateStudent({ accountLocked: !student.accountLocked })"
         >
           Lock Account
-        </button>
+        </b-button>
         <template v-if="user.rcs_id === 'matraf'">
-          <button
+          <b-button
             v-if="confirming"
-            class="button is-danger is-small"
+            type="is-danger"
+            size="is-small"
             @click="deleteStudent"
           >
             Confirm
-          </button>
-          <button
+          </b-button>
+          <b-button
             v-else
-            class="button is-danger is-small"
+            type="is-danger"
+            size="is-small"
             @click="confirming = true"
           >
             Delete Account
-          </button>
+          </b-button>
 
-          <button
-            class="button is-success is-small"
+          <b-button
+            type="is-success"
+            size="is-small"
             @click="updateStudent({ admin: !student.admin })"
           >
             {{ student.admin ? 'Remove' : 'Make' }} Admin
-          </button>
+          </b-button>
         </template>
       </div>
     </div>

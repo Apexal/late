@@ -43,20 +43,22 @@
     <hr class="small-margin">
 
     <div class="buttons">
-      <button
-        class="button is-outlined is-info"
+      <b-button
+        type="is-info"
+        outlined
         @click="$emit('add-assessment', 'assignment')"
       >
         <i class="fa fa-clipboard-list" />
         Add Assignment
-      </button>
-      <button
-        class="button is-outlined is-info"
+      </b-button>
+      <b-button
+        type="is-info"
+        outlined
         @click="$emit('add-assessment', 'exam')"
       >
         <i class="fa fa-exclamation-triangle" />
         Add Exam
-      </button>
+      </b-button>
     </div>
   </div>
 </template>
