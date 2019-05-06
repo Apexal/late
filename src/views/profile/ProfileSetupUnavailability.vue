@@ -178,26 +178,38 @@ export default {
   },
   methods: {
     eventClick (calEvent, jsEvent, view) {
-      if (!calEvent.eventType === 'unavailability') return;
+      if (calEvent.eventType !== 'unavailability') return;
 
-      this.removeUnavailability(calEvent);
+      this.$dialog.confirm({
+        message: `Remove ${calEvent.title}?`,
+        onConfirm: () => this.removeUnavailability(calEvent)
+      });
     },
     eventResized (calEvent) {
       // TODO: can do
     },
     select (start, end) {
-      let promptedTitle = prompt('What is it?').trim();
-      const unavailability = {
-        title: promptedTitle || 'Busy',
-        start: start.format('HH:mm'),
-        end: end.format('HH:mm'),
-        dow: [start.day()],
-        isOneTime: false
-      };
+      this.$dialog.prompt({
+        message: `What are you doing ${start.format('h:mma')} to ${start.format('h:mma')} on ${start.format('dddd')}?`,
+        confirmText: 'Add Block',
+        inputAttrs: {
+          placeholder: 'e.g. Dinner',
+          maxlength: 50
+        },
+        onConfirm: title => {
+          const unavailability = {
+            title: title || 'Busy',
+            start: start.format('HH:mm'),
+            end: end.format('HH:mm'),
+            dow: [start.day()],
+            isOneTime: false
+          };
 
-      this.addUnavailability(unavailability);
-      this.$refs.calendar.fireMethod('unselect');
-      this.saved = false;
+          this.addUnavailability(unavailability);
+          this.$refs.calendar.fireMethod('unselect');
+          this.saved = false;
+        }
+      });
     },
     async addUnavailability (unavailability) {
       let request;
