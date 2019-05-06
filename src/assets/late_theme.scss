@@ -4,7 +4,6 @@
 // Set your colors
 $dark: #2e3b59;
 $primary: #70cad1;
-$primary-invert: findColorInvert($primary);
 
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: (
@@ -23,3 +22,4 @@ $colors: (
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+@import '~bulma-steps/src/sass/index.sass';
