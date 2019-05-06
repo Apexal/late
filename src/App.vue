@@ -328,4 +328,8 @@ body {
 .no-bottom-padding {
   padding-bottom: 0;
 }
+
+.modal-content {
+  max-width: 800px;
+}
 </style>

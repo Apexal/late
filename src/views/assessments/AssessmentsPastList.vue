@@ -93,6 +93,7 @@
 
     <AssessmentsTable
       v-if="filteredAssessments.length > 0"
+      :loading="loading"
       :assessments="filteredAssessments"
       :show-remove-button="true"
       @remove-assessment="removeAssessment"

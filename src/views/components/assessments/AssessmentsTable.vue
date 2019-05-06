@@ -1,6 +1,7 @@
 <template>
   <b-table
     :data="assessments"
+    :loading="loading"
   >
     <template slot-scope="props">
       <b-table-column
@@ -32,6 +33,40 @@
           {{ props.row.title }}
         </router-link>
       </b-table-column>
+      <b-table-column
+        field="done"
+        label="Done"
+      >
+        <span
+          v-if="props.row.assessmentType === 'assignment'"
+          class="icon"
+        >
+          <i
+            class="fas"
+            :class="{ 'fa-check': props.row.completed, 'fa-times': !props.row.completed }"
+            :title="props.row.completed ? 'Completed on ' + toFullDateTimeString(props.row.completedAt) : 'Incomplete'"
+          />
+        </span>
+        <span
+          v-else
+          class="icon has-text-grey has-text-centered"
+          title="Not applicable."
+        >—</span>
+      </b-table-column>
+
+      <b-table-column v-if="showRemoveButton">
+        <a
+          class="delete"
+          :title="'Delete this ' + props.row.assessmentType"
+          @click="$emit('remove-assessment', props.row)"
+        />
+      </b-table-column>
+    </template>
+
+    <template slot="empty">
+      <p class="has-text-grey has-text-centered">
+        {{ emptyMessage }}
+      </p>
     </template>
   </b-table>
 </template>
@@ -42,6 +77,10 @@ import moment from 'moment';
 export default {
   name: 'AssessmentsTable',
   props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
     showRemoveButton: {
       type: Boolean,
       default: false
@@ -53,6 +92,10 @@ export default {
     assessments: {
       type: Array,
       required: true
+    },
+    emptyMessage: {
+      type: String,
+      default: 'No assignments or exams found.'
     }
   },
   methods: {
