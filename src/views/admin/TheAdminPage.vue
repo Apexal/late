@@ -42,21 +42,20 @@
       <h2 class="subtitle">
         Server Log
       </h2>
-      <button
-        class="button is-pulled-right"
-        :class="{ 'is-loading': loadingLog }"
+      <b-button
+        class="is-pulled-right"
+        :loading="loadingLog"
         @click="getLog"
       >
         Refresh
-      </button>
+      </b-button>
       <blockquote>
-        <p
-          v-if="loadingLog"
-          class="has-text-grey has-text-centered"
-        >
-          Loading log from server. This may take a while...
-        </p>
-        <ul v-else>
+        <b-loading
+          :is-full-page="false"
+          :active="loadingLog"
+          :can-cancel="false"
+        />
+        <ul>
           <li
             v-for="line in log"
             :key="line"

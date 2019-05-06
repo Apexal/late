@@ -1,12 +1,10 @@
 <template>
-  <div
+  <b-modal
+    has-modal-card
     class="modal announcements-modal"
-    :class="{ 'is-active': open }"
+    :active="open"
+    @close="$emit('close-modal')"
   >
-    <div
-      class="modal-background"
-      @click="$emit('close-modal')"
-    />
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
@@ -51,15 +49,9 @@
             </div>
 
             <div class="field">
-              <div class="control">
-                <label class="checkbox">
-                  <input
-                    v-model="newAnnouncement.isPinned"
-                    type="checkbox"
-                  >
-                  Pin Announcement
-                </label>
-              </div>
+              <b-checkbox v-model="newAnnouncement.isPinned">
+                Pin Announcement
+              </b-checkbox>
             </div>
           </form>
         </template>
@@ -98,23 +90,22 @@
         </template>
       </section>
       <footer class="modal-card-foot">
-        <button
+        <b-button
           v-if="user.admin"
-          class="button is-success"
-          :class="{ 'is-loading': loading }"
+          type="is-success"
+          :loading="loading"
           @click="buttonClick"
         >
           {{ addingAnnouncement ? 'Save' : 'New Announcement' }}
-        </button>
-        <button
-          class="button"
+        </b-button>
+        <b-button
           @click="cancelButtonClick"
         >
           {{ addingAnnouncement ? 'Cancel' : 'Close' }}
-        </button>
+        </b-button>
       </footer>
     </div>
-  </div>
+  </b-modal>
 </template>
 
 <script>

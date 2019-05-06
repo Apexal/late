@@ -30,11 +30,7 @@
         :class="{ 'is-active': isCurrentEvent(event), 'passed': hasPassed(event.end), 'clickable': event.link }"
         @click="eventClicked(event)"
       >
-        <span
-          class="course-dot dot"
-          :style="{ 'background-color': event.course.color }"
-          @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
-        />
+        <CourseAssessmentDot :course="event.course" />
         <span
           class="event-title"
           style="flex: 1"
@@ -60,9 +56,9 @@
       </div>
     </div>
     <div class="panel-block has-background-light has-text-centered">
-      <button
+      <b-button
         :class="{ 'is-active': showPassed }"
-        class="button is-fullwidth showPassedButton"
+        class="is-fullwidth showPassedButton"
         @click="showPassed = !showPassed"
       >
         <i
@@ -70,7 +66,7 @@
           :class="[ showPassed ? 'fa-eye' : 'fa-eye-slash' ]"
         />
         {{ showPassed ? 'Hide' : 'Show' }} Passed
-      </button>
+      </b-button>
     </div>
   </div>
 </template>
@@ -193,9 +189,6 @@ export default {
     color: #929292;
   }
 
-  .course-dot {
-    margin-right: 3px;
-  }
   .period-longname {
     cursor: pointer;
     margin-right: 3px;

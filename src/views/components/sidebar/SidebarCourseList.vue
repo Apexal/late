@@ -17,10 +17,8 @@
         class="panel-block course-panel-block"
         @click="$store.commit('OPEN_COURSE_MODAL', c)"
       >
-        <span
-          class="course-dot dot"
-          :style="{ 'background-color': c.color }"
-        />
+        <CourseAssessmentDot :course="c" />
+
         {{ c.longname }}
       </div>
     </div>
@@ -58,10 +56,6 @@ export default {
   padding: 10px;
   cursor: pointer;
   font-weight: 500;
-
-  .course-dot {
-    margin-right: 5px;
-  }
 }
 
 .editCoursesButton:hover {

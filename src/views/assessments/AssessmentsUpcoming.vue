@@ -74,6 +74,7 @@
       <AssessmentsTable
         v-if="showingFutureAssessments"
         :assessments="filteredFarFutureAssessments"
+        empty-message="No assignments or exams due in over 2 weeks."
       />
     </div>
   </div>
@@ -264,9 +265,5 @@ export default {
       opacity: 1;
     }
   }
-}
-
-.dot {
-  margin-right: 5px;
 }
 </style>

@@ -3,9 +3,10 @@
     <div id="content">
       <vue-progress-bar />
       <TheHeader ref="header" />
-      <Loading
-        :active.sync="loading"
+      <b-loading
         :is-full-page="true"
+        :active="loading"
+        :can-cancel="false"
       />
       <template v-if="loggedIn">
         <CourseModal
@@ -99,13 +100,9 @@ import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB'
 
 import SISMan from '@/views/components/sisman/SISMan';
 
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
-
 export default {
   name: 'LATE',
   components: {
-    Loading,
     CourseModal,
     TheHeader,
     TheSidebar,
@@ -215,12 +212,12 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/late_theme.scss';
+
 /*-------------------------------------------*/
 /*               Global Styles
 /* These styles will apply to the whole app. */
 /*-------------------------------------------*/
-@import "@/assets/bulma.scss";
-
 * {
   word-wrap: break-word;
 }
@@ -263,7 +260,7 @@ body {
   color: initial;
   background: none;
   text-shadow: none;
-  @extend .button;
+  //@extend .button;
 }
 
 .is-full-width {
@@ -284,15 +281,6 @@ body {
   margin-top: 0.5em;
   width: 2.5em;
   height: 1.5em;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  cursor: pointer;
-  background-color: green;
-  display: inline-block;
 }
 
 /* TRANSITIONS */
@@ -339,5 +327,9 @@ body {
 
 .no-bottom-padding {
   padding-bottom: 0;
+}
+
+.modal-content {
+  max-width: 800px;
 }
 </style>

@@ -1,21 +1,10 @@
 <template>
   <div class="related-assessments">
-    <p
-      v-if="loading"
-      class="has-text-grey has-text-centered"
-    >
-      Loading {{ assessmentType }}s...
-    </p>
     <AssessmentsTable
-      v-else
       :assessments="related"
+      :loading="loading"
+      :empty-message="`No related ${assessmentType}s found.`"
     />
-    <p
-      v-if="!loading && related.length === 0"
-      class="has-text-grey has-text-centered"
-    >
-      No related {{ assessmentType }}s found!
-    </p>
   </div>
 </template>
 

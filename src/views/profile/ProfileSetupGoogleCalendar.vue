@@ -53,23 +53,23 @@
               <li>delete a work block on LATE</li>
             </ul>
             <br>
-            <button
+            <b-button
               title="Remove calendar and reset"
-              class="is-danger button"
+              type="is-danger"
               @click="reset('workBlocks')"
             >
               Reset
-            </button>
+            </b-button>
           </div>
           <div v-else>
-            <button
-              class="button is-danger"
-              :class="{ 'is-loading': loading }"
+            <b-button
+              type="is-danger"
+              :loading="loading"
               :disabled="loading"
               @click="createWorkBlockCalendar"
             >
               Create Calendar for Work Blocks
-            </button>
+            </b-button>
           </div>
         </div>
         <div v-else-if="tab === 'courseSchedule'">
@@ -78,13 +78,13 @@
           </p>
         </div>
         <hr>
-        <button
-          class="button is-primary"
+        <b-button
+          type="is-primary"
           :disabled="saved"
           @click="save"
         >
           Save
-        </button>
+        </b-button>
       </div>
     </div>
   </div>

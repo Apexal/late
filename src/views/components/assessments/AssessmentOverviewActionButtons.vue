@@ -1,18 +1,18 @@
 <template>
   <div class="assessment-actions clearfix">
-    <button
-      class="button is-warning"
+    <b-button
+      type="is-warning"
       @click="$emit('toggle-editing')"
     >
       <i class="fas fa-edit" />
       Edit {{ assessmentTypeCaps }}
-    </button>
-    <button
-      class="button is-pulled-right"
+    </b-button>
+    <b-button
+      class="is-pulled-right"
       @click="$emit('copy-assessment')"
     >
       Copy {{ assessmentTypeCaps }}
-    </button>
+    </b-button>
   </div>
 </template>
 

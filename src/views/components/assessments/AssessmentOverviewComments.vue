@@ -56,13 +56,14 @@
               />
             </div>
           </div>
-          <button
-            :class="{ 'is-loading': loading }"
-            class="button is-success is-pulled-right"
+          <b-button
+            :loading="loading"
+            type="is-success"
+            class="is-pulled-right"
             :disabled="newComment.length === 0"
           >
             Add Comment
-          </button>
+          </b-button>
         </form>
       </div>
     </template>

@@ -1,12 +1,10 @@
 <template>
-  <div
-    class="modal course-modal"
-    :class="{'is-active': open}"
+  <b-modal
+    class="course-modal"
+    :active="open"
+    :width="800"
+    @close="$store.commit('CLOSE_COURSE_MODAL')"
   >
-    <div
-      class="modal-background"
-      @click="$store.commit('CLOSE_COURSE_MODAL')"
-    />
     <div class="modal-content">
       <div class="box">
         <router-link
@@ -91,7 +89,7 @@
         />
       </div>
     </div>
-  </div>
+  </b-modal>
 </template>
 
 <script>

@@ -1,12 +1,9 @@
 <template>
-  <div
-    :class="{'is-active': open}"
-    class="modal dashboard-calendar-select-modal"
+  <b-modal
+    :active="open"
+    class="dashboard-calendar-select-modal"
+    @close="$emit('close-modal')"
   >
-    <div
-      class="modal-background"
-      @click="$emit('close-modal')"
-    />
     <div class="modal-content panel">
       <p class="panel-heading">
         Schedule
@@ -75,12 +72,7 @@
         </div>
       </template>
     </div>
-    <button
-      class="modal-close is-large"
-      aria-label="close"
-      @click="$emit('close-modal')"
-    />
-  </div>
+  </b-modal>
 </template>
 
 <script>

@@ -18,17 +18,14 @@
       @remove-exam="removeAssessment"
     />
     <section
-      v-if="loading"
       class="section"
     >
-      <h1 class="title has-text-grey">
-        Loading {{ assessmentType }}...
-      </h1>
-    </section>
-    <section
-      v-else
-      class="section"
-    >
+      <b-loading
+        :is-full-page="false"
+        :active="loading"
+        :can-cancel="false"
+      />
+
       <AssessmentOverviewTitle
         :assessment-type="'assignment'"
         :assessment="assessment"
@@ -36,23 +33,25 @@
         @update-assessment="updatedAssessment"
       />
 
-      <AssignmentOverviewStats
-        v-if="assessmentType === 'assignment'"
-        :assignment="assessment"
-        @not-fully-scheduled-click="notFullyScheduledClick"
-        @update-assessment="updatedAssessment"
-      />
+      <div>
+        <AssignmentOverviewStats
+          v-if="assessmentType === 'assignment'"
+          :assignment="assessment"
+          @not-fully-scheduled-click="notFullyScheduledClick"
+          @update-assessment="updatedAssessment"
+        />
 
-      <ExamOverviewStats
-        v-else
-        :exam="assessment"
-        @not-fully-scheduled-click="notFullyScheduledClick"
-      />
+        <ExamOverviewStats
+          v-else
+          :exam="assessment"
+          @not-fully-scheduled-click="notFullyScheduledClick"
+        />
 
-      <AssessmentOverviewDescription
-        :assessment="assessment"
-        @update-assessment="updatedAssessment"
-      />
+        <AssessmentOverviewDescription
+          :assessment="assessment"
+          @update-assessment="updatedAssessment"
+        />
+      </div>
       <AssignmentOverviewTabs
         v-if="assessmentType === 'assignment'"
         ref="assignment-tabs"

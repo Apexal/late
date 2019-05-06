@@ -4,28 +4,29 @@
     class="section pinned-announcements"
     title="Pinned announcement"
   >
-    <details
+    <b-notification
       v-for="ann in pinnedAnnouncements"
       :key="ann._id"
-      class="notification pinned-announcement is-primary"
+      type="is-info"
+      class="pinned-announcement"
+      aria-close-label="Close notification"
+      @close="dismissPinnedAnnouncement(ann._id)"
     >
-      <summary>
-        <i class="fas fa-thumbtack" />
-        <strong>Pinned Announcement:</strong>
-        {{ ann.title }}
-        <a
-          class="delete is-pulled-right"
-          @click="dismissPinnedAnnouncement(ann._id)"
+      <details>
+        <summary>
+          <i class="fas fa-thumbtack" />
+          <strong>Pinned Announcement:</strong>
+          {{ ann.title }}
+        </summary>
+        <VueMarkdown
+          class="announcement-body"
+          :source="ann.body"
+          :html="false"
+          :emoji="true"
+          :anchor-attributes="{target: '_blank'}"
         />
-      </summary>
-      <VueMarkdown
-        class="announcement-body"
-        :source="ann.body"
-        :html="false"
-        :emoji="true"
-        :anchor-attributes="{target: '_blank'}"
-      />
-    </details>
+      </details>
+    </b-notification>
   </section>
 </template>
 
@@ -63,25 +64,21 @@ export default {
 .pinned-announcements {
   padding-bottom: 0;
   padding-top: 2em;
-
-  .pinned-announcement {
-    padding: 10px;
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
-    .fas.fa-thumbtack {
-      margin-right: 5px;
-    }
-    summary {
-      cursor: pointer;
-      font-size: 1.2em;
-      margin-bottom: 3px;
-    }
+  .fas.fa-thumbtack {
+    margin-right: 5px;
   }
 
-  .pinned-announcement:hover {
-    background-color: #6abfc5;
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
-  }
+  // .pinned-announcement {
+  //   padding: 10px;
+  //   transition: 0.2s;
+  //   -webkit-transition: 0.2s;
+  //
+  //   summary {
+  //     cursor: pointer;
+  //     font-size: 1.2em;
+  //     margin-bottom: 3px;
+  //   }
+  // }
+
 }
 </style>

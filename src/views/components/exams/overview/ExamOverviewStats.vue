@@ -101,6 +101,7 @@ export default {
 }
 
 .exam-stats {
+
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 

@@ -1,14 +1,18 @@
 <template>
   <div class="admin-user-list">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
     <h2 class="subtitle">
       User List
       <small class="is-pulled-right has-text-grey">
         {{ students.length }} total
-        <button
-          class="button"
-          :class="{ 'is-loading': loading }"
+        <b-button
+          :loading="loading"
           @click="$emit('refresh-students')"
-        >Refresh</button>
+        >Refresh</b-button>
       </small>
     </h2>
 

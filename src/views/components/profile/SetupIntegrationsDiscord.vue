@@ -32,9 +32,9 @@
         >
         <b class="is-size-3">{{ discordUser.username }} <span class="has-text-grey">#{{ discordUser.discriminator }}</span></b>
         <div class="right">
-          <button class="button">
+          <b-button>
             Disconnect
-          </button>
+          </b-button>
         </div>
       </div>
     </div>

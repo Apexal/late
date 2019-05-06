@@ -1,12 +1,10 @@
 <template>
-  <div
-    :class="{'is-active': open}"
-    class="add-exam-modal modal"
+  <b-modal
+    has-modal-card
+    :active="open"
+    class="add-exam-modal"
+    @close="$emit('toggle-modal')"
   >
-    <div
-      class="modal-background"
-      @click="$emit('toggle-modal')"
-    />
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
@@ -24,11 +22,10 @@
               @click="setStep(index)"
             >
               <a>
-                <span
+                <CourseAssessmentDot
                   v-if="courseCRN && s.label === 'Course'"
-                  class="dot course-dot"
-                  :title="course.longname"
-                  :style="'background-color: ' + course.color"
+                  :course="course"
+                  :on-click-open-modal="false"
                 />
                 {{ s.label }}
                 <span
@@ -101,7 +98,7 @@
         </div>
       </footer>
     </div>
-  </div>
+  </b-modal>
 </template>
 
 <script>
@@ -300,10 +297,6 @@ export default {
 <style lang="scss" scoped>
 .modal-card-body {
   padding-top: 0;
-}
-
-.course-dot {
-  margin-right: 5px;
 }
 
 .step-marker {

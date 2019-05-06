@@ -133,13 +133,14 @@
             </div>
           </div>
 
-          <button
-            class="button is-small is-primary"
-            :class="{'is-loading': loading}"
+          <b-button
+            size="is-small"
+            type="is-primary"
+            :loading="loading"
             :disabled="!canReset"
           >
             {{ user.setup.personal_info ? 'Import Schedule' : 'Save' }}
-          </button>
+          </b-button>
         </details>
       </form>
 
