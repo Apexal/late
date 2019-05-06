@@ -2,7 +2,7 @@
   <div class="assessment-overview-title is-flex-tablet">
     <router-link
       :to="`/assessments/upcoming`"
-      class="button is-link tooltip backButton"
+      class="button is-link tooltip is-tooltip-bottom backButton"
       :data-tooltip="`Browse all course work.`"
     >
       <span class="icon">
@@ -28,8 +28,11 @@
       class="title assessment-title has-text-centered-mobile"
       style="flex: 1"
     >
-      {{ assessment.title }}
+      <span class="pad">
+        {{ assessment.title }}
+      </span>
       <i
+        title="Edit title"
         class="fas fa-pencil-alt edit-title-icon has-text-grey"
         @click="editing = true"
       />
@@ -186,7 +189,16 @@ export default {
   font-size: 1.3em;
 }
 .assessment-overview-title {
+  z-index: 5;
+  position: sticky;
+  top: 70px;
   align-items: center;
+
+  .pad {
+    background-color: white;
+    border-radius: 10px;
+    padding: 0 10px;
+  }
 
   &:hover {
     .edit-title-icon {

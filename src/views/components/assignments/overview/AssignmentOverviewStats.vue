@@ -269,6 +269,7 @@ export default {
 }
 
 .level.assignment-stats {
+
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   margin-top: 20px;

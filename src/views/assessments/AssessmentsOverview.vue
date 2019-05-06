@@ -33,23 +33,25 @@
         @update-assessment="updatedAssessment"
       />
 
-      <AssignmentOverviewStats
-        v-if="assessmentType === 'assignment'"
-        :assignment="assessment"
-        @not-fully-scheduled-click="notFullyScheduledClick"
-        @update-assessment="updatedAssessment"
-      />
+      <div>
+        <AssignmentOverviewStats
+          v-if="assessmentType === 'assignment'"
+          :assignment="assessment"
+          @not-fully-scheduled-click="notFullyScheduledClick"
+          @update-assessment="updatedAssessment"
+        />
 
-      <ExamOverviewStats
-        v-else
-        :exam="assessment"
-        @not-fully-scheduled-click="notFullyScheduledClick"
-      />
+        <ExamOverviewStats
+          v-else
+          :exam="assessment"
+          @not-fully-scheduled-click="notFullyScheduledClick"
+        />
 
-      <AssessmentOverviewDescription
-        :assessment="assessment"
-        @update-assessment="updatedAssessment"
-      />
+        <AssessmentOverviewDescription
+          :assessment="assessment"
+          @update-assessment="updatedAssessment"
+        />
+      </div>
       <AssignmentOverviewTabs
         v-if="assessmentType === 'assignment'"
         ref="assignment-tabs"
