@@ -3,7 +3,7 @@
     class="course-assessment-dot"
     :class="classes"
     :title="title"
-    :style="'color: ' + course.color"
+    :style="style"
     @click.prevent="$store.commit('OPEN_COURSE_MODAL', course)"
   />
 </template>
@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     isForAssessment () {
-      return Object.keys(this.assessment).length > 0;
+      return Object.keys(this.assessment || {}).length > 0;
     },
     classes () {
       if (this.isForAssessment) {
@@ -31,6 +31,11 @@ export default {
       }
 
       return ['dot', 'course'];
+    },
+    style () {
+      return {
+        [this.isForAssessment ? 'color' : 'background-color']: this.course.color
+      };
     },
     title () {
       if (this.isForAssessment) {
@@ -48,11 +53,14 @@ export default {
   cursor: pointer;
 }
 
-.assessment {
-
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  cursor: pointer;
+  background-color: black;
+  display: inline-block;
+  margin-right: 5px;
 }
 
-.course {
-
-}
 </style>
