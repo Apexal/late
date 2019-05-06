@@ -54,6 +54,7 @@ app.use(async (ctx, next) => {
   ctx.state.isAPI = ctx.request.url.startsWith('/api');
 
   if (ctx.session.cas_user) {
+    // Find the logged in user to make it available in all routes
     ctx.state.user = await Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
@@ -71,6 +72,7 @@ app.use(async (ctx, next) => {
       );
     }
 
+    // Create Google auth if logged in and setup
     if (ctx.state.user && ctx.state.user.setup.google) {
       const auth = google.createConnection();
       auth.setCredentials(ctx.state.user.integrations.google.tokens);
@@ -83,6 +85,7 @@ app.use(async (ctx, next) => {
     ctx.status = e.status || 500;
     logger.error(e);
 
+    // Only send details of error if in development mode (to protect confidential info)
     ctx.send(
       ctx.status,
       ctx.state.env === 'development'

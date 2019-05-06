@@ -52,7 +52,7 @@
           <a>
             Comments
             <span
-              v-if="exam.comments.length > 0"
+              v-if="hasComments"
               class="tag is-dark comment-count"
             >{{ exam.comments.length }}</span>
           </a>
@@ -98,7 +98,12 @@ export default {
     }
   },
   computed: {
+    hasComments () {
+      return this.exam.comments && this.exam.comments.length > 0;
+    },
     scheduledMinutes () {
+      if (!this.exam._blocks) return 0;
+
       return this.exam._blocks.reduce((acc, block) => acc + block.duration, 0);
     },
     totalEstimatedMinutes () {
@@ -114,6 +119,8 @@ export default {
       return this.exam.studyPlan;
     },
     studyPlanMade () {
+      if (!this.studyPlan) return false;
+
       return Object.keys(this.studyPlan).length > 0;
     },
     studyPlanCompletedPercent () {

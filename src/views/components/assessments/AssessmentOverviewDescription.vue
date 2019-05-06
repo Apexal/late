@@ -11,7 +11,7 @@
       />
       <template v-else>
         <VueMarkdown
-          v-if="assessment.description.length > 0"
+          v-if="assessment.description && assessment.description.length > 0"
           :source="assessment.description"
           :html="false"
           :emoji="true"

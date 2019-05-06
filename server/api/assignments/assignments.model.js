@@ -12,7 +12,7 @@ const schema = new Schema(
       required: true
     },
     title: { type: String, required: true, minlength: 3, maxlength: 200 },
-    description: { type: String, maxlength: 4000 },
+    description: { type: String, maxlength: 4000, default: '' },
     dueDate: { type: Date, required: true },
     courseCRN: { type: String, required: true }, // CRN
     timeEstimate: { type: Number, required: true, min: 0, max: 696969420 },

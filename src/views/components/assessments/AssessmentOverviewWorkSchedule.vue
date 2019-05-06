@@ -97,6 +97,8 @@ export default {
       return false;
     },
     scheduledMinutes () {
+      if (!this.assessment._blocks) return 0;
+
       return this.assessment._blocks.reduce(
         (acc, block) => acc + block.duration,
         0

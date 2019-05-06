@@ -1,7 +1,7 @@
 <template>
   <div class="assessment-comments">
     <div
-      v-if="assessment.comments.length === 0"
+      v-if="!hasComments"
       class="has-text-grey has-text-centered"
     >
       {{ assessment.passed ? 'No comments were posted for this ' + assessmentType + '.' : 'You have not posted any comments yet.' }}
@@ -61,6 +61,7 @@
             type="is-success"
             class="is-pulled-right"
             :disabled="newComment.length === 0"
+            @click="addComment"
           >
             Add Comment
           </b-button>
@@ -90,6 +91,9 @@ export default {
     };
   },
   computed: {
+    hasComments () {
+      return this.assessment.comments && this.assessment.comments.length > 0;
+    },
     assessmentType () {
       return this.assessment.assessmentType;
     },

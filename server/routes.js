@@ -44,7 +44,6 @@ module.exports = router => {
 
     const { code } = ctx.query;
     const { tokens } = await googleAuth.getToken(code);
-    console.log(tokens);
 
     Object.assign(ctx.state.user.integrations.google.tokens, tokens);
     ctx.state.user.setup.google = true;

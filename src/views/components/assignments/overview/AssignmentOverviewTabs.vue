@@ -32,7 +32,7 @@
           <a>
             Comments
             <span
-              v-if="assignment.comments.length > 0"
+              v-if="hasComments"
               class="tag is-dark comment-count"
             >{{ assignment.comments.length }}</span>
           </a>
@@ -84,7 +84,12 @@ export default {
     }
   },
   computed: {
+    hasComments () {
+      return this.assignment.comments && this.assignment.comments.length > 0;
+    },
     scheduledMinutes () {
+      if (!this.assignment._blocks) return 0;
+
       return this.assignment._blocks.reduce(
         (acc, block) => acc + block.duration,
         0
