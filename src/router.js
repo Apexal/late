@@ -30,6 +30,19 @@ const router = new Router({
       }
     },
     {
+      path: '/academicutils',
+      component: () => import('@/views/academicutils/AcademicUtils.vue'),
+      meta: {
+        title: 'Academic Utilities'
+      },
+      children: [
+        {
+          path: '',
+          name: 'academic-utils'
+        }
+      ]
+    },
+    {
       path: '/studytools',
       component: () => import('@/views/studytools/StudyTools.vue'),
       meta: {
