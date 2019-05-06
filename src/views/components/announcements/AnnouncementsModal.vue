@@ -49,15 +49,9 @@
             </div>
 
             <div class="field">
-              <div class="control">
-                <label class="checkbox">
-                  <input
-                    v-model="newAnnouncement.isPinned"
-                    type="checkbox"
-                  >
-                  Pin Announcement
-                </label>
-              </div>
+              <b-checkbox v-model="newAnnouncement.isPinned">
+                Pin Announcement
+              </b-checkbox>
             </div>
           </form>
         </template>

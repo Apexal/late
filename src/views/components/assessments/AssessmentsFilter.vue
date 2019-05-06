@@ -29,14 +29,13 @@
       </div>
       <div class="is-flex">
         <div class="field">
-          <input
-            id="show-completed-assignmemts"
-            type="checkbox"
-            class="switch is-rounded is-link"
+          <b-checkbox
             :checked="showCompleted"
+            type="is-link"
             @change="$emit('toggle-show-completed')"
           >
-          <label for="show-completed-assignmemts">Show Completed Assignments</label>
+            Show Completed Assignments
+          </b-checkbox>
         </div>
         <div
           v-if="showGroupBy"
