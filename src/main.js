@@ -8,12 +8,17 @@ import FullCalendar from 'vue-full-calendar';
 import KnobControl from 'vue-knob-control';
 import Toasted from 'vue-toasted';
 
+import Buefy from 'buefy';
+
 import 'bulma-tooltip';
 
 import VueProgressBar from 'vue-progressbar';
 
 import wysiwyg from 'vue-wysiwyg';
 Vue.use(wysiwyg, { hideModules: { image: true } });
+
+
+Vue.use(Buefy);
 
 const options = {
   color: '#70cad1',

@@ -215,12 +215,12 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/late_theme.scss';
+
 /*-------------------------------------------*/
 /*               Global Styles
 /* These styles will apply to the whole app. */
 /*-------------------------------------------*/
-@import "@/assets/bulma.scss";
-
 * {
   word-wrap: break-word;
 }
@@ -263,7 +263,7 @@ body {
   color: initial;
   background: none;
   text-shadow: none;
-  @extend .button;
+  //@extend .button;
 }
 
 .is-full-width {
