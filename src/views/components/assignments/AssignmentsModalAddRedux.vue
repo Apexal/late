@@ -24,11 +24,10 @@
               @click="setStep(index)"
             >
               <a>
-                <span
+                <CourseAssessmentDot
                   v-if="courseCRN && s.label === 'Course'"
-                  class="dot course-dot"
-                  :title="course.longname"
-                  :style="'background-color: ' + course.color"
+                  :course="course"
+                  :on-click-open-modal="false"
                 />
                 {{ s.label }}
                 <span
@@ -348,10 +347,6 @@ export default {
 <style lang="scss" scoped>
 .modal-card-body {
   padding-top: 0;
-}
-
-.course-dot {
-  margin-right: 5px;
 }
 
 .step-marker {

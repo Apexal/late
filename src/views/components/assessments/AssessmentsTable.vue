@@ -1,73 +1,39 @@
 <template>
-  <table class="assessment-table table is-full-width">
-    <thead>
-      <tr>
-        <th>When</th>
-        <th>What</th>
-        <th>Done</th>
-        <th v-if="showRemoveButton" />
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="assessment in assessments"
-        :key="assessment._id"
+  <b-table
+    :data="assessments"
+  >
+    <template slot-scope="props">
+      <b-table-column
+        field="date"
+        label="When"
+        class="tooltip"
+        :data-tooltip="fromNow(props.row.date)"
       >
-        <td
-          class="tooltip"
-          :data-tooltip="fromNow(assessment.date)"
-        >
-          {{ toDateShorterString(assessment.date) }}
-          <span
-            class="has-text-grey"
-          >{{ toTimeString(assessmentDate(assessment)) }}</span>
-        </td>
-        <td class="exam-course">
-          <span @click="$store.commit('OPEN_COURSE_MODAL', course(assessment))">
-            <span
-              class="assessment-icon fas"
-              :class="[ assessment.assessmentType === 'assignment' ? 'fa-clipboard-check' : 'fa-exclamation-triangle' ]"
-              :title="course(assessment).longname + ' ' + capitalize(assessment.assessmentType)"
-              :style="'color: ' + course(assessment).color"
-            />
-          </span>
+        {{ toDateShorterString(props.row.date) }}
+        <span
+          class="has-text-grey"
+        >{{ toTimeString(props.row.date) }}</span>
+      </b-table-column>
 
-          <router-link
-            class="assessment-link"
-            :class="assessmentClasses(assessment)"
-            :title="assessmentTitle(assessment)"
-            :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
-          >
-            {{ assessment.title }}
-          </router-link>
-        </td>
-        <td>
-          <span
-            v-if="assessment.assessmentType === 'assignment'"
-            class="icon"
-          >
-            <i
-              class="fas"
-              :class="{ 'fa-check': assessment.completed, 'fa-times': !assessment.completed }"
-              :title="assessment.completed ? 'Completed on ' + toFullDateTimeString(assessment.completedAt) : 'Incomplete'"
-            />
-          </span>
-          <span
-            v-else
-            class="icon has-text-grey has-text-centered"
-            title="Not applicable."
-          >—</span>
-        </td>
-        <td v-if="showRemoveButton">
-          <a
-            class="delete"
-            :title="'Delete this ' + assessment.assessmentType"
-            @click="$emit('remove-assessment', assessment)"
-          />
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <b-table-column
+        field="title"
+        label="What"
+      >
+        <CourseAssessmentDot
+          :assessment="props.row"
+          :course="course(props.row)"
+        />
+        <router-link
+          class="assessment-link"
+          :class="assessmentClasses(props.row)"
+          :title="assessmentTitle(props.row)"
+          :to="{ name: props.row.assessmentType + '-overview', params: { [props.row.assessmentType + 'ID']: props.row._id }}"
+        >
+          {{ props.row.title }}
+        </router-link>
+      </b-table-column>
+    </template>
+  </b-table>
 </template>
 
 <script>
@@ -149,13 +115,13 @@ export default {
   text-align: center;
 }
 
-.assessment-table {
-  th,
-  td {
-    width: 40%;
-    &:nth-child(3) {
-      width: 20%;
-    }
-  }
-}
+// .assessment-table {
+//   th,
+//   td {
+//     width: 40%;
+//     &:nth-child(3) {
+//       width: 20%;
+//     }
+//   }
+// }
 </style>

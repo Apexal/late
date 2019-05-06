@@ -283,15 +283,6 @@ body {
   height: 1.5em;
 }
 
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  cursor: pointer;
-  background-color: green;
-  display: inline-block;
-}
-
 /* TRANSITIONS */
 .fade-enter-active,
 .fade-leave-active {

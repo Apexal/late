@@ -4,7 +4,7 @@
     :class="classes"
     :title="title"
     :style="style"
-    @click.prevent="$store.commit('OPEN_COURSE_MODAL', course)"
+    @click.prevent="click"
   />
 </template>
 
@@ -12,6 +12,10 @@
 export default {
   name: 'CourseAssessmentDot',
   props: {
+    onClickOpenModal: {
+      type: Boolean,
+      default: true
+    },
     assessment: {
       type: Object,
       default: () => {}
@@ -43,6 +47,11 @@ export default {
       }
 
       return this.course.longname;
+    }
+  },
+  methods: {
+    click () {
+      if (this.onClickOpenModal) { this.$store.commit('OPEN_COURSE_MODAL', this.course); }
     }
   }
 };

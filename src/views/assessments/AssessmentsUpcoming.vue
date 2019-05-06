@@ -265,8 +265,4 @@ export default {
     }
   }
 }
-
-.dot {
-  margin-right: 5px;
-}
 </style>

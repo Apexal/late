@@ -303,10 +303,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dot {
-  margin-right: 5px;
-}
-
 .assignment-link {
   color: inherit;
 }
