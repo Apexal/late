@@ -1,12 +1,10 @@
 <template>
-  <div
-    :class="{'is-active': open}"
-    class="add-exam-modal modal"
+  <b-modal
+    has-modal-card
+    :active="open"
+    class="add-exam-modal"
+    @close="$emit('toggle-modal')"
   >
-    <div
-      class="modal-background"
-      @click="$emit('toggle-modal')"
-    />
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
@@ -100,7 +98,7 @@
         </div>
       </footer>
     </div>
-  </div>
+  </b-modal>
 </template>
 
 <script>

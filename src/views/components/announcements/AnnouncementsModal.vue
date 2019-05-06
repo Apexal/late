@@ -1,12 +1,10 @@
 <template>
-  <div
+  <b-modal
+    has-modal-card
     class="modal announcements-modal"
-    :class="{ 'is-active': open }"
+    :active="open"
+    @close="$emit('close-modal')"
   >
-    <div
-      class="modal-background"
-      @click="$emit('close-modal')"
-    />
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
@@ -114,7 +112,7 @@
         </button>
       </footer>
     </div>
-  </div>
+  </b-modal>
 </template>
 
 <script>

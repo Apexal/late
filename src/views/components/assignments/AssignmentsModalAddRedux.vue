@@ -1,12 +1,10 @@
 <template>
-  <div
-    :class="{'is-active': open}"
-    class="add-assignment-modal modal"
+  <b-modal
+    has-modal-card
+    class="add-assignment-modal"
+    :active="open"
+    @close="$emit('toggle-modal')"
   >
-    <div
-      class="modal-background"
-      @click="$emit('toggle-modal')"
-    />
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
@@ -14,7 +12,7 @@
         </p>
       </header>
 
-      <div class="modal-card-body">
+      <section class="modal-card-body">
         <div class="tabs is-fullwidth">
           <ul>
             <li
@@ -74,7 +72,7 @@
             @next-step="nextStep()"
           />
         </transition>
-      </div>
+      </section>
       <footer class="modal-card-foot modal-nav">
         <div
           v-if="step > 0"
@@ -105,7 +103,7 @@
         </div>
       </footer>
     </div>
-  </div>
+  </b-modal>
 </template>
 
 <script>
