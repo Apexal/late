@@ -4,15 +4,12 @@
       v-if="none"
       class="has-text-centered has-text-grey"
     >
-      No upcoming assessments
+      No upcoming assignments or exams
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
-      >matching your filters.</i>
-      <i
-        v-else-if="filter.length <= 0"
-        style="font-style:inherit"
-      >for the next 2 weeks!</i>
+      >matching your filters</i>
+      for the next 2 weeks!
     </p>
     <div
       v-else

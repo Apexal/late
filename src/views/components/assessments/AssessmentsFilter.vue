@@ -32,7 +32,7 @@
           <b-checkbox
             :checked="showCompleted"
             type="is-link"
-            @change="$emit('toggle-show-completed')"
+            @input="$emit('toggle-show-completed')"
           >
             Show Completed Assignments
           </b-checkbox>
