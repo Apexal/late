@@ -1,21 +1,24 @@
 <template>
   <div class="exam-overview-study-plan">
-    <details
+    <b-notification
       v-if="editing"
-      class="notification is-small is-warning"
+      type="is-warning"
+      class="is-small"
     >
-      <summary>
-        <span class="icon">
-          <i class="fas fa-info-circle" />
-        </span>
-        <b>Study Plan Help</b>
-      </summary>You can keep track of your plan of attack for studying for exams here. Use this to plan out categorically how you will study. You can create categories such as
-      <code>Chapter 1</code>,
-      <code>Chapter 2</code>, etc. with checkpoints for each such as
-      <code>Reread textbook</code>,
-      <code>Do pratice test</code>, etc. You can also add multiple categories/checkpoints at the same time by separating them with a semicolon, e.g.
-      <code>Chapter 1; Chapter 2</code>
-    </details>
+      <details>
+        <summary>
+          <span class="icon">
+            <i class="fas fa-info-circle" />
+          </span>
+          <b>Study Plan Help</b>
+        </summary>You can keep track of your plan of attack for studying for exams here. Use this to plan out categorically how you will study. You can create categories such as
+        <code>Chapter 1</code>,
+        <code>Chapter 2</code>, etc. with checkpoints for each such as
+        <code>Reread textbook</code>,
+        <code>Do pratice test</code>, etc. You can also add multiple categories/checkpoints at the same time by separating them with a semicolon, e.g.
+        <code>Chapter 1; Chapter 2</code>
+      </details>
+    </b-notification>
     <p
       v-if="totalItemCount === 0 && !editing"
       class="has-text-grey has-text-centered"
