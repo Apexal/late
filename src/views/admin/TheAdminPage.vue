@@ -50,13 +50,12 @@
         Refresh
       </button>
       <blockquote>
-        <p
-          v-if="loadingLog"
-          class="has-text-grey has-text-centered"
-        >
-          Loading log from server. This may take a while...
-        </p>
-        <ul v-else>
+        <b-loading
+          :is-full-page="false"
+          :active="loadingLog"
+          :can-cancel="false"
+        />
+        <ul>
           <li
             v-for="line in log"
             :key="line"

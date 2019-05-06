@@ -1,5 +1,10 @@
 <template>
   <div class="admin-user-list">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
     <h2 class="subtitle">
       User List
       <small class="is-pulled-right has-text-grey">

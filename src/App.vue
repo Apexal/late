@@ -5,7 +5,7 @@
       <TheHeader ref="header" />
       <b-loading
         :is-full-page="true"
-        :active.sync="loading"
+        :active="loading"
         :can-cancel="false"
       />
       <template v-if="loggedIn">

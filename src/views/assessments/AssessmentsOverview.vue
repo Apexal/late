@@ -18,17 +18,14 @@
       @remove-exam="removeAssessment"
     />
     <section
-      v-if="loading"
       class="section"
     >
-      <h1 class="title has-text-grey">
-        Loading {{ assessmentType }}...
-      </h1>
-    </section>
-    <section
-      v-else
-      class="section"
-    >
+      <b-loading
+        :is-full-page="false"
+        :active="loading"
+        :can-cancel="false"
+      />
+
       <AssessmentOverviewTitle
         :assessment-type="'assignment'"
         :assessment="assessment"

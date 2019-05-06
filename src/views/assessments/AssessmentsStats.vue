@@ -1,16 +1,15 @@
 <template>
   <section class="section assessment-stats">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
     <h1 class="has-text-centered-mobile title">
       Coursework Stats
     </h1>
-    <p
-      v-if="loading"
-      class="has-text-grey has-text-centered"
-    >
-      Grabbing your stats...
-    </p>
     <div
-      v-else
+      v-if="!loading"
       class="charts"
     >
       <canvas id="doughnut-chart" />

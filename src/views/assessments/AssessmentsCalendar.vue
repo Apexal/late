@@ -1,5 +1,10 @@
 <template>
   <div class="assessment-calendar">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
     <FullCalendar
       ref="calendar"
       :editable="false"
@@ -29,6 +34,7 @@ export default {
   },
   data () {
     return {
+      loading: true,
       calendar: {
         header: {
           left: 'title',
@@ -75,6 +81,8 @@ export default {
   },
   methods: {
     async events (start, end, tz, callback) {
+      this.loading = true;
+
       let request;
       const assessments = [];
       try {
@@ -106,6 +114,8 @@ export default {
 
       this.events = events;
       callback(events);
+
+      this.loading = false;
     },
     dayClick (date) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: date });
