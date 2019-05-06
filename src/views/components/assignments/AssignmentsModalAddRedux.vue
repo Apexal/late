@@ -134,6 +134,7 @@ export default {
     return {
       loading: false,
       oldTitles: new Set(),
+      oldCRN: '',
       steps: [
         {
           label: 'Course',
@@ -215,11 +216,14 @@ export default {
   },
   watch: {
     async course (newCourse) {
+      if (this.oldCRN === newCourse.crn) return;
+
       const request = await this.$http.get(
         '/assignments?courseCRN=' + newCourse.crn
       );
 
       this.oldTitles = new Set(request.data.assignments.reverse().slice(0, 5).map(a => a.title));
+      this.oldCRN = newCourse.crn;
     }
   },
   methods: {
