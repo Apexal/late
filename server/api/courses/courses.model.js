@@ -20,9 +20,9 @@ const schema = new Schema(
     links: { type: Array, default: [] },
     periods: [
       {
-        day: { type: Number, required: true },
-        start: { type: String, required: true },
-        end: { type: String, required: true },
+        day: { type: Number, required: true, min: 0, max: 6 },
+        start: { type: String, required: true }, // HHmm
+        end: { type: String, required: true }, // HHmm
         type: { type: String, default: 'LEC' }, // LEC, TES, STU, REC
         location: { type: String, default: '???' }
       }
@@ -34,4 +34,4 @@ const schema = new Schema(
 schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });
 
-module.exports = mongoose.model('Exam', schema);
+module.exports = mongoose.model('Course', schema);

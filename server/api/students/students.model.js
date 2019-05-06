@@ -242,6 +242,12 @@ schema.methods.getUnavailabilityForTerm = function (termCode) {
     .exec();
 };
 
+schema.methods.getCoursesForTerm = function (termCode) {
+  return this.model('Course')
+    .find({ termCode })
+    .exec();
+};
+
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
