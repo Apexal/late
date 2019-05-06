@@ -180,6 +180,7 @@ export default {
     await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
+      await this.$store.dispatch('GET_COURSES');
       await this.$store.dispatch('GET_UNAVAILABILITIES');
       await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
       await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');

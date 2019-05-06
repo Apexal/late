@@ -1,9 +1,20 @@
 import axios from '@/api';
 import moment from 'moment';
 
+const removedCourse = {
+  listing_id: '000',
+  section_id: '000',
+  longname: 'Removed Course',
+  crn: '00000',
+  periods: [],
+  color: 'grey',
+  links: []
+};
+
 const state = {
   date: null,
   terms: [],
+  courses: [],
   current: {
     course: {},
     period: false
@@ -54,6 +65,11 @@ const actions = {
   async GET_TERMS ({ commit }) {
     const response = await axios.get('/terms');
     commit('SET_TERMS', response.data.terms);
+  },
+  async GET_COURSES ({ commit }) {
+    const response = await axios.get('/courses');
+    commit('SET_COURSES', response.data.courses);
+    return response;
   },
   AUTO_UPDATE_SCHEDULE ({ dispatch }) {
     dispatch('UPDATE_SCHEDULE');
@@ -109,6 +125,9 @@ const actions = {
 };
 
 const mutations = {
+  SET_COURSES: (state, courses) => {
+    state.courses = courses;
+  },
   SET_TERMS: (state, terms) => {
     state.terms = terms;
     state.terms.sort((t1, t2) => {
