@@ -238,13 +238,13 @@ schema.methods.getExams = function (start, end, title, courseCRN) {
 
 schema.methods.getUnavailabilityForTerm = function (termCode) {
   return this.model('Unavailabiliy')
-    .find({ termCode })
+    .find({ _student: this._id, termCode })
     .exec();
 };
 
 schema.methods.getCoursesForTerm = function (termCode) {
   return this.model('Course')
-    .find({ termCode })
+    .find({ _student: this._id, termCode })
     .exec();
 };
 

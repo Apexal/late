@@ -1,11 +1,10 @@
-const ical = require('node-ical');
 const logger = require('../../modules/logger');
 const {
   scrapeSISForCourseSchedule,
   scrapePeriodTypesFromCRNs
 } = require('../../modules/scraping');
-const { getSectionInfoFromCRN } = require('../../modules/yacs_api');
-const { convertICalIntoCourseSchedule } = require('../../modules/ical');
+
+const Course = require('../courses/courses.model');
 
 /**
  * Given personal info in the request body:
@@ -55,48 +54,29 @@ async function setPersonalInfo (ctx) {
  */
 async function setCourseSchedule (ctx) {
   const body = ctx.request.body;
+  const termCode = ctx.session.currentTerm.code;
 
   logger.info(`Setting schedule info for ${ctx.state.user.rcs_id}`);
 
-  // Determine method
-  const method = ctx.request.query.method;
-
   let courseSchedule = [];
-  if (method === 'sis') {
-    try {
-      courseSchedule = await scrapeSISForCourseSchedule(
-        ctx.state.user.rin,
-        body.pin,
-        ctx.session.currentTerm.code
-      );
-    } catch (e) {
-      logger.error(
-        `Failed to scrape SIS cours schedule for ${ctx.state.user.rcs_id}: ${e}`
-      );
-      return ctx.badRequest('Invalid SIS credentials!');
-    }
-  } else if (method === 'crn') {
-    const CRNs = body.crns.split(',').map(crn => crn.trim());
-    courseSchedule = await Promise.all(CRNs.map(getSectionInfoFromCRN));
-  } else if (method === 'ical') {
-    const file = ctx.request.files['ical-file'];
-    if (!file) {
-      return ctx.badRequest('You did not upload an .ical file!');
-    }
-    const cal = await ical.parseFile(file.path);
-    courseSchedule = convertICalIntoCourseSchedule(cal);
-  } else {
-    logger.error();
-    return ctx.badRequest('Invalid method.');
+  try {
+    courseSchedule = await scrapeSISForCourseSchedule(
+      ctx.state.user.rin,
+      body.pin,
+      ctx.session.currentTerm,
+      ctx.state.user
+    );
+  } catch (e) {
+    logger.error(
+      `Failed to scrape SIS course schedule for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('Invalid SIS credentials!');
   }
-
-  // Remove courses that YACS could not find
-  courseSchedule = courseSchedule.filter(course => !!course);
 
   // Set course types for each course
   try {
-    await scrapePeriodTypesFromCRNs(
-      ctx.session.currentTerm.code,
+    courseSchedule = await scrapePeriodTypesFromCRNs(
+      termCode,
       courseSchedule
     );
   } catch (e) {
@@ -110,63 +90,52 @@ async function setCourseSchedule (ctx) {
 
   // "Other" course
   courseSchedule.push({
-    longname: 'Other',
+    _student: ctx.state.user._id,
+    sectionId: 0,
+    originalTitle: 'Other',
+    title: 'Other',
+    startDate: ctx.session.currentTerm.start,
+    endDate: ctx.session.currentTerm.end,
     summary: 'OTHER',
-    section_id: '00',
+    termCode,
     crn: '00000',
+    credits: 0,
     periods: [],
     links: []
   });
 
-  // If reimporting, update old list but keep longnames and colors
-  const oldSchedule =
-    ctx.state.user.semester_schedules[ctx.session.currentTerm.code];
-  if (
-    oldSchedule &&
-    ctx.state.user.setup.course_schedule.includes(ctx.session.currentTerm.code)
-  ) {
-    // Already previously imported
-    for (let i in courseSchedule) {
-      const course = courseSchedule[i];
-      // Look for match in old schedule
-      const oldMatch = oldSchedule.find(c => c.summary === course.summary);
-      if (oldMatch) {
-        Object.assign(course, {
-          longname: oldMatch.longname,
-          color: oldMatch.color,
-          links: oldMatch.links || []
-        });
-      }
-    }
-  }
 
-  for (let i in courseSchedule) {
-    if (!courseSchedule[i].color) {
-      courseSchedule[i].color =
+  // If reimporting, update old list but keep longnames and colors
+
+  // Already previously imported
+  const promises = courseSchedule.map(async course => {
+    // Look for match in old schedule
+    let courseDoc = await Course.findOne({ _student: ctx.state.user._id, termCode, crn: course.crn });
+
+    if (courseDoc) {
+      Object.assign(course, {
+        title: course.title,
+        color: course.color,
+        links: course.links || []
+      });
+    } else {
+      course.color =
         '#' +
         Math.random()
           .toString(16)
           .substr(-6);
+      courseDoc = new Course(course);
     }
-  }
+    courseDoc.save();
+
+    return courseDoc;
+  });
+
+  const courses = await Promise.all(promises);
 
   ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code);
 
-  try {
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ctx.state.user.semester_schedules[
-      ctx.session.currentTerm.code
-    ] = courseSchedule;
-    ctx.state.user.markModified('semester_schedules');
-    await ctx.state.user.save();
-  } catch (e) {
-    logger.error(
-      `Failed to set course schedule for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('Failed to set your schedule course.');
-  }
-
-  ctx.ok({ updatedUser: ctx.state.user });
+  ctx.ok({ updatedUser: ctx.state.user, courses });
 }
 
 /**

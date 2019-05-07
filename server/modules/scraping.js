@@ -33,12 +33,12 @@ function checkLogin ($) {
  * login to SIS for them and navigate to their shedule page
  * and simply grab the CRNs of each of their courses and forget their credentials.
  **/
-async function scrapeSISForCourseSchedule (RIN, PIN, term) {
+async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
   // The cookie jar to persist the login session
   // Must be used with each request
   const jar = request.jar();
 
-  logger.info(`Getting CRNs student ${RIN} from SIS.`);
+  logger.info(`Getting courses for student ${RIN} from SIS.`);
 
   // Attempt to login to SIS
   let $ = await request({
@@ -70,7 +70,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
     rejectUnauthorized: false,
     method: 'POST',
     form: {
-      term_in: term
+      term_in: term.code
     },
     transform: body => cheerio.load(body),
     jar
@@ -94,11 +94,11 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
       .find('caption[class="captiontext"]')
       .first()
       .text();
-
     const courseParts = courseTitleLine.split(' - ');
-    const courseLongName = courseParts[0];
+    const courseTitle = courseParts[0];
     const summary = courseParts[1];
-    const sectionId = courseParts[2];
+    const sectionId = parseInt(courseParts[2]);
+
 
     const crn = $(this)
       .find('acronym[title="Course Reference Number"]')
@@ -106,13 +106,31 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
       .next()
       .text();
 
+    const credits = parseFloat($(this)
+      .find('tbody tr:nth-child(6) td')
+      .text());
+
+    // const course = {
+    //   section_id: sectionId,
+    //   listing_id: '00',
+    //   original_longname: courseLongName,
+    //   summary: summary,
+    //   longname: courseLongName,
+    //   crn,
+    //   links: [],
+    //   periods: []
+    // };
     const course = {
-      section_id: sectionId,
-      listing_id: '00',
-      original_longname: courseLongName,
-      summary: summary,
-      longname: courseLongName,
+      _student: user._id,
+      sectionId,
+      originalTitle: courseTitle,
+      title: courseTitle,
+      termCode: term.code,
+      summary,
       crn,
+      startDate: term.start,
+      endDate: term.classesEnd,
+      credits,
       links: [],
       periods: []
     };
@@ -139,6 +157,8 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
           .split('')
           .map(d => DAY_INITIALS[d]);
 
+        if (!days) return;
+
         for (let day of days) {
           const period = {
             day,
@@ -151,6 +171,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
         }
       });
 
+    // Sort periods
     course.periods = course.periods.sort((a, b) => {
       if (a.day > b.day) return 1;
       else if (a.day < b.day) return -1;
@@ -171,8 +192,8 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
  * request the period list site and find the period type
  * for each CRN in the table.
  *
- * @param {String} term
- * @param {Array} crns
+ * @param {String} termCode The code of the current term.
+ * @param {Array} courses The array of courses to modify
  * @returns {Object} mapping of crn to 3-character period type (LEC, LAB, TES, etc)
  */
 async function scrapePeriodTypesFromCRNs (termCode, courses) {
@@ -185,6 +206,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
 
   for (let course of courses) {
     // Scrape for period type
+    const paddedSection = course.sectionId > 9 ? course.sectionId : '0' + course.sectionId;
 
     // Generate title as found on the table site
     const title =
@@ -192,7 +214,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
       ' ' +
       course.summary.replace(' ', '-') +
       '-' +
-      course.section_id;
+      paddedSection;
     logger.info(`Finding period types for '${title}'`);
     const topRow = $(`table tr td:first-child:contains('${title}')`).parent(
       'tr'

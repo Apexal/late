@@ -138,6 +138,7 @@
             type="is-primary"
             :loading="loading"
             :disabled="!canReset"
+            @click="save"
           >
             {{ user.setup.personal_info ? 'Import Schedule' : 'Save' }}
           </b-button>
@@ -286,13 +287,7 @@ export default {
       return this.$store.getters.getCourseScheduleAsEvents;
     }
   },
-  created () {
-    this.crns = this.$store.getters.current_schedule_all.map(c => c.crn).join(',');
-  },
   methods: {
-    async iCalFileChange (file) {
-      this.iCalFile = file;
-    },
     destroyCalendar () {
       // this.$refs.calendar.fireMethod('destroy');
     },
@@ -309,25 +304,9 @@ export default {
     async save () {
       this.loading = true;
 
-      let data = {};
-      if (this.method === 'sis') {
-        data.pin = this.pin;
-      } else if (this.method === 'crn') {
-        data.crns = this.crns;
-      } else if (this.method === 'ical') {
-        data = new FormData();
-        data.append('ical-file', this.iCalFile, this.iCalFile.name);
-      } else {
-        this.$toasted.error('Unknown method...');
-        this.loading = false;
-        return;
-      }
-
       let request;
       try {
-        request = await this.$http.post('/setup/courseschedule', data, {
-          params: { method: this.method }
-        });
+        request = await this.$http.post('/setup/courseschedule', { pin: this.pin });
       } catch (e) {
         this.loading = false;
         this.$toasted.error(e.response.data.message);
