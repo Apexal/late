@@ -40,7 +40,7 @@
                       :key="c.crn"
                       :value="c.crn"
                     >
-                      {{ c.longname }}
+                      {{ c.title }}
                     </option>
                   </select>
                 </div>
@@ -237,7 +237,7 @@ export default {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
     },
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     },
     saved () {
       return (

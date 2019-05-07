@@ -19,7 +19,7 @@
         :style="{ 'background-color': course.color }"
         @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
-        <b class="course-longname">{{ course.longname }}</b>
+        <b class="course-title">{{ course.title }}</b>
         {{ assessment.passed ? 'Past ': '' }}{{ assessmentType === 'assignment' && assessment.isRecurring ? 'Recurring ' : '' }}{{ capitalizedAssessmentType }}
       </span>
     </div>
@@ -49,7 +49,7 @@
             :key="course.crn"
             :value="course.crn"
           >
-            {{ course.longname }}
+            {{ course.title }}
           </option>
         </select>
       </div>
@@ -105,7 +105,7 @@ export default {
   },
   computed: {
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     },
     assessmentType () {
       return this.assessment.assessmentType;
@@ -228,7 +228,7 @@ export default {
   cursor: pointer;
   color: white;
 
-  .course-longname {
+  .course-title {
     margin-right: 5px;
   }
 

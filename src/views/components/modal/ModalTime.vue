@@ -208,7 +208,7 @@ export default {
     },
     datePeriod () {
       if (!this.courseCRN) return false;
-      let course = this.$store.getters.current_schedule.find(
+      let course = this.$store.getters.current_courses.find(
         course => course.crn === this.courseCRN
       );
       return course.periods.find(p => p.day === moment(this.date).day());

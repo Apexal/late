@@ -27,7 +27,8 @@ const schema = new Schema(
         type: { type: String, default: 'LEC' }, // LEC, TES, STU, REC
         location: { type: String, default: '???' }
       }
-    ]
+    ],
+    hidden: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

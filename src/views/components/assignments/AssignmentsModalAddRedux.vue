@@ -203,7 +203,7 @@ export default {
       return this.$store.state.addAssignmentModal.recurringDays;
     },
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     },
     completedChecks () {
       return {

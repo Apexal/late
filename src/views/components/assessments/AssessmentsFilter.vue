@@ -20,10 +20,10 @@
             class="tag is-white course-tag level-item is-unselectable"
             :class="{ 'filtered-out': filter.includes(c.crn) }"
             :style="{ 'background-color': c.color }"
-            :title="c.longname"
+            :title="c.title"
             @click="$emit('toggle-filter', c)"
           >
-            <span>{{ c.longname }}</span>
+            <span>{{ c.title }}</span>
           </span>
         </div>
       </div>
@@ -96,7 +96,7 @@ export default {
   },
   computed: {
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     }
   },
   mounted () {

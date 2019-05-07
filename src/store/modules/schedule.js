@@ -2,12 +2,14 @@ import axios from '@/api';
 import moment from 'moment';
 
 const removedCourse = {
-  listing_id: '000',
   section_id: '000',
-  longname: 'Removed Course',
+  originalTitle: 'Removed Course',
+  title: 'Removed Course',
+  summary: 'REMOVED',
+  credits: 0,
   crn: '00000',
-  periods: [],
   color: 'grey',
+  periods: [],
   links: []
 };
 
@@ -30,18 +32,18 @@ const getters = {
   currentTerm: (state, getters, rootState) =>
     state.terms.find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
     {},
-  current_schedule_all: (state, getters, rootState) => {
-    if (!getters.userSetup.course_schedule) return [];
-
-    if (rootState.auth.isAuthenticated && getters.currentTerm) {
-      return rootState.auth.user.semester_schedules[getters.currentTerm.code];
-    } else {
-      return [];
-    }
+  current_courses_all: state => {
+    return state.courses;
   },
-  current_schedule: (state, getters) => {
-    return getters.current_schedule_all.filter(course => !course.hidden);
+  current_courses: (state) => {
+    return state.courses.filter(course => !course.hidden);
   },
+  getCourseFromCRN: state => crn =>
+    state.courses.find(c => c.crn === crn) || removedCourse,
+  getCourseFromPeriod: state => period =>
+    state.courses.find(c =>
+      c.periods.find(p => p.day === period.day && p.start === period.start)
+    ),
   nextTerm: state => {
     let tms = state.terms.slice(0);
     return tms.find(t => moment(t.start).isAfter(moment()));
@@ -79,7 +81,7 @@ const actions = {
   },
   UPDATE_SCHEDULE ({ commit, getters, rootState }) {
     // Reset all state values
-    const semesterSchedule = getters.current_schedule_all;
+    const semesterSchedule = getters.current_courses_all;
 
     const now = moment(); // moment('1430', 'Hmm');
     const dateStr = now.format('YYYY-MM-DD');

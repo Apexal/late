@@ -156,7 +156,7 @@ export default {
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
-        ? this.course(key).longname
+        ? this.course(key).title
         : this.toDateShortString(moment(key, 'YYYY-MM-DD', true));
     },
     headerStyle (key) {
@@ -203,7 +203,7 @@ export default {
     },
     addAssessmentTitle (key, assessmentType) {
       if (this.groupBy === 'courseCRN') {
-        return `Add new ${this.course(key).longname} ${assessmentType}`;
+        return `Add new ${this.course(key).title} ${assessmentType}`;
       } else {
         return `Add new ${assessmentType} on ${moment(
           key,
@@ -214,7 +214,7 @@ export default {
     },
     toggleAssignmentTitle (a) {
       return (
-        this.course(a.courseCRN).longname +
+        this.course(a.courseCRN).title +
         (a.completedAt
           ? ` | Completed ${moment(a.completedAt).format('M/DD/YY h:mma')}`
           : '')

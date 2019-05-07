@@ -27,11 +27,11 @@
           <i
             class="fas"
             :class="[ assessment.assessmentType === 'assignment' ? 'fas fa-clipboard-check' : 'fas fa-exclamation-triangle' ]"
-            :title="course(assessment).longname + ' ' + assessment.assessmentType"
+            :title="course(assessment).title + ' ' + assessment.assessmentType"
             :style="'color: ' + course(assessment).color"
             @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(assessment))"
           />
-          <b class="course-title is-hidden-tablet">{{ course(assessment).longname }}</b>
+          <b class="course-title is-hidden-tablet">{{ course(assessment).title }}</b>
           {{ assessment.title }}
           <small
             class="has-text-grey is-pulled-right tooltip is-tooltip-left"

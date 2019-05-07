@@ -43,10 +43,10 @@ export default {
     },
     title () {
       if (this.isForAssessment) {
-        return this.course.longname + ' ' + this.assessment.assessmentType.charAt(0).toUpperCase() + this.assessment.assessmentType.slice(1);
+        return this.course.title + ' ' + this.assessment.assessmentType.charAt(0).toUpperCase() + this.assessment.assessmentType.slice(1);
       }
 
-      return this.course.longname;
+      return this.course.title;
     }
   },
   methods: {

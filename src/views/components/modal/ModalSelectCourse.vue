@@ -15,9 +15,9 @@
         <span
           class="tag is-pulled-right"
           :style="{'background-color': c.color , 'color': 'white'}"
-          :title="'You are in Section ' + c.section_id"
-        >Section {{ c.section_id }}</span>
-        {{ c.longname }}
+          :title="'You are in Section ' + c.sectionId"
+        >Section {{ c.sectionId }}</span>
+        {{ c.title }}
       </div>
     </div>
   </div>

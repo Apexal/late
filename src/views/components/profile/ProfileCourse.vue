@@ -9,7 +9,7 @@
           <span class="has-text-grey">
             {{ courseData.summary }}
           </span>
-          {{ courseData.longname }}
+          {{ courseData.title }}
           <small
             class="has-text-grey"
           >
@@ -18,9 +18,9 @@
           <span
             class="tag is-pulled-right"
             :style="{'background-color': courseData.color, 'color': 'white'}"
-            :title="'You are in Section ' + courseData.section_id"
+            :title="'You are in Section ' + courseData.sectionId"
           >
-            Section {{ courseData.section_id }}
+            Section {{ courseData.sectionId }}
           </span>
           <span
             class="icon edit-course is-pulled-right"
@@ -96,10 +96,10 @@
             </label>
             <input
               :id="'course-title-' + elementID"
-              v-model.trim="courseData.longname"
+              v-model.trim="courseData.title"
               type="text"
-              :placeholder="courseData.original_longname"
-              class="input course-longname-input"
+              :placeholder="courseData.originalTitle"
+              class="input course-title-input"
               required
             >
           </div>
@@ -111,7 +111,7 @@
             </label>
             <input
               :id="'course-section-' + elementID"
-              v-model.trim="courseData.section_id"
+              v-model.trim="courseData.sectionId"
               type="text"
               placeholder="Section"
               class="input course-section-input"
@@ -390,8 +390,8 @@ export default {
     },
     async save () {
       if (
-        this.courseData.longname.length === 0 ||
-        this.courseData.section_id.length === 0
+        this.courseData.title.length === 0 ||
+        this.courseData.sectionId.length === 0
       ) {
         this.$toasted.error(
           'You cannot set an empty name or section for a course!'
@@ -425,7 +425,7 @@ export default {
 
       this.$toasted.show(
         `${this.type(periodToRemove.type)} period will be removed from ${
-          this.courseData.longname
+          this.courseData.title
         } when you save.`
       );
     },
@@ -449,7 +449,7 @@ export default {
 
       this.$toasted.success(
         `New ${this.type(this.newPeriod.type)} period will be added ${
-          this.courseData.longname
+          this.courseData.title
         } when you save.`
       );
 

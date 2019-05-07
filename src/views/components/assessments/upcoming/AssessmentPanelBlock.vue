@@ -22,11 +22,11 @@
           v-if="assessmentType === 'exam'"
           :style="{ 'color': course.color }"
           class="icon exam-icon"
-          :title="`${course.longname} Exam`"
+          :title="`${course.title} Exam`"
         >
           <i class="fas fa-exclamation-triangle" />
         </span>
-        <b class="course-title is-hidden-tablet">{{ course.longname }}</b>
+        <b class="course-title is-hidden-tablet">{{ course.title }}</b>
         {{ assessment.title }}
       </router-link>
       <span
@@ -78,7 +78,7 @@ export default {
     },
     toggleAssignmentTitle () {
       return (
-        this.course.longname +
+        this.course.title +
         ' Assignment' +
         (this.assessment.completedAt
           ? ` | Completed ${moment(this.assessment.completedAt).format(

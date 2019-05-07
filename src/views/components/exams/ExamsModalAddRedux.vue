@@ -188,7 +188,7 @@ export default {
       return this.$store.state.addExamModal.priority;
     },
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     },
     completedChecks () {
       return {

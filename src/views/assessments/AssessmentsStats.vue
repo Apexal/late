@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     },
     assignmentCountDataset () {
       const data = this.courses.map(
@@ -101,7 +101,7 @@ export default {
         }
 
         datasets.push({
-          label: course.longname,
+          label: course.title,
           data,
           backgroundColor: course.color,
           borderColor: 'white', // this.courses.map(course => course.color),
@@ -163,7 +163,7 @@ export default {
     const doughnutChart = new Chart('doughnut-chart', {
       type: 'doughnut',
       data: {
-        labels: this.courses.map(course => course.longname), // ['Calculus II', 'RCOS', etc]
+        labels: this.courses.map(course => course.title), // ['Calculus II', 'RCOS', etc]
         datasets: [this.assignmentCountDataset, this.scheduledTimeDataSet]
       },
       options: {

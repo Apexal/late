@@ -33,102 +33,26 @@
             </h2>
           </summary>
 
-          <div class="columns">
-            <div class="field column is-narrow">
+          <div class="sis-method">
+            <div class="field">
               <label
-                for="method"
+                for="pin"
                 class="label"
-              >Method</label>
+              >SIS PIN</label>
+              <p
+                class="help"
+              >
+                Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.
+              </p>
               <div class="control">
-                <select
-                  id="method"
-                  v-model="method"
-                  name="method"
-                  class="control"
-                  disabled
+                <input
+                  id="pin"
+                  v-model.trim="pin"
+                  type="password"
+                  class="input is-small"
+                  placeholder="Enter your SIS password."
+                  @change="saved = false"
                 >
-                  <option value="sis">
-                    SIS
-                  </option>
-                  <!--<option value="crn">
-                    CRNs
-                  </option>
-                  <option value="ical">
-                    iCal
-                  </option>-->
-                </select>
-              </div>
-            </div>
-
-            <div
-              v-if="method === 'sis'"
-              class="sis-method column"
-            >
-              <div class="field">
-                <label
-                  for="pin"
-                  class="label"
-                >SIS PIN</label>
-                <p
-                  class="help"
-                >
-                  Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.
-                </p>
-                <div class="control">
-                  <input
-                    id="pin"
-                    v-model.trim="pin"
-                    type="password"
-                    class="input is-small"
-                    placeholder="Enter your SIS password."
-                    @change="saved = false"
-                  >
-                </div>
-              </div>
-            </div>
-            <div
-              v-else-if="method === 'crn'"
-              class="crn-method column"
-            >
-              <div class="field">
-                <label
-                  class="label"
-                  for="crns"
-                >Directly Enter Your Course CRNs</label>
-                <p class="help">
-                  These are found in SIS under 'View Weekly Schedule'.
-                </p>
-                <div class="control">
-                  <input
-                    id="crns"
-                    v-model.trim="crns"
-                    class="input"
-                    name="crns"
-                    type="text"
-                    placeholder="123456, 654321, ..."
-                    @change="saved = false"
-                  >
-                </div>
-              </div>
-            </div>
-            <div
-              v-else-if="method === 'ical'"
-              class="ical-method column"
-            >
-              <div class="field">
-                <label
-                  for="ical-file"
-                  class="label"
-                >iCal File from YACS</label>
-                <div class="control">
-                  <input
-                    id="ical-file"
-                    type="file"
-                    class="input"
-                    accept=".ics"
-                    @change="iCalFileChange($event.target.files[0])"
-                  >
-                </div>
               </div>
             </div>
           </div>
@@ -275,13 +199,13 @@ export default {
       return this.$store.state.auth.user;
     },
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     },
     coursesWithoutOther () {
       return this.courses.filter(c => c.summary !== 'OTHER');
     },
     hiddenCourses () {
-      return this.$store.getters.current_schedule_all.filter(c => c.summary !== 'OTHER' && c.hidden);
+      return this.$store.getters.current_courses_all.filter(c => c.summary !== 'OTHER' && c.hidden);
     },
     courseEvents () {
       return this.$store.getters.getCourseScheduleAsEvents;
@@ -296,7 +220,7 @@ export default {
 
       await this.$store.dispatch('UPDATE_COURSE', updatedCourse);
 
-      this.$toasted.show(`'${updatedCourse.longname}' has been updated.`);
+      this.$toasted.show(`'${updatedCourse.title}' has been updated.`);
 
       // this.saved = true;
       this.loading = false;

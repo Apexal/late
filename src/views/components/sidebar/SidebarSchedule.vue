@@ -38,9 +38,9 @@
         >
           <template v-if="event.eventType === 'period'">
             <b
-              class="period-longname"
+              class="period-title"
               @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
-            >{{ event.course.longname }}</b>
+            >{{ event.course.title }}</b>
             <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
           </template>
           <template v-else-if="event.eventType === 'work-block'">
@@ -189,7 +189,7 @@ export default {
     color: #929292;
   }
 
-  .period-longname {
+  .period-title {
     cursor: pointer;
     margin-right: 3px;
   }

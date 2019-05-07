@@ -17,15 +17,15 @@
         <div
           class="tag section-tag is-pulled-right"
           :style="{ 'background-color': course.color }"
-          :title="'You are in Section ' + course.section_id"
+          :title="'You are in Section ' + course.sectionId"
         >
-          Section {{ course.section_id }}
+          Section {{ course.sectionId }}
         </div>
         <h2
-          class="subtitle course-longname"
-          :title="course.original_longname + ' - ' + course.summary + ' - ' + course.section_id"
+          class="subtitle course-title"
+          :title="course.originalTitle + ' - ' + course.summary + ' - ' + course.sectionId"
         >
-          {{ course.longname }}
+          {{ course.title }}
           <br>
           <small class="has-text-grey course-summary">{{ course.summary }}</small>
         </h2>
@@ -151,7 +151,7 @@ export default {
 div.tabs.is-centered {
   margin-bottom: 12px;
 }
-h2.subtitle.course-longname {
+h2.subtitle.course-title {
   margin-bottom: 0;
 }
 .section-tag {

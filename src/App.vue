@@ -138,7 +138,7 @@ export default {
       return this.$store.state.auth.isAuthenticated;
     },
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     },
     announcements () {
       return this.$store.getters.allAnnouncements;

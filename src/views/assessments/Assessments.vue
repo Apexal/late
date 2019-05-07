@@ -169,7 +169,7 @@ export default {
       // TODO change word assessments to exam or assignment depending on type
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
-        this.$toasted.info(`Showing '${c.longname}' assessments.`, {
+        this.$toasted.info(`Showing '${c.title}' assessments.`, {
           icon: 'plus',
           position: 'top-right',
           fullWidth: false,
@@ -177,7 +177,7 @@ export default {
         });
       } else {
         this.filter.push(c.crn);
-        this.$toasted.error(`Hiding '${c.longname}' assessments.`, {
+        this.$toasted.error(`Hiding '${c.title}' assessments.`, {
           icon: 'minus',
           position: 'top-right',
           fullWidth: false,

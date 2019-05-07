@@ -13,13 +13,13 @@
       <div
         v-for="c in courses"
         :key="c.crn"
-        :title="c.original_longname + ' - ' + c.summary + ' - ' + c.section_id"
+        :title="c.originalTitle + ' - ' + c.summary + ' - ' + c.sectionId"
         class="panel-block course-panel-block"
         @click="$store.commit('OPEN_COURSE_MODAL', c)"
       >
         <CourseAssessmentDot :course="c" />
 
-        {{ c.longname }}
+        {{ c.title }}
       </div>
     </div>
     <div
@@ -42,7 +42,7 @@ export default {
   name: 'SidebarCourseList',
   computed: {
     courses () {
-      return this.$store.getters.current_schedule;
+      return this.$store.getters.current_courses;
     },
     onBreak () {
       return this.$store.getters.onBreak;

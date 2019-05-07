@@ -3,16 +3,6 @@ import moment from 'moment';
 
 const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14;
 
-const removedCourse = {
-  listing_id: '000',
-  section_id: '000',
-  longname: 'Removed Course',
-  crn: '00000',
-  periods: [],
-  color: 'grey',
-  links: []
-};
-
 const state = {
   upcomingAssessments: []
 };
@@ -51,12 +41,6 @@ const getters = {
     state.upcomingAssessments.filter(
       assessment =>
         assessment.assessmentType === 'assignment' && !assessment.completed
-    ),
-  getCourseFromCRN: (state, getters, rootState, rootGetters) => crn =>
-    rootGetters.current_schedule_all.find(c => c.crn === crn) || removedCourse,
-  getCourseFromPeriod: (state, getters, rootState, rootGetters) => period =>
-    rootGetters.current_schedule_all.find(c =>
-      c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
   mapAssessmentToEvent: (state, getters) => assessment => ({
     eventType: assessment.assessmentType,

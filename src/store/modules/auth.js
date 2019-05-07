@@ -35,9 +35,8 @@ const getters = {
     return true;
   },
   getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
-    if (!rootGetters.current_schedule_all) return [];
     // Turn periods into this week's schedule...
-    const events = rootGetters.current_schedule_all
+    const events = rootGetters.current_courses
       .map(c =>
         c.periods.map(p => {
           let start = moment(p.start, 'Hmm', true).format('HH:mm');
@@ -45,7 +44,7 @@ const getters = {
 
           return {
             eventType: 'course',
-            title: `${c.longname} ${getters.periodType(p.type)}`,
+            title: `${c.title} ${getters.periodType(p.type)}`,
             start,
             end,
             dow: [p.day],
@@ -82,11 +81,9 @@ const actions = {
     });
 
     // call API
-    const request = await axios.post('/setup/courses', {
-      courses: rootGetters.current_schedule_all
-    });
+    const request = await axios.post(`/courses/${updatedCourse._id}`, updatedCourse);
 
-    commit('SET_USER', request.data.updatedUser);
+    // commit('SET_USER', request.data.updatedUser);
   }
 };
 
