@@ -204,7 +204,7 @@ export default {
       return this.courses.filter(c => c.summary !== 'OTHER');
     },
     hiddenCourses () {
-      return this.$store.getters.current_courses_all.filter(c => c.summary !== 'OTHER' && c.hidden);
+      return this.$store.getters.current_courses_all.filter(c => c.hidden);
     },
     courseEvents () {
       return this.$store.getters.getCourseScheduleAsEvents;

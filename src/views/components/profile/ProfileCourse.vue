@@ -146,7 +146,7 @@
             v-model="courseData.hidden"
             title="Hidden courses will not show in the course selection list"
           >
-            Hide from couse list
+            Hide from course list
           </b-checkbox>
         </div>
         <div class="course-links">
@@ -403,7 +403,8 @@ export default {
         title: this.course.title,
         color: this.course.color,
         links: this.course.links,
-        periods: this.course.periods
+        periods: this.course.periods,
+        hidden: this.course.hidden
       };
     },
     updatedCourse () {
@@ -413,7 +414,8 @@ export default {
         title: this.courseData.title,
         color: this.courseData.color,
         links: this.editedLinks,
-        periods: this.editedPeriods
+        periods: this.editedPeriods,
+        hidden: this.courseData.hidden
       };
     }
   },
