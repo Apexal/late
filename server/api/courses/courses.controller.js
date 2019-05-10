@@ -10,7 +10,7 @@ async function getCourses (ctx) {
   const courses = await Course.find({
     _student: ctx.state.user._id,
     termCode: ctx.session.currentTerm.code
-  }).sort('longname');
+  }).sort('originalTitle');
 
   logger.info(`Sending courses to ${ctx.state.user.rcs_id}`);
 
@@ -34,7 +34,7 @@ async function updateCourse (ctx) {
     });
 
     const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle'];
-    if (forbiddenProperties.some(prop => ctx.request.body[prop] !== course[prop])) {
+    if (forbiddenProperties.some(prop => prop in forbiddenProperties)) {
       throw new Error('You cannot change the id, owner, crn, or original title of a course!');
     }
     course.set(ctx.request.body);

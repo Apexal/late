@@ -169,11 +169,7 @@
             @click="addLink"
           />
         </div>
-        <!-- <InputTag
-          :id="'course-links-' + elementID"
-          v-model="courseData.links"
-          placeholder="Put links to courses here! Hit Enter after each link."
-        /> -->
+
         <div class="periods">
           <table class="table is-full-width">
             <thead>
@@ -191,8 +187,10 @@
                 :key="p.day + p.start"
               >
                 <td>
-                  <select
+                  <b-select
                     v-model.number="p.day"
+                    size="is-small"
+                    placeholder="Day"
                     required
                   >
                     <option
@@ -202,10 +200,11 @@
                     >
                       {{ day(i-1) }}
                     </option>
-                  </select>
+                  </b-select>
                 </td>
                 <td>
                   <input
+                    class="input is-small time-input"
                     :value="formatToInputTime(p.start)"
                     type="time"
                     required
@@ -215,6 +214,7 @@
                     -
                   </span>
                   <input
+                    class="input is-small time-input"
                     :value="formatToInputTime(p.end)"
                     type="time"
                     required
@@ -222,16 +222,21 @@
                   >
                 </td>
                 <td>
-                  <input
+                  <b-input
                     v-model="p.location"
+                    size="is-small"
                     type="text"
                     :placeholder="p.location"
+                    maxlength="100"
+                    :has-counter="false"
                     required
-                  >
+                  />
                 </td>
                 <td>
-                  <select
+                  <b-select
                     v-model="p.type"
+                    placeholder="Period type"
+                    size="is-small"
                     required
                   >
                     <option
@@ -241,7 +246,7 @@
                     >
                       {{ type(t) }}
                     </option>
-                  </select>
+                  </b-select>
                 </td>
                 <td title="Remove period.">
                   <i
@@ -251,10 +256,14 @@
                 </td>
               </tr>
             </tbody>
-            <tfoot>
+            <tfoot class="has-background-success">
               <tr>
                 <td>
-                  <select v-model.number="newPeriod.day">
+                  <b-select
+                    v-model.number="newPeriod.day"
+                    placeholder="Choose day"
+                    size="is-small"
+                  >
                     <option
                       v-for="i in 7"
                       :key="i"
@@ -262,11 +271,12 @@
                     >
                       {{ day(i-1) }}
                     </option>
-                  </select>
+                  </b-select>
                 </td>
                 <td>
                   <input
                     v-model="newPeriod.start"
+                    class="input time-input is-small"
                     type="time"
                   >
                   <span class="has-text-grey-light">
@@ -274,18 +284,25 @@
                   </span>
                   <input
                     v-model="newPeriod.end"
+                    class="input time-input is-small"
                     type="time"
                   >
                 </td>
                 <td>
-                  <input
+                  <b-input
                     v-model.trim="newPeriod.location"
+                    size="is-small"
                     type="text"
+                    maxlength="100"
+                    :has-counter="false"
                     placeholder="Location of new period."
-                  >
+                  />
                 </td>
                 <td>
-                  <select v-model="newPeriod.type">
+                  <b-select
+                    v-model="newPeriod.type"
+                    size="is-small"
+                  >
                     <option
                       v-for="t in periodTypes"
                       :key="t"
@@ -293,11 +310,11 @@
                     >
                       {{ type(t) }}
                     </option>
-                  </select>
+                  </b-select>
                 </td>
-                <td title="Add period.">
+                <td title="Add new period">
                   <i
-                    class="fa fa-plus has-text-success add-period"
+                    class="fa fa-plus has-text-white add-period"
                     @click="addPeriod"
                   />
                 </td>
@@ -348,7 +365,7 @@ export default {
       editing: false,
       periodTypes: ['LEC', 'REC', 'LAB', 'TES', 'STU'],
       newPeriod: {
-        day: 1,
+        day: undefined,
         start: '08:00',
         end: '09:50',
         location: '',
@@ -547,6 +564,11 @@ export default {
     .edit-course {
       display: inherit;
     }
+  }
+
+  .time-input {
+    width: unset;
+    max-width: unset;
   }
 }
 
