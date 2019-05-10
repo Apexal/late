@@ -157,7 +157,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
           .split('')
           .map(d => DAY_INITIALS[d]);
 
-        if (!days) return;
+        if (start === 'Invalid date') return;
 
         for (let day of days) {
           const period = {

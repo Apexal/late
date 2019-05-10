@@ -226,7 +226,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch('SET_USER', request.data.updatedUser);
+      this.$store.commit('SET_COURSES', request.data.courses);
 
       // Notify user of success
       this.$toasted.info(
