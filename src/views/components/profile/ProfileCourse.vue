@@ -7,23 +7,29 @@
           style="cursor:pointer;"
         >
           <span class="has-text-grey">
-            {{ courseData.summary }}
+            {{ course.summary }}
           </span>
-          {{ courseData.title }}
+          {{ course.title }}
           <small
             class="has-text-grey"
           >
-            {{ courseData.periods.length }} periods | {{ courseData.links.length }} links
+            {{ course.periods.length }} periods | {{ course.links.length }} links
           </small>
-          <span
-            class="tag is-pulled-right"
-            :style="{'background-color': courseData.color, 'color': 'white'}"
-            :title="'You are in Section ' + courseData.sectionId"
-          >
-            Section {{ courseData.sectionId }}
-          </span>
+          <b-taglist class="is-pulled-right">
+            <b-tag v-if="course.credits">
+              {{ course.credits }} credits
+            </b-tag>
+            <b-tag
+              rounded
+              :style="{'background-color': course.color, 'color': 'white'}"
+              :title="'You are in Section ' + course.sectionId"
+            >
+              Section {{ course.sectionId }}
+            </b-tag>
+          </b-taglist>
           <span
             class="icon edit-course is-pulled-right"
+            title="Click to edit this course"
             @click="editing = true"
           >
             <i class="fas fa-pencil-alt" />
@@ -375,10 +381,10 @@ export default {
   },
   computed: {
     elementID () {
-      return this.courseData._id;
+      return this.course._id;
     },
     sortedPeriods () {
-      return this.courseData.periods
+      return this.course.periods
         .concat()
         .sort((a, b) => parseInt(a.day) - parseInt(b.day));
     },
@@ -493,26 +499,18 @@ export default {
       this.open = true;
     },
     removePeriod (periodToRemove) {
-      if (
-        !confirm(
-          `Remove ${periodToRemove.start} ${this.type(
-            periodToRemove.type
-          )} period on ${this.day(periodToRemove.day)}?`
-        )
-      ) {
-        return;
-      }
-
-      // Remove period by filtering by day and start time
-      this.editedPeriods = this.editedPeriods.filter(
-        p => !(p.day === periodToRemove.day && p.start === periodToRemove.start)
-      );
-
-      this.$toasted.show(
-        `${this.type(periodToRemove.type)} period will be removed from ${
-          this.courseData.title
-        } when you save.`
-      );
+      this.$dialog.confirm({
+        title: 'Confirm Remove Period',
+        message: `Remove <b>${this.courseData.title} ${this.type(periodToRemove.type)}</b> period on ${this.day(periodToRemove.day)} from <b>${moment(periodToRemove.start, 'Hmm', true).format('h:mma')}</b> to <b>${moment(periodToRemove.end, 'Hmm', true).format('h:mma')}</b>?`,
+        confirmText: 'Yes',
+        type: 'is-danger',
+        onConfirm: () => {
+          // Remove period by filtering by day and start time
+          this.editedPeriods = this.editedPeriods.filter(
+            p => !(p.day === periodToRemove.day && p.start === periodToRemove.start)
+          );
+        }
+      });
     },
     addPeriod () {
       // Validate
@@ -530,12 +528,6 @@ export default {
           start: moment(this.newPeriod.start, 'HH:mm', true).format('Hmm'),
           end: moment(this.newPeriod.end, 'HH:mm', true).format('Hmm')
         })
-      );
-
-      this.$toasted.success(
-        `New ${this.type(this.newPeriod.type)} period will be added ${
-          this.courseData.title
-        } when you save.`
       );
 
       this.newPeriod = {
@@ -556,6 +548,12 @@ export default {
 }
 
 .course.box {
+  .tags {
+    margin-bottom: 0;
+    .tag {
+      margin-bottom: 0;
+    }
+  }
   .edit-course {
     display: none;
     cursor: pointer;

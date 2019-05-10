@@ -48,11 +48,11 @@ async function setPersonalInfo (ctx) {
  * - SIS PIN as sis_pin
  *  OR
  * - Period CRNs as crns
- * Set the user's course schedule using the YACS API and possibly SIS scraping.
+ * Set the user's course schedule using SIS scraping.
  *
  * @param {Koa context} ctx
  */
-async function setCourseSchedule (ctx) {
+async function importCourseSchedule (ctx) {
   const body = ctx.request.body;
   const termCode = ctx.session.currentTerm.code;
 
@@ -105,20 +105,22 @@ async function setCourseSchedule (ctx) {
   });
 
 
-  // If reimporting, update old list but keep longnames and colors
+  // If reimporting, only update sectionId, start/end dates, credits, and periods
 
-  // Already previously imported
   const promises = courseSchedule.map(async course => {
-    // Look for match in old schedule
+    // Look for match in old course list
     let courseDoc = await Course.findOne({ _student: ctx.state.user._id, termCode, crn: course.crn });
 
     if (courseDoc) {
-      Object.assign(course, {
-        title: course.title,
-        color: course.color,
-        links: course.links || []
+      Object.assign(courseDoc, {
+        sectionId: course.sectionId,
+        startDate: course.startDate,
+        endDate: course.endDate,
+        credits: course.credits,
+        periods: course.periods
       });
     } else {
+      // Generate a random color for a new course
       course.color =
         '#' +
         Math.random()
@@ -136,36 +138,6 @@ async function setCourseSchedule (ctx) {
   ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code);
 
   ctx.ok({ updatedUser: ctx.state.user, courses });
-}
-
-/**
- * Set the logged in user's courses and return the updated user.
- * Request body:
- *  - courses: array of objects with the same schema as current_schedule
- *
- * @param {Koa context} ctx
- */
-async function setCourses (ctx) {
-  const body = ctx.request.body;
-  const updatedCourses = body.courses;
-
-  try {
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ctx.state.user.semester_schedules[
-      ctx.session.currentTerm.code
-    ] = updatedCourses;
-    ctx.state.user.markModified('semester_schedules');
-    await ctx.state.user.save();
-  } catch (e) {
-    logger.error(
-      `Failed to set update courses for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('Failed to update your courses.');
-  }
-
-  logger.info(`Updated courses for ${ctx.state.user.rcs_id}`);
-
-  ctx.ok({ updatedUser: ctx.state.user });
 }
 
 /**
@@ -220,8 +192,7 @@ async function setGoogle (ctx) {
 
 module.exports = {
   setPersonalInfo,
-  setCourseSchedule,
-  setCourses,
+  importCourseSchedule,
   setTimePreference,
   setGoogle
 };

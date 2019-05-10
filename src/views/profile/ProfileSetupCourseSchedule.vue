@@ -230,7 +230,7 @@ export default {
 
       // Notify user of success
       this.$toasted.info(
-        'Your course schedule has been compiled. Edit the courses to your liking below.',
+        'Your course schedule has been imported from SIS. Edit the courses below to customize titles, colors, and more.',
         {
           action: {
             text: 'Next Step',
