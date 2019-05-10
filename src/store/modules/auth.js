@@ -73,17 +73,6 @@ const actions = {
   },
   async SET_USER ({ dispatch, commit }, user) {
     commit('SET_USER', user);
-  },
-  async UPDATE_COURSE ({ state, commit, rootGetters }, updatedCourse) {
-    commit('UPDATE_COURSE', {
-      currentTermCode: rootGetters.currentTerm.code,
-      updatedCourse
-    });
-
-    // call API
-    const request = await axios.post(`/courses/${updatedCourse._id}`, updatedCourse);
-
-    // commit('SET_USER', request.data.updatedUser);
   }
 };
 
@@ -91,14 +80,6 @@ const mutations = {
   SET_USER: (state, user) => {
     state.user = user;
     state.isAuthenticated = true;
-  },
-  UPDATE_COURSE: (state, { currentTermCode, updatedCourse }) => {
-    Object.assign(
-      state.user.semester_schedules[currentTermCode].find(
-        c => c.crn === updatedCourse.crn
-      ),
-      updatedCourse
-    );
   },
   UNSET_USER: state => {
     state.user = {};

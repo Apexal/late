@@ -73,6 +73,18 @@ const actions = {
     commit('SET_COURSES', response.data.courses);
     return response;
   },
+  /**
+   * Update a user's course. This updates the single course object passed on the server and validates that no special properties are change (_id, originalTitle, etc.)
+   *
+   * @param {Object} course The course to update with its new properties and values
+   * @returns {Object} The updatedCourse returned from the POST api call
+   */
+  async UPDATE_COURSE ({ commit }, course) {
+    const request = await axios.post(`/courses/${course._id}`, course);
+    const updatedCourse = request.data.updatedCourse;
+    commit('UPDATE_COURSE', updatedCourse);
+    return updatedCourse;
+  },
   AUTO_UPDATE_SCHEDULE ({ dispatch }) {
     dispatch('UPDATE_SCHEDULE');
     setInterval(() => {
@@ -129,6 +141,9 @@ const actions = {
 const mutations = {
   SET_COURSES: (state, courses) => {
     state.courses = courses;
+  },
+  UPDATE_COURSE: (state, updatedCourse) => {
+    Object.assign(state.courses.find(c => c._id === updatedCourse._id), updatedCourse);
   },
   SET_TERMS: (state, terms) => {
     state.terms = terms;

@@ -62,7 +62,7 @@
             type="is-primary"
             :loading="loading"
             :disabled="!canReset"
-            @click="save"
+            @click="importSchedule"
           >
             {{ user.setup.personal_info ? 'Import Schedule' : 'Save' }}
           </b-button>
@@ -107,7 +107,6 @@
             v-for="c in coursesWithoutOther"
             :key="c.crn"
             :course="c"
-            @update-course="updatedCourse"
           />
         </div>
         <div
@@ -215,17 +214,7 @@ export default {
     destroyCalendar () {
       // this.$refs.calendar.fireMethod('destroy');
     },
-    async updatedCourse (updatedCourse) {
-      this.loading = true;
-
-      await this.$store.dispatch('UPDATE_COURSE', updatedCourse);
-
-      this.$toasted.show(`'${updatedCourse.title}' has been updated.`);
-
-      // this.saved = true;
-      this.loading = false;
-    },
-    async save () {
+    async importSchedule () {
       this.loading = true;
 
       let request;

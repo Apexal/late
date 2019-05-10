@@ -78,7 +78,7 @@
     <template v-else>
       <form
         class="course-edit"
-        @submit.prevent="save"
+        @submit.prevent="updateCourse"
       >
         <div class="columns is-multiline">
           <div class="column">
@@ -111,8 +111,10 @@
             </label>
             <input
               :id="'course-section-' + elementID"
-              v-model.trim="courseData.sectionId"
-              type="text"
+              v-model.number="courseData.sectionId"
+              type="number"
+              min="1"
+              max="100"
               placeholder="Section"
               class="input course-section-input"
               required
@@ -131,16 +133,13 @@
             >
           </div>
         </div>
-        <div>
-          <label :for="'course-hidden-' + elementID">
-            Mark as hidden
-          </label>
-          <input
-            :id="'course-links-' + elementID"
+        <div class="field">
+          <b-checkbox
             v-model="courseData.hidden"
-            type="checkbox"
             title="Hidden courses will not show in the course selection list"
           >
+            Hide from couse list
+          </b-checkbox>
         </div>
         <label :for="'course-links-' + elementID">
           Links
@@ -291,6 +290,7 @@
         <b-button
           :disabled="saved"
           type="is-primary"
+          @click="updateCourse"
         >
           Save
         </b-button>
@@ -331,7 +331,7 @@ export default {
   },
   computed: {
     elementID () {
-      return this.courseData.summary.replace(' ', '').toLowerCase();
+      return this.courseData._id;
     },
     sortedPeriods () {
       return this.courseData.periods
@@ -388,7 +388,7 @@ export default {
       this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
       this.editing = false;
     },
-    async save () {
+    async updateCourse () {
       if (
         this.courseData.title.length === 0 ||
         this.courseData.sectionId.length === 0
@@ -398,12 +398,31 @@ export default {
         );
         return;
       }
-      this.$emit(
-        'update-course',
-        Object.assign(this.courseData, {
-          periods: this.editedPeriods
-        })
-      );
+
+      let updatedCourse;
+      try {
+        updatedCourse = await this.$store.dispatch(
+          'UPDATE_COURSE',
+          Object.assign(this.courseData, {
+            periods: this.editedPeriods
+          })
+        );
+      } catch (e) {
+        let message = (e.response ? e.response.data.message : e.message);
+        this.$toast.open({
+          duration: 5000,
+          message,
+          type: 'is-danger'
+        });
+        return;
+      }
+
+      this.$toast.open({
+        duration: 2000,
+        message: `Updated '${updatedCourse.title}'`,
+        type: 'is-success'
+      });
+
       this.editing = false;
       this.open = true;
     },
