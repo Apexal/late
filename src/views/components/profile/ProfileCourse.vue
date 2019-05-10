@@ -59,19 +59,22 @@
             </tbody>
           </table>
 
-          <ul class="course-links">
-            <li
-              v-for="l in courseData.links"
+          <b-taglist class="course-links">
+            <b-tag
+              v-for="l in course.links"
               :key="l"
+              type="is-link"
             >
+              <i class="fa fa-link" />
               <a
                 :href="l"
                 target="_blank"
+                style="color: white"
               >
                 {{ l }}
               </a>
-            </li>
-          </ul>
+            </b-tag>
+          </b-taglist>
         </div>
       </details>
     </template>
@@ -82,13 +85,12 @@
       >
         <div class="columns is-multiline">
           <div class="column">
-            <label>Course</label>
-            <input
-              type="text"
-              class="input"
-              :value="courseData.summary"
-              disabled
-            >
+            <h1 class="title has-text-centered-mobile">
+              {{ courseData.originalTitle }}
+              <h2 class="subtitle has-text-grey has-text-centered-mobile">
+                {{ courseData.summary }}
+              </h2>
+            </h1>
           </div>
           <div class="column">
             <label :for="'course-title-' + elementID">
@@ -141,14 +143,37 @@
             Hide from couse list
           </b-checkbox>
         </div>
-        <label :for="'course-links-' + elementID">
-          Links
-        </label>
-        <InputTag
+        <div class="course-links">
+          <label :for="'course-links-' + elementID">
+            Links
+          </label>
+          <b-taglist>
+            <b-tag
+              v-for="(link, index) in editedLinks"
+              :key="index"
+              type="is-link"
+              closable
+              class="course-link"
+              @close="editedLinks.splice(index, 1)"
+            >
+              <i class="fa fa-link" />
+              {{ link }}
+            </b-tag>
+          </b-taglist>
+          <input
+            :id="'course-links-' + elementID"
+            v-model="newLink"
+            type="text"
+          ><i
+            class="fa fa-plus"
+            @click="addLink"
+          />
+        </div>
+        <!-- <InputTag
           :id="'course-links-' + elementID"
           v-model="courseData.links"
           placeholder="Put links to courses here! Hit Enter after each link."
-        />
+        /> -->
         <div class="periods">
           <table class="table is-full-width">
             <thead>
@@ -316,7 +341,9 @@ export default {
   data () {
     return {
       open: false,
+      newLink: '',
       courseData: Object.assign({}, this.course),
+      editedLinks: this.course.links.slice(0),
       editedPeriods: JSON.parse(JSON.stringify(this.course.periods)),
       editing: false,
       periodTypes: ['LEC', 'REC', 'LAB', 'TES', 'STU'],
@@ -340,22 +367,45 @@ export default {
     },
     saved () {
       return (
-        JSON.stringify(this.course) ===
+        JSON.stringify(this.currentCourse) ===
         JSON.stringify(
-          Object.assign(this.courseData, {
-            periods: this.editedPeriods
-          })
+          this.updatedCourse
         )
       );
+    },
+    currentCourse () {
+      return {
+        _id: this.course._id,
+        sectionId: this.course.sectionId,
+        title: this.course.title,
+        color: this.course.color,
+        links: this.course.links,
+        periods: this.course.periods
+      };
+    },
+    updatedCourse () {
+      return {
+        _id: this.course._id,
+        sectionId: this.courseData.sectionId,
+        title: this.courseData.title,
+        color: this.courseData.color,
+        links: this.editedLinks,
+        periods: this.editedPeriods
+      };
     }
   },
   watch: {
     course (newCourse) {
       this.courseData = Object.assign({}, this.course);
+      this.editedLinks = this.course.links.slice(0);
       this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
     }
   },
   methods: {
+    addLink () {
+      this.editedLinks.push(this.newLink);
+      this.newLink = '';
+    },
     changePeriodTime (p, startOrEnd, inputFormat) {
       p[startOrEnd] = moment(inputFormat, 'HH:mm', true).format('Hmm');
     },
@@ -385,6 +435,7 @@ export default {
     },
     cancel () {
       this.courseData = Object.assign({}, this.course);
+      this.editedLinks = this.course.links.slice(0);
       this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
       this.editing = false;
     },
@@ -403,9 +454,7 @@ export default {
       try {
         updatedCourse = await this.$store.dispatch(
           'UPDATE_COURSE',
-          Object.assign(this.courseData, {
-            periods: this.editedPeriods
-          })
+          this.updatedCourse
         );
       } catch (e) {
         let message = (e.response ? e.response.data.message : e.message);
@@ -497,12 +546,6 @@ export default {
   &:hover {
     .edit-course {
       display: inherit;
-    }
-  }
-
-  .course-links {
-    li {
-      list-style-type: none;
     }
   }
 }

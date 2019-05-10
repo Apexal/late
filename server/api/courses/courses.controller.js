@@ -33,11 +33,10 @@ async function updateCourse (ctx) {
       _student: ctx.state.user._id
     });
 
-    // const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle'];
-    // if (forbiddenProperties.some(prop => ctx.request.body[prop] !== course[prop])) {
-    //   throw new Error('You cannot change the id, owner, crn, or original title of a course!');
-    // }
-
+    const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle'];
+    if (forbiddenProperties.some(prop => ctx.request.body[prop] !== course[prop])) {
+      throw new Error('You cannot change the id, owner, crn, or original title of a course!');
+    }
     course.set(ctx.request.body);
 
     await course.save();
