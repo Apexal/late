@@ -30,14 +30,14 @@
         :assessment-type="'assignment'"
         :assessment="assessment"
         @toggle-completed="toggleCompleted"
-        @update-assessment="updatedAssessment"
+        @updated-assessment="updatedAssessment"
       />
 
       <div>
         <AssessmentOverviewStats
           :assessment="assessment"
           @not-fully-scheduled-click="notFullyScheduledClick"
-          @update-assessment="updatedAssessment"
+          @updated-assessment="updatedAssessment"
         />
 
         <AssessmentOverviewDescription
@@ -209,42 +209,34 @@ export default {
       }
       this.toggleLoading = true;
 
-      // If upcoming assignment, let store handle it
+      let updatedAssessment;
       try {
-        if (
-          this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
-        ) {
-          await this.$store.dispatch(
-            'TOGGLE_UPCOMING_ASSIGNMENT',
-            this.assessment._id
-          );
-          await this.getAssessment();
-        } else {
-          const request = await this.$http.post(
-            `/assignments/a/${this.assessment._id}/toggle`
-          );
-
-          this.updatedAssessment(request.data.updatedAssignment);
-        }
-        this.$toasted[this.assessment.completed ? 'success' : 'show'](
-          this.assessment.completed
-            ? 'Marked assignment as completed! Nice job!'
-            : 'Marked assignment as incomplete.',
-          {
-            icon: this.assessment.completed ? 'check-circle' : 'circle',
-            action: {
-              text: 'Undo'
-            }
-          }
+        updatedAssessment = await this.$store.dispatch(
+          'TOGGLE_ASSIGNMENT',
+          this.assessment
         );
 
-        if (this.assessment.completed) {
+        this.$toast.open({
+          message: updatedAssessment.completed
+            ? 'Marked assignment as completed! Nice job!'
+            : 'Marked assignment as incomplete.',
+          type: 'is-primary'
+        });
+
+        if (updatedAssessment.completed) {
           this.confetti.render();
           setTimeout(() => this.confetti.clear(), 2000);
         }
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        this.toggleLoading = false;
+        return;
       }
+
+      this.updatedAssessment(updatedAssessment);
 
       this.toggleLoading = false;
     },

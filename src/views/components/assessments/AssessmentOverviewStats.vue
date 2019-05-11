@@ -252,31 +252,21 @@ export default {
     },
     async updateAssessment (updates) {
       this.loading = true;
-      let request;
+
+      let updatedAssessment;
       try {
-        request = await this.$http.patch(
-          `/${this.assessmentType}s/${this.assessmentType.charAt(0)}/${this.assessment._id}`,
-          updates
-        );
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.assessment, updates));
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        return this.assessment;
+        this.loading = false;
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        return;
       }
 
-      const updatedAssessment = request.data['updated' + (this.assessmentType === 'assignment' ? 'Assignment' : 'Exam')];
+      this.$emit('updated-assessment', updatedAssessment);
 
-      // Calls API and updates state
-      if (
-        // eslint-disable-next-line
-        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
-      ) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSESSMENT',
-          updatedAssessment
-        );
-      } else {
-        this.$emit('update-assessment', updatedAssessment);
-      }
       this.loading = false;
       return updatedAssessment;
     },

@@ -133,35 +133,23 @@ export default {
         return;
       }
 
-      let request;
+      let updatedAssessment;
       try {
-        request = await this.$http.patch(
-          `/${this.assessmentType}s/${this.assessmentType.charAt(0)}/${
-            this.assessment._id
-          }`,
-          { title: this.tempTitle, courseCRN: this.tempCourseCRN }
-        );
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.assessment, { title: this.tempTitle, courseCRN: this.tempCourseCRN }));
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
         this.editing = false;
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         return;
       }
 
-      // Calls API and updates state
-      if (
-        // eslint-disable-next-line
-        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
-      ) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSESSMENT',
-          request.data[`updated${this.capitalizedAssessmentType}`]
-        );
-      } else {
-        this.$emit(
-          'update-assessment',
-          request.data[`updated${this.capitalizedAssessmentType}`]
-        );
-      }
+      this.$emit('updated-assessment', updatedAssessment);
+      this.$toast.open({
+        message: 'Updated the title and course!',
+        type: 'is-success'
+      });
 
       this.editing = false;
     }

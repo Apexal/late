@@ -109,60 +109,55 @@ export default {
     fromNow (date) {
       return moment(date).from(this.now);
     },
-    async updateAssessmentFromRequest (request) {
-      // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSESSMENT',
-          request.data[`updated${this.capitalizedAssessmentType}`]
-        );
-      } else {
-        this.$emit(
-          'update-assessment',
-          request.data[`updated${this.capitalizedAssessmentType}`]
-        );
-      }
-    },
     async addComment () {
       if (!this.newComment) return;
 
       this.loading = true;
-      let request;
+      let updatedAssessment;
       try {
-        request = await this.$http.post(
-          `/${this.assessmentType}s/${this.assessmentType.charAt(0)}/${
-            this.assessment._id
-          }/comments`,
-          { comment: this.newComment }
-        );
+        updatedAssessment = await this.$store.dispatch('ADD_ASSESSMENT_COMMENT', { assessment: this.assessment, newComment: this.newComment });
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         this.loading = false;
         return;
       }
 
-      this.updateAssessmentFromRequest(request);
+      this.$emit('update-assessment', updatedAssessment);
+
+      this.$toast.open({
+        message: 'Added comment!',
+        type: 'is-success'
+      });
 
       this.newComment = '';
       this.loading = false;
     },
-    async deleteComment (i) {
-      let request;
-
+    async deleteComment (commentIndex) {
       this.loading = true;
+
+      let updatedAssessment;
       try {
-        request = await this.$http.delete(
-          `/${this.assessmentType}s/${this.assessmentType.charAt(0)}/${
-            this.assessment._id
-          }/comments/${i}`
-        );
+        updatedAssessment = await this.$store.dispatch('REMOVE_ASSESSMENT_COMMENT', { assessment: this.assessment, commentIndex });
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.commentLoading = false;
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        this.loading = false;
         return;
       }
 
-      this.updateAssessmentFromRequest(request);
+      this.$emit('update-assessment', updatedAssessment);
+
+      this.$toast.open({
+        message: 'Removed comment!',
+        type: 'is-success'
+      });
+
+
       this.loading = false;
     }
   }

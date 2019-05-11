@@ -277,30 +277,21 @@ export default {
     async updateStudyPlan (studyPlan) {
       this.loading = true;
 
-      let request;
+      let updatedAssessment;
       try {
-        request = await this.$http.patch(`/exams/e/${this.assessment._id}`, {
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.assessment, {
           studyPlan
-        });
+        }));
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         this.editing = false;
         return;
       }
 
-      // Calls API and updates state
-      if (
-        // eslint-disable-next-line
-        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
-      ) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSESSMENT',
-          request.data.updatedExam
-        );
-      } else {
-        this.$emit('update-assessment', request.data.updatedExam);
-      }
-
+      this.$emit('update-assessment', updatedAssessment);
       this.loading = false;
     }
   }

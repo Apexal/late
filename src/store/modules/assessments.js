@@ -120,10 +120,9 @@ const actions = {
   async TOGGLE_ASSIGNMENT ({ commit, dispatch, getters }, assignmentToToggle) {
     const request = await axios.post(`/assignments/a/${assignmentToToggle._id}/toggle`);
     const updatedAssignment = request.data.updatedAssignment;
-    commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssignment);
 
     if (getters.getUpcomingAssessmentById(updatedAssignment._id)) {
-      await dispatch('SORT_UPCOMING_ASSESSMENTS');
+      commit('UPDATE_UPCOMING_ASSESSMENT', updatedAssignment);
     }
     return updatedAssignment;
   },
@@ -196,6 +195,38 @@ const actions = {
         request.data.updatedAssessment
       );
     }
+    return request.data.updatedAssessment;
+  },
+  async ADD_ASSESSMENT_COMMENT ({ commit, getters }, { assessment, newComment }) {
+    let request = await axios.post(
+      `/${assessment.assessmentType}s/${assessment.assessmentType.charAt(0)}/${
+        assessment._id
+      }/comments`,
+      { comment: newComment }
+    );
+
+    if (getters.getUpcomingAssessmentById(assessment._id)) {
+      commit(
+        'UPDATE_UPCOMING_ASSESSMENT',
+        request.data.updatedAssessment
+      );
+    }
+
+    return request.data.updatedAssessment;
+  },
+  async REMOVE_ASSESSMENT_COMMENT ({ commit, getters }, { assessment, commentIndex }) {
+    let request = await axios.delete(
+      `/${assessment.assessmentType}s/${assessment.assessmentType.charAt(0)}/${
+        assessment._id
+      }/comments/${commentIndex}`);
+
+    if (getters.getUpcomingAssessmentById(assessment._id)) {
+      commit(
+        'UPDATE_UPCOMING_ASSESSMENT',
+        request.data.updatedAssessment
+      );
+    }
+
     return request.data.updatedAssessment;
   }
 };

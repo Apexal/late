@@ -417,7 +417,10 @@ async function addComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedAssignment: ctx.state.assignment });
+  ctx.ok({
+    updatedAssessment: ctx.state.assignment,
+    updatedAssignment: ctx.state.assignment
+  });
 }
 
 /**
@@ -446,7 +449,10 @@ async function deleteComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedAssignment: ctx.state.assignment });
+  ctx.ok({
+    updatedAssessment: ctx.state.assignment,
+    updatedAssignment: ctx.state.assignment
+  });
 }
 
 module.exports = {
