@@ -23,7 +23,7 @@
         class="box"
         @submit.prevent="save"
       >
-        <details :open="crns.length === 0">
+        <details :open="courses.length === 0">
           <summary>
             <h2
               style="display: inline-block; cursor: pointer;"
@@ -82,13 +82,13 @@
           <ul>
             <li
               :class="{'is-active': tab === 'list'}"
-              @click="tab = 'list'; destroyCalendar();"
+              @click="tab = 'list';"
             >
               <a>List</a>
             </li>
             <li
               :class="{'is-active': tab === 'calendar'}"
-              @click="tab = 'calendar'"
+              @click="tab = 'calendar'; openedCourseID = ''"
             >
               <a>Calendar</a>
             </li>
@@ -107,37 +107,33 @@
             v-for="c in coursesWithoutOther"
             :key="c.crn"
             :course="c"
+            :highlighted="openedCourseID === c._id"
           />
-        </div>
-        <div
-          v-else-if="tab === 'calendar'"
-          class="course-calendar"
-        >
-          <p class="has-text-centered has-text-grey">
-            Coming soon...
+
+          <hr>
+          <h2
+            class="subtitle"
+            title="These courses won't show up on any course list or on your schedule."
+          >
+            Hidden Courses
+            <small class="has-text-grey">{{ hiddenCourses.length }} total</small>
+          </h2>
+          <ProfileCourse
+            v-for="c in hiddenCourses"
+            :key="c.crn"
+            :course="c"
+          />
+          <p
+            v-if="hiddenCourses.length === 0"
+            class="has-text-grey has-text-centered"
+          >
+            You have not hidden any courses.
           </p>
         </div>
-
-        <hr>
-        <h2
-          class="subtitle"
-          title="These courses won't show up on any course list or on your schedule."
-        >
-          Hidden Courses
-          <small class="has-text-grey">{{ hiddenCourses.length }} total</small>
-        </h2>
-        <ProfileCourse
-          v-for="c in hiddenCourses"
-          :key="c.crn"
-          :course="c"
-          @update-course="updatedCourse"
+        <CourseScheduleCalendar
+          v-else-if="tab === 'calendar'"
+          @goto-course="gotoCourse"
         />
-        <p
-          v-if="hiddenCourses.length === 0"
-          class="has-text-grey has-text-centered"
-        >
-          You have not hidden any courses.
-        </p>
       </template>
       <hr>
       <router-link
@@ -152,14 +148,12 @@
 </template>
 
 <script>
-import { FullCalendar } from 'vue-full-calendar';
-import 'fullcalendar/dist/fullcalendar.css';
-
+import CourseScheduleCalendar from '@/views/components/profile/CourseScheduleCalendar';
 import ProfileCourse from '@/views/components/profile/ProfileCourse';
 
 export default {
   name: 'ProfileSetupCourseSchedule',
-  components: { ProfileCourse, FullCalendar },
+  components: { ProfileCourse, CourseScheduleCalendar },
   data () {
     return {
       tab: 'list',
@@ -167,18 +161,7 @@ export default {
       loading: false,
       method: 'sis',
       pin: '',
-      crns: '',
-      iCalFile: null,
-      calendar: {
-        allDaySlot: false,
-        minTime: '08:00:00',
-        maxTime: '20:00:00',
-        header: {
-          left: '',
-          center: '',
-          right: ''
-        }
-      }
+      openedCourseID: ''
     };
   },
   computed: {
@@ -192,7 +175,7 @@ export default {
       return this.$store.getters.onBreak;
     },
     canReset () {
-      return !(this.pin.length === 0 && this.crns.length === 0);
+      return !(this.pin.length === 0);
     },
     user () {
       return this.$store.state.auth.user;
@@ -205,14 +188,12 @@ export default {
     },
     hiddenCourses () {
       return this.$store.getters.current_courses_all.filter(c => c.hidden);
-    },
-    courseEvents () {
-      return this.$store.getters.getCourseScheduleAsEvents;
     }
   },
   methods: {
-    destroyCalendar () {
-      // this.$refs.calendar.fireMethod('destroy');
+    gotoCourse (courseID) {
+      this.tab = 'list';
+      this.openedCourseID = courseID;
     },
     async importSchedule () {
       this.loading = true;

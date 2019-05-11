@@ -60,7 +60,33 @@ const getters = {
       TES: 'Test',
       REC: 'Recitation',
       STU: 'Studio'
-    }[type] || type)
+    }[type] || type),
+  getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
+    // Turn periods into this week's schedule...
+    const events = state.courses
+      .map(c =>
+        c.periods.map(p => {
+          let start = moment(p.start, 'Hmm', true).format('HH:mm');
+          let end = moment(p.end, 'Hmm', true).format('HH:mm');
+
+          return {
+            id: c._id,
+            eventType: 'course',
+            title: `${c.title} ${getters.periodType(p.type)}`,
+            start,
+            end,
+            dow: [p.day],
+            color: c.color,
+            editable: false,
+            period: p,
+            course: c
+          };
+        })
+      )
+      .flat();
+
+    return events;
+  }
 };
 
 const actions = {

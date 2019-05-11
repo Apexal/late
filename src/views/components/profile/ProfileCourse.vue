@@ -1,7 +1,7 @@
 <template>
   <div class="course box">
     <template v-if="!editing">
-      <details :open="open">
+      <details :open="highlighted || open">
         <summary
           class="is-clearfix is-unselectable"
           style="cursor:pointer;"
@@ -359,6 +359,10 @@ export default {
       type: Object,
       required: true,
       default: () => {}
+    },
+    highlighted: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -424,6 +428,10 @@ export default {
       this.courseData = Object.assign({}, this.course);
       this.editedLinks = this.course.links.slice(0);
       this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
+    },
+    highlighted (newHighlighted) {
+      alert(newHighlighted);
+      if (newHighlighted) { this.open = true; }
     }
   },
   methods: {

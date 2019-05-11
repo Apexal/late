@@ -33,31 +33,6 @@ const getters = {
       if (!getters.userSetup[check]) return false;
     }
     return true;
-  },
-  getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
-    // Turn periods into this week's schedule...
-    const events = rootGetters.current_courses
-      .map(c =>
-        c.periods.map(p => {
-          let start = moment(p.start, 'Hmm', true).format('HH:mm');
-          let end = moment(p.end, 'Hmm', true).format('HH:mm');
-
-          return {
-            eventType: 'course',
-            title: `${c.title} ${getters.periodType(p.type)}`,
-            start,
-            end,
-            dow: [p.day],
-            color: c.color,
-            editable: false,
-            period: p,
-            course: c
-          };
-        })
-      )
-      .flat();
-
-    return events;
   }
 };
 
