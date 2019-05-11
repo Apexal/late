@@ -113,6 +113,7 @@ async function createExam (ctx) {
 
   logger.info(`Added exam ${newExam._id} for ${ctx.state.user._id}`);
   ctx.created({
+    createdAssessent: newExam,
     createdExam: newExam
   });
 }
@@ -121,25 +122,26 @@ async function editExam (ctx) {
   const examID = ctx.params.examID;
   const updates = ctx.request.body;
 
-  const allowedProperties = [
-    'title',
-    'description',
-    'date',
-    'courseCRN',
-    'timeEstimate',
-    'priority',
-    'studyPlan'
-  ];
+  // const allowedProperties = [
+  //   '_id',
+  //   'title',
+  //   'description',
+  //   'date',
+  //   'courseCRN',
+  //   'timeEstimate',
+  //   'priority',
+  //   'studyPlan'
+  // ];
 
-  // Ensure no unallowed properties are passed to update
-  if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
-    logger.error(
-      `Failed to update exam for ${
-        ctx.state.user.rcs_id
-      } because of invalid update properties.`
-    );
-    return ctx.badRequest('Passed unallowed properties.');
-  }
+  // // Ensure no unallowed properties are passed to update
+  // if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
+  //   logger.error(
+  //     `Failed to update exam for ${
+  //       ctx.state.user.rcs_id
+  //     } because of invalid update properties.`
+  //   );
+  //   return ctx.badRequest('Passed unallowed properties.');
+  // }
 
   // Limit to this semester
   if (
@@ -173,6 +175,7 @@ async function editExam (ctx) {
   );
 
   ctx.ok({
+    updatedAssessment: ctx.state.exam,
     updatedExam: ctx.state.exam
   });
 }
@@ -231,7 +234,10 @@ async function addComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedExam: ctx.state.exam });
+  ctx.ok({
+    updatedAssessment: ctx.state.exam,
+    updatedExam: ctx.state.exam
+  });
 }
 
 /**
@@ -258,7 +264,10 @@ async function deleteComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedExam: ctx.state.exam });
+  ctx.ok({
+    updatedAssessment: ctx.state.exam,
+    updatedExam: ctx.state.exam
+  });
 }
 
 module.exports = {

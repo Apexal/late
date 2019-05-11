@@ -85,6 +85,7 @@ async function getAssignment (ctx) {
   logger.info(`Sending assignment ${assignmentID} to ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
+    assessment: ctx.state.assignment,
     assignment: ctx.state.assignment
   });
 }
@@ -229,6 +230,7 @@ async function createAssignment (ctx) {
   );
 
   ctx.created({
+    createdAssessment: newAssignment,
     createdAssignment: newAssignment,
     recurringAssignments
   });
@@ -247,24 +249,25 @@ async function editAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
   const updates = ctx.request.body;
 
-  const allowedProperties = [
-    'title',
-    'description',
-    'dueDate',
-    'courseCRN',
-    'timeEstimate',
-    'priority'
-  ];
+  // const allowedProperties = [
+  //   '_id',
+  //   'title',
+  //   'description',
+  //   'dueDate',
+  //   'courseCRN',
+  //   'timeEstimate',
+  //   'priority'
+  // ];
 
-  // Ensure no unallowed properties are passed to update
-  if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
-    logger.error(
-      `Failed to update assignment for ${
-        ctx.state.user.rcs_id
-      } because of invalid update properties.`
-    );
-    return ctx.badRequest('Passed unallowed properties.');
-  }
+  // // Ensure no unallowed properties are passed to update
+  // if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
+  //   logger.error(
+  //     `Failed to update assignment for ${
+  //       ctx.state.user.rcs_id
+  //     } because of invalid update properties.`
+  //   );
+  //   return ctx.badRequest('Passed unallowed properties.');
+  // }
 
   // Limit to this semester
   if (
@@ -304,6 +307,7 @@ async function editAssignment (ctx) {
   );
 
   ctx.ok({
+    updatedAssessment: ctx.state.assignment,
     updatedAssignment: ctx.state.assignment
   });
 }
@@ -346,6 +350,7 @@ async function toggleAssignment (ctx) {
   );
 
   ctx.ok({
+    updatedAssessment: ctx.state.assignment,
     updatedAssignment: ctx.state.assignment
   });
 }
@@ -378,6 +383,7 @@ async function removeAssignment (ctx) {
   );
 
   ctx.ok({
+    removedAssessment: ctx.state.assignment,
     removedAssignment: ctx.state.assignment
   });
 }

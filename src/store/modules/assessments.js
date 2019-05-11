@@ -99,15 +99,33 @@ const actions = {
     commit('ADD_UPCOMING_ASSESSMENT', newAssessment);
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
+  async UPDATE_ASSESSMENT ({ dispatch, getters }, updatedAssessment) {
+    let request = await axios.patch(
+      `/${updatedAssessment.assessmentType}s/${updatedAssessment.assessmentType.charAt(0)}/${updatedAssessment._id}`,
+      updatedAssessment
+    );
+
+    updatedAssessment = request.data.updatedAssessment;
+
+    if (getters.getUpcomingAssessmentById(updatedAssessment._id)) {
+      await dispatch('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
+    }
+
+    return updatedAssessment;
+  },
   async UPDATE_UPCOMING_ASSESSMENT ({ commit }, updatedAssessment) {
     commit('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
-  async TOGGLE_UPCOMING_ASSIGNMENT ({ commit }, assignmentID) {
-    const request = await axios.post(`/assignments/a/${assignmentID}/toggle`);
+  async TOGGLE_ASSIGNMENT ({ commit, dispatch, getters }, assignmentToToggle) {
+    const request = await axios.post(`/assignments/a/${assignmentToToggle._id}/toggle`);
+    const updatedAssignment = request.data.updatedAssignment;
     commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssignment);
-    commit('SORT_UPCOMING_ASSESSMENTS');
-    return request.data.updatedAssignment;
+
+    if (getters.getUpcomingAssessmentById(updatedAssignment._id)) {
+      await dispatch('SORT_UPCOMING_ASSESSMENTS');
+    }
+    return updatedAssignment;
   },
   async GET_UPCOMING_ASSESSMENTS ({ commit }) {
     let response = await axios.get('/assignments', {
@@ -123,33 +141,31 @@ const actions = {
     commit('SET_UPCOMING_ASSESSMENTS', assignments.concat(exams));
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
-  async REMOVE_UPCOMING_ASSESSMENT ({ state, commit }, assessmentID) {
-    const assessmentToRemove = state.upcomingAssessments.find(
-      assessment => assessment._id === assessmentID
+  async REMOVE_ASSESSMENT ({ commit }, assessmentToRemove) {
+    const deletedAssessment = await axios.delete(
+      `${assessmentToRemove.assessmentType}s/${assessmentToRemove.assessmentType.charAt(0)}/${assessmentToRemove._id}`
     );
-    commit('REMOVE_UPCOMING_ASSESSMENT', assessmentID); // It shows up as removed before it actually is ;)
-    let apiURL =
-      assessmentToRemove.assessmentType === 'assignment'
-        ? '/assignments/a/'
-        : '/exams/e/';
-    const request = await axios.delete(apiURL + assessmentID);
+
+    if (getters.getUpcomingAssessmentById(deletedAssessment._id)) {
+      commit('REMOVE_UPCOMING_ASSESSMENT', deletedAssessment);
+    }
+
+    return deletedAssessment;
   },
   async ADD_WORK_BLOCK ({ commit, getters }, { assessment, start, end }) {
     const request = await axios.post(
       `/blocks/${assessment.assessmentType}/${assessment._id}`,
       { startTime: start, endTime: end }
     );
-    const capitalized =
-      assessment.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
       commit(
         'UPDATE_UPCOMING_ASSESSMENT',
-        request.data['updated' + capitalized]
+        request.data.updatedAssessment
       );
     }
 
-    return request.data['updated' + capitalized];
+    return request.data.updatedAssessment;
   },
   async EDIT_WORK_BLOCK ({ commit, getters }, { blockID, start, end }) {
     const block = getters.getWorkBlocksAsEvents.find(
@@ -162,12 +178,9 @@ const actions = {
       { startTime: start, endTime: end, assessmentType: block.assessmentType }
     );
 
-    const capitalized =
-      block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
 
-    commit('UPDATE_UPCOMING_ASSESSMENT', request.data['updated' + capitalized]);
-
-    return request.data['updated' + capitalized];
+    return request.data.updatedAssessment;
   },
   async REMOVE_WORK_BLOCK ({ commit, getters }, { blockID }) {
     const block = getters.getWorkBlocksAsEvents.find(
@@ -177,16 +190,13 @@ const actions = {
       `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`
     );
 
-    const capitalized =
-      block.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
-
     if (getters.getUpcomingAssessmentById(block.assessment._id)) {
       commit(
         'UPDATE_UPCOMING_ASSESSMENT',
-        request.data['updated' + capitalized]
+        request.data.updatedAssessment
       );
     }
-    return request.data['updated' + capitalized];
+    return request.data.updatedAssessment;
   }
 };
 
@@ -218,9 +228,9 @@ const mutations = {
       updatedAssessment
     );
   },
-  REMOVE_UPCOMING_ASSESSMENT: (state, assessmentID) => {
+  REMOVE_UPCOMING_ASSESSMENT: (state, removedAssignment) => {
     state.upcomingAssessments = state.upcomingAssessments.filter(
-      assessment => assessment._id !== assessmentID
+      assessment => assessment._id !== removedAssignment._id
     );
   }
 };

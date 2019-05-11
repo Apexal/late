@@ -64,35 +64,24 @@ export default {
           return;
         }
 
-        let request;
+        let updatedAssessment;
         try {
-          request = await this.$http.patch(
-            `/${this.assessmentType}s/${this.assessmentType.charAt(0)}/${
-              this.assessment._id
-            }`,
-            { description: this.edited }
-          );
+          updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.assessment, { description: this.edited }));
         } catch (e) {
-          this.$toasted.error(e.response.data.message);
+          this.$toast.open({
+            message: e.response.data.message,
+            type: 'is-danger'
+          });
           this.editing = false;
           return;
         }
 
-        // Calls API and updates state
-        if (
-          // eslint-disable-next-line
-          this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
-        ) {
-          this.$store.dispatch(
-            'UPDATE_UPCOMING_ASSESSMENT',
-            request.data[`updated${this.capitalizedAssessmentType}`]
-          );
-        } else {
-          this.$emit(
-            'update-assessment',
-            request.data[`updated${this.capitalizedAssessmentType}`]
-          );
-        }
+        this.$emit('updated-assessment', updatedAssessment);
+
+        this.$toast.open({
+          message: 'Updated the description!',
+          type: 'is-success'
+        });
 
         this.editing = false;
       } else {

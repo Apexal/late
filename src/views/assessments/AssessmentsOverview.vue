@@ -42,7 +42,7 @@
 
         <AssessmentOverviewDescription
           :assessment="assessment"
-          @update-assessment="updatedAssessment"
+          @updated-assessment="updatedAssessment"
         />
       </div>
       <AssignmentOverviewTabs
@@ -157,6 +157,7 @@ export default {
     $route: 'getAssessment',
     assessment (newAssessment) {
       document.title = `${newAssessment.title} | LATE`;
+      this.editedDescription = newAssessment.description;
     }
   },
   mounted () {
@@ -179,10 +180,8 @@ export default {
         behavior: 'smooth'
       });
     },
-    updatedAssessment (newAssessment) {
-      this.assessment = newAssessment;
-      this.editedDescription = newAssessment.description;
-      document.title = `${newAssessment.title} | LATE`;
+    async updatedAssessment (updatedAssessment) {
+      this.assessment = updatedAssessment;
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
