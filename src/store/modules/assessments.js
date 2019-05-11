@@ -109,6 +109,8 @@ const actions = {
 
     if (getters.getUpcomingAssessmentById(updatedAssessment._id)) {
       await dispatch('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
+    } else if (moment(updatedAssessment.date).isSameOrAfter(moment().startOf('day'))) {
+      await dispatch('ADD_UPCOMING_ASSESSMENT', updatedAssessment);
     }
 
     return updatedAssessment;

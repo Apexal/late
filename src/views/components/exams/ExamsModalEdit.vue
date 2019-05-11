@@ -98,7 +98,7 @@
                   <input
                     id="edit-exam-date"
                     v-model="exam.date"
-                    :min="today"
+                    :min="minDate"
                     :max="maxDate"
                     type="date"
                   >
@@ -236,6 +236,9 @@ export default {
     maxDate () {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
     },
+    minDate () {
+      return moment(this.currentTerm.start).format('YYYY-MM-DD');
+    },
     courses () {
       return this.$store.getters.current_courses;
     },
@@ -244,8 +247,7 @@ export default {
         JSON.stringify(this.convertExam(this.initialExam)) ===
         JSON.stringify(this.exam)
       );
-    },
-    today: () => moment().format('YYYY-MM-DD')
+    }
   },
   watch: {
     initialExam (newEx) {
@@ -262,31 +264,30 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await this.$http.patch(`/exams/e/${this.exam._id}`, {
-        title: this.exam.title,
-        description: this.exam.description,
-        date: moment(
-          this.exam.date + ' ' + this.exam.time,
-          'YYYY-MM-DD HH:mm',
-          true
-        ).toDate(),
-        courseCRN: this.exam.courseCRN,
-        timeEstimate: this.exam.timeEstimate,
-        priority: this.exam.priority
-      });
-
-      // Calls API and updates state
-      if (this.$store.getters.getUpcomingAssessmentById(this.exam._id)) {
-        this.$store.dispatch('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedExam);
-      } else if (
-        moment(request.data.updatedExam.dueDate).isAfter(
-          moment().startOf('day')
-        )
-      ) {
-        // Past assignment was moved to the future
-        this.$store.commit('ADD_UPCOMING_ASSESSMENT', request.data.updatedExam);
+      let updatedExam;
+      try {
+        updatedExam = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.initialExam, {
+          title: this.exam.title,
+          description: this.exam.description,
+          date: moment(
+            this.exam.date + ' ' + this.exam.time,
+            'YYYY-MM-DD HH:mm',
+            true
+          ).toDate(),
+          courseCRN: this.exam.courseCRN,
+          timeEstimate: this.exam.timeEstimate,
+          priority: this.exam.priority
+        }));
+      } catch (e) {
+        this.loading = false;
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        return;
       }
-      this.$emit('edit-exam', this.exam);
+
+      this.$emit('updated-assessment', updatedExam);
 
       this.loading = false;
 
@@ -294,17 +295,13 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$toasted.info(
-        `Edited exam '${request.data.updatedExam.title}' due ${moment(
-          request.data.updatedExam.date
-        ).fromNow()}.`,
-        {
-          action: {
-            text: 'Undo'
-          },
-          icon: 'pen'
-        }
-      );
+      this.$toast.open({
+        message:
+          `Edited exam '${
+            updatedExam.title
+          }' on ${moment(updatedExam.date).fromNow()}.`,
+        type: 'is-success'
+      });
     }
   }
 };

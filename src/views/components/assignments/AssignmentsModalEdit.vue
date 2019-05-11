@@ -79,7 +79,7 @@
                   <input
                     id="edit-assignment-due-date"
                     v-model="dueDate"
-                    :min="today"
+                    :min="minDate"
                     :max="maxDate"
                     type="date"
                     name="due_date"
@@ -215,10 +215,12 @@ export default {
     maxDate () {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
     },
+    minDate () {
+      return moment(this.currentTerm.start).format('YYYY-MM-DD');
+    },
     courses () {
       return this.$store.getters.current_courses;
-    },
-    today: () => moment().format('YYYY-MM-DD')
+    }
   },
   watch: {
     initialAssignment (newA) {
@@ -242,9 +244,9 @@ export default {
     async save () {
       this.loading = true;
 
-      const request = await this.$http.patch(
-        `/assignments/a/${this.initialAssignment._id}`,
-        {
+      let updatedAssignment;
+      try {
+        updatedAssignment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.initialAssignment, {
           title: this.title,
           dueDate: moment(
             this.dueDate + ' ' + this.dueTime,
@@ -254,31 +256,17 @@ export default {
           courseCRN: this.courseCRN,
           timeEstimate: this.timeEstimate,
           priority: this.priority
-        }
-      );
-
-      // Calls API and updates state
-      if (
-        this.$store.getters.getUpcomingAssessmentById(
-          this.initialAssignment._id
-        )
-      ) {
-        this.$store.dispatch(
-          'UPDATE_UPCOMING_ASSESSMENT',
-          request.data.updatedAssignment
-        );
-      } else if (
-        moment(request.data.updatedAssignment.dueDate).isAfter(
-          moment().startOf('day')
-        )
-      ) {
-        // Past assignment was moved to the future
-        this.$store.dispatch(
-          'ADD_UPCOMING_ASSESSMENT',
-          request.data.updatedAssignment
-        );
+        }));
+      } catch (e) {
+        this.loading = false;
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        return;
       }
-      this.$emit('edit-assignment', request.data.updatedAssignment);
+
+      this.$emit('updated-assessment', updatedAssignment);
 
       this.loading = false;
 
@@ -286,17 +274,13 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$toasted.info(
-        `Edited assignment '${
-          request.data.updatedAssignment.title
-        }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
-        {
-          action: {
-            text: 'Undo'
-          },
-          icon: 'pen'
-        }
-      );
+      this.$toast.open({
+        message:
+          `Edited assignment '${
+            updatedAssignment.title
+          }' due ${moment(updatedAssignment.dueDate).fromNow()}.`,
+        type: 'is-success'
+      });
     }
   }
 };
