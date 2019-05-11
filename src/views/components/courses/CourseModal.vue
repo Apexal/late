@@ -118,7 +118,7 @@ export default {
   computed: {
     upcomingAssessments () {
       const limit = moment().add(2, 'week');
-      const assessments = this.$store.state.work.upcomingAssessments.filter(
+      const assessments = this.$store.state.assessments.upcomingAssessments.filter(
         assessment =>
           moment(assessment.dueDate || assessment.date).isBefore(limit) &&
           assessment.courseCRN === this.course.crn

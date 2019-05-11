@@ -4,7 +4,7 @@ import moment from 'moment';
 
 /* MODULES */
 import auth from './modules/auth';
-import work from './modules/work';
+import assessments from './modules/assessments';
 import schedule from './modules/schedule';
 import addAssignmentModal from './modules/addAssignmentModal';
 import addExamModal from './modules/addExamModal';
@@ -22,7 +22,7 @@ const debug = process.env.NODE_ENV !== 'production';
 export default new Vuex.Store({
   modules: {
     auth,
-    work,
+    assessments,
     schedule,
     addAssignmentModal,
     addExamModal,
@@ -47,7 +47,7 @@ export default new Vuex.Store({
           if (p.type !== 'TES') return true;
 
           // Check if there is a test scheduled this day
-          return !!state.work.upcomingAssessments.find(
+          return !!state.assessments.upcomingAssessments.find(
             assessment =>
               assessment.assessmentType === 'exam' &&
               assessment.courseCRN === getters.getCourseFromPeriod(p).crn &&

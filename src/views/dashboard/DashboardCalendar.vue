@@ -96,7 +96,7 @@ export default {
               if (!moment(event.end).isBetween(event.course.startDate, event.course.endDate)) return false;
 
               if (event.period.type === 'TES') {
-                return !!this.$store.state.work.upcomingAssessments.find(
+                return !!this.$store.state.assessments.upcomingAssessments.find(
                   assessment =>
                     assessment.assessmentType === 'exam' &&
                     assessment.courseCRN === event.course.crn &&
@@ -136,7 +136,7 @@ export default {
       return this.$store.getters.currentTerm;
     },
     filteredUpcomingAssessments () {
-      return this.$store.state.work.upcomingAssessments.filter(
+      return this.$store.state.assessments.upcomingAssessments.filter(
         assessment =>
           moment(this.selectModal.end).isBefore(
             assessment.dueDate || assessment.date
