@@ -4,122 +4,110 @@
       Academic Utilities
     </h1>
 
-    <div class="utils columns">
-      <div
-        class="column is-one-third"
-        @click="launch('gpa')"
-      >
-        <div class="util card">
-          <div class="card-image">
-            <figure class="image is-4by3">
-              <img
-                src="https://bulma.io/images/placeholders/1280x960.png"
-                alt="GPA Calculator"
-              >
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="media">
-              <div class="media-content">
-                <p class="title is-4">
-                  GPA Calculator
-                </p>
-                <p class="subtitle is-6 is-italic">
-                  No login required. Login to have your courses auto-filled.
-                </p>
-              </div>
-            </div>
-
-            <div class="content">
-              Plug in your courses and your end of year grades to determine what your GPA will be!
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="column is-one-third">
-        <div
-          class="util card"
-          @click="launch('course-grade')"
+    <div class="gpa-calculator box">
+      <h2 class="subtitle">
+        GPA Calculator
+      </h2>
+      <div class="buttons">
+        <b-button
+          type="is-dark"
+          @click="fillCourses"
         >
-          <div class="card-image">
-            <figure class="image is-4by3">
-              <img
-                src="https://bulma.io/images/placeholders/1280x960.png"
-                alt="Course grade estimater"
-              >
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="media">
-              <div class="media-content">
-                <p class="title is-4">
-                  Course Grade Estimator
-                </p>
-                <p class="subtitle is-6 is-italic">
-                  No login required.
-                </p>
-              </div>
-            </div>
-
-            <div class="content">
-              Provide the grading weights for a course and your grades to estimate what your final course grade would be!
-            </div>
-          </div>
-        </div>
+          Auto Fill Courses
+        </b-button>
+        <b-button
+          type="is-warning"
+          @click="courses = []"
+        >
+          Clear Courses
+        </b-button>
       </div>
-    </div>
-
-    <!-- <div class="gpa-calculator box">
       <form
         class="form"
         @submit.prevent="addCourse"
       >
-        <input
-          v-model="newCourse.title"
-          type="text"
-          class="input"
-          required
-        >
-        <select v-model="newCourse.gradeValue">
-          <option
-            v-for="(value, letter) in grades"
-            :key="letter"
-            :value="value"
-          >
-            {{ letter }}
-          </option>
-        </select>
-        <input
-          v-model="newCourse.credits"
-          type="number"
-          min="1"
-          max="4"
-          step="1"
-          class="input"
-        >
-
-        <input
-          type="submit"
-          class="button"
-          value="Add"
-        >
+        <b-field>
+          <b-input
+            v-model.trim="newCourseTitle"
+            type="text"
+            placeholder="Add another course"
+            required
+          />
+          <p class="control">
+            <button class="button is-success">
+              Add
+            </button>
+          </p>
+        </b-field>
       </form>
       <hr>
-      <ul>
-        <li
-v-for="c in courses"
-            :key="c.title"
->
-          <b-tag type="is-success">
-            {{ c.gradeValue }}
-          </b-tag>
-          <b>{{ c.title }}</b> <i>{{ c.credits }}</i>
-        </li>
-      </ul>
-      <hr>
-      <h1>{{ gpa }}</h1>
-    </div> -->
+      <div class="columns">
+        <div class="column is-half">
+          <ul v-if="courses.length">
+            <li
+              v-for="(c, index) in courses"
+              :key="index"
+            >
+              <b-field grouped>
+                <span
+                  class="icon has-text-danger remove-course"
+                  title="Remove course"
+                  @click="courses.splice(index, 1)"
+                >
+                  <i class="fas fa-times" />
+                </span>
+                <b-field>
+                  <b-select
+                    v-model="c.gradeValue"
+                    placeholder="Choose Grade"
+                  >
+                    <option
+                      v-for="(gradeValue, letter) in grades"
+                      :key="gradeValue"
+                      :value="gradeValue"
+                    >
+                      {{ letter }}
+                    </option>
+                  </b-select>
+                </b-field>
+                <b-field>
+                  <b-input
+                    v-model.number="c.credits"
+                    type="number"
+                    min="0"
+                    max="10"
+                  />
+                  <p class="control">
+                    <span class="button is-static"> credits</span>
+                  </p>
+                </b-field>
+                <b>{{ c.title }}</b>
+              </b-field>
+            </li>
+          </ul>
+          <p
+            v-else
+            class="has-text-centered has-text-grey"
+          >
+            Add courses manually above or auto fill this semester's courses above!
+          </p>
+        </div>
+        <div class="column is-half has-text-centered">
+          <div v-if="courses.length > 0 && allGradesIn">
+            <span class="has-text-grey">GPA</span>
+            <h1 class="title gpa">
+              {{ gpa }}
+            </h1>
+          </div>
+          <div
+            v-else
+            class="has-text-grey"
+          >
+            Please enter all your grades to see a GPA!
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -144,30 +132,36 @@ export default {
   data () {
     return {
       grades,
-      newCourse: {
-        title: '',
-        gradeValue: 4.0,
-        credits: 4
-      },
+      newCourseTitle: '',
       courses: []
     };
   },
   computed: {
+    allGradesIn () {
+      return this.courses.every(course => course.gradeValue && course.credits);
+    },
     gpa () {
       const total = this.courses.reduce((acc, course) => acc + course.gradeValue * course.credits, 0);
       const takenCredits = this.courses.reduce((acc, course) => acc + course.credits, 0);
 
-      return total / takenCredits;
+      return (total / takenCredits).toFixed(2);
     }
   },
   methods: {
+    fillCourses () {
+      this.courses = this.$store.getters.current_courses.filter(course => course.credits).map(course => ({
+        title: course.title,
+        gradeValue: undefined,
+        credits: course.credits
+      }));
+    },
     addCourse () {
-      this.courses.push(Object.assign({}, this.newCourse));
-      this.newCourse = {
-        title: '',
-        gradeValue: 4.0,
-        credits: 4
-      };
+      this.courses.push({
+        title: this.newCourseTitle,
+        gradeValue: undefined,
+        credits: undefined
+      });
+      this.newCourseTitle = '';
     },
     launch (utilName) {
       this.$toast.open({
@@ -180,6 +174,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.remove-course {
+  cursor: pointer;
+}
+
+.gpa {
+  font-size: 5em;
+}
+
 .util {
   cursor: pointer;
   transition: 0.2s box-shadow;
