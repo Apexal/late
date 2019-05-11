@@ -4,7 +4,7 @@
       <span
         v-if="assessmentType === 'assignment'"
         class="icon toggle-assignment"
-        @click="$emit('toggle-assignment', assessment._id)"
+        @click="$emit('toggle-assignment', assessment)"
       >
         <span
           :class="[ assessment.completed ? 'fas fa-check-circle' : 'far fa-circle' ]"

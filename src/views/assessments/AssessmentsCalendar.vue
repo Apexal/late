@@ -93,7 +93,8 @@ export default {
           }
         });
       } catch (e) {
-        return this.$toasted.error(e.response.data.message);
+        this.loading = false;
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
       assessments.push(...request.data.assignments);
 
@@ -105,7 +106,8 @@ export default {
           }
         });
       } catch (e) {
-        return this.$toasted.error(e.response.data.message);
+        this.loading = false;
+        return this.$toast.error({ message: e.response.data.message, type: 'is-danger' });
       }
 
       assessments.push(...request.data.exams);
@@ -121,9 +123,10 @@ export default {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: date });
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', { date });
 
-      this.$toasted.info(
-        'Date set. Add a new assignment or exam with the buttons below the calendar!'
-      );
+      this.$toast.open({
+        message: 'Add a new assignment or exam with the buttons below the calendar!',
+        position: 'is-bottom-left'
+      });
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);

@@ -105,6 +105,11 @@ export default {
   watch: {
     showCompleted (nowShowing) {
       localStorage.setItem('assignmentsShowCompleted', nowShowing);
+      this.$toast.open({
+        message: (nowShowing ? 'Showing' : 'Hiding') + ' completed assignments.',
+        type: 'is-info',
+        duration: 1000
+      });
     },
     groupBy (newGroupBy) {
       localStorage.setItem('assessmentsGroupBy', newGroupBy);
@@ -134,29 +139,29 @@ export default {
     }
   },
   methods: {
-    async toggleAssignment (assignmentID) {
+    async toggleAssignment (assignment) {
       try {
         const toggledAssignment = await this.$store.dispatch(
-          'TOGGLE_UPCOMING_ASSIGNMENT',
-          assignmentID
+          'TOGGLE_ASSIGNMENT',
+          assignment
         );
-        this.$toasted[toggledAssignment.completed ? 'success' : 'show'](
-          `Marked '${toggledAssignment.title}' as ${
+
+        this.$snackbar.open({
+          message: `Marked '${toggledAssignment.title}' as ${
             toggledAssignment.completed ? 'complete' : 'incomplete'
           }!`,
-          {
-            icon: toggledAssignment.completed ? 'check-circle' : 'circle',
-            action: {
-              text: 'View',
-              push: {
-                name: 'assignment-overview',
-                params: { assignmentID }
-              }
-            }
+          type: 'is-primary',
+          position: 'is-bottom',
+          actionText: 'View',
+          onAction: () => {
+            this.$router.push({
+              name: 'assignment-overview',
+              params: { assignmentID: assignment._id }
+            });
           }
-        );
+        });
       } catch (e) {
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
     },
     course (ex) {
@@ -169,20 +174,10 @@ export default {
       // TODO change word assessments to exam or assignment depending on type
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
-        this.$toasted.info(`Showing '${c.title}' assessments.`, {
-          icon: 'plus',
-          position: 'top-right',
-          fullWidth: false,
-          duration: 1000
-        });
+        this.$toast.open({ message: `Showing '${c.title}' coursework.`, type: 'is-info', duration: 1000 });
       } else {
         this.filter.push(c.crn);
-        this.$toasted.error(`Hiding '${c.title}' assessments.`, {
-          icon: 'minus',
-          position: 'top-right',
-          fullWidth: false,
-          duration: 1000
-        });
+        this.$toast.open({ message: `Hiding '${c.title}' coursework.`, type: 'is-info', duration: 1000 });
       }
     }
   }

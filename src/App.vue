@@ -163,9 +163,11 @@ export default {
 
     if (this.$route.query.accountLocked) {
       this.loading = false;
-      return this.$toasted.error(
-        'Your account has been locked by administrators.'
-      );
+      return this.$toast.open({
+        message: 'Your account has been locked by administrators.',
+        type: 'is-warning',
+        duration: 70000
+      });
     }
 
     if (

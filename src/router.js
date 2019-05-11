@@ -3,6 +3,8 @@ import Router from 'vue-router';
 
 import store from '@/store';
 
+import { Toast } from 'buefy/dist/components/toast';
+
 Vue.use(Router);
 
 const router = new Router({
@@ -202,7 +204,10 @@ const router = new Router({
         // this route requires admin
         if (!store.state.auth.user.admin) {
           next('/');
-          // Vue.$toasted.error('You are not an admin!');
+          Toast.open({
+            message: 'You are not an admin!',
+            type: 'is-warning'
+          });
         } else {
           next();
         }
