@@ -147,9 +147,8 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
           .split(' - ');
         const start = moment(time[0], 'h:mm a', true).format('Hmm');
         const end = moment(time[1], 'h:mm a', true).format('Hmm');
-        const location = $(this)
-          .find('td:nth-child(4)')
-          .text();
+
+        if (start === 'Invalid date') return;
 
         const days = $(this)
           .find('td:nth-child(3)')
@@ -157,7 +156,16 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
           .split('')
           .map(d => DAY_INITIALS[d]);
 
-        if (start === 'Invalid date') return;
+        const location = $(this)
+          .find('td:nth-child(4)')
+          .text();
+
+        const dateRangeParts = $(this)
+          .find('td:nth-child(5)')
+          .text().split(' - ');
+
+        course.startDate = moment(dateRangeParts[0], 'MMM DD[,] YYYY');
+        course.endDate = moment(dateRangeParts[1], 'MMM DD[,] YYYY');
 
         for (let day of days) {
           const period = {
