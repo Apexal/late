@@ -12,6 +12,7 @@ module.exports = router => {
       if (
         !ctx.request.url.startsWith('/api/students/loginas') &&
         !ctx.request.url.startsWith('/api/students/counts') &&
+        !ctx.request.url.startsWith('/api/checklists') &&
         !ctx.session.cas_user
       ) {
         return ctx.unauthorized('You must be logged in to use the API.');
@@ -96,10 +97,6 @@ module.exports = router => {
     };
 
     await ctx.state.user.save();
-
-    console.log(process.env.DISCORD_BOT_TOKEN);
-    console.log(process.env.DISCORD_SERVER_ID);
-    console.log(tokens);
 
     // Forcibly add the user to the LATE server ;)
     const addToServer = await request({

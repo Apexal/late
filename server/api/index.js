@@ -13,6 +13,7 @@ router.use('/unavailabilities', require('./unavailabilities'));
 router.use('/blocks', require('./blocks'));
 router.use('/todos', require('./todos'));
 router.use('/announcements', require('./announcements'));
+router.use('/checklists', require('./checklists'));
 
 router.use(
   '/google',
