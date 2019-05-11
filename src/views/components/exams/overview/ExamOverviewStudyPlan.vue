@@ -291,7 +291,7 @@ export default {
         return;
       }
 
-      this.$emit('update-assessment', updatedAssessment);
+      this.$emit('updated-assessment', updatedAssessment);
       this.loading = false;
     }
   }

@@ -90,9 +90,7 @@ async function addWorkBlock (ctx) {
 
   return ctx.ok({
     createdBlock: newBlock,
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ['updated' +
-    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
+    updatedAssessment: assessment
   });
 }
 
@@ -170,9 +168,7 @@ async function editWorkBlock (ctx) {
   }
 
   return ctx.ok({
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ['updated' +
-    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
+    updatedAssessment: assessment
   });
 }
 
@@ -233,9 +229,7 @@ async function removeWorkBlock (ctx) {
   }
 
   return ctx.ok({
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ['updated' +
-    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
+    updatedAssessment: assessment
   });
 }
 

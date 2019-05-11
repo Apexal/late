@@ -79,9 +79,6 @@ export default {
     assessmentType () {
       return this.assessment.assessmentType;
     },
-    assessmentTypeCapitalized () {
-      return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
-    },
     scheduledMinutes () {
       if (!this.assessment._blocks) return 0;
 
@@ -316,7 +313,7 @@ export default {
 
       if (!this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
         // Updated past assessment, send up to parent overview
-        this.$emit('update-assessment', updatedAssessment);
+        this.$emit('updated-assessment', updatedAssessment);
       }
 
       this.$toasted.success('Added work block to your schedule!', {
@@ -351,11 +348,10 @@ export default {
           }
         );
 
-        updatedAssessment =
-          request.data['updated' + this.assessmentTypeCapitalized];
+        updatedAssessment = request.data.updatedAssessment;
         message = 'Edited past work block!';
         // Updated past assessment, send up to parent overview
-        this.$emit('update-assessment', updatedAssessment);
+        this.$emit('updated-assessment', updatedAssessment);
       }
 
       this.$toasted.show(message, {
@@ -385,10 +381,9 @@ export default {
         const request = await this.$http.delete(
           `/blocks/${this.assessmentType}/${this.assessment._id}/${blockID}`
         );
-        updatedAssessment =
-          request.data['updated' + this.assessmentTypeCapitalized];
+        updatedAssessment = request.data.updatedAssessment;
         message = 'Removed work block from your past schedule!';
-        this.$emit('update-assessment', updatedAssessment);
+        this.$emit('updated-assessment', updatedAssessment);
       }
 
       this.$toasted.error(message, {

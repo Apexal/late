@@ -125,7 +125,7 @@ export default {
         return;
       }
 
-      this.$emit('update-assessment', updatedAssessment);
+      this.$emit('updated-assessment', updatedAssessment);
 
       this.$toast.open({
         message: 'Added comment!',
@@ -150,7 +150,7 @@ export default {
         return;
       }
 
-      this.$emit('update-assessment', updatedAssessment);
+      this.$emit('updated-assessment', updatedAssessment);
 
       this.$toast.open({
         message: 'Removed comment!',

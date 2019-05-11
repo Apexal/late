@@ -52,7 +52,7 @@
         :assignment="assessment"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
-        @update-assessment="updatedAssessment"
+        @updated-assessment="updatedAssessment"
       />
 
       <ExamOverviewTabs
@@ -62,7 +62,7 @@
         :exam="assessment"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
-        @update-assessment="updatedAssessment"
+        @updated-assessment="updatedAssessment"
       />
 
       <hr>

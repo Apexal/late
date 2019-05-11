@@ -51,7 +51,7 @@
       :assessment-type="'assignment'"
       :assessment="assignment"
       :loading="loading"
-      @update-assessment="$emit('update-assessment', arguments[0])"
+      @updated-assessment="$emit('updated-assessment', arguments[0])"
     />
   </div>
 </template>
