@@ -34,17 +34,10 @@
       />
 
       <div>
-        <AssignmentOverviewStats
-          v-if="assessmentType === 'assignment'"
-          :assignment="assessment"
+        <AssessmentOverviewStats
+          :assessment="assessment"
           @not-fully-scheduled-click="notFullyScheduledClick"
           @update-assessment="updatedAssessment"
-        />
-
-        <ExamOverviewStats
-          v-else
-          :exam="assessment"
-          @not-fully-scheduled-click="notFullyScheduledClick"
         />
 
         <AssessmentOverviewDescription
@@ -89,7 +82,7 @@ import 'confetti-js';
 import VueMarkdown from 'vue-markdown';
 
 // Page components
-import AssignmentOverviewStats from '@/views/components/assignments/overview/AssignmentOverviewStats';
+import AssessmentOverviewStats from '@/views/components/assessments/AssessmentOverviewStats';
 import AssessmentOverviewDescription from '@/views/components/assessments/AssessmentOverviewDescription';
 import AssessmentOverviewActionButtons from '@/views/components/assessments/AssessmentOverviewActionButtons';
 import AssessmentOverviewTitle from '@/views/components/assessments/AssessmentOverviewTitle';
@@ -98,7 +91,6 @@ import AssignmentOverviewTabs from '@/views/components/assignments/overview/Assi
 import AssignmentsModalEdit from '@/views/components/assignments/AssignmentsModalEdit';
 
 import ExamsModalEdit from '@/views/components/exams/ExamsModalEdit';
-import ExamOverviewStats from '@/views/components/exams/overview/ExamOverviewStats';
 import ExamOverviewTabs from '@/views/components/exams/overview/ExamOverviewTabs';
 
 export default {
@@ -110,10 +102,9 @@ export default {
     VueMarkdown,
     ExamsModalEdit,
     ExamOverviewTabs,
-    ExamOverviewStats,
     AssignmentsModalEdit,
     AssignmentOverviewTabs,
-    AssignmentOverviewStats
+    AssessmentOverviewStats
   },
   props: {
     assessmentType: {

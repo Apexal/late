@@ -1,13 +1,5 @@
 <template>
   <div class="assessment-work-schedule">
-    <div
-      v-if="locked"
-      class="notification is-warning"
-    >
-      <i class="fa fa-lock" />
-      This {{ assessmentType }} is overdue so your work schedule can no longer be changed.
-    </div>
-
     <div class="box columns percents">
       <div
         class="column is-one-half tooltip"
@@ -89,12 +81,6 @@ export default {
     },
     assessmentTypeCapitalized () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
-    },
-    locked () {
-      if (this.assessmentType === 'assignment') {
-        return this.assessment.completed || this.assessment.passed;
-      } else if (this.assessmentType === 'exam') return this.passed;
-      return false;
     },
     scheduledMinutes () {
       if (!this.assessment._blocks) return 0;

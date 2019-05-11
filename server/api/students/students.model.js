@@ -54,9 +54,7 @@ const schema = new Schema(
       type: Number,
       min: 2000,
       max: 3000
-      /*, required: true */
-    }, // maybe?
-    semester_schedules: { type: Object, default: {} },
+    },
     earliestWorkTime: {
       type: String,
       minlength: 5,
