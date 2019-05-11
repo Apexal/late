@@ -10,13 +10,6 @@
           @click="$emit('set-tab', 'schedule')"
         >
           <a>
-            <span
-              v-if="workScheduleLocked"
-              class="icon tooltip is-tooltip-right"
-              data-tooltip="This can no longer be edited."
-            >
-              <i class="fa fa-lock" />
-            </span>
             <span>Work Schedule</span>
 
             <span
@@ -111,9 +104,6 @@ export default {
     },
     fullyScheduled () {
       return this.scheduledMinutes >= this.totalEstimatedMinutes;
-    },
-    workScheduleLocked () {
-      return this.exam.passed;
     },
     studyPlan () {
       return this.exam.studyPlan;
