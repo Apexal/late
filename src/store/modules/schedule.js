@@ -32,6 +32,9 @@ const getters = {
   currentTerm: (state, getters, rootState) =>
     state.terms.find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
     {},
+  ongoing_courses: (state, getters, rootState) => {
+    return state.courses.filter(course => !course.hidden && moment(rootState.now).isBetween(course.startDate, course.endDate));
+  },
   current_courses_all: state => {
     return state.courses;
   },
@@ -119,7 +122,7 @@ const actions = {
   },
   UPDATE_SCHEDULE ({ commit, getters, rootState }) {
     // Reset all state values
-    const semesterSchedule = getters.current_courses_all;
+    const semesterSchedule = getters.ongoing_courses;
 
     const now = moment(); // moment('1430', 'Hmm');
     const dateStr = now.format('YYYY-MM-DD');
