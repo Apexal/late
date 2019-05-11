@@ -93,6 +93,8 @@ export default {
               event.period ? event.period.location : event.title
             );
             if (event.eventType === 'course') {
+              if (!moment(event.end).isBetween(event.course.startDate, event.course.endDate)) return false;
+
               if (event.period.type === 'TES') {
                 return !!this.$store.state.work.upcomingAssessments.find(
                   assessment =>
