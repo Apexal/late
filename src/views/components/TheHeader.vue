@@ -119,17 +119,37 @@
               </div>
             </div>
 
-            <router-link
+            <div
               v-if="!onBreak"
-              class="navbar-item"
-              to="/studytools"
-              title="Tools to help you study/work!"
+              class="navbar-item has-dropdown is-hoverable"
             >
-              <span class="icon">
-                <i class="fas fa-toolbox" />
-              </span>
-              Tools
-            </router-link>
+              <a
+                class="navbar-link"
+                title="Tools to calculate grades and to help you work/study for assignments and exams!"
+              >
+                <span class="icon">
+                  <i class="fas fa-toolbox" />
+                </span>
+                Tools
+              </a>
+
+              <div class="navbar-dropdown">
+                <router-link
+                  class="navbar-item"
+                  to="/studytools"
+                  title="Work/study timer and scratchpad"
+                >
+                  Study/Work Tools
+                </router-link>
+                <router-link
+                  class="navbar-item"
+                  to="/academicutils"
+                  title="GPA calculator and course grade estimator"
+                >
+                  Grade Calculators
+                </router-link>
+              </div>
+            </div>
           </template>
         </div>
 
