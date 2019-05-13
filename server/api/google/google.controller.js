@@ -9,6 +9,16 @@ async function googleAuthMiddleware (ctx, next) {
   await next();
 }
 
+async function createCourseSchedule (ctx) {
+  const courses = await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code);
+
+  await google.actions.createRecurringEventsFromCourseSchedule(ctx, courses);
+
+  ctx.ok({
+    message: 'good'
+  });
+}
+
 async function listCalendars (ctx) {
   const calendar = google.apis.calendar({
     version: 'v3',
@@ -81,5 +91,6 @@ async function createCalendar (ctx) {
 module.exports = {
   googleAuthMiddleware,
   listCalendars,
-  createCalendar
+  createCalendar,
+  createCourseSchedule
 };

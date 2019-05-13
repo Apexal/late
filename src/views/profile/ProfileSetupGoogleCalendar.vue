@@ -74,7 +74,14 @@
         </div>
         <div v-else-if="tab === 'courseSchedule'">
           <p class="has-text-grey has-text-centered">
-            Coming soon...
+            <b-button
+              type="is-danger"
+              :loading="loading"
+              :disabled="loading"
+              @click="createCourseScheduleCalendar"
+            >
+              Create Calendar for Work Blocks
+            </b-button>
           </p>
         </div>
         <hr>
@@ -115,6 +122,9 @@ export default {
     setup () {
       return this.$store.getters.userSetup.google;
     },
+    currentTerm () {
+      return this.$store.getters.currentTerm;
+    },
     user () {
       return this.$store.state.auth.user;
     }
@@ -123,6 +133,42 @@ export default {
     if (this.setup) this.getCalendars();
   },
   methods: {
+    async createCourseScheduleCalendar () {
+      if (
+        !confirm(
+          `This will create a new calendar specifically for your ${this.currentTerm.name} course schedule.`
+        )
+      ) {
+        return;
+      }
+
+      this.loading = true;
+      let request;
+      try {
+        request = await this.$http.post('/google/calendars', {
+          calendarType: 'courseSchedule',
+          summary: `${this.currentTerm.name} Course Schedule`,
+          description: 'This calender was created by LATE.'
+        });
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.loading = false;
+        return;
+      }
+      this.loading = false;
+      const createdCalendar = request.data.createdCalendar;
+
+      this.calendars.push(createdCalendar);
+      this.calendarIDs.courseSchedule = createdCalendar.id;
+
+      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+
+      this.$toasted.success(
+        `Added '${createdCalendar.summary}' to your Google Calendar!`
+      );
+
+      this.loading = false;
+    },
     async createWorkBlockCalendar () {
       if (
         !confirm(

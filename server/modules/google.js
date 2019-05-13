@@ -1,5 +1,8 @@
 const { google } = require('googleapis');
 const logger = require('./logger');
+const moment = require('moment');
+
+const RRule = require('rrule').RRule;
 
 function createConnection () {
   return new google.auth.OAuth2(
@@ -89,6 +92,65 @@ const actions = {
     logger.info(`Deleted work block GCal event for ${ctx.state.user.rcs_id}.`);
 
     return request.data;
+  },
+  async createRecurringEventsFromCourseSchedule (ctx, courses) {
+    const calendar = google.calendar({
+      version: 'v3',
+      auth: ctx.state.googleAuth
+    });
+
+    const dayAbbreviations = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+
+    for (let course of courses) {
+      const courseStart = moment(course.startDate);
+      const courseEnd = moment(course.endDate);
+
+      for (let period of course.periods) {
+        const start = moment(courseStart.format('YYYY-MM-DD') + ' ' + period.start, 'YYYY-MM-DD Hmm', true);
+        while (start.day() !== period.day) { start.add(1, 'day'); }
+
+        const end = moment(start.format('YYYY-MM-DD') + ' ' + period.end, 'YYYY-MM-DD Hmm', true);
+        const recurrence = new RRule({
+          freq: RRule.WEEKLY,
+          byweekday: [RRule[dayAbbreviations[period.day]]],
+          until: courseEnd.valueOf()
+        });
+
+        logger.info(recurrence);
+
+        let request = await calendar.events.insert({
+          calendarId: ctx.state.user.integrations.google.calendarIDs.courseSchedule,
+          requestBody: {
+            summary: `${course.title} ${period.type}`,
+            description: `${course.summary} - ${course.sectionId} - ${course.credits} credits`,
+            location: period.location,
+            // source: {
+            //   title: assessment.title,
+            //   url: assessmentURL
+            // },
+            start: {
+              dateTime: start.toDate(),
+              timezone: 'America/New_York'
+            },
+            end: {
+              dateTime: end.toDate(),
+              timezone: 'America/New_York'
+            },
+            recurrence: [recurrence.toString()],
+            extendedProperties: {
+              private: {
+                scheduleByLATE: true,
+                courseID: course._id // links this event to the course
+              }
+            }
+          }
+        });
+
+        logger.info(`Created recurring GCAL event for period of course '${course.title}' for ${ctx.state.user.rcs_id}`);
+      }
+
+      return;
+    }
   }
 };
 
