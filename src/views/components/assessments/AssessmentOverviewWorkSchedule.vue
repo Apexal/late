@@ -250,59 +250,49 @@ export default {
     async select (start, end) {
       // Only confirm with user if they are trying to add work block to the past
       if (moment(start).isBefore(moment())) {
-        if (
-          !confirm(
-            `Add work block to your history for ${moment(start).format(
-              'M/DD/YY'
-            )}?`
-          )
-        ) {
-          return this.$refs.calendar.fireMethod('unselect');
-        }
+        this.$dialog.confirm({
+          message: 'Add work block to the past?',
+          onConfirm: () => this.addWorkBlock(start, end),
+          onCancel: () => this.$refs.calendar.fireMethod('unselect')
+        });
+      } else {
+        this.addWorkBlock(start, end);
       }
-
-      this.addWorkBlock(start, end);
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType !== 'work-block') return;
 
-      if (moment(calEvent.end).isBefore(moment())) {
-        if (!confirm('Remove this work block from your history?')) return;
-      } else {
-        const assessmentTitle = this.assessment.title;
-        const dateStr = moment(calEvent.start).format('dddd');
-        const startStr = moment(calEvent.start).format('h:mm a');
-        const endStr = moment(calEvent.end).format('h:mm a');
+      const dateStr = moment(calEvent.start).format('dddd M/D');
+      const startStr = moment(calEvent.start).format('h:mm a');
+      const endStr = moment(calEvent.end).format('h:mm a');
 
-        if (
-          !confirm(
-            `You no longer want to ${
-              this.assessmentType === 'assignment' ? 'work on' : 'study for'
-            } ${assessmentTitle} on ${dateStr} from ${startStr} to ${endStr}?`
-          )
-        ) {
-          return;
-        }
-      }
-
-      this.removeWorkBlock(calEvent.blockID);
+      this.$dialog.confirm({
+        message: `Unschedule ${dateStr} from <b>${startStr}</b> to <b>${endStr}</b>?`,
+        onConfirm: () => this.removeWorkBlock(calEvent.blockID)
+      });
     },
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
       // Update work block on server
       if (calEvent.end.isBefore(moment())) {
-        if (!confirm('Move this work block to your history?')) {
-          return revertFunc();
-        }
+        this.$dialog.confirm({
+          message: 'Move this past work block?',
+          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onCancel: revertFunc
+        });
+      } else {
+        this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
       }
-      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
     },
     eventResize (calEvent, delta, revertFunc) {
-      if (moment(calEvent.end).isBefore(moment())) {
-        if (!confirm('Edit this work block from your history?')) {
-          return revertFunc();
-        }
+      if (calEvent.end.isBefore(moment())) {
+        this.$dialog.confirm({
+          message: 'Edit this past work block?',
+          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onCancel: revertFunc
+        });
+      } else {
+        this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
       }
-      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
     },
     async addWorkBlock (start, end) {
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
@@ -316,49 +306,34 @@ export default {
         this.$emit('updated-assessment', updatedAssessment);
       }
 
-      this.$toasted.success('Added work block to your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
+      this.$toast.open({
+        message: 'Added work block to your schedule!',
+        type: 'is-success'
       });
 
       this.$refs.calendar.fireMethod('unselect');
     },
     async editWorkBlock (blockID, start, end) {
-      let updatedAssessment;
+      let updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+        assessment: this.assessment,
+        blockID,
+        start,
+        end
+      });
+
       let message = 'Rescheduled work block!';
 
       if (
-        // eslint-disable-next-line
-        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
+        !this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
       ) {
-        updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
-          blockID,
-          start,
-          end
-        });
-      } else {
-        const request = await this.$http.patch(
-          `/blocks/${this.assessmentType}/${this.assessment._id}/${blockID}`,
-          {
-            startTime: start,
-            endTime: end,
-            assessmentType: this.assessmentType
-          }
-        );
-
-        updatedAssessment = request.data.updatedAssessment;
         message = 'Edited past work block!';
         // Updated past assessment, send up to parent overview
         this.$emit('updated-assessment', updatedAssessment);
       }
 
-      this.$toasted.show(message, {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
+      this.$toast.open({
+        message,
+        type: 'is-info'
       });
     },
     async removeWorkBlock (blockID) {
@@ -366,31 +341,23 @@ export default {
       const block = this.assessment._blocks.find(b => b._id === blockID);
       if (!block) return;
 
-      let updatedAssessment;
+      let updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
+        assessment: this.assessment,
+        blockID
+      });
       let message = 'Removed work block from your schedule!';
 
       if (
         // eslint-disable-next-line
-        this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
+        !this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
       ) {
-        updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
-          blockID
-        });
-        // Updated past assessment, send up to parent overview
-      } else {
-        const request = await this.$http.delete(
-          `/blocks/${this.assessmentType}/${this.assessment._id}/${blockID}`
-        );
-        updatedAssessment = request.data.updatedAssessment;
         message = 'Removed work block from your past schedule!';
         this.$emit('updated-assessment', updatedAssessment);
       }
 
-      this.$toasted.error(message, {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
+      this.$toast.open({
+        message,
+        type: 'is-success'
       });
     }
   }

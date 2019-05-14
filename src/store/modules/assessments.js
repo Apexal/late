@@ -168,30 +168,25 @@ const actions = {
 
     return request.data.updatedAssessment;
   },
-  async EDIT_WORK_BLOCK ({ commit, getters }, { blockID, start, end }) {
-    const block = getters.getWorkBlocksAsEvents.find(
-      b => b.blockID === blockID
-    );
+  async EDIT_WORK_BLOCK ({ commit, getters }, { assessment, blockID, start, end }) {
     const request = await axios.patch(
-      `/blocks/${block.assessment.assessmentType}/${
-        block.assessment._id
+      `/blocks/${assessment.assessmentType}/${
+        assessment._id
       }/${blockID}`,
-      { startTime: start, endTime: end, assessmentType: block.assessmentType }
+      { startTime: start, endTime: end, assessmentType: assessment.assessmentType }
     );
 
-    commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
+    if (getters.getUpcomingAssessmentById(assessment._id)) {
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
+    }
 
     return request.data.updatedAssessment;
   },
-  async REMOVE_WORK_BLOCK ({ commit, getters }, { blockID }) {
-    const block = getters.getWorkBlocksAsEvents.find(
-      b => b.blockID === blockID
-    );
+  async REMOVE_WORK_BLOCK ({ commit, getters }, { assessment, blockID }) {
     const request = await axios.delete(
-      `/blocks/${block.assessmentType}/${block.assessment._id}/${blockID}`
+      `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`
     );
-
-    if (getters.getUpcomingAssessmentById(block.assessment._id)) {
+    if (getters.getUpcomingAssessmentById(assessment._id)) {
       commit(
         'UPDATE_UPCOMING_ASSESSMENT',
         request.data.updatedAssessment

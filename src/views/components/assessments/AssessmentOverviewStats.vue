@@ -223,9 +223,7 @@ export default {
         this.editingDate = false;
         return;
       }
-      if (newDate.isBefore(moment())) {
-        if (!confirm(`Move this ${this.assessmentType} to the past?`)) return;
-      }
+
       await this.updateAssessment({ [ this.assessmentType === 'assignment' ? 'dueDate' : 'date' ]: newDate.toDate() });
 
       this.$toast.open({

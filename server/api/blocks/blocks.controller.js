@@ -229,6 +229,7 @@ async function removeWorkBlock (ctx) {
   }
 
   return ctx.ok({
+    removeBlock: removedBlock,
     updatedAssessment: assessment
   });
 }

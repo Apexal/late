@@ -198,31 +198,25 @@ export default {
   methods: {
     async removeAssessment (assessment) {
       // Confirm user wants to remove assignment
-      if (!confirm(`Are you sure you want to remove ${assessment.title}?`)) {
-        return;
-      }
+      this.$dialog.confirm({
+        message: `Permanently remove ${assessment.assessmentType} ${assessment.title}?`,
+        onConfirm: async () => {
+          await this.$store.dispatch('REMOVE_ASSESSMENT', assessment);
 
-      // This handles the API call and state update
-      if (assessment.assessmentType === 'assignment') {
-        await this.$http.delete(`/assignments/a/${assessment._id}`);
-      } else await this.$http.delete(`/exams/e/${assessment._id}`);
+          this.currentAssessments = this.currentAssessments.filter(
+            as => as._id !== assessment._id
+          );
 
-      this.currentAssessments = this.currentAssessments.filter(
-        as => as._id !== assessment._id
-      );
-
-      // Notify user of success
-      this.$toasted.success(
-        `Successfully removed past ${assessment.assessmentType} '${
-          assessment.title
-        }'.`,
-        {
-          icon: 'times',
-          action: {
-            text: 'Undo'
-          }
+          // Notify user of success
+          this.$toast.open({
+            message: `Successfully removed past ${assessment.assessmentType} '${
+              assessment.title
+            }`,
+            type: 'is-success',
+            duration: 15000
+          });
         }
-      );
+      });
     },
     gotoLastWeek () {
       this.endDate = this.today;
