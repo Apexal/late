@@ -29,7 +29,7 @@ const actions = {
 
     const assessmentURL = `${
       process.env.BASE_URL
-    }/assessments/${assessmentType.charAt(0)}/${assessment._id}`;
+    }/coursework/${assessmentType.charAt(0)}/${assessment._id}`;
     const course = ctx.state.user.courseFromCRN(
       ctx.session.currentTerm.code,
       assessment.courseCRN

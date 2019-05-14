@@ -42,7 +42,7 @@
 
       <div class="panel-block has-background-light">
         <router-link
-          to="/assessments/upcoming"
+          :to="{ name: 'coursework-upcoming' }"
           class="button is-fullwidth browseAssessmentsButton"
           title="Browse your coursework"
         >

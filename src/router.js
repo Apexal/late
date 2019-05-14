@@ -73,7 +73,7 @@ const router = new Router({
       component: () => import('@/views/TheAboutPage.vue')
     },
     {
-      path: '/assessments',
+      path: '/coursework',
       component: () => import('@/views/assessments/AssessmentsPage.vue'),
       meta: {
         title: 'Coursework',
@@ -86,7 +86,7 @@ const router = new Router({
         },
         {
           path: 'calendar',
-          name: 'assessments-calendar',
+          name: 'coursework-calendar',
           meta: {
             title: 'Coursework Calendar'
           },
@@ -94,7 +94,7 @@ const router = new Router({
         },
         {
           path: 'upcoming',
-          name: 'assessments-upcoming',
+          name: 'coursework-upcoming',
           meta: {
             title: 'Upcoming Coursework'
           },
@@ -102,7 +102,7 @@ const router = new Router({
         },
         {
           path: 'past',
-          name: 'past-assessments',
+          name: 'coursework-past',
           meta: {
             title: 'Past Coursework'
           },
@@ -111,8 +111,8 @@ const router = new Router({
       ]
     },
     {
-      path: '/assessments/stats',
-      name: 'assessment-stats',
+      path: '/coursework/stats',
+      name: 'coursework-stats',
       meta: {
         title: 'Coursework Stats',
         requiresAuth: true
@@ -120,7 +120,7 @@ const router = new Router({
       component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
     },
     {
-      path: '/assessments/a/:assignmentID',
+      path: '/coursework/a/:assignmentID',
       name: 'assignment-overview',
       component: () => import('@/views/assessments/AssessmentsOverviewPage.vue'),
       props: { assessmentType: 'assignment' },
@@ -129,7 +129,7 @@ const router = new Router({
       }
     },
     {
-      path: '/assessments/e/:examID',
+      path: '/coursework/e/:examID',
       name: 'exam-overview',
       component: () => import('@/views/assessments/AssessmentsOverviewPage.vue'),
       props: { assessmentType: 'exam' },

@@ -15,22 +15,22 @@
 
         <router-link
           tag="li"
-          to="/assessments/upcoming"
+          :to="{ name: 'coursework-upcoming' }"
           title="Switch to view upcoming assessments"
         >
           <a>Upcoming</a>
         </router-link>
         <router-link
           tag="li"
-          to="/assessments/past"
+          :to="{ name: 'coursework-past' }"
           title="Switch to view past assessments"
         >
-          <a>Previous</a>
+          <a>Past</a>
         </router-link>
 
         <router-link
           tag="li"
-          to="/assessments/calendar"
+          :to="{ name: 'coursework-calendar' }"
           title="Switch to view your assessment calendar"
         >
           <a>Calendar</a>

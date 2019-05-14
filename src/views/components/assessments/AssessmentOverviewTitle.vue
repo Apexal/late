@@ -1,7 +1,7 @@
 <template>
   <div class="assessment-overview-title is-flex-tablet">
     <router-link
-      :to="`/assessments/upcoming`"
+      :to="{ name: 'coursework-upcoming' }"
       class="button is-link tooltip is-tooltip-bottom backButton"
       :data-tooltip="`Browse all course work.`"
     >

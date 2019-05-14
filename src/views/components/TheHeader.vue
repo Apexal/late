@@ -76,21 +76,21 @@
               <div class="navbar-dropdown">
                 <router-link
                   class="navbar-item"
-                  to="/assessments/upcoming"
+                  :to="{ name: 'coursework-upcoming' }"
                   title="View upcoming assessments"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assessments/past"
+                  :to="{ name: 'coursework-past' }"
                   title="Browse all past assessments"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assessments/calendar"
+                  :to="{ name: 'coursework-calendar' }"
                   title="View a calendar of all your assessment due dates"
                 >
                   Calendar
@@ -184,7 +184,7 @@
               <div class="navbar-dropdown is-right">
                 <router-link
                   class="navbar-item"
-                  to="/assessments/stats"
+                  :to="{ name: 'coursework-stats' }"
                   title="View stats on your coursework"
                 >
                   <span class="icon">
