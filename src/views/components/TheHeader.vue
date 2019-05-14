@@ -207,8 +207,8 @@
 
                 <router-link
                   class="navbar-item"
-                  to="/profile"
-                  title="Edit your profile"
+                  to="/account"
+                  title="Edit your account"
                 >
                   <span class="icon">
                     <i

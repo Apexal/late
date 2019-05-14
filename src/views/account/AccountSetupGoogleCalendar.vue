@@ -99,7 +99,7 @@
 
 <script>
 export default {
-  name: 'ProfileSetupGoogleCalendar',
+  name: 'AccountSetupGoogleCalendar',
   data () {
     return {
       loading: false,

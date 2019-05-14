@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-ho">
+  <div class="account-home">
     <h1 class="is-size-5 integration-note">
       For <b>LATE</b> to function, it must know basic info about yourself, your course schedule, your
       work/study schedule, and (optionally) accounts you want to integrate <b>LATE</b> with.
@@ -7,7 +7,7 @@
     <br>
     <router-link
       class="button is-medium is-primary"
-      to="/profile/personalinfo"
+      to="/account/personalinfo"
     >
       Start Setup
     </router-link>
@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: 'ProfileHome'
+  name: 'AccountHome'
 };
 </script>
 

@@ -105,7 +105,7 @@
           type="is-info"
           size="is-small"
         >
-          View Profile
+          View Account
         </b-button>
         <b-button
           type="is-warning"

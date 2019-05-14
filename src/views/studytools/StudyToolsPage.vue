@@ -105,7 +105,7 @@
 
 <script>
 export default {
-  name: 'StudyTools',
+  name: 'StudyToolsPage',
   props: {
     detached: {
       type: Boolean,

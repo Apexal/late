@@ -33,20 +33,27 @@ const router = new Router({
     },
     {
       path: '/academicutils',
-      component: () => import('@/views/academicutils/AcademicUtils.vue'),
+      component: () => import('@/views/academicutils/AcademicUtilsPage.vue'),
+      name: 'academic-utils',
       meta: {
         title: 'Academic Utilities'
       },
       children: [
         {
-          path: '',
-          name: 'academic-utils'
+          path: 'gpa-calulator',
+          name: 'gpa-calulator',
+          component: () => import('@/views/academicutils/GPACalculator.vue')
+        },
+        {
+          path: 'coursegrade',
+          name: 'course-grade-estimator',
+          component: () => import('@/views/academicutils/CourseGradeEstimator.vue')
         }
       ]
     },
     {
       path: '/studytools',
-      component: () => import('@/views/studytools/StudyTools.vue'),
+      component: () => import('@/views/studytools/StudyToolsPage.vue'),
       meta: {
         title: 'Study Tools'
       },
@@ -67,7 +74,7 @@ const router = new Router({
     },
     {
       path: '/assessments',
-      component: () => import('@/views/assessments/Assessments.vue'),
+      component: () => import('@/views/assessments/AssessmentsPage.vue'),
       meta: {
         title: 'Coursework',
         requiresAuth: true
@@ -110,12 +117,12 @@ const router = new Router({
         title: 'Coursework Stats',
         requiresAuth: true
       },
-      component: () => import('@/views/assessments/AssessmentsStats.vue')
+      component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
     },
     {
       path: '/assessments/a/:assignmentID',
       name: 'assignment-overview',
-      component: () => import('@/views/assessments/AssessmentsOverview.vue'),
+      component: () => import('@/views/assessments/AssessmentsOverviewPage.vue'),
       props: { assessmentType: 'assignment' },
       meta: {
         requiresAuth: true
@@ -124,26 +131,26 @@ const router = new Router({
     {
       path: '/assessments/e/:examID',
       name: 'exam-overview',
-      component: () => import('@/views/assessments/AssessmentsOverview.vue'),
+      component: () => import('@/views/assessments/AssessmentsOverviewPage.vue'),
       props: { assessmentType: 'exam' },
       meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/profile',
-      component: () => import('@/views/profile/Profile.vue'),
+      path: '/account',
+      component: () => import('@/views/account/AccountPage.vue'),
       meta: {
         requiresAuth: true
       },
       children: [
         {
           path: '',
-          name: 'profile',
+          name: 'account',
           meta: {
-            title: 'Your Profile'
+            title: 'Your Account'
           },
-          component: () => import('@/views/profile/ProfileHome.vue')
+          component: () => import('@/views/account/AccountHome.vue')
         },
         {
           path: 'personalinfo',
@@ -152,7 +159,7 @@ const router = new Router({
             title: 'Account Info'
           },
           component: () =>
-            import('@/views/profile/ProfileSetupPersonalInfo.vue')
+            import('@/views/account/AccountSetupPersonalInfo.vue')
         },
         {
           path: 'courseschedule',
@@ -161,7 +168,7 @@ const router = new Router({
             title: 'Course Schedule'
           },
           component: () =>
-            import('@/views/profile/ProfileSetupCourseSchedule.vue')
+            import('@/views/account/AccountSetupCourseSchedule.vue')
         },
         {
           path: 'unavailability',
@@ -170,7 +177,7 @@ const router = new Router({
             title: 'Study/Work Unavailability'
           },
           component: () =>
-            import('@/views/profile/ProfileSetupUnavailability.vue')
+            import('@/views/account/AccountSetupUnavailability.vue')
         },
         {
           path: 'integrations',
@@ -179,7 +186,7 @@ const router = new Router({
             title: 'Notifications'
           },
           component: () =>
-            import('@/views/profile/ProfileSetupIntegrations.vue')
+            import('@/views/account/AccountSetupIntegrations.vue')
         },
         {
           path: 'googlecalendar',
@@ -188,7 +195,7 @@ const router = new Router({
             title: 'Google Calendar'
           },
           component: () =>
-            import('@/views/profile/ProfileSetupGoogleCalendar.vue')
+            import('@/views/account/AccountSetupGoogleCalendar.vue')
         }
       ]
     },

@@ -352,7 +352,7 @@ import moment from 'moment';
 import InputTag from 'vue-input-tag';
 
 export default {
-  name: 'ProfileCourse',
+  name: 'AccountCourse',
   components: { InputTag },
   props: {
     course: {

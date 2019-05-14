@@ -1,5 +1,5 @@
 <template>
-  <div id="profile">
+  <div id="account">
     <section class="section">
       <h1 class="title">
         Your Account
@@ -50,33 +50,33 @@
 import 'bulma-steps';
 
 export default {
-  name: 'Profile',
+  name: 'AccountPage',
   data () {
     return {
       setups: [
         {
           label: 'Account Info',
-          link: '/profile/personalinfo',
+          link: '/account/personalinfo',
           setup_check: 'personal_info'
         },
         {
           label: 'Course Schedule',
-          link: '/profile/courseschedule',
+          link: '/account/courseschedule',
           setup_check: 'course_schedule'
         },
         {
           label: 'Study/Work Unavailability',
-          link: '/profile/unavailability',
+          link: '/account/unavailability',
           setup_check: 'unavailability'
         },
         {
           label: 'Notifications',
-          link: '/profile/integrations',
+          link: '/account/integrations',
           setup_check: 'integrations'
         },
         {
           label: 'Google Calendar',
-          link: '/profile/googlecalendar',
+          link: '/account/googlecalendar',
           setup_check: 'google'
         }
       ]

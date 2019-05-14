@@ -90,7 +90,7 @@ import 'fullcalendar/dist/fullcalendar.css';
 import TimeInput from '@/views/components/TimeInput';
 
 export default {
-  name: 'ProfileSetupUnavailability',
+  name: 'AccountSetupUnavailability',
   components: { FullCalendar, TimeInput },
   data () {
     return {

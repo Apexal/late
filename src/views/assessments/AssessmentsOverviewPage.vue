@@ -94,7 +94,7 @@ import ExamsModalEdit from '@/views/components/exams/ExamsModalEdit';
 import ExamOverviewTabs from '@/views/components/exams/overview/ExamOverviewTabs';
 
 export default {
-  name: 'AssessmentsOverview',
+  name: 'AssessmentsOverviewPage',
   components: {
     AssessmentOverviewDescription,
     AssessmentOverviewTitle,

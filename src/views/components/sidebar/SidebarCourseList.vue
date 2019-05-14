@@ -28,7 +28,7 @@
     >
       <router-link
         class="button edit-button is-fullwidth editCoursesButton"
-        to="/profile/courseschedule"
+        to="/account/courseschedule"
         title="Edit your courses"
       >
         Edit Courses

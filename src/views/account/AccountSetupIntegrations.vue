@@ -49,13 +49,13 @@
 </template>
 
 <script>
-import SetupIntegrationsPreferences from '@/views/components/profile/SetupIntegrationsPreferences';
-import SetupIntegrationsSMS from '@/views/components/profile/SetupIntegrationsSMS';
-import SetupIntegrationsEmail from '@/views/components/profile/SetupIntegrationsEmail';
-import SetupIntegrationsDiscord from '@/views/components/profile/SetupIntegrationsDiscord';
+import SetupIntegrationsPreferences from '@/views/components/account/SetupIntegrationsPreferences';
+import SetupIntegrationsSMS from '@/views/components/account/SetupIntegrationsSMS';
+import SetupIntegrationsEmail from '@/views/components/account/SetupIntegrationsEmail';
+import SetupIntegrationsDiscord from '@/views/components/account/SetupIntegrationsDiscord';
 
 export default {
-  name: 'IntegrationsSetup',
+  name: 'AccountSetupIntegrations',
   components: {
     SetupIntegrationsPreferences,
     SetupIntegrationsSMS,

@@ -103,7 +103,7 @@
             Your Courses
             <small class="has-text-grey">{{ coursesWithoutOther.length }} total</small>
           </h2>
-          <ProfileCourse
+          <AccountCourse
             v-for="c in coursesWithoutOther"
             :key="c.crn"
             :course="c"
@@ -118,7 +118,7 @@
             Hidden Courses
             <small class="has-text-grey">{{ hiddenCourses.length }} total</small>
           </h2>
-          <ProfileCourse
+          <AccountCourse
             v-for="c in hiddenCourses"
             :key="c.crn"
             :course="c"
@@ -137,7 +137,7 @@
       </template>
       <hr>
       <router-link
-        to="/profile/unavailability"
+        to="/account/unavailability"
         class="button is-primary"
         :class="{'is-loading': loading}"
       >
@@ -148,12 +148,12 @@
 </template>
 
 <script>
-import CourseScheduleCalendar from '@/views/components/profile/CourseScheduleCalendar';
-import ProfileCourse from '@/views/components/profile/ProfileCourse';
+import CourseScheduleCalendar from '@/views/components/account/CourseScheduleCalendar';
+import AccountCourse from '@/views/components/account/AccountCourse';
 
 export default {
-  name: 'ProfileSetupCourseSchedule',
-  components: { ProfileCourse, CourseScheduleCalendar },
+  name: 'AccountSetupCourseSchedule',
+  components: { AccountCourse, CourseScheduleCalendar },
   data () {
     return {
       tab: 'list',

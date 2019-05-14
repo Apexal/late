@@ -85,7 +85,7 @@
 import AssessmentsFilter from '@/views/components/assessments/AssessmentsFilter';
 
 export default {
-  name: 'Assessments',
+  name: 'AssessmentsPage',
   components: { AssessmentsFilter },
   data () {
     return {

@@ -51,7 +51,7 @@ module.exports = router => {
 
     await ctx.state.user.save();
 
-    ctx.redirect('/profile/googlecalendar');
+    ctx.redirect('/account/googlecalendar');
   });
 
   router.get('/auth/discord', ctx => {
@@ -119,6 +119,6 @@ module.exports = router => {
         ctx.state.user.display_name
       }`
     );
-    ctx.redirect('/profile/integrations#discord');
+    ctx.redirect('/account/integrations#discord');
   });
 };

@@ -122,7 +122,7 @@
 
 <script>
 export default {
-  name: 'ProfileSetupPersonalInfo',
+  name: 'AccountSetupPersonalInfo',
   data () {
     return {
       saved: false,
