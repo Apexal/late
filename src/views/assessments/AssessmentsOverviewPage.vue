@@ -198,47 +198,43 @@ export default {
     async toggleCompleted () {
       if (this.assessmentType !== 'assignment') return;
 
-      if (
-        !confirm(
-          `Are you sure you want to mark this ${this.assessmentType} as ${
-            this.assessment.completed ? 'incomplete' : 'complete'
-          }?`
-        )
-      ) {
-        return;
-      }
-      this.toggleLoading = true;
+      this.$dialog.confirm({
+        message: `Mark this assignment as <b>${this.assessment.completed ? 'incomplete' : 'complete'}</b>?`,
+        onConfirm: async () => {
+          this.toggleLoading = true;
 
-      let updatedAssessment;
-      try {
-        updatedAssessment = await this.$store.dispatch(
-          'TOGGLE_ASSIGNMENT',
-          this.assessment
-        );
+          let updatedAssessment;
+          try {
+            updatedAssessment = await this.$store.dispatch(
+              'TOGGLE_ASSIGNMENT',
+              this.assessment
+            );
 
-        this.$toast.open({
-          message: updatedAssessment.completed
-            ? 'Marked assignment as completed! Nice job!'
-            : 'Marked assignment as incomplete.',
-          type: 'is-primary'
-        });
+            this.$toast.open({
+              message: updatedAssessment.completed
+                ? 'Marked as complete. Nice job!'
+                : 'Marked as incomplete.',
+              type: 'is-primary'
+            });
 
-        if (updatedAssessment.completed) {
-          this.confetti.render();
-          setTimeout(() => this.confetti.clear(), 2000);
+            if (updatedAssessment.completed) {
+              this.confetti.render();
+              setTimeout(() => this.confetti.clear(), 2000);
+            }
+          } catch (e) {
+            this.$toast.open({
+              message: e.response.data.message,
+              type: 'is-danger'
+            });
+            this.toggleLoading = false;
+            return;
+          }
+
+          this.updatedAssessment(updatedAssessment);
+
+          this.toggleLoading = false;
         }
-      } catch (e) {
-        this.$toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        });
-        this.toggleLoading = false;
-        return;
-      }
-
-      this.updatedAssessment(updatedAssessment);
-
-      this.toggleLoading = false;
+      });
     },
     async getAssessment () {
       // If its an upcoming assignment, we already have the data on it
@@ -267,9 +263,12 @@ export default {
         request = await this.$http.get(apiURL + this.assessmentID);
       } catch (e) {
         this.loading = false;
-        this.router.push('/assessments');
+        this.$router.push('/coursework');
 
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       this.updatedAssessment(request.data[this.assessmentType]);
@@ -278,43 +277,23 @@ export default {
 
       this.loading = false;
     },
-    async dispatchOrDelete (assessmentID) {
-      // This handles the API call and state update
-      if (this.isUpcoming) {
-        await this.$store.dispatch('REMOVE_UPCOMING_ASSESSMENT', assessmentID);
-      } else {
-        await this.$http.delete(
-          (this.assessmentType === 'assignment'
-            ? '/assignments/a/'
-            : '/exams/e/') + assessmentID
-        );
-      }
-      this.$router.push('/assessments');
-    },
     async removeAssessment () {
       // Confirm user wants to remove assessment
-      if (
-        !confirm(
-          `Are you sure you want to remove assessment ${this.assessment.title}?`
-        )
-      ) {
-        return;
-      }
+      this.$dialog.confirm({
+        message: `Permanently remove this ${this.assessmentType}?`,
+        onConfirm: async () => {
+          const assessmentTitle = this.assessment.title;
+          this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment);
 
-      const assessmentTitle = this.assessment.title;
-      const assessmentID = this.assessment._id;
-      this.dispatchOrDelete(assessmentID);
+          // Notify user of success
+          this.$toast.open({
+            message: `Successfully removed assessment '${assessmentTitle}'.`,
+            type: 'is-success'
+          });
 
-      // Notify user of success
-      this.$toasted.success(
-        `Successfully removed assessment '${assessmentTitle}'.`,
-        {
-          icon: 'times',
-          action: {
-            text: 'Undo'
-          }
+          this.$router.push('/coursework');
         }
-      );
+      });
     },
     shortDateTimeString: date =>
       moment(date).format('dddd, MMM Do YYYY [@] h:mma'),
