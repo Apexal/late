@@ -159,9 +159,7 @@ export default {
           noEventsMessage: 'No work periods set yet.',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
-              if (moment(event.start).isAfter(this.term.classesEnd)) {
-                return false;
-              }
+              return moment(event.end).isBetween(event.course.startDate, event.course.endDate);
             }
           },
           buttonText: {
