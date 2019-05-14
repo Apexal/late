@@ -30,7 +30,7 @@
       <div class="is-flex">
         <div class="field">
           <b-checkbox
-            :checked="showCompleted"
+            :value="showCompleted"
             type="is-link"
             @input="$emit('toggle-show-completed')"
           >
