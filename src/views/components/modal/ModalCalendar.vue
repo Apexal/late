@@ -21,7 +21,20 @@ export default {
   components: {
     FullCalendar
   },
-  props: ['assessmentType', 'date', 'courseCRN'],
+  props: {
+    assessmentType: {
+      type: String,
+      required: true
+    },
+    date: {
+      type: Object, // moment
+      required: false
+    },
+    courseCRN: {
+      type: String,
+      required: true
+    }
+  },
   data () {
     return {
       calendar: {
