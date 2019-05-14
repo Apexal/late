@@ -134,74 +134,69 @@ export default {
   },
   methods: {
     async createCourseScheduleCalendar () {
-      if (
-        !confirm(
-          `This will create a new calendar specifically for your ${this.currentTerm.name} course schedule.`
-        )
-      ) {
-        return;
-      }
+      this.$dialog.confirm({
+        message: `This will create a new calendar specifically for your <b>${this.currentTerm.name}</b> course schedule.`,
+        onConfirm: async () => {
+          this.loading = true;
+          let request;
+          try {
+            request = await this.$http.post('/google/calendars', {
+              calendarType: 'courseSchedule',
+              summary: `${this.currentTerm.name} Course Schedule`,
+              description: 'This calender was created by LATE.'
+            });
+          } catch (e) {
+            this.$toasted.error(e.response.data.message);
+            this.loading = false;
+            return;
+          }
+          this.loading = false;
+          const createdCalendar = request.data.createdCalendar;
 
-      this.loading = true;
-      let request;
-      try {
-        request = await this.$http.post('/google/calendars', {
-          calendarType: 'courseSchedule',
-          summary: `${this.currentTerm.name} Course Schedule`,
-          description: 'This calender was created by LATE.'
-        });
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.loading = false;
-        return;
-      }
-      this.loading = false;
-      const createdCalendar = request.data.createdCalendar;
+          this.calendars.push(createdCalendar);
+          this.calendarIDs.courseSchedule = createdCalendar.id;
 
-      this.calendars.push(createdCalendar);
-      this.calendarIDs.courseSchedule = createdCalendar.id;
+          await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+          this.$toasted.success(
+            `Added '${createdCalendar.summary}' to your Google Calendar!`
+          );
 
-      this.$toasted.success(
-        `Added '${createdCalendar.summary}' to your Google Calendar!`
-      );
-
-      this.loading = false;
+          this.loading = false;
+        }
+      });
     },
     async createWorkBlockCalendar () {
-      if (
-        !confirm(
-          'This will create a new calendar specifically for work blocks.'
-        )
-      ) {
-        return;
-      }
-      this.loading = true;
-      let request;
-      try {
-        request = await this.$http.post('/google/calendars', {
-          calendarType: 'workBlocks',
-          summary: 'LATE Study/Work',
-          description: 'This calender was created by LATE.'
-        });
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-        this.loading = false;
-        return;
-      }
-      const createdCalendar = request.data.createdCalendar;
+      this.$dialog.confirm({
+        message: 'This will create a new calendar specifically for work blocks.',
+        onConfirm: async () => {
+          this.loading = true;
+          let request;
+          try {
+            request = await this.$http.post('/google/calendars', {
+              calendarType: 'workBlocks',
+              summary: 'LATE Study/Work',
+              description: 'This calender was created by LATE.'
+            });
+          } catch (e) {
+            this.$toasted.error(e.response.data.message);
+            this.loading = false;
+            return;
+          }
+          const createdCalendar = request.data.createdCalendar;
 
-      this.calendars.push(createdCalendar);
-      this.calendarIDs.workBlocks = createdCalendar.id;
+          this.calendars.push(createdCalendar);
+          this.calendarIDs.workBlocks = createdCalendar.id;
 
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+          await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-      this.$toasted.success(
-        `Added '${createdCalendar.summary}' to your Google Calendar!`
-      );
+          this.$toasted.success(
+            `Added '${createdCalendar.summary}' to your Google Calendar!`
+          );
 
-      this.loading = false;
+          this.loading = false;
+        }
+      });
     },
     getCalendarById (id) {
       return this.calendars.find(c => c.id === id);

@@ -86,12 +86,12 @@
       <hr>
       <span>
         <b>Joined:</b>
-        {{ shortDateTimeString(student.joined_date) }}
+        {{ shortDateTimeFormat(student.joined_date) }}
       </span>
       <br>
       <span>
         <b>Last Login:</b>
-        {{ shortDateTimeString(student.last_login) }}
+        {{ shortDateTimeFormat(student.last_login) }}
       </span>
     </div>
 
@@ -208,24 +208,21 @@ export default {
       this.$toasted.show('Updated student.');
     },
     async deleteStudent () {
-      if (
-        !confirm(
-          'Are you sure you want to delete this student account? This is IRREVERSIBLE'
-        )
-      ) {
-        this.confirming = false;
-        return;
-      }
+      this.$dialog.confirm({
+        message: 'Are you sure you want to delete this student account? This is IRREVERSIBLE',
+        onConfirm: async () => {
+          let request;
+          try {
+            request = await this.$http.delete('/students/' + this.student._id);
+          } catch (e) {
+            return this.$toasted.error(e.response.data.message);
+          }
 
-      let request;
-      try {
-        request = await this.$http.delete('/students/' + this.student._id);
-      } catch (e) {
-        return this.$toasted.error(e.response.data.message);
-      }
-
-      this.$emit('delete-student', this.student._id);
-      this.$toasted.show('Deleted student account.');
+          this.$emit('delete-student', this.student._id);
+          this.$toasted.show(`Deleted student ${this.student.rcs_id}.`);
+        },
+        onCancel: () => (this.confirming = false)
+      });
     }
   }
 };

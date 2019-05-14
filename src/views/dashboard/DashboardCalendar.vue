@@ -276,22 +276,29 @@ export default {
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
       // Update work block on server
       if (calEvent.end.isBefore(moment())) {
-        if (!confirm('Move this work block to your history?')) {
-          return revertFunc();
-        }
+        this.$dialog.confirm({
+          message: 'Move this past work block?',
+          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onCancel: revertFunc
+        });
+      } else {
+        this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
       }
-      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
     },
     eventResize (calEvent, delta, revertFunc) {
-      if (moment(calEvent.end).isBefore(moment())) {
-        if (!confirm('Edit this work block from your history?')) {
-          return revertFunc();
-        }
+      if (calEvent.end.isBefore(moment())) {
+        this.$dialog.confirm({
+          message: 'Edit this past work block?',
+          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onCancel: revertFunc
+        });
+      } else {
+        this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
       }
-      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
     },
     async editWorkBlock (blockID, start, end) {
       const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+
         blockID,
         start,
         end

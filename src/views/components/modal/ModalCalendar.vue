@@ -101,12 +101,15 @@ export default {
       if (
         moment(date)
           .endOf('day')
-          .isBefore(moment().startOf('day')) &&
-        !confirm(`Add this ${this.assessmentType} to the past?`)
+          .isBefore(moment().startOf('day'))
       ) {
-        return;
+        this.$dialog.confirm({
+          message: `Add this ${this.assessmentType} to the past?`,
+          onConfirm: () => this.$emit('update-date', date)
+        });
+      } else {
+        this.$emit('update-date', date);
       }
-      this.$emit('update-date', date);
     },
     periodType (p) {
       return this.$store.getters.periodType(p.type);

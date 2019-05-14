@@ -185,22 +185,25 @@ export default {
       this.loading = false;
     },
     async disable () {
-      if (!confirm('Are you sure you want to disable SMS integration?')) return;
+      this.$dialog.confirm({
+        message: 'Are you sure you want to disable SMS integration?',
+        onConfirm: async () => {
+          this.loading = true;
 
-      this.loading = true;
+          let request;
+          try {
+            request = await this.$http.delete('/integrations/sms');
+          } catch (e) {
+            this.loading = false;
+            return this.$toasted.error(e.response.data.message);
+          }
 
-      let request;
-      try {
-        request = await this.$http.delete('/integrations/sms');
-      } catch (e) {
-        this.loading = false;
-        return this.$toasted.error(e.response.data.message);
-      }
+          await this.$store.dispatch('SET_USER', request.data.updatedUser);
+          this.$toasted.success('Successfully disabled SMS integration!');
 
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
-      this.$toasted.success('Successfully disabled SMS integration!');
-
-      this.loading = false;
+          this.loading = false;
+        }
+      });
     },
     async resetPhoneNumber () {
       this.$toasted.error('Coming soon!', {

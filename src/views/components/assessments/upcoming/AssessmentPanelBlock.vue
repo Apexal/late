@@ -42,12 +42,12 @@
       <small
         v-if="groupBy === 'date'"
         class="is-pulled-right has-text-grey"
-      >{{ toTimeString }}</small>
+      >{{ timeFormat(assessment.date) }}</small>
       <small
         v-else
         class="is-pulled-right tooltip is-tooltip-left has-text-grey"
-        :data-tooltip="toDateShortString + ' ' + toTimeString"
-      >{{ fromNow(this.assessmentDate) }}</small>
+        :data-tooltip="toDateShortString + ' ' + timeFormat(assessment.date)"
+      >{{ fromNow(assessmentDate) }}</small>
     </span>
   </div>
 </template>
@@ -102,9 +102,6 @@ export default {
         return 'Tomorrow';
       }
       return moment(this.assessmentDate).format('dddd [the] Do');
-    },
-    toTimeString () {
-      return moment(this.assessmentDate).format('h:mma');
     },
     daysAway () {
       return moment(this.assessmentDate).diff(

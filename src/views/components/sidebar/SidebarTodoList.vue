@@ -63,14 +63,17 @@ export default {
       }
     },
     async removeTodo (todo) {
-      if (!confirm(`Done with '${todo.text}'?`)) return;
-
-      try {
-        await this.$store.dispatch('REMOVE_TODO', todo);
-        this.$toasted.show(`Deleted to-do '${todo.text}'.`);
-      } catch (e) {
-        this.$toasted.error(e.response.data.message);
-      }
+      this.$dialog.confirm({
+        message: `Done with <i>${todo.text}</i>?`,
+        onConfirm: async () => {
+          try {
+            await this.$store.dispatch('REMOVE_TODO', todo);
+            this.$toast.open({ message: `Deleted to-do '${todo.text}'.`, type: 'is-success' });
+          } catch (e) {
+            this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+          }
+        }
+      });
     }
   }
 };

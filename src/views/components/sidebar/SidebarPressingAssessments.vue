@@ -35,7 +35,7 @@
           {{ assessment.title }}
           <small
             class="has-text-grey is-pulled-right tooltip is-tooltip-left"
-            :data-tooltip="toFullDateTimeString(assessment.dueDate || assessment.date)"
+            :data-tooltip="longDateTimeFormat(assessment.dueDate || assessment.date)"
           >{{ fromNow(assessment.dueDate || assessment.date) }}</small>
         </span>
       </router-link>
@@ -76,8 +76,7 @@ export default {
   methods: {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
-    },
-    toFullDateTimeString: date => moment(date).format('ddd, MMM Do YYYY, h:mma')
+    }
   }
 };
 </script>
