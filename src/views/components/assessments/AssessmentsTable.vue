@@ -10,7 +10,7 @@
         class="tooltip"
         :data-tooltip="fromNow(props.row.date)"
       >
-        {{ shortDateTimeFormat(props.row.date) }}
+        {{ shortDateFormat(props.row.date) }}
         <span
           class="has-text-grey"
         >{{ timeFormat(props.row.date) }}</span>
