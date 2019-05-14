@@ -1,8 +1,6 @@
 import axios from '@/api';
 import moment from 'moment';
 
-import { Dialog } from 'buefy/dist/components/dialog';
-
 const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14;
 
 const state = {

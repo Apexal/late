@@ -87,30 +87,7 @@ export default {
           timeFormat: 'h(:mm)t',
           snapDuration: '00:15',
           noEventsMessage: 'You\'ve got nothing to do. You can relax!',
-          eventRender: (event, el) => {
-            el.attr(
-              'title',
-              event.period ? event.period.location : event.title
-            );
-            if (event.eventType === 'course') {
-              if (!moment(event.end).isBetween(event.course.startDate, event.course.endDate)) return false;
-
-              if (event.period.type === 'TES') {
-                return !!this.$store.state.assessments.upcomingAssessments.find(
-                  assessment =>
-                    assessment.assessmentType === 'exam' &&
-                    assessment.courseCRN === event.course.crn &&
-                    moment(assessment.date).isSame(event.start, 'day')
-                );
-              }
-
-              // No classes after classes end date
-              if (moment(event.start).isAfter(this.term.classesEnd)) {
-                return false;
-              }
-            } else {
-            }
-          },
+          eventRender: this.eventRender,
           buttonText: {
             today: 'Today',
             agendaWeek: 'Week'
@@ -212,6 +189,43 @@ export default {
         div.requestFullscreen();
       }
     },
+    eventRender (event, el) {
+      el.attr(
+        'title',
+        event.period ? event.period.location : event.title
+      );
+      if (event.eventType === 'course') {
+        if (!moment(event.end).isBetween(event.course.startDate, event.course.endDate)) return false;
+
+        if (event.period.type === 'TES') {
+          return !!this.$store.state.assessments.upcomingAssessments.find(
+            assessment =>
+              assessment.assessmentType === 'exam' &&
+              assessment.courseCRN === event.course.crn &&
+              moment(assessment.date).isSame(event.start, 'day')
+          );
+        }
+      } else if (event.eventType === 'work-block') {
+        const deleteButton = document.createElement('span');
+        deleteButton.classList.add('remove-work-block');
+        deleteButton.classList.add('delete');
+        deleteButton.title = 'Remove from schedule';
+        deleteButton.onclick = async ev => {
+          ev.stopPropagation();
+
+          let updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
+            assessment: event.assessment,
+            blockID: event.blockID
+          });
+
+          this.$toast.open({
+            message: 'Unscheduled work block!',
+            type: 'is-primary'
+          });
+        };
+        el.find('.fc-content').append(deleteButton);
+      }
+    },
     select (start, end, jsEvent, view) {
       this.selectModal.start = start;
       this.selectModal.end = end;
@@ -226,11 +240,10 @@ export default {
         end: this.selectModal.end
       });
 
-      this.$toasted.success('Added work block to your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
+      this.$toast.open({
+        message: 'Added work block to your schedule!',
+        type: 'is-primary',
+        duration: 1000
       });
 
       this.selectModal.open = false;
@@ -278,37 +291,36 @@ export default {
       if (calEvent.end.isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Move this past work block?',
-          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onConfirm: () => this.editWorkBlock(calEvent.assessment, calEvent.blockID, calEvent.start, calEvent.end),
           onCancel: revertFunc
         });
       } else {
-        this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
+        this.editWorkBlock(calEvent.assessment, calEvent.blockID, calEvent.start, calEvent.end);
       }
     },
     eventResize (calEvent, delta, revertFunc) {
       if (calEvent.end.isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Edit this past work block?',
-          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onConfirm: () => this.editWorkBlock(calEvent.assessment, calEvent.blockID, calEvent.start, calEvent.end),
           onCancel: revertFunc
         });
       } else {
-        this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
+        this.editWorkBlock(calEvent.assessment, calEvent.blockID, calEvent.start, calEvent.end);
       }
     },
-    async editWorkBlock (blockID, start, end) {
+    async editWorkBlock (assessment, blockID, start, end) {
       const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
-
+        assessment,
         blockID,
         start,
         end
       });
 
-      this.$toasted.show('Rescheduled work block!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
+      this.$toast.open({
+        message: 'Rescheduled work block!',
+        type: 'is-primary',
+        duration: 1000
       });
     }
   }
@@ -321,6 +333,24 @@ export default {
 }
 .work-block-event {
   border-width: 3px !important;
+}
+
+.fc-content {
+  .remove-work-block {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    &:hover {
+      background-color: red;
+    }
+  }
+
+  &:hover {
+    .remove-work-block {
+      display: block;
+    }
+  }
 }
 
 .dashboard-calendar-select-modal .panel {
