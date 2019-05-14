@@ -188,7 +188,7 @@ async function createAssignment (ctx) {
         while (nextFirst.isBefore(ctx.session.currentTerm.classesEnd)) {
           const recurringAssignment = new Assignment({
             ...assignmentData,
-            recurringOriginal: newAssignment._id,
+            _recurringOriginal: newAssignment._id,
             dueDate: nextFirst
           });
           await recurringAssignment.save();
@@ -382,9 +382,25 @@ async function removeAssignment (ctx) {
     }`
   );
 
+  let removedRecurringAssignments = [];
+  if (ctx.request.query.removeRecurring) {
+    const rootAssignmentID = ctx.state.assignment._recurringOriginal;
+    const query = { _student: ctx.state.user._id, _recurringOriginal: rootAssignmentID };
+
+    if (ctx.request.query.removeRecurring === 'future') query.dueDate = { $gt: ctx.state.assignment.dueDate };
+
+    removedRecurringAssignments = await Assignment.find(query);
+
+    // Remove all in series either past and future or just future
+    for (let a of removedRecurringAssignments) a.remove();
+
+    logger.info('Removed recurring assignments');
+  }
+
   ctx.ok({
     removedAssessment: ctx.state.assignment,
-    removedAssignment: ctx.state.assignment
+    removedAssignment: ctx.state.assignment,
+    removedRecurringAssignments
   });
 }
 

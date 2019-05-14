@@ -259,15 +259,48 @@ export default {
         message: `Permanently remove this ${this.assessmentType}?`,
         onConfirm: async () => {
           const assessmentTitle = this.assessment.title;
-          this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment);
 
-          // Notify user of success
-          this.$toast.open({
-            message: `Successfully removed assessment '${assessmentTitle}'.`,
-            type: 'is-success'
-          });
 
-          this.$router.push('/coursework');
+          if (this.assessment.isRecurring) {
+            this.$dialog.confirm({
+              message: 'This is a <b>repeating assignment</b>. Remove just this one or this and future ones?',
+              confirmText: 'Future Assignments',
+              cancelText: 'Just This One',
+              onConfirm: () => {
+                this.$store.dispatch('REMOVE_ASSIGNMENT_AND_RECURRING', this.assessment);
+                this.$toast.open({
+                  message: `Successfully removed repeating assignment <b>${assessmentTitle}</b> and future ones.`,
+                  type: 'is-success',
+                  duration: 3000
+                });
+
+                this.$router.push('/coursework');
+              },
+              onCancel: () => {
+                this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment);
+
+                // Notify user of success
+                this.$toast.open({
+                  message: `Successfully removed single repeating assignment <b>${assessmentTitle}</b>.`,
+                  type: 'is-success',
+                  duration: 3000
+                });
+
+                this.$router.push('/coursework');
+              }
+            });
+          } else {
+            this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment);
+
+            // Notify user of success
+            this.$toast.open({
+              message: `Successfully removed ${this.assessment.assessmentType} <b>${assessmentTitle}</b>.`,
+              type: 'is-success',
+              duration: 3000
+            });
+
+            this.$router.push('/coursework');
+          }
         }
       });
     }

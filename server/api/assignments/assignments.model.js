@@ -36,7 +36,7 @@ const schema = new Schema(
       type: Boolean,
       default: false
     },
-    recurringOriginal: {
+    _recurringOriginal: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Assignment'
     },

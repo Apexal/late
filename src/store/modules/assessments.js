@@ -1,6 +1,8 @@
 import axios from '@/api';
 import moment from 'moment';
 
+import { Dialog } from 'buefy/dist/components/dialog';
+
 const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14;
 
 const state = {
@@ -143,15 +145,28 @@ const actions = {
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
   async REMOVE_ASSESSMENT ({ commit }, assessmentToRemove) {
-    const deletedAssessment = await axios.delete(
+    const request = await axios.delete(
       `${assessmentToRemove.assessmentType}s/${assessmentToRemove.assessmentType.charAt(0)}/${assessmentToRemove._id}`
     );
 
+    const deletedAssessment = request.data.deletedAssessment;
     if (getters.getUpcomingAssessmentById(deletedAssessment._id)) {
       commit('REMOVE_UPCOMING_ASSESSMENT', deletedAssessment);
     }
 
     return deletedAssessment;
+  },
+  async REMOVE_ASSIGNMENT_AND_RECURRING ({ commit }, assessmentToRemove) {
+    const request = await axios.delete(
+      `${assessmentToRemove.assessmentType}s/${assessmentToRemove.assessmentType.charAt(0)}/${assessmentToRemove._id}?removeRecurring=future`
+    );
+    const removedAssessments = [request.data.removedAssessment, ...request.data.removedRecurringAssignments];
+    for (let assessment of removedAssessments) {
+      if (getters.getUpcomingAssessmentById(assessment)) {
+        commit('REMOVE_UPCOMING_ASSESSMENT', assessment);
+      }
+    }
+    return removedAssessments;
   },
   async ADD_WORK_BLOCK ({ commit, getters }, { assessment, start, end }) {
     const request = await axios.post(
