@@ -18,6 +18,8 @@ import CourseAssessmentDot from '@/views/components/CourseAssessmentDot';
 
 import wysiwyg from 'vue-wysiwyg';
 
+import datemethods from './mixins/datemethods';
+
 Vue.component('CourseAssessmentDot', CourseAssessmentDot);
 Vue.use(wysiwyg, { hideModules: { image: true } });
 Vue.use(Buefy);
@@ -50,6 +52,8 @@ Vue.use(Toasted, {
 Vue.config.productionTip = false;
 
 Vue.prototype.$http = Api;
+
+Vue.mixin(datemethods);
 
 const app = new Vue({
   router,

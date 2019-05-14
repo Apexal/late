@@ -127,30 +127,7 @@ export default {
   },
   computed: {
     assessmentID () {
-      return this.assessmentType === 'assignment'
-        ? this.$route.params.assignmentID
-        : this.$route.params.examID;
-    },
-    now () {
-      return this.$store.state.now;
-    },
-    course () {
-      return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
-    },
-    lastEdited () {
-      return moment(this.assessment.createdAt).isSame(this.assessment.updatedAt)
-        ? 'never'
-        : moment(this.assessment.updatedAt).format('M/DD/YY h:mma');
-    },
-    isPast () {
-      return this.assessment.passed;
-    },
-    toggleButtonTitle () {
-      return this.assessment.completed
-        ? `Completed ${moment(this.assessment.completedAt).format(
-          'M/DD/YY h:mma'
-        )}`
-        : 'Click to mark as completed.';
+      return this.$route.params[this.assessmentType + 'ID'];
     }
   },
   watch: {
@@ -238,10 +215,9 @@ export default {
     },
     async getAssessment () {
       // If its an upcoming assignment, we already have the data on it
-      const assessmentID = this.$route.params[this.assessmentType + 'ID'];
-      if (this.$store.getters.getUpcomingAssessmentById(assessmentID)) {
+      if (this.$store.getters.getUpcomingAssessmentById(this.assessmentID)) {
         this.updatedAssessment(
-          this.$store.getters.getUpcomingAssessmentById(assessmentID)
+          this.$store.getters.getUpcomingAssessmentById(this.assessmentID)
         );
         this.loading = false;
         this.isUpcoming = true;
@@ -294,13 +270,6 @@ export default {
           this.$router.push('/coursework');
         }
       });
-    },
-    shortDateTimeString: date =>
-      moment(date).format('dddd, MMM Do YYYY [@] h:mma'),
-    toFullDateTimeString: date =>
-      moment(date).format('dddd, MMMM Do YYYY, h:mma'),
-    fromNow (date) {
-      return moment(date).from(this.now);
     }
   }
 };

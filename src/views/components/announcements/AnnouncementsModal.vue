@@ -83,7 +83,7 @@
               :anchor-attributes="{target: '_blank'}"
             />
             <small
-              :data-tooltip="formatDate(announcement.createdAt)"
+              :data-tooltip="shortDateTimeFormat(announcement.createdAt)"
               class="tooltip has-text-grey"
             >Posted {{ fromNow(announcement.createdAt) }} by {{ announcement._student.display_name }}</small>
           </article>
@@ -139,12 +139,6 @@ export default {
     }
   },
   methods: {
-    formatDate (date) {
-      return moment(date).format('M/DD/YY h:mma');
-    },
-    fromNow (date) {
-      return moment(date).fromNow();
-    },
     buttonClick () {
       if (this.addingAnnouncement) return this.addAnnouncement();
       else this.addingAnnouncement = true;

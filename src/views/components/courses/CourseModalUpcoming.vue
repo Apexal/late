@@ -81,9 +81,9 @@ export default {
   methods: {
     assessmentLinkTitle (assessment) {
       if (assessment.assessmentType === 'exam') {
-        return 'Exam on ' + moment(assessment.date).format('M/DD/YY');
+        return 'Exam on ' + this.shortDateFormat(assessment.date);
       } else if (assessment.assessmentType === 'assignment') {
-        return 'Assignment due ' + moment(assessment.dueDate).format('M/DD/YY');
+        return 'Assignment due ' + this.shortDateFormat(assessment.dueDate);
       }
     }
   }

@@ -72,7 +72,7 @@
       class="has-text-centered-mobile"
     >
       <button
-        :title="`This assignment is ${assessment.completed ? 'completed' : 'incomplete'}!`"
+        :title="toggleButtonTitle"
         class="button is-success toggle-complete"
         :class="{ 'is-outlined': !assessment.completed }"
         @click="$emit('toggle-completed')"
@@ -115,6 +115,11 @@ export default {
     },
     capitalizedAssessmentType () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    },
+    toggleButtonTitle () {
+      return this.assessment.completed
+        ? `Completed ${this.shortDateTimeFormat(this.assessment.completedAt)}`
+        : 'Click to mark as completed.';
     }
   },
   watch: {
@@ -124,6 +129,7 @@ export default {
     }
   },
   methods: {
+
     async save () {
       if (
         this.tempCourseCRN === this.assessment.courseCRN &&

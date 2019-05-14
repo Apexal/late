@@ -64,7 +64,7 @@
           class="subtitle date tooltip is-tooltip-bottom"
           :data-tooltip="timeLeft"
         >
-          {{ shortDateString }}
+          {{ shortDateFormat(assessment.date) }}
           <i
             class="fas fa-pencil-alt has-text-grey edit-date"
             title="Edit date and time."
@@ -85,7 +85,7 @@
           class="subtitle tooltip is-tooltip-bottom"
           :data-tooltip="fromNow(assessment.completedAt)"
         >
-          {{ completedAt }}
+          {{ shortDateTimeFormat(assessment.completedAt) }}
         </p>
       </div>
     </div>
@@ -185,9 +185,6 @@ export default {
     priorityString () {
       return this.priorityStrings[this.assessment.priority] || 'Unknown';
     },
-    completedAt () {
-      return moment(this.assessment.updatedAt).format('M/DD/YY h:mma');
-    },
     timeLeft () {
       const diff = moment.duration(
         moment(this.assessment.date).diff(this.now)
@@ -199,9 +196,6 @@ export default {
     },
     inputFormatTime () {
       return moment(this.assessment.date).format('HH:mm');
-    },
-    shortDateString () {
-      return this.shortDateTimeString(this.assessment.date);
     }
   },
   watch: {
@@ -267,13 +261,6 @@ export default {
 
       this.loading = false;
       return updatedAssessment;
-    },
-    shortDateTimeString: date =>
-      moment(date).format('ddd, MMM Do YY [@] h:mma'),
-    toFullDateTimeString: date =>
-      moment(date).format('dddd, MMMM Do YYYY, h:mma'),
-    fromNow (date) {
-      return moment(date).from(this.now);
     }
   }
 };

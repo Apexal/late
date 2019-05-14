@@ -74,9 +74,6 @@ export default {
     }
   },
   methods: {
-    fromNow (date) {
-      return moment(date).from(this.now);
-    },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
     },

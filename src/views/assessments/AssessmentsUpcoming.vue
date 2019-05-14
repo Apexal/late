@@ -157,7 +157,7 @@ export default {
     headerText (key) {
       return this.groupBy === 'courseCRN'
         ? this.course(key).title
-        : this.toDateShortString(moment(key, 'YYYY-MM-DD', true));
+        : this.relativeDateFormat(moment(key, 'YYYY-MM-DD', true));
     },
     headerStyle (key) {
       if (this.groupBy === 'date') return {};
@@ -212,26 +212,12 @@ export default {
         ).format('M/DD/YY')}`;
       }
     },
-    toggleAssignmentTitle (a) {
-      return (
-        this.course(a.courseCRN).title +
-        (a.completedAt
-          ? ` | Completed ${moment(a.completedAt).format('M/DD/YY h:mma')}`
-          : '')
-      );
-    },
-    toDateShortString (dueDate) {
+    relativeDateFormat (dueDate) {
       if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
       if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) {
         return 'Tomorrow';
       }
       return moment(dueDate).format('dddd [the] Do');
-    },
-    toTimeString (dueDate) {
-      return moment(dueDate).format('h:mma');
-    },
-    fromNow (date) {
-      return moment(date).fromNow();
     },
     daysAway (date) {
       return moment(date).diff(moment(this.now).startOf('day'), 'days');

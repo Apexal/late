@@ -2,6 +2,7 @@
   <div class="assessment-actions clearfix">
     <b-button
       type="is-warning"
+      :title="editButtonTitle"
       @click="$emit('toggle-editing')"
     >
       <i class="fas fa-edit" />
@@ -35,6 +36,9 @@ export default {
     },
     assessmentTypeCaps () {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    },
+    editButtonTitle () {
+      return this.assessment.updatedAt ? `Last edited ${this.shortDateTimeFormat(this.assessment.updatedAt)}` : 'Never edited';
     }
   }
 };

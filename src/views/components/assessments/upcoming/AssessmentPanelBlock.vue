@@ -47,7 +47,7 @@
         v-else
         class="is-pulled-right tooltip is-tooltip-left has-text-grey"
         :data-tooltip="toDateShortString + ' ' + toTimeString"
-      >{{ fromNow }}</small>
+      >{{ fromNow(this.assessmentDate) }}</small>
     </span>
   </div>
 </template>
@@ -81,9 +81,7 @@ export default {
         this.course.title +
         ' Assignment' +
         (this.assessment.completedAt
-          ? ` | Completed ${moment(this.assessment.completedAt).format(
-            'M/DD/YY h:mma'
-          )}`
+          ? ` | Completed ${this.shortDateTimeFormat(this.assessment.completedAt)}`
           : '')
       );
     },
@@ -107,9 +105,6 @@ export default {
     },
     toTimeString () {
       return moment(this.assessmentDate).format('h:mma');
-    },
-    fromNow () {
-      return moment(this.assessmentDate).fromNow();
     },
     daysAway () {
       return moment(this.assessmentDate).diff(

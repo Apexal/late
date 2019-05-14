@@ -173,7 +173,7 @@ export default {
       return this.endMoment.isSame(moment(), 'day');
     },
     weekOf () {
-      return this.startMoment.format('dddd, MMMM Do YYYY');
+      return this.longDateFormat(this.startMoment);
     },
     range () {
       return this.endMoment.diff(
@@ -229,9 +229,6 @@ export default {
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN);
     },
-    fromNow (date) {
-      return moment(date).fromNow();
-    },
     shiftDates (amount) {
       this.startDate = moment(this.startDate, 'YYYY-MM-DD', true)
         .add(amount, 'days')
@@ -286,11 +283,7 @@ export default {
         });
 
       this.loading = false;
-    },
-    toFullDateTimeString: dueDate =>
-      moment(dueDate).format('dddd, MMMM Do YYYY, h:mma'),
-    toDateShorterString: dueDate => moment(dueDate).format('M/DD/YY'),
-    toTimeString: time => moment(time).format('h:mm a')
+    }
   }
 };
 </script>

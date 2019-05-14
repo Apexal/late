@@ -51,9 +51,6 @@ export default {
     }
   },
   methods: {
-    fromNow (date) {
-      return moment(date).from(this.now);
-    },
     async addTodo () {
       if (!this.newTodo) return;
 

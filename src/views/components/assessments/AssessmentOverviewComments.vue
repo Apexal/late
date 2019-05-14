@@ -23,7 +23,7 @@
           <div class="level-left">
             <small
               class="level-item tooltip is-tooltip-right has-text-grey"
-              :data-tooltip="toFullDateTimeString(c.addedAt)"
+              :data-tooltip="longDateTimeFormat(c.addedAt)"
             >{{ fromNow(c.addedAt) }}</small>
           </div>
         </nav>
@@ -72,7 +72,6 @@
 </template>
 
 <script>
-import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
 
 export default {
@@ -102,13 +101,6 @@ export default {
     }
   },
   methods: {
-    shortDateTimeString: date =>
-      moment(date).format('dddd, MMM Do YYYY [@] h:mma'),
-    toFullDateTimeString: date =>
-      moment(date).format('dddd, MMMM Do YYYY, h:mma'),
-    fromNow (date) {
-      return moment(date).from(this.now);
-    },
     async addComment () {
       if (!this.newComment) return;
 

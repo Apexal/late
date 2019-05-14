@@ -10,10 +10,10 @@
         class="tooltip"
         :data-tooltip="fromNow(props.row.date)"
       >
-        {{ toDateShorterString(props.row.date) }}
+        {{ shortDateTimeFormat(props.row.date) }}
         <span
           class="has-text-grey"
-        >{{ toTimeString(props.row.date) }}</span>
+        >{{ timeFormat(props.row.date) }}</span>
       </b-table-column>
 
       <b-table-column
@@ -44,7 +44,7 @@
           <i
             class="fas"
             :class="{ 'fa-check': props.row.completed, 'fa-times': !props.row.completed }"
-            :title="props.row.completed ? 'Completed on ' + toFullDateTimeString(props.row.completedAt) : 'Incomplete'"
+            :title="props.row.completed ? 'Completed on ' + longDateTimeFormat(props.row.completedAt) : 'Incomplete'"
           />
         </span>
         <span
@@ -117,14 +117,7 @@ export default {
     },
     capitalize (str) {
       return str.charAt(0).toUpperCase() + str.substring(1, str.length);
-    },
-    fromNow (date) {
-      return moment(date).from(this.now);
-    },
-    toFullDateTimeString: date =>
-      moment(date).format('dddd, MMMM Do YYYY, h:mma'),
-    toDateShorterString: date => moment(date).format('M/DD/YY'),
-    toTimeString: time => moment(time).format('h:mm a')
+    }
   }
 };
 </script>

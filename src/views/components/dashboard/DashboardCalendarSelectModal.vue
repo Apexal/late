@@ -34,7 +34,7 @@
         <span
           class="has-text-grey is-pulled-right"
         >
-          due {{ formatDate(assessment.dueDate || assessment.date) }}
+          due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}
         </span>
       </div>
       <template v-if="hasExtra">
@@ -58,7 +58,7 @@
             <span
               class="has-text-grey is-pulled-right"
             >
-              due {{ formatDate(assessment.dueDate || assessment.date) }}
+              due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}
             </span>
           </div>
         </div>
@@ -76,8 +76,6 @@
 </template>
 
 <script>
-import moment from 'moment';
-
 export default {
   name: 'DashboardCalendarSelectModal',
   props: {
@@ -106,17 +104,10 @@ export default {
   },
   computed: {
     dateStrs () {
-      if (this.start.isSame(this.end, 'day')) {
-        return {
-          start: this.start.format('M/DD/YY h:mm a'),
-          end: this.end.format('h:mm a')
-        };
-      } else {
-        return {
-          start: this.start.format('M/DD/YY h:mm a'),
-          end: this.end.format('M/DD/YY h:mm a')
-        };
-      }
+      return {
+        start: this.shortDateTimeFormat(this.start),
+        end: this.start.isSame(this.end, 'day') ? this.timeFormat(this.end) : this.shortDateTimeFormat(this.end)
+      };
     },
     limitedAssessments () {
       return this.assessments.slice(0, this.limit);
@@ -130,9 +121,6 @@ export default {
     }
   },
   methods: {
-    formatDate (date) {
-      return moment(date).format('M/DD/YY h:mm A');
-    },
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     }

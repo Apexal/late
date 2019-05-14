@@ -86,12 +86,12 @@
       <hr>
       <span>
         <b>Joined:</b>
-        {{ joinedDateString(student.joined_date) }}
+        {{ shortDateTimeString(student.joined_date) }}
       </span>
       <br>
       <span>
         <b>Last Login:</b>
-        {{ joinedDateString(student.last_login) }}
+        {{ shortDateTimeString(student.last_login) }}
       </span>
     </div>
 
@@ -183,9 +183,6 @@ export default {
     }
   },
   methods: {
-    joinedDateString (date) {
-      return moment(date).format('M/DD/YY h:mm a');
-    },
     async getStats () {
       let request;
 
