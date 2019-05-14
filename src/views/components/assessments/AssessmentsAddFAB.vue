@@ -76,6 +76,7 @@ export default {
     vertical-align: middle;
     transition:0.1s;
     transition-timing-function: ease-in-out;
+    color: white;
   }
 }
 
