@@ -209,6 +209,10 @@ const router = new Router({
       component: () => import('@/views/admin/TheAdminPage'),
       children: [
         {
+          path: '',
+          redirect: 'students'
+        },
+        {
           path: 'students',
           name: 'admin-student-list',
           meta: {
