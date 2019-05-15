@@ -100,6 +100,13 @@ const actions = {
     });
 
     const dayAbbreviations = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+    const periodTypes = {
+      LEC: 'Lecture',
+      LAB: 'Lab',
+      TES: 'Test',
+      REC: 'Recitation',
+      STU: 'Studio'
+    };
 
     for (let course of courses) {
       const courseStart = moment(course.startDate);
@@ -113,28 +120,26 @@ const actions = {
         const recurrence = new RRule({
           freq: RRule.WEEKLY,
           byweekday: [RRule[dayAbbreviations[period.day]]],
-          until: courseEnd.valueOf()
+          until: courseEnd.toDate()
         });
-
-        logger.info(recurrence);
 
         let request = await calendar.events.insert({
           calendarId: ctx.state.user.integrations.google.calendarIDs.courseSchedule,
           requestBody: {
-            summary: `${course.title} ${period.type}`,
+            summary: `${course.title} ${periodTypes[period.type] || period.type}`,
             description: `${course.summary} - ${course.sectionId} - ${course.credits} credits`,
             location: period.location,
-            // source: {
-            //   title: assessment.title,
-            //   url: assessmentURL
-            // },
+            source: {
+              title: 'Course Page',
+              url: process.env.BASE_URL + '/account/courses'
+            },
             start: {
               dateTime: start.toDate(),
-              timezone: 'America/New_York'
+              timeZone: 'America/New_York'
             },
             end: {
               dateTime: end.toDate(),
-              timezone: 'America/New_York'
+              timeZone: 'America/New_York'
             },
             recurrence: [recurrence.toString()],
             extendedProperties: {
@@ -145,11 +150,9 @@ const actions = {
             }
           }
         });
-
-        logger.info(`Created recurring GCAL event for period of course '${course.title}' for ${ctx.state.user.rcs_id}`);
       }
 
-      return;
+      logger.debug(`Created recurring GCAL events for course '${course.title}' for ${ctx.state.user.rcs_id}`);
     }
   }
 };

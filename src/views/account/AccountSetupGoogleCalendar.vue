@@ -73,7 +73,10 @@
           </div>
         </div>
         <div v-else-if="tab === 'courseSchedule'">
-          <p class="has-text-grey has-text-centered">
+          <div
+            v-if="calendarIDs.courseSchedule === ''"
+            class="has-text-centered"
+          >
             <b-button
               type="is-danger"
               :loading="loading"
@@ -82,7 +85,20 @@
             >
               Create Calendar for Work Blocks
             </b-button>
-          </p>
+          </div>
+          <div
+            v-else
+            class="content"
+          >
+            <p>
+              <b>LATE</b> has created the
+              <b
+                :title="getCalendarById(calendarIDs.courseSchedule).summary"
+                class="tag has-text-white google-calendar-tag"
+                :style="{ 'background-color': getCalendarById(calendarIDs.courseSchedule).backgroundColor }"
+              >{{ getCalendarById(calendarIDs.courseSchedule).summary }}</b> calendar in your Google Calendar and placed all of your course periods into it.
+            </p>
+          </div>
         </div>
         <hr>
         <b-button
