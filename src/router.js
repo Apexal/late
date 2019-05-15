@@ -207,6 +207,24 @@ const router = new Router({
         requiresAdmin: true
       },
       component: () => import('@/views/admin/TheAdminPage'),
+      children: [
+        {
+          path: 'students',
+          name: 'admin-student-list',
+          meta: {
+            title: 'Students'
+          },
+          component: () => import('@/views/components/admin/AdminStudentList.vue')
+        },
+        {
+          path: 'log',
+          name: 'admin-log',
+          meta: {
+            title: 'Server Log'
+          },
+          component: () => import('@/views/components/admin/AdminLog.vue')
+        }
+      ],
       beforeEnter: (to, from, next) => {
         // this route requires admin
         if (!store.state.auth.user.admin) {

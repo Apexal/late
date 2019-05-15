@@ -11,27 +11,22 @@
         >
           Administrator Control Panel
         </h1>
-        <li
-          :class="{ 'is-active': tab === 'users' }"
-          @click="tab = 'users'"
+        <router-link
+          :to="{ name: 'admin-student-list' }"
+          tag="li"
         >
-          <a>Users</a>
-        </li>
-        <li
-          :class="{ 'is-active': tab === 'log' }"
-          @click="tab = 'log'"
+          <a>Students</a>
+        </router-link>
+        <router-link
+          :to="{ name: 'admin-log' }"
+          tag="li"
         >
-          <a>Log</a>
-        </li>
+          <a>Server Log</a>
+        </router-link>
       </ul>
     </div>
 
-    <AdminStudentList
-      v-if="tab === 'users'"
-    />
-    <AdminLog
-      v-else-if="tab === 'log'"
-    />
+    <router-view />
   </section>
 </template>
 
@@ -41,14 +36,12 @@ import AdminLog from '@/views/components/admin/AdminLog';
 
 export default {
   name: 'TheAdminPage',
-  components: { AdminStudentList, AdminLog },
-  data () {
-    return {
-      tab: 'users'
-    };
-  }
+  components: { AdminStudentList, AdminLog }
 };
 </script>
 
 <style lang="scss" scoped>
+h1.title {
+  margin: 0;
+}
 </style>
