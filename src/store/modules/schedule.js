@@ -30,7 +30,7 @@ const state = {
 
 const getters = {
   currentTerm: (state, getters, rootState) =>
-    state.terms.find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
+    state.terms.filter(t => rootState.auth.user.terms.includes(t.code)).find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
     {},
   ongoing_courses: (state, getters, rootState) => {
     return state.courses.filter(course => !course.hidden && moment(rootState.now).isBetween(course.startDate, course.endDate));

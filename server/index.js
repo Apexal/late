@@ -60,10 +60,11 @@ app.use(async (ctx, next) => {
       .exec();
 
     // If first request, get terms
-    /* if (!ctx.session.terms) */ ctx.session.terms = await Term.find().exec();
+    if (ctx.state.env === 'development' || !ctx.session.terms) ctx.session.terms = await Term.find().exec();
 
     // Calculate current term on each request in case it changes (very unlikely but possible)
     if (
+      ctx.state.env === 'development' ||
       !ctx.session.currentTerm ||
       (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
     ) {
@@ -71,6 +72,8 @@ app.use(async (ctx, next) => {
         moment().isBetween(moment(t.start), moment(t.end))
       );
     }
+    // console.log(ctx.session.currentTerm);
+    ctx.state.onBreak = !ctx.session.currentTerm || !ctx.state.user.terms.includes(ctx.session.currentTerm.code);
 
     // Create Google auth if logged in and setup
     if (ctx.state.user && ctx.state.user.setup.google) {
@@ -83,6 +86,7 @@ app.use(async (ctx, next) => {
     await next();
   } catch (e) {
     ctx.status = e.status || 500;
+    console.error(e);
     logger.error(e);
 
     // Only send details of error if in development mode (to protect confidential info)

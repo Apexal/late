@@ -1,5 +1,4 @@
 import axios from '@/api';
-import moment from 'moment';
 
 const state = {
   user: {},
@@ -10,6 +9,7 @@ const getters = {
     if (!state.isAuthenticated) {
       return {
         profile: false,
+        terms: false,
         course_schedule: false,
         unavailability: false,
         integrations: false,
@@ -18,6 +18,7 @@ const getters = {
     }
     return {
       profile: state.user.setup.profile,
+      terms: state.user.setup.terms,
       course_schedule: state.user.setup.course_schedule.includes(
         rootGetters.currentTerm.code
       ),
