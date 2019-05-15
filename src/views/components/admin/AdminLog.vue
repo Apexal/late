@@ -1,5 +1,11 @@
 <template>
   <div class="admin-log content">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
+
     <h2 class="subtitle">
       Server Log
     </h2>
@@ -11,11 +17,6 @@
       Refresh
     </b-button>
     <blockquote>
-      <b-loading
-        :is-full-page="false"
-        :active="loading"
-        :can-cancel="false"
-      />
       <ul>
         <li
           v-for="(line, index) in log"

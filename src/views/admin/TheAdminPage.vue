@@ -23,6 +23,12 @@
         >
           <a>Server Log</a>
         </router-link>
+        <router-link
+          :to="{ name: 'admin-terms' }"
+          tag="li"
+        >
+          <a>School Terms</a>
+        </router-link>
       </ul>
     </div>
 

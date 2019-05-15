@@ -227,6 +227,14 @@ const router = new Router({
             title: 'Server Log'
           },
           component: () => import('@/views/components/admin/AdminLog.vue')
+        },
+        {
+          path: 'terms',
+          name: 'admin-terms',
+          meta: {
+            title: 'School Terms'
+          },
+          component: () => import('@/views/components/admin/AdminTermsList.vue')
         }
       ],
       beforeEnter: (to, from, next) => {
