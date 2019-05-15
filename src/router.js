@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import store from '@/store';
 
 import { Toast } from 'buefy/dist/components/toast';
+import { Snackbar } from 'buefy/dist/components/snackbar';
 
 Vue.use(Router);
 
@@ -77,6 +78,7 @@ const router = new Router({
       component: () => import('@/views/assessments/AssessmentsPage.vue'),
       meta: {
         title: 'Coursework',
+        cantViewOnBreak: true,
         requiresAuth: true
       },
       children: [
@@ -115,6 +117,7 @@ const router = new Router({
       name: 'coursework-stats',
       meta: {
         title: 'Coursework Stats',
+        cantViewOnBreak: true,
         requiresAuth: true
       },
       component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
@@ -125,6 +128,7 @@ const router = new Router({
       component: () => import('@/views/assessments/AssessmentsOverviewPage.vue'),
       props: { assessmentType: 'assignment' },
       meta: {
+        cantViewOnBreak: true,
         requiresAuth: true
       }
     },
@@ -134,6 +138,7 @@ const router = new Router({
       component: () => import('@/views/assessments/AssessmentsOverviewPage.vue'),
       props: { assessmentType: 'exam' },
       meta: {
+        cantViewOnBreak: true,
         requiresAuth: true
       }
     },
@@ -245,19 +250,7 @@ const router = new Router({
           },
           component: () => import('@/views/components/admin/AdminTermsList.vue')
         }
-      ],
-      beforeEnter: (to, from, next) => {
-        // this route requires admin
-        if (!store.state.auth.user.admin) {
-          next('/');
-          Toast.open({
-            message: 'You are not an admin!',
-            type: 'is-warning'
-          });
-        } else {
-          next();
-        }
-      }
+      ]
     },
     {
       path: '*',
@@ -276,17 +269,37 @@ router.beforeEach(async (to, from, next) => {
 
   if (!store.state.auth.isAuthenticated) await store.dispatch('GET_USER');
   if (to.meta.title) document.title = to.meta.title + ' | LATE';
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some(record => record.meta.requiresAuth) && !store.state.auth.isAuthenticated) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if (!store.state.auth.isAuthenticated) {
-      window.location = '/auth/login?redirectTo' + to.fullPath;
-    } else {
-      next();
-    }
-  } else {
-    next();
+    window.location = '/auth/login?redirectTo' + to.fullPath;
+    return;
   }
+
+  if (to.matched.some(record => record.meta.requiresAdmin) && !store.state.auth.user.admin) {
+    Toast.open({
+      message: 'Only admins can view this page!',
+      type: 'is-warning',
+      duration: 3000
+    });
+    return next('/');
+  }
+
+  if (to.matched.some(record => record.meta.cantViewOnBreak) && store.getters.onBreak) {
+    Snackbar.open({
+      message: 'You cannot view this page while on break!',
+      type: 'is-warning',
+      duration: 8000,
+      position: 'is-bottom',
+      actionText: 'Not on Break?',
+      onAction: () => {
+        router.push({ name: 'setup-terms' });
+      }
+    });
+    return next('/');
+  }
+
+  next();
 });
 
 export default router;

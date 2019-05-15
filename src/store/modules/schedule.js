@@ -32,6 +32,9 @@ const getters = {
   currentTerm: (state, getters, rootState) =>
     state.terms.filter(t => rootState.auth.user.terms.includes(t.code)).find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
     {},
+  nextTerm: (state, getters, rootState) => {
+    return state.terms.filter(t => rootState.auth.user.terms.includes(t.code)).find(t => moment(t.start).isAfter(moment()));
+  },
   ongoing_courses: (state, getters, rootState) => {
     return state.courses.filter(course => !course.hidden && moment(rootState.now).isBetween(course.startDate, course.endDate));
   },
@@ -47,10 +50,6 @@ const getters = {
     state.courses.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
-  nextTerm: state => {
-    let tms = state.terms.slice(0);
-    return tms.find(t => moment(t.start).isAfter(moment()));
-  },
   onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
   inClass: state => state.current.period !== false,
   classesOver: (state, getters) => {

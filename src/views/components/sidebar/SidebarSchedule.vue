@@ -4,7 +4,12 @@
       v-if="onBreak"
       class="panel-block has-text-grey"
     >
-      {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
+      <span v-if="!nextTerm">
+        Enjoy your break!
+      </span>
+      <span v-else>
+        {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
+      </span>
     </div>
     <div
       v-else-if="!setup"
@@ -55,7 +60,10 @@
         >{{ timeFormat(event.start) }}</span>
       </div>
     </div>
-    <div class="panel-block has-background-light has-text-centered">
+    <div
+      v-if="!onBreak"
+      class="panel-block has-background-light has-text-centered"
+    >
       <b-button
         :class="{ 'is-active': showPassed }"
         class="is-fullwidth showPassedButton"
