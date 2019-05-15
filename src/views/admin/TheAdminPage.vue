@@ -29,71 +29,23 @@
     <AdminStudentList
       v-if="tab === 'users'"
     />
-    <div
+    <AdminLog
       v-else-if="tab === 'log'"
-      class="server-log content"
-    >
-      <h2 class="subtitle">
-        Server Log
-      </h2>
-      <b-button
-        class="is-pulled-right"
-        :loading="loadingLog"
-        @click="getLog"
-      >
-        Refresh
-      </b-button>
-      <blockquote>
-        <b-loading
-          :is-full-page="false"
-          :active="loadingLog"
-          :can-cancel="false"
-        />
-        <ul>
-          <li
-            v-for="line in log"
-            :key="line"
-          >
-            {{ line }}
-          </li>
-        </ul>
-      </blockquote>
-    </div>
+    />
   </section>
 </template>
 
 <script>
 import AdminStudentList from '@/views/components/admin/AdminStudentList';
+import AdminLog from '@/views/components/admin/AdminLog';
 
 export default {
   name: 'TheAdminPage',
-  components: { AdminStudentList },
+  components: { AdminStudentList, AdminLog },
   data () {
     return {
-      tab: 'users',
-      log: [],
-      loadingLog: true
+      tab: 'users'
     };
-  },
-  async created () {
-    await this.getLog();
-  },
-  methods: {
-    async getLog () {
-      this.loadingLog = true;
-      let request;
-      try {
-        request = await this.$http.get('/students/log');
-      } catch (e) {
-        this.$toasted.error('Failed to load server log.');
-        this.log = [];
-        this.loadingLog = false;
-        return;
-      }
-
-      this.log = request.data.log.reverse();
-      this.loadingLog = false;
-    }
   }
 };
 </script>
