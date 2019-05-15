@@ -9,7 +9,7 @@ const getters = {
   userSetup: (state, getters, rootState, rootGetters) => {
     if (!state.isAuthenticated) {
       return {
-        personal_info: false,
+        profile: false,
         course_schedule: false,
         unavailability: false,
         integrations: false,
@@ -17,7 +17,7 @@ const getters = {
       };
     }
     return {
-      personal_info: state.user.setup.personal_info,
+      profile: state.user.setup.profile,
       course_schedule: state.user.setup.course_schedule.includes(
         rootGetters.currentTerm.code
       ),

@@ -153,13 +153,13 @@ const router = new Router({
           component: () => import('@/views/account/AccountHome.vue')
         },
         {
-          path: 'personalinfo',
-          name: 'setup-personal-info',
+          path: 'profile',
+          name: 'setup-profile',
           meta: {
-            title: 'Account Info'
+            title: 'Profile'
           },
           component: () =>
-            import('@/views/account/AccountSetupPersonalInfo.vue')
+            import('@/views/account/AccountSetupProfile.vue')
         },
         {
           path: 'terms',

@@ -64,7 +64,7 @@
             :disabled="!canReset"
             @click="importSchedule"
           >
-            {{ user.setup.personal_info ? 'Import Schedule' : 'Save' }}
+            {{ user.setup.profile ? 'Import Schedule' : 'Save' }}
           </b-button>
         </details>
       </form>
@@ -166,7 +166,7 @@ export default {
   },
   computed: {
     hasPersonalInfoSetup () {
-      return this.$store.getters.userSetup.personal_info;
+      return this.$store.getters.userSetup.profile;
     },
     currentTerm () {
       return this.$store.getters.currentTerm;

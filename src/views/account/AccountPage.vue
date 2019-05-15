@@ -55,9 +55,9 @@ export default {
     return {
       setups: [
         {
-          label: 'Account Info',
-          link: '/account/personalinfo',
-          setup_check: 'personal_info'
+          label: 'Profile',
+          link: '/account/profile',
+          setup_check: 'profile'
         },
         {
           label: 'Course Schedule',

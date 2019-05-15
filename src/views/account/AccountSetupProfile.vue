@@ -1,5 +1,5 @@
 <template>
-  <div class="personal-info-form">
+  <div class="account-setup-profile">
     <h2 class="is-size-4 integration-note">
       Tell us about yourself!
     </h2>
@@ -122,7 +122,7 @@
 
 <script>
 export default {
-  name: 'AccountSetupPersonalInfo',
+  name: 'AccountSetupProfile',
   data () {
     return {
       saved: false,

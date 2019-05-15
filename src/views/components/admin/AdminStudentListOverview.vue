@@ -167,7 +167,7 @@ export default {
     },
     setupCheckNames () {
       return {
-        personal_info: 'Account Info',
+        profile: 'Profile',
         course_schedule: 'Course Schedule',
         unavailability: 'Unavailability',
         integrations: 'Notifications'
@@ -175,7 +175,7 @@ export default {
     },
     hasSetupCheck () {
       return {
-        personal_info: this.student.setup.personal_info,
+        profile: this.student.setup.profile,
         course_schedule: this.student.setup.course_schedule.length > 0,
         unavailability: this.student.setup.unavailability.length > 0,
         integrations: this.student.setup.integrations
