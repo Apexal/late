@@ -11,7 +11,7 @@
         {{ students.length }} total
         <b-button
           :loading="loading"
-          @click="$emit('refresh-students')"
+          @click="getStudents"
         >Refresh</b-button>
       </small>
     </h2>
@@ -25,8 +25,7 @@
         <div class="select is-fullwidth">
           <select
             id="sort-by"
-            :value="sortBy"
-            @change="$emit('sort-by', $event.target.value)"
+            v-model="sortBy"
           >
             <option value="last_login">
               Last Login
@@ -46,7 +45,7 @@
       <div class="control">
         <a
           class="button"
-          @click="$emit('sort-ascending', !sortAscending)"
+          @click="sortAscending = !sortAscending"
         >{{ sortAscending ? 'Ascending' : 'Descending' }}</a>
       </div>
     </div>
@@ -58,8 +57,8 @@
       >
         <AdminStudentListOverview
           :student="student"
-          @update-student="$emit('update-student', arguments[0])"
-          @delete-student="$emit('delete-student', arguments[0])"
+          @update-student="updatedStudent"
+          @delete-student="deletedStudent"
         />
       </div>
     </div>
@@ -71,22 +70,65 @@ import AdminStudentListOverview from '@/views/components/admin/AdminStudentListO
 export default {
   name: 'AdminStudentList',
   components: { AdminStudentListOverview },
-  props: {
-    loading: {
-      type: Boolean,
-      required: true
+  data () {
+    return {
+      loading: true,
+      sortBy: 'joined_date',
+      sortAscending: true,
+      students: []
+    };
+  },
+  watch: {
+    sortBy (newSortBy) {
+      this.sortStudents();
     },
-    sortBy: {
-      type: String,
-      required: true
+    sortAscending (newSortAscending) {
+      this.sortStudents();
+    }
+  },
+  async created () {
+    await this.getStudents();
+  },
+  methods: {
+    sortStudents () {
+      this.students.sort((s1, s2) => {
+        if (this.sortAscending) {
+          if (!s1[this.sortBy]) return -1;
+          if (!s2[this.sortBy]) return 1;
+
+          if (s1[this.sortBy] < s2[this.sortBy]) return -1;
+          if (s1[this.sortBy] > s2[this.sortBy]) return 1;
+        } else {
+          if (!s1[this.sortBy]) return 1;
+          if (!s2[this.sortBy]) return -1;
+
+          if (s1[this.sortBy] > s2[this.sortBy]) return -1;
+          if (s1[this.sortBy] < s2[this.sortBy]) return 1;
+        }
+        return 0;
+      });
     },
-    sortAscending: {
-      type: Boolean,
-      required: true
+    async getStudents () {
+      this.loading = true;
+      let request;
+      try {
+        request = await this.$http.get('/students');
+      } catch (e) {
+        this.$toasted.error(e.response.data.message);
+        this.students = [];
+        this.loading = false;
+        return;
+      }
+
+      this.students = request.data.students;
+      this.sortStudents();
+      this.loading = false;
     },
-    students: {
-      type: Array,
-      required: true
+    updatedStudent (student) {
+      Object.assign(this.students.find(s => s._id === student._id), student);
+    },
+    deletedStudent (studentID) {
+      this.students = this.students.filter(s => s._id !== studentID);
     }
   }
 };
