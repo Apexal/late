@@ -67,7 +67,6 @@ const schema = new Schema(
       maxlength: 5,
       default: '23:00'
     },
-    // unavailability_schedules: { type: Object, default: {} },
     admin: { type: Boolean, default: false },
     notificationPreferences: {
       preWorkBlockReminders: {
@@ -125,7 +124,11 @@ const schema = new Schema(
       course_schedule: {
         type: Array,
         default: [] // semester codes like ['201809', '201901']
-      }, // what SIS and YACS will give us
+      }, // what SIS
+      terms: {
+        type: Array,
+        default: false // semester codes like ['201809', '201901']
+      },
       unavailability: {
         type: Array,
         default: [] // semester codes like ['201809', '201901']
@@ -138,6 +141,10 @@ const schema = new Schema(
         type: Boolean,
         default: false
       } // when the student has connected their Google account
+    },
+    terms: { // termCodes for all the terms they will be at school (able to use LATE)
+      type: Array,
+      default: []
     },
     joined_date: {
       type: Date,

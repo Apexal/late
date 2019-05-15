@@ -255,11 +255,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.integration-note {
-  text-align: center;
-  margin: 1.5em 0em 1em 0em;
-}
-
 .box.calendar {
   cursor: pointer;
   transition: opacity 0.3s;

@@ -92,11 +92,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.integration-note {
-  text-align: center;
-  margin: 1.5em 0em 1em 0em;
-}
-
 .integration-indicator {
   &.fa-check {
     color: green;

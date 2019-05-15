@@ -65,6 +65,11 @@ export default {
           setup_check: 'course_schedule'
         },
         {
+          label: 'Terms',
+          link: '/account/terms',
+          setup_check: 'terms'
+        },
+        {
           label: 'Study/Work Unavailability',
           link: '/account/unavailability',
           setup_check: 'unavailability'
@@ -109,5 +114,13 @@ export default {
 }
 .steps .is-active .step-details {
   font-weight: 600 !important;
+}
+
+</style>
+
+<style>
+.integration-note {
+  text-align: center;
+  margin: 1.5em 0em 1em 0em;
 }
 </style>

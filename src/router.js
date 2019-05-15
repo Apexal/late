@@ -162,6 +162,15 @@ const router = new Router({
             import('@/views/account/AccountSetupPersonalInfo.vue')
         },
         {
+          path: 'terms',
+          name: 'setup-terms',
+          meta: {
+            title: 'Terms'
+          },
+          component: () =>
+            import('@/views/account/AccountSetupTerms.vue')
+        },
+        {
           path: 'courseschedule',
           name: 'setup-course-schedule',
           meta: {
