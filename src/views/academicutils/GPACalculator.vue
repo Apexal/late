@@ -5,6 +5,7 @@
     </h2>
     <div class="buttons">
       <b-button
+        v-if="!onBreak"
         type="is-dark"
         @click="fillCourses"
       >
@@ -131,6 +132,9 @@ export default {
     };
   },
   computed: {
+    onBreak () {
+      return this.$store.getters.onBreak;
+    },
     allGradesIn () {
       return this.courses.every(course => course.gradeValue && course.credits);
     },

@@ -55,6 +55,18 @@
               Dashboard
             </router-link>
 
+            <router-link
+              v-if="onBreak"
+              class="navbar-item"
+              to="/about"
+              title="Learn more about LATE and its creators"
+            >
+              <span class="icon">
+                <i class="fas fa-question-circle" />
+              </span>
+              About
+            </router-link>
+
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
@@ -120,7 +132,6 @@
             </div>
 
             <div
-              v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
               <a
@@ -280,6 +291,9 @@ export default {
     },
     onBreak () {
       return this.$store.getters.onBreak;
+    },
+    isUserSetup () {
+      return this.$store.getters.isUserSetup;
     },
     navbarExpanded () {
       return this.$store.state.navbarExpanded;

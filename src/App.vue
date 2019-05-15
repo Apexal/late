@@ -152,7 +152,7 @@ export default {
     expanded () {
       return this.$store.state.sidebarExpanded;
     },
-    isSetup () {
+    isUserSetup () {
       return this.$store.getters.isUserSetup;
     }
   },
