@@ -60,14 +60,14 @@ export default {
           setup_check: 'profile'
         },
         {
+          label: 'School Terms',
+          link: '/account/terms',
+          setup_check: 'terms'
+        },
+        {
           label: 'Course Schedule',
           link: '/account/courseschedule',
           setup_check: 'course_schedule'
-        },
-        {
-          label: 'Terms',
-          link: '/account/terms',
-          setup_check: 'terms'
         },
         {
           label: 'Study/Work Unavailability',

@@ -113,6 +113,7 @@
         type="is-primary"
         :loading="loading"
         :disabled="saved"
+        @click="save"
       >
         Save and Continue
       </b-button>
@@ -155,7 +156,7 @@ export default {
 
       let request;
       try {
-        request = await this.$http.post('/setup/personalinfo', {
+        request = await this.$http.post('/account/profile', {
           first_name: this.first_name,
           last_name: this.last_name,
           rin: this.rin,

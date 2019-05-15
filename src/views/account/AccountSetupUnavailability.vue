@@ -252,7 +252,7 @@ export default {
 
       let request;
       try {
-        request = await this.$http.post('/setup/timepreference', {
+        request = await this.$http.post('/account/timepreference', {
           earliest: this.earliest,
           latest: this.fixedLatest
         });

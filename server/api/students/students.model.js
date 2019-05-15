@@ -117,7 +117,7 @@ const schema = new Schema(
       }
     },
     setup: {
-      personal_info: {
+      profile: {
         type: Boolean,
         default: false
       }, // what CMS API will give us

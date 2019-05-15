@@ -7,7 +7,7 @@
     <br>
     <router-link
       class="button is-medium is-primary"
-      to="/account/personalinfo"
+      to="/account/profile"
     >
       Start Setup
     </router-link>

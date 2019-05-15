@@ -16,7 +16,7 @@ const Course = require('../courses/courses.model');
  *
  * @param {Koa context} ctx
  */
-async function setPersonalInfo (ctx) {
+async function setProfile (ctx) {
   const body = ctx.request.body;
 
   // TODO: validate RIN
@@ -26,7 +26,7 @@ async function setPersonalInfo (ctx) {
 
   ctx.state.user.grad_year = parseInt(body.grad_year);
 
-  ctx.state.user.setup.personal_info = true;
+  ctx.state.user.setup.profile = true;
 
   try {
     await ctx.state.user.save();
@@ -41,6 +41,26 @@ async function setPersonalInfo (ctx) {
     );
     return ctx.badRequest('Failed to save personal info.');
   }
+}
+
+async function setTerms (ctx) {
+  const { termCodes } = ctx.request.body;
+
+  logger.info(`Setting terms for ${ctx.state.user.rcs_id}`);
+
+  // Validate the termCodes
+  if (termCodes.some(code => !ctx.session.terms.find(term => term.code === code))) {
+    logger.error(`Could not set terms for ${ctx.state.user.rcs_id}: Invalid term given.`);
+    return ctx.badRequest('Failed to set terms. You gave an invalid term code!');
+  }
+
+  ctx.state.user.terms = termCodes.sort();
+
+  await ctx.state.user.save();
+
+  ctx.ok({
+    updatedUser: ctx.state.user
+  });
 }
 
 /**
@@ -191,7 +211,8 @@ async function setGoogle (ctx) {
 }
 
 module.exports = {
-  setPersonalInfo,
+  setProfile,
+  setTerms,
   importCourseSchedule,
   setTimePreference,
   setGoogle

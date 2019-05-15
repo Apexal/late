@@ -200,7 +200,7 @@ export default {
 
       let request;
       try {
-        request = await this.$http.post('/setup/courseschedule', { pin: this.pin });
+        request = await this.$http.post('/account/courseschedule', { pin: this.pin });
       } catch (e) {
         this.loading = false;
         this.$toasted.error(e.response.data.message);

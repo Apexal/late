@@ -232,7 +232,7 @@ export default {
 
       let request;
       try {
-        request = await this.$http.post('/setup/google', {
+        request = await this.$http.post('/account/google', {
           calendarIDs: this.calendarIDs
         });
       } catch (e) {

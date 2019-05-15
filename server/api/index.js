@@ -6,7 +6,7 @@ router.use('/students', require('./students'));
 router.use('/courses', require('./courses'));
 router.use('/assignments', require('./assignments'));
 router.use('/exams', require('./exams'));
-router.use('/setup', require('./setup'));
+router.use('/account', require('./account'));
 router.use('/integrations', require('./integrations'));
 router.use('/terms', require('./terms'));
 router.use('/unavailabilities', require('./unavailabilities'));
