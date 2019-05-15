@@ -31,6 +31,7 @@
     <b-button
       type="is-primary"
       :disabled="saved"
+      @click="save"
     >
       Save and Continue
     </b-button>
@@ -66,6 +67,31 @@ export default {
       } else {
         this.selected.push(termCode);
       }
+    },
+    async save () {
+      this.loading = true;
+
+      let request;
+      try {
+        request = await this.$http.post('/account/terms', {
+          termCodes: this.selected
+        });
+      } catch (e) {
+        this.loading = false;
+        return this.$toasted.error(e.response.data.message);
+      }
+
+      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+
+      // Notify user of success
+      this.$toast.open({
+        message: 'Saved terms!',
+        type: 'is-success'
+      });
+
+      this.$router.push({ name: 'setup-course-schedule' });
+
+      this.loading = false;
     }
   }
 };

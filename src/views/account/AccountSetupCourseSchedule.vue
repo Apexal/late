@@ -7,7 +7,7 @@
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>
-    <template v-else-if="!hasPersonalInfoSetup">
+    <template v-else-if="!hasPersonalInfoSetup || !hasSelectedTerms">
       <h2
         class="subtitle has-text-centered"
       >
@@ -167,6 +167,9 @@ export default {
   computed: {
     hasPersonalInfoSetup () {
       return this.$store.getters.userSetup.profile;
+    },
+    hasSelectedTerms () {
+      return this.$store.getters.userSetup.terms;
     },
     currentTerm () {
       return this.$store.getters.currentTerm;

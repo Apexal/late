@@ -54,6 +54,7 @@ async function setTerms (ctx) {
     return ctx.badRequest('Failed to set terms. You gave an invalid term code!');
   }
 
+  ctx.state.user.setup.terms = true;
   ctx.state.user.terms = termCodes.sort();
 
   await ctx.state.user.save();

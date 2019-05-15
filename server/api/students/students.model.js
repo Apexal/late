@@ -126,7 +126,7 @@ const schema = new Schema(
         default: [] // semester codes like ['201809', '201901']
       }, // what SIS
       terms: {
-        type: Array,
+        type: Boolean,
         default: false // semester codes like ['201809', '201901']
       },
       unavailability: {

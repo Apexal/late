@@ -183,6 +183,7 @@
 
               <div class="navbar-dropdown is-right">
                 <router-link
+                  v-if="!onBreak"
                   class="navbar-item"
                   :to="{ name: 'coursework-stats' }"
                   title="View stats on your coursework"
@@ -192,7 +193,10 @@
                   </span>
                   Your Statistics
                 </router-link>
-                <hr class="navbar-divider">
+                <hr
+                  v-if="!onBreak"
+                  class="navbar-divider"
+                >
                 <router-link
                   v-if="user.admin"
                   class="navbar-item"
