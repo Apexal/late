@@ -37,21 +37,6 @@
         class="buttons is-centered"
       >
         <div class="field is-horizontal">
-          <div class="field-body">
-            <div
-              class="control"
-              style="margin-right:1em;"
-            >
-              <input
-                id="assignmentFilter"
-                v-model="assignmentFilter"
-                class="input"
-                type="text"
-                placeholder="Filter Assignments"
-              >
-            </div>
-          </div>
-
           <b-button
             type="is-primary"
             :disabled="isLastWeek"

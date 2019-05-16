@@ -16,52 +16,64 @@
       </small>
     </h2>
 
-    <label
-      for="sort-by"
-      class="label"
-    >Sort By</label>
-    <div class="field has-addons">
-      <div class="control is-expanded">
-        <div class="select is-fullwidth">
-          <select
-            id="sort-by"
-            v-model="sortBy"
-          >
-            <option value="last_login">
-              Last Login
-            </option>
-            <option value="joined_date">
-              Date Joined
-            </option>
-            <option value="rcs_id">
-              Username
-            </option>
-            <option value="grad_year">
-              Class
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="control">
-        <a
-          class="button"
-          @click="sortAscending = !sortAscending"
-        >{{ sortAscending ? 'Ascending' : 'Descending' }}</a>
-      </div>
-    </div>
-    <div class="users columns is-multiline">
-      <div
-        v-for="student in students"
-        :key="student._id"
-        class="column is-half"
+
+    <b-table
+      ref="table"
+      :data="students"
+      detailed
+      detail-key="rcs_id"
+      :row-class="rowClass"
+    >
+      <template slot-scope="props">
+        <b-table-column
+          field="rcs_id"
+          label="RCS ID"
+          width="40"
+        >
+          <a @click="toggle(props.row)">
+            {{ props.row.rcs_id }}
+          </a>
+        </b-table-column>
+
+        <b-table-column
+          field="name.first"
+          label="First Name"
+        >
+          <span v-if="props.row.name">
+            {{ props.row.name.first || '---' }}
+          </span>
+          <span v-else>---</span>
+        </b-table-column>
+
+        <b-table-column
+          field="name.last"
+          label="Last Name"
+        >
+          <span v-if="props.row.name">
+            {{ props.row.name.last || '---' }}
+          </span>
+          <span v-else>---</span>
+        </b-table-column>
+
+        <b-table-column
+          field="grad_year"
+          label="Graduation Year"
+        >
+          {{ props.row.grad_year || '---' }}
+        </b-table-column>
+      </template>
+
+      <template
+        slot="detail"
+        slot-scope="props"
       >
         <AdminStudentListOverview
-          :student="student"
+          :student="props.row"
           @update-student="updatedStudent"
           @delete-student="deletedStudent"
         />
-      </div>
-    </div>
+      </template>
+    </b-table>
   </div>
 </template>
 
@@ -90,6 +102,13 @@ export default {
     await this.getStudents();
   },
   methods: {
+    toggle (row) {
+      this.$refs.table.toggleDetails(row);
+    },
+    rowClass (row, index) {
+      if (row.admin) return 'has-background-primary';
+      if (row.accountLocked) return 'has-background-warning';
+    },
     sortStudents () {
       this.students.sort((s1, s2) => {
         if (this.sortAscending) {

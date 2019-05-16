@@ -1,59 +1,20 @@
 <template>
-  <details
-    class="user-overview box"
+  <div
+    class="user-overview "
     @toggle="getStats()"
   >
-    <summary>
-      <h2 class="subtitle">
-        <span
-          v-if="student.accountLocked"
-          class="icon"
-          title="This student's account is locked."
-        >
-          <i class="fa fa-lock" />
-        </span>
-        <span class="has-text-grey">{{ student.grade_name }}</span>
-        {{ student.display_name }}
-        <i
-          v-if="student.admin"
-          class="fa fa-star"
-          style="color:#e5c100"
-        />
-      </h2>
-    </summary>
-
-    <div class="setup-checks">
-      <hr>
-      <b>Setup Checks</b>
-      <table class="table">
-        <thead>
-          <th
-            v-for="sc in student.setup_checks"
-            :key="sc"
-          >
-            {{ setupCheckNames[sc] }}
-          </th>
-        </thead>
-        <tbody>
-          <tr>
-            <td
-              v-for="sc in student.setup_checks"
-              :key="sc"
-            >
-              <span class="icon">
-                <i
-                  class="fa"
-                  :class="hasSetupCheck[sc] ? 'fa-check' : 'fa-times'"
-                />
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <b-taglist class="setup-checks">
+      <b-tag
+        v-for="sc in student.setup_checks"
+        :key="sc"
+        :type="student.setup[sc] ? 'is-success' : 'is-danger'"
+        :title="`They have setup ${setupCheckNames[sc]}.`"
+      >
+        {{ setupCheckNames[sc] }}
+      </b-tag>
+    </b-taglist>
 
     <div class="content-stats">
-      <hr>
       <div class="level is-mobile">
         <div class="level-item has-text-centered">
           <div>
@@ -83,7 +44,6 @@
     </div>
 
     <div class="dates">
-      <hr>
       <span>
         <b>Joined:</b>
         {{ shortDateTimeFormat(student.joined_date) }}
@@ -142,7 +102,7 @@
         </template>
       </div>
     </div>
-  </details>
+  </div>
 </template>
 
 <script>
@@ -168,9 +128,11 @@ export default {
     setupCheckNames () {
       return {
         profile: 'Profile',
+        terms: 'Terms',
         course_schedule: 'Course Schedule',
         unavailability: 'Unavailability',
-        integrations: 'Notifications'
+        integrations: 'Notifications',
+        google: 'Google'
       };
     },
     hasSetupCheck () {
@@ -181,6 +143,9 @@ export default {
         integrations: this.student.setup.integrations
       };
     }
+  },
+  created () {
+    this.getStats();
   },
   methods: {
     async getStats () {

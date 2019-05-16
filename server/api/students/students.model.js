@@ -275,16 +275,16 @@ schema.virtual('setup_checks').get(function () {
 schema.virtual('grade_name').get(function () {
   // TODO: implement properly
   switch (this.grad_year) {
-  case 2022:
+  case 2023:
     return 'Freshman';
-  case 2021:
+  case 2022:
     return 'Sophomore';
-  case 2020:
+  case 2021:
     return 'Junior';
-  case 2019:
+  case 2020:
     return 'Senior';
   default:
-    return 'Unknown Grade';
+    return 'Alumn';
   }
 });
 
