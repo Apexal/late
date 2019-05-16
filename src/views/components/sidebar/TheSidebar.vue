@@ -21,7 +21,10 @@
         >{{ countdown }}</span>
       </p>
 
-      <div class="panel-block has-background-white-ter has-text-centered controls">
+      <div
+        v-if="!onBreak"
+        class="panel-block has-background-white-ter has-text-centered controls"
+      >
         <a
           class
           title="Add a new assignment"

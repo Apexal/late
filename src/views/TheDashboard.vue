@@ -35,7 +35,7 @@
         On Break
       </h2>
     </template>
-    <DashboardOverview v-if="tab === 'overview'" />
+    <DashboardOverview v-else-if="tab === 'overview'" />
     <DashboardCalendar v-else-if="tab === 'calendar'" />
   </section>
 </template>

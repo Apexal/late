@@ -10,6 +10,7 @@
       />
       <template v-if="loggedIn">
         <CourseModal
+          v-if="!onBreak"
           :open="courseModalOpen"
           :course="courseModalData"
         />
@@ -19,7 +20,7 @@
           @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
         />
         <SISMan />
-        <AssessmentsAddFAB />
+        <AssessmentsAddFAB v-if="!onBreak" />
       </template>
       <template v-if="!loading">
         <StudyToolsTimer
@@ -28,12 +29,12 @@
           :open="studyToolsTimerOpen"
         />
         <AssignmentsModalAdd
-          v-if="loggedIn"
+          v-if="loggedIn && !onBreak"
           :open="addAssignmentModalExpanded"
           @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
         />
         <ExamsModalAddRedux
-          v-if="loggedIn"
+          v-if="loggedIn && !onBreak"
           :open="addExamModalExpanded"
           @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
         />
@@ -136,6 +137,9 @@ export default {
     },
     loggedIn () {
       return this.$store.state.auth.isAuthenticated;
+    },
+    onBreak () {
+      return this.$store.getters.onBreak;
     },
     courses () {
       return this.$store.getters.current_courses;
