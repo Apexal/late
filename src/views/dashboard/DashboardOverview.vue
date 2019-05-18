@@ -48,7 +48,7 @@ export default {
         let location = locationParts.slice(0, locationParts.length - 1).join(' ') + ', Troy, NY 12180';
         return `&markers=color:${color}|label:${label}|${location}`;
       });
-      const url = `https://maps.googleapis.com/maps/api/staticmap?size=${this.sizeX}x${this.sizeY}&maptype=satellite${markers.join('')}&key=${this.key}`;
+      const url = `https://maps.googleapis.com/maps/api/staticmap?size=${this.sizeX}x${this.sizeY}&maptype=satellite${markers.join('')}&style=feature:all|visibility:off&style=feature:poi.school|visibility:on&key=${this.key}`;
       return encodeURI(url);
     }
   },
