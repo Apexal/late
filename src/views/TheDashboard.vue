@@ -43,6 +43,7 @@
 <script>
 import DashboardOverview from '@/views/dashboard/DashboardOverview';
 import DashboardCalendar from '@/views/dashboard/DashboardCalendar';
+
 export default {
   name: 'TheDashboard',
   components: { DashboardOverview, DashboardCalendar },

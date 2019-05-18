@@ -20,6 +20,8 @@ import wysiwyg from 'vue-wysiwyg';
 
 import datemethods from './mixins/datemethods';
 
+import * as VueGoogleMaps from 'vue2-google-maps';
+
 Vue.component('CourseAssessmentDot', CourseAssessmentDot);
 Vue.use(wysiwyg, { hideModules: { image: true } });
 Vue.use(Buefy);
@@ -52,6 +54,24 @@ Vue.use(Toasted, {
 Vue.config.productionTip = false;
 
 Vue.prototype.$http = Api;
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: process.env.VUE_APP_GOOGLE_API_KEY
+  }
+
+  /// / If you intend to programmatically custom event listener code
+  /// / (e.g. `this.$refs.gmap.$on('zoom_changed', someFunc)`)
+  /// / instead of going through Vue templates (e.g. `<GmapMap @zoom_changed="someFunc">`)
+  /// / you might need to turn this on.
+  // autobindAllEvents: false,
+
+  /// / If you want to manually install components, e.g.
+  /// / import {GmapMarker} from 'vue2-google-maps/src/components/marker'
+  /// / Vue.component('GmapMarker', GmapMarker)
+  /// / then disable the following:
+  // installComponents: true,
+});
 
 Vue.mixin(datemethods);
 

@@ -5,64 +5,18 @@
         <article class="tile is-child notification is-success">
           <div class="content">
             <p class="title">
-              Today
-            </p>
-            <p class="subtitle">
-              With even more content
+              Today's Class Locations
             </p>
             <div class="content">
-              <!-- Content -->
+              <router-link to="/">
+                <img
+                  :src="imageURL"
+                  alt="Map of locations of today's periods"
+                >
+              </router-link>
             </div>
           </div>
         </article>
-      </div>
-      <div class="tile is-vertical is-8">
-        <div class="tile">
-          <div class="tile is-parent is-vertical">
-            <article class="tile is-child notification is-primary">
-              <p class="title">
-                Vertical...
-              </p>
-              <p class="subtitle">
-                Top tile
-              </p>
-            </article>
-            <article class="tile is-child notification is-warning">
-              <p class="title">
-                ...tiles
-              </p>
-              <p class="subtitle">
-                Bottom tile
-              </p>
-            </article>
-          </div>
-          <div class="tile is-parent">
-            <article class="tile is-child notification is-info">
-              <p class="title">
-                Middle tile
-              </p>
-              <p class="subtitle">
-                With an image
-              </p>
-              <figure class="image is-4by3">
-                <img src="https://bulma.io/images/placeholders/640x480.png">
-              </figure>
-            </article>
-          </div>
-        </div>
-        <div class="tile is-parent">
-          <article class="tile is-child notification is-danger">
-            <p class="title">
-              Wide tile
-            </p>
-            <p class="subtitle">
-              Aligned with the right tile
-            </p>
-            <div class="content">
-              <!-- Content -->
-            </div>
-          </article>
-        </div>
       </div>
     </div>
   </div>
@@ -70,7 +24,39 @@
 
 <script>
 export default {
-  name: 'DashboardOverview'
+  name: 'DashboardOverview',
+  data () {
+    return {
+      zoom: 13,
+      sizeX: 600,
+      sizeY: 300
+    };
+  },
+  computed: {
+    key () {
+      return process.env.VUE_APP_GOOGLE_API_KEY;
+    },
+    periods () {
+      return this.$store.getters.current_courses.map(course => course.periods.filter(p => p.day === 1)).flat();
+    },
+    imageURL () {
+      let markers = this.periods.map(period => {
+        const course = this.course(period);
+        let color = '0x' + course.color.replace('#', '');
+        let label = period.type.charAt(0);
+        let locationParts = period.location.split(' ');
+        let location = locationParts.slice(0, locationParts.length - 1).join(' ') + ', Troy, NY 12180';
+        return `&markers=color:${color}|label:${label}|${location}`;
+      });
+      const url = `https://maps.googleapis.com/maps/api/staticmap?size=${this.sizeX}x${this.sizeY}&maptype=satellite${markers.join('')}&key=${this.key}`;
+      return encodeURI(url);
+    }
+  },
+  methods: {
+    course (p) {
+      return this.$store.getters.getCourseFromPeriod(p);
+    }
+  }
 };
 </script>
 
