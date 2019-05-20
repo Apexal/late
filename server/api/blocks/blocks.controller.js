@@ -173,13 +173,13 @@ async function editWorkBlock (ctx) {
 }
 
 /**
- * Remove a work block given its ID
+ * Delete a work block given its ID
  * @param {Koa context} ctx
- * @returns Removed block
+ * @returns Deleted block
  *
  * DELETE /:blockID
  */
-async function removeWorkBlock (ctx) {
+async function deleteWorkBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params;
 
   const removedBlock = await Block.findOne({
@@ -214,7 +214,7 @@ async function removeWorkBlock (ctx) {
     );
   }
 
-  logger.info(`Removed work block for ${ctx.state.user.rcs_id}`);
+  logger.info(`Deleted work block for ${ctx.state.user.rcs_id}`);
 
   if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
     try {
@@ -237,5 +237,5 @@ async function removeWorkBlock (ctx) {
 module.exports = {
   addWorkBlock,
   editWorkBlock,
-  removeWorkBlock
+  deleteWorkBlock
 };

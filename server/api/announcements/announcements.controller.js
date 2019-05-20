@@ -47,12 +47,12 @@ async function createAnnouncement (ctx) {
 }
 
 /**
- * Removes an announcement given its ID.
+ * Deletes an announcement given its ID.
  * Request parameters:
  *  - announcementID: the announcement ID
  * @param {Koa context} ctx
  */
-async function removeAnnouncement (ctx) {
+async function deleteAnnouncement (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!');
   }
@@ -64,12 +64,12 @@ async function removeAnnouncement (ctx) {
 
   deletedAnnouncement.remove();
 
-  logger.info(`Removed announcement for ${ctx.state.user.rcs_id}`);
+  logger.info(`Deleted announcement for ${ctx.state.user.rcs_id}`);
   ctx.ok({ deletedAnnouncement });
 }
 
 module.exports = {
   getAnnouncements,
   createAnnouncement,
-  removeAnnouncement
+  deleteAnnouncement
 };

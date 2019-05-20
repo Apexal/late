@@ -188,10 +188,10 @@ async function editExam (ctx) {
  * @param {Koa context} ctx
  * @returns The removed exam.
  */
-async function removeExam (ctx) {
+async function deleteExam (ctx) {
   const examID = ctx.params.examID;
 
-  // Remove exam
+  // Delete exam
   try {
     ctx.state.exam.remove();
   } catch (e) {
@@ -199,7 +199,7 @@ async function removeExam (ctx) {
   }
 
   logger.info(
-    `Removed exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}`
+    `Deleted exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}`
   );
 
   ctx.ok({
@@ -252,7 +252,7 @@ async function deleteComment (ctx) {
 
   const index = ctx.params.commentIndex;
 
-  // Remove the comment by its index
+  // Delete the comment by its index
   ctx.state.exam.comments.splice(index, 1);
 
   try {
@@ -276,7 +276,7 @@ module.exports = {
   getExam,
   createExam,
   editExam,
-  removeExam,
+  deleteExam,
   addComment,
   deleteComment
 };

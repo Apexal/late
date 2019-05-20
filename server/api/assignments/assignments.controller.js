@@ -363,10 +363,10 @@ async function toggleAssignment (ctx) {
  * @param {Koa context} ctx
  * @returns The removed assignment.
  */
-async function removeAssignment (ctx) {
+async function deleteAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
-  // Remove assignment
+  // Delete assignment
   try {
     ctx.state.assignment.remove();
   } catch (e) {
@@ -377,7 +377,7 @@ async function removeAssignment (ctx) {
   }
 
   logger.info(
-    `Removed assignment ${ctx.state.assignment._id} for ${
+    `Deleted assignment ${ctx.state.assignment._id} for ${
       ctx.state.user.rcs_id
     }`
   );
@@ -396,10 +396,10 @@ async function removeAssignment (ctx) {
 
     removedRecurringAssignments = await Assignment.find(query);
 
-    // Remove all in series either past and future or just future
+    // Delete all in series either past and future or just future
     for (let a of removedRecurringAssignments) a.remove();
 
-    logger.info('Removed recurring assignments');
+    logger.info('Deleted recurring assignments');
   }
 
   ctx.ok({
@@ -456,7 +456,7 @@ async function deleteComment (ctx) {
 
   const index = ctx.params.commentIndex;
 
-  // Remove the comment by its index
+  // Delete the comment by its index
   ctx.state.assignment.comments.splice(index, 1);
 
   try {
@@ -483,7 +483,7 @@ module.exports = {
   createAssignment,
   toggleAssignment,
   editAssignment,
-  removeAssignment,
+  deleteAssignment,
   addComment,
   deleteComment
 };

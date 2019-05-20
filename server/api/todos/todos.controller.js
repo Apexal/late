@@ -38,12 +38,12 @@ async function createTodo (ctx) {
 }
 
 /**
- * Removes a todo given its ID.
+ * Deletes a todo given its ID.
  * Request parameters:
  *  - todoID: the todo ID
  * @param {Koa context} ctx
  */
-async function removeTodo (ctx) {
+async function deleteTodo (ctx) {
   const { todoID } = ctx.params;
   const deletedTodo = await Todo.findOne({
     _id: todoID,
@@ -52,12 +52,12 @@ async function removeTodo (ctx) {
 
   deletedTodo.remove();
 
-  logger.info(`Removed todo for ${ctx.state.user.rcs_id}`);
+  logger.info(`Deleted todo for ${ctx.state.user.rcs_id}`);
   ctx.ok({ deletedTodo });
 }
 
 module.exports = {
   getTodos,
   createTodo,
-  removeTodo
+  deleteTodo
 };

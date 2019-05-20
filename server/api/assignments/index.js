@@ -24,7 +24,7 @@ router.post(
 router.delete(
   '/a/:assignmentID',
   Ctrl.getAssignmentMiddleware,
-  Ctrl.removeAssignment
+  Ctrl.deleteAssignment
 );
 
 /* Assignment Comments */

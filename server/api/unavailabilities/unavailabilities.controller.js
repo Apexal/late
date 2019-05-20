@@ -83,7 +83,7 @@ async function updateUnavailability (ctx) {
 }
 
 /**
- * Removes a unavailability given its ID.
+ * Deletes a unavailability given its ID.
  * Request parameters:
  *  - unavailabilityID: the unavailability block ID
  * @param {Koa context} ctx
@@ -97,7 +97,7 @@ async function removeUnavailability (ctx) {
 
   deletedUnavailability.remove();
 
-  logger.info(`Removed unavailability block for ${ctx.state.user.rcs_id}`);
+  logger.info(`Deleted unavailability block for ${ctx.state.user.rcs_id}`);
   ctx.ok({ deletedUnavailability });
 }
 

@@ -5,6 +5,6 @@ const Ctrl = require('./announcements.controller');
 
 router.get('/', Ctrl.getAnnouncements);
 router.post('/', Ctrl.createAnnouncement);
-router.delete('/:announcementID', Ctrl.removeAnnouncement);
+router.delete('/:announcementID', Ctrl.deleteAnnouncement);
 
 module.exports = router.routes();
