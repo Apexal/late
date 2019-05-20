@@ -19,7 +19,9 @@
       @click="removeTodo(t)"
     >
       <span class="is-full-width">
-        <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.addedAt) }}</small>
+        <small class="todo-time is-pulled-right has-text-grey">{{
+          fromNow(t.addedAt)
+        }}</small>
         {{ t.text }}
       </span>
     </div>
@@ -68,9 +70,15 @@ export default {
         onConfirm: async () => {
           try {
             await this.$store.dispatch('REMOVE_TODO', todo);
-            this.$toast.open({ message: `Deleted to-do '${todo.text}'.`, type: 'is-success' });
+            this.$toast.open({
+              message: `Completed to-do '${todo.text}'.`,
+              type: 'is-success'
+            });
           } catch (e) {
-            this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+            this.$toast.open({
+              message: e.response.data.message,
+              type: 'is-danger'
+            });
           }
         }
       });
