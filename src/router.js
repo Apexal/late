@@ -48,7 +48,8 @@ const router = new Router({
         {
           path: 'coursegrade',
           name: 'course-grade-estimator',
-          component: () => import('@/views/academicutils/CourseGradeEstimator.vue')
+          component: () =>
+            import('@/views/academicutils/CourseGradeEstimator.vue')
         }
       ]
     },
@@ -62,6 +63,19 @@ const router = new Router({
         {
           path: '',
           name: 'study-tools'
+        }
+      ]
+    },
+    {
+      path: '/checklist',
+      component: () => import('@/views/checklists/MoveInChecklist.vue'),
+      meta: {
+        title: 'Move In Checklist'
+      },
+      children: [
+        {
+          path: '',
+          name: 'checklist'
         }
       ]
     },
@@ -125,7 +139,8 @@ const router = new Router({
     {
       path: '/coursework/a/:assignmentID',
       name: 'assignment-overview',
-      component: () => import('@/views/assessments/AssessmentsOverviewPage.vue'),
+      component: () =>
+        import('@/views/assessments/AssessmentsOverviewPage.vue'),
       props: { assessmentType: 'assignment' },
       meta: {
         cantViewOnBreak: true,
@@ -135,7 +150,8 @@ const router = new Router({
     {
       path: '/coursework/e/:examID',
       name: 'exam-overview',
-      component: () => import('@/views/assessments/AssessmentsOverviewPage.vue'),
+      component: () =>
+        import('@/views/assessments/AssessmentsOverviewPage.vue'),
       props: { assessmentType: 'exam' },
       meta: {
         cantViewOnBreak: true,
@@ -163,8 +179,7 @@ const router = new Router({
           meta: {
             title: 'Profile'
           },
-          component: () =>
-            import('@/views/account/AccountSetupProfile.vue')
+          component: () => import('@/views/account/AccountSetupProfile.vue')
         },
         {
           path: 'terms',
@@ -172,8 +187,7 @@ const router = new Router({
           meta: {
             title: 'Terms'
           },
-          component: () =>
-            import('@/views/account/AccountSetupTerms.vue')
+          component: () => import('@/views/account/AccountSetupTerms.vue')
         },
         {
           path: 'courseschedule',
@@ -232,7 +246,8 @@ const router = new Router({
           meta: {
             title: 'Students'
           },
-          component: () => import('@/views/components/admin/AdminStudentList.vue')
+          component: () =>
+            import('@/views/components/admin/AdminStudentList.vue')
         },
         {
           path: 'log',
@@ -269,14 +284,20 @@ router.beforeEach(async (to, from, next) => {
 
   if (!store.state.auth.isAuthenticated) await store.dispatch('GET_USER');
   if (to.meta.title) document.title = to.meta.title + ' | LATE';
-  if (to.matched.some(record => record.meta.requiresAuth) && !store.state.auth.isAuthenticated) {
+  if (
+    to.matched.some(record => record.meta.requiresAuth) &&
+    !store.state.auth.isAuthenticated
+  ) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
     window.location = '/auth/login?redirectTo' + to.fullPath;
     return;
   }
 
-  if (to.matched.some(record => record.meta.requiresAdmin) && !store.state.auth.user.admin) {
+  if (
+    to.matched.some(record => record.meta.requiresAdmin) &&
+    !store.state.auth.user.admin
+  ) {
     Toast.open({
       message: 'Only admins can view this page!',
       type: 'is-warning',
@@ -285,7 +306,10 @@ router.beforeEach(async (to, from, next) => {
     return next('/');
   }
 
-  if (to.matched.some(record => record.meta.cantViewOnBreak) && store.getters.onBreak) {
+  if (
+    to.matched.some(record => record.meta.cantViewOnBreak) &&
+    store.getters.onBreak
+  ) {
     Snackbar.open({
       message: 'You cannot view this page while on break!',
       type: 'is-warning',
