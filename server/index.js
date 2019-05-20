@@ -60,7 +60,9 @@ app.use(async (ctx, next) => {
       .exec();
 
     // If first request, get terms
-    if (ctx.state.env === 'development' || !ctx.session.terms) ctx.session.terms = await Term.find().exec();
+    if (ctx.state.env === 'development' || !ctx.session.terms) {
+      ctx.session.terms = await Term.find().exec();
+    }
 
     // Calculate current term on each request in case it changes (very unlikely but possible)
     if (
@@ -73,7 +75,9 @@ app.use(async (ctx, next) => {
       );
     }
     // console.log(ctx.session.currentTerm);
-    ctx.state.onBreak = !ctx.session.currentTerm || !ctx.state.user.terms.includes(ctx.session.currentTerm.code);
+    ctx.state.onBreak =
+      !ctx.session.currentTerm ||
+      !ctx.state.user.terms.includes(ctx.session.currentTerm.code);
 
     // Create Google auth if logged in and setup
     if (ctx.state.user && ctx.state.user.setup.google) {

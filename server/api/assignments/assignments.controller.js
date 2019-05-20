@@ -385,9 +385,14 @@ async function removeAssignment (ctx) {
   let removedRecurringAssignments = [];
   if (ctx.request.query.removeRecurring) {
     const rootAssignmentID = ctx.state.assignment._recurringOriginal;
-    const query = { _student: ctx.state.user._id, _recurringOriginal: rootAssignmentID };
+    const query = {
+      _student: ctx.state.user._id,
+      _recurringOriginal: rootAssignmentID
+    };
 
-    if (ctx.request.query.removeRecurring === 'future') query.dueDate = { $gt: ctx.state.assignment.dueDate };
+    if (ctx.request.query.removeRecurring === 'future') {
+      query.dueDate = { $gt: ctx.state.assignment.dueDate };
+    }
 
     removedRecurringAssignments = await Assignment.find(query);
 

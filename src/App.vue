@@ -24,7 +24,7 @@
       </template>
       <template v-if="!loading">
         <StudyToolsTimer
-          v-if="$route.path !='/studytools'"
+          v-if="$route.path != '/studytools'"
           :detached="true"
           :open="studyToolsTimerOpen"
         />
@@ -46,7 +46,12 @@
             @click="$store.commit('TOGGLE_SIDEBAR')"
           >
             <i
-              :class="'fas ' + (expanded ? 'fas fa-chevron-up fa-rotate-270' : 'fas fa-chevron-up fa-rotate-90')"
+              :class="
+                'fas ' +
+                  (expanded
+                    ? 'fas fa-chevron-up fa-rotate-270'
+                    : 'fas fa-chevron-up fa-rotate-90')
+              "
             />
           </span>
         </transition>
@@ -69,7 +74,10 @@
 
           <div
             id="content"
-            :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
+            :class="[
+              loggedIn && expanded ? 'columm' : 'container',
+              { 'no-sidebar': !expanded }
+            ]"
             style="flex: 1;"
           >
             <PinnedAnnouncements v-if="loggedIn" />
@@ -125,7 +133,10 @@ export default {
   },
   computed: {
     studyToolsTimerOpen () {
-      return this.$store.state.studytoolstimer.open && this.$route.name !== 'study-tools-timer';
+      return (
+        this.$store.state.studytoolstimer.open &&
+        this.$route.name !== 'study-tools-timer'
+      );
     },
     courseModalData () {
       return this.$store.state.courseModal.current;
@@ -222,7 +233,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/assets/late_theme.scss';
+@import "@/assets/late_theme.scss";
 
 /*-------------------------------------------*/
 /*               Global Styles

@@ -1,4 +1,3 @@
-
 /**
  * Returns a mapping which determines whether a particular time
  * range is available.
@@ -15,10 +14,12 @@ function availableTime (user) {
     for (const time in blockedTimes) {
       // determine if the interval bgn-end and time are not disjoint
       // return false if they are not disjoint.
-      if ((time.start <= bgn && bgn <= time.end) ||
+      if (
+        (time.start <= bgn && bgn <= time.end) ||
         (time.start <= end && end <= time.end) ||
         (bgn <= time.start && time.start <= end) ||
-        (bgn <= time.end && time.end <= end)) {
+        (bgn <= time.end && time.end <= end)
+      ) {
         return false;
       }
     }
@@ -53,11 +54,11 @@ function splitAssignments (ctx, assignments) {
     let timeRemaining = a.timeRemaining * 60;
     // for now, split everything into 30 minute blocks
     while (timeRemaining > 0) {
-      const block = /* new ctx.db.Block */({
+      const block = /* new ctx.db.Block */ {
         _assignment: a,
         startTime: null,
         duration: Math.min(30, timeRemaining)
-      });
+      };
       blocks.push(block);
       timeRemaining -= 30;
     }
@@ -91,11 +92,8 @@ function orderBlocks (blocks) {
  */
 function placeBlocks (user, block) {
   // collect free time slots as bins
-
   // place blocks into bins first-come-first-serve
-
   // continue until blocks are filled
-
   // if we can't fit...we don't sit?
 }
 
@@ -106,7 +104,7 @@ function placeBlocks (user, block) {
  * @param blocks the array of blocks
  */
 function calcPosition (block, idx, blocks) {
-  return Math.floor(Math.random() * (idx + 1) / (block._assignment.priority));
+  return Math.floor((Math.random() * (idx + 1)) / block._assignment.priority);
 }
 
 module.exports = {

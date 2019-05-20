@@ -65,7 +65,7 @@
     "@vue/cli-service": "^3.7.0",
     "@vue/eslint-config-prettier": "^3.0.5",
     "cross-env": "^5.2.0",
-    "eslint": "^5.14.1",
+    "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-node": "^8.0.1",
@@ -107,89 +107,6 @@
     "url": "https://github.com/Apexal/late/issues"
   },
   "homepage": "https://github.com/Apexal/late#readme",
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "standard",
-      "plugin:vue/recommended"
-    ],
-    "rules": {
-      "indent": [
-        "error",
-        2
-      ],
-      "linebreak-style": [
-        "error",
-        "unix"
-      ],
-      "quotes": [
-        "error",
-        "single"
-      ],
-      "semi": [
-        "error",
-        "always"
-      ],
-      "no-multiple-empty-lines": [
-        1,
-        {
-          "max": 2,
-          "maxEOF": 1
-        }
-      ],
-      "no-trailing-spaces": [
-        1,
-        {
-          "skipBlankLines": false
-        }
-      ],
-      "no-mixed-spaces-and-tabs": [
-        1
-      ],
-      "no-unused-vars": [
-        1,
-        {
-          "allow": [
-            "warn",
-            "error"
-          ]
-        }
-      ],
-      "no-console": [
-        1,
-        {
-          "allow": [
-            "warn",
-            "error"
-          ]
-        }
-      ],
-      "vue/component-name-in-template-casing": [
-        "error",
-        "PascalCase",
-        {
-          "ignores": [
-            "router-view",
-            "router-link",
-            "transition",
-            "transition-group",
-            "keep-alive",
-            "vue-progress-bar"
-          ]
-        }
-      ],
-      "vue/script-indent": "error",
-      "vue/no-spaces-around-equal-signs-in-attribute": "error",
-      "vue/no-unused-components": "off",
-      "vue/no-unused-vars": "warning"
-    },
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
   "postcss": {
     "plugins": {
       "autoprefixer": {}

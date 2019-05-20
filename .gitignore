@@ -64,7 +64,6 @@ typings/
 .next
 
 package-lock.json
-.vscode
 
 config/
 client/
@@ -73,4 +72,4 @@ test.js
 
 *.ics
 
-.idea
+.idea/
