@@ -4,9 +4,8 @@
 
 > Lazy Automatic Time Evaluator
 
-<p align="right">
-  <img src="./public/sisman.svg" width="150">
-</p>
+  <img align="right" src="./public/sisman.svg" width="150">
+
 
 #### Links
 
