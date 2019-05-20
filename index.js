@@ -1,3 +1,7 @@
+/**
+ * This file starts the server on the HOST and PORT specified in .env file.
+ */
+
 require('dotenv').config();
 
 const app = require('./server');

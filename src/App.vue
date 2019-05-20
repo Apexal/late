@@ -86,6 +86,7 @@
     <TheFooter id="footer" />
   </div>
 </template>
+
 <script>
 import TheHeader from '@/views/components/TheHeader';
 import TheFooter from '@/views/components/TheFooter';

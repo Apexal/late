@@ -1,3 +1,10 @@
+/**
+ * This file consolidates all of the API routes with the authentication routes.
+ * For the API routes, it ensures that there must be a logged in user for the majority of the endpoints.
+ *
+ * CAS authentication, Google authentication, and Discord authentication is also handled here.
+ */
+
 const { loginStudent, cas } = require('./modules/auth');
 const request = require('request-promise');
 const google = require('./modules/google');
