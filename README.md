@@ -5,7 +5,7 @@
 > Lazy Automatic Time Evaluator
 
 <p align="right">
-  <img src="https://raw.githubusercontent.com/Apexal/late/dev/public/sisman.svg" width="150">
+  <img src="./public/sisman.svg" width="150">
 </p>
 
 #### Links
