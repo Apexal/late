@@ -1,6 +1,11 @@
+
+
 # LATE
 
 > Lazy Automatic Time Evaluator
+
+  <img align="right" src="./public/sisman.svg" width="150">
+
 
 #### Links
 
@@ -31,7 +36,7 @@ Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with vers
 - Checkout the `dev` branch with `$ git checkout dev`
 - `$ npm install -g @vue/cli`
 - `$ npm install`
-- Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables **TEAM MEMBERS: ** Ask Frank for the official `.env` file
+- Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables **TEAM MEMBERS:** Ask Frank for the official `.env` file
 
 To run the project in development mode, you must run the API server in one terminal and the front end hot-reloading server in another terminal:
 
@@ -51,3 +56,6 @@ Conveniently view assignments for the near future:<br/>
 
 Seamlessly integrate SMS/email reminders:<br/>
 <img src= "https://github.com/Apexal/late/blob/dev/public/Notification_Preferences_README.png" width="250" height="250">
+
+## License
+MIT
