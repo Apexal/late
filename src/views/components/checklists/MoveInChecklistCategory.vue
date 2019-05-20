@@ -1,10 +1,16 @@
 <template>
   <details class="panel category">
-    <summary
-      class="panel-heading"
-    >
-      {{ category.title }}
-      <span class="delete is-pulled-right">delete</span>
+    <summary class="panel-heading">
+      <div class="padded">
+        {{ category.title }}
+      </div>
+      <progress
+        :value="progress"
+        class="progress is-small is-primary"
+        max="100"
+      >
+        {{ progress }}%
+      </progress>
     </summary>
     <div class="panel-block">
       <form @submit.prevent="addItem">
@@ -34,8 +40,9 @@
     <Item
       v-for="(item, index) in category.items"
       :key="index"
+      :category-index="categoryIndex"
+      :item-index="index"
       :item="item"
-      @add-item="addItem"
     />
   </details>
 </template>
@@ -51,6 +58,10 @@ export default {
       type: Boolean,
       default: true
     },
+    categoryIndex: {
+      type: Number,
+      required: true
+    },
     category: {
       type: Object,
       required: true
@@ -64,9 +75,23 @@ export default {
       }
     };
   },
+  computed: {
+    progress () {
+      if (this.category.items.length === 0) return 0;
+      return (
+        (this.category.items.filter(item => item.count === item.progress)
+          .length /
+        this.category.items.length) *
+        100
+      );
+    }
+  },
   methods: {
     addItem () {
-      this.$emit('add-item', this.newItem);
+      this.$store.commit('ADD_CHECKLIST_ITEM', {
+        categoryIndex: this.categoryIndex,
+        item: this.newItem
+      });
       this.newItem = {
         title: '',
         count: 1
@@ -77,4 +102,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.panel-heading {
+  padding: 0;
+
+  .padded {
+    padding: 0.5em 0;
+    display: inline-block;
+  }
+
+  progress {
+    border-radius: 0;
+  }
+}
 </style>

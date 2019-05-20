@@ -24,13 +24,13 @@
 
     <div class="columns is-multiline categories">
       <div
-        v-for="(category, index) in categories"
+        v-for="(category, index) in checklist.categories"
         :key="index"
         class="column is-one-third"
       >
         <Category
+          :category-index="index"
           :category="category"
-          @add-item="addItem(index, arguments[0])"
         />
       </div>
     </div>
@@ -46,7 +46,6 @@ export default {
   data () {
     return {
       newCategory: '',
-      categories: [],
       recommendedCategories: [
         'Bedroom Items',
         'Clothing',
@@ -59,16 +58,15 @@ export default {
       ]
     };
   },
+  computed: {
+    checklist () {
+      return this.$store.state.checklists.checklist;
+    }
+  },
   methods: {
     addCategory () {
-      this.categories.push({
-        title: this.newCategory,
-        items: []
-      });
+      this.$store.commit('ADD_CATEGORY', this.newCategory);
       this.newCategory = '';
-    },
-    addItem (categoryIndex, item) {
-      this.categories[categoryIndex].items.push(item);
     }
   }
 };
