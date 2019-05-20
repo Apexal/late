@@ -30,18 +30,25 @@ const state = {
 
 const getters = {
   currentTerm: (state, getters, rootState) =>
-    state.terms.filter(t => rootState.auth.user.terms.includes(t.code)).find(t => moment(rootState.now).isBetween(t.start, t.end)) ||
-    {},
+    state.terms
+      .filter(t => rootState.auth.user.terms.includes(t.code))
+      .find(t => moment(rootState.now).isBetween(t.start, t.end)) || {},
   nextTerm: (state, getters, rootState) => {
-    return state.terms.filter(t => rootState.auth.user.terms.includes(t.code)).find(t => moment(t.start).isAfter(moment()));
+    return state.terms
+      .filter(t => rootState.auth.user.terms.includes(t.code))
+      .find(t => moment(t.start).isAfter(moment()));
   },
   ongoing_courses: (state, getters, rootState) => {
-    return state.courses.filter(course => !course.hidden && moment(rootState.now).isBetween(course.startDate, course.endDate));
+    return state.courses.filter(
+      course =>
+        !course.hidden &&
+        moment(rootState.now).isBetween(course.startDate, course.endDate)
+    );
   },
   current_courses_all: state => {
     return state.courses;
   },
-  current_courses: (state) => {
+  current_courses: state => {
     return state.courses.filter(course => !course.hidden);
   },
   getCourseFromCRN: state => crn =>
@@ -95,11 +102,20 @@ const actions = {
   async GET_TERMS ({ commit }) {
     const response = await axios.get('/terms');
     commit('SET_TERMS', response.data.terms);
+
+    return response.data.terms;
+  },
+  async ADD_TERM ({ commit, state }, newTerm) {
+    const response = await axios.post('/terms', newTerm);
+    commit('SET_TERMS', [...state.terms, response.data.createdTerm]);
+
+    return response.data.createdTerm;
   },
   async GET_COURSES ({ commit }) {
     const response = await axios.get('/courses');
     commit('SET_COURSES', response.data.courses);
-    return response;
+
+    return response.data.courses;
   },
   /**
    * Update a user's course. This updates the single course object passed on the server and validates that no special properties are change (_id, originalTitle, etc.)
@@ -171,7 +187,10 @@ const mutations = {
     state.courses = courses;
   },
   UPDATE_COURSE: (state, updatedCourse) => {
-    Object.assign(state.courses.find(c => c._id === updatedCourse._id), updatedCourse);
+    Object.assign(
+      state.courses.find(c => c._id === updatedCourse._id),
+      updatedCourse
+    );
   },
   SET_TERMS: (state, terms) => {
     state.terms = terms;

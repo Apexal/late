@@ -44,7 +44,7 @@ async function createTerm (ctx) {
   });
 
   if (
-    moment(start).isSameOrBefore(end) ||
+    moment(end).isSameOrBefore(start) ||
     moment(classesEnd).isSameOrBefore(start) ||
     moment(classesEnd).isAfter(end)
   ) {
