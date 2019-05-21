@@ -1,13 +1,21 @@
 <template>
   <div class="integrations-setup">
-    <h2 class="title">
-      Notification Preferences
+    <h2 class="is-size-4 integration-note">
+      How do you want your updates?
     </h2>
     <div class="columns">
       <div class="column">
+        <h2 class="is-size-5">
+          Notification Preferences
+        </h2>
+        <hr class="title-divider">
         <SetupIntegrationsPreferences />
       </div>
       <div class="column">
+        <h2 class="is-size-5">
+          Integrations
+        </h2>
+        <hr class="title-divider">
         <div class="tabs">
           <ul>
             <li :class="{ 'is-active': currentTab === 'SetupIntegrationsSMS' }">
@@ -92,6 +100,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.title-divider {
+  margin: 0.5rem 0;
+}
 .integration-indicator {
   &.fa-check {
     color: green;

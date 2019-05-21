@@ -26,7 +26,7 @@
         <b-input
           v-model.trim="newCourseTitle"
           type="text"
-          placeholder="Add another course"
+          placeholder="Add a course"
           required
         />
         <p class="control">

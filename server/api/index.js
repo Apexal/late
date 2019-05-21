@@ -11,7 +11,7 @@ router.use('/students', require('./students'));
 router.use('/courses', notOnBreak, require('./courses'));
 router.use('/assignments', notOnBreak, require('./assignments'));
 router.use('/exams', notOnBreak, require('./exams'));
-router.use('/account', notOnBreak, require('./account'));
+router.use('/account', require('./account')); // removed notOnBreak temporarily
 router.use('/integrations', require('./integrations'));
 router.use('/terms', require('./terms'));
 router.use('/unavailabilities', notOnBreak, require('./unavailabilities'));

@@ -56,9 +56,14 @@
           </div>
         </form>
       </div>
-      <h2>Drag to set your study/work unavailability</h2>
-      <p class="help">
-        Click on blocks to remove them. You can also drag, drop, and resive them.
+      <h1 class="is-size-4">
+        Set unavailabilities
+        <span class="has-text-grey">(optional)</span>
+      </h1>
+      <p
+        class="help"
+      >
+        Drag, drop, and resize to create blocks of time that LATE will avoid scheduling work/studying within. Click on blocks to remove them.
       </p>
       <FullCalendar
         ref="calendar"
@@ -190,7 +195,9 @@ export default {
     },
     select (start, end) {
       this.$dialog.prompt({
-        message: `What are you doing ${start.format('h:mma')} to ${start.format('h:mma')} on ${start.format('dddd')}?`,
+        message: `What are you doing ${start.format('h:mma')} to ${start.format(
+          'h:mma'
+        )} on ${start.format('dddd')}?`,
         confirmText: 'Add Block',
         inputAttrs: {
           placeholder: 'e.g. Dinner',

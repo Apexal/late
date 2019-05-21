@@ -35,16 +35,11 @@
 
           <div class="sis-method">
             <div class="field">
-              <label
-                for="pin"
-                class="label"
-              >SIS PIN</label>
-              <p
-                class="help"
-              >
-                Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.
-              </p>
               <div class="control">
+                <label
+                  for="pin"
+                  class="label is-pulled-left"
+                >SIS PIN:</label>
                 <input
                   id="pin"
                   v-model.trim="pin"
@@ -53,19 +48,23 @@
                   placeholder="Enter your SIS password."
                   @change="saved = false"
                 >
+                <b-button
+                  size="is-small"
+                  type="is-primary"
+                  :loading="loading"
+                  :disabled="!canReset"
+                  @click="importSchedule"
+                >
+                  {{ user.setup.profile ? 'Import Schedule' : 'Save' }}
+                </b-button>
               </div>
             </div>
+            <p
+              class="help"
+            >
+              Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.
+            </p>
           </div>
-
-          <b-button
-            size="is-small"
-            type="is-primary"
-            :loading="loading"
-            :disabled="!canReset"
-            @click="importSchedule"
-          >
-            {{ user.setup.profile ? 'Import Schedule' : 'Save' }}
-          </b-button>
         </details>
       </form>
 
@@ -203,7 +202,9 @@ export default {
 
       let request;
       try {
-        request = await this.$http.post('/account/courseschedule', { pin: this.pin });
+        request = await this.$http.post('/account/courseschedule', {
+          pin: this.pin
+        });
       } catch (e) {
         this.loading = false;
         this.$toasted.error(e.response.data.message);
@@ -233,4 +234,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#pin {
+  margin-left: 5px;
+  margin-right: 5px;
+  max-width: 80%;
+}
 </style>

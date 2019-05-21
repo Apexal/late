@@ -1,7 +1,7 @@
 <template>
   <div class="account-setup-terms">
     <h2 class="is-size-4 integration-note">
-      When will you be at <b>RPI</b>?
+      Which terms are you enrolled in?
     </h2>
 
     <div class="terms columns is-multiline">
@@ -51,7 +51,9 @@ export default {
       return this.$store.state.auth.user.terms;
     },
     saved () {
-      return JSON.stringify(this.currentSelections) === JSON.stringify(this.selected);
+      return (
+        JSON.stringify(this.currentSelections) === JSON.stringify(this.selected)
+      );
     },
     terms () {
       return this.$store.state.schedule.terms;

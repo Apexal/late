@@ -70,7 +70,7 @@ export default {
           setup_check: 'course_schedule'
         },
         {
-          label: 'Study/Work Unavailability',
+          label: 'Unavailability',
           link: '/account/unavailability',
           setup_check: 'unavailability'
         },
@@ -115,7 +115,6 @@ export default {
 .steps .is-active .step-details {
   font-weight: 600 !important;
 }
-
 </style>
 
 <style>
