@@ -47,17 +47,31 @@
     <hr>
     <form @submit.prevent="submitLink">
       <b-field>
+        <b-select v-model="newLink.category">
+          <option value="school">
+            School
+          </option>
+          <option value="communication">
+            Communcation
+          </option>
+          <option value="entertainment">
+            Entertainment
+          </option>
+        </b-select>
         <b-input
+          v-model="newLink.title"
           type="text"
           placeholder="Link Title"
           required
         />
         <b-input
+          v-model="newLink.description"
           expanded
           type="text"
           placeholder="Description (optional)"
         />
         <b-input
+          v-model="newLink.url"
           type="url"
           placeholder="URL"
           required
@@ -79,6 +93,7 @@ export default {
     return {
       loading: true,
       newLink: {
+        category: '',
         title: '',
         description: '',
         url: ''
@@ -102,13 +117,34 @@ export default {
   },
   methods: {
     async submitLink () {
-      alert('yeet');
+      this.loading = true;
+
+      let request;
+      try {
+        request = await this.$http.post('/quicklinks', this.newLink);
+      } catch (e) {
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        this.loading = false;
+        return;
+      }
+
+      this.$toast.open({
+        message:
+          'Submitted link! It will be reviewd by an admin before being added.',
+        type: 'is-warning',
+        duration: 5000
+      });
 
       this.newLink = {
         title: '',
         description: '',
         url: ''
       };
+
+      this.loading = false;
     },
     async getQuickLinks () {
       this.loading = true;

@@ -20,9 +20,10 @@ async function getQuickLinks (ctx) {
  * @param {Koa context} ctx
  */
 async function createQuickLink (ctx) {
-  const { title, description, url } = ctx.request.body;
+  const { category, title, description, url } = ctx.request.body;
   const createdQuickLink = QuickLink({
     _student: ctx.state.user._id,
+    category,
     title,
     description,
     url,
