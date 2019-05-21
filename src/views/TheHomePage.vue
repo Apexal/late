@@ -10,10 +10,10 @@
         v-if="waitlisted"
         type="is-info"
       >
-        <b>WAIT LIST</b> You are currently on the wait list and will be notified by email once LATE opens to the student body. Reach out to the
-        <a
-          href="mailto:matraf@rpi.edu"
-        >project lead</a> if you have any questions, or join the
+        <b>WAIT LIST</b> You are currently on the wait list and will be notified
+        by email once LATE opens to the student body. Reach out to the
+        <a href="mailto:matraf@rpi.edu">project lead</a> if you have any
+        questions, or join the
         <a
           target="_blank"
           href="https://discord.gg/2GUKcHg"
@@ -21,6 +21,7 @@
       </b-notification>
       <p id="sis-man-holder">
         <img
+          title="Better LATE than never!"
           src="/sisman.svg"
         >
       </p>
@@ -33,16 +34,18 @@
       </h1>
 
       <h2 class="subtitle has-text-grey has-text-centered">
-        <b>{{ testers }}</b> Current Testers
-        |
+        <b>{{ testers }}</b> Current Testers |
         <b>{{ waitlist }}</b>
-        {{ waitlist === 1 ? 'Student' : 'Students' }} on Wait List
+        {{ waitlist === 1 ? "Student" : "Students" }} on Wait List
       </h2>
       <p
         class="is-size-8 has-text-centered"
         style="max-width:800px;margin:0 auto;"
       >
-        <b>LATE</b> is currently in closed BETA and is not available to the general student body yet. Interested students can be added to the wait list by logging in and will be notified when we publicly launch in Fall 2019.
+        <b>LATE</b> is currently in closed BETA and is not available to the
+        general student body yet. Interested students can be added to the wait
+        list by logging in and will be notified when we publicly launch in
+        <b>Fall 2019.</b>
       </p>
 
       <p class="has-text-centered">
@@ -66,10 +69,9 @@
           <h2 class="is-size-3 title">
             Tell us when you would like to work.
           </h2>
-          <h3
-            class="is-size-6 tagline"
-          >
-            Not everybody's a workaholic. Late will adjust itself to fit other committments, your social life, or just you time :)
+          <h3 class="is-size-6 tagline">
+            Not everybody's a workaholic. Late will adjust itself to fit other
+            committments, your social life, or just you time :)
           </h3>
           <img
             class="example"
@@ -80,10 +82,10 @@
           <h2 class="is-size-3 title">
             Import schedule from SIS.
           </h2>
-          <h3
-            class="is-size-6 tagline"
-          >
-            No more manual scheduling. LATE grabs your classes automatically using your SIS login for hassle-free setup. Reimport your schedule when you add or drop a class and we take care of the rest.
+          <h3 class="is-size-6 tagline">
+            No more manual scheduling. LATE grabs your classes automatically
+            using your SIS login for hassle-free setup. Reimport your schedule
+            when you add or drop a class and we take care of the rest.
           </h3>
           <img
             class="example"
@@ -94,10 +96,9 @@
           <h2 class="is-size-3 title">
             See a clear layout of your day.
           </h2>
-          <h3
-            class="is-size-6 tagline"
-          >
-            All of your classes at a glance. Be the lazy student you always dreamed of.
+          <h3 class="is-size-6 tagline">
+            All of your classes at a glance. Be the lazy student you always
+            dreamed of.
           </h3>
           <img
             class="example"
@@ -108,10 +109,9 @@
           <h2 class="is-size-3 title">
             Keeps track of upcoming assignments and tests.
           </h2>
-          <h3
-            class="is-size-6 tagline"
-          >
-            No more planners or fiddling with syllabi. LATE helps you stay on top of your work.
+          <h3 class="is-size-6 tagline">
+            No more planners or fiddling with syllabi. LATE helps you stay on
+            top of your work.
           </h3>
           <img
             class="example"
@@ -123,7 +123,8 @@
             Add, edit, and remove assignments and exams.
           </h2>
           <h3 class="is-size-6 tagline">
-            Quickly edit and remove your assessments and tests with the click of a button.
+            Quickly edit and remove your assessments and tests with the click of
+            a button.
           </h3>
           <img
             class="example"
@@ -134,10 +135,10 @@
           <h2 class="is-size-3 title">
             Be notified when it's time to work.
           </h2>
-          <h3
-            class="is-size-6 tagline"
-          >
-            Using integrations like SMS, email, and Discord, LATE will automatically remind you of scheduled study blocks and upcoming work.
+          <h3 class="is-size-6 tagline">
+            Using integrations like SMS, email, and Discord, LATE will
+            automatically remind you of scheduled study blocks and upcoming
+            work.
           </h3>
           <img
             class="example"
@@ -190,13 +191,17 @@ export default {
   text-align: center;
   img {
     width: 250px;
-    pointer-events: none;  }
+    pointer-events: none;
+  }
 }
 
-.join-beta,.the-other-button {
+.join-beta,
+.the-other-button {
   margin-top: 25px;
 }
-.join-beta { margin-right: 10px; }
+.join-beta {
+  margin-right: 10px;
+}
 
 hr {
   margin: 3em;
