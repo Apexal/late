@@ -10,14 +10,26 @@
       Quick Links
     </h1>
 
-    <div class="columns is-multiline links">
+    <p
+      v-if="quickLinks.length === 0"
+      class="has-text-centered has-text-grey"
+    >
+      Nobody has submitted links yet!
+    </p>
+
+    <div
+      v-else
+      class="columns is-multiline links"
+    >
       <div
         v-for="(links, category) in categories"
         :key="category"
         class="column is-one-third"
       >
         <div class="box category">
-          <h2 class="subtitle link-category-title">
+          <h2
+            class="subtitle has-text-grey has-text-centered link-category-title"
+          >
             {{ category }}
           </h2>
           <ul>
@@ -27,12 +39,10 @@
               class="link content"
             >
               <a
-                class="link-title"
+                class="has-text-dark link-title"
                 target="_blank"
                 :href="link.url"
-              >{{
-                link.title
-              }}</a>
+              ><b>{{ link.title }}</b></a>
               <blockquote
                 v-if="link.description"
                 class="blockquote link-description"
@@ -47,7 +57,10 @@
     <hr>
     <form @submit.prevent="submitLink">
       <b-field>
-        <b-select v-model="newLink.category">
+        <b-select
+          v-model="newLink.category"
+          placeholder="Category"
+        >
           <option value="school">
             School
           </option>
@@ -93,7 +106,7 @@ export default {
     return {
       loading: true,
       newLink: {
-        category: '',
+        category: 'school',
         title: '',
         description: '',
         url: ''
@@ -172,6 +185,10 @@ export default {
 
 <style lang="scss" scoped>
 .category {
+  .link-category-title {
+    margin-bottom: 10px;
+    text-transform: capitalize;
+  }
   .link {
     margin-bottom: 10px;
 
