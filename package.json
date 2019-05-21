@@ -41,7 +41,6 @@
     "npm": "^6.9.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "rss-parser": "^3.7.0",
     "twilio": "^3.31.0",
     "vue": "^2.6.10",
     "vue-full-calendar": "^2.7.0",
