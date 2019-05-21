@@ -1,7 +1,7 @@
 <template>
   <div class="discord-setup">
     <div
-      v-if="!verified"
+      v-if="!verified || unauthorized"
       class="has-text-centered"
     >
       <a
@@ -30,7 +30,10 @@
           :src="discordAvatarURL"
           alt="Your Avatar"
         >
-        <b class="is-size-3">{{ discordUser.username }} <span class="has-text-grey">#{{ discordUser.discriminator }}</span></b>
+        <b
+          class="is-size-3"
+        >{{ discordUser.username }}
+          <span class="has-text-grey">#{{ discordUser.discriminator }}</span></b>
         <div class="right">
           <b-button>
             Disconnect
@@ -47,6 +50,7 @@ export default {
   data () {
     return {
       loading: true,
+      unauthorized: false,
       discordUser: {
         username: '',
         avatar: '',
@@ -60,10 +64,13 @@ export default {
       return this.$store.state.auth.user.integrations.discord.verified;
     },
     discordAvatarURL () {
-      return `https://cdn.discordapp.com/avatars/${this.discordUser.id}/${this.discordUser.avatar}.png`;
+      return `https://cdn.discordapp.com/avatars/${this.discordUser.id}/${
+        this.discordUser.avatar
+      }.png`;
     },
     token () {
-      return this.$store.state.auth.user.integrations.discord.tokens.accessToken;
+      return this.$store.state.auth.user.integrations.discord.tokens
+        .accessToken;
     }
   },
   mounted () {
@@ -72,12 +79,21 @@ export default {
   methods: {
     async getDiscordUser () {
       this.loading = true;
-      let request = await this.$http.get('https://discordapp.com/api/users/@me', {
-        headers: {
-          Authorization: `Bearer ${this.token}`
-        }
-      });
+      let request;
 
+      try {
+        request = await this.$http.get('https://discordapp.com/api/users/@me', {
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          }
+        });
+      } catch (e) {
+        this.unauthorized = true;
+        this.loading = false;
+        return;
+      }
+
+      this.unauthorized = false;
       this.discordUser = request.data;
       this.loading = false;
     }
@@ -86,8 +102,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.discord-button  {
-  background-color: #7289DA;
+.discord-button {
+  background-color: #7289da;
   color: white;
   img {
     height: 30px;
@@ -96,7 +112,7 @@ export default {
 }
 .box.discord-user {
   align-items: center;
-  background-color: #2C2F33;
+  background-color: #2c2f33;
   color: white;
   img {
     height: 75px;
