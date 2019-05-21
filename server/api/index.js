@@ -19,6 +19,7 @@ router.use('/blocks', notOnBreak, require('./blocks'));
 router.use('/todos', require('./todos'));
 router.use('/announcements', require('./announcements'));
 router.use('/checklists', require('./checklists'));
+router.use('/quicklinks', require('./quicklinks'));
 
 router.use(
   '/google',

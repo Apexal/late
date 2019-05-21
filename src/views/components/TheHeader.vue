@@ -23,7 +23,7 @@
           >BETA</span>
         </router-link>
         <a
-          :class="{'is-active': navbarExpanded}"
+          :class="{ 'is-active': navbarExpanded }"
           role="button"
           class="navbar-burger burger"
           aria-label="menu"
@@ -39,7 +39,7 @@
 
       <div
         id="top-navbar"
-        :class="{'is-active': navbarExpanded}"
+        :class="{ 'is-active': navbarExpanded }"
         class="navbar-menu is-unselectable"
       >
         <div class="navbar-start">
@@ -131,9 +131,7 @@
               </div>
             </div>
 
-            <div
-              class="navbar-item has-dropdown is-hoverable"
-            >
+            <div class="navbar-item has-dropdown is-hoverable">
               <a
                 class="navbar-link"
                 title="Tools to calculate grades and to help you work/study for assignments and exams!"
@@ -145,6 +143,13 @@
               </a>
 
               <div class="navbar-dropdown">
+                <router-link
+                  class="navbar-item"
+                  to="/quicklinks"
+                  title="Useful RPI related links!"
+                >
+                  Quick Links
+                </router-link>
                 <router-link
                   class="navbar-item"
                   to="/studytools"
@@ -173,7 +178,9 @@
             >
               <i
                 class="fa-bell announcement-bell-icon"
-                :class="[ announcementsCount === 0 ? 'far' : 'fas new-announcements' ]"
+                :class="[
+                  announcementsCount === 0 ? 'far' : 'fas new-announcements'
+                ]"
               />
             </a>
             <div class="navbar-item has-dropdown is-hoverable">
@@ -185,7 +192,7 @@
                   <i
                     class="fas"
                     :title="user.admin ? 'You are an administrator!' : ''"
-                    :class="[ user.admin ? 'fa-star' : 'fa-user-circle' ]"
+                    :class="[user.admin ? 'fa-star' : 'fa-user-circle']"
                     :style="user.admin ? 'color:#e5c100' : 'color:#ffffff'"
                   />
                 </span>
@@ -226,9 +233,7 @@
                   title="Edit your account"
                 >
                   <span class="icon">
-                    <i
-                      class="fas fa-pencil-alt"
-                    />
+                    <i class="fas fa-pencil-alt" />
                   </span>
                   Edit Account
                 </router-link>
@@ -341,20 +346,40 @@ export default {
 }
 
 @keyframes bellshake {
-  0% { transform: rotate(0); }
-  10% { transform: rotate(5deg); }
-  25% { transform: rotate(-5deg); }
-  40% { transform: rotate(4deg); }
-  55% { transform: rotate(-4deg); }
-  70% { transform: rotate(2deg); }
-  80% { transform: rotate(-2deg); }
-  87% { transform: rotate(1deg); }
-  95% { transform: rotate(0); }
-  100% { transform: rotate(0); }
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(5deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  40% {
+    transform: rotate(4deg);
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+  80% {
+    transform: rotate(-2deg);
+  }
+  87% {
+    transform: rotate(1deg);
+  }
+  95% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
 }
 
 .announcement-bell-icon.new-announcements {
-  animation: bellshake 1s cubic-bezier(.36,.07,.19,.97) both;
+  animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   animation-iteration-count: infinite;
 }
 
