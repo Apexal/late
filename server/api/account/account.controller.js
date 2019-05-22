@@ -49,9 +49,15 @@ async function setTerms (ctx) {
   logger.info(`Setting terms for ${ctx.state.user.rcs_id}`);
 
   // Validate the termCodes
-  if (termCodes.some(code => !ctx.session.terms.find(term => term.code === code))) {
-    logger.error(`Could not set terms for ${ctx.state.user.rcs_id}: Invalid term given.`);
-    return ctx.badRequest('Failed to set terms. You gave an invalid term code!');
+  if (
+    termCodes.some(code => !ctx.session.terms.find(term => term.code === code))
+  ) {
+    logger.error(
+      `Could not set terms for ${ctx.state.user.rcs_id}: Invalid term given.`
+    );
+    return ctx.badRequest(
+      'Failed to set terms. You gave an invalid term code!'
+    );
   }
 
   ctx.state.user.setup.terms = true;
@@ -91,15 +97,12 @@ async function importCourseSchedule (ctx) {
     logger.error(
       `Failed to scrape SIS course schedule for ${ctx.state.user.rcs_id}: ${e}`
     );
-    return ctx.badRequest('Invalid SIS credentials!');
+    return ctx.badRequest(e.message);
   }
 
   // Set course types for each course
   try {
-    courseSchedule = await scrapePeriodTypesFromCRNs(
-      termCode,
-      courseSchedule
-    );
+    courseSchedule = await scrapePeriodTypesFromCRNs(termCode, courseSchedule);
   } catch (e) {
     logger.error(
       `Failed to scrape period types for ${ctx.state.user.rcs_id}: ${e}`
@@ -125,12 +128,15 @@ async function importCourseSchedule (ctx) {
     links: []
   });
 
-
   // If reimporting, only update sectionId, start/end dates, credits, and periods
 
   const promises = courseSchedule.map(async course => {
     // Look for match in old course list
-    let courseDoc = await Course.findOne({ _student: ctx.state.user._id, termCode, crn: course.crn });
+    let courseDoc = await Course.findOne({
+      _student: ctx.state.user._id,
+      termCode,
+      crn: course.crn
+    });
 
     if (courseDoc) {
       Object.assign(courseDoc, {

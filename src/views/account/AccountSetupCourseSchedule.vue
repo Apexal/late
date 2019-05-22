@@ -21,7 +21,7 @@
       </h2>
       <form
         class="box"
-        @submit.prevent="save"
+        @submit.prevent="importSchedule"
       >
         <details :open="courses.length === 0">
           <summary>

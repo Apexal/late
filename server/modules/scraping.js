@@ -84,6 +84,11 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
         acronym(title='Course Reference Number')
       td.dddefault CRN_HERE
   */
+  if (
+    $('table[summary="This layout table holds message information"]').length
+  ) {
+    throw new Error('You are not enrolled in this term!');
+  }
   const courseSchedule = [];
   const courseOverviews = $(
     'table[summary="This layout table is used to present the schedule course detail"]'
@@ -99,16 +104,17 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
     const summary = courseParts[1];
     const sectionId = parseInt(courseParts[2]);
 
-
     const crn = $(this)
       .find('acronym[title="Course Reference Number"]')
       .parent()
       .next()
       .text();
 
-    const credits = parseFloat($(this)
-      .find('tbody tr:nth-child(6) td')
-      .text());
+    const credits = parseFloat(
+      $(this)
+        .find('tbody tr:nth-child(6) td')
+        .text()
+    );
 
     // const course = {
     //   section_id: sectionId,
@@ -162,7 +168,8 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
 
         const dateRangeParts = $(this)
           .find('td:nth-child(5)')
-          .text().split(' - ');
+          .text()
+          .split(' - ');
 
         course.startDate = moment(dateRangeParts[0], 'MMM DD[,] YYYY');
         course.endDate = moment(dateRangeParts[1], 'MMM DD[,] YYYY');
@@ -214,15 +221,12 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
 
   for (let course of courses) {
     // Scrape for period type
-    const paddedSection = course.sectionId > 9 ? course.sectionId : '0' + course.sectionId;
+    const paddedSection =
+      course.sectionId > 9 ? course.sectionId : '0' + course.sectionId;
 
     // Generate title as found on the table site
     const title =
-      course.crn +
-      ' ' +
-      course.summary.replace(' ', '-') +
-      '-' +
-      paddedSection;
+      course.crn + ' ' + course.summary.replace(' ', '-') + '-' + paddedSection;
     logger.info(`Finding period types for '${title}'`);
     const topRow = $(`table tr td:first-child:contains('${title}')`).parent(
       'tr'
