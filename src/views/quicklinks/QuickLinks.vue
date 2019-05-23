@@ -9,6 +9,11 @@
     <h1 class="title has-text-centered-mobile">
       Quick Links
     </h1>
+    <h2
+      class="subtitle has-text-centered-mobile"
+    >
+      A user-curated list of useful educational links. Can't find what you're looking for? Add your own!
+    </h2>
 
     <p
       v-if="quickLinks.length === 0"
@@ -27,9 +32,7 @@
         class="column is-one-third"
       >
         <div class="box category">
-          <h2
-            class="subtitle has-text-grey has-text-centered link-category-title"
-          >
+          <h2 class="subtitle has-text-grey has-text-centered link-category-title">
             {{ category }}
           </h2>
           <ul>
@@ -49,7 +52,9 @@
                 class="has-text-dark link-title"
                 target="_blank"
                 :href="link.url"
-              ><b>{{ link.title }}</b></a>
+              >
+                <b>{{ link.title }}</b>
+              </a>
               <blockquote
                 v-if="link.description"
                 class="blockquote link-description"
@@ -194,6 +199,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.title {
+  padding-bottom: 0px;
+  padding-left: 0px;
+  border-bottom-color: #dbdbdb;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
 .category {
   .link-category-title {
     margin-bottom: 10px;

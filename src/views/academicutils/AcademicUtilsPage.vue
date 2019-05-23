@@ -1,8 +1,13 @@
 <template>
   <section class="section academic-utils">
     <h1 class="has-text-centered-mobile title">
-      Academic Utilities
+      Grade Calculators
     </h1>
+    <h2
+      class="subtitle has-text-centered-mobile"
+    >
+      Estimates your final course grades and cumulative grade point average
+    </h2>
 
     <div class="tabs">
       <ul>
@@ -10,13 +15,13 @@
           tag="li"
           :to="{ name: 'gpa-calulator' }"
         >
-          <a>GPA Calculator</a>
+          <a>GPA</a>
         </router-link>
         <router-link
           tag="li"
           :to="{ name: 'course-grade-estimator' }"
         >
-          <a>Course Grade Estimator</a>
+          <a>Course Grades</a>
         </router-link>
       </ul>
     </div>
@@ -43,5 +48,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.title {
+  padding-bottom: 0px;
+  padding-left: 0px;
+  border-bottom-color: #dbdbdb;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
 </style>

@@ -1,7 +1,9 @@
 <template>
   <div class="setup-course-schedule">
     <template v-if="onBreak">
-      <h2 class="subtitle has-text-centered">
+      <h2
+        class="subtitle has-text-centered"
+      >
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>
@@ -100,9 +102,7 @@
         >
           <h2 class="subtitle">
             Your Courses
-            <small
-              class="has-text-grey"
-            >{{ coursesWithoutOther.length }} total</small>
+            <small class="has-text-grey">{{ coursesWithoutOther.length }} total</small>
           </h2>
           <AccountCourse
             v-for="c in coursesWithoutOther"
@@ -117,9 +117,7 @@
             title="These courses won't show up on any course list or on your schedule."
           >
             Hidden Courses
-            <small
-              class="has-text-grey"
-            >{{ hiddenCourses.length }} total</small>
+            <small class="has-text-grey">{{ hiddenCourses.length }} total</small>
           </h2>
           <AccountCourse
             v-for="c in hiddenCourses"
@@ -239,6 +237,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.control {
+  margin-top: 10px;
+}
+
 #pin {
   margin-left: 5px;
   margin-right: 5px;
