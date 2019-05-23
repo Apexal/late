@@ -2,9 +2,9 @@
   <div class="sidebar-course-list">
     <div
       v-if="onBreak"
-      class="panel-block has-text-grey"
+      class="panel-block has-text-grey no-hover"
     >
-      On Break
+      No courses over break!
     </div>
     <div
       v-else
@@ -24,7 +24,7 @@
     </div>
     <div
       v-if="!onBreak"
-      class="panel-block has-background-light"
+      class="panel-block has-background-light no-hover"
     >
       <router-link
         class="button edit-button is-fullwidth editCoursesButton"
@@ -59,11 +59,11 @@ export default {
 }
 
 .editCoursesButton:hover {
-    background-color:#f5efef;
+  background-color: #f5efef;
 }
 .editCoursesButton:focus {
   border-color: black;
-  box-shadow: none!important;
+  box-shadow: none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 </style>

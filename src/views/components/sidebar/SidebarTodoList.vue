@@ -27,7 +27,7 @@
     </div>
     <div
       v-if="todos.length === 0"
-      class="panel-block has-text-grey-light"
+      class="panel-block has-text-grey-light no-hover"
     >
       No to-dos saved yet.
     </div>

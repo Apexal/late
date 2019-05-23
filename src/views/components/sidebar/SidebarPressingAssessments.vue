@@ -1,14 +1,14 @@
 <template>
   <div class="sidebar-pressing-assessments">
     <template v-if="onBreak">
-      <div class="panel-block has-text-grey">
+      <div class="panel-block has-text-grey no-hover">
         There's no work over break!
       </div>
     </template>
     <template v-else>
       <div
         v-if="pressing.length == 0"
-        class="panel-block has-text-grey"
+        class="panel-block has-text-grey no-hover"
       >
         <span class="has-text-centered">No pressing assignments or exams!</span>
       </div>
@@ -19,28 +19,47 @@
         :key="assessment._id"
         tag="div"
         class="assessment assessment-link panel-block"
-        :title="assessment.description.substring(0, 500) || `No description for this ${assessment.assessmentType} given.`"
-        :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
-        :class="{ [assessment.assessmentType]: true, 'priority': assessment.priority > 3 }"
+        :title="
+          assessment.description.substring(0, 500) ||
+            `No description for this ${assessment.assessmentType} given.`
+        "
+        :to="{
+          name: assessment.assessmentType + '-overview',
+          params: { [assessment.assessmentType + 'ID']: assessment._id }
+        }"
+        :class="{
+          [assessment.assessmentType]: true,
+          priority: assessment.priority > 3
+        }"
       >
         <span class="is-full-width">
           <i
             class="fas"
-            :class="[ assessment.assessmentType === 'assignment' ? 'fas fa-clipboard-check' : 'fas fa-exclamation-triangle' ]"
+            :class="[
+              assessment.assessmentType === 'assignment'
+                ? 'fas fa-clipboard-check'
+                : 'fas fa-exclamation-triangle'
+            ]"
             :title="course(assessment).title + ' ' + assessment.assessmentType"
             :style="'color: ' + course(assessment).color"
-            @click.prevent="$store.commit('OPEN_COURSE_MODAL', course(assessment))"
+            @click.prevent="
+              $store.commit('OPEN_COURSE_MODAL', course(assessment))
+            "
           />
-          <b class="course-title is-hidden-tablet">{{ course(assessment).title }}</b>
+          <b class="course-title is-hidden-tablet">{{
+            course(assessment).title
+          }}</b>
           {{ assessment.title }}
           <small
             class="has-text-grey is-pulled-right tooltip is-tooltip-left"
-            :data-tooltip="longDateTimeFormat(assessment.dueDate || assessment.date)"
+            :data-tooltip="
+              longDateTimeFormat(assessment.dueDate || assessment.date)
+            "
           >{{ fromNow(assessment.dueDate || assessment.date) }}</small>
         </span>
       </router-link>
 
-      <div class="panel-block has-background-light">
+      <div class="panel-block has-background-light no-hover">
         <router-link
           :to="{ name: 'coursework-upcoming' }"
           class="button is-fullwidth browseAssessmentsButton"
@@ -101,11 +120,11 @@ export default {
 }
 
 .browseAssessmentsButton:hover {
-    background-color:#f5efef;
+  background-color: #f5efef;
 }
 .browseAssessmentsButton:focus {
   border-color: black;
-  box-shadow: none!important;
+  box-shadow: none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 </style>

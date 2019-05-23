@@ -4,7 +4,9 @@
     class="menu"
   >
     <div class="panel">
-      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
+      <p
+        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
+      >
         <span
           class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar"
@@ -12,12 +14,15 @@
         >
           <i class="fas fa-chevron-up fa-rotate-270" />
         </span>
-        {{ onBreak ? 'On Break' : currentTerm.name }}
+        {{ onBreak ? "On Break" : currentTerm.name }}
         <span
           v-if="currentEvent"
           class="tag is-info is-pulled-right tab-count countdown"
           :style="{ 'background-color': currentEvent.course.color }"
-          :title="'Until end of ' + (currentEvent.eventType === 'period' ? 'class' : 'work block')"
+          :title="
+            'Until end of ' +
+              (currentEvent.eventType === 'period' ? 'class' : 'work block')
+          "
         >{{ countdown }}</span>
       </p>
 
@@ -52,7 +57,7 @@
           v-for="(t, name) in tabs"
           :key="name"
           class="tooltip"
-          :class="{'is-active': tab === name}"
+          :class="{ 'is-active': tab === name }"
           :data-tooltip="t.name"
           @click="tab = name"
         >
@@ -219,7 +224,9 @@ export default {
   }
 
   //Janky selector for bottom sidebar block
-  .panel .is-size-7 div:last-child:not(.control):not(.course-panel-block):not(.event) {
+  .panel
+    .is-size-7
+    div:last-child:not(.control):not(.course-panel-block):not(.event) {
     border-radius: 0px 0px 4px 4px;
   }
 
@@ -247,7 +254,7 @@ export default {
     }
   }
 
-  .panel-block:not(.is-active):not(.control):hover {
+  .panel-block:not(.is-active):not(.control):not(.no-hover):hover {
     background-color: #f3f3f3;
   }
 

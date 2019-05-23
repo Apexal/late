@@ -2,18 +2,18 @@
   <div class="sidebar-schedule">
     <div
       v-if="onBreak"
-      class="panel-block has-text-grey"
+      class="panel-block has-text-grey no-hover"
     >
       <span v-if="!nextTerm">
         Enjoy your break!
       </span>
       <span v-else>
-        {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}
+        {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}!
       </span>
     </div>
     <div
       v-else-if="!setup"
-      class="panel-block has-text-grey"
+      class="panel-block has-text-grey no-hover"
     >
       You have not set your course schedule yet!
     </div>
@@ -22,47 +22,66 @@
       class="sidebar-body agenda"
     >
       <div v-if="filteredTodaysAgenda.length === 0">
-        <div
-          class="panel-block has-text-grey"
-        >
-          Nothing scheduled for the {{ todaysAgenda.length === filteredTodaysAgenda.length ? '' : 'rest of the ' }}day!
+        <div class="panel-block has-text-grey">
+          Nothing scheduled for the
+          {{
+            todaysAgenda.length === filteredTodaysAgenda.length
+              ? ""
+              : "rest of the "
+          }}day!
         </div>
       </div>
       <div
         v-for="event in filteredTodaysAgenda"
-        :key="event.course.crn + '-' + event.start.toString() + event.end.toString()"
+        :key="
+          event.course.crn + '-' + event.start.toString() + event.end.toString()
+        "
         class="panel-block event is-flex"
-        :class="{ 'is-active': isCurrentEvent(event), 'passed': hasPassed(event.end), 'clickable': event.link }"
+        :class="{
+          'is-active': isCurrentEvent(event),
+          passed: hasPassed(event.end),
+          clickable: event.link
+        }"
         @click="eventClicked(event)"
       >
         <CourseAssessmentDot :course="event.course" />
         <span
           class="event-title"
           style="flex: 1"
-          :title="event.eventType === 'period' ? 'Class at ' + event.period.location : 'Work/Study'"
+          :title="
+            event.eventType === 'period'
+              ? 'Class at ' + event.period.location
+              : 'Work/Study'
+          "
         >
           <template v-if="event.eventType === 'period'">
             <b
               class="period-title"
               @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
             >{{ event.course.title }}</b>
-            <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
+            <span class="has-text-grey">{{
+              periodType(event.period.type)
+            }}</span>
           </template>
           <template v-else-if="event.eventType === 'work-block'">
-            <span>{{ event.assessmentType === 'assignment' ? 'Work on ' : 'Study for ' }}</span>
+            <span>{{
+              event.assessmentType === "assignment" ? "Work on " : "Study for "
+            }}</span>
             <b>{{ event.assessment.title }}</b>
           </template>
         </span>
 
         <span
           class="event-times is-pulled-right has-text-grey tooltip is-tooltip-left"
-          :data-tooltip="timeFormat(event.start) + ' - ' + timeFormat(event.end)"
+          :data-tooltip="
+            timeFormat(event.start) + ' - ' + timeFormat(event.end)
+          "
         >{{ timeFormat(event.start) }}</span>
       </div>
     </div>
     <div
       v-if="!onBreak"
-      class="panel-block has-background-light has-text-centered"
+      class="panel-block has-background-light has-text-centered no-hover"
     >
       <b-button
         :class="{ 'is-active': showPassed }"
@@ -71,9 +90,9 @@
       >
         <i
           class="show-passed-icon far"
-          :class="[ showPassed ? 'fa-eye' : 'fa-eye-slash' ]"
+          :class="[showPassed ? 'fa-eye' : 'fa-eye-slash']"
         />
-        {{ showPassed ? 'Hide' : 'Show' }} Passed
+        {{ showPassed ? "Hide" : "Show" }} Passed
       </b-button>
     </div>
   </div>
@@ -204,11 +223,11 @@ export default {
 }
 
 .showPassedButton:hover {
-    background-color:#f5efef;
+  background-color: #f5efef;
 }
 .showPassedButton:focus {
   border-color: black;
-  box-shadow: none!important;
+  box-shadow: none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 
