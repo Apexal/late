@@ -38,6 +38,13 @@
               :key="index"
               class="link content"
             >
+              <img
+                class="link-favicon"
+                :src="
+                  'https://www.google.com/s2/favicons?domain_url=' + link.url
+                "
+                alt="Favicon"
+              >
               <a
                 class="has-text-dark link-title"
                 target="_blank"
@@ -91,7 +98,7 @@
         />
         <p class="control">
           <button class="button is-primary">
-            {{ user.admin ? 'Add' : 'Submit' }} Link
+            {{ user.admin ? "Add" : "Submit" }} Link
           </button>
         </p>
       </b-field>
@@ -194,7 +201,11 @@ export default {
   }
   .link {
     margin-bottom: 10px;
-
+    .link-favicon {
+      height: 16px;
+      width: 16px;
+      margin-right: 5px;
+    }
     .link-description {
       padding: 5px;
     }
