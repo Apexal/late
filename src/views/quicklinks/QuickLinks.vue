@@ -91,7 +91,7 @@
         />
         <p class="control">
           <button class="button is-primary">
-            Submit Link
+            {{ user.admin ? 'Add' : 'Submit' }} Link
           </button>
         </p>
       </b-field>
@@ -115,6 +115,9 @@ export default {
     };
   },
   computed: {
+    user () {
+      return this.$store.state.auth.user;
+    },
     categories () {
       const categories = {};
       for (const link of this.quickLinks) {

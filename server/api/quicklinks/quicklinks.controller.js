@@ -27,7 +27,7 @@ async function createQuickLink (ctx) {
     title,
     description,
     url,
-    confirmed: false
+    confirmed: ctx.state.user.admin // if user is admin, don't have to confirm
   });
   try {
     await createdQuickLink.save();
