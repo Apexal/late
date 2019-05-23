@@ -5,7 +5,10 @@
       <span class="has-text-grey">(optional)</span>
     </h2>
 
-    <div v-if="!setup">
+    <div v-if="!setup || unauthorized">
+      <p if="unauthorized">
+        Your Google login has expired! Please login with Google again.
+      </p>
       <a
         href="/auth/google"
         class="button is-primary"
@@ -43,10 +46,14 @@
             <b
               :title="getCalendarById(calendarIDs.workBlocks).summary"
               class="tag has-text-white google-calendar-tag"
-              :style="{ 'background-color': getCalendarById(calendarIDs.workBlocks).backgroundColor }"
-            >{{ getCalendarById(calendarIDs.workBlocks).summary }}</b> calendar in your Google Calendar that will sync with your work schedule in
-            <b>LATE</b>.
-            <br>It gets automatically updated when you:
+              :style="{
+                'background-color': getCalendarById(calendarIDs.workBlocks)
+                  .backgroundColor
+              }"
+            >{{ getCalendarById(calendarIDs.workBlocks).summary }}</b>
+            calendar in your Google Calendar that will sync with your work
+            schedule in <b>LATE</b>. <br>It gets automatically updated when
+            you:
             <ul class="points">
               <li>create a work block on LATE</li>
               <li>resize/move a work block on LATE</li>
@@ -83,7 +90,7 @@
               :disabled="loading"
               @click="createCourseScheduleCalendar"
             >
-              Create Calendar for Work Blocks
+              Create Calendar for Course Schedule
             </b-button>
           </div>
           <div
@@ -95,8 +102,14 @@
               <b
                 :title="getCalendarById(calendarIDs.courseSchedule).summary"
                 class="tag has-text-white google-calendar-tag"
-                :style="{ 'background-color': getCalendarById(calendarIDs.courseSchedule).backgroundColor }"
-              >{{ getCalendarById(calendarIDs.courseSchedule).summary }}</b> calendar in your Google Calendar and placed all of your course periods into it.
+                :style="{
+                  'background-color': getCalendarById(
+                    calendarIDs.courseSchedule
+                  ).backgroundColor
+                }"
+              >{{ getCalendarById(calendarIDs.courseSchedule).summary }}</b>
+              calendar in your Google Calendar and placed all of your course
+              periods into it.
             </p>
           </div>
         </div>
@@ -118,6 +131,7 @@ export default {
   name: 'AccountSetupGoogleCalendar',
   data () {
     return {
+      unauthorized: false,
       loading: false,
       tab: 'workBlocks',
       calendars: [],
@@ -151,7 +165,9 @@ export default {
   methods: {
     async createCourseScheduleCalendar () {
       this.$dialog.confirm({
-        message: `This will create a new calendar specifically for your <b>${this.currentTerm.name}</b> course schedule.`,
+        message: `This will create a new calendar specifically for your <b>${
+          this.currentTerm.name
+        }</b> course schedule.`,
         onConfirm: async () => {
           this.loading = true;
           let request;
@@ -184,7 +200,8 @@ export default {
     },
     async createWorkBlockCalendar () {
       this.$dialog.confirm({
-        message: 'This will create a new calendar specifically for work blocks.',
+        message:
+          'This will create a new calendar specifically for work blocks.',
         onConfirm: async () => {
           this.loading = true;
           let request;
@@ -219,11 +236,20 @@ export default {
     },
     async getCalendars () {
       this.loading = true;
-      let request = await this.$http.get('/google/calendars', {
-        params: {
-          minAccessRole: 'owner'
-        }
-      });
+      this.unauthorized = false;
+      let request;
+
+      try {
+        request = await this.$http.get('/google/calendars', {
+          params: {
+            minAccessRole: 'owner'
+          }
+        });
+      } catch (e) {
+        this.unauthorized = true;
+        this.loading = false;
+        return;
+      }
       this.calendars = request.data.calendars;
       this.loading = false;
     },
