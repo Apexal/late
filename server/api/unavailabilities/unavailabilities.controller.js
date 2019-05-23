@@ -34,6 +34,13 @@ async function createUnavailability (ctx) {
     end,
     isOneTime
   });
+
+  if (
+    !ctx.state.user.setup.unavailability.includes(ctx.session.currentTerm.code)
+  ) {
+    ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code);
+  }
+
   try {
     await unavailability.save();
   } catch (e) {
@@ -46,7 +53,10 @@ async function createUnavailability (ctx) {
   }
 
   logger.info(`Added unavailability block for ${ctx.state.user.rcs_id}`);
-  return ctx.created({ createdUnavailability: unavailability });
+  return ctx.created({
+    updatedUser: ctx.state.user,
+    createdUnavailability: unavailability
+  });
 }
 
 /**

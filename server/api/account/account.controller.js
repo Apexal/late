@@ -180,7 +180,11 @@ async function setTimePreference (ctx) {
   ctx.state.user.earliestWorkTime = body.earliest;
   ctx.state.user.latestWorkTime = body.latest;
 
-  ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code);
+  if (
+    !ctx.state.user.setup.unavailability.includes(ctx.session.currentTerm.code)
+  ) {
+    ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code);
+  }
 
   try {
     await ctx.state.user.save();

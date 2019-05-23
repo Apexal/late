@@ -1,17 +1,14 @@
 <template>
   <div class="setup-course-schedule">
     <template v-if="onBreak">
-      <h2
-        class="subtitle has-text-centered"
-      >
+      <h2 class="subtitle has-text-centered">
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>
     <template v-else-if="!hasPersonalInfoSetup || !hasSelectedTerms">
-      <h2
-        class="subtitle has-text-centered"
-      >
-        To setup your course schedule, you must first enter your RIN on the previous page.
+      <h2 class="subtitle has-text-centered">
+        To setup your course schedule, you must first enter your RIN on the
+        previous page.
       </h2>
     </template>
     <template v-else>
@@ -55,14 +52,14 @@
                   :disabled="!canReset"
                   @click="importSchedule"
                 >
-                  {{ user.setup.profile ? 'Import Schedule' : 'Save' }}
+                  {{ user.setup.profile ? "Import Schedule" : "Save" }}
                 </b-button>
               </div>
             </div>
-            <p
-              class="help"
-            >
-              Your password will be used to log into SIS, navigate to your current schedule page, and grab the CRNs of your courses. Your password is never saved or logged anywhere.
+            <p class="help">
+              Your password will be used to log into SIS, navigate to your
+              current schedule page, and grab the CRNs of your courses. Your
+              password is never saved or logged anywhere.
             </p>
           </div>
         </details>
@@ -80,14 +77,17 @@
         <div class="tabs">
           <ul>
             <li
-              :class="{'is-active': tab === 'list'}"
-              @click="tab = 'list';"
+              :class="{ 'is-active': tab === 'list' }"
+              @click="tab = 'list'"
             >
               <a>List</a>
             </li>
             <li
-              :class="{'is-active': tab === 'calendar'}"
-              @click="tab = 'calendar'; openedCourseID = ''"
+              :class="{ 'is-active': tab === 'calendar' }"
+              @click="
+                tab = 'calendar';
+                openedCourseID = '';
+              "
             >
               <a>Calendar</a>
             </li>
@@ -100,7 +100,9 @@
         >
           <h2 class="subtitle">
             Your Courses
-            <small class="has-text-grey">{{ coursesWithoutOther.length }} total</small>
+            <small
+              class="has-text-grey"
+            >{{ coursesWithoutOther.length }} total</small>
           </h2>
           <AccountCourse
             v-for="c in coursesWithoutOther"
@@ -115,7 +117,9 @@
             title="These courses won't show up on any course list or on your schedule."
           >
             Hidden Courses
-            <small class="has-text-grey">{{ hiddenCourses.length }} total</small>
+            <small
+              class="has-text-grey"
+            >{{ hiddenCourses.length }} total</small>
           </h2>
           <AccountCourse
             v-for="c in hiddenCourses"
@@ -138,7 +142,7 @@
       <router-link
         to="/account/unavailability"
         class="button is-primary"
-        :class="{'is-loading': loading}"
+        :class="{ 'is-loading': loading }"
       >
         Save and Continue
       </router-link>
@@ -212,6 +216,7 @@ export default {
       }
 
       this.$store.commit('SET_COURSES', request.data.courses);
+      this.$store.commit('SET_USER', request.data.updatedUser);
 
       // Notify user of success
       this.$toasted.info(

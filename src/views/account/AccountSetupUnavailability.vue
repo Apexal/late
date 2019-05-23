@@ -1,9 +1,7 @@
 <template>
   <div class="setup-unavailability">
     <template v-if="onBreak">
-      <h2
-        class="subtitle has-text-centered"
-      >
+      <h2 class="subtitle has-text-centered">
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>
@@ -23,7 +21,8 @@
                 class="label"
               >Earliest Time Preference</label>
               <p class="help">
-                <b>LATE</b> will not schedule any work for you before this time unless it absolutely does not fit anywhere else.
+                <b>LATE</b> will not schedule any work for you before this time
+                unless it absolutely does not fit anywhere else.
               </p>
               <div class="control">
                 <input
@@ -41,7 +40,8 @@
                 class="label"
               >Latest Time Preference</label>
               <p class="help">
-                <b>LATE</b> will not schedule any work for you after this time unless it absolutely does not fit anywhere else.
+                <b>LATE</b> will not schedule any work for you after this time
+                unless it absolutely does not fit anywhere else.
               </p>
               <div class="control">
                 <input
@@ -60,10 +60,9 @@
         Set unavailabilities
         <span class="has-text-grey">(optional)</span>
       </h1>
-      <p
-        class="help"
-      >
-        Drag, drop, and resize to create blocks of time that LATE will avoid scheduling work/studying within. Click on blocks to remove them.
+      <p class="help">
+        Drag, drop, and resize to create blocks of time that LATE will avoid
+        scheduling work/studying within. Click on blocks to remove them.
       </p>
       <FullCalendar
         ref="calendar"
@@ -229,6 +228,8 @@ export default {
         this.$toasted.error(e.response.data.message);
         return;
       }
+
+      this.$store.commit('SET_USER', request.data.updatedUser);
 
       this.$toasted.success(
         `Added "${
