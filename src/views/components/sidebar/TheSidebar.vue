@@ -263,6 +263,7 @@ export default {
     transform: scale(0.8);
   }
   .local-toggle-sidebar {
+    cursor: pointer;
     width: 2.5em;
     height: 1.5em;
   }

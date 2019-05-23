@@ -74,6 +74,7 @@
             <b-button
               :loading="loading"
               type="is-info"
+              @click="submitPhoneNumber"
             >
               Submit
             </b-button>
@@ -106,6 +107,7 @@
             <b-button
               :loading="loading"
               type="is-danger"
+              @click="verify"
             >
               Verify
             </b-button>

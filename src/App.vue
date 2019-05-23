@@ -289,6 +289,7 @@ body {
 }
 
 .toggle-sidebar {
+  cursor: pointer;
   top: 70px;
   z-index: 4;
   position: fixed;
