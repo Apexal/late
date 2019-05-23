@@ -44,6 +44,7 @@
         type="is-primary"
         :loading="loading"
         :disabled="saved"
+        @click="save"
       >
         Save
       </b-button>

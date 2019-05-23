@@ -79,6 +79,7 @@
         type="is-primary"
         :leading="loading"
         :disabled="saved"
+        @click="saveTimePreferences"
       >
         Save and Continue
       </b-button>
