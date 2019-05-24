@@ -103,7 +103,7 @@
         />
         <p class="control">
           <button class="button is-primary">
-            {{ user.admin ? "Add" : "Submit" }} Link
+            {{ user.admin ? "Suggest" : "Submit" }} Link
           </button>
         </p>
       </b-field>
@@ -161,7 +161,7 @@ export default {
 
       this.$toast.open({
         message:
-          'Submitted link! It will be reviewd by an admin before being added.',
+          'Submitted link! It will be reviewed by an admin before being added.',
         type: 'is-warning',
         duration: 5000
       });

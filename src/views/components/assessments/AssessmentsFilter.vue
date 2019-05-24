@@ -9,11 +9,8 @@
     </summary>
     <div class="filters-body has-background-white">
       <div class="is-flex">
+        <label class="hide-label">Filter:</label>
         <div class="courses">
-          <label
-            class
-            style="margin-right: 5px"
-          >Hide Courses</label>
           <span
             v-for="c in courses"
             :key="c.crn"
@@ -155,8 +152,10 @@ export default {
     margin: 0;
   }
 
-  label {
+  .hide-label {
     font-weight: 500;
+    width: 60px;
+    align-self: flex-start;
   }
 
   #group-by-select {
