@@ -139,7 +139,7 @@
       <hr>
       <router-link
         to="/account/unavailability"
-        class="button is-primary"
+        class="button is-primary is-pulled-right"
         :class="{ 'is-loading': loading }"
       >
         Save and Continue

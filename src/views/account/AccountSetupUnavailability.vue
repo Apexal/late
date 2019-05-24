@@ -1,7 +1,9 @@
 <template>
   <div class="setup-unavailability">
     <template v-if="onBreak">
-      <h2 class="subtitle has-text-centered">
+      <h2
+        class="subtitle has-text-centered"
+      >
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>
@@ -79,6 +81,7 @@
         type="is-primary"
         :leading="loading"
         :disabled="saved"
+        class="is-pulled-right"
         @click="saveTimePreferences"
       >
         Save and Continue

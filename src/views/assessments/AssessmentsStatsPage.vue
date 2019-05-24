@@ -239,6 +239,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h1 {
+  border-bottom-color: #dbdbdb;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
 .charts canvas {
   margin-bottom: 50px;
 }

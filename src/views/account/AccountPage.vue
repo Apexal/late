@@ -118,6 +118,9 @@ export default {
 </style>
 
 <style>
+.section {
+  margin-bottom: 30px;
+}
 .integration-note {
   text-align: center;
   margin: 1.5em 0em 1em 0em;

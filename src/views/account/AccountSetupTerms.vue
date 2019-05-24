@@ -31,6 +31,7 @@
     <b-button
       type="is-primary"
       :disabled="saved"
+      class="is-pulled-right"
       @click="save"
     >
       Save and Continue
