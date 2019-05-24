@@ -23,19 +23,19 @@
           tag="li"
           :to="{ name: 'stats-pie' }"
         >
-          <a>Pie Chart</a>
+          <a>Course Stats</a>
         </router-link>
         <router-link
           tag="li"
           :to="{ name: 'stats-bar' }"
         >
-          <a>Bar Chart</a>
+          <a>Week Stats</a>
         </router-link>
         <router-link
           tag="li"
           :to="{ name: 'stats-line' }"
         >
-          <a>Line Chart</a>
+          <a>Assignment Stats</a>
         </router-link>
       </ul>
     </div>
@@ -57,6 +57,10 @@ export default {
 <style lang="scss" scoped>
 .charts canvas {
   margin-bottom: 50px;
+}
+
+h1 {
+  margin-bottom: auto;
 }
 
 .tab-nav {
