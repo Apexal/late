@@ -123,7 +123,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.assessments-filter:hover { cursor: pointer; }
+.assessments-filter:hover {
+  cursor: pointer;
+}
+
 .assessments-filter {
   padding: 0;
   margin: 0;
@@ -132,6 +135,7 @@ export default {
 
   .filters-body {
     padding: 10px;
+    animation: fadein 0.3s;
   }
   .is-flex {
     align-items: center;
@@ -179,6 +183,15 @@ span.tag.course-tag {
   }
   &:hover:not(.filtered-out) {
     opacity: 0.8;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 </style>

@@ -1,7 +1,5 @@
 <template>
-  <div
-    id="calendar-holder"
-  >
+  <div id="calendar-holder">
     <DashboardCalendarSelectModal
       :open="selectModal.open"
       :start="selectModal.start"
@@ -190,12 +188,14 @@ export default {
       }
     },
     eventRender (event, el) {
-      el.attr(
-        'title',
-        event.period ? event.period.location : event.title
-      );
+      el.attr('title', event.period ? event.period.location : event.title);
       if (event.eventType === 'course') {
-        if (!moment(event.end).isBetween(event.course.startDate, event.course.endDate)) return false;
+        if (
+          !moment(event.end).isBetween(
+            event.course.startDate,
+            event.course.endDate
+          )
+        ) { return false; }
 
         if (event.period.type === 'TES') {
           return !!this.$store.state.assessments.upcomingAssessments.find(
@@ -213,10 +213,13 @@ export default {
         deleteButton.onclick = async ev => {
           ev.stopPropagation();
 
-          let updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
-            assessment: event.assessment,
-            blockID: event.blockID
-          });
+          let updatedAssessment = await this.$store.dispatch(
+            'REMOVE_WORK_BLOCK',
+            {
+              assessment: event.assessment,
+              blockID: event.blockID
+            }
+          );
 
           this.$toast.open({
             message: 'Unscheduled work block!',
@@ -291,22 +294,44 @@ export default {
       if (calEvent.end.isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Move this past work block?',
-          onConfirm: () => this.editWorkBlock(calEvent.assessment, calEvent.blockID, calEvent.start, calEvent.end),
+          onConfirm: () =>
+            this.editWorkBlock(
+              calEvent.assessment,
+              calEvent.blockID,
+              calEvent.start,
+              calEvent.end
+            ),
           onCancel: revertFunc
         });
       } else {
-        this.editWorkBlock(calEvent.assessment, calEvent.blockID, calEvent.start, calEvent.end);
+        this.editWorkBlock(
+          calEvent.assessment,
+          calEvent.blockID,
+          calEvent.start,
+          calEvent.end
+        );
       }
     },
     eventResize (calEvent, delta, revertFunc) {
       if (calEvent.end.isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Edit this past work block?',
-          onConfirm: () => this.editWorkBlock(calEvent.assessment, calEvent.blockID, calEvent.start, calEvent.end),
+          onConfirm: () =>
+            this.editWorkBlock(
+              calEvent.assessment,
+              calEvent.blockID,
+              calEvent.start,
+              calEvent.end
+            ),
           onCancel: revertFunc
         });
       } else {
-        this.editWorkBlock(calEvent.assessment, calEvent.blockID, calEvent.start, calEvent.end);
+        this.editWorkBlock(
+          calEvent.assessment,
+          calEvent.blockID,
+          calEvent.start,
+          calEvent.end
+        );
       }
     },
     async editWorkBlock (assessment, blockID, start, end) {
@@ -376,6 +401,10 @@ export default {
   margin-top: 7px;
 }
 
+.fc-button {
+  box-shadow: none !important;
+}
+
 .fc-center,
 .fc-right {
   * {
@@ -430,5 +459,19 @@ export default {
   float: right;
   margin-top: -35px;
   z-index: 10;
+}
+
+.fc-view {
+  animation: fade-in 0.7s;
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateY(7px);
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>

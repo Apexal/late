@@ -326,6 +326,7 @@ body {
   opacity: 0;
   -webkit-transform: translate(30px, 0);
   transform: translate(30px, 0);
+  margin-right: -30px;
 }
 .slide-left-leave-active,
 .slide-right-enter {
@@ -344,6 +345,7 @@ body {
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(-80px);
+  margin-right: -80px;
   opacity: 0;
 }
 
