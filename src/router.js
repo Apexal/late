@@ -142,6 +142,25 @@ const router = new Router({
         cantViewOnBreak: true,
         requiresAuth: true
       },
+      children: [
+        {
+          path: 'stats-pie',
+          name: 'stats-pie',
+          component: () => import('@/views/assessments/charts/statsPie.vue')
+        },
+        {
+          path: 'stats-bar',
+          name: 'stats-bar',
+          component: () =>
+            import('@/views/assessments/charts/statsBar.vue')
+        },
+        {
+          path: 'stats-line',
+          name: 'stats-line',
+          component: () =>
+            import('@/views/assessments/charts/statsLine.vue')
+        }
+      ],
       component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
     },
     {

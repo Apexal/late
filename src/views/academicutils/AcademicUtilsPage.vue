@@ -1,5 +1,11 @@
 <template>
   <section class="section academic-utils">
+    <h1
+      class="is-hidden-desktop title"
+      style="text-align:center;"
+    >
+      Grade Calculators
+    </h1>
     <div class="tab-nav tabs is-centered">
       <ul>
         <h1
