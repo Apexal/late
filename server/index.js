@@ -74,16 +74,21 @@ app.use(async (ctx, next) => {
         moment().isBetween(moment(t.start), moment(t.end))
       );
     }
-    // console.log(ctx.session.currentTerm);
-    ctx.state.onBreak =
-      !ctx.session.currentTerm ||
-      !ctx.state.user.terms.includes(ctx.session.currentTerm.code);
+    if (ctx.state.user) {
+      // console.log(ctx.session.currentTerm);
+      ctx.state.onBreak =
+        !ctx.session.currentTerm ||
+        !ctx.state.user.terms.includes(ctx.session.currentTerm.code);
 
-    // Create Google auth if logged in and setup
-    if (ctx.state.user && ctx.state.user.setup.google) {
-      const auth = google.createConnection();
-      auth.setCredentials(ctx.state.user.integrations.google.tokens);
-      ctx.state.googleAuth = auth;
+      // Create Google auth if logged in and setup
+      if (ctx.state.user && ctx.state.user.setup.google) {
+        const auth = google.createConnection();
+        auth.setCredentials(ctx.state.user.integrations.google.tokens);
+        ctx.state.googleAuth = auth;
+      }
+    } else {
+      console.error('Input Error: User input is NULL');
+      logger.error('Input Error: User input is NULL');
     }
   }
   try {

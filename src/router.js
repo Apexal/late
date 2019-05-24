@@ -137,6 +137,7 @@ const router = new Router({
     {
       path: '/coursework/stats',
       name: 'coursework-stats',
+      redirect: 'coursework/stats/stats-pie',
       meta: {
         title: 'Coursework Stats',
         cantViewOnBreak: true,
@@ -167,8 +168,8 @@ const router = new Router({
       path: '/coursework/a/:assignmentID',
       name: 'assignment-overview',
       component: () =>
-        import('@/views/assessments/AssessmentsOverviewPage.vue'),
-      props: { assessmentType: 'assignment' },
+      import('@/views/assessments/AssessmentsOverviewPage.vue'),
+      ops: { assessmentType: 'assignment' },
       meta: {
         cantViewOnBreak: true,
         requiresAuth: true
@@ -223,7 +224,7 @@ const router = new Router({
             title: 'Course Schedule'
           },
           component: () =>
-            import('@/views/account/AccountSetupCourseSchedule.vue')
+    import('@/views/account/AccountSetupCourseSchedule.vue')
         },
         {
           path: 'unavailability',
@@ -232,7 +233,7 @@ const router = new Router({
             title: 'Study/Work Unavailability'
           },
           component: () =>
-            import('@/views/account/AccountSetupUnavailability.vue')
+    import('@/views/account/AccountSetupUnavailability.vue')
         },
         {
           path: 'integrations',
@@ -241,7 +242,7 @@ const router = new Router({
             title: 'Notifications'
           },
           component: () =>
-            import('@/views/account/AccountSetupIntegrations.vue')
+    import('@/views/account/AccountSetupIntegrations.vue')
         },
         {
           path: 'googlecalendar',
@@ -250,7 +251,7 @@ const router = new Router({
             title: 'Google Calendar'
           },
           component: () =>
-            import('@/views/account/AccountSetupGoogleCalendar.vue')
+    import('@/views/account/AccountSetupGoogleCalendar.vue')
         }
       ]
     },
@@ -274,7 +275,7 @@ const router = new Router({
             title: 'Students'
           },
           component: () =>
-            import('@/views/components/admin/AdminStudentList.vue')
+      import('@/views/components/admin/AdminStudentList.vue')
         },
         {
           path: 'log',
