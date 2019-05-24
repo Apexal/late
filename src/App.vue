@@ -78,7 +78,7 @@
               loggedIn && expanded ? 'columm' : 'container',
               { 'no-sidebar': !expanded }
             ]"
-            style="flex: 1;"
+            style="flex: 1;max-width: 85vw;"
           >
             <PinnedAnnouncements v-if="loggedIn" />
             <transition
