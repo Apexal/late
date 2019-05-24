@@ -42,7 +42,9 @@
     <h2 class="subtitle has-text-centered-mobile">
       Helpful insights on your classwork and assignments
     </h2>
-    <router-view />
+    <transition name="slide-fade">
+      <router-view />
+    </transition>
   </section>
 </template>
 
