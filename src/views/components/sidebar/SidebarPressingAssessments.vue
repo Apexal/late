@@ -1,16 +1,24 @@
 <template>
   <div class="sidebar-pressing-assessments">
     <template v-if="onBreak">
-      <div class="panel-block has-text-grey no-hover">
-        There's no work over break!
+      <div class="no-work">
+        <i class="fas fa-umbrella-beach no-work-icon" />
+        <div class="panel-block has-text-grey no-hover">
+          No work over break!
+        </div>
       </div>
     </template>
     <template v-else>
       <div
         v-if="pressing.length == 0"
-        class="panel-block has-text-grey no-hover"
+        class="no-work"
       >
-        <span class="has-text-centered">No pressing assignments or exams!</span>
+        <i class="far fa-check-square no-work-icon" />
+        <div
+          class="panel-block has-text-grey no-hover has-text-centered"
+        >
+          No pressing assignments or exams!
+        </div>
       </div>
 
       <router-link
@@ -46,9 +54,11 @@
               $store.commit('OPEN_COURSE_MODAL', course(assessment))
             "
           />
-          <b class="course-title is-hidden-tablet">{{
-            course(assessment).title
-          }}</b>
+          <b class="course-title is-hidden-tablet">
+            {{
+              course(assessment).title
+            }}
+          </b>
           {{ assessment.title }}
           <small
             class="has-text-grey is-pulled-right tooltip is-tooltip-left"
@@ -126,5 +136,25 @@ export default {
   border-color: black;
   box-shadow: none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+}
+
+.no-work {
+  i {
+    width: 100%;
+    text-align: center;
+    font-size: 4em;
+    padding: 15px 0px 5px 0px;
+    display: block;
+    color: rgba(128, 128, 128, 0.5);
+
+    border-left: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+  }
+
+  div {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>
