@@ -44,13 +44,14 @@ const router = new Router({
       path: '/academicutils',
       component: () => import('@/views/academicutils/AcademicUtilsPage.vue'),
       name: 'academic-utils',
+      redirect: 'academicutils/gpa-calculator',
       meta: {
         title: 'Academic Utilities'
       },
       children: [
         {
-          path: 'gpa-calulator',
-          name: 'gpa-calulator',
+          path: 'gpa-calculator',
+          name: 'gpa-calculator',
           component: () => import('@/views/academicutils/GPACalculator.vue')
         },
         {
@@ -137,11 +138,31 @@ const router = new Router({
     {
       path: '/coursework/stats',
       name: 'coursework-stats',
+      redirect: 'coursework/stats/stats-pie',
       meta: {
         title: 'Coursework Stats',
         cantViewOnBreak: true,
         requiresAuth: true
       },
+      children: [
+        {
+          path: 'stats-pie',
+          name: 'stats-pie',
+          component: () => import('@/views/assessments/charts/statsPie.vue')
+        },
+        {
+          path: 'stats-bar',
+          name: 'stats-bar',
+          component: () =>
+            import('@/views/assessments/charts/statsBar.vue')
+        },
+        {
+          path: 'stats-line',
+          name: 'stats-line',
+          component: () =>
+            import('@/views/assessments/charts/statsLine.vue')
+        }
+      ],
       component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
     },
     {
@@ -149,7 +170,7 @@ const router = new Router({
       name: 'assignment-overview',
       component: () =>
         import('@/views/assessments/AssessmentsOverviewPage.vue'),
-      props: { assessmentType: 'assignment' },
+      ops: { assessmentType: 'assignment' },
       meta: {
         cantViewOnBreak: true,
         requiresAuth: true
@@ -284,6 +305,7 @@ const router = new Router({
       component: () => import('@/views/TheNotFoundPage.vue')
     }
   ]
+
 });
 
 router.beforeEach(async (to, from, next) => {

@@ -1,7 +1,7 @@
 <template>
   <div class="account-setup-terms">
     <h2 class="is-size-4 integration-note">
-      Which terms are you enrolled in?
+      What term(s) are you currently enrolled in?
     </h2>
 
     <div class="terms columns is-multiline">
@@ -31,6 +31,7 @@
     <b-button
       type="is-primary"
       :disabled="saved"
+      class="is-pulled-right"
       @click="save"
     >
       Save and Continue

@@ -106,7 +106,8 @@ export default {
     showCompleted (nowShowing) {
       localStorage.setItem('assignmentsShowCompleted', nowShowing);
       this.$toast.open({
-        message: (nowShowing ? 'Showing' : 'Hiding') + ' completed assignments.',
+        message:
+          (nowShowing ? 'Showing' : 'Hiding') + ' completed assignments.',
         type: 'is-info',
         duration: 1000
       });
@@ -161,7 +162,10 @@ export default {
           }
         });
       } catch (e) {
-        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
     },
     course (ex) {
@@ -174,10 +178,18 @@ export default {
       // TODO change word assessments to exam or assignment depending on type
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1);
-        this.$toast.open({ message: `Showing '${c.title}' coursework.`, type: 'is-info', duration: 1000 });
+        this.$toast.open({
+          message: `Showing '${c.title}' coursework.`,
+          type: 'is-info',
+          duration: 1000
+        });
       } else {
         this.filter.push(c.crn);
-        this.$toast.open({ message: `Hiding '${c.title}' coursework.`, type: 'is-info', duration: 1000 });
+        this.$toast.open({
+          message: `Hiding '${c.title}' coursework.`,
+          type: 'is-info',
+          duration: 1000
+        });
       }
     }
   }
@@ -235,5 +247,9 @@ span.tag.course-tag {
   .title {
     margin: 0;
   }
+}
+
+.buttons {
+  justify-content: flex-end;
 }
 </style>

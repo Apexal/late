@@ -155,7 +155,7 @@
                   to="/studytools"
                   title="Work/study timer and scratchpad"
                 >
-                  Study/Work Tools
+                  Study Timer
                 </router-link>
                 <router-link
                   class="navbar-item"

@@ -2,14 +2,13 @@
   <div class="sidebar-schedule">
     <div
       v-if="onBreak"
-      class="panel-block has-text-grey no-hover"
+      class="no-classes"
     >
-      <span v-if="!nextTerm">
-        Enjoy your break!
-      </span>
-      <span v-else>
-        {{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}!
-      </span>
+      <i class="fas fa-umbrella-beach no-classes-icon" />
+      <div class="panel-block has-text-grey no-hover">
+        <span v-if="!nextTerm">No courses over break!</span>
+        <span v-else>{{ daysUntilNextTerm }} days left of break until {{ nextTerm.name }}!</span>
+      </div>
     </div>
     <div
       v-else-if="!setup"
@@ -21,7 +20,11 @@
       v-else
       class="sidebar-body agenda"
     >
-      <div v-if="filteredTodaysAgenda.length === 0">
+      <div
+        v-if="filteredTodaysAgenda.length === 0"
+        class="no-classes"
+      >
+        <i class="far fa-calendar-check no-classes-icon" />
         <div class="panel-block has-text-grey">
           Nothing scheduled for the
           {{
@@ -59,14 +62,18 @@
               class="period-title"
               @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
             >{{ event.course.title }}</b>
-            <span class="has-text-grey">{{
-              periodType(event.period.type)
-            }}</span>
+            <span class="has-text-grey">
+              {{
+                periodType(event.period.type)
+              }}
+            </span>
           </template>
           <template v-else-if="event.eventType === 'work-block'">
-            <span>{{
-              event.assessmentType === "assignment" ? "Work on " : "Study for "
-            }}</span>
+            <span>
+              {{
+                event.assessmentType === "assignment" ? "Work on " : "Study for "
+              }}
+            </span>
             <b>{{ event.assessment.title }}</b>
           </template>
         </span>
@@ -226,12 +233,34 @@ export default {
   background-color: #f5efef;
 }
 .showPassedButton:focus {
-  border-color: black;
+  border-color: #dbdbdb;
   box-shadow: none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 
 .show-passed-icon {
   margin-right: 5px;
+}
+
+.no-classes i {
+  width: 100%;
+  text-align: center;
+  font-size: 4em;
+  padding: 15px 0px 5px 0px;
+  display: block;
+  color: rgba(128, 128, 128, 0.5);
+
+  border-left: 1px solid #dbdbdb;
+  border-right: 1px solid #dbdbdb;
+}
+
+.no-classes div {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.no-classes div:hover {
+  background-color: inherit !important;
 }
 </style>

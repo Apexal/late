@@ -7,14 +7,10 @@
       <label
         for="phone-number"
         class="label"
-      >
-        Your Phone Number
-      </label>
+      >Your Phone Number</label>
       <div class="field has-addons">
         <div class="control">
-          <a class="button is-static">
-            +1
-          </a>
+          <a class="button is-static">+1</a>
         </div>
         <div class="control">
           <input
@@ -49,14 +45,10 @@
         <label
           for="new-phone-number"
           class="label"
-        >
-          Your Phone Number
-        </label>
+        >Your Phone Number</label>
         <div class="field has-addons">
           <p class="control">
-            <a class="button is-static">
-              +1
-            </a>
+            <a class="button is-static">+1</a>
           </p>
           <div class="control is-expanded">
             <input
@@ -89,9 +81,7 @@
         <label
           for="verification-code"
           class="label"
-        >
-          Verification Code
-        </label>
+        >Verification Code</label>
         <div class="field has-addons">
           <div class="control is-expanded">
             <input
@@ -219,4 +209,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.control:nth-child(2) input {
+  border: 1px solid #dbdbdb;
+  color: #7a7a7a;
+}
 </style>

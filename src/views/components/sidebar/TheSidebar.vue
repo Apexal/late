@@ -4,9 +4,7 @@
     class="menu"
   >
     <div class="panel">
-      <p
-        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
-      >
+      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         <span
           class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar"
@@ -226,7 +224,7 @@ export default {
   //Janky selector for bottom sidebar block
   .panel
     .is-size-7
-    div:last-child:not(.control):not(.course-panel-block):not(.event) {
+    div:last-child:not(.control):not(.course-panel-block):not(.event):not(.has-text-grey) {
     border-radius: 0px 0px 4px 4px;
   }
 
@@ -297,5 +295,9 @@ export default {
   a:hover {
     background-color: #dbdbdb;
   }
+}
+
+.panel-heading {
+  border: 1px solid #2e3b59 !important;
 }
 </style>

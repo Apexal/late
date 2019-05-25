@@ -19,17 +19,22 @@
       @click="removeTodo(t)"
     >
       <span class="is-full-width">
-        <small class="todo-time is-pulled-right has-text-grey">{{
-          fromNow(t.addedAt)
-        }}</small>
+        <small class="todo-time is-pulled-right has-text-grey">
+          {{
+            fromNow(t.addedAt)
+          }}
+        </small>
         {{ t.text }}
       </span>
     </div>
     <div
       v-if="todos.length === 0"
-      class="panel-block has-text-grey-light no-hover"
+      class="no-todo"
     >
-      No to-dos saved yet.
+      <i class="far fa-sticky-note no-todo-icon" />
+      <div class="panel-block has-text-grey-light no-hover">
+        No to-dos saved yet.
+      </div>
     </div>
   </div>
 </template>
@@ -99,6 +104,26 @@ export default {
   &:hover {
     background-color: hsl(0, 0%, 96%);
     text-decoration: line-through;
+  }
+}
+
+.no-todo {
+  i {
+    width: 100%;
+    text-align: center;
+    font-size: 4em;
+    padding: 15px 0px 5px 0px;
+    display: block;
+    color: rgba(128, 128, 128, 0.5);
+
+    border-left: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+  }
+
+  div {
+    display: block;
+    width: 100%;
+    text-align: center;
   }
 }
 </style>

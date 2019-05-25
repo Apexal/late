@@ -113,6 +113,7 @@
         type="is-primary"
         :loading="loading"
         :disabled="saved"
+        class="is-pulled-right"
         @click="save"
       >
         Save and Continue
@@ -182,5 +183,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>
