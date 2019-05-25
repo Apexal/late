@@ -12,9 +12,7 @@
       >
         <b>WAIT LIST</b> You are currently on the wait list and will be notified
         by email once LATE opens to the student body. Reach out to the
-        <a
-          href="mailto:matraf@rpi.edu"
-        >project lead</a> if you have any
+        <a href="mailto:matraf@rpi.edu">project lead</a> if you have any
         questions, or join the
         <a
           target="_blank"
@@ -127,8 +125,8 @@
               Add, edit, and remove assignments and exams.
             </h2>
             <h3 class="is-size-6 tagline">
-              Quickly edit and remove your assessments and tests with the click of
-              a button.
+              Quickly edit and remove your assessments and tests with the click
+              of a button.
             </h3>
             <img
               class="example"
@@ -214,6 +212,13 @@ export default {
   img {
     width: 250px;
     pointer-events: none;
+    transition: transform 0.5s;
+  }
+}
+
+#sis-man-holder:hover {
+  img {
+    transform: rotate(-5deg);
   }
 }
 
