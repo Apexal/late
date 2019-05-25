@@ -247,7 +247,7 @@ hr {
   border-radius: 10px;
   line-height: 1.25;
   position: absolute;
-  z-index: 99;
+  z-index: 4;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
   left: 50%;
