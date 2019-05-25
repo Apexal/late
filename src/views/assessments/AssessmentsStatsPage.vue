@@ -1,10 +1,5 @@
 <template>
   <section class="section assessment-stats">
-    <b-loading
-      :is-full-page="false"
-      :active="loading"
-      :can-cancel="false"
-    />
     <h1
       class="is-hidden-desktop title"
       style="text-align:center;"

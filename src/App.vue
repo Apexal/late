@@ -1,96 +1,100 @@
 <template>
   <div id="app">
-    <div id="content">
-      <vue-progress-bar />
-      <TheHeader ref="header" />
+    <vue-progress-bar />
+    <TheHeader ref="header" />
+
+    <main
+      v-if="!loading"
+      id="content"
+    >
       <b-loading
         :is-full-page="true"
         :active="loading"
         :can-cancel="false"
       />
-      <template v-if="loggedIn">
-        <CourseModal
-          v-if="!onBreak"
-          :open="courseModalOpen"
-          :course="courseModalData"
-        />
-        <AnnouncementsModal
-          :open="announcementsModalOpen"
-          :announcements="announcements"
-          @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
-        />
-        <SISMan />
-        <AssessmentsAddFAB v-if="!onBreak" />
-      </template>
-      <template v-if="!loading">
-        <StudyToolsTimer
-          v-if="$route.path != '/studytools'"
-          :detached="true"
-          :open="studyToolsTimerOpen"
-        />
-        <AssignmentsModalAdd
-          v-if="loggedIn && !onBreak"
-          :open="addAssignmentModalExpanded"
-          @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-        />
-        <ExamsModalAddRedux
-          v-if="loggedIn && !onBreak"
-          :open="addExamModalExpanded"
-          @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
-        />
+      <transition name="slide-fade">
+        <span
+          v-if="loggedIn && !expanded"
+          class="icon button is-dark toggle-sidebar"
+          title="Toggle sidebar."
+          @click="$store.commit('TOGGLE_SIDEBAR')"
+        >
+          <i
+            :class="
+              'fas ' +
+                (expanded
+                  ? 'fas fa-chevron-up fa-rotate-270'
+                  : 'fas fa-chevron-up fa-rotate-90')
+            "
+          />
+        </span>
+      </transition>
+      <div
+        class="columns"
+        style="margin-right: initial;"
+      >
         <transition name="slide-fade">
-          <span
-            v-if="loggedIn && !expanded"
-            class="icon button is-dark toggle-sidebar"
-            title="Toggle sidebar."
-            @click="$store.commit('TOGGLE_SIDEBAR')"
+          <div
+            v-if="loggedIn && expanded"
+            id="sidebar-column"
+            class="column is-3 child-view sidebar-holder"
           >
-            <i
-              :class="
-                'fas ' +
-                  (expanded
-                    ? 'fas fa-chevron-up fa-rotate-270'
-                    : 'fas fa-chevron-up fa-rotate-90')
+            <TheSidebar
+              ref="sidebar"
+              @sidebar-loaded="onResize"
+            />
+          </div>
+        </transition>
+
+        <div
+          :class="[
+            loggedIn && expanded ? 'columm' : 'container',
+            { 'no-sidebar': !expanded }
+          ]"
+          style="flex: 1;max-width: 85vw;margin: 0 auto;"
+        >
+          <template v-if="loggedIn">
+            <PinnedAnnouncements v-if="loggedIn" />
+            <StudyToolsTimer
+              v-if="$route.path != '/studytools'"
+              :detached="true"
+              :open="studyToolsTimerOpen"
+            />
+            <AssignmentsModalAdd
+              v-if="!onBreak"
+              :open="addAssignmentModalExpanded"
+              @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+            />
+            <ExamsModalAddRedux
+              v-if="!onBreak"
+              :open="addExamModalExpanded"
+              @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+            />
+            <CourseModal
+              v-if="!onBreak"
+              :open="courseModalOpen"
+              :course="courseModalData"
+            />
+            <AnnouncementsModal
+              :open="announcementsModalOpen"
+              :announcements="announcements"
+              @close-modal="
+                $store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)
               "
             />
-          </span>
-        </transition>
-        <div
-          class="columns"
-          style="margin-right: initial;"
-        >
-          <transition name="slide-fade">
-            <div
-              v-if="loggedIn && expanded"
-              id="sidebar-column"
-              class="column is-3 child-view sidebar-holder"
-            >
-              <TheSidebar
-                ref="sidebar"
-                @sidebar-loaded="onResize"
-              />
-            </div>
-          </transition>
-
-          <div
-            id="content"
-            :class="[
-              loggedIn && expanded ? 'columm' : 'container',
-              { 'no-sidebar': !expanded }
-            ]"
-            style="flex: 1;max-width: 85vw;margin: 0 auto;"
+            <SISMan />
+            <AssessmentsAddFAB v-if="!onBreak" />
+          </template>
+          <transition
+            name="fade"
+            mode="out-in"
           >
-            <PinnedAnnouncements v-if="loggedIn" />
-            <transition
-              name="fade"
-              mode="out-in"
-            >
-              <router-view />
-            </transition>
-          </div>
+            <router-view />
+          </transition>
         </div>
-      </template>
-    </div>
+      </div>
+    </main>
+
     <TheFooter id="footer" />
   </div>
 </template>

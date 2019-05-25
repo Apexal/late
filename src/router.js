@@ -44,11 +44,14 @@ const router = new Router({
       path: '/academicutils',
       component: () => import('@/views/academicutils/AcademicUtilsPage.vue'),
       name: 'academic-utils',
-      redirect: 'academicutils/gpa-calculator',
       meta: {
         title: 'Academic Utilities'
       },
       children: [
+        {
+          path: '',
+          redirect: 'gpa-calculator'
+        },
         {
           path: 'gpa-calculator',
           name: 'gpa-calculator',
@@ -64,16 +67,11 @@ const router = new Router({
     },
     {
       path: '/studytools',
+      name: 'study-tools',
       component: () => import('@/views/studytools/StudyToolsPage.vue'),
       meta: {
         title: 'Study Tools'
-      },
-      children: [
-        {
-          path: '',
-          name: 'study-tools'
-        }
-      ]
+      }
     },
     {
       path: '/checklist',
@@ -153,14 +151,12 @@ const router = new Router({
         {
           path: 'stats-bar',
           name: 'stats-bar',
-          component: () =>
-            import('@/views/assessments/charts/statsBar.vue')
+          component: () => import('@/views/assessments/charts/statsBar.vue')
         },
         {
           path: 'stats-line',
           name: 'stats-line',
-          component: () =>
-            import('@/views/assessments/charts/statsLine.vue')
+          component: () => import('@/views/assessments/charts/statsLine.vue')
         }
       ],
       component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
@@ -305,7 +301,6 @@ const router = new Router({
       component: () => import('@/views/TheNotFoundPage.vue')
     }
   ]
-
 });
 
 router.beforeEach(async (to, from, next) => {
