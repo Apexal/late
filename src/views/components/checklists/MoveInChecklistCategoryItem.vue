@@ -5,7 +5,7 @@
       v-if="item.count === 1"
       type="checkbox"
       :checked="item.progress"
-      @change="updateItemProgress"
+      @change="updateItemProgress($event.target.checked ? 1 : 0)"
     >
     <template v-else>
       0
@@ -16,7 +16,7 @@
         :max="item.count"
         step="1"
         :list="'steplist-' + item.count"
-        @change="updateItemProgress"
+        @change="updateItemProgress($event.target.value)"
       >
       {{ item.count }}
       <datalist :id="'steplist-' + item.count">
@@ -49,12 +49,8 @@ export default {
     }
   },
   methods: {
-    updateItemProgress (event) {
-      alert(event.target.value);
-      let progress;
-      if (event.target.value === 'on') progress = 1;
-      else if (event.target.value === 'off') progress = 0;
-      else progress = parseInt(event.target.value);
+    updateItemProgress (progress) {
+      alert(progress);
 
       this.$store.commit('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,

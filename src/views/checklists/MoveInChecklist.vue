@@ -11,7 +11,16 @@
           type="text"
           placeholder="New category"
           required
+          list="recommended-categories"
         />
+        <datalist id="recommended-categories">
+          <option
+            v-for="(c, index) in recommendedCategories"
+            :key="index"
+            :value="c"
+          />
+        </datalist>
+
         <p class="control">
           <button class="button is-success">
             Add
