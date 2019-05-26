@@ -132,7 +132,8 @@
             </div>
 
             <div class="navbar-item has-dropdown is-hoverable">
-              <a
+              <router-link
+                :to="{ name: 'tools' }"
                 class="navbar-link"
                 title="Tools to calculate grades and to help you work/study for assignments and exams!"
               >
@@ -140,9 +141,17 @@
                   <i class="fas fa-toolbox" />
                 </span>
                 Tools
-              </a>
+              </router-link>
 
               <div class="navbar-dropdown">
+                <router-link
+                  v-if="onBreak"
+                  class="navbar-item"
+                  to="/checklist"
+                  title="Make checklists for move in!"
+                >
+                  Move In Checklist
+                </router-link>
                 <router-link
                   class="navbar-item"
                   to="/quicklinks"

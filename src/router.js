@@ -33,6 +33,14 @@ const router = new Router({
       }
     },
     {
+      path: '/tools',
+      component: () => import('@/views/tools/ToolsIndexPage.vue'),
+      name: 'tools',
+      meta: {
+        title: 'Quick Links'
+      }
+    },
+    {
       path: '/quicklinks',
       component: () => import('@/views/quicklinks/QuickLinks.vue'),
       name: 'quick-links',
