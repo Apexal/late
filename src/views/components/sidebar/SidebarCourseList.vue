@@ -30,7 +30,7 @@
     >
       <router-link
         class="button edit-button is-fullwidth editCoursesButton"
-        to="/account/courseschedule"
+        :to="{ name: 'setup-unavailability' }"
         title="Edit your courses"
       >
         Edit Courses

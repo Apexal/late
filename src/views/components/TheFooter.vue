@@ -3,7 +3,7 @@
     <h1 class="is-size-5 has-text-centered">
       An
       <router-link
-        to="/about"
+        :to="{ name: 'about' }"
         title="View project proposal and contributors"
       >
         RCOS project!
@@ -15,8 +15,7 @@
           <img
             src="https://github.com/Apexal/old-ontrac/blob/master/client/public/images/logos/logo128x128.png?raw=true"
             style="max-height: 15px; max-width: 15px;"
-          >
-        </span>In memory of
+          > </span>In memory of
         <a
           href="https://github.com/Apexal/old-ontrac/"
           target="_blank"
