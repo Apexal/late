@@ -23,6 +23,11 @@ const mutations = {
       state.checklist.categories[categoryIndex].items[itemIndex],
       updates
     );
+  },
+  CLEAR_CHECKLIST: state => {
+    state.checklist = {
+      categories: []
+    };
   }
 };
 

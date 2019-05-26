@@ -15,7 +15,7 @@
         />
         <datalist id="recommended-categories">
           <option
-            v-for="(c, index) in recommendedCategories"
+            v-for="(c, index) in remainingRecommendedCategories"
             :key="index"
             :value="c"
           />
@@ -42,6 +42,14 @@
           :category="category"
         />
       </div>
+    </div>
+
+    <hr>
+
+    <div class="buttons">
+      <b-button @click="clearChecklist">
+        Clear
+      </b-button>
     </div>
   </section>
 </template>
@@ -70,10 +78,28 @@ export default {
   computed: {
     checklist () {
       return this.$store.state.checklists.checklist;
+    },
+    remainingRecommendedCategories () {
+      return this.recommendedCategories.filter(
+        cat => !this.categoryTitles.includes(cat)
+      );
+    },
+    categoryTitles () {
+      return this.checklist.categories.map(cat => cat.title);
     }
   },
   methods: {
+    clearChecklist () {
+      this.$store.commit('CLEAR_CHECKLIST');
+    },
     addCategory () {
+      if (this.categoryTitles.includes(this.newCategory)) {
+        this.$toast.open({
+          message: 'You already have that category!',
+          type: 'is-warning '
+        });
+        return;
+      }
       this.$store.commit('ADD_CATEGORY', this.newCategory);
       this.newCategory = '';
     }

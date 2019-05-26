@@ -104,7 +104,7 @@ export default {
 <style lang="scss" scoped>
 .panel-heading {
   padding: 0;
-
+  cursor: pointer;
   .padded {
     padding: 0.5em 0;
     display: inline-block;
