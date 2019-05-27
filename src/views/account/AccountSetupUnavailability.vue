@@ -1,9 +1,7 @@
 <template>
   <div class="setup-unavailability">
     <template v-if="onBreak">
-      <h2
-        class="subtitle has-text-centered"
-      >
+      <h2 class="subtitle has-text-centered">
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>
@@ -139,12 +137,6 @@ export default {
     };
   },
   computed: {
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
-    onBreak () {
-      return this.$store.getters.onBreak;
-    },
     allEvents () {
       return this.$store.getters.getCourseScheduleAsEvents.concat(
         this.$store.getters.getUnavailabilityAsEvents

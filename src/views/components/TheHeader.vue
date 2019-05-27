@@ -303,20 +303,11 @@ export default {
         a => !this.seenAnnouncementIDs.includes(a._id)
       ).length;
     },
-    onBreak () {
-      return this.$store.getters.onBreak;
-    },
     isUserSetup () {
       return this.$store.getters.isUserSetup;
     },
     navbarExpanded () {
       return this.$store.state.navbarExpanded;
-    },
-    user () {
-      return this.$store.state.auth.user;
-    },
-    loggedIn () {
-      return this.$store.state.auth.isAuthenticated;
     },
     assessmentCount () {
       return this.$store.getters.limitedUpcomingAssessments.length;

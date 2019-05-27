@@ -168,9 +168,6 @@ export default {
     };
   },
   computed: {
-    loggedIn () {
-      return this.$store.state.auth.isAuthenticated;
-    },
     waitlisted () {
       return !!this.$route.query.waitlisted;
     }

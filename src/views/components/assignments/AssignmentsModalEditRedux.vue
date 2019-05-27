@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{'is-active': open}"
+    :class="{ 'is-active': open }"
     class="add-assignment-modal modal"
   >
     <div
@@ -21,9 +21,11 @@
             :key="s.step"
             tag="div"
             class="step-item"
-            :class="{ 'is-completed': s.completed,
-                      'is-active': s.active }"
-            @click="step = s.step; updateSteps()"
+            :class="{ 'is-completed': s.completed, 'is-active': s.active }"
+            @click="
+              step = s.step;
+              updateSteps();
+            "
           >
             <div class="step-marker">
               <span class="icon">
@@ -62,13 +64,18 @@
             :title="assignment.title"
             :description="assignment.description"
             :title-place-holder="'Assignment Title - Keep it concise!'"
-            :description-place-holder="'(optional) Long description of the assignment here! You can use Markdown!'"
+            :description-place-holder="
+              '(optional) Long description of the assignment here! You can use Markdown!'
+            "
             @update-title="assignment.title = $event"
             @update-desc="assignment.description = $event"
           />
           <ModalCalendar
             v-else-if="step === 3"
-            @update-date="assignment.dueDate = $event; nextStep();"
+            @update-date="
+              assignment.dueDate = $event;
+              nextStep();
+            "
           />
           <ModalTime
             v-else-if="step === 4"
@@ -198,11 +205,6 @@ export default {
         }
       ]
     };
-  },
-  computed: {
-    courses () {
-      return this.$store.getters.current_courses;
-    }
   },
   watch: {
     initialAssignment (newA) {

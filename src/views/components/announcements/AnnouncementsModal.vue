@@ -8,7 +8,7 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
-          {{ addingAnnouncement ? 'Add Announcement' : 'Announcements' }}
+          {{ addingAnnouncement ? "Add Announcement" : "Announcements" }}
         </p>
       </header>
       <section class="modal-card-body">
@@ -80,12 +80,13 @@
               :source="announcement.body"
               :html="false"
               :emoji="true"
-              :anchor-attributes="{target: '_blank'}"
+              :anchor-attributes="{ target: '_blank' }"
             />
             <small
               :data-tooltip="shortDateTimeFormat(announcement.createdAt)"
               class="tooltip has-text-grey"
-            >Posted {{ fromNow(announcement.createdAt) }} by {{ announcement._student.display_name }}</small>
+            >Posted {{ fromNow(announcement.createdAt) }} by
+              {{ announcement._student.display_name }}</small>
           </article>
         </template>
       </section>
@@ -96,12 +97,10 @@
           :loading="loading"
           @click="buttonClick"
         >
-          {{ addingAnnouncement ? 'Save' : 'New Announcement' }}
+          {{ addingAnnouncement ? "Save" : "New Announcement" }}
         </b-button>
-        <b-button
-          @click="cancelButtonClick"
-        >
-          {{ addingAnnouncement ? 'Cancel' : 'Close' }}
+        <b-button @click="cancelButtonClick">
+          {{ addingAnnouncement ? "Cancel" : "Close" }}
         </b-button>
       </footer>
     </div>
@@ -132,11 +131,6 @@ export default {
         isPinned: false
       }
     };
-  },
-  computed: {
-    user () {
-      return this.$store.state.auth.user;
-    }
   },
   methods: {
     buttonClick () {

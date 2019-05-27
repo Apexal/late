@@ -1,5 +1,7 @@
 <template>
-  <nav class="box level assessment-stats has-background-grey-darker has-text-white">
+  <nav
+    class="box level assessment-stats has-background-grey-darker has-text-white"
+  >
     <div class="level-item has-text-centered">
       <div>
         <p
@@ -16,14 +18,18 @@
           <i
             v-show="assessment.priority - 1 in priorityStrings"
             class="fas fa-minus has-text-grey decrease-priority"
-            :title="'Decrease priority to ' + priorityStrings[assessment.priority - 1]"
+            :title="
+              'Decrease priority to ' + priorityStrings[assessment.priority - 1]
+            "
             @click="changePriority(-1)"
           />
           {{ priorityString }}
           <i
             v-show="assessment.priority + 1 in priorityStrings"
             class="fas fa-plus has-text-grey increase-priority"
-            :title="'Increase priority to ' + priorityStrings[assessment.priority + 1]"
+            :title="
+              'Increase priority to ' + priorityStrings[assessment.priority + 1]
+            "
             @click="changePriority(1)"
           />
         </p>
@@ -36,7 +42,10 @@
           class="heading"
           title="When is this assessment due?"
         >
-          {{ (assessment.passed ? 'Was ': '') + (assessmentType === 'assignment' ? 'Due' : 'On') }}
+          {{
+            (assessment.passed ? "Was " : "") +
+              (assessmentType === "assignment" ? "Due" : "On")
+          }}
         </p>
         <form
           v-if="editingDate"
@@ -96,7 +105,11 @@
     >
       <div>
         <p class="heading">
-          {{ assessment.fullyScheduled ? 'Scheduled ' + assessmentActionTerm + ' Left' : assessmentActionTerm + ' Schedule' }}
+          {{
+            assessment.fullyScheduled
+              ? "Scheduled " + assessmentActionTerm + " Left"
+              : assessmentActionTerm + " Schedule"
+          }}
         </p>
         <p
           v-if="assessment.fullyScheduled"
@@ -145,9 +158,6 @@ export default {
     assessmentActionTerm () {
       return this.assessmentType === 'assignment' ? 'Work' : 'Study';
     },
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
     minDate () {
       return moment(this.course.startDate).format('YYYY-MM-DD');
     },
@@ -186,9 +196,7 @@ export default {
       return this.priorityStrings[this.assessment.priority] || 'Unknown';
     },
     timeLeft () {
-      const diff = moment.duration(
-        moment(this.assessment.date).diff(this.now)
-      );
+      const diff = moment.duration(moment(this.assessment.date).diff(this.now));
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
     },
     inputFormatDate () {
@@ -218,10 +226,17 @@ export default {
         return;
       }
 
-      await this.updateAssessment({ [ this.assessmentType === 'assignment' ? 'dueDate' : 'date' ]: newDate.toDate() });
+      const propName =
+        this.assessmentType === 'assignment' ? 'dueDate' : 'date';
+      await this.updateAssessment({
+        [propName]: newDate.toDate()
+      });
 
       this.$toast.open({
-        message: 'Updated ' + (this.assessmentType === 'assignment' ? 'due date' : 'date') + '!',
+        message:
+          'Updated ' +
+          (this.assessmentType === 'assignment' ? 'due date' : 'date') +
+          '!',
         type: 'is-success'
       });
 
@@ -236,7 +251,9 @@ export default {
       ) {
         return;
       }
-      await this.updateAssessment({ priority: this.assessment.priority + change });
+      await this.updateAssessment({
+        priority: this.assessment.priority + change
+      });
       this.$toast.open({
         message: 'Updated priority!',
         type: 'is-success'
@@ -247,7 +264,10 @@ export default {
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.assessment, updates));
+        updatedAssessment = await this.$store.dispatch(
+          'UPDATE_ASSESSMENT',
+          Object.assign(this.assessment, updates)
+        );
       } catch (e) {
         this.loading = false;
         this.$toast.open({
@@ -272,7 +292,6 @@ export default {
 }
 
 .level.assessment-stats {
-
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   margin-top: 20px;

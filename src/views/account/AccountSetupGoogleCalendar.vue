@@ -151,12 +151,6 @@ export default {
     },
     setup () {
       return this.$store.getters.userSetup.google;
-    },
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
-    user () {
-      return this.$store.state.auth.user;
     }
   },
   async mounted () {

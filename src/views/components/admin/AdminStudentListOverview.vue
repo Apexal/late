@@ -97,7 +97,7 @@
             size="is-small"
             @click="updateStudent({ admin: !student.admin })"
           >
-            {{ student.admin ? 'Remove' : 'Make' }} Admin
+            {{ student.admin ? "Remove" : "Make" }} Admin
           </b-button>
         </template>
       </div>
@@ -122,9 +122,6 @@ export default {
     };
   },
   computed: {
-    user () {
-      return this.$store.state.auth.user;
-    },
     setupCheckNames () {
       return {
         profile: 'Profile',
@@ -174,7 +171,8 @@ export default {
     },
     async deleteStudent () {
       this.$dialog.confirm({
-        message: 'Are you sure you want to delete this student account? This is IRREVERSIBLE',
+        message:
+          'Are you sure you want to delete this student account? This is IRREVERSIBLE',
         onConfirm: async () => {
           let request;
           try {

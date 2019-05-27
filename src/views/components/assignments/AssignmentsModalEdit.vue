@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{'is-active': open}"
+    :class="{ 'is-active': open }"
     class="edit-assignment-modal modal"
   >
     <div
@@ -170,12 +170,16 @@
           <button
             class="button is-warning"
             @click="$emit('toggle-modal')"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
           <button
             form="edit-assignment-form"
             class="button is-success"
-            :class="{'is-loading': loading}"
-          >Save</button>
+            :class="{ 'is-loading': loading }"
+          >
+            Save
+          </button>
         </span>
       </footer>
     </div>
@@ -209,17 +213,11 @@ export default {
     };
   },
   computed: {
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
     maxDate () {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
     },
     minDate () {
       return moment(this.currentTerm.start).format('YYYY-MM-DD');
-    },
-    courses () {
-      return this.$store.getters.current_courses;
     }
   },
   watch: {
@@ -246,17 +244,20 @@ export default {
 
       let updatedAssignment;
       try {
-        updatedAssignment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.initialAssignment, {
-          title: this.title,
-          dueDate: moment(
-            this.dueDate + ' ' + this.dueTime,
-            'YYYY-MM-DD HH:mm',
-            true
-          ).toDate(),
-          courseCRN: this.courseCRN,
-          timeEstimate: this.timeEstimate,
-          priority: this.priority
-        }));
+        updatedAssignment = await this.$store.dispatch(
+          'UPDATE_ASSESSMENT',
+          Object.assign(this.initialAssignment, {
+            title: this.title,
+            dueDate: moment(
+              this.dueDate + ' ' + this.dueTime,
+              'YYYY-MM-DD HH:mm',
+              true
+            ).toDate(),
+            courseCRN: this.courseCRN,
+            timeEstimate: this.timeEstimate,
+            priority: this.priority
+          })
+        );
       } catch (e) {
         this.loading = false;
         this.$toast.open({
@@ -275,10 +276,9 @@ export default {
 
       // Notify user
       this.$toast.open({
-        message:
-          `Edited assignment '${
-            updatedAssignment.title
-          }' due ${moment(updatedAssignment.dueDate).fromNow()}.`,
+        message: `Edited assignment '${updatedAssignment.title}' due ${moment(
+          updatedAssignment.dueDate
+        ).fromNow()}.`,
         type: 'is-success'
       });
     }

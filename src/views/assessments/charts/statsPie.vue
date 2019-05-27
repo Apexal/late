@@ -20,9 +20,6 @@ export default {
     };
   },
   computed: {
-    courses () {
-      return this.$store.getters.current_courses;
-    },
     assignmentCountDataset () {
       const data = this.courses.map(
         course =>
@@ -96,9 +93,6 @@ export default {
       }
 
       return datasets;
-    },
-    currentTerm () {
-      return this.$store.getters.currentTerm;
     },
     weekLabels () {
       const weekLabels = [];

@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{'is-active': open}"
+    :class="{ 'is-active': open }"
     class="modal edit-exam-modal"
   >
     <div
@@ -185,12 +185,16 @@
           <button
             class="button is-warning"
             @click="$emit('toggle-modal')"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
           <button
             form="edit-exam-form"
             class="button is-success"
-            :class="{'is-loading': loading}"
-          >Save</button>
+            :class="{ 'is-loading': loading }"
+          >
+            Save
+          </button>
         </span>
       </footer>
     </div>
@@ -230,17 +234,11 @@ export default {
     };
   },
   computed: {
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
     maxDate () {
       return moment(this.currentTerm.end).format('YYYY-MM-DD');
     },
     minDate () {
       return moment(this.currentTerm.start).format('YYYY-MM-DD');
-    },
-    courses () {
-      return this.$store.getters.current_courses;
     },
     saved () {
       return (
@@ -266,18 +264,21 @@ export default {
 
       let updatedExam;
       try {
-        updatedExam = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.initialExam, {
-          title: this.exam.title,
-          description: this.exam.description,
-          date: moment(
-            this.exam.date + ' ' + this.exam.time,
-            'YYYY-MM-DD HH:mm',
-            true
-          ).toDate(),
-          courseCRN: this.exam.courseCRN,
-          timeEstimate: this.exam.timeEstimate,
-          priority: this.exam.priority
-        }));
+        updatedExam = await this.$store.dispatch(
+          'UPDATE_ASSESSMENT',
+          Object.assign(this.initialExam, {
+            title: this.exam.title,
+            description: this.exam.description,
+            date: moment(
+              this.exam.date + ' ' + this.exam.time,
+              'YYYY-MM-DD HH:mm',
+              true
+            ).toDate(),
+            courseCRN: this.exam.courseCRN,
+            timeEstimate: this.exam.timeEstimate,
+            priority: this.exam.priority
+          })
+        );
       } catch (e) {
         this.loading = false;
         this.$toast.open({
@@ -296,10 +297,9 @@ export default {
 
       // Notify user
       this.$toast.open({
-        message:
-          `Edited exam '${
-            updatedExam.title
-          }' on ${moment(updatedExam.date).fromNow()}.`,
+        message: `Edited exam '${updatedExam.title}' on ${moment(
+          updatedExam.date
+        ).fromNow()}.`,
         type: 'is-success'
       });
     }

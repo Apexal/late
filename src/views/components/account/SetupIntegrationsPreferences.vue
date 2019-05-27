@@ -84,9 +84,6 @@ export default {
         JSON.stringify(this.user.notificationPreferences)
       );
     },
-    user () {
-      return this.$store.state.auth.user;
-    },
     enabledIntegrations () {
       const enabled = {};
       for (let key in this.notifications) {

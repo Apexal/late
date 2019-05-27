@@ -151,15 +151,6 @@ export default {
     announcementsModalOpen () {
       return this.$store.state.announcements.modalOpen;
     },
-    loggedIn () {
-      return this.$store.state.auth.isAuthenticated;
-    },
-    onBreak () {
-      return this.$store.getters.onBreak;
-    },
-    courses () {
-      return this.$store.getters.current_courses;
-    },
     announcements () {
       return this.$store.getters.allAnnouncements;
     },

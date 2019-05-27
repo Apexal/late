@@ -18,7 +18,7 @@
             <li
               v-for="(s, index) in steps"
               :key="index"
-              :class="{'is-active': index === step}"
+              :class="{ 'is-active': index === step }"
               @click="setStep(index)"
             >
               <a>
@@ -51,7 +51,9 @@
             :title="title"
             :description="description"
             :title-placeholder="'Assignment Title - Keep it concise!'"
-            :description-placeholder="'(optional) Long description of the assignment here! You can use Markdown!'"
+            :description-placeholder="
+              '(optional) Long description of the assignment here! You can use Markdown!'
+            "
             :date="dueDate"
             :time="dueTime"
             :time-estimate="timeEstimate"
@@ -61,7 +63,10 @@
             :recurring-days="recurringDays"
             :old-titles="oldTitles"
             @update-crn="setValue('courseCRN', $event)"
-            @update-date="setValue('dueDate', $event); nextStep();"
+            @update-date="
+              setValue('dueDate', $event);
+              nextStep();
+            "
             @update-time="setValue('dueTime', $event.trim())"
             @update-title="setValue('title', $event.trim())"
             @update-description="setValue('description', $event.trim())"
@@ -202,9 +207,6 @@ export default {
     recurringDays () {
       return this.$store.state.addAssignmentModal.recurringDays;
     },
-    courses () {
-      return this.$store.getters.current_courses;
-    },
     completedChecks () {
       return {
         ModalSelectCourse: this.courseCRN.length > 0,
@@ -222,7 +224,12 @@ export default {
         '/assignments?courseCRN=' + newCourse.crn
       );
 
-      this.oldTitles = new Set(request.data.assignments.reverse().slice(0, 5).map(a => a.title));
+      this.oldTitles = new Set(
+        request.data.assignments
+          .reverse()
+          .slice(0, 5)
+          .map(a => a.title)
+      );
       this.oldCRN = newCourse.crn;
     }
   },

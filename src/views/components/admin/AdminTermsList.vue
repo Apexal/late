@@ -101,9 +101,6 @@ export default {
   computed: {
     terms () {
       return this.$store.state.schedule.terms;
-    },
-    currentTerm () {
-      return this.$store.getters.currentTerm;
     }
   },
   methods: {

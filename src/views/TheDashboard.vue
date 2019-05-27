@@ -51,11 +51,6 @@ export default {
     return {
       tab: 'calendar'
     };
-  },
-  computed: {
-    onBreak () {
-      return this.$store.getters.onBreak;
-    }
   }
 };
 </script>

@@ -135,11 +135,6 @@ export default {
       grad_year: ''
     };
   },
-  computed: {
-    user () {
-      return this.$store.state.auth.user;
-    }
-  },
   created () {
     this.first_name = this.$store.state.auth.user.name
       ? this.$store.state.auth.user.name.first

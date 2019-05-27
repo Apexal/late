@@ -16,7 +16,7 @@
         </h1>
         <router-link
           tag="li"
-          :to="{ name: 'gpa-calulator' }"
+          :to="{ name: 'gpa-calculator' }"
         >
           <a>GPA</a>
         </router-link>
@@ -28,9 +28,7 @@
         </router-link>
       </ul>
     </div>
-    <h2
-      class="subtitle has-text-centered-mobile"
-    >
+    <h2 class="subtitle has-text-centered-mobile">
       Estimates your final course grades and cumulative grade point average
     </h2>
 

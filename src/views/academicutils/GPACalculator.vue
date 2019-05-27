@@ -13,7 +13,7 @@
       </b-button>
       <b-button
         type="is-warning"
-        @click="courses = []"
+        @click="enteredCourses = []"
       >
         Clear Courses
       </b-button>
@@ -39,16 +39,16 @@
     <hr>
     <div class="columns">
       <div class="column is-half">
-        <ul v-if="courses.length">
+        <ul v-if="enteredCourses.length">
           <li
-            v-for="(c, index) in courses"
+            v-for="(c, index) in enteredCourses"
             :key="index"
           >
             <b-field grouped>
               <span
                 class="icon has-text-danger remove-course"
                 title="Remove course"
-                @click="courses.splice(index, 1)"
+                @click="enteredCourses.splice(index, 1)"
               >
                 <i class="fas fa-times" />
               </span>
@@ -89,7 +89,7 @@
         </p>
       </div>
       <div class="column is-half has-text-centered">
-        <div v-if="courses.length > 0 && allGradesIn">
+        <div v-if="enteredCourses.length > 0 && allGradesIn">
           <span class="has-text-grey">GPA</span>
           <h1 class="title gpa">
             {{ gpa }}
@@ -108,18 +108,18 @@
 
 <script>
 const grades = {
-  'A': 4.0,
+  A: 4.0,
   'A-': 3.7,
   'B+': 3.3,
-  'B': 3.0,
+  B: 3.0,
   'B-': 2.7,
   'C+': 2.3,
-  'C': 2.0,
+  C: 2.0,
   'C-': 1.7,
   'D+': 1.3,
-  'D': 1.0,
+  D: 1.0,
   'D-': 0.7,
-  'F': 0.0
+  F: 0.0
 };
 
 export default {
@@ -128,33 +128,40 @@ export default {
     return {
       grades,
       newCourseTitle: '',
-      courses: []
+      enteredCourses: []
     };
   },
   computed: {
-    onBreak () {
-      return this.$store.getters.onBreak;
-    },
     allGradesIn () {
-      return this.courses.every(course => course.gradeValue && course.credits);
+      return this.enteredCourses.every(
+        course => course.gradeValue && course.credits
+      );
     },
     gpa () {
-      const total = this.courses.reduce((acc, course) => acc + course.gradeValue * course.credits, 0);
-      const takenCredits = this.courses.reduce((acc, course) => acc + course.credits, 0);
+      const total = this.enteredCourses.reduce(
+        (acc, course) => acc + course.gradeValue * course.credits,
+        0
+      );
+      const takenCredits = this.enteredCourses.reduce(
+        (acc, course) => acc + course.credits,
+        0
+      );
 
       return (total / takenCredits).toFixed(2);
     }
   },
   methods: {
     fillCourses () {
-      this.courses = this.$store.getters.current_courses.filter(course => course.credits).map(course => ({
-        title: course.title,
-        gradeValue: undefined,
-        credits: course.credits
-      }));
+      this.enteredCourses = this.courses
+        .filter(course => course.credits)
+        .map(course => ({
+          title: course.title,
+          gradeValue: undefined,
+          credits: course.credits
+        }));
     },
     addCourse () {
-      this.courses.push({
+      this.enteredCourses.push({
         title: this.newCourseTitle,
         gradeValue: undefined,
         credits: undefined

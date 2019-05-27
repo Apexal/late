@@ -89,7 +89,8 @@
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
-      >matching your filters </i>
+      >matching your filters
+      </i>
       <i
         v-if="filter.length <= 0"
         style="font-style:inherit"
@@ -137,9 +138,6 @@ export default {
         return !this.filter.includes(assessment.courseCRN);
       });
     },
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
     canGoForward () {
       return this.endMoment.isBefore(moment().startOf('day'));
     },
@@ -184,7 +182,9 @@ export default {
     async removeAssessment (assessment) {
       // Confirm user wants to remove assignment
       this.$dialog.confirm({
-        message: `Permanently remove ${assessment.assessmentType} ${assessment.title}?`,
+        message: `Permanently remove ${assessment.assessmentType} ${
+          assessment.title
+        }?`,
         onConfirm: async () => {
           await this.$store.dispatch('REMOVE_ASSESSMENT', assessment);
 

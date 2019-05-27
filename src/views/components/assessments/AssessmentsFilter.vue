@@ -91,11 +91,6 @@ export default {
       expanded: false
     };
   },
-  computed: {
-    courses () {
-      return this.$store.getters.current_courses;
-    }
-  },
   mounted () {
     if (localStorage.getItem('assessmentsShowFilters')) {
       try {

@@ -41,15 +41,7 @@
 
 <script>
 export default {
-  name: 'SidebarCourseList',
-  computed: {
-    courses () {
-      return this.$store.getters.current_courses;
-    },
-    onBreak () {
-      return this.$store.getters.onBreak;
-    }
-  }
+  name: 'SidebarCourseList'
 };
 </script>
 

@@ -174,20 +174,8 @@ export default {
     hasSelectedTerms () {
       return this.$store.getters.userSetup.terms;
     },
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
-    onBreak () {
-      return this.$store.getters.onBreak;
-    },
     canReset () {
       return !(this.pin.length === 0);
-    },
-    user () {
-      return this.$store.state.auth.user;
-    },
-    courses () {
-      return this.$store.getters.current_courses;
     },
     coursesWithoutOther () {
       return this.courses.filter(c => c.summary !== 'OTHER');

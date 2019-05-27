@@ -20,7 +20,12 @@
         @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
         <b class="course-title">{{ course.title }}</b>
-        {{ assessment.passed ? 'Past ': '' }}{{ assessmentType === 'assignment' && assessment.isRecurring ? 'Recurring ' : '' }}{{ capitalizedAssessmentType }}
+        {{ assessment.passed ? "Past " : ""
+        }}{{
+          assessmentType === "assignment" && assessment.isRecurring
+            ? "Recurring "
+            : ""
+        }}{{ capitalizedAssessmentType }}
       </span>
     </div>
     <h1
@@ -39,7 +44,7 @@
     </h1>
     <form
       v-else
-      :style="{ flex: 1}"
+      :style="{ flex: 1 }"
       @submit.prevent="save"
     >
       <div class="select">
@@ -81,7 +86,7 @@
           class="fa-check-square"
           :class="[assessment.completed ? 'fas' : 'far']"
         />
-        {{ assessment.completed ? 'Completed' : 'Incomplete' }}
+        {{ assessment.completed ? "Completed" : "Incomplete" }}
       </button>
     </div>
   </div>
@@ -104,9 +109,6 @@ export default {
     };
   },
   computed: {
-    courses () {
-      return this.$store.getters.current_courses;
-    },
     assessmentType () {
       return this.assessment.assessmentType;
     },
@@ -129,7 +131,6 @@ export default {
     }
   },
   methods: {
-
     async save () {
       if (
         this.tempCourseCRN === this.assessment.courseCRN &&
@@ -141,7 +142,13 @@ export default {
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.assessment, { title: this.tempTitle, courseCRN: this.tempCourseCRN }));
+        updatedAssessment = await this.$store.dispatch(
+          'UPDATE_ASSESSMENT',
+          Object.assign(this.assessment, {
+            title: this.tempTitle,
+            courseCRN: this.tempCourseCRN
+          })
+        );
       } catch (e) {
         this.editing = false;
         this.$toast.open({

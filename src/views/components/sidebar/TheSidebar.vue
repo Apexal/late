@@ -130,12 +130,6 @@ export default {
     };
   },
   computed: {
-    onBreak () {
-      return this.$store.getters.onBreak;
-    },
-    currentTerm () {
-      return this.$store.getters.currentTerm;
-    },
     counts () {
       return {
         schedule: this.$store.getters.todaysAgenda.length,

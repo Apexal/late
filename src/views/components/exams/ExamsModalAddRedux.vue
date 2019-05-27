@@ -18,7 +18,7 @@
             <li
               v-for="(s, index) in steps"
               :key="index"
-              :class="{'is-active': index === step}"
+              :class="{ 'is-active': index === step }"
               @click="setStep(index)"
             >
               <a>
@@ -51,14 +51,19 @@
             :title="title"
             :description="description"
             :title-placeholder="'Exam Title - Keep it concise!'"
-            :description-placeholder="'(optional) Long description of the exam here! You can use Markdown!'"
+            :description-placeholder="
+              '(optional) Long description of the exam here! You can use Markdown!'
+            "
             :date="date"
             :time="time"
             :time-estimate="timeEstimate"
             :priority-max="3"
             :priority="priority"
             @update-crn="setValue('courseCRN', $event)"
-            @update-date="setValue('date', $event); nextStep();"
+            @update-date="
+              setValue('date', $event);
+              nextStep();
+            "
             @update-time="setValue('time', $event.trim())"
             @update-title="setValue('title', $event.trim())"
             @update-description="setValue('description', $event.trim())"
@@ -187,9 +192,6 @@ export default {
     priority () {
       return this.$store.state.addExamModal.priority;
     },
-    courses () {
-      return this.$store.getters.current_courses;
-    },
     completedChecks () {
       return {
         ModalSelectCourse: this.courseCRN.length > 0,
@@ -256,7 +258,10 @@ export default {
           moment().startOf('day')
         )
       ) {
-        this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', request.data.createdExam);
+        this.$store.dispatch(
+          'ADD_UPCOMING_ASSESSMENT',
+          request.data.createdExam
+        );
       }
 
       // Reset important fields

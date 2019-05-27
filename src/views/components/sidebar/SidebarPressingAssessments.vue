@@ -14,9 +14,7 @@
         class="no-work"
       >
         <i class="far fa-check-square no-work-icon" />
-        <div
-          class="panel-block has-text-grey no-hover has-text-centered"
-        >
+        <div class="panel-block has-text-grey no-hover has-text-centered">
           No pressing assignments or exams!
         </div>
       </div>
@@ -55,9 +53,7 @@
             "
           />
           <b class="course-title is-hidden-tablet">
-            {{
-              course(assessment).title
-            }}
+            {{ course(assessment).title }}
           </b>
           {{ assessment.title }}
           <small
@@ -95,9 +91,6 @@ export default {
     }
   },
   computed: {
-    onBreak () {
-      return this.$store.getters.onBreak;
-    },
     now () {
       return this.$store.state.now;
     }

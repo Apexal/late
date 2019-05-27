@@ -19,6 +19,7 @@ import CourseAssessmentDot from '@/views/components/CourseAssessmentDot';
 import wysiwyg from 'vue-wysiwyg';
 
 import datemethods from './mixins/datemethods';
+import sharedproperties from './mixins/sharedproperties';
 
 import * as VueGoogleMaps from 'vue2-google-maps';
 
@@ -74,6 +75,7 @@ Vue.use(VueGoogleMaps, {
 });
 
 Vue.mixin(datemethods);
+Vue.mixin(sharedproperties);
 
 const app = new Vue({
   router,
