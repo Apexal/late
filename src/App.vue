@@ -239,11 +239,11 @@ export default {
 }
 
 //Removes annoying outline around elements when clicked.
-*:focus {
-  outline: none;
-  box-shadow: none !important;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-}
+// *:focus {
+//   outline: none;
+//   box-shadow: none !important;
+//   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+// }
 
 html,
 body {
@@ -254,21 +254,18 @@ body {
 /*             All other styles
 /*-------------------------------------------*/
 
-//Sticky Footer
+// Sticky Footer
 #app {
   display: flex;
-  //Dynamically calculate page height - header height (3.25rem)
-  min-height: calc(100vh - 3.25rem);
-  min-height: -webkit-calc(100vh - 3.25rem);
   flex-direction: column;
+  height: 100%;
 }
 
 #content {
-  flex: 1 1 auto;
+  flex: 1 0 auto;
 }
-
 #footer {
-  flex: 1 0 inherit;
+  flex-shrink: 0;
 }
 
 // Replace Fullcalendar ugly button style with Bulma's nice style
@@ -277,10 +274,6 @@ body {
   background: none;
   text-shadow: none;
   //@extend .button;
-}
-
-.is-full-width {
-  width: 100%;
 }
 
 .toggle-sidebar {
@@ -342,10 +335,6 @@ body {
   transform: translateX(-80px);
   margin-right: -80px;
   opacity: 0;
-}
-
-.no-bottom-padding {
-  padding-bottom: 0;
 }
 
 .modal-content {

@@ -38,7 +38,7 @@
           priority: assessment.priority > 3
         }"
       >
-        <span class="is-full-width">
+        <span class="is-fullwidth">
           <i
             class="fas"
             :class="[

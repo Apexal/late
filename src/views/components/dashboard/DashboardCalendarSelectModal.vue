@@ -66,7 +66,7 @@
           class="panel-block has-text-grey has-text-centered"
           @click="showingExtra = !showingExtra"
         >
-          <span class="is-full-width">
+          <span class="is-fullwidth">
             {{ showingExtra ? 'Hide' : 'Show' }} Extra ({{ extraAssessments.length }})
           </span>
         </div>

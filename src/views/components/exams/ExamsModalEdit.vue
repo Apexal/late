@@ -172,7 +172,7 @@
       </section>
 
       <footer class="modal-card-foot">
-        <span class="is-full-width">
+        <span class="is-fullwidth">
           <button
             class="button is-danger is-pulled-right"
             @click="$emit('remove-exam')"

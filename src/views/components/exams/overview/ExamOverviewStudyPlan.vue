@@ -103,7 +103,7 @@
           >
             <form @submit.prevent="addChildItem(index, $event)">
               <input
-                type="text is-full-width"
+                type="text is-fullwidth"
                 class="input"
                 name="child-item-name"
                 maxlength="200"
@@ -121,7 +121,7 @@
       <input
         v-model="newCategory"
         class="input new-checkpoint-input"
-        type="text is-full-width"
+        type="text is-fullwidth"
         placeholder="New Category"
         maxlength="200"
         required

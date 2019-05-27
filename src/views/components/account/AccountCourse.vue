@@ -37,7 +37,7 @@
         </summary>
 
         <div class="periods">
-          <table class="table is-full-width">
+          <table class="table is-fullwidth">
             <thead class="is-unselectable">
               <tr>
                 <th>Day</th>
@@ -177,7 +177,7 @@
         </div>
 
         <div class="periods">
-          <table class="table is-full-width">
+          <table class="table is-fullwidth">
             <thead>
               <tr>
                 <th>Day</th>

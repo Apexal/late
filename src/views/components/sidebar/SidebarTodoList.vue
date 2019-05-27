@@ -18,7 +18,7 @@
       title="Click to mark completed."
       @click="removeTodo(t)"
     >
-      <span class="is-full-width">
+      <span class="is-fullwidth">
         <small class="todo-time is-pulled-right has-text-grey">
           {{
             fromNow(t.addedAt)

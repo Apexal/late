@@ -1,6 +1,6 @@
 <template>
   <div class="assessment panel-block">
-    <span class="is-full-width">
+    <span class="is-fullwidth">
       <span
         v-if="assessmentType === 'assignment'"
         class="icon toggle-assignment"
