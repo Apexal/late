@@ -30,14 +30,16 @@
         </span>
       </transition>
       <div
-        class="columns"
-        style="margin-right: initial;"
+        :class="[
+          loggedIn && expanded ? 'columns is-marginless' : 'container',
+          { homepage }
+        ]"
       >
         <transition name="slide-fade">
           <div
             v-if="loggedIn && expanded"
             id="sidebar-column"
-            class="column is-3 child-view sidebar-holder"
+            class="column is-3 sidebar-holder"
           >
             <TheSidebar
               ref="sidebar"
@@ -48,10 +50,9 @@
 
         <div
           :class="[
-            loggedIn && expanded ? 'columm' : 'container',
+            loggedIn && expanded ? 'column' : '',
             { 'no-sidebar': !expanded }
           ]"
-          style="flex: 1;max-width: 85vw;margin: 0 auto;"
         >
           <template v-if="loggedIn">
             <PinnedAnnouncements v-if="loggedIn" />
@@ -136,6 +137,9 @@ export default {
     };
   },
   computed: {
+    homepage () {
+      return this.$route.name === 'home' && !this.loggedIn;
+    },
     studyToolsTimerOpen () {
       return (
         this.$store.state.studytoolstimer.open &&

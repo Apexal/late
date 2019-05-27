@@ -149,7 +149,6 @@
           </div>
         </div>
       </div>
-      <div id="dumb-flex-padding" />
     </section>
   </div>
 </template>
@@ -186,6 +185,17 @@ export default {
 };
 </script>
 
+<style lang="scss">
+.homepage {
+  margin: 0;
+  width: 100%;
+  max-width: unset;
+  .section {
+    padding: 0;
+  }
+}
+</style>
+
 
 <style lang="scss" scoped>
 .splash {
@@ -195,16 +205,14 @@ export default {
   top: 10px;
   margin-left: -10vw;
   height: 450px;
-  z-index: -999;
+  z-index: -1;
   background: url(/splash-bg.png);
   background-size: cover;
-  -webkit-filter: blur(5px);
   filter: blur(5px);
 }
 
 #sis-man-holder {
   text-align: center;
-  z-index: 5;
   margin-top: -20px;
   img {
     width: 250px;
@@ -243,31 +251,19 @@ hr {
   height: 40px;
   line-height: 40px !important;
   margin: 0 auto;
-  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
   vertical-align: middle;
   border-radius: 10px;
-  line-height: 1.25;
   position: absolute;
-  z-index: 4;
-  -webkit-transform: translateX(-50%);
+  z-index: 40;
   transform: translateX(-50%);
   left: 50%;
+  margin-bottom: -20px;
 }
 
 .desc-container {
   padding-top: 40px;
   background-color: white;
-  position: absolute;
-  width: 102vw;
-  left: 0px;
-  margin-left: -8vw;
-  margin-left: -8.3vw;
-  transform: rotate(-1deg);
-}
-
-.desc-container > * {
-  transform: rotate(1deg);
 }
 
 .columns {
@@ -313,15 +309,6 @@ hr {
     transition: 0.2s;
     -webkit-transition: 0.2s;
   }
-}
-
-//I am so sorry for this mess of a solution
-#dumb-flex-padding {
-  width: 0px;
-  display: flex;
-  flex: 0 0 auto;
-  height: 180vh;
-  pointer-events: none;
 }
 </style>
 
