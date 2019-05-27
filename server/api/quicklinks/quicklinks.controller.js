@@ -35,12 +35,18 @@ async function createQuickLink (ctx) {
     await createdQuickLink.save();
   } catch (e) {
     logger.error(
-      `Failed to save new quick link for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to save new quick link for ${
+        ctx.state.user ? ctx.state.user.rcs_id : 'anonymous'
+      }: ${e}`
     );
     return ctx.badRequest('There was an error adding the quick link.');
   }
 
-  logger.info(`Added quick link for ${ctx.state.user.rcs_id}`);
+  logger.info(
+    `Added quick link for ${
+      ctx.state.user ? ctx.state.user.rcs_id : 'anonymous'
+    }`
+  );
   return ctx.created({ createdQuickLink });
 }
 
