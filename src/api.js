@@ -21,6 +21,7 @@ instance.interceptors.response.use(
     return response;
   },
   error => {
+    app.$Progress.finish();
     if (
       error.response.status === 401 &&
       error.response.config.url !== '/api/students/user' &&

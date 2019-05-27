@@ -22,13 +22,15 @@ async function getQuickLinks (ctx) {
 async function createQuickLink (ctx) {
   const { category, title, description, url } = ctx.request.body;
   const createdQuickLink = QuickLink({
-    _student: ctx.state.user._id,
     category,
     title,
     description,
-    url,
-    confirmed: ctx.state.user.admin // if user is admin, don't have to confirm
+    url
   });
+  if (ctx.state.user) {
+    createQuickLink._student = ctx.state.user._id;
+    createQuickLink.confirmed = ctx.state.user.admin; // if user is admin, don't have to confirm
+  }
   try {
     await createdQuickLink.save();
   } catch (e) {

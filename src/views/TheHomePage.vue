@@ -247,7 +247,7 @@ hr {
 
 .subtitle {
   background-color: #fdfdfd;
-  width: 400px;
+  padding: 0 10px;
   height: 40px;
   line-height: 40px !important;
   margin: 0 auto;
