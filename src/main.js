@@ -25,7 +25,10 @@ import * as VueGoogleMaps from 'vue2-google-maps';
 
 Vue.component('CourseAssessmentDot', CourseAssessmentDot);
 Vue.use(wysiwyg, { hideModules: { image: true } });
-Vue.use(Buefy);
+Vue.use(Buefy, {
+  defaultIconPack: 'fas',
+  defaultContainerElement: '#app'
+});
 
 const options = {
   color: '#70cad1',
