@@ -5,8 +5,7 @@ const schema = new Schema(
   {
     _student: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Student',
-      required: true
+      ref: 'Student'
     },
     category: { type: String, required: true },
     title: { type: String, required: true },

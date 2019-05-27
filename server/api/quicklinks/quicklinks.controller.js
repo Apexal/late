@@ -28,8 +28,8 @@ async function createQuickLink (ctx) {
     url
   });
   if (ctx.state.user) {
-    createQuickLink._student = ctx.state.user._id;
-    createQuickLink.confirmed = ctx.state.user.admin; // if user is admin, don't have to confirm
+    createdQuickLink._student = ctx.state.user._id;
+    createdQuickLink.confirmed = ctx.state.user.admin; // if user is admin, don't have to confirm
   }
   try {
     await createdQuickLink.save();
