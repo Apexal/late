@@ -130,52 +130,63 @@
                 </a>
               </div>
             </div>
-
-            <div class="navbar-item has-dropdown is-hoverable">
-              <router-link
-                :to="{ name: 'tools' }"
-                class="navbar-link"
-                title="Tools to calculate grades and to help you work/study for assignments and exams!"
-              >
-                <span class="icon">
-                  <i class="fas fa-toolbox" />
-                </span>
-                Tools
-              </router-link>
-
-              <div class="navbar-dropdown">
-                <router-link
-                  v-if="onBreak"
-                  class="navbar-item"
-                  to="/checklist"
-                  title="Make checklists for move in!"
-                >
-                  Move In Checklist
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/quicklinks"
-                  title="Useful RPI related links!"
-                >
-                  Quick Links
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/studytools"
-                  title="Work/study timer and scratchpad"
-                >
-                  Study Timer
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/academicutils"
-                  title="GPA calculator and course grade estimator"
-                >
-                  Grade Calculators
-                </router-link>
-              </div>
-            </div>
           </template>
+          <template v-else>
+            <router-link
+              class="navbar-item"
+              :to="{ name: 'about' }"
+              title="Learn more about LATE and its creators"
+            >
+              <span class="icon">
+                <i class="fas fa-question-circle" />
+              </span>
+              About
+            </router-link>
+          </template>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <router-link
+              :to="{ name: 'tools' }"
+              class="navbar-link"
+              title="Tools to calculate grades and to help you work/study for assignments and exams!"
+            >
+              <span class="icon">
+                <i class="fas fa-toolbox" />
+              </span>
+              Tools
+            </router-link>
+
+            <div class="navbar-dropdown">
+              <router-link
+                v-if="onBreak"
+                class="navbar-item"
+                to="/checklist"
+                title="Make checklists for move in!"
+              >
+                Move In Checklist
+              </router-link>
+              <router-link
+                class="navbar-item"
+                to="/quicklinks"
+                title="Useful RPI related links!"
+              >
+                Quick Links
+              </router-link>
+              <router-link
+                class="navbar-item"
+                to="/studytools"
+                title="Work/study timer and scratchpad"
+              >
+                Study Timer
+              </router-link>
+              <router-link
+                class="navbar-item"
+                to="/academicutils"
+                title="GPA calculator and course grade estimator"
+              >
+                Grade Calculators
+              </router-link>
+            </div>
+          </div>
         </div>
 
         <div class="navbar-end">
@@ -337,14 +348,6 @@ export default {
   margin-left: 5px;
 }
 
-.beta-tag {
-  margin-left: 5px;
-  transition: 0.2s;
-  background-color: #70cad1;
-  color: white;
-  line-height: 1.2em;
-}
-
 @keyframes bellshake {
   0% {
     transform: rotate(0);
@@ -383,26 +386,29 @@ export default {
   animation-iteration-count: infinite;
 }
 
+// Dropdown arrow transition
 .has-dropdown .navbar-link::after {
-  transition: 0.1s;
+  transition: transform 0.1s;
+  transition-timing-function: ease-out;
 }
 
 .has-dropdown:hover .navbar-link::after {
   transform: translateY(3px) rotate(135deg);
-  transition: 0.05s;
-  -webkit-transition: 0.05s;
 }
+// ---------------------
 
-.has-dropdown:hover .navbar-link::after {
-  transition: 0.2s;
-  transition-timing-function: ease-out;
+.navbar-brand {
+  .beta-tag {
+    margin-left: 5px;
+    transition: background-color 0.2s;
+    background-color: #70cad1;
+  }
+  &:hover {
+    .beta-tag {
+      background-color: #73dee6 !important;
+    }
+  }
 }
-
-.navbar-brand:hover .beta-tag {
-  background-color: #73dee6 !important;
-  transition: 0.2s;
-}
-
 .no-margin-left {
   margin-left: 0;
 }
