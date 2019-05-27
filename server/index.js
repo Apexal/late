@@ -87,8 +87,8 @@ app.use(async (ctx, next) => {
         ctx.state.googleAuth = auth;
       }
     } else {
-      console.error('Input Error: User input is NULL');
-      logger.error('Input Error: User input is NULL');
+      console.error('User is NULL');
+      logger.error('User is NULL');
     }
   }
   try {

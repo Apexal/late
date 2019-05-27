@@ -20,6 +20,7 @@ module.exports = router => {
         !ctx.request.url.startsWith('/api/students/loginas') &&
         !ctx.request.url.startsWith('/api/students/counts') &&
         !ctx.request.url.startsWith('/api/checklists') &&
+        !ctx.request.url.startsWith('/api/quicklinks') &&
         !ctx.session.cas_user
       ) {
         return ctx.unauthorized('You must be logged in to use the API.');
