@@ -1,33 +1,16 @@
 <template>
-  <div class="panel-block is-flex item">
+  <div
+    class="panel-block is-flex item"
+    :class="itemClass"
+  >
     <span class="item-title">{{ item.title }}</span>
-    <input
-      v-if="item.count === 1"
-      type="checkbox"
-      :checked="item.progress"
-      @change="updateItemProgress($event.target.checked ? 1 : 0)"
-    >
-    <template v-else>
-      0
-      <input
-        :value="item.progress"
-        type="range"
-        min="0"
-        :max="item.count"
-        step="1"
-        :list="'steplist-' + item.count"
-        @change="updateItemProgress($event.target.value)"
-      >
-      {{ item.count }}
-      <datalist :id="'steplist-' + item.count">
-        <option
-          v-for="i in item.count + 1"
-          :key="i"
-        >
-          {{ i - 1 }}
-        </option>
-      </datalist>
-    </template>
+
+    <b-numberinput
+      :min="0"
+      :max="item.count"
+      :value="item.progress"
+      @input="updateItemProgress"
+    />
   </div>
 </template>
 
@@ -48,10 +31,17 @@ export default {
       required: true
     }
   },
+  computed: {
+    itemClass () {
+      if (this.item.progress === 0) return '';
+      else if (this.item.progress === this.item.count) {
+        return 'completed';
+      }
+      return 'in-progress';
+    }
+  },
   methods: {
     updateItemProgress (progress) {
-      alert(progress);
-
       this.$store.commit('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
@@ -70,6 +60,14 @@ export default {
 
   input {
     margin: 0;
+  }
+
+  border-left: 5px solid rgb(255, 175, 175);
+  &.completed {
+    border-left: 5px solid lightgreen;
+  }
+  &.in-progress {
+    border-left: 5px solid rgb(255, 253, 163);
   }
 }
 </style>

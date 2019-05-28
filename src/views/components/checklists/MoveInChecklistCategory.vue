@@ -1,16 +1,7 @@
 <template>
   <details class="panel category">
     <summary class="panel-heading">
-      <div class="padded">
-        {{ category.title }}
-      </div>
-      <progress
-        :value="progress"
-        class="progress is-small is-primary"
-        max="100"
-      >
-        {{ progress }}%
-      </progress>
+      {{ category.title }}
     </summary>
     <div class="panel-block">
       <form @submit.prevent="addItem">
@@ -78,12 +69,16 @@ export default {
   computed: {
     progress () {
       if (this.category.items.length === 0) return 0;
-      return (
-        (this.category.items.filter(item => item.count === item.progress)
-          .length /
-        this.category.items.length) *
-        100
+      const totalItems = this.category.items.reduce(
+        (acc, item) => acc + item.count,
+        0
       );
+      const totalCompletedItems = this.category.items.reduce(
+        (acc, item) => acc + item.progress,
+        0
+      );
+
+      return (totalCompletedItems / totalItems) * 100;
     }
   },
   methods: {
@@ -103,15 +98,6 @@ export default {
 
 <style lang="scss" scoped>
 .panel-heading {
-  padding: 0;
   cursor: pointer;
-  .padded {
-    padding: 0.5em 0;
-    display: inline-block;
-  }
-
-  progress {
-    border-radius: 0;
-  }
 }
 </style>
