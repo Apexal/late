@@ -55,7 +55,7 @@
               <b-field>
                 <b-select
                   v-model="c.gradeValue"
-                  placeholder="Choose Grade"
+                  placeholder="Grade"
                 >
                   <option
                     v-for="(gradeValue, letter) in grades"
@@ -74,7 +74,7 @@
                   max="10"
                 />
                 <p class="control">
-                  <span class="button is-static"> credits</span>
+                  <span class="button is-static">credits</span>
                 </p>
               </b-field>
               <b>{{ c.title }}</b>
@@ -181,6 +181,9 @@ export default {
 <style lang="scss" scoped>
 .remove-course {
   cursor: pointer;
+  height: 36px;
+  width: 10px;
+  margin-right: 10px;
 }
 
 .gpa {
