@@ -3,10 +3,7 @@
     <vue-progress-bar />
     <TheHeader ref="header" />
 
-    <main
-      v-if="!loading"
-      id="content"
-    >
+    <main id="content">
       <b-loading
         :is-full-page="true"
         :active="loading"
