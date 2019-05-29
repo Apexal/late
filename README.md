@@ -1,6 +1,10 @@
-<img src="./src/assets/logo.png" width="100">
+![Discord](https://img.shields.io/discord/514854227462324244.svg?label=discord)
+![GitHub stars](https://img.shields.io/github/stars/Apexal/late.svg)
+![David](https://img.shields.io/david/Apexal/late.svg)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/Apexal/late.svg)
 
----
+# LATE
+
 
 > Lazy Automatic Time Evaluator
 
