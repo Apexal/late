@@ -242,6 +242,11 @@ export default {
   word-wrap: break-word;
 }
 
+
+.is-fullwidth {
+  width: 100%;
+}
+
 //Removes annoying outline around elements when clicked.
 // *:focus {
 //   outline: none;

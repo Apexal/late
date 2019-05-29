@@ -174,7 +174,7 @@ const router = new Router({
       name: 'assignment-overview',
       component: () =>
         import('@/views/assessments/AssessmentsOverviewPage.vue'),
-      ops: { assessmentType: 'assignment' },
+      props: { assessmentType: 'assignment' },
       meta: {
         cantViewOnBreak: true,
         requiresAuth: true
