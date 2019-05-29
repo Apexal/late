@@ -63,7 +63,12 @@ async function setTerms (ctx) {
   ctx.state.user.setup.terms = true;
   ctx.state.user.terms = termCodes.sort();
 
-  await ctx.state.user.save();
+  try {
+    await ctx.state.user.save();
+  } catch (e) {
+    logger.error(`Failed to save user ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.internalServerError('There was an issue saving the user.');
+  }
 
   ctx.ok({
     updatedUser: ctx.state.user
