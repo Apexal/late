@@ -1,6 +1,6 @@
+<img src="./src/assets/logo.png" width="100">
 
-
-# LATE
+---
 
 > Lazy Automatic Time Evaluator
 
