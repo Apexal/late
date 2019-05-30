@@ -8,13 +8,13 @@
       <div
         class="course box"
         :value="c.crn"
-        :class="{ 'active': isActive(c.crn) }"
-        :style="{'--box-shadow-color': c.color}"
+        :class="{ active: isActive(c.crn) }"
+        :style="{ '--box-shadow-color': c.color }"
         @click="setCRN(c.crn)"
       >
         <span
           class="tag is-pulled-right"
-          :style="{'background-color': c.color , 'color': 'white'}"
+          :style="{ 'background-color': c.color, color: 'white' }"
           :title="'You are in Section ' + c.sectionId"
         >Section {{ c.sectionId }}</span>
         {{ c.title }}
@@ -26,7 +26,10 @@
 <script>
 export default {
   name: 'ModalSelectCourse',
-  props: ['assessmentType', 'courses', 'courseCRN'],
+  props: {
+    assessmentType: { type: String, required: true },
+    courseCRN: { type: String, required: true }
+  },
   methods: {
     isActive (crn) {
       return this.courseCRN === crn ? 'active' : '';

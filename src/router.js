@@ -174,7 +174,7 @@ const router = new Router({
       name: 'assignment-overview',
       component: () =>
         import('@/views/assessments/AssessmentsOverviewPage.vue'),
-      ops: { assessmentType: 'assignment' },
+      props: { assessmentType: 'assignment' },
       meta: {
         cantViewOnBreak: true,
         requiresAuth: true
@@ -341,7 +341,8 @@ router.beforeEach(async (to, from, next) => {
 
   if (
     to.matched.some(record => record.meta.cantViewOnBreak) &&
-    store.getters.onBreak
+    store.getters.onBreak &&
+    store.state.schedule.terms.length > 0
   ) {
     Snackbar.open({
       message: 'You cannot view this page while on break!',

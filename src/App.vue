@@ -3,10 +3,7 @@
     <vue-progress-bar />
     <TheHeader ref="header" />
 
-    <main
-      v-if="!loading"
-      id="content"
-    >
+    <main id="content">
       <b-loading
         :is-full-page="true"
         :active="loading"
@@ -201,15 +198,21 @@ export default {
     await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
+      const calls = [];
       if (!this.$store.getters.onBreak) {
-        await this.$store.dispatch('GET_COURSES');
-        await this.$store.dispatch('GET_UNAVAILABILITIES');
-        await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
-        await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
+        calls.concat([
+          this.$store.dispatch('GET_COURSES'),
+          this.$store.dispatch('GET_UNAVAILABILITIES'),
+          this.$store.dispatch('AUTO_UPDATE_SCHEDULE'),
+          this.$store.dispatch('AUTO_GET_UPCOMING_WORK')
+        ]);
       }
-      await this.$store.dispatch('GET_TODOS');
-      await this.$store.dispatch('GET_ANNOUNCEMENTS');
-      await this.$store.dispatch('AUTO_UPDATE_NOW');
+      calls.concat([
+        this.$store.dispatch('GET_TODOS'),
+        this.$store.dispatch('GET_ANNOUNCEMENTS'),
+        this.$store.dispatch('AUTO_UPDATE_NOW')
+      ]);
+      await Promise.all(calls);
     }
 
     this.loading = false;
@@ -226,10 +229,12 @@ export default {
       }
     },
     onResize () {
+      // if (document.getElementById('sidebar').style.position === 'fixed') {
       if (document.getElementById('sidebar-column')) {
         document.getElementById('sidebar').style.width =
           document.getElementById('sidebar-column').offsetWidth - 15 + 'px';
       }
+      // }
     }
   }
 };
@@ -244,6 +249,10 @@ export default {
 /*-------------------------------------------*/
 * {
   word-wrap: break-word;
+}
+
+.is-fullwidth {
+  width: 100%;
 }
 
 //Removes annoying outline around elements when clicked.
@@ -274,6 +283,9 @@ body {
 }
 #footer {
   flex-shrink: 0;
+}
+section.section {
+  padding: 1.5rem;
 }
 
 // Replace Fullcalendar ugly button style with Bulma's nice style
