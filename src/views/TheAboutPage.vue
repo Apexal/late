@@ -12,10 +12,21 @@
           <h1 class="title is-4">
             The Goal
           </h1>
-          <p>To provide the user with a clear list of all upcoming assignments and tests.</p>
-          <p>To automatically allocate free time in a user’s calendar to work on/study for assignments/tests.</p>
-          <p>To remind users to follow the allocated study/work times through means including notifications, text messages, etc.</p>
-          <p>To account for missing scheduled work by reallocating work times</p>
+          <p>
+            To provide the user with a clear list of all upcoming assignments
+            and tests.
+          </p>
+          <p>
+            To automatically allocate free time in a user’s calendar to work
+            on/study for assignments/tests.
+          </p>
+          <p>
+            To remind users to follow the allocated study/work times through
+            means including notifications, text messages, etc.
+          </p>
+          <p>
+            To account for missing scheduled work by reallocating work times
+          </p>
         </div>
         <div
           id="team"
@@ -70,16 +81,19 @@ export default {
       contributors: [
         'Frank Matranga',
         'Zach Love',
-        'Abigail Medina',
         'Christie Nero',
-        'Tyler Machado',
+        'Abigail Medina',
         'Alexandra Rachiele',
+        'Tyler Machado',
         'Colton Zecca',
         'Anglea Lopez',
         'Sam Fawcett',
         'Jose Deantes',
         'Gabe Benelli',
-        'Henry Heffernan'
+        'Henry Heffernan',
+        'Seth Laurenceau',
+        'Ziyi Wang',
+        'Kikiola Sanusi'
       ]
     };
   }
