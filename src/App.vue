@@ -225,10 +225,12 @@ export default {
       }
     },
     onResize () {
+      // if (document.getElementById('sidebar').style.position === 'fixed') {
       if (document.getElementById('sidebar-column')) {
         document.getElementById('sidebar').style.width =
           document.getElementById('sidebar-column').offsetWidth - 15 + 'px';
       }
+      // }
     }
   }
 };
@@ -277,6 +279,9 @@ body {
 }
 #footer {
   flex-shrink: 0;
+}
+section.section {
+  padding: 1.5rem;
 }
 
 // Replace Fullcalendar ugly button style with Bulma's nice style

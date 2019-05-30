@@ -212,7 +212,6 @@ export default {
 
   .panel * {
     transition: 0.15s;
-    -webkit-transition: 0.15s;
   }
 
   .sidebar-body {
