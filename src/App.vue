@@ -193,8 +193,8 @@ export default {
     // Seems like we need the following line no matter what :/
     await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
+      await this.$store.dispatch('GET_TERMS');
       const calls = [];
-      calls.push(this.$store.dispatch('GET_TERMS'));
       if (!this.$store.getters.onBreak) {
         calls.concat([
           this.$store.dispatch('GET_COURSES'),
