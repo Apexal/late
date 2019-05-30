@@ -1,11 +1,8 @@
 <template>
-  <div class="chat">
-    <p class="online-count has-text-centered">
-      {{ onlineCount }} {{ onlineCount === 1 ? "user" : "users" }} online
-    </p>
+  <div class="sidebar-chat">
     <ul
       ref="messages"
-      class="messages"
+      class="sidebar-body messages"
     >
       <li
         v-for="(message, index) in messages"
@@ -17,8 +14,11 @@
         <span class="message-text">{{ message.text }}</span>
       </li>
     </ul>
-    <form @submit.prevent="sendMessage">
-      <b-field>
+    <form
+      class="panel-block"
+      @submit.prevent="sendMessage"
+    >
+      <b-field class="is-fullwidth">
         <input
           v-model="newMessage"
           class="input"
@@ -77,23 +77,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.chat {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 20px;
-  border: 2px solid black;
-  background-color: white;
-  z-index: 10;
-
+.sidebar-chat {
   .messages {
-    height: 300px;
+    padding: 5px;
+    border: 1px solid #dbdbdb;
+
+    height: 200px;
     overflow: auto;
 
-    .message-author {
-      cursor: pointer;
-      font-weight: bold;
-      margin-right: 5px;
+    .chat-message {
+      .message-author {
+        cursor: pointer;
+        font-weight: bold;
+        margin-right: 5px;
+      }
     }
   }
 }

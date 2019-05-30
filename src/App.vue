@@ -82,7 +82,6 @@
             />
             <SISMan />
             <AssessmentsAddFAB v-if="!onBreak" />
-            <Chat />
           </template>
           <transition
             name="fade"
@@ -111,8 +110,6 @@ import AnnouncementsModal from '@/views/components/announcements/AnnouncementsMo
 import StudyToolsTimer from '@/views/studytools/StudyToolsTimerOverlay';
 import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB';
 
-import Chat from '@/views/components/Chat';
-
 import SISMan from '@/views/components/sisman/SISMan';
 
 export default {
@@ -128,7 +125,6 @@ export default {
     PinnedAnnouncements,
     AssessmentsAddFAB,
     StudyToolsTimer,
-    Chat,
     SISMan
   },
   data () {

@@ -89,6 +89,7 @@ import SidebarSchedule from '@/views/components/sidebar/SidebarSchedule';
 import SidebarPressingAssessments from '@/views/components/sidebar/SidebarPressingAssessments';
 import SidebarTodoList from '@/views/components/sidebar/SidebarTodoList';
 import SidebarCourseList from '@/views/components/sidebar/SidebarCourseList';
+import SidebarChat from '@/views/components/sidebar/SidebarChat';
 
 export default {
   name: 'TheSidebar',
@@ -96,7 +97,8 @@ export default {
     SidebarPressingAssessments,
     SidebarSchedule,
     SidebarTodoList,
-    SidebarCourseList
+    SidebarCourseList,
+    SidebarChat
   },
   data () {
     return {
@@ -125,6 +127,12 @@ export default {
           name: 'To-Do List',
           icon: 'fas fa-check',
           tagColor: 'success'
+        },
+        chat: {
+          component: SidebarChat,
+          name: 'Chat',
+          icon: 'fas fa-comments',
+          tagColor: 'dark'
         }
       }
     };
@@ -135,7 +143,8 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
         courseList: this.$store.getters.current_courses.length,
-        todos: this.todos.length
+        todos: this.todos.length,
+        chat: 0
       };
     },
     currentTab () {
