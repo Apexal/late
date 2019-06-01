@@ -1,6 +1,8 @@
+![License](https://img.shields.io/github/license/Apexal/late.svg)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Apexal/late.svg?color=red)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/Apexal/late.svg)
 ![Dependencies](https://img.shields.io/david/Apexal/late.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D%2011.0.0-brightgreen.svg)
 ![Discord](https://img.shields.io/discord/514854227462324244.svg?label=discord)
 ![GitHub stars](https://img.shields.io/github/stars/Apexal/late.svg)
 
