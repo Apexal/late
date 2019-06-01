@@ -4,6 +4,14 @@
       ref="messages"
       class="sidebar-body messages"
     >
+      <li class="chat-message notice">
+        <i class="fas fa-smile-beam notice-icon" />
+        <div
+          class="panel-block has-text-grey no-hover"
+        >
+          Please be courteous and helpful to your fellow students.
+        </div>
+      </li>
       <li
         v-for="(message, index) in messages"
         :key="index"
@@ -15,7 +23,7 @@
       </li>
     </ul>
     <form
-      class="panel-block"
+      class="panel-block send-message"
       @submit.prevent="sendMessage"
     >
       <b-field class="is-fullwidth">
@@ -67,7 +75,7 @@ export default {
   methods: {
     sendMessage () {
       this.socket.emit('message', {
-        author: this.user.rcs_id,
+        author: this.user.first_name,
         text: this.newMessage
       });
       this.newMessage = '';
@@ -91,6 +99,29 @@ export default {
         font-weight: bold;
         margin-right: 5px;
       }
+    }
+  }
+
+  .field input {
+    border-radius: 5px 0px 0px 4px !important;
+  }
+
+  .notice {
+    i {
+      width: 100%;
+      text-align: center;
+      font-size: 4em;
+      padding: 15px 0px 5px 0px;
+      display: block;
+      color: rgba(128, 128, 128, 0.5);
+      border-style: none;
+    }
+
+    div {
+      display: block;
+      width: 100%;
+      text-align: center;
+      border-style: none;
     }
   }
 }

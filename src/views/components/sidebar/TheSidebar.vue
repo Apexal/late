@@ -4,9 +4,7 @@
     class="menu"
   >
     <div class="panel">
-      <p
-        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
-      >
+      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         <span
           class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar"
@@ -260,7 +258,8 @@ export default {
     }
   }
 
-  .panel-block:not(.is-active):not(.control):not(.no-hover):hover {
+  .panel-block:not(.is-active):not(.control):not(.no-hover):not(.send-message)
+    :hover {
     background-color: #f3f3f3;
   }
 
