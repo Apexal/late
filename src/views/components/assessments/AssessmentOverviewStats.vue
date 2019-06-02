@@ -1,7 +1,5 @@
 <template>
-  <nav
-    class="box level assessment-stats has-background-grey-darker has-text-white"
-  >
+  <nav class="box level assessment-stats has-background-grey-darker has-text-white">
     <div class="level-item has-text-centered">
       <div>
         <p
@@ -318,6 +316,18 @@ export default {
     .increase-priority {
       opacity: 1;
     }
+  }
+
+  .date {
+    margin-left: 30px;
+  }
+
+  .date::after {
+    margin-left: -25px;
+  }
+
+  .date::before {
+    margin-left: -15px;
   }
 
   .date:hover {
