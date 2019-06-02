@@ -30,7 +30,7 @@ const actions = {
     const assessmentURL = `${
       process.env.BASE_URL
     }/coursework/${assessmentType.charAt(0)}/${assessment._id}`;
-    const course = ctx.state.user.courseFromCRN(
+    const course = await ctx.state.user.courseFromCRN(
       ctx.session.currentTerm.code,
       assessment.courseCRN
     );
@@ -113,10 +113,20 @@ const actions = {
       const courseEnd = moment(course.endDate);
 
       for (let period of course.periods) {
-        const start = moment(courseStart.format('YYYY-MM-DD') + ' ' + period.start, 'YYYY-MM-DD Hmm', true);
-        while (start.day() !== period.day) { start.add(1, 'day'); }
+        const start = moment(
+          courseStart.format('YYYY-MM-DD') + ' ' + period.start,
+          'YYYY-MM-DD Hmm',
+          true
+        );
+        while (start.day() !== period.day) {
+          start.add(1, 'day');
+        }
 
-        const end = moment(start.format('YYYY-MM-DD') + ' ' + period.end, 'YYYY-MM-DD Hmm', true);
+        const end = moment(
+          start.format('YYYY-MM-DD') + ' ' + period.end,
+          'YYYY-MM-DD Hmm',
+          true
+        );
         const recurrence = new RRule({
           freq: RRule.WEEKLY,
           byweekday: [RRule[dayAbbreviations[period.day]]],
@@ -124,10 +134,14 @@ const actions = {
         });
 
         let request = await calendar.events.insert({
-          calendarId: ctx.state.user.integrations.google.calendarIDs.courseSchedule,
+          calendarId:
+            ctx.state.user.integrations.google.calendarIDs.courseSchedule,
           requestBody: {
-            summary: `${course.title} ${periodTypes[period.type] || period.type}`,
-            description: `${course.summary} - ${course.sectionId} - ${course.credits} credits`,
+            summary: `${course.title} ${periodTypes[period.type] ||
+              period.type}`,
+            description: `${course.summary} - ${course.sectionId} - ${
+              course.credits
+            } credits`,
             location: period.location,
             source: {
               title: 'Course Page',
@@ -152,7 +166,11 @@ const actions = {
         });
       }
 
-      logger.debug(`Created recurring GCAL events for course '${course.title}' for ${ctx.state.user.rcs_id}`);
+      logger.debug(
+        `Created recurring GCAL events for course '${course.title}' for ${
+          ctx.state.user.rcs_id
+        }`
+      );
     }
   }
 };
