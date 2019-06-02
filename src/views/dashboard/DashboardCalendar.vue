@@ -8,6 +8,11 @@
       @add-work-block="addWorkBlock"
       @close-modal="selectModal.open = false"
     />
+    <DashboardCalendarEventModal
+      :open="eventModal.open"
+      :event="eventModal.event"
+      @close-modal="eventModal.open = false"
+    />
     <FullCalendar
       ref="calendar"
       :events="events"
@@ -33,10 +38,15 @@ import 'fullcalendar/dist/fullcalendar.css';
 import moment from 'moment';
 
 import DashboardCalendarSelectModal from '@/views/components/dashboard/DashboardCalendarSelectModal';
+import DashboardCalendarEventModal from '@/views/components/dashboard/DashboardCalendarEventModal';
 
 export default {
   name: 'DashboardCalendar',
-  components: { DashboardCalendarSelectModal, FullCalendar },
+  components: {
+    DashboardCalendarSelectModal,
+    DashboardCalendarEventModal,
+    FullCalendar
+  },
   data () {
     return {
       selectModal: {
@@ -44,6 +54,11 @@ export default {
         start: moment(),
         end: moment()
       },
+      eventModal: {
+        open: false,
+        event: {}
+      },
+      academicCalendarEvents: [],
       calendar: {
         header: {
           center: 'agendaThreeDay, agendaFiveDay, agendaWeek'
@@ -141,7 +156,8 @@ export default {
       return courseSchedule
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
-        .concat(workBlocks);
+        .concat(workBlocks)
+        .concat(this.academicCalendarEvents);
     },
     earliest () {
       let earliest = this.$store.state.auth.user.earliestWorkTime;
@@ -175,10 +191,33 @@ export default {
       );
     }
   },
-  created () {
+  async created () {
     this.calendar.config.scrollTime = this.earliest;
+
+    const response = await this.$http.get('/integrations/academiccalendar');
+    const parsed = response.data.events;
+    const events = [];
+    for (let id in parsed) {
+      if (parsed[id].summary) {
+        events.push(this.mapICalObjectToEvent(id, parsed[id]));
+      }
+    }
+    this.academicCalendarEvents = events;
   },
   methods: {
+    mapICalObjectToEvent (id, obj) {
+      const event = {
+        id,
+        title: obj.summary,
+        eventType: 'academic-calendar-event',
+        start: moment(obj.start),
+        editable: false
+      };
+      if (obj.end) event.end = moment(obj.end);
+      else event.allDay = true;
+
+      return event;
+    },
     toggleFullscreen () {
       if (document.fullscreenElement) {
         document.exitFullscreen();
@@ -195,7 +234,9 @@ export default {
             event.course.startDate,
             event.course.endDate
           )
-        ) { return false; }
+        ) {
+          return false;
+        }
 
         if (event.period.type === 'TES') {
           return !!this.$store.state.assessments.upcomingAssessments.find(
@@ -287,6 +328,9 @@ export default {
             params: { examID: calEvent.exam._id }
           });
         }
+      } else if (calEvent.eventType === 'academic-calendar-event') {
+        this.eventModal.event = calEvent;
+        this.eventModal.open = true;
       }
     },
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
