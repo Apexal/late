@@ -68,6 +68,72 @@
       </div>
     </div>
     <hr>
+    <div v-if="user.admin">
+      <h2 class="subtitle">
+        Unconfirmed Links
+      </h2>
+
+      <table class="table is-fullwidth">
+        <thead>
+          <tr>
+            <th>Submitter</th>
+            <th>Category</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>URL</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="link in unconfirmedQuickLinks"
+            :key="link._id"
+          >
+            <td>
+              <span v-if="link._student">
+                <b>{{ link._student.rcs_id }}</b>
+              </span>
+              <span
+                v-else
+                class="has-text-grey"
+              >—</span>
+            </td>
+            <td>{{ link.category }}</td>
+            <td>{{ link.title }}</td>
+            <td>
+              <span v-if="link.description">{{ link.description }}</span>
+              <span
+                v-else
+                class="has-text-grey"
+              >—</span>
+            </td>
+            <td>{{ link.url }}</td>
+            <td>
+              <b-button
+                type="is-success"
+                @click="confirmQuickLink(link._id)"
+              >
+                <i class="fas fa-check" />
+              </b-button>
+              <b-button
+                type="is-danger"
+                @click="deleteQuickLink(link._id)"
+              >
+                <i class="fas fa-times" />
+              </b-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p
+        v-if="unconfirmedQuickLinks.length === 0"
+        class="has-text-grey has-text-centered"
+      >
+        No pending submissions!
+      </p>
+      <hr>
+    </div>
+
     <form @submit.prevent="submitLink">
       <b-field>
         <b-select
@@ -128,9 +194,15 @@ export default {
     };
   },
   computed: {
+    confirmedQuickLinks () {
+      return this.quickLinks.filter(link => link.confirmed);
+    },
+    unconfirmedQuickLinks () {
+      return this.quickLinks.filter(link => !link.confirmed);
+    },
     categories () {
       const categories = {};
-      for (const link of this.quickLinks) {
+      for (const link of this.confirmedQuickLinks) {
         categories[link.category] = categories[link.category] || [];
         categories[link.category].push(link);
       }
@@ -142,6 +214,63 @@ export default {
     this.getQuickLinks();
   },
   methods: {
+    async deleteQuickLink (quickLinkID) {
+      this.loading = true;
+
+      let response;
+      try {
+        response = await this.$http.delete('/quicklinks/' + quickLinkID);
+      } catch (e) {
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        this.loading = false;
+        return;
+      }
+
+      this.quickLinks = this.quickLinks.filter(
+        quickLink => quickLink._id !== response.data.deletedQuickLink._id
+      );
+
+      this.$toast.open({
+        message: 'Deleted submitted quick link!',
+        type: 'is-success'
+      });
+
+      this.loading = false;
+    },
+    async confirmQuickLink (quickLinkID) {
+      this.loading = true;
+
+      let response;
+      try {
+        response = await this.$http.patch('/quicklinks/' + quickLinkID, {
+          confirmed: true
+        });
+      } catch (e) {
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        this.loading = false;
+        return;
+      }
+
+      Object.assign(
+        this.quickLinks.find(
+          link => link._id === response.data.updatedQuickLink._id
+        ),
+        response.data.updatedQuickLink
+      );
+
+      this.$toast.open({
+        message: 'Confirmed submitted quick link!',
+        type: 'is-success'
+      });
+
+      this.loading = false;
+    },
     async submitLink () {
       this.loading = true;
 
