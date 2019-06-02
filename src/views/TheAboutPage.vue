@@ -16,7 +16,15 @@
             <h4 class="subtitle has-text-grey">
               What LATE can do for you
             </h4>
-            <p>LATE is an all-in-one academic planner, assignment tracker, and class scheduler. LATE provides the user with a clear list of all upcoming assignments and tests, automatically allocates free time in a user’s calendar to work on/study for assignments/tests, reminds users to follow the allocated study/work times through multiple methods, and accounts for missing scheduled work by reallocating work times, keeping your schedule in mind.</p>
+            <p>
+              LATE is an all-in-one academic planner, assignment tracker, and
+              class scheduler. LATE provides the user with a clear list of all
+              upcoming assignments and tests, automatically allocates free time
+              in a user’s calendar to work on/study for assignments/tests,
+              reminds users to follow the allocated study/work times through
+              multiple methods, and accounts for missing scheduled work by
+              reallocating work times, keeping your schedule in mind.
+            </p>
           </div>
         </div>
         <div class="tile is-child box">
@@ -58,7 +66,19 @@
               v-for="c in contributors"
               :key="c"
             >
+              <b-tag type="is-dark">
+                Developer
+              </b-tag>
               {{ c }}
+            </li>
+            <li
+              v-for="t in testers"
+              :key="t"
+            >
+              <b-tag type="is-primary">
+                Tester
+              </b-tag>
+              {{ t }}
             </li>
           </ul>
         </div>
@@ -74,10 +94,14 @@
               <a href="https://github.com/Apexal/late/">Contribute on GitHub</a>
             </li>
             <li>
-              <a href="https://rcos.io/projects/apexal/late/profile">View us on Observatory</a>
+              <a
+                href="https://rcos.io/projects/apexal/late/profile"
+              >View us on Observatory</a>
             </li>
             <li>
-              <a href="https://github.com/Apexal/late/wiki">Read our development setup guide</a>
+              <a
+                href="https://github.com/Apexal/late/wiki"
+              >Read our development setup guide</a>
             </li>
             <li>
               <strike>
@@ -111,15 +135,17 @@ export default {
         'Alexandra Rachiele',
         'Tyler Machado',
         'Colton Zecca',
-        'Anglea Lopez',
+        'Angela Lopez',
         'Sam Fawcett',
         'Jose Deantes',
         'Gabe Benelli',
         'Henry Heffernan',
         'Seth Laurenceau',
         'Ziyi Wang',
-        'Kikiola Sanusi'
-      ]
+        'Kikiola Sanusi',
+        'Bowen Wang'
+      ],
+      testers: ['Caitlin Bennett', 'Sarah Tedesco', 'Ben Sherman', 'Hannah Lim']
     };
   }
 };
