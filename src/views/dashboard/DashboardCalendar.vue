@@ -211,7 +211,8 @@ export default {
         title: obj.summary,
         eventType: 'academic-calendar-event',
         start: moment(obj.start),
-        editable: false
+        editable: false,
+        eventURL: `http://events.rpi.edu/cal/event/eventView.do?b=de&calPath=%2Fpublic%2Fcals%2FMainCal&guid=${id}`
       };
       if (obj.end) event.end = moment(obj.end);
       else event.allDay = true;
