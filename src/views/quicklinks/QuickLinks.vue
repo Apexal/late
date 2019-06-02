@@ -286,6 +286,8 @@ export default {
         return;
       }
 
+      if (request.data.createdQuickLink.confirmed) { this.quickLinks.push(request.data.createdQuickLink); }
+
       this.$toast.open({
         message:
           'Submitted link! It will be reviewed by an admin before being added.',
