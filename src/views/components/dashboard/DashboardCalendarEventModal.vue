@@ -9,8 +9,8 @@
       <hr>
       <span
         class="has-text-grey"
-      >{{ shortDateTimeFormat(event.start) }}
-        {{ event.allDay ? "" : "to " + shortDateTimeFormat(event.end) }}</span>
+      >{{ longDateFormat(event.start) }}
+        {{ event.allDay ? "" : "to " + longDateFormat(event.end) }}</span>
     </div>
   </b-modal>
 </template>
