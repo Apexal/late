@@ -202,7 +202,8 @@ export default {
           const unavailability = {
             title: title || 'Busy',
             start: start.format('HH:mm'),
-            end: end.format('HH:mm'),
+            end:
+              end.format('HH:mm') === '00:00' ? '24:00' : end.format('HH:mm'),
             dow: [start.day()],
             isOneTime: false
           };
