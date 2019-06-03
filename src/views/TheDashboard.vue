@@ -107,6 +107,10 @@ export default {
     border-left: 1px solid #dbdbdb;
   }
 
+  .fc-button {
+    outline: 0;
+  }
+
   .fc-button:hover {
     color: black;
   }

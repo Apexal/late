@@ -33,9 +33,7 @@
       class="title assessment-title has-text-centered-mobile"
       style="flex: 1"
     >
-      <span class="pad">
-        {{ assessment.title }}
-      </span>
+      <span class="pad">{{ assessment.title }}</span>
       <i
         title="Edit title"
         class="fas fa-pencil-alt edit-title-icon has-text-grey"
@@ -199,6 +197,7 @@ export default {
     background-color: white;
     border-radius: 10px;
     padding: 0 10px;
+    margin-right: -10px;
   }
 
   &:hover {
