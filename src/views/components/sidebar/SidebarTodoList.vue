@@ -64,7 +64,7 @@ export default {
         this.$toasted.show(`Added to-do '${this.newTodo}'.`);
         this.newTodo = '';
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
     },
     async removeTodo (todo) {

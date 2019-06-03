@@ -222,7 +222,7 @@ export default {
           unavailability
         );
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
         return;
       }
 
@@ -242,7 +242,7 @@ export default {
           unavailability
         );
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
         return;
       }
 
@@ -263,7 +263,7 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);

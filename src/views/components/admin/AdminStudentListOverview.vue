@@ -163,7 +163,7 @@ export default {
           updates
         );
       } catch (e) {
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
 
       this.$emit('update-student', request.data.updatedStudent);
@@ -178,7 +178,7 @@ export default {
           try {
             request = await this.$http.delete('/students/' + this.student._id);
           } catch (e) {
-            return this.$toasted.error(e.response.data.message);
+            return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
           }
 
           this.$emit('delete-student', this.student._id);

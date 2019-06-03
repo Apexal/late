@@ -283,9 +283,11 @@ export default {
           recurringDays: this.isRecurring ? this.recurringDays : undefined
         });
       } catch (e) {
-        this.$toasted.error(
-          'There was an error adding the assignment. Please try again later.'
-        );
+        this.$toast.open({
+          message:
+            'There was an error adding the assignment. Please try again later.',
+          type: 'is-danger'
+        });
         this.loading = false;
         return;
       }

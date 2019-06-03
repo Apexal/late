@@ -143,7 +143,7 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
 
       this.$toasted.info(request.data.message);
@@ -163,7 +163,7 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
@@ -187,7 +187,7 @@ export default {
             request = await this.$http.delete('/integrations/sms');
           } catch (e) {
             this.loading = false;
-            return this.$toasted.error(e.response.data.message);
+            return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
           }
 
           await this.$store.dispatch('SET_USER', request.data.updatedUser);
