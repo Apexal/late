@@ -245,6 +245,7 @@ export default {
 /*-------------------------------------------*/
 * {
   word-wrap: break-word;
+  outline: 0;
 }
 
 .is-fullwidth {
