@@ -7,7 +7,7 @@ const logger = require('../../modules/logger');
  * @retuns A JSON list of quicklinks
  */
 async function getQuickLinks (ctx) {
-  const quickLinks = await QuickLink.find({ confirmed: true });
+  const quickLinks = await QuickLink.find().populate('_student', 'rcs_id');
   return ctx.ok({ quickLinks });
 }
 
@@ -51,12 +51,37 @@ async function createQuickLink (ctx) {
 }
 
 /**
+ * Update a quick link with whatever properties are in the request body.
+ *
+ * @param {Koa context} ctx
+ */
+async function updateQuickLink (ctx) {
+  if (!ctx.state.user.admin) return ctx.unauthorized('You are not an admin!');
+
+  const { quickLinkID } = ctx.params;
+  const updatedQuickLink = await QuickLink.findOne({
+    _id: quickLinkID
+  });
+
+  delete ctx.request.body._id;
+
+  Object.assign(updatedQuickLink, ctx.request.body);
+  await updatedQuickLink.save();
+
+  logger.info(`Updated quick link for ${ctx.state.user.rcs_id}`);
+
+  return ctx.ok({ updatedQuickLink });
+}
+
+/**
  * Deletes a quick link given its ID.
  * Request parameters:
  *  - quickLinkID: the quick link ID
  * @param {Koa context} ctx
  */
 async function deleteQuickLink (ctx) {
+  if (!ctx.state.user.admin) return ctx.unauthorized('You are not an admin!');
+
   const { quickLinkID } = ctx.params;
   const deletedQuickLink = await QuickLink.findOne({
     _id: quickLinkID
@@ -71,5 +96,6 @@ async function deleteQuickLink (ctx) {
 module.exports = {
   getQuickLinks,
   createQuickLink,
+  updateQuickLink,
   deleteQuickLink
 };

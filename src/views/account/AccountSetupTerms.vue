@@ -81,7 +81,7 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);

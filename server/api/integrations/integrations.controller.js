@@ -1,5 +1,37 @@
 const logger = require('../../modules/logger');
 const SMS = require('../../integrations/sms');
+const ical = require('node-ical');
+const request = require('request-promise');
+const moment = require('moment');
+
+const CALENDAR_URL = 'http://events.rpi.edu/cal/misc/export.gdo?b=de';
+
+async function getAcademicCalendarEvents (ctx) {
+  const response = await request.post(CALENDAR_URL, {
+    form: {
+      calPath: '/user/public-user/Academic Calendar',
+      nocache: 'no',
+      contentName: 'Academic Calendar.ics',
+      dateLimits: 'all'
+    }
+  });
+
+  const events = {};
+
+  let parsed = ical.parseICS(response);
+  for (let id in parsed) {
+    if (
+      moment(parsed[id].start).isBetween(
+        ctx.session.currentTerm.start,
+        ctx.session.currentTerm.end
+      )
+    ) {
+      events[id] = parsed[id];
+    }
+  }
+
+  return ctx.ok({ events });
+}
 
 /**
  * Get a SMS verification code and send it to the user's given phone number.
@@ -153,6 +185,7 @@ async function saveNotificationPreferences (ctx) {
 }
 
 module.exports = {
+  getAcademicCalendarEvents,
   submitSMS,
   verifySMS,
   disableSMS,

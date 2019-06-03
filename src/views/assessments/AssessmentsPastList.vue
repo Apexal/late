@@ -237,7 +237,7 @@ export default {
       } catch (e) {
         this.loading = false;
         this.currentAssessments = [];
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
       let currentExams = request.data.exams.filter(e => e.passed); // Only get passed exams
 
@@ -251,7 +251,7 @@ export default {
       } catch (e) {
         this.loading = false;
         this.currentAssessments = [];
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
       }
 
       let currentAssignments = request.data.assignments.filter(e => e.passed); // Only get passed exams

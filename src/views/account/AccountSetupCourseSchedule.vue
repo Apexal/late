@@ -199,7 +199,10 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         return;
       }
 
@@ -207,19 +210,18 @@ export default {
       this.$store.commit('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.info(
-        'Your course schedule has been imported from SIS. Edit the courses below to customize titles, colors, and more.',
-        {
-          action: {
-            text: 'Next Step',
-            push: {
-              name: 'setup-unavailability'
-            }
-          }
+      this.$snackbar.open({
+        message:
+          'Your course schedule has been imported from SIS. Edit the courses below to customize titles, colors, and more.',
+        type: 'is-primary',
+        position: 'is-bottom',
+        actionText: 'Next Step',
+        duration: 5000,
+        onAction: () => {
+          this.$router.push({ name: 'setup-unavailability' });
         }
-      );
+      });
 
-      // this.saved = true;
       this.loading = false;
     }
   }

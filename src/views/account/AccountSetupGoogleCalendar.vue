@@ -172,7 +172,10 @@ export default {
               description: 'This calender was created by LATE.'
             });
           } catch (e) {
-            this.$toasted.error(e.response.data.message);
+            this.$toast.open({
+              message: e.response.data.message,
+              type: 'is-danger'
+            });
             this.loading = false;
             return;
           }
@@ -184,9 +187,12 @@ export default {
 
           await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-          this.$toasted.success(
-            `Added '${createdCalendar.summary}' to your Google Calendar!`
-          );
+          this.$toast.open({
+            message: `Added '${
+              createdCalendar.summary
+            }' to your Google Calendar!`,
+            type: 'is-success'
+          });
 
           this.loading = false;
         }
@@ -206,7 +212,10 @@ export default {
               description: 'This calender was created by LATE.'
             });
           } catch (e) {
-            this.$toasted.error(e.response.data.message);
+            this.$toast.open({
+              message: e.response.data.message,
+              type: 'is-danger'
+            });
             this.loading = false;
             return;
           }
@@ -217,9 +226,12 @@ export default {
 
           await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-          this.$toasted.success(
-            `Added '${createdCalendar.summary}' to your Google Calendar!`
-          );
+          this.$toast.open({
+            message: `Added '${
+              createdCalendar.summary
+            }' to your Google Calendar!`,
+            type: 'is-success'
+          });
 
           this.loading = false;
         }
@@ -257,7 +269,10 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
