@@ -30,8 +30,7 @@ const getters = {
       const key =
         groupBy === 'courseCRN'
           ? assessment.courseCRN
-          : moment(assessment.dueDate || assessment.date)
-            .format('YYYY-MM-DD');
+          : moment(assessment.dueDate || assessment.date).format('YYYY-MM-DD');
       if (!grouped[key]) grouped[key] = [];
       grouped[key].push(assessment);
     }
@@ -101,7 +100,11 @@ const actions = {
   },
   async UPDATE_ASSESSMENT ({ dispatch, getters }, updatedAssessment) {
     let request = await axios.patch(
-      `/${updatedAssessment.assessmentType}s/${updatedAssessment.assessmentType.charAt(0)}/${updatedAssessment._id}`,
+      `/${
+        updatedAssessment.assessmentType
+      }s/${updatedAssessment.assessmentType.charAt(0)}/${
+        updatedAssessment._id
+      }`,
       updatedAssessment
     );
 
@@ -109,7 +112,9 @@ const actions = {
 
     if (getters.getUpcomingAssessmentById(updatedAssessment._id)) {
       await dispatch('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
-    } else if (moment(updatedAssessment.date).isSameOrAfter(moment().startOf('day'))) {
+    } else if (
+      moment(updatedAssessment.date).isSameOrAfter(moment().startOf('day'))
+    ) {
       await dispatch('ADD_UPCOMING_ASSESSMENT', updatedAssessment);
     }
 
@@ -120,7 +125,9 @@ const actions = {
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
   async TOGGLE_ASSIGNMENT ({ commit, dispatch, getters }, assignmentToToggle) {
-    const request = await axios.post(`/assignments/a/${assignmentToToggle._id}/toggle`);
+    const request = await axios.post(
+      `/assignments/a/${assignmentToToggle._id}/toggle`
+    );
     const updatedAssignment = request.data.updatedAssignment;
 
     if (getters.getUpcomingAssessmentById(updatedAssignment._id)) {
@@ -144,21 +151,32 @@ const actions = {
   },
   async REMOVE_ASSESSMENT ({ commit }, assessmentToRemove) {
     const request = await axios.delete(
-      `${assessmentToRemove.assessmentType}s/${assessmentToRemove.assessmentType.charAt(0)}/${assessmentToRemove._id}`
+      `${
+        assessmentToRemove.assessmentType
+      }s/${assessmentToRemove.assessmentType.charAt(0)}/${
+        assessmentToRemove._id
+      }`
     );
 
-    const deletedAssessment = request.data.deletedAssessment;
-    if (getters.getUpcomingAssessmentById(deletedAssessment._id)) {
-      commit('REMOVE_UPCOMING_ASSESSMENT', deletedAssessment);
+    const removedAssessment = request.data.removedAssessment;
+    if (getters.getUpcomingAssessmentById(removedAssessment._id)) {
+      commit('REMOVE_UPCOMING_ASSESSMENT', removedAssessment);
     }
 
-    return deletedAssessment;
+    return removedAssessment;
   },
   async REMOVE_ASSIGNMENT_AND_RECURRING ({ commit }, assessmentToRemove) {
     const request = await axios.delete(
-      `${assessmentToRemove.assessmentType}s/${assessmentToRemove.assessmentType.charAt(0)}/${assessmentToRemove._id}?removeRecurring=future`
+      `${
+        assessmentToRemove.assessmentType
+      }s/${assessmentToRemove.assessmentType.charAt(0)}/${
+        assessmentToRemove._id
+      }?removeRecurring=future`
     );
-    const removedAssessments = [request.data.removedAssessment, ...request.data.removedRecurringAssignments];
+    const removedAssessments = [
+      request.data.removedAssessment,
+      ...request.data.removedRecurringAssignments
+    ];
     for (let assessment of removedAssessments) {
       if (getters.getUpcomingAssessmentById(assessment)) {
         commit('REMOVE_UPCOMING_ASSESSMENT', assessment);
@@ -173,20 +191,22 @@ const actions = {
     );
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit(
-        'UPDATE_UPCOMING_ASSESSMENT',
-        request.data.updatedAssessment
-      );
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
     }
 
     return request.data.updatedAssessment;
   },
-  async EDIT_WORK_BLOCK ({ commit, getters }, { assessment, blockID, start, end }) {
+  async EDIT_WORK_BLOCK (
+    { commit, getters },
+    { assessment, blockID, start, end }
+  ) {
     const request = await axios.patch(
-      `/blocks/${assessment.assessmentType}/${
-        assessment._id
-      }/${blockID}`,
-      { startTime: start, endTime: end, assessmentType: assessment.assessmentType }
+      `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`,
+      {
+        startTime: start,
+        endTime: end,
+        assessmentType: assessment.assessmentType
+      }
     );
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
@@ -200,14 +220,14 @@ const actions = {
       `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`
     );
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit(
-        'UPDATE_UPCOMING_ASSESSMENT',
-        request.data.updatedAssessment
-      );
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
     }
     return request.data.updatedAssessment;
   },
-  async ADD_ASSESSMENT_COMMENT ({ commit, getters }, { assessment, newComment }) {
+  async ADD_ASSESSMENT_COMMENT (
+    { commit, getters },
+    { assessment, newComment }
+  ) {
     let request = await axios.post(
       `/${assessment.assessmentType}s/${assessment.assessmentType.charAt(0)}/${
         assessment._id
@@ -216,25 +236,23 @@ const actions = {
     );
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit(
-        'UPDATE_UPCOMING_ASSESSMENT',
-        request.data.updatedAssessment
-      );
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
     }
 
     return request.data.updatedAssessment;
   },
-  async REMOVE_ASSESSMENT_COMMENT ({ commit, getters }, { assessment, commentIndex }) {
+  async REMOVE_ASSESSMENT_COMMENT (
+    { commit, getters },
+    { assessment, commentIndex }
+  ) {
     let request = await axios.delete(
       `/${assessment.assessmentType}s/${assessment.assessmentType.charAt(0)}/${
         assessment._id
-      }/comments/${commentIndex}`);
+      }/comments/${commentIndex}`
+    );
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit(
-        'UPDATE_UPCOMING_ASSESSMENT',
-        request.data.updatedAssessment
-      );
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
     }
 
     return request.data.updatedAssessment;
