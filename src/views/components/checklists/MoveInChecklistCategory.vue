@@ -1,10 +1,13 @@
 <template>
   <details class="panel category">
-    <summary class="panel-heading">
+    <summary class="panel-heading has-background-dark has-text-white">
       {{ category.title }}
     </summary>
     <div class="panel-block">
-      <form @submit.prevent="addItem">
+      <form
+        class="is-fullwidth"
+        @submit.prevent="addItem"
+      >
         <b-field>
           <b-input
             v-model.trim="newItem.title"
