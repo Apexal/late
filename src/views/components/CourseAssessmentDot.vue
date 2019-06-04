@@ -31,7 +31,13 @@ export default {
     },
     classes () {
       if (this.isForAssessment) {
-        return ['assessment', 'fas', this.assessment.assessmentType === 'assignment' ? 'fa-clipboard-check' : 'fa-exclamation-triangle'];
+        return [
+          'assessment-dot',
+          'fas',
+          this.assessment.assessmentType === 'assignment'
+            ? 'fa-clipboard-check'
+            : 'fa-exclamation-triangle'
+        ];
       }
 
       return ['dot', 'course'];
@@ -43,7 +49,12 @@ export default {
     },
     title () {
       if (this.isForAssessment) {
-        return this.course.title + ' ' + this.assessment.assessmentType.charAt(0).toUpperCase() + this.assessment.assessmentType.slice(1);
+        return (
+          this.course.title +
+          ' ' +
+          this.assessment.assessmentType.charAt(0).toUpperCase() +
+          this.assessment.assessmentType.slice(1)
+        );
       }
 
       return this.course.title;
@@ -51,7 +62,9 @@ export default {
   },
   methods: {
     click () {
-      if (this.onClickOpenModal) { this.$store.commit('OPEN_COURSE_MODAL', this.course); }
+      if (this.onClickOpenModal) {
+        this.$store.commit('OPEN_COURSE_MODAL', this.course);
+      }
     }
   }
 };
@@ -60,6 +73,7 @@ export default {
 <style lang="scss" scoped>
 .course-assessment-dot {
   cursor: pointer;
+  margin-right: 5px;
 }
 
 .dot {
@@ -69,7 +83,5 @@ export default {
   cursor: pointer;
   background-color: black;
   display: inline-block;
-  margin-right: 5px;
 }
-
 </style>

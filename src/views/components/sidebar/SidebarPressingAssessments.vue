@@ -39,7 +39,7 @@
         }"
       >
         <span class="is-fullwidth">
-          <i
+          <!-- <i
             class="fas"
             :class="[
               assessment.assessmentType === 'assignment'
@@ -51,6 +51,11 @@
             @click.prevent="
               $store.commit('OPEN_COURSE_MODAL', course(assessment))
             "
+          /> -->
+
+          <CourseAssessmentDot
+            :assessment="assessment"
+            :course="course(assessment)"
           />
           <b class="course-title is-hidden-tablet">
             {{ course(assessment).title }}
