@@ -30,6 +30,9 @@ const mutations = {
     };
   },
   LOAD_CHECKLIST: state => {
+    if (localStorage.getItem('checklist') === null) {
+      localStorage.setItem('checklist', JSON.stringify(state.checklist));
+    }
     state.checklist = JSON.parse(localStorage.getItem('checklist'));
   },
   SAVE_CHECKLIST: state => {
