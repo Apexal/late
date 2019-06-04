@@ -4,9 +4,7 @@
     class="menu"
   >
     <div class="panel">
-      <p
-        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
-      >
+      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         <span
           class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar"
@@ -293,6 +291,24 @@ export default {
   }
   a:hover {
     background-color: #dbdbdb;
+  }
+}
+
+@media only screen and (max-width: 769px) {
+  //Very hardcodey solution to sidebar on mobile.
+  #sidebar {
+    width: calc(100vw + 1px) !important;
+    min-width: 300px;
+    padding: 0px !important;
+    margin-left: -12px !important;
+    margin-top: -1rem !important;
+    border-radius: 0px;
+  }
+
+  .panel
+    .is-size-7
+    div:last-child:not(.control):not(.course-panel-block):not(.event):not(.has-text-grey) {
+    border-radius: 0px !important;
   }
 }
 </style>

@@ -141,4 +141,10 @@ export default {
   margin-top: -35px;
   z-index: 10;
 }
+
+@media only screen and (max-width: 769px) {
+  .fc-center {
+    margin-top: 10px;
+  }
+}
 </style>

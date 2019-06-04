@@ -12,7 +12,9 @@
       >
         <b>WAIT LIST</b> You are currently on the wait list and will be notified
         by email once LATE opens to the student body. Reach out to the
-        <a href="mailto:matraf@rpi.edu">project lead</a> if you have any
+        <a
+          href="mailto:matraf@rpi.edu"
+        >project lead</a> if you have any
         questions, or join the
         <a
           target="_blank"
@@ -246,18 +248,15 @@ hr {
 }
 
 .subtitle {
+  display: inline-block;
   background-color: #fdfdfd;
-  padding: 0 10px;
-  height: 40px;
-  line-height: 40px !important;
-  margin: 0 auto;
+  padding: 5px 10px 5px 10px;
+  margin-left: calc(50vw - 195px);
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
   vertical-align: middle;
   border-radius: 10px;
-  position: absolute;
-  z-index: 40;
-  transform: translateX(-50%);
-  left: 50%;
+
   margin-bottom: -20px;
 }
 
@@ -272,7 +271,7 @@ hr {
 
   .column {
     padding: 10px 20px 10px 20px;
-    min-width: 350px; //Adjust number of columns on devices.
+    min-width: 300px; //Adjust number of columns on devices.
     margin: 10px;
 
     //Copied "box" styles
