@@ -43,11 +43,11 @@
 
     <hr>
 
-    <div class="columns is-multiline categories">
+    <div class="columns is-desktop is-multiline categories">
       <div
         v-for="(category, index) in checklist.categories"
         :key="index"
-        class="column is-one-third"
+        class="column is-one-third-fullhd is-half-desktop is-full"
       >
         <Category
           :category-index="index"
@@ -68,12 +68,13 @@
       >
         Share
       </b-button>
-      <b-button
+      <a
         v-else
-        type="is-success"
+        class="button is-success"
+        href="/auth/login"
       >
         <b>RPI Students:</b> Login to Save
-      </b-button>
+      </a>
     </div>
   </section>
 </template>
