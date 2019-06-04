@@ -5,7 +5,6 @@ import store from './store';
 import Api from './api';
 
 import FullCalendar from 'vue-full-calendar';
-import KnobControl from 'vue-knob-control';
 import Toasted from 'vue-toasted';
 
 import Buefy from 'buefy';
@@ -46,7 +45,6 @@ const options = {
 Vue.use(VueProgressBar, options);
 
 Vue.use(FullCalendar);
-Vue.use(KnobControl);
 Vue.use(Toasted, {
   router,
   fullWidth: true,

@@ -110,7 +110,6 @@
 
 <script>
 import moment from 'moment';
-import 'bulma-switch';
 
 export default {
   name: 'SidebarSchedule',
