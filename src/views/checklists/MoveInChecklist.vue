@@ -3,7 +3,19 @@
     <h1 class="title has-text-centered-mobile">
       Move In Checklist
     </h1>
+    <details
+      v-if="!loggedIn"
+      class="notification is-warning"
+    >
+      <summary>
+        <i class="fas fa-info-circle" />
 
+        <b>Info</b>
+      </summary>
+      Your checklist is only saved on your current device.
+      <b>RPI Students</b> can login to <b>LATE</b> below to save their checklist
+      to their account and access all the other features of the site!
+    </details>
     <form @submit.prevent="addCategory">
       <b-field>
         <b-input
@@ -55,6 +67,12 @@
         type="is-link"
       >
         Share
+      </b-button>
+      <b-button
+        v-else
+        type="is-success"
+      >
+        <b>RPI Students:</b> Login to Save
       </b-button>
     </div>
   </section>
