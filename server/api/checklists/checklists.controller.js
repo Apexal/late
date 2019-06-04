@@ -6,28 +6,21 @@ const logger = require('../../modules/logger');
  *
  * @param {Koa context} ctx
  */
-async function getChecklists (ctx) {
-  let checklists;
+async function getStudentChecklist (ctx) {
+  let checklist;
   try {
-    checklists = await Checklist.find({ private: false }).sort('createdAt');
+    checklist = await Checklist.findOne({
+      _student: ctx.state.user._id
+    });
   } catch (e) {
-    logger.error(
-      `Failed to get checklists for ${
-        ctx.state.user ? ctx.state.user.rcs_id : 'guest'
-      }: ${e}`
-    );
-    return ctx.internalServerError(
-      'There was an issue getting the checklists.'
-    );
+    logger.error(`Failed to get checklist for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.badRequest('Could not find the checklist!');
   }
 
-  logger.info(
-    'Sending checklists to ' +
-      (ctx.state.user ? ctx.state.user.rcs_id : 'guest')
-  );
+  logger.info(`Sending checklist to ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
-    checklists
+    checklist
   });
 }
 
@@ -52,15 +45,10 @@ async function getChecklist (ctx) {
   });
 }
 
-async function createChecklist (ctx) {}
-
-async function updateChecklist (ctx) {
-  const { checklistID } = ctx.params;
-
-  let updatedChecklist;
+async function createOrUpdateChecklist (ctx) {
+  let checklist;
   try {
-    updatedChecklist = await Checklist.findOne({
-      _id: checklistID,
+    checklist = await Checklist.findOne({
       _student: ctx.state.user._id
     });
   } catch (e) {
@@ -68,33 +56,42 @@ async function updateChecklist (ctx) {
     return ctx.badRequest('Could not find the checklist!');
   }
 
-  delete ctx.request.body._id;
-  Object.assign(updateChecklist, ctx.request.body);
+  const updates = {
+    _student: ctx.state.user._id,
+    categories: ctx.request.body.categories,
+    private: ctx.request.body.private
+  };
+
+  if (!checklist) {
+    checklist = new Checklist({
+      ...updates,
+      _student: ctx.state.user._id
+    });
+  } else {
+    Object.assign(checklist, updates);
+  }
 
   try {
-    await updatedChecklist.save();
+    await checklist.save();
   } catch (e) {
     logger.error(
-      `Failed to updated checklist for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to update checklist for ${ctx.state.user.rcs_id}: ${e}`
     );
     return ctx.internalServerError('Failed to update the checklist!');
   }
 
-  logger.info(
-    `Saved checklist ${updatedChecklist._id} for ${ctx.state.user.rcs_id}`
-  );
+  logger.info(`Saved checklist ${checklist._id} for ${ctx.state.user.rcs_id}`);
 
   return ctx.ok({
-    updatedChecklist
+    updatedChecklist: checklist
   });
 }
 
 async function removeChecklist (ctx) {}
 
 module.exports = {
-  getChecklists,
+  getStudentChecklist,
   getChecklist,
-  createChecklist,
-  updateChecklist,
+  createOrUpdateChecklist,
   removeChecklist
 };

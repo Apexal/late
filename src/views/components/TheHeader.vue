@@ -157,7 +157,7 @@
 
             <div class="navbar-dropdown">
               <router-link
-                v-if="onBreak"
+                v-if="!onBreak"
                 class="navbar-item"
                 to="/checklist"
                 title="Make checklists for move in!"

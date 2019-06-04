@@ -83,11 +83,10 @@ export default {
   },
   methods: {
     addItem () {
-      this.$store.commit('ADD_CHECKLIST_ITEM', {
+      this.$store.dispatch('ADD_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         item: this.newItem
       });
-      this.$store.commit('SAVE_CHECKLIST');
       this.newItem = {
         title: '',
         count: 1

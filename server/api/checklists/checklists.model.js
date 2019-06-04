@@ -21,8 +21,7 @@ const category = new Schema({
       count: { type: Number, required: true },
       progress: { type: Number, default: 0 }
     }
-  ],
-  private: { type: Boolean, default: false }
+  ]
 });
 
 const schema = new Schema(
@@ -33,7 +32,8 @@ const schema = new Schema(
       ref: 'Student',
       required: true
     },
-    categories: [category]
+    categories: [category],
+    private: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

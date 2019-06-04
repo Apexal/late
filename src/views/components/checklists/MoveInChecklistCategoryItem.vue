@@ -42,12 +42,11 @@ export default {
   },
   methods: {
     updateItemProgress (progress) {
-      this.$store.commit('UPDATE_CHECKLIST_ITEM', {
+      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
         updates: { progress }
       });
-      this.$store.commit('SAVE_CHECKLIST');
     }
   }
 };

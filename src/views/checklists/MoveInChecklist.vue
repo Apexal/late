@@ -95,12 +95,11 @@ export default {
     }
   },
   created () {
-    this.$store.commit('LOAD_CHECKLIST');
+    this.$store.dispatch('GET_CHECKLIST');
   },
   methods: {
     clearChecklist () {
-      this.$store.commit('CLEAR_CHECKLIST');
-      this.$store.commit('SAVE_CHECKLIST');
+      this.$store.dispatch('CLEAR_CHECKLIST');
     },
     addCategory () {
       if (this.categoryTitles.includes(this.newCategory)) {
@@ -110,8 +109,7 @@ export default {
         });
         return;
       }
-      this.$store.commit('ADD_CATEGORY', this.newCategory);
-      this.$store.commit('SAVE_CHECKLIST');
+      this.$store.dispatch('ADD_CATEGORY', this.newCategory);
       this.newCategory = '';
     }
   }
