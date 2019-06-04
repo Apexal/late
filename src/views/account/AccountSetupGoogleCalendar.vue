@@ -278,12 +278,15 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.show('Saved Google Calendar settings!');
+      this.$toast.open({
+        type: 'is-success',
+        message: 'Saved Google Calendar settings!'
+      });
 
       this.loading = false;
     },
     async reset (calendarType) {
-      this.$toasted.show('Coming soon...');
+      this.$toast.open({ type: 'is-success', message: 'Coming soon...' });
     }
   }
 };

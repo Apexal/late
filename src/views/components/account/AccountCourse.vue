@@ -474,9 +474,10 @@ export default {
         this.courseData.title.length === 0 ||
         this.courseData.sectionId.length === 0
       ) {
-        this.$toasted.error(
-          'You cannot set an empty name or section for a course!'
-        );
+        this.$toast.open({
+          type: 'is-danger',
+          message: 'You cannot set an empty name or section for a course!'
+        });
         return;
       }
 
@@ -539,7 +540,10 @@ export default {
         !this.newPeriod.start ||
         !this.newPeriod.end
       ) {
-        this.$toasted.error('Make sure the time and location is set!');
+        this.$toast.open({
+          type: 'is-danger',
+          message: 'Make sure the time and location is set!'
+        });
         return;
       }
       // Remeber to convert start/end from HH:mm to Hmm

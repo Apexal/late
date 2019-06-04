@@ -48,7 +48,10 @@ export default {
       try {
         request = await this.$http.get('/students/log');
       } catch (e) {
-        this.$toasted.error('Failed to load server log.');
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        });
         this.log = [];
         this.loading = false;
         return;
@@ -62,5 +65,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

@@ -163,11 +163,14 @@ export default {
           updates
         );
       } catch (e) {
-        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       this.$emit('update-student', request.data.updatedStudent);
-      this.$toasted.show('Updated student.');
+      this.$toast.open({ type: 'is-success', message: 'Updated student.' });
     },
     async deleteStudent () {
       this.$dialog.confirm({
@@ -178,11 +181,17 @@ export default {
           try {
             request = await this.$http.delete('/students/' + this.student._id);
           } catch (e) {
-            return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+            return this.$toast.open({
+              message: e.response.data.message,
+              type: 'is-danger'
+            });
           }
 
           this.$emit('delete-student', this.student._id);
-          this.$toasted.show(`Deleted student ${this.student.rcs_id}.`);
+          this.$toast.open({
+            type: 'is-success',
+            message: `Deleted student ${this.student.rcs_id}.`
+          });
         },
         onCancel: () => (this.confirming = false)
       });

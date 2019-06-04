@@ -226,7 +226,10 @@ export default {
       this.loading = true;
 
       if (!this.isComplete) {
-        this.$toasted.error('Make sure you complete every step!');
+        this.$toast.open({
+          type: 'is-danger',
+          message: 'Make sure you complete every step!'
+        });
         return;
       }
 
@@ -245,9 +248,10 @@ export default {
           timeEstimate: this.timeEstimate
         });
       } catch (e) {
-        this.$toasted.error(
-          'There was an error adding the exam. Please try again later.'
-        );
+        this.$toast.open({
+          type: 'is-danger',
+          message: 'There was an error adding the exam. Please try again later.'
+        });
         this.loading = false;
         return;
       }
@@ -279,21 +283,23 @@ export default {
 
       this.$emit('toggle-modal');
 
-      const options = {
-        action: {
-          text: 'View',
-          push: {
-            name: 'exam-overview',
-            params: { examID: request.data.createdExam._id }
-          }
-        }
-      };
-
       const message = `Added exam '${request.data.createdExam.title}' ${moment(
         request.data.createdExam.date
       ).fromNow()}.`;
 
-      this.$toasted.success(message, options);
+      this.$snackbar.open({
+        message,
+        type: 'is-primary',
+        position: 'is-bottom',
+        actionText: 'View',
+        indefinite: true,
+        onAction: () => {
+          this.$router.push({
+            name: 'exam-overview',
+            params: { examID: request.data.createdExam._id }
+          });
+        }
+      });
     }
   }
 };

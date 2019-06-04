@@ -262,7 +262,10 @@ export default {
       this.loading = true;
 
       if (!this.isComplete) {
-        this.$toasted.error('Make sure you complete every step!');
+        this.$toast.open({
+          type: 'is-danger',
+          message: 'Make sure you complete every step!'
+        });
         return;
       }
 
@@ -328,8 +331,8 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$toasted.success(
-        `Added assignment '${
+      this.$snackbar.open({
+        message: `Added assignment '${
           request.data.createdAssignment.title
         }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}${
           request.data.recurringAssignments.length > 0
@@ -338,17 +341,17 @@ export default {
               ' recurring assignments'
             : ''
         }.`,
-        {
-          icon: 'plus',
-          action: {
-            text: 'View',
-            push: {
-              name: 'assignment-overview',
-              params: { assignmentID: request.data.createdAssignment._id }
-            }
-          }
+        type: 'is-primary',
+        position: 'is-bottom',
+        actionText: 'View',
+        duration: 5000,
+        onAction: () => {
+          this.$router.push({
+            name: 'assignment-overview',
+            params: { assignmentID: request.data.createdAssignment._id }
+          });
         }
-      );
+      });
     }
   }
 };

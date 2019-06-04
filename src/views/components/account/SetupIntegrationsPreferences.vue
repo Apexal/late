@@ -141,14 +141,18 @@ export default {
         );
       } catch (e) {
         this.loading = false;
-        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-      this.$toasted.success(
-        'Successfully updated your notification preferences!'
-      );
+      this.$toast.open({
+        type: 'is-success',
+        message: 'Successfully updated your notification preferences!'
+      });
 
       this.loading = false;
     }

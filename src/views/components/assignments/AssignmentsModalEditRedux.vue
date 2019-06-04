@@ -278,7 +278,10 @@ export default {
       }
 
       if (complete) {
-        this.$toasted.error('Make sure you complete every step!');
+        this.$toast.open({
+          type: 'is-danger',
+          message: 'Make sure you complete every step!'
+        });
         return;
       }
 
@@ -326,17 +329,12 @@ export default {
       this.$emit('toggle-modal');
 
       // Notify user
-      this.$toasted.info(
-        `Edited assignment '${
+      this.$snackbar.open({
+        message: `Edited assignment '${
           request.data.updatedAssignment.title
         }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
-        {
-          action: {
-            text: 'Undo'
-          },
-          icon: 'pen'
-        }
-      );
+        position: 'is-bottom'
+      });
     }
   }
 };

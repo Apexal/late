@@ -5,7 +5,6 @@ import store from './store';
 import Api from './api';
 
 import FullCalendar from 'vue-full-calendar';
-import Toasted from 'vue-toasted';
 
 import Buefy from 'buefy';
 
@@ -45,14 +44,6 @@ const options = {
 Vue.use(VueProgressBar, options);
 
 Vue.use(FullCalendar);
-Vue.use(Toasted, {
-  router,
-  fullWidth: true,
-  iconPack: 'fontawesome',
-  fitToScreen: true,
-  duration: 5000,
-  position: 'bottom-center'
-});
 Vue.config.productionTip = false;
 
 Vue.prototype.$http = Api;

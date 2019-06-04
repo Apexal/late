@@ -148,13 +148,19 @@ export default {
       try {
         request = await this.$http.post('/announcements', this.newAnnouncement);
       } catch (e) {
-        this.$toasted.error(e.request.data.message);
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        });
         this.loading = false;
         return;
       }
 
       this.$store.commit('ADD_ANNOUNCEMENT', request.data.createdAnnouncement);
-      this.$toasted.success('Posted new announcement.');
+      this.$toast.open({
+        type: 'is-success',
+        message: 'Posted new announcement.'
+      });
 
       this.addingAnnouncement = {
         title: '',

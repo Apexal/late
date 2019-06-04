@@ -169,9 +169,9 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.info('Saved personal info!');
+      this.$toast.open({ type: 'is-success', message: 'Saved personal info!' });
 
-      this.$router.push({ name: 'setup-course-schedule' });
+      this.$router.push({ name: 'setup-terms' });
 
       // this.saved = true;
       this.loading = false;

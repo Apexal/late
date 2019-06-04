@@ -222,17 +222,21 @@ export default {
           unavailability
         );
       } catch (e) {
-        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         return;
       }
 
       this.$store.commit('SET_USER', request.data.updatedUser);
 
-      this.$toasted.success(
-        `Added "${
+      this.$toast.open({
+        type: 'is-success',
+        message: `Added "${
           request.data.createdUnavailability.title
         }" to your unavailability.`
-      );
+      });
     },
     async removeUnavailability (unavailability) {
       let request;
@@ -242,15 +246,18 @@ export default {
           unavailability
         );
       } catch (e) {
-        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         return;
       }
-
-      this.$toasted.success(
-        `Removed "${
+      this.$toast.open({
+        type: 'is-success',
+        message: `Removed "${
           request.data.deletedUnavailability.title
         }" from your unavailability.`
-      );
+      });
     },
     async saveTimePreferences () {
       this.loading = true;
@@ -263,14 +270,19 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.show('Your study/work time limits have been saved.');
-
+      this.$toast.open({
+        type: 'is-success',
+        message: 'Your study/work time limits have been saved.'
+      });
       this.$router.push({ name: 'setup-integrations' });
 
       this.loading = false;
