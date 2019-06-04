@@ -89,12 +89,12 @@ async function updateChecklist (ctx) {
   });
 }
 
-async function deleteChecklist (ctx) {}
+async function removeChecklist (ctx) {}
 
 module.exports = {
   getChecklists,
   getChecklist,
   createChecklist,
   updateChecklist,
-  deleteChecklist
+  removeChecklist
 };
