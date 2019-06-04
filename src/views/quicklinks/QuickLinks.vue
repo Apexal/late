@@ -28,7 +28,7 @@
       <div
         v-for="(links, category) in categories"
         :key="category"
-        class="column is-one-third"
+        class="column is-one-third-desktop is-full"
       >
         <div class="box category">
           <h2
@@ -286,7 +286,9 @@ export default {
         return;
       }
 
-      if (request.data.createdQuickLink.confirmed) { this.quickLinks.push(request.data.createdQuickLink); }
+      if (request.data.createdQuickLink.confirmed) {
+        this.quickLinks.push(request.data.createdQuickLink);
+      }
 
       this.$toast.open({
         message:
