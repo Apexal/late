@@ -47,6 +47,7 @@ export default {
         itemIndex: this.itemIndex,
         updates: { progress }
       });
+      this.$store.commit('SAVE_CHECKLIST');
     }
   }
 };

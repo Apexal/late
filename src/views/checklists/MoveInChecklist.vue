@@ -50,6 +50,12 @@
       <b-button @click="clearChecklist">
         Clear
       </b-button>
+      <b-button
+        v-if="loggedIn"
+        type="is-link"
+      >
+        Share
+      </b-button>
     </div>
   </section>
 </template>
@@ -88,9 +94,13 @@ export default {
       return this.checklist.categories.map(cat => cat.title);
     }
   },
+  created () {
+    this.$store.commit('LOAD_CHECKLIST');
+  },
   methods: {
     clearChecklist () {
       this.$store.commit('CLEAR_CHECKLIST');
+      this.$store.commit('SAVE_CHECKLIST');
     },
     addCategory () {
       if (this.categoryTitles.includes(this.newCategory)) {
@@ -101,6 +111,7 @@ export default {
         return;
       }
       this.$store.commit('ADD_CATEGORY', this.newCategory);
+      this.$store.commit('SAVE_CHECKLIST');
       this.newCategory = '';
     }
   }

@@ -87,6 +87,7 @@ export default {
         categoryIndex: this.categoryIndex,
         item: this.newItem
       });
+      this.$store.commit('SAVE_CHECKLIST');
       this.newItem = {
         title: '',
         count: 1

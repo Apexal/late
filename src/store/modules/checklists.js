@@ -28,6 +28,12 @@ const mutations = {
     state.checklist = {
       categories: []
     };
+  },
+  LOAD_CHECKLIST: state => {
+    state.checklist = JSON.parse(localStorage.getItem('checklist'));
+  },
+  SAVE_CHECKLIST: state => {
+    localStorage.setItem('checklist', JSON.stringify(state.checklist));
   }
 };
 
