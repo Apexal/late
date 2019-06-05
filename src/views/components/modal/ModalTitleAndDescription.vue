@@ -67,7 +67,7 @@ export default {
     },
     oldTitles: {
       type: Set,
-      default: () => []
+      default: () => new Set()
     }
   },
   data () {
