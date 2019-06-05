@@ -1,45 +1,48 @@
 <template>
   <div class="assessment-work-schedule">
-    <div class="box columns percents">
-      <div
-        class="column is-one-half tooltip"
-        :data-tooltip="scheduledPercent + '% scheduled'"
-      >
-        <div class="is-narrow">
-          You've scheduled
-          <b>{{ scheduledMinutes }}</b> out of
-          <b>{{ totalEstimatedMinutes }}</b>
-          minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
+    <div class="box ">
+      <div class="columns percents">
+        <div
+          class="column is-one-half tooltip"
+          :data-tooltip="scheduledPercent + '% scheduled'"
+        >
+          <div class="is-narrow">
+            You've scheduled
+            <b>{{ scheduledMinutes }}</b> out of
+            <b>{{ totalEstimatedMinutes }}</b>
+            minutes to {{ assessmentType === "assignment" ? "work" : "study" }}.
+          </div>
+          <div class>
+            <progress
+              class="progress is-info"
+              :value="scheduledMinutes"
+              :max="totalEstimatedMinutes"
+            >
+              {{ scheduledPercent }}%
+            </progress>
+          </div>
         </div>
-        <div class>
-          <progress
-            class="progress is-info"
-            :value="scheduledMinutes"
-            :max="totalEstimatedMinutes"
-          >
-            {{ scheduledPercent }}%
-          </progress>
-        </div>
-      </div>
 
-      <div
-        class="column is-one-half tooltip"
-        :data-tooltip="finishedPercent + '% finished'"
-      >
-        <div class="is-narrow">
-          You've finished
-          <b>{{ finishedMinutes }}</b> out of
-          <b>{{ scheduledMinutes }}</b>
-          scheduled minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
-        </div>
-        <div class>
-          <progress
-            class="progress is-success"
-            :value="finishedMinutes"
-            :max="scheduledMinutes"
-          >
-            {{ finishedPercent }}%
-          </progress>
+        <div
+          class="column is-one-half tooltip"
+          :data-tooltip="finishedPercent + '% finished'"
+        >
+          <div class="is-narrow">
+            You've finished
+            <b>{{ finishedMinutes }}</b> out of
+            <b>{{ scheduledMinutes }}</b>
+            scheduled minutes to
+            {{ assessmentType === "assignment" ? "work" : "study" }}.
+          </div>
+          <div class>
+            <progress
+              class="progress is-success"
+              :value="finishedMinutes"
+              :max="scheduledMinutes"
+            >
+              {{ finishedPercent }}%
+            </progress>
+          </div>
         </div>
       </div>
     </div>
@@ -159,7 +162,10 @@ export default {
           noEventsMessage: 'No work periods set yet.',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
-              return moment(event.end).isBetween(event.course.startDate, event.course.endDate);
+              return moment(event.end).isBetween(
+                event.course.startDate,
+                event.course.endDate
+              );
             }
           },
           buttonText: {
@@ -274,7 +280,8 @@ export default {
       if (calEvent.end.isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Move this past work block?',
-          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onConfirm: () =>
+            this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
           onCancel: revertFunc
         });
       } else {
@@ -285,7 +292,8 @@ export default {
       if (calEvent.end.isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Edit this past work block?',
-          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onConfirm: () =>
+            this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
           onCancel: revertFunc
         });
       } else {
@@ -321,9 +329,7 @@ export default {
 
       let message = 'Rescheduled work block!';
 
-      if (
-        !this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
-      ) {
+      if (!this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
         message = 'Edited past work block!';
         // Updated past assessment, send up to parent overview
         this.$emit('updated-assessment', updatedAssessment);
