@@ -1,36 +1,58 @@
 <template>
-  <div class="assessment-overview-title is-flex-tablet">
-    <router-link
-      :to="{ name: 'coursework-upcoming' }"
-      class="button is-link tooltip is-tooltip-bottom backButton"
-      :data-tooltip="`Browse all course work.`"
-    >
-      <span class="icon">
-        <i class="fas fa-angle-left" />
-      </span>
-    </router-link>
-
+  <div class="assessment-overview-title is-flex-desktop">
     <div
       v-if="!editing"
-      class="has-text-centered-mobile"
+      class="has-text-centered-touch"
     >
+      <router-link
+        :to="{ name: 'coursework-upcoming' }"
+        class="button is-link tooltip is-tooltip-bottom back-button"
+        data-tooltip="Browse all course work."
+      >
+        <span class="icon">
+          <i class="fas fa-angle-left" />
+        </span>
+      </router-link>
       <span
-        class="tag is-medium course-tag"
+        class="tag is-medium tooltip is-tooltip-bottom course-tag"
         :style="{ 'background-color': course.color }"
+        :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
         @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
         <b class="course-title">{{ course.title }}</b>
-        {{ assessment.passed ? "Past " : ""
-        }}{{
-          assessmentType === "assignment" && assessment.isRecurring
-            ? "Recurring "
-            : ""
-        }}{{ capitalizedAssessmentType }}
+        <span>
+          {{ assessment.passed ? "Past " : ""
+          }}{{
+            assessmentType === "assignment" && assessment.isRecurring
+              ? "Recurring "
+              : ""
+          }}
+        </span>
+        <i
+          class="fas"
+          :class="
+            assessmentType === 'assignment'
+              ? 'fa-clipboard-check'
+              : 'fa-exclamation-triangle'
+          "
+        />
       </span>
+      <b-button
+        v-if="assessmentType === 'assignment'"
+        class="is-hidden-desktop touch-complete-button"
+        type="is-success"
+        :outlined="!assessment.completed"
+        @click="$emit('toggle-completed')"
+      >
+        <i
+          class="fa-check-square"
+          :class="[assessment.completed ? 'fas' : 'far']"
+        />
+      </b-button>
     </div>
     <h1
       v-if="!editing"
-      class="title assessment-title has-text-centered-mobile"
+      class="title assessment-title has-text-centered-touch"
       style="flex: 1"
     >
       <span class="pad">{{ assessment.title }}</span>
@@ -72,7 +94,7 @@
 
     <div
       v-if="assessmentType === 'assignment'"
-      class="has-text-centered-mobile"
+      class="is-hidden-touch"
     >
       <button
         :title="toggleButtonTitle"
@@ -169,9 +191,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.backButton {
+.back-button {
   height: 2em;
-  margin-right: 5px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.touch-complete-button {
+  height: 2em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .edit-title-icon {
@@ -195,7 +224,7 @@ export default {
 
   .pad {
     background-color: white;
-    border-radius: 10px;
+    border-radius: 4px;
     padding: 0 10px;
     margin-right: -10px;
   }
@@ -227,11 +256,10 @@ export default {
 .course-tag {
   cursor: pointer;
   color: white;
+  border-radius: 0;
 
   .course-title {
     margin-right: 5px;
   }
-
-  margin-right: 10px;
 }
 </style>
