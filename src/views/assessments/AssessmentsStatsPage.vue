@@ -50,6 +50,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.section {
+  max-width: 85vw;
+  margin: 0 auto;
+}
 .charts canvas {
   margin-bottom: 50px;
 }

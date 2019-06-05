@@ -3,6 +3,12 @@
     <h1 class="title has-text-centered-mobile">
       Tools
     </h1>
+    <h2
+      class="subtitle has-text-centered-mobile"
+      style="padding-left: 5px;"
+    >
+      Study tools to help you stay productive and informed
+    </h2>
 
     <div class="tile is-ancestor">
       <div class="tile">
