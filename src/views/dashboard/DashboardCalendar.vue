@@ -247,6 +247,15 @@ export default {
               moment(assessment.date).isSame(event.start, 'day')
           );
         }
+
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-graduation-cap';
+        el.find('.fc-title').prepend(icon);
+
+        const locationElement = document.createElement('i');
+        locationElement.className = 'event-period-location';
+        locationElement.innerText = event.period.location;
+        el.find('.fc-content').append(locationElement);
       } else if (event.eventType === 'work-block') {
         const deleteButton = document.createElement('span');
         deleteButton.classList.add('remove-work-block');
@@ -276,6 +285,10 @@ export default {
       } else if (event.eventType === 'exam') {
         const icon = document.createElement('i');
         icon.className = 'fas fa-exclamation-triangle';
+        el.find('.fc-content').prepend(icon);
+      } else if (event.eventType === 'academic-calendar-event') {
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-info-circle';
         el.find('.fc-content').prepend(icon);
       }
     },
@@ -411,6 +424,19 @@ export default {
 }
 .work-block-event {
   border-width: 3px !important;
+}
+
+.event-period-location {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.fc-event {
+  &:hover {
+    .event-period-location {
+      opacity: 1;
+    }
+  }
 }
 
 .fc-content {
