@@ -269,6 +269,14 @@ export default {
           });
         };
         el.find('.fc-content').append(deleteButton);
+      } else if (event.eventType === 'assignment') {
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-clipboard-check';
+        el.find('.fc-content').prepend(icon);
+      } else if (event.eventType === 'exam') {
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-exclamation-triangle';
+        el.find('.fc-content').prepend(icon);
       }
     },
     select (start, end, jsEvent, view) {
