@@ -10,27 +10,29 @@
           <router-link
             tag="article"
             :to="{ name: 'checklist' }"
-            class="tile is-child notification is-primary"
+            class="tile is-child tools-button notification"
           >
+            <i class="fas fa-tasks" />
             <p class="title">
               Checklist
             </p>
             <p class="subtitle">
               Create a checklist for all the items you need to move into your
-              dorm!
+              dorm
             </p>
           </router-link>
           <router-link
             tag="article"
             :to="{ name: 'study-tools' }"
-            class="tile is-child notification is-dark"
+            class="tile is-child tools-button notification"
           >
+            <i class="fas fa-hourglass-half" />
             <p class="title">
               Study Timer
             </p>
             <p class="subtitle">
               Work/study with the Pomodoro timer to keep you focused and
-              motivated!
+              motivated
             </p>
           </router-link>
         </div>
@@ -38,30 +40,35 @@
           <router-link
             tag="article"
             :to="{ name: 'quick-links' }"
-            class="tile is-child notification is-link"
+            class="tile is-child tools-button notification"
           >
+            <i class="fas fa-link" />
             <p class="title">
               Quick Links
             </p>
             <p class="subtitle">
-              Student curated list of useful RPI related links!
+              Student curated list of useful RPI related links
             </p>
           </router-link>
           <router-link
             tag="article"
             :to="{ name: 'academic-utils' }"
-            class="tile is-child notification is-info"
+            class="tile is-child tools-button notification"
           >
+            <i class="fas fa-calculator" />
             <p class="title">
               Grade Calculators
             </p>
             <p class="subtitle">
-              Calculate your GPA and estimate your course grades!
+              Calculate your GPA and estimate your course grades
             </p>
           </router-link>
         </div>
       </div>
     </div>
+    <h2 class="subtitle is-size-4 has-text-grey-lighter has-text-centered">
+      More to come!
+    </h2>
   </section>
 </template>
 
@@ -72,7 +79,71 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tile {
+.section {
+  max-width: 85vw;
+  margin: 0 auto;
+}
+
+.tools-button i {
+  position: absolute;
+  right: 30px;
+  font-size: 3.5em;
+  opacity: 0.1;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.tools-button {
+  background: none;
+  border: 1px solid rgba(224, 224, 224, 0.8);
+  border-radius: 5px;
+  color: black;
+  display: block;
+  font-size: 1.6em;
+  font-weight: bold;
+  position: relative;
   cursor: pointer;
+  max-width: 650px;
+}
+
+.tools-button::before,
+.tools-button::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+}
+.tools-button:before {
+  background: hsl(171, 100%, 41%);
+}
+
+.tools-button {
+  overflow: hidden;
+}
+
+.tools-button::after {
+  background-color: hsl(171, 100%, 41%);
+  height: 100%;
+  left: -35%;
+  top: 0;
+  transform: skew(50deg);
+  transition-duration: 0.4s;
+  transform-origin: top left;
+  width: 0;
+}
+
+.tools-button:hover:after {
+  height: 100%;
+  width: 135%;
+}
+
+.tools-button:hover .button-icon {
+  opacity: 0.3;
+}
+
+.title:not(p) {
+  padding-bottom: 0px;
+  padding-left: 0px;
+  border-bottom-color: #dbdbdb;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 }
 </style>

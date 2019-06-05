@@ -143,50 +143,16 @@
               About
             </router-link>
           </template>
-          <div class="navbar-item has-dropdown is-hoverable">
-            <router-link
-              :to="{ name: 'tools' }"
-              class="navbar-link"
-              title="Tools to calculate grades and to help you work/study for assignments and exams!"
-            >
-              <span class="icon">
-                <i class="fas fa-toolbox" />
-              </span>
-              Tools
-            </router-link>
-
-            <div class="navbar-dropdown">
-              <router-link
-                v-if="!onBreak"
-                class="navbar-item"
-                to="/checklist"
-                title="Make checklists for move in!"
-              >
-                Move In Checklist
-              </router-link>
-              <router-link
-                class="navbar-item"
-                to="/quicklinks"
-                title="Useful RPI related links!"
-              >
-                Quick Links
-              </router-link>
-              <router-link
-                class="navbar-item"
-                to="/studytools"
-                title="Work/study timer and scratchpad"
-              >
-                Study Timer
-              </router-link>
-              <router-link
-                class="navbar-item"
-                to="/academicutils"
-                title="GPA calculator and course grade estimator"
-              >
-                Grade Calculators
-              </router-link>
-            </div>
-          </div>
+          <router-link
+            :to="{ name: 'tools' }"
+            class="navbar-item"
+            title="Tools to calculate grades and to help you work/study for assignments and exams!"
+          >
+            <span class="icon">
+              <i class="fas fa-toolbox" />
+            </span>
+            Tools
+          </router-link>
         </div>
 
         <div class="navbar-end">
