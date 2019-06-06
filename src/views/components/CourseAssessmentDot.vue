@@ -73,7 +73,7 @@ export default {
 <style lang="scss" scoped>
 .course-assessment-dot {
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 3px;
 }
 
 .dot {
