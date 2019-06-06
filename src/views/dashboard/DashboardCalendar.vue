@@ -518,7 +518,7 @@ export default {
 }
 
 #calendar-holder {
-  height: 700px;
+  height: 800px;
   .show-fullscreen {
     display: none;
   }

@@ -116,29 +116,6 @@ export default {
   margin-left: 5px;
 }
 
-#calendar-holder {
-  height: 700px;
-  .show-fullscreen {
-    display: none;
-  }
-  &:fullscreen {
-    padding: 15px;
-    background-color: white;
-    height: 95%;
-    .show-fullscreen {
-      display: initial;
-    }
-    .hide-fullscreen {
-      display: none;
-    }
-  }
-}
-.fullscreen-toggle {
-  float: right;
-  margin-top: -35px;
-  z-index: 10;
-}
-
 @media only screen and (max-width: 769px) {
   .fc-center {
     margin-top: 10px;
