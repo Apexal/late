@@ -75,12 +75,49 @@
     <h2 class="subtitle is-size-4 has-text-grey-lighter has-text-centered">
       More to come!
     </h2>
+
+    <hr>
+
+    <form @submit.prevent="suggestTool">
+      <textarea
+        id="suggest-tools"
+        v-model.trim="suggestion"
+        class="is-fullwidth input"
+        placeholder="Have an idea for a tool, small or large? Send your suggestion straight to Frank here and get credited for the idea if it is implemented! Make sure to include your name if you are not logged in."
+        required
+      />
+      <button class="button">
+        Suggest
+      </button>
+    </form>
   </section>
 </template>
 
 <script>
 export default {
-  name: 'ToolsPage'
+  name: 'ToolsPage',
+  data () {
+    return {
+      suggestion: ''
+    };
+  },
+  methods: {
+    async suggestTool () {
+      let response;
+      try {
+        response = await this.$http.post('/tools/suggest', {
+          suggestion: this.suggestion
+        });
+      } catch (e) {
+        return;
+      }
+      this.$toast.open({
+        type: 'is-primary',
+        message: 'Suggestion sent to Frank! Thank you for your idea!'
+      });
+      this.suggestion = '';
+    }
+  }
 };
 </script>
 
@@ -165,5 +202,12 @@ export default {
   border-bottom-color: #dbdbdb;
   border-bottom-style: solid;
   border-bottom-width: 1px;
+}
+
+#suggest-tools {
+  max-width: 800px;
+  min-width: 100%;
+  min-height: 50px;
+  max-height: 200px;
 }
 </style>

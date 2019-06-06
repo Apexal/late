@@ -21,6 +21,27 @@ router.use('/announcements', require('./announcements'));
 router.use('/checklists', require('./checklists'));
 router.use('/quicklinks', require('./quicklinks'));
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+router.post('/tools/suggest', async ctx => {
+  const { suggestion } = ctx.request.body;
+
+  if (!suggestion) {
+    return ctx.badRequest('Must send suggestion.');
+  }
+  sgMail.send({
+    to: 'matraf@rpi.edu',
+    from: 'LATE <thefrankmatranga@gmail.com>',
+    templateId: 'd-3ebbbf52793045be9df74f00bd2c6b7b',
+    dynamic_template_data: {
+      student: ctx.state.user ? ctx.state.user.rcs_id : 'anonymous',
+      suggestion: ctx.request.body.suggestion
+    }
+  });
+  ctx.ok({ message: 'Sent message!' });
+});
+
 router.use(
   '/google',
   async (ctx, next) => {
