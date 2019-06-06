@@ -17,9 +17,7 @@
       @edit-exam="updatedAssessment"
       @remove-exam="removeAssessment"
     />
-    <section
-      class="section"
-    >
+    <section class="section">
       <b-loading
         :is-full-page="false"
         :active="loading"
@@ -176,7 +174,9 @@ export default {
       if (this.assessmentType !== 'assignment') return;
 
       this.$dialog.confirm({
-        message: `Mark this assignment as <b>${this.assessment.completed ? 'incomplete' : 'complete'}</b>?`,
+        message: `Mark this assignment as <b>${
+          this.assessment.completed ? 'incomplete' : 'complete'
+        }</b>?`,
         onConfirm: async () => {
           this.toggleLoading = true;
 
@@ -260,14 +260,25 @@ export default {
         onConfirm: async () => {
           const assessmentTitle = this.assessment.title;
 
-
           if (this.assessment.isRecurring) {
             this.$dialog.confirm({
-              message: 'This is a <b>repeating assignment</b>. Remove just this one or this and future ones?',
+              message:
+                'This is a <b>repeating assignment</b>. Remove just this one or this and future ones?',
               confirmText: 'Future Assignments',
               cancelText: 'Just This One',
-              onConfirm: () => {
-                this.$store.dispatch('REMOVE_ASSIGNMENT_AND_RECURRING', this.assessment);
+              onConfirm: async () => {
+                try {
+                  await this.$store.dispatch(
+                    'REMOVE_ASSIGNMENT_AND_RECURRING',
+                    this.assessment
+                  );
+                } catch (e) {
+                  this.$toast.open({
+                    type: 'is-danger',
+                    message: e.response.data.message
+                  });
+                  return;
+                }
                 this.$toast.open({
                   message: `Successfully removed repeating assignment <b>${assessmentTitle}</b> and future ones.`,
                   type: 'is-success',
@@ -276,8 +287,19 @@ export default {
 
                 this.$router.push('/coursework');
               },
-              onCancel: () => {
-                this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment);
+              onCancel: async () => {
+                try {
+                  await this.$store.dispatch(
+                    'REMOVE_ASSESSMENT',
+                    this.assessment
+                  );
+                } catch (e) {
+                  this.$toast.open({
+                    type: 'is-danger',
+                    message: e.response.data.message
+                  });
+                  return;
+                }
 
                 // Notify user of success
                 this.$toast.open({
@@ -290,11 +312,21 @@ export default {
               }
             });
           } else {
-            this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment);
+            try {
+              await this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment);
+            } catch (e) {
+              this.$toast.open({
+                type: 'is-danger',
+                message: e.response.data.message
+              });
+              return;
+            }
 
             // Notify user of success
             this.$toast.open({
-              message: `Successfully removed ${this.assessment.assessmentType} <b>${assessmentTitle}</b>.`,
+              message: `Successfully removed ${
+                this.assessment.assessmentType
+              } <b>${assessmentTitle}</b>.`,
               type: 'is-success',
               duration: 3000
             });

@@ -20,6 +20,10 @@ const schema = new Schema(
     priority: { type: Number, min: 1, max: 5, default: 3 },
     comments: [
       {
+        _student: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student'
+        },
         addedAt: { type: Date, required: true },
         body: { type: String, minlength: 1, maxlength: 2000, required: true }
       }

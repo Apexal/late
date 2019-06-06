@@ -17,7 +17,9 @@ async function getAssignmentMiddleware (ctx, next) {
         { _student: ctx.state.user._id },
         { shared: true, sharedWith: ctx.state.user.rcs_id }
       ]
-    }).populate('_blocks');
+    })
+      .populate('_blocks')
+      .populate('comments._student', '_id rcs_id name grad_year');
   } catch (e) {
     logger.error(
       `Error getting assignment ${assignmentID} for ${
@@ -439,6 +441,7 @@ async function addComment (ctx) {
 
   // Add comment
   ctx.state.assignment.comments.push({
+    _student: ctx.state.user,
     addedAt: new Date(),
     body: text
   });
@@ -471,8 +474,31 @@ async function deleteComment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
   const index = ctx.params.commentIndex;
+  if (!ctx.state.assignment.comments[index]) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete nonexistent comment on assignment ${assignmentID}`
+    );
+    return ctx.badRequest('Could not find the comment to delete!');
+  }
+
+  if (
+    !ctx.state.assignment.comments[index]._student ||
+    !ctx.state.assignment.comments[index]._student._id.equals(
+      ctx.state.user._id
+    )
+  ) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete other students comment on assignment ${assignmentID}`
+    );
+    return ctx.forbidden('You cannot delete somebody else\'s comment!');
+  }
 
   // Delete the comment by its index
+
   ctx.state.assignment.comments.splice(index, 1);
 
   try {
