@@ -106,7 +106,7 @@
           class="fa-check-square"
           :class="[assessment.completed ? 'fas' : 'far']"
         />
-        {{ assessment.completed ? "Completed" : "Incomplete" }}
+        {{ assessment.completed ? "Mark Incomplete" : "Mark Complete" }}
       </button>
     </div>
   </div>

@@ -20,12 +20,8 @@
           :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
           :title="assessmentLinkTitle(assessment)"
         >
-          <span style="flex: 1">
-            {{ assessment.title }}
-          </span>
-          <span
-            class="icon"
-          >
+          <span style="flex: 1">{{ assessment.title }}</span>
+          <span class="icon">
             <i
               v-if="assessment.assessmentType === 'assignment'"
               class="fa assessment-completion-icon"
@@ -119,6 +115,7 @@ export default {
   }
 
   .buttons {
+    justify-content: flex-end;
     button {
       i.fa {
         margin-right: 5px;

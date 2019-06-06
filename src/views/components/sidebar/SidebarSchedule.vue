@@ -51,7 +51,7 @@
           passed: hasPassed(event.end),
           clickable: event.link
         }"
-        @click="eventClicked(event)"
+        @click="$store.commit('OPEN_COURSE_MODAL', event.course); eventClicked(event)"
       >
         <CourseAssessmentDot :course="event.course" />
         <span
@@ -64,10 +64,7 @@
           "
         >
           <template v-if="event.eventType === 'period'">
-            <b
-              class="period-title"
-              @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
-            >{{ event.course.title }}</b>
+            <b class="period-title">{{ event.course.title }}</b>
             <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
           </template>
           <template v-else-if="event.eventType === 'work-block'">
@@ -213,9 +210,7 @@ export default {
 <style lang='scss' scoped>
 .event {
   padding: 10px;
-  &.clickable {
-    cursor: pointer;
-  }
+  cursor: pointer;
   &.has-background-success {
     font-weight: bold;
     color: white;

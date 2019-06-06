@@ -12,7 +12,7 @@
       class="is-pulled-right"
       @click="$emit('copy-assessment')"
     >
-      Copy {{ assessmentTypeCaps }}
+      Duplicate {{ assessmentTypeCaps }}
     </b-button>
   </div>
 </template>
@@ -38,7 +38,9 @@ export default {
       return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     },
     editButtonTitle () {
-      return this.assessment.updatedAt ? `Last edited ${this.shortDateTimeFormat(this.assessment.updatedAt)}` : 'Never edited';
+      return this.assessment.updatedAt
+        ? `Last edited ${this.shortDateTimeFormat(this.assessment.updatedAt)}`
+        : 'Never edited';
     }
   }
 };
