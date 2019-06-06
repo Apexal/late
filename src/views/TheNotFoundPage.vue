@@ -13,6 +13,10 @@
             src="https://giant.gfycat.com/AgedMiniatureBoto.webm"
             type="video/webm"
           >
+          <source
+            src="https://thumbs.gfycat.com/AgedMiniatureBoto-mobile.mp4"
+            type="video/mp4"
+          >
         </video>
       </div>
       <div class="subtitle has-text-centered">
