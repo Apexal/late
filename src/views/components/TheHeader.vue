@@ -82,6 +82,17 @@
               About
             </router-link>
 
+            <router-link
+              :to="{ name: 'tools' }"
+              class="navbar-item"
+              title="Tools to calculate grades and to help you work/study for assignments and exams!"
+            >
+              <span class="icon">
+                <i class="fas fa-toolbox" />
+              </span>
+              Tools
+            </router-link>
+
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
@@ -158,16 +169,6 @@
               About
             </router-link>
           </template>
-          <router-link
-            :to="{ name: 'tools' }"
-            class="navbar-item"
-            title="Tools to calculate grades and to help you work/study for assignments and exams!"
-          >
-            <span class="icon">
-              <i class="fas fa-toolbox" />
-            </span>
-            Tools
-          </router-link>
         </div>
 
         <div class="navbar-end">
