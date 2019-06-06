@@ -75,20 +75,27 @@
     <h2 class="subtitle is-size-4 has-text-grey-lighter has-text-centered">
       More to come!
     </h2>
+    <hr v-if="loggedIn">
+    <form
+      v-if="loggedIn"
+      class="suggest"
+      @submit.prevent="suggestTool"
+    >
+      <b-field>
+        <b-input
+          id="suggest-tools"
+          v-model.trim="suggestion"
+          class="is-fullwidth"
+          placeholder="Suggest a new tool - get credit if it is implemented!"
+          required
+        />
 
-    <hr>
-
-    <form @submit.prevent="suggestTool">
-      <textarea
-        id="suggest-tools"
-        v-model.trim="suggestion"
-        class="is-fullwidth input"
-        placeholder="Have an idea for a tool, small or large? Send your suggestion straight to Frank here and get credited for the idea if it is implemented! Make sure to include your name if you are not logged in."
-        required
-      />
-      <button class="button">
-        Suggest
-      </button>
+        <p class="control">
+          <button class="button is-primary">
+            Suggest
+          </button>
+        </p>
+      </b-field>
     </form>
   </section>
 </template>
@@ -204,10 +211,8 @@ export default {
   border-bottom-width: 1px;
 }
 
-#suggest-tools {
-  max-width: 800px;
-  min-width: 100%;
-  min-height: 50px;
-  max-height: 200px;
+.help {
+  display: none !important;
+  width: 0px !important;
 }
 </style>
