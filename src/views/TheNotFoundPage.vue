@@ -20,7 +20,7 @@
         </video>
       </div>
       <div class="subtitle has-text-centered">
-        <p>The page you are looking for does not exist! Trying checking the URL for typos.</p>
+        <p>The page you are looking for does not exist! Try checking the URL for typos.</p>
       </div>
     </section>
   </div>
