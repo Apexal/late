@@ -23,6 +23,21 @@
           >BETA</span>
         </router-link>
         <a
+          v-if="loggedIn"
+          class="navbar-item announcementIcon is-hidden-desktop"
+          :title="announcementsCount + ' new announcements'"
+          @click="openAnnouncementsModal"
+        >
+          <span class="icon">
+            <i
+              class="fa-bell announcement-bell-icon"
+              :class="[
+                announcementsCount === 0 ? 'far' : 'fas new-announcements'
+              ]"
+            />
+          </span>
+        </a>
+        <a
           :class="{ 'is-active': navbarExpanded }"
           role="button"
           class="navbar-burger burger"
@@ -158,16 +173,18 @@
         <div class="navbar-end">
           <template v-if="loggedIn">
             <a
-              class="navbar-item announcementIcon"
+              class="navbar-item announcementIcon is-hidden-touch"
               :title="announcementsCount + ' new announcements'"
               @click="openAnnouncementsModal"
             >
-              <i
-                class="fa-bell announcement-bell-icon"
-                :class="[
-                  announcementsCount === 0 ? 'far' : 'fas new-announcements'
-                ]"
-              />
+              <span class="icon">
+                <i
+                  class="fa-bell announcement-bell-icon"
+                  :class="[
+                    announcementsCount === 0 ? 'far' : 'fas new-announcements'
+                  ]"
+                />
+              </span>
             </a>
             <div class="navbar-item has-dropdown is-hoverable">
               <a

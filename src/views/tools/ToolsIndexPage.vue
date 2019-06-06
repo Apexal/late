@@ -111,6 +111,15 @@ export default {
   max-width: 650px;
 }
 
+.tools-button,
+.tools-button::after,
+.tools-button i {
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
 .tools-button::before,
 .tools-button::after {
   content: "";
@@ -125,13 +134,17 @@ export default {
   overflow: hidden;
 }
 
+.tools-button:hover {
+  color: white;
+}
+
 .tools-button::after {
-  background-color: hsl(171, 100%, 41%);
+  background-color: hsl(217, 71%, 53%);
   height: 100%;
   left: -35%;
   top: 0;
   transform: skew(50deg);
-  transition-duration: 0.4s;
+  transition-duration: 0.2s;
   transform-origin: top left;
   width: 0;
 }
@@ -141,7 +154,8 @@ export default {
   width: 135%;
 }
 
-.tools-button:hover .button-icon {
+.tools-button:hover i {
+  color: rgba(255, 255, 255, 0.6);
   opacity: 0.3;
 }
 
