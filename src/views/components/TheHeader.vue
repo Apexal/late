@@ -24,7 +24,7 @@
         </router-link>
         <a
           v-if="loggedIn"
-          class="navbar-item announcementIcon is-hidden-desktop"
+          class="navbar-item announcement-icon is-hidden-desktop"
           :title="announcementsCount + ' new announcements'"
           @click="openAnnouncementsModal"
         >
@@ -174,7 +174,7 @@
         <div class="navbar-end">
           <template v-if="loggedIn">
             <a
-              class="navbar-item announcementIcon is-hidden-touch"
+              class="navbar-item announcement-icon is-hidden-touch"
               :title="announcementsCount + ' new announcements'"
               @click="openAnnouncementsModal"
             >
@@ -384,6 +384,7 @@ export default {
 .navbar-brand {
   .beta-tag {
     margin-left: 5px;
+    margin-bottom: -2px;
     transition: background-color 0.2s;
     background-color: #70cad1;
   }
@@ -408,8 +409,13 @@ export default {
 
   .navbar-item {
     span.icon {
-      margin-right: 3px;
+      margin-right: 1px;
+      margin-left: 1px;
     }
+  }
+
+  .announcement-icon {
+    padding: 0.5rem 0.2rem;
   }
 
   span.tag.assignment-count,

@@ -311,6 +311,19 @@ section.section {
   height: 1.5em;
 }
 
+.toggle-sidebar i {
+  transition: 0.1s;
+  -webkit-transition: 0.1s;
+  -moz-transition: 0.1s;
+}
+
+.toggle-sidebar:hover i {
+  margin-right: -6px;
+  transition: 0.1s;
+  -webkit-transition: 0.1s;
+  -moz-transition: 0.1s;
+}
+
 /* TRANSITIONS */
 .fade-enter-active,
 .fade-leave-active {

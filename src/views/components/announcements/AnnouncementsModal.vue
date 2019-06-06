@@ -85,8 +85,10 @@
             <small
               :data-tooltip="shortDateTimeFormat(announcement.createdAt)"
               class="tooltip has-text-grey"
-            >Posted {{ fromNow(announcement.createdAt) }} by
-              {{ announcement._student.display_name }}</small>
+            >
+              Posted {{ fromNow(announcement.createdAt) }} by
+              {{ announcement._student.display_name }}
+            </small>
           </article>
         </template>
       </section>
@@ -174,4 +176,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.modal-card-foot {
+  justify-content: flex-end;
+}
 </style>

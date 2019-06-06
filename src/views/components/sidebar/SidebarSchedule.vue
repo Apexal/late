@@ -208,6 +208,10 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.panel-block.is-active {
+  border-left: 3px solid #3273dc;
+}
+
 .event {
   padding: 10px;
   cursor: pointer;

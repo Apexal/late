@@ -4,9 +4,7 @@
     class="menu"
   >
     <div class="panel">
-      <p
-        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
-      >
+      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         <span
           class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar"
@@ -260,6 +258,17 @@ export default {
     cursor: pointer;
     width: 2.5em;
     height: 1.5em;
+  }
+
+  .local-toggle-sidebar:hover {
+    background-color: rgb(252, 252, 252);
+  }
+
+  .local-toggle-sidebar:hover i {
+    margin-left: -6px;
+    transition: 0.1s;
+    -webkit-transition: 0.1s;
+    -moz-transition: 0.1s;
   }
   .countdown {
     height: 2.5em;
