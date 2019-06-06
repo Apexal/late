@@ -1,68 +1,86 @@
 <template>
   <div class="dashboard-overview">
-    <div class="columns">
-      <div class="column">
-        <div class="timeline">
-          <header class="timeline-header">
-            <span class="tag is-medium is-primary">Morning</span>
-          </header>
-          <div
-            v-for="(event, index) in todaysAgenda"
-            :key="index"
-            class="timeline-item"
-            :class="timelineItemClass(event)"
-          >
-            <template v-if="event.eventType === 'work-block'">
-              <router-link
-                tag="div"
-                class="timeline-marker is-icon"
-                :class="timelineItemClass(event)"
-                :title="timelineItemTitle(event)"
-                :to="timelineRoute(event)"
-              >
-                <i
-                  class="fas"
-                  :class="markerIcon(event)"
-                />
-              </router-link>
-            </template>
-            <template v-else-if="event.eventType === 'period'">
-              <div
-                class="timeline-marker is-icon"
-                :class="timelineItemClass(event)"
-                :title="timelineItemTitle(event)"
-              >
-                <i
-                  class="fas"
-                  :class="markerIcon(event)"
-                />
+    <div class="box">
+      <div class="tabs">
+        <ul>
+          <li class="is-active">
+            <a>Today</a>
+          </li>
+          <li><a>Tomorrow</a></li>
+        </ul>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="timeline">
+            <header class="timeline-header">
+              <span class="tag is-medium is-primary">Morning</span>
+            </header>
+            <div
+              v-for="(event, index) in todaysAgenda"
+              :key="index"
+              class="timeline-item"
+              :class="timelineItemClass(event)"
+            >
+              <template v-if="event.eventType === 'work-block'">
+                <router-link
+                  tag="div"
+                  class="timeline-marker is-icon"
+                  :class="timelineItemClass(event)"
+                  :title="timelineItemTitle(event)"
+                  :to="timelineRoute(event)"
+                >
+                  <i
+                    class="fas"
+                    :class="markerIcon(event)"
+                  />
+                </router-link>
+              </template>
+              <template v-else-if="event.eventType === 'period'">
+                <div
+                  class="timeline-marker is-icon"
+                  :class="timelineItemClass(event)"
+                  :title="timelineItemTitle(event)"
+                  @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
+                >
+                  <i
+                    class="fas"
+                    :class="markerIcon(event)"
+                  />
+                </div>
+              </template>
+
+              <div class="timeline-content">
+                <p class="heading">
+                  {{ timeFormat(event.start) }} to {{ timeFormat(event.end) }}
+                </p>
+                <p>
+                  <template v-if="event.eventType === 'work-block'">
+                    {{
+                      event.assessment.assessmentType === "assignment"
+                        ? "Work on"
+                        : "Study for"
+                    }}
+                    <router-link :to="timelineRoute(event)">
+                      <b class="course-title">{{ event.assessment.title }}</b>
+                    </router-link>
+                    <br>
+                    <i
+                      class="has-text-grey"
+                    >For {{ eventDuration(event) }} minutes</i>
+                  </template>
+                  <template v-else-if="event.eventType === 'period'">
+                    <b class="course-title">{{ event.course.title }}</b>
+                    <span class="has-text-grey">{{
+                      periodType(event.period.type)
+                    }}</span>
+                    <br>
+                    <i class="has-text-grey">{{ event.period.location }}</i>
+                  </template>
+                </p>
               </div>
-            </template>
-
-            <div class="timeline-content">
-              <p class="heading">
-                {{ timeFormat(event.start) }} to {{ timeFormat(event.end) }}
-              </p>
-              <p>
-                <template v-if="event.eventType === 'work-block'">
-                  {{
-                    event.assessment.assessmentType === "assignment"
-                      ? "Work on"
-                      : "Study for"
-                  }}
-                  <b>{{ event.assessment.title }}</b>
-                </template>
-                <template v-else-if="event.eventType === 'period'">
-                  <b>{{ event.course.title }}</b>
-                  <span class="has-text-grey">{{
-                    periodType(event.period.type)
-                  }}</span>
-                </template>
-              </p>
             </div>
-          </div>
 
-          <!-- <header class="timeline-header">
+            <!-- <header class="timeline-header">
             <span class="tag is-primary">End of Classes</span>
           </header>
           <div class="timeline-item">
@@ -74,30 +92,16 @@
               <p>Timeline content - Can include any HTML element</p>
             </div>
           </div> -->
-          <div class="timeline-header">
-            <span class="tag is-medium is-primary">Night</span>
+            <div class="timeline-header">
+              <span class="tag is-medium is-primary">Night</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="column">
-        <div class="tile is-ancestor">
-          <div class="tile is-parent">
-            <article class="tile is-child notification is-success">
-              <div class="content">
-                <p class="title">
-                  Today's Class Locations
-                </p>
-                <div class="content">
-                  <router-link to="/">
-                    <img
-                      :src="imageURL"
-                      alt="Map of locations of today's periods"
-                    >
-                  </router-link>
-                </div>
-              </div>
-            </article>
-          </div>
+        <div class="column">
+          <img
+            :src="imageURL"
+            alt="Map of locations of today's periods"
+          >
         </div>
       </div>
     </div>
@@ -124,9 +128,7 @@ export default {
       return process.env.VUE_APP_GOOGLE_API_KEY;
     },
     periods () {
-      return this.$store.getters.current_courses
-        .map(course => course.periods.filter(p => p.day === 1))
-        .flat();
+      return this.$store.state.schedule.periods;
     },
     imageURL () {
       let markers = this.periods.map(period => {
@@ -152,6 +154,9 @@ export default {
   methods: {
     course (p) {
       return this.$store.getters.getCourseFromPeriod(p);
+    },
+    eventDuration (event) {
+      return moment(event.end).diff(event.start, 'minutes');
     },
     timelineRoute (event) {
       return {
@@ -194,5 +199,13 @@ export default {
 <style lang="scss" scoped>
 .timeline-marker {
   cursor: pointer;
+}
+
+.course-title {
+  margin-right: 5px;
+}
+
+.timeline {
+  padding-left: 20px;
 }
 </style>
