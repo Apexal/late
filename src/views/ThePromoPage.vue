@@ -219,8 +219,8 @@ export default {
 }
 
 #sis-man-holder,
-#promo-container .title,
-#promo-container .subtitle {
+.promo-container .title,
+.promo-container .subtitle {
   margin: 0rem 1.5rem 0rem 1.5rem;
 }
 
@@ -232,7 +232,7 @@ export default {
   margin-right: 10px;
 }
 
-#promo-container hr {
+.promo-container hr {
   margin: 3em;
   background-color: darkgrey;
 }
@@ -244,7 +244,7 @@ export default {
   text-shadow: 0 1px 0 #52413c, 0px 0px 50px #52413c;
 }
 
-#promo-container .desc-container {
+.promo-container .desc-container {
   background-color: white;
   border-radius: 10px;
   padding: 20px 10px;
