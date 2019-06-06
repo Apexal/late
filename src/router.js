@@ -25,7 +25,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      alias: '/dashboard',
+      alias: ['/dashboard', '/frontpage'],
       name: 'home',
       component: () => import('@/views/TheHomePage.vue'),
       meta: {
@@ -95,12 +95,12 @@ const router = new Router({
       ]
     },
     {
-      path: '/frontpage',
-      name: 'frontpage',
+      path: '/about',
+      name: 'about',
       meta: {
-        title: 'Front Page'
+        title: 'About'
       },
-      component: () => import('@/views/TheHomePage.vue')
+      component: () => import('@/views/TheAboutPage.vue')
     },
     {
       path: '/coursework',
