@@ -58,7 +58,7 @@
           </router-link>
           <router-link
             tag="article"
-            :to="{ name: 'academic-utils' }"
+            :to="{ name: 'gpa-calculator' }"
             class="tile is-child tools-button notification"
           >
             <i class="fas fa-calculator" />

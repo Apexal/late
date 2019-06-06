@@ -51,7 +51,6 @@ const router = new Router({
     {
       path: '/academicutils',
       component: () => import('@/views/academicutils/AcademicUtilsPage.vue'),
-      name: 'academic-utils',
       meta: {
         title: 'Academic Utilities'
       },
@@ -262,7 +261,6 @@ const router = new Router({
     },
     {
       path: '/admin',
-      name: 'AdminPage',
       meta: {
         requiresAuth: true,
         requiresAdmin: true

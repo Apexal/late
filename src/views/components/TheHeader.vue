@@ -12,7 +12,7 @@
         <router-link
           id="logo"
           class="navbar-item"
-          to="/dashboard"
+          :to="{ name: 'home' }"
           active-class
           exact-active-class
         >
@@ -61,7 +61,7 @@
           <template v-if="loggedIn">
             <router-link
               class="navbar-item"
-              to="/dashboard"
+              :to="{ name: 'home' }"
               title="View your dashboard"
             >
               <span class="icon">
@@ -73,7 +73,7 @@
             <router-link
               v-if="onBreak"
               class="navbar-item"
-              to="/about"
+              :to="{ name: 'about' }"
               title="Learn more about LATE and its creators"
             >
               <span class="icon">
@@ -222,7 +222,7 @@
                 <router-link
                   v-if="user.admin"
                   class="navbar-item"
-                  to="/admin"
+                  :to="{ name: 'admin-student-list' }"
                   title="View the administrator page"
                 >
                   <span class="icon">

@@ -31,13 +31,6 @@
     <h2 class="subtitle has-text-centered-mobile">
       Estimates your final course grades and cumulative grade point average
     </h2>
-
-    <p
-      v-if="$route.name === 'academic-utils'"
-      class="has-text-centered has-text-grey"
-    >
-      Choose a tool above.
-    </p>
     <router-view />
   </section>
 </template>
