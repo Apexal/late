@@ -91,7 +91,7 @@
       </div>
     </div>
     <div
-      v-if="!onBreak"
+      v-if="!onBreak && setup"
       class="panel-block has-background-light has-text-centered no-hover"
     >
       <b-button
@@ -105,6 +105,18 @@
         />
         {{ showPassed ? "Hide" : "Show" }} Passed
       </b-button>
+    </div>
+    <div
+      v-if="!onBreak && !setup"
+      class="panel-block has-background-light has-text-centered no-hover"
+    >
+      <router-link
+        class="button is-secondary is-fullwidth showPassedButton"
+        to="/account"
+      >
+        <i class="show-passed-icon far fa-edit" />
+        Account Setup
+      </router-link>
     </div>
   </div>
 </template>
