@@ -199,7 +199,6 @@ export default {
         calls.concat([
           this.$store.dispatch('GET_COURSES'),
           this.$store.dispatch('GET_UNAVAILABILITIES'),
-          this.$store.dispatch('AUTO_UPDATE_SCHEDULE'),
           this.$store.dispatch('AUTO_GET_UPCOMING_WORK')
         ]);
       }

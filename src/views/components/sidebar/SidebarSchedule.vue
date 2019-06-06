@@ -136,9 +136,6 @@ export default {
     daysUntilNextTerm () {
       return moment(this.nextTerm.start).diff(this.now, 'days');
     },
-    now () {
-      return this.$store.state.now;
-    },
     schedule () {
       return this.$store.state.schedule;
     },

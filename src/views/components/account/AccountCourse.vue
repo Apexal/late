@@ -425,7 +425,6 @@ export default {
       this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
     },
     highlighted (newHighlighted) {
-      alert(newHighlighted);
       if (newHighlighted) {
         this.open = true;
       }

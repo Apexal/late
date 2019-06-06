@@ -48,11 +48,6 @@ export default {
       newTodo: ''
     };
   },
-  computed: {
-    now () {
-      return this.$store.state.now;
-    }
-  },
   methods: {
     async addTodo () {
       if (!this.newTodo) return;

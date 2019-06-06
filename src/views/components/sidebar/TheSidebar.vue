@@ -4,7 +4,9 @@
     class="menu"
   >
     <div class="panel">
-      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
+      <p
+        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
+      >
         <span
           class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar"
@@ -166,9 +168,6 @@ export default {
     },
     todos () {
       return this.$store.state.todos.todos;
-    },
-    now () {
-      return this.$store.state.now;
     }
   },
   mounted () {

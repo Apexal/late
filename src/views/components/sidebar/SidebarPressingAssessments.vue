@@ -95,11 +95,6 @@ export default {
       required: true
     }
   },
-  computed: {
-    now () {
-      return this.$store.state.now;
-    }
-  },
   methods: {
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
