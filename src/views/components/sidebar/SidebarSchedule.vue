@@ -7,17 +7,20 @@
       <i class="fas fa-umbrella-beach no-classes-icon" />
       <div class="panel-block has-text-grey no-hover">
         <span v-if="!nextTerm">No courses over break!</span>
-        <span
-          v-else
-        >{{ daysUntilNextTerm }} days left of break until
-          {{ nextTerm.name }}!</span>
+        <span v-else>
+          {{ daysUntilNextTerm }} days left of break until
+          {{ nextTerm.name }}!
+        </span>
       </div>
     </div>
     <div
       v-else-if="!setup"
-      class="panel-block has-text-grey no-hover"
+      class="no-classes"
     >
-      You have not set your course schedule yet!
+      <i class="far fa-frown no-classes-icon" />
+      <div class="panel-block has-text-grey no-hover">
+        You have not set your course schedule yet!
+      </div>
     </div>
     <div
       v-else
@@ -65,9 +68,7 @@
               class="period-title"
               @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
             >{{ event.course.title }}</b>
-            <span class="has-text-grey">
-              {{ periodType(event.period.type) }}
-            </span>
+            <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
           </template>
           <template v-else-if="event.eventType === 'work-block'">
             <span>
