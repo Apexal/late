@@ -9,7 +9,10 @@
           <li><a>Tomorrow</a></li>
         </ul>
       </div>
-      <div class="columns">
+      <div
+        v-if="todaysAgenda.length"
+        class="columns"
+      >
         <div class="column">
           <div class="timeline">
             <header class="timeline-header">
@@ -104,6 +107,12 @@
           >
         </div>
       </div>
+      <div v-else>
+        <p class="has-text-centered has-text-grey">
+          You have <b>nothing</b> on your agenda for today. No classes, working
+          on assignments, or studying for exams scheduled!
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -169,7 +178,7 @@ export default {
     timelineItemClass (event) {
       if (moment(event.end).isSameOrBefore(this.now)) {
         return 'is-primary';
-      } else if (moment(event.end).isSameOrBefore(this.now)) {
+      } else if (moment(this.now).isBetween(event.start, event.end)) {
         return 'is-warning';
       }
     },

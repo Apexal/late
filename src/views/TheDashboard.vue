@@ -16,10 +16,7 @@
           :class="{ 'is-active': tab === 'overview' }"
           @click="tab = 'overview'"
         >
-          <a
-            title="(WIP) View your weekly schedule"
-            style="cursor: not-allowed;"
-          >Your Week</a>
+          <a title="View a detailed overview of the next few days">Overiview</a>
         </li>
         <li
           :class="{ 'is-active': tab === 'calendar' }"
