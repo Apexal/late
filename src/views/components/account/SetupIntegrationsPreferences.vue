@@ -46,7 +46,7 @@
         :disabled="saved"
         @click="save"
       >
-        Save
+        Set Preferences
       </b-button>
     </form>
   </div>
