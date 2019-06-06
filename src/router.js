@@ -95,12 +95,12 @@ const router = new Router({
       ]
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/frontpage',
+      name: 'frontpage',
       meta: {
-        title: 'About'
+        title: 'Front Page'
       },
-      component: () => import('@/views/TheAboutPage.vue')
+      component: () => import('@/views/TheHomePage.vue')
     },
     {
       path: '/coursework',

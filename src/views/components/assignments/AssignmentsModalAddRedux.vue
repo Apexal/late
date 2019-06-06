@@ -50,9 +50,9 @@
             :course-c-r-n="courseCRN"
             :title="title"
             :description="description"
-            :title-placeholder="'Assignment Title - Keep it concise!'"
+            :title-placeholder="'Assignment title'"
             :description-placeholder="
-              '(optional) Long description of the assignment here! You can use Markdown!'
+              'Long description of the assignment'
             "
             :date="dueDate"
             :time="dueTime"

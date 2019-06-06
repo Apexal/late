@@ -50,9 +50,9 @@
             :course-c-r-n="courseCRN"
             :title="title"
             :description="description"
-            :title-placeholder="'Exam Title - Keep it concise!'"
+            :title-placeholder="'Exam title'"
             :description-placeholder="
-              '(optional) Long description of the exam here! You can use Markdown!'
+              'Long description of the exam'
             "
             :date="date"
             :time="time"

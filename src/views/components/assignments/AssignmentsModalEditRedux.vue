@@ -63,9 +63,9 @@
             v-else-if="step === 2"
             :title="assignment.title"
             :description="assignment.description"
-            :title-place-holder="'Assignment Title - Keep it concise!'"
+            :title-place-holder="'Assignment title'"
             :description-place-holder="
-              '(optional) Long description of the assignment here! You can use Markdown!'
+              'Long description of the assignment'
             "
             @update-title="assignment.title = $event"
             @update-desc="assignment.description = $event"
