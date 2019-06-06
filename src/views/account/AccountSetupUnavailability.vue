@@ -46,10 +46,11 @@
               <div class="control">
                 <input
                   id="latest"
-                  v-model="latest"
+                  :value="originalLatest"
                   type="time"
                   class="input is-small"
                   required
+                  @input="setLatest"
                 >
               </div>
             </div>
@@ -142,16 +143,24 @@ export default {
         this.$store.getters.getUnavailabilityAsEvents
       );
     },
+    originalLatest () {
+      const parts = this.latest.split(':');
+      const hours = parseInt(parts[0]);
+      if (hours >= 24) {
+        const fixedHours = String(hours - 24).padStart(2, '0');
+        const minutes = parts[1];
+        return `${fixedHours}:${minutes}`;
+      }
+
+      return this.latest;
+    },
     fixedLatest () {
       const rawEnd = moment(this.latest, 'HH:mm', true);
-
       if (rawEnd.isBefore(moment(this.earliest, 'HH:mm', true))) {
         let hours = (24 + rawEnd.hours()).toString();
         let minutes = rawEnd.minutes().toString();
-
         return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
       }
-
       return this.latest;
     }
   },
@@ -177,6 +186,9 @@ export default {
     this.calendar.events = this.$store.getters.getUnavailabilityAsEvents.slice();
   },
   methods: {
+    setLatest (event) {
+      this.latest = event.target.value;
+    },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType !== 'unavailability') return;
 
@@ -261,7 +273,6 @@ export default {
     },
     async saveTimePreferences () {
       this.loading = true;
-
       let request;
       try {
         request = await this.$http.post('/account/timepreference', {
@@ -270,21 +281,18 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
         });
       }
-
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
-
       // Notify user of success
       this.$toast.open({
         type: 'is-success',
         message: 'Your study/work time limits have been saved.'
       });
       this.$router.push({ name: 'setup-integrations' });
-
       this.loading = false;
       this.saved = true;
     }
