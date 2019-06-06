@@ -31,11 +31,16 @@
       Welcome to LATE
     </h1>
 
-    <h2 class="subtitle main-subtitle has-text-grey has-text-centered">
-      <b>{{ testers }}</b> Current Testers |
-      <b>{{ waitlist }}</b>
-      {{ waitlist === 1 ? "Student" : "Students" }} on Wait List
-    </h2>
+    <p class="has-text-grey has-text-centered">
+      <b-tag
+        type="is-dark"
+        class="counts"
+      >
+        <b>{{ testers }}</b> Current Testers |
+        <b>{{ waitlist }}</b>
+        {{ waitlist === 1 ? "Student" : "Students" }} on Wait List
+      </b-tag>
+    </p>
     <div class="desc-container">
       <p
         class="is-size-8 has-text-centered desc"
@@ -293,5 +298,11 @@ export default {
     transition: 0.2s;
     -webkit-transition: 0.2s;
   }
+}
+
+.counts {
+  font-size: 1em;
+  margin-top: 20px;
+  margin-bottom: -10px;
 }
 </style>

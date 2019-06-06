@@ -26,12 +26,7 @@
           />
         </span>
       </transition>
-      <div
-        :class="[
-          loggedIn && expanded ? 'columns is-marginless' : 'container',
-          { homepage }
-        ]"
-      >
+      <div :class="appClass">
         <transition name="slide-fade">
           <div
             v-if="loggedIn && expanded"
@@ -136,6 +131,13 @@ export default {
   computed: {
     homepage () {
       return this.$route.name === 'home' && !this.loggedIn;
+    },
+    appClass () {
+      return {
+        'columns is-marginless': this.loggedIn && this.expanded,
+        container: this.loggedIn && !this.expanded,
+        homepage: this.homepage
+      };
     },
     studyToolsTimerOpen () {
       return (
