@@ -13,7 +13,10 @@ async function getAssignmentMiddleware (ctx, next) {
   try {
     assignment = await Assignment.findOne({
       _id: assignmentID,
-      _student: ctx.state.user._id
+      $or: [
+        { _student: ctx.state.user._id },
+        { shared: true, sharedWith: ctx.state.user.rcs_id }
+      ]
     }).populate('_blocks');
   } catch (e) {
     logger.error(
@@ -36,6 +39,8 @@ async function getAssignmentMiddleware (ctx, next) {
   }
 
   ctx.state.assignment = assignment;
+  ctx.state.isAssignmentOwner = assignment._id === ctx.state.user._id;
+
   await next();
 }
 
@@ -366,7 +371,18 @@ async function toggleAssignment (ctx) {
 async function deleteAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
+  if (!ctx.state.isAssignmentOwner) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete shared assignment ${assignmentID}`
+    );
+    return ctx.forbidden(
+      'You cannot delete shared assignments. Only the owner can!'
+    );
+  }
   // Delete assignment
+
   try {
     ctx.state.assignment.remove();
   } catch (e) {

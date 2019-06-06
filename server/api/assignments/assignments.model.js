@@ -43,6 +43,15 @@ const schema = new Schema(
     recurringdays: {
       type: Array,
       default: []
+    },
+    shared: {
+      type: Boolean,
+      default: false
+    },
+    sharedWith: {
+      // rcs_id's
+      type: Array,
+      default: []
     }
   },
   { timestamps: true }
