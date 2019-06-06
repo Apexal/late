@@ -356,4 +356,8 @@ section.section {
 .modal-content {
   max-width: 800px;
 }
+
+.exam-event {
+  font-weight: bold;
+}
 </style>

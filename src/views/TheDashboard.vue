@@ -16,7 +16,7 @@
           :class="{ 'is-active': tab === 'overview' }"
           @click="tab = 'overview'"
         >
-          <a title="View a detailed overview of the next few days">Overiview</a>
+          <a title="View a detailed overview of the next few days">Overview</a>
         </li>
         <li
           :class="{ 'is-active': tab === 'calendar' }"

@@ -47,9 +47,9 @@ const getters = {
     start: assessment.dueDate || assessment.date,
     allDay: true,
     editable: false,
+    className: `assessment-event ${assessment.assessmentType}-event`,
     color: getters.getCourseFromCRN(assessment.courseCRN).color,
     [assessment.assessmentType]: assessment,
-    borderColor: assessment.assessmentType === 'exam' ? 'black' : '',
     assessment
   }),
   getUpcomingAssessmentsAsEvents: (state, getters) =>

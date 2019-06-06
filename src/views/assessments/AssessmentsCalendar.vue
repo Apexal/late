@@ -53,16 +53,29 @@ export default {
           eventClick: (calEvent, jsEvent, view) => {
             this.$router.push({
               name: calEvent.assessment.assessmentType + '-overview',
-              params: { [calEvent.assessment.assessmentType + 'ID']: calEvent.assessment._id }
+              params: {
+                [calEvent.assessment.assessmentType + 'ID']: calEvent.assessment
+                  ._id
+              }
             });
           },
-          eventRender: event => {
+          eventRender: (event, el) => {
             if (
               this.filter.includes(event.assessment.courseCRN) ||
               (event.assessment.assessmentType === 'assignment' &&
               (!this.showCompleted && event.assignment.completed))
             ) {
               return false;
+            }
+
+            if (event.assessment.assessmentType === 'assignment') {
+              const icon = document.createElement('i');
+              icon.className = 'fas fa-clipboard-check';
+              el.find('.fc-content').prepend(icon);
+            } else if (event.assessment.assessmentType === 'exam') {
+              const icon = document.createElement('i');
+              icon.className = 'fas fa-exclamation-triangle';
+              el.find('.fc-content').prepend(icon);
             }
           },
           timezone: 'local',
@@ -94,7 +107,10 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
       assessments.push(...request.data.assignments);
 
@@ -107,7 +123,10 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toast.error({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.error({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       assessments.push(...request.data.exams);
@@ -124,7 +143,8 @@ export default {
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', { date });
 
       this.$toast.open({
-        message: 'Add a new assignment or exam with the buttons below the calendar!',
+        message:
+          'Add a new assignment or exam with the buttons below the calendar!',
         position: 'is-bottom-left'
       });
     },
