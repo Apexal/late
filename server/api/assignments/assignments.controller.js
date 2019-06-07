@@ -5,6 +5,8 @@ const { compileWeeklyOpenSchedule } = require('../../modules/auto_allocate');
 
 const Block = require('../blocks/blocks.model');
 const Assignment = require('./assignments.model');
+const Student = require('../students/students.model');
+const Unavailability = require('../unavailabilities/unavailabilities.model');
 
 async function getAssignmentMiddleware (ctx, next) {
   const assignmentID = ctx.params.assignmentID;
@@ -95,6 +97,42 @@ async function getAssignment (ctx) {
   ctx.ok({
     assessment: ctx.state.assignment,
     assignment: ctx.state.assignment
+  });
+}
+
+/**
+ * Given an assignment ID, return the assignment only if it belongs to the logged in user.
+ *
+ * GET /assignments/a/:assignmentID
+ * @param {Koa context} ctx
+ * @returns The assignment
+ */
+async function getAssignmentCollaboratorInfo (ctx) {
+  if (!ctx.state.assignment.shared) {
+    return ctx.badRequest('This assignment is not shared.');
+  }
+
+  const assignmentID = ctx.params.assignmentID;
+  logger.info(
+    `Sending assignment ${assignmentID} collaborator info to ${
+      ctx.state.user.rcs_id
+    }`
+  );
+
+  const unavailabilities = {};
+  const collaborators = await Student.find({
+    rcs_id: { $in: ctx.state.assignment.sharedWith }
+  });
+  for (let collaborator of collaborators) {
+    unavailabilities[collaborator.rcs_id] = await Unavailability.find({
+      _student: collaborator._id,
+      termCode: ctx.session.currentTerm.code
+    });
+  }
+
+  ctx.ok({
+    collaborators,
+    unavailabilities
   });
 }
 
@@ -523,6 +561,7 @@ module.exports = {
   getAssignmentMiddleware,
   getAssignments,
   getAssignment,
+  getAssignmentCollaboratorInfo,
   createAssignment,
   toggleAssignment,
   editAssignment,

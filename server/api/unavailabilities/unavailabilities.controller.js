@@ -8,7 +8,8 @@ const logger = require('../../modules/logger');
  */
 async function getUnavailabilities (ctx) {
   const unavailabilities = await Unavailability.find({
-    _student: ctx.state.user._id
+    _student: ctx.state.user._id,
+    termCode: ctx.session.currentTerm.code
   });
   return ctx.ok({ unavailabilities });
 }

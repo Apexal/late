@@ -47,6 +47,22 @@
       </div>
     </div>
 
+    <b-taglist v-if="assessment.shared">
+      <span
+        v-for="(rcsID, index) in assessment.sharedWith"
+        :key="index"
+        class="tag collaborator is-unselectable"
+        :title="`Toggle showing ${rcsID}'s unavailability'`"
+        :class="!hiding.includes(rcsID) ? 'is-dark' : ''"
+        @click="toggleCollaboratorUnavailabilityHiding(rcsID)"
+      >{{ rcsID }}
+        {{
+          collaboratorUnavailabilities[rcsID]
+            ? ` | ${collaboratorUnavailabilities[rcsID].length}`
+            : ""
+        }}</span>
+    </b-taglist>
+
     <FullCalendar
       ref="calendar"
       :events="totalEvents"
@@ -75,6 +91,9 @@ export default {
   },
   data () {
     return {
+      hiding: [],
+      collaboratorUnavailabilities: {},
+      loading: true,
       saved: true
     };
   },
@@ -218,6 +237,21 @@ export default {
         })
       );
     },
+    collaboratorUnavailabilitySchedule () {
+      const events = [];
+      for (let rcsID in this.collaboratorUnavailabilities) {
+        if (this.hiding.includes(rcsID)) continue;
+
+        events.push(
+          this.collaboratorUnavailabilities[rcsID].map(p => ({
+            ...this.$store.getters.mapUnavailabilityToEvent(p),
+            backgroundColor: 'black',
+            rendering: 'background'
+          }))
+        );
+      }
+      return events.flat();
+    },
     workBlockEvents () {
       return this.assessment._blocks
         .map(block =>
@@ -235,14 +269,17 @@ export default {
     },
     totalEvents () {
       // Render work blocks for other assessments in the background
-
       return this.workBlockEvents
         .concat(this.courseScheduleEvents)
         .concat(this.unavailabilitySchedule)
+        .concat(this.collaboratorUnavailabilitySchedule)
         .concat([this.dueDateEvent]);
     }
   },
   watch: {
+    assessment (newAssessment) {
+      this.getCollaboratorUnavailabilities();
+    },
     end (newEnd) {
       this.$refs.calendar.fireMethod('option', 'validRange', {
         start: this.start,
@@ -250,7 +287,39 @@ export default {
       });
     }
   },
+  created () {
+    this.getCollaboratorUnavailabilities();
+  },
   methods: {
+    toggleCollaboratorUnavailabilityHiding (rcsID) {
+      if (this.hiding.includes(rcsID)) {
+        this.hiding.splice(this.hiding.indexOf(rcsID), 1);
+      } else {
+        this.hiding.push(rcsID);
+      }
+    },
+    async getCollaboratorUnavailabilities () {
+      if (!this.assessment.shared) return;
+
+      this.loading = true;
+
+      let response;
+      try {
+        response = await this.$http.get(
+          '/assignments/a/' + this.assessment._id + '/collaborators'
+        );
+      } catch (e) {
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        });
+        return;
+      }
+
+      this.collaboratorUnavailabilities = response.data.unavailabilities;
+
+      this.loading = false;
+    },
     async select (start, end) {
       // Only confirm with user if they are trying to add work block to the past
       if (moment(start).isBefore(moment())) {
@@ -371,5 +440,9 @@ export default {
 <style lang="scss" scoped>
 .box.percents {
   padding: 10px;
+}
+
+.collaborator {
+  cursor: pointer;
 }
 </style>
