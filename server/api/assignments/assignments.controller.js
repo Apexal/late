@@ -125,7 +125,7 @@ async function createAssignment (ctx) {
     );
   }
   const assignmentData = {
-    _student: ctx.state.user._id,
+    _student: ctx.state.user,
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),

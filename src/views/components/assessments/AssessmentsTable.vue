@@ -11,9 +11,7 @@
         :data-tooltip="fromNow(props.row.date)"
       >
         {{ shortDateFormat(props.row.date) }}
-        <span
-          class="has-text-grey"
-        >{{ timeFormat(props.row.date) }}</span>
+        <span class="has-text-grey">{{ timeFormat(props.row.date) }}</span>
       </b-table-column>
 
       <b-table-column
@@ -28,9 +26,17 @@
           class="assessment-link"
           :class="assessmentClasses(props.row)"
           :title="assessmentTitle(props.row)"
-          :to="{ name: props.row.assessmentType + '-overview', params: { [props.row.assessmentType + 'ID']: props.row._id }}"
+          :to="{
+            name: props.row.assessmentType + '-overview',
+            params: { [props.row.assessmentType + 'ID']: props.row._id }
+          }"
         >
           {{ props.row.title }}
+          <i
+            v-if="props.row.assessmentType === 'assignment' && props.row.shared"
+            class="fas fa-users has-text-grey-light"
+            title="Shared assignment"
+          />
         </router-link>
       </b-table-column>
       <b-table-column
@@ -43,8 +49,15 @@
         >
           <i
             class="fas"
-            :class="{ 'fa-check': props.row.completed, 'fa-times': !props.row.completed }"
-            :title="props.row.completed ? 'Completed on ' + longDateTimeFormat(props.row.completedAt) : 'Incomplete'"
+            :class="{
+              'fa-check': props.row.completed,
+              'fa-times': !props.row.completed
+            }"
+            :title="
+              props.row.completed
+                ? 'Completed on ' + longDateTimeFormat(props.row.completedAt)
+                : 'Incomplete'
+            "
           />
         </span>
         <span
@@ -106,11 +119,22 @@ export default {
       return a.dueDate || a.date;
     },
     assessmentClasses (assessment) {
-      return [assessment.assessmentType, assessment.assessmentType === 'assignment' && assessment.priority === 1 ? 'optional' : ''];
+      return [
+        assessment.assessmentType,
+        assessment.assessmentType === 'assignment' && assessment.priority === 1
+          ? 'optional'
+          : ''
+      ];
     },
     assessmentTitle (assessment) {
-      let title = assessment.assessmentType === 'assignment' && assessment.priority === 1 ? '(optional) ' : '';
-      let description = assessment.description.length > 500 ? (assessment.description.substring(0, 500) + '...') : assessment.description;
+      let title =
+        assessment.assessmentType === 'assignment' && assessment.priority === 1
+          ? '(optional) '
+          : '';
+      let description =
+        assessment.description.length > 500
+          ? assessment.description.substring(0, 500) + '...'
+          : assessment.description;
 
       title += description || 'No description given.';
       return title;
