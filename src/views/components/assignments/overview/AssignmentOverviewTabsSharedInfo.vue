@@ -99,12 +99,13 @@ export default {
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.assessment, {
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessment.assessmentType,
+          updates: {
             sharedWith: [...this.assessment.sharedWith, this.newStudent]
-          })
-        );
+          }
+        });
       } catch (e) {
         console.error(e);
         this.$toast.open({
@@ -130,12 +131,13 @@ export default {
     async removeStudent (rcsId) {
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.assessment, {
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessment.assessmentType,
+          updates: {
             sharedWith: this.assessment.sharedWith.filter(rid => rid !== rcsId)
-          })
-        );
+          }
+        });
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,

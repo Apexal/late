@@ -1,5 +1,7 @@
 <template>
-  <nav class="box level assessment-stats has-background-grey-darker has-text-white">
+  <nav
+    class="box level assessment-stats has-background-grey-darker has-text-white"
+  >
     <div class="level-item has-text-centered">
       <div>
         <p
@@ -262,10 +264,11 @@ export default {
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.assessment, updates)
-        );
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessment.assessmentType,
+          updates
+        });
       } catch (e) {
         this.loading = false;
         this.$toast.open({

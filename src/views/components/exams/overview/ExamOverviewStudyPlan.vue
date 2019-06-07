@@ -11,11 +11,13 @@
             <i class="fas fa-info-circle" />
           </span>
           <b>Study Plan Help</b>
-        </summary>You can keep track of your plan of attack for studying for exams here. Use this to plan out categorically how you will study. You can create categories such as
-        <code>Chapter 1</code>,
-        <code>Chapter 2</code>, etc. with checkpoints for each such as
-        <code>Reread textbook</code>,
-        <code>Do pratice test</code>, etc. You can also add multiple categories/checkpoints at the same time by separating them with a semicolon, e.g.
+        </summary>You can keep track of your plan of attack for studying for exams here.
+        Use this to plan out categorically how you will study. You can create
+        categories such as <code>Chapter 1</code>, <code>Chapter 2</code>, etc.
+        with checkpoints for each such as <code>Reread textbook</code>,
+        <code>Do pratice test</code>, etc. You can also add multiple
+        categories/checkpoints at the same time by separating them with a
+        semicolon, e.g.
         <code>Chapter 1; Chapter 2</code>
       </details>
     </b-notification>
@@ -85,7 +87,9 @@
                   type="checkbox"
                   :checked="child.completed"
                   :disabled="loading"
-                  @change="setChildCompleted(index, childIndex, !child.completed)"
+                  @change="
+                    setChildCompleted(index, childIndex, !child.completed)
+                  "
                 >
                 {{ child.text }}
               </label>
@@ -136,7 +140,7 @@
         type="is-warning"
         class="edit-study-plan"
         @click="editing = !editing"
-      >{{ editing ? 'Save Plan' : 'Edit Plan' }}</b-button>
+      >{{ editing ? "Save Plan" : "Edit Plan" }}</b-button>
       <progress
         class="progress is-success is-tooltip-bottom"
         :value="completedCount"
@@ -279,9 +283,11 @@ export default {
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.assessment, {
-          studyPlan
-        }));
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessment.assessmentType,
+          updates: { studyPlan }
+        });
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,

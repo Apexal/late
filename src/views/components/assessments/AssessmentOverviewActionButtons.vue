@@ -73,10 +73,11 @@ export default {
     async toggleShared () {
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.assessment, { shared: !this.assessment.shared })
-        );
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessmentType,
+          updates: { shared: !this.assessment.shared }
+        });
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,

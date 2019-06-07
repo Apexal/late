@@ -162,13 +162,14 @@ export default {
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.assessment, {
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessmentType,
+          updates: {
             title: this.tempTitle,
             courseCRN: this.tempCourseCRN
-          })
-        );
+          }
+        });
       } catch (e) {
         this.editing = false;
         this.$toast.open({
