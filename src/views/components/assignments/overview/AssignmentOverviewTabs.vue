@@ -10,6 +10,12 @@
           @click="$emit('set-tab', 'schedule')"
         >
           <a>
+            <span
+              class="icon is-small"
+            ><i
+              class="fas fa-calendar-alt"
+              aria-hidden="true"
+            /></span>
             <span>Work Schedule</span>
             <span
               v-if="!assignment.completed && !fullyScheduled"
@@ -23,7 +29,13 @@
           @click="$emit('set-tab', 'comments')"
         >
           <a>
-            Comments
+            <span
+              class="icon is-small"
+            ><i
+              class="fas fa-comments"
+              aria-hidden="true"
+            /></span>
+            <span>Comments</span>
             <span
               v-if="hasComments"
               class="tag is-dark comment-count"
@@ -37,14 +49,29 @@
           :class="{ 'is-active': tab === 'shared-info' }"
           @click="$emit('set-tab', 'shared-info')"
         >
-          <a>Shared Assignment Info</a>
+          <a>
+            <span
+              class="icon is-small"
+            ><i
+              class="fas fa-users"
+              aria-hidden="true"
+            /></span>
+            <span>Shared Assignment Info</span></a>
         </li>
         <li
           v-else
           :class="{ 'is-active': tab === 'related' }"
           @click="$emit('set-tab', 'related')"
         >
-          <a>Related Assignments</a>
+          <a>
+            <span
+              class="icon is-small"
+            ><i
+              class="fas fa-clipboard-check"
+              aria-hidden="true"
+            /></span>
+            <span>Related Assignments</span>
+          </a>
         </li>
       </ul>
     </div>
