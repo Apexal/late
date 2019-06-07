@@ -27,10 +27,20 @@
             <span
               v-if="hasComments"
               class="tag is-dark comment-count"
-            >{{ assignment.comments.length }}</span>
+            >{{
+              assignment.comments.length
+            }}</span>
           </a>
         </li>
         <li
+          v-if="assignment.shared"
+          :class="{ 'is-active': tab === 'shared-info' }"
+          @click="$emit('set-tab', 'shared-info')"
+        >
+          <a>Shared Assignment Info</a>
+        </li>
+        <li
+          v-else
           :class="{ 'is-active': tab === 'related' }"
           @click="$emit('set-tab', 'related')"
         >
@@ -54,13 +64,15 @@
 import AssessmentOverviewComments from '@/views/components/assessments/AssessmentOverviewComments';
 import AssessmentOverviewWorkSchedule from '@/views/components/assessments/AssessmentOverviewWorkSchedule';
 import AssessmentOverviewRelated from '@/views/components/assessments/AssessmentOverviewRelated';
+import AssignmentOverviewTabsSharedInfo from '@/views/components/assignments/overview/AssignmentOverviewTabsSharedInfo';
 
 export default {
   name: 'AssignmentOverviewTabs',
   components: {
     AssessmentOverviewComments,
     AssessmentOverviewWorkSchedule,
-    AssessmentOverviewRelated
+    AssessmentOverviewRelated,
+    AssignmentOverviewTabsSharedInfo
   },
   props: {
     tab: {
@@ -98,7 +110,8 @@ export default {
       return {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule',
-        related: 'AssessmentOverviewRelated'
+        related: 'AssessmentOverviewRelated',
+        'shared-info': 'AssignmentOverviewTabsSharedInfo'
       }[this.tab];
     }
   },

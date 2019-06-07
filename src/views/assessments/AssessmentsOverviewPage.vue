@@ -69,6 +69,7 @@
         :loading="loading"
         @toggle-editing="toggleEditing"
         @copy-assessment="copyAssessment"
+        @set-tab="tabChanged"
       />
     </section>
   </div>

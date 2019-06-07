@@ -9,6 +9,16 @@
       Edit {{ assessmentTypeCaps }}
     </b-button>
     <b-button
+      v-if="assessmentType === 'assignment' && isOwner"
+      type="is-link"
+      class="tooltip is-tooltip-top"
+      data-tooltip="Collaborate on this assignment with other students!"
+      @click="toggleShared"
+    >
+      <i class="fas fa-users" />
+      {{ assessment.shared ? "Stop Sharing" : "Share" }}
+    </b-button>
+    <b-button
       class="is-pulled-right"
       @click="$emit('copy-assessment')"
     >
@@ -31,6 +41,9 @@ export default {
     }
   },
   computed: {
+    isOwner () {
+      return this.assessment._student._id === this.user._id;
+    },
     assessmentType () {
       return this.assessment.assessmentType;
     },
@@ -41,6 +54,35 @@ export default {
       return this.assessment.updatedAt
         ? `Last edited ${this.shortDateTimeFormat(this.assessment.updatedAt)}`
         : 'Never edited';
+    }
+  },
+  methods: {
+    async toggleShared () {
+      let updatedAssessment;
+      try {
+        updatedAssessment = await this.$store.dispatch(
+          'UPDATE_ASSESSMENT',
+          Object.assign(this.assessment, { shared: !this.assessment.shared })
+        );
+      } catch (e) {
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        this.editing = false;
+        return;
+      }
+
+      this.$emit('updated-assessment', updatedAssessment);
+
+      this.$toast.open({
+        message: updatedAssessment.shared
+          ? 'This assignment is now shared, add people by their RPI usernames.'
+          : 'Sharing stopped. Only you can see this assignment now.',
+        type: 'is-success'
+      });
+
+      this.$emit('set-tab', 'shared-info');
     }
   }
 };
