@@ -5,10 +5,13 @@
 
       <ul>
         <li
-          v-for="(rcs_id, index) in assessment.sharedWith"
+          v-for="(rcsId, index) in assessment.sharedWith"
           :key="index"
         >
-          {{ rcs_id }}
+          {{ rcsId }} <span
+            class="delete"
+            @click="removeStudent(rcsId)"
+          />
         </li>
         <li>
           <form @submit.prevent="addStudent">
@@ -36,17 +39,17 @@
       This assignment was created by
       <b
         class="tooltip is-tooltip-top"
-        :data-tooltip="owner.rcs_id"
+        :data-tooltip="owner.rcsId"
       >{{
         owner.display_name
       }}</b>. They have shared it with:
       <ul>
         <li
-          v-for="(rcs_id, index) in assessment.sharedWith"
+          v-for="(rcsId, index) in assessment.sharedWith"
           :key="index"
         >
           <b-tag type="is-primary">
-            {{ rcs_id }}
+            {{ rcsId }}
           </b-tag>
         </li>
       </ul>
@@ -87,7 +90,7 @@ export default {
 
       if (
         this.assessment.sharedWith.includes(this.newStudent) ||
-        this.newStudent === this.user.rcs_id
+        this.newStudent === this.user.rcsId
       ) {
         this.loading = false;
         this.newStudent = '';
@@ -122,7 +125,32 @@ export default {
       });
 
       this.newStudent = '';
-      this.loading = true;
+      this.loading = false;
+    },
+    async removeStudent (rcsId) {
+      let updatedAssessment;
+      try {
+        updatedAssessment = await this.$store.dispatch(
+          'UPDATE_ASSESSMENT',
+          Object.assign(this.assessment, {
+            sharedWith: this.assessment.sharedWith.filter(rid => rid !== rcsId)
+          })
+        );
+      } catch (e) {
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        this.editing = false;
+        return;
+      }
+
+      this.$emit('updated-assessment', updatedAssessment);
+
+      this.$toast.open({
+        message: `Stopped sharing this assignment with <b>${rcsId}</b>. They have been notified.`,
+        type: 'is-success'
+      });
     }
   }
 };

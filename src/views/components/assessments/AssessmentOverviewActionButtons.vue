@@ -13,7 +13,7 @@
       type="is-link"
       class="tooltip is-tooltip-top"
       data-tooltip="Collaborate on this assignment with other students!"
-      @click="toggleShared"
+      @click="toggleSharedClick"
     >
       <i class="fas fa-users" />
       {{ assessment.shared ? "Stop Sharing" : "Share" }}
@@ -57,6 +57,19 @@ export default {
     }
   },
   methods: {
+    toggleSharedClick () {
+      this.$dialog.confirm({
+        title: this.assessment.shared ? 'Stop Sharing' : 'Share Assignment',
+        message: this.assessment.shared
+          ? 'Stop sharing this assignment? Students currently able to view it will no longer have access. This can be reversed at any time.'
+          : 'Sharing this assignment allows you to choose students that can view/edit/schedule for this assignment together. It can be turned off at any time.',
+        confirmText: this.assessment.shared ? 'Stop' : 'Share',
+        type: 'is-warning',
+        hasIcon: true,
+        icon: 'users',
+        onConfirm: this.toggleShared
+      });
+    },
     async toggleShared () {
       let updatedAssessment;
       try {
@@ -82,7 +95,10 @@ export default {
         type: 'is-success'
       });
 
-      this.$emit('set-tab', 'shared-info');
+      this.$emit(
+        'set-tab',
+        updatedAssessment.shared ? 'shared-info' : 'schedule'
+      );
     }
   }
 };
