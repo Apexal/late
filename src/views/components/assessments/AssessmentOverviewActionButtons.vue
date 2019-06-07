@@ -1,6 +1,7 @@
 <template>
   <div class="assessment-actions clearfix">
     <b-button
+      v-if="assessmentType === 'exam' || isOwner"
       type="is-warning"
       :title="editButtonTitle"
       @click="$emit('toggle-editing')"
@@ -42,7 +43,11 @@ export default {
   },
   computed: {
     isOwner () {
-      return this.assessment._student._id === this.user._id;
+      return (
+        this.assessment._student &&
+        (this.assessment._student === this.user._id ||
+        this.assessment._student._id === this.user._id)
+      );
     },
     assessmentType () {
       return this.assessment.assessmentType;

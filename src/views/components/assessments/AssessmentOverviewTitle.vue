@@ -42,6 +42,7 @@
         class="is-hidden-desktop touch-complete-button"
         type="is-success"
         :outlined="!assessment.completed"
+        :disabled="true"
         @click="$emit('toggle-completed')"
       >
         <i
@@ -55,8 +56,14 @@
       class="title assessment-title has-text-centered-touch"
       style="flex: 1"
     >
-      <span class="pad">{{ assessment.title }}</span>
+      <span class="pad">{{ assessment.title }} </span>
       <i
+        v-if="assessmentType === 'assignment' && assessment.shared"
+        class="fas fa-users has-text-grey-light"
+        title="Shared assignment"
+      />
+      <i
+        v-if="assessmentType === 'exam' || isOwner"
         title="Edit title"
         class="fas fa-pencil-alt edit-title-icon has-text-grey"
         @click="editing = true"
@@ -100,6 +107,7 @@
         :title="toggleButtonTitle"
         class="button is-success toggle-complete"
         :class="{ 'is-outlined': !assessment.completed }"
+        :disabled="true"
         @click="$emit('toggle-completed')"
       >
         <i
@@ -129,6 +137,13 @@ export default {
     };
   },
   computed: {
+    isOwner () {
+      return (
+        this.assessment._student &&
+        (this.assessment._student === this.user._id ||
+        this.assessment._student._id === this.user._id)
+      );
+    },
     assessmentType () {
       return this.assessment.assessmentType;
     },
@@ -153,8 +168,9 @@ export default {
   methods: {
     async save () {
       if (
-        this.tempCourseCRN === this.assessment.courseCRN &&
-        this.tempTitle === this.assessment.title
+        (this.tempCourseCRN === this.assessment.courseCRN &&
+        this.tempTitle === this.assessment.title) ||
+        !this.isOwner
       ) {
         this.editing = false;
         return;
