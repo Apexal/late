@@ -19,6 +19,7 @@ async function getAssignmentMiddleware (ctx, next) {
       ]
     })
       .populate('_blocks')
+      .populate('_student', '_id rcs_id name grad_year')
       .populate('comments._student', '_id rcs_id name grad_year');
   } catch (e) {
     logger.error(

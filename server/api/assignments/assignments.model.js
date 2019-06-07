@@ -82,6 +82,7 @@ schema.statics.getAllMissedAssignmentsForDay = function (day) {
     )
     .populate('_student', 'name semester_schedules rcs_id rin integrations')
     .populate('_blocks')
+    .populate('_student', '_id rcs_id name grad_year')
     .sort('dueDate')
     .sort('-priority')
     .exec();
@@ -96,8 +97,8 @@ schema.statics.getAllUpcomingAssignments = function () {
 
   return this.model('Assignment')
     .find(query)
-    .populate('_student', 'rcs_id rin integrations')
     .populate('_blocks')
+    .populate('_student', '_id rin name grad_year rcs_id rin integrations')
     .sort('dueDate')
     .sort('-priority')
     .exec();

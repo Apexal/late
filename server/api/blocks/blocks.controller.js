@@ -44,6 +44,7 @@ async function addWorkBlock (ctx) {
         _student: ctx.state.user._id,
         _id: assessmentID
       })
+      .populate('_student', '_id rcs_id name grad_year')
       .populate('_blocks');
   } catch (e) {
     logger.error(
@@ -134,6 +135,8 @@ async function editWorkBlock (ctx) {
         _student: ctx.state.user._id,
         _id: assessmentID
       })
+      .populate('_student', '_id rcs_id name grad_year')
+
       .populate('_blocks');
   } catch (e) {
     logger.error(
@@ -196,8 +199,8 @@ async function deleteWorkBlock (ctx) {
         _student: ctx.state.user._id,
         _id: assessmentID
       })
+      .populate('_student', '_id rcs_id name grad_year')
       .populate('_blocks');
-
     assessment._blocks = assessment._blocks.filter(
       b => b._id !== removedBlock._id
     );
