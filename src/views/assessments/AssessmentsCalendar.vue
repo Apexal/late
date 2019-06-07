@@ -72,6 +72,12 @@ export default {
               const icon = document.createElement('i');
               icon.className = 'fas fa-clipboard-check';
               el.find('.fc-content').prepend(icon);
+
+              if (event.assessment.shared) {
+                const sharedIcon = document.createElement('i');
+                sharedIcon.className = 'fas fa-users is-pulled-right';
+                el.find('.fc-content').append(sharedIcon);
+              }
             } else if (event.assessment.assessmentType === 'exam') {
               const icon = document.createElement('i');
               icon.className = 'fas fa-exclamation-triangle';

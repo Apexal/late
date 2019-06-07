@@ -98,17 +98,16 @@ const actions = {
     commit('ADD_UPCOMING_ASSESSMENT', newAssessment);
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
-  async UPDATE_ASSESSMENT ({ dispatch, getters }, updatedAssessment) {
+  async UPDATE_ASSESSMENT (
+    { dispatch, getters },
+    { assessmentID, assessmentType, updates }
+  ) {
     let request = await axios.patch(
-      `/${
-        updatedAssessment.assessmentType
-      }s/${updatedAssessment.assessmentType.charAt(0)}/${
-        updatedAssessment._id
-      }`,
-      updatedAssessment
+      `/${assessmentType}s/${assessmentType.charAt(0)}/${assessmentID}`,
+      updates
     );
 
-    updatedAssessment = request.data.updatedAssessment;
+    let updatedAssessment = request.data.updatedAssessment;
 
     if (getters.getUpcomingAssessmentById(updatedAssessment._id)) {
       await dispatch('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);

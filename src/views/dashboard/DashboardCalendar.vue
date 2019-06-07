@@ -278,6 +278,12 @@ export default {
           });
         };
         el.find('.fc-content').append(deleteButton);
+
+        if (event.assessment.shared) {
+          const sharedIcon = document.createElement('i');
+          sharedIcon.className = 'fas fa-users margin-left';
+          el.find('.fc-title').append(sharedIcon);
+        }
       } else if (event.eventType === 'assignment') {
         const icon = document.createElement('i');
         icon.className = 'fas fa-clipboard-check';
@@ -424,6 +430,10 @@ export default {
 }
 .work-block-event {
   border-width: 3px !important;
+
+  .margin-left {
+    margin-left: 5px;
+  }
 }
 
 .event-period-location {

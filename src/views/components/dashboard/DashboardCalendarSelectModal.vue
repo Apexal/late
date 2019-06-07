@@ -30,17 +30,21 @@
             {{ assessment.assessmentType }}
           </span>
           {{ assessment.title }}
+          <i
+            v-if="
+              assessment.assessmentType === 'assignment' && assessment.shared
+            "
+            class="fas fa-users has-text-grey-light"
+            title="Shared assignment"
+          />
         </span>
-        <span
-          class="has-text-grey is-pulled-right"
-        >
+        <span class="has-text-grey is-pulled-right">
           due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}
         </span>
       </div>
       <template v-if="hasExtra">
         <div v-if="showingExtra">
           <div
-
             v-for="assessment in extraAssessments"
             :key="assessment._id"
             class="panel-block is-flex"
@@ -49,16 +53,17 @@
             <span style="flex: 1">
               <span
                 class="tag assessment-type-tag"
-                :style="{ 'background-color': course(assessment.courseCRN).color }"
+                :style="{
+                  'background-color': course(assessment.courseCRN).color
+                }"
               >
                 {{ assessment.assessmentType }}
               </span>
               {{ assessment.title }}
             </span>
-            <span
-              class="has-text-grey is-pulled-right"
-            >
-              due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}
+            <span class="has-text-grey is-pulled-right">
+              due
+              {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}
             </span>
           </div>
         </div>
@@ -67,7 +72,9 @@
           @click="showingExtra = !showingExtra"
         >
           <span class="is-fullwidth">
-            {{ showingExtra ? 'Hide' : 'Show' }} Extra ({{ extraAssessments.length }})
+            {{ showingExtra ? "Hide" : "Show" }} Extra ({{
+              extraAssessments.length
+            }})
           </span>
         </div>
       </template>
@@ -106,7 +113,9 @@ export default {
     dateStrs () {
       return {
         start: this.shortDateTimeFormat(this.start),
-        end: this.start.isSame(this.end, 'day') ? this.timeFormat(this.end) : this.shortDateTimeFormat(this.end)
+        end: this.start.isSame(this.end, 'day')
+          ? this.timeFormat(this.end)
+          : this.shortDateTimeFormat(this.end)
       };
     },
     limitedAssessments () {
@@ -129,5 +138,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

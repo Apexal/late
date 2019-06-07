@@ -20,6 +20,10 @@ const schema = new Schema(
     priority: { type: Number, min: 1, max: 5, default: 3 },
     comments: [
       {
+        _student: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student'
+        },
         addedAt: { type: Date, required: true },
         body: { type: String, minlength: 1, maxlength: 2000, required: true }
       }
@@ -41,6 +45,15 @@ const schema = new Schema(
       ref: 'Assignment'
     },
     recurringdays: {
+      type: Array,
+      default: []
+    },
+    shared: {
+      type: Boolean,
+      default: false
+    },
+    sharedWith: {
+      // rcs_id's
       type: Array,
       default: []
     }
@@ -69,6 +82,7 @@ schema.statics.getAllMissedAssignmentsForDay = function (day) {
     )
     .populate('_student', 'name semester_schedules rcs_id rin integrations')
     .populate('_blocks')
+    .populate('_student', '_id rcs_id name grad_year')
     .sort('dueDate')
     .sort('-priority')
     .exec();
@@ -83,8 +97,8 @@ schema.statics.getAllUpcomingAssignments = function () {
 
   return this.model('Assignment')
     .find(query)
-    .populate('_student', 'rcs_id rin integrations')
     .populate('_blocks')
+    .populate('_student', '_id rin name grad_year rcs_id rin integrations')
     .sort('dueDate')
     .sort('-priority')
     .exec();

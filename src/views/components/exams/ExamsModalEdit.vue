@@ -185,12 +185,16 @@
           <button
             class="button is-warning"
             @click="$emit('toggle-modal')"
-          >Cancel</button>
+          >
+            Cancel
+          </button>
           <button
             form="edit-exam-form"
             class="button is-success"
             :class="{ 'is-loading': loading }"
-          >Save</button>
+          >
+            Save
+          </button>
         </span>
       </footer>
     </div>
@@ -260,9 +264,10 @@ export default {
 
       let updatedExam;
       try {
-        updatedExam = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.initialExam, {
+        updatedExam = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.initialExam._id,
+          assessmentType: 'exam',
+          updates: {
             title: this.exam.title,
             description: this.exam.description,
             date: moment(
@@ -273,8 +278,8 @@ export default {
             courseCRN: this.exam.courseCRN,
             timeEstimate: this.exam.timeEstimate,
             priority: this.exam.priority
-          })
-        );
+          }
+        });
       } catch (e) {
         this.loading = false;
         this.$toast.open({

@@ -4,7 +4,11 @@
       v-if="!hasComments"
       class="has-text-grey has-text-centered"
     >
-      {{ assessment.passed ? 'No comments were posted for this ' + assessmentType + '.' : 'You have not posted any comments yet.' }}
+      {{
+        assessment.passed
+          ? "No comments were posted for this " + assessmentType + "."
+          : "You have not posted any comments yet."
+      }}
     </div>
 
     <article
@@ -17,14 +21,21 @@
           :source="c.body"
           :html="false"
           :emoji="true"
-          :anchor-attributes="{target: '_blank'}"
+          :anchor-attributes="{ target: '_blank' }"
         />
         <nav class="level is-mobile">
           <div class="level-left">
-            <small
-              class="level-item tooltip is-tooltip-right has-text-grey"
-              :data-tooltip="longDateTimeFormat(c.addedAt)"
-            >{{ fromNow(c.addedAt) }}</small>
+            <small class="level-item has-text-grey">
+              <b
+                class="tooltip is-tooltip-bottom"
+                :data-tooltip="c._student ? c._student.rcs_id : 'anonymous'"
+              >{{ c._student ? c._student.display_name : "Anonymous" }}</b>
+              &nbsp;|&nbsp;
+              <span
+                class="tooltip is-tooltip-right"
+                :data-tooltip="longDateTimeFormat(c.addedAt)"
+              >{{ fromNow(c.addedAt) }}</span>
+            </small>
           </div>
         </nav>
       </div>
@@ -107,7 +118,10 @@ export default {
       this.loading = true;
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch('ADD_ASSESSMENT_COMMENT', { assessment: this.assessment, newComment: this.newComment });
+        updatedAssessment = await this.$store.dispatch(
+          'ADD_ASSESSMENT_COMMENT',
+          { assessment: this.assessment, newComment: this.newComment }
+        );
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
@@ -132,7 +146,10 @@ export default {
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch('REMOVE_ASSESSMENT_COMMENT', { assessment: this.assessment, commentIndex });
+        updatedAssessment = await this.$store.dispatch(
+          'REMOVE_ASSESSMENT_COMMENT',
+          { assessment: this.assessment, commentIndex }
+        );
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
@@ -148,7 +165,6 @@ export default {
         message: 'Removed comment!',
         type: 'is-success'
       });
-
 
       this.loading = false;
     }

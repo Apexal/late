@@ -1,5 +1,7 @@
 <template>
-  <nav class="box level assessment-stats has-background-grey-darker has-text-white">
+  <nav
+    class="box level assessment-stats has-background-grey-darker has-text-white"
+  >
     <div class="level-item has-text-centered">
       <div>
         <p
@@ -14,6 +16,7 @@
           :style="{ 'font-weight': fontWeight }"
         >
           <i
+            v-if="assessmentType === 'exam' || isOwner"
             v-show="assessment.priority - 1 in priorityStrings"
             class="fas fa-minus has-text-grey decrease-priority"
             :title="
@@ -23,6 +26,7 @@
           />
           {{ priorityString }}
           <i
+            v-if="assessmentType === 'exam' || isOwner"
             v-show="assessment.priority + 1 in priorityStrings"
             class="fas fa-plus has-text-grey increase-priority"
             :title="
@@ -73,6 +77,7 @@
         >
           {{ shortDateFormat(assessment.date) }}
           <i
+            v-if="assessmentType === 'exam' || isOwner"
             class="fas fa-pencil-alt has-text-grey edit-date"
             title="Edit date and time."
             @click="editingDate = true"
@@ -147,6 +152,13 @@ export default {
     };
   },
   computed: {
+    isOwner () {
+      return (
+        this.assessment._student &&
+        (this.assessment._student === this.user._id ||
+        this.assessment._student._id === this.user._id)
+      );
+    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
     },
@@ -212,7 +224,7 @@ export default {
   },
   methods: {
     async updateDate () {
-      if (this.loading) return;
+      if (this.loading || !this.isOwner) return;
 
       const newDate = moment(
         this.tempDateString + ' ' + this.tempTimeString,
@@ -241,7 +253,7 @@ export default {
       this.editingDate = false;
     },
     async changePriority (change) {
-      if (this.loading) return;
+      if (this.loading || !this.isOwner) return;
 
       if (
         this.assessment.priority + change < 1 ||
@@ -258,14 +270,17 @@ export default {
       });
     },
     async updateAssessment (updates) {
+      if (!this.isOwner) return;
+
       this.loading = true;
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.assessment, updates)
-        );
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessment.assessmentType,
+          updates
+        });
       } catch (e) {
         this.loading = false;
         this.$toast.open({
@@ -316,18 +331,6 @@ export default {
     .increase-priority {
       opacity: 1;
     }
-  }
-
-  .date {
-    margin-left: 30px;
-  }
-
-  .date::after {
-    margin-left: -25px;
-  }
-
-  .date::before {
-    margin-left: -15px;
   }
 
   .date:hover {

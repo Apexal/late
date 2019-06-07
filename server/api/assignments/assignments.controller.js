@@ -5,6 +5,8 @@ const { compileWeeklyOpenSchedule } = require('../../modules/auto_allocate');
 
 const Block = require('../blocks/blocks.model');
 const Assignment = require('./assignments.model');
+const Student = require('../students/students.model');
+const Unavailability = require('../unavailabilities/unavailabilities.model');
 
 async function getAssignmentMiddleware (ctx, next) {
   const assignmentID = ctx.params.assignmentID;
@@ -13,8 +15,14 @@ async function getAssignmentMiddleware (ctx, next) {
   try {
     assignment = await Assignment.findOne({
       _id: assignmentID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
+      $or: [
+        { _student: ctx.state.user._id },
+        { shared: true, sharedWith: ctx.state.user.rcs_id }
+      ]
+    })
+      .populate('_blocks')
+      .populate('_student', '_id rcs_id name grad_year')
+      .populate('comments._student', '_id rcs_id name grad_year');
   } catch (e) {
     logger.error(
       `Error getting assignment ${assignmentID} for ${
@@ -36,6 +44,8 @@ async function getAssignmentMiddleware (ctx, next) {
   }
 
   ctx.state.assignment = assignment;
+  ctx.state.isAssignmentOwner = assignment._id === ctx.state.user._id;
+
   await next();
 }
 
@@ -91,6 +101,42 @@ async function getAssignment (ctx) {
 }
 
 /**
+ * Given an assignment ID, return the assignment only if it belongs to the logged in user.
+ *
+ * GET /assignments/a/:assignmentID
+ * @param {Koa context} ctx
+ * @returns The assignment
+ */
+async function getAssignmentCollaboratorInfo (ctx) {
+  if (!ctx.state.assignment.shared) {
+    return ctx.badRequest('This assignment is not shared.');
+  }
+
+  const assignmentID = ctx.params.assignmentID;
+  logger.info(
+    `Sending assignment ${assignmentID} collaborator info to ${
+      ctx.state.user.rcs_id
+    }`
+  );
+
+  const unavailabilities = {};
+  const collaborators = await Student.find({
+    rcs_id: { $in: ctx.state.assignment.sharedWith }
+  });
+  for (let collaborator of collaborators) {
+    unavailabilities[collaborator.rcs_id] = await Unavailability.find({
+      _student: collaborator._id,
+      termCode: ctx.session.currentTerm.code
+    });
+  }
+
+  ctx.ok({
+    collaborators,
+    unavailabilities
+  });
+}
+
+/**
  * Create an assignment given the assignment properies in the request body.
  * Request body:
  *  - title, description, dueDate, course_crn, time_estimate, priority
@@ -117,7 +163,7 @@ async function createAssignment (ctx) {
     );
   }
   const assignmentData = {
-    _student: ctx.state.user._id,
+    _student: ctx.state.user,
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),
@@ -366,7 +412,18 @@ async function toggleAssignment (ctx) {
 async function deleteAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
+  if (!ctx.state.isAssignmentOwner) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete shared assignment ${assignmentID}`
+    );
+    return ctx.forbidden(
+      'You cannot delete shared assignments. Only the owner can!'
+    );
+  }
   // Delete assignment
+
   try {
     ctx.state.assignment.remove();
   } catch (e) {
@@ -423,6 +480,7 @@ async function addComment (ctx) {
 
   // Add comment
   ctx.state.assignment.comments.push({
+    _student: ctx.state.user,
     addedAt: new Date(),
     body: text
   });
@@ -455,8 +513,31 @@ async function deleteComment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
   const index = ctx.params.commentIndex;
+  if (!ctx.state.assignment.comments[index]) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete nonexistent comment on assignment ${assignmentID}`
+    );
+    return ctx.badRequest('Could not find the comment to delete!');
+  }
+
+  if (
+    !ctx.state.assignment.comments[index]._student ||
+    !ctx.state.assignment.comments[index]._student._id.equals(
+      ctx.state.user._id
+    )
+  ) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete other students comment on assignment ${assignmentID}`
+    );
+    return ctx.forbidden('You cannot delete somebody else\'s comment!');
+  }
 
   // Delete the comment by its index
+
   ctx.state.assignment.comments.splice(index, 1);
 
   try {
@@ -480,6 +561,7 @@ module.exports = {
   getAssignmentMiddleware,
   getAssignments,
   getAssignment,
+  getAssignmentCollaboratorInfo,
   createAssignment,
   toggleAssignment,
   editAssignment,

@@ -37,6 +37,11 @@
         </span>
         <b class="course-title is-hidden-tablet">{{ course.title }}</b>
         {{ assessment.title }}
+        <i
+          v-if="assessmentType === 'assignment' && assessment.shared"
+          class="fas fa-users has-text-grey-light"
+          title="Shared assignment"
+        />
       </router-link>
       <span
         class="is-tooltip-left icon has-text-danger is-pulled-right"

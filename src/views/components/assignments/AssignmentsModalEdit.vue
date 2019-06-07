@@ -244,9 +244,10 @@ export default {
 
       let updatedAssignment;
       try {
-        updatedAssignment = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.initialAssignment, {
+        updatedAssignment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.initialAssignment._id,
+          assessmentType: 'assignment',
+          updates: {
             title: this.title,
             dueDate: moment(
               this.dueDate + ' ' + this.dueTime,
@@ -256,8 +257,8 @@ export default {
             courseCRN: this.courseCRN,
             timeEstimate: this.timeEstimate,
             priority: this.priority
-          })
-        );
+          }
+        });
       } catch (e) {
         this.loading = false;
         this.$toast.open({

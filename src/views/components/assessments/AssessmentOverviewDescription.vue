@@ -15,13 +15,16 @@
           :source="assessment.description"
           :html="false"
           :emoji="true"
-          :anchor-attributes="{target: '_blank'}"
+          :anchor-attributes="{ target: '_blank' }"
         />
         <i v-else>No description given.</i>
       </template>
       <span
+        v-if="assessmentType === 'exam' || isOwner"
         class="edit-description tooltip is-tooltip-left"
-        :data-tooltip="editing ? 'Click to save description.' : 'Click to edit description.'"
+        :data-tooltip="
+          editing ? 'Click to save description.' : 'Click to edit description.'
+        "
         @click="toggleEditing"
       >
         <i class="fas fa-pencil-alt" />
@@ -49,6 +52,13 @@ export default {
     };
   },
   computed: {
+    isOwner () {
+      return (
+        this.assessment._student &&
+        (this.assessment._student === this.user._id ||
+        this.assessment._student._id === this.user._id)
+      );
+    },
     assessmentType () {
       return this.assessment.assessmentType;
     },
@@ -58,6 +68,11 @@ export default {
   },
   methods: {
     async toggleEditing () {
+      if (this.isOwner) {
+        this.editing = false;
+        return;
+      }
+
       if (this.editing) {
         if (this.edited === this.assessment.description) {
           this.editing = false;
@@ -66,7 +81,11 @@ export default {
 
         let updatedAssessment;
         try {
-          updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', Object.assign(this.assessment, { description: this.edited }));
+          updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+            assessmentID: this.assessment._id,
+            assessmentType: this.assessment.assessmentType,
+            updates: { description: this.edited }
+          });
         } catch (e) {
           this.$toast.open({
             message: e.response.data.message,
