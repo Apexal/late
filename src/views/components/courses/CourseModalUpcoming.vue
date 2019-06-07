@@ -17,10 +17,23 @@
       >
         <router-link
           class="box assessment-box is-flex"
-          :to="{ name: assessment.assessmentType + '-overview', params: { [assessment.assessmentType + 'ID']: assessment._id }}"
+          :to="{
+            name: assessment.assessmentType + '-overview',
+            params: { [assessment.assessmentType + 'ID']: assessment._id }
+          }"
           :title="assessmentLinkTitle(assessment)"
         >
-          <span style="flex: 1">{{ assessment.title }}</span>
+          <span
+            style="flex: 1"
+          >{{ assessment.title }}
+            <i
+              v-if="
+                assessment.assessmentType === 'assignment' && assessment.shared
+              "
+              class="fas fa-users has-text-grey-light"
+              title="Shared assignment"
+            />
+          </span>
           <span class="icon">
             <i
               v-if="assessment.assessmentType === 'assignment'"

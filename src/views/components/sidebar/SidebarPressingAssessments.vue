@@ -61,6 +61,13 @@
             {{ course(assessment).title }}
           </b>
           {{ assessment.title }}
+          <i
+            v-if="
+              assessment.assessmentType === 'assignment' && assessment.shared
+            "
+            class="fas fa-users has-text-grey-light"
+            title="Shared assignment"
+          />
           <small
             class="has-text-grey is-pulled-right tooltip is-tooltip-left"
             :data-tooltip="
