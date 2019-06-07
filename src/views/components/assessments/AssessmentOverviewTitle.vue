@@ -42,7 +42,7 @@
         class="is-hidden-desktop touch-complete-button"
         type="is-success"
         :outlined="!assessment.completed"
-        :disabled="true"
+        :disabled="!isOwner"
         @click="$emit('toggle-completed')"
       >
         <i
@@ -107,7 +107,7 @@
         :title="toggleButtonTitle"
         class="button is-success toggle-complete"
         :class="{ 'is-outlined': !assessment.completed }"
-        :disabled="true"
+        :disabled="!isOwner"
         @click="$emit('toggle-completed')"
       >
         <i
