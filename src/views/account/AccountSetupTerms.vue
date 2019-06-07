@@ -81,10 +81,18 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
+      if (!this.$store.getters.onBreak) {
+        await this.$store.dispatch('GET_COURSES');
+        await this.$store.dispatch('GET_UNAVAILABILITIES');
+        await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
+      }
 
       // Notify user of success
       this.$toast.open({
