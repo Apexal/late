@@ -184,7 +184,7 @@ schema.methods.courseFromCRN = function (termCode, crn) {
 
 schema.methods.getAssignments = function (start, end, title, courseCRN) {
   let query = {
-    $or: [{ _student: this._id }, { sharedWith: this.rcs_id }]
+    $or: [{ _student: this._id }, { shared: true, sharedWith: this.rcs_id }]
   };
 
   if (start) {

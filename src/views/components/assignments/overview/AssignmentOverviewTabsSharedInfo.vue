@@ -97,26 +97,68 @@ export default {
         return;
       }
 
-      let updatedAssessment;
+      let response;
       try {
-        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
-          assessmentID: this.assessment._id,
-          assessmentType: this.assessment.assessmentType,
-          updates: {
-            sharedWith: [...this.assessment.sharedWith, this.newStudent]
-          }
-        });
+        response = await this.$http.post(
+          `/assignments/a/${this.assessment._id}/collaborators`,
+          { sharedWith: [...this.assessment.sharedWith, this.newStudent] }
+        );
+        if (
+          this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
+        ) {
+          await this.$store.dispatch(
+            'UPDATE_UPCOMING_ASSESSMENT',
+            response.data.updatedAssessment
+          );
+        }
       } catch (e) {
-        console.error(e);
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         });
-        this.editing = false;
+        this.loading = false;
         return;
       }
 
-      this.$emit('updated-assessment', updatedAssessment);
+      this.$emit('updated-assessment', response.data.updatedAssessment);
+
+      this.$toast.open({
+        message: `Shared this assignment with <b>${
+          this.newStudent
+        }</b>. They have been notified.`,
+        type: 'is-success'
+      });
+
+      this.newStudent = '';
+      this.loading = false;
+    },
+    async removeStudent (rcsId) {
+      let response;
+      try {
+        response = await this.$http.post(
+          `/assignments/a/${this.assessment._id}/collaborators`,
+          {
+            sharedWith: this.assessment.sharedWith.filter(rid => rid !== rcsId)
+          }
+        );
+        if (
+          this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
+        ) {
+          await this.$store.dispatch(
+            'UPDATE_UPCOMING_ASSESSMENT',
+            response.data.updatedAssessment
+          );
+        }
+      } catch (e) {
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        this.loading = false;
+        return;
+      }
+
+      this.$emit('updated-assessment', response.data.updatedAssessment);
 
       this.$toast.open({
         message: `Shared this assignment with <b>${
@@ -126,28 +168,6 @@ export default {
       });
 
       this.newStudent = '';
-      this.loading = false;
-    },
-    async removeStudent (rcsId) {
-      let updatedAssessment;
-      try {
-        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
-          assessmentID: this.assessment._id,
-          assessmentType: this.assessment.assessmentType,
-          updates: {
-            sharedWith: this.assessment.sharedWith.filter(rid => rid !== rcsId)
-          }
-        });
-      } catch (e) {
-        this.$toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        });
-        this.editing = false;
-        return;
-      }
-
-      this.$emit('updated-assessment', updatedAssessment);
 
       this.$toast.open({
         message: `Stopped sharing this assignment with <b>${rcsId}</b>. They have been notified.`,

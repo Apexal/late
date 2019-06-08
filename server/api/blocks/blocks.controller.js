@@ -43,7 +43,7 @@ async function addWorkBlock (ctx) {
       .findOne({
         $or: [
           { _student: ctx.state.user._id },
-          { sharedWith: ctx.state.user.rcs_id }
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
         ],
         _id: assessmentID
       })
@@ -136,7 +136,7 @@ async function editWorkBlock (ctx) {
       .findOne({
         $or: [
           { _student: ctx.state.user._id },
-          { sharedWith: ctx.state.user.rcs_id }
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
         ],
         _id: assessmentID
       })
@@ -202,7 +202,7 @@ async function deleteWorkBlock (ctx) {
       .findOne({
         $or: [
           { _student: ctx.state.user._id },
-          { sharedWith: ctx.state.user.rcs_id }
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
         ],
         _id: assessmentID
       })
