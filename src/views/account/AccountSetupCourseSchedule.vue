@@ -1,7 +1,9 @@
 <template>
   <div class="setup-course-schedule">
     <template v-if="onBreak">
-      <h2 class="subtitle has-text-centered">
+      <h2
+        class="subtitle has-text-centered"
+      >
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>
@@ -100,9 +102,7 @@
         >
           <h2 class="subtitle">
             Your Courses
-            <small
-              class="has-text-grey"
-            >{{ coursesWithoutOther.length }} total</small>
+            <small class="has-text-grey">{{ coursesWithoutOther.length }} total</small>
           </h2>
           <AccountCourse
             v-for="c in coursesWithoutOther"
@@ -117,9 +117,7 @@
             title="These courses won't show up on any course list or on your schedule."
           >
             Hidden Courses
-            <small
-              class="has-text-grey"
-            >{{ hiddenCourses.length }} total</small>
+            <small class="has-text-grey">{{ hiddenCourses.length }} total</small>
           </h2>
           <AccountCourse
             v-for="c in hiddenCourses"
@@ -141,7 +139,7 @@
       <hr>
       <router-link
         :to="{ name: 'setup-unavailability' }"
-        class="button is-primary is-pulled-right"
+        class="button has-background-secondary is-pulled-right"
         :class="{ 'is-loading': loading }"
       >
         Save and Continue
@@ -199,7 +197,10 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         return;
       }
 
@@ -207,19 +208,18 @@ export default {
       this.$store.commit('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.info(
-        'Your course schedule has been imported from SIS. Edit the courses below to customize titles, colors, and more.',
-        {
-          action: {
-            text: 'Next Step',
-            push: {
-              name: 'setup-unavailability'
-            }
-          }
+      this.$snackbar.open({
+        message:
+          'Your course schedule has been imported from SIS. Edit the courses below to customize titles, colors, and more.',
+        type: 'is-primary',
+        position: 'is-bottom',
+        actionText: 'Next Step',
+        duration: 5000,
+        onAction: () => {
+          this.$router.push({ name: 'setup-unavailability' });
         }
-      );
+      });
 
-      // this.saved = true;
       this.loading = false;
     }
   }

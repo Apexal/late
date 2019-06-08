@@ -1,48 +1,67 @@
 <template>
   <div class="assessment-work-schedule">
-    <div class="box columns percents">
-      <div
-        class="column is-one-half tooltip"
-        :data-tooltip="scheduledPercent + '% scheduled'"
-      >
-        <div class="is-narrow">
-          You've scheduled
-          <b>{{ scheduledMinutes }}</b> out of
-          <b>{{ totalEstimatedMinutes }}</b>
-          minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
+    <div class="box ">
+      <div class="columns percents">
+        <div
+          class="column is-one-half tooltip"
+          :data-tooltip="scheduledPercent + '% scheduled'"
+        >
+          <div class="is-narrow">
+            You've scheduled
+            <b>{{ scheduledMinutes }}</b> out of
+            <b>{{ totalEstimatedMinutes }}</b>
+            minutes to {{ assessmentType === "assignment" ? "work" : "study" }}.
+          </div>
+          <div class>
+            <progress
+              class="progress is-info"
+              :value="scheduledMinutes"
+              :max="totalEstimatedMinutes"
+            >
+              {{ scheduledPercent }}%
+            </progress>
+          </div>
         </div>
-        <div class>
-          <progress
-            class="progress is-info"
-            :value="scheduledMinutes"
-            :max="totalEstimatedMinutes"
-          >
-            {{ scheduledPercent }}%
-          </progress>
-        </div>
-      </div>
 
-      <div
-        class="column is-one-half tooltip"
-        :data-tooltip="finishedPercent + '% finished'"
-      >
-        <div class="is-narrow">
-          You've finished
-          <b>{{ finishedMinutes }}</b> out of
-          <b>{{ scheduledMinutes }}</b>
-          scheduled minutes to {{ assessmentType === 'assignment' ? 'work' : 'study' }}.
-        </div>
-        <div class>
-          <progress
-            class="progress is-success"
-            :value="finishedMinutes"
-            :max="scheduledMinutes"
-          >
-            {{ finishedPercent }}%
-          </progress>
+        <div
+          class="column is-one-half tooltip"
+          :data-tooltip="finishedPercent + '% finished'"
+        >
+          <div class="is-narrow">
+            You've finished
+            <b>{{ finishedMinutes }}</b> out of
+            <b>{{ scheduledMinutes }}</b>
+            scheduled minutes to
+            {{ assessmentType === "assignment" ? "work" : "study" }}.
+          </div>
+          <div class>
+            <progress
+              class="progress is-success"
+              :value="finishedMinutes"
+              :max="scheduledMinutes"
+            >
+              {{ finishedPercent }}%
+            </progress>
+          </div>
         </div>
       </div>
     </div>
+
+    <b-taglist v-if="assessment.shared">
+      <span
+        v-for="(rcsID, index) in assessment.sharedWith"
+        :key="index"
+        class="tag collaborator is-unselectable"
+        :title="`Toggle showing ${rcsID}'s unavailability'`"
+        :class="!hiding.includes(rcsID) ? 'is-dark' : ''"
+        @click="toggleCollaboratorUnavailabilityHiding(rcsID)"
+      >{{ rcsID }}
+        {{
+          collaboratorUnavailabilities[rcsID]
+            ? ` | ${collaboratorUnavailabilities[rcsID].length}`
+            : ""
+        }}</span>
+    </b-taglist>
 
     <FullCalendar
       ref="calendar"
@@ -72,6 +91,9 @@ export default {
   },
   data () {
     return {
+      hiding: [],
+      collaboratorUnavailabilities: {},
+      loading: true,
       saved: true
     };
   },
@@ -159,7 +181,10 @@ export default {
           noEventsMessage: 'No work periods set yet.',
           eventRender: (event, el) => {
             if (event.eventType === 'course') {
-              return moment(event.end).isBetween(event.course.startDate, event.course.endDate);
+              return moment(event.end).isBetween(
+                event.course.startDate,
+                event.course.endDate
+              );
             }
           },
           buttonText: {
@@ -212,6 +237,21 @@ export default {
         })
       );
     },
+    collaboratorUnavailabilitySchedule () {
+      const events = [];
+      for (let rcsID in this.collaboratorUnavailabilities) {
+        if (this.hiding.includes(rcsID)) continue;
+
+        events.push(
+          this.collaboratorUnavailabilities[rcsID].map(p => ({
+            ...this.$store.getters.mapUnavailabilityToEvent(p),
+            backgroundColor: 'black',
+            rendering: 'background'
+          }))
+        );
+      }
+      return events.flat();
+    },
     workBlockEvents () {
       return this.assessment._blocks
         .map(block =>
@@ -229,14 +269,17 @@ export default {
     },
     totalEvents () {
       // Render work blocks for other assessments in the background
-
       return this.workBlockEvents
         .concat(this.courseScheduleEvents)
         .concat(this.unavailabilitySchedule)
+        .concat(this.collaboratorUnavailabilitySchedule)
         .concat([this.dueDateEvent]);
     }
   },
   watch: {
+    assessment (newAssessment) {
+      this.getCollaboratorUnavailabilities();
+    },
     end (newEnd) {
       this.$refs.calendar.fireMethod('option', 'validRange', {
         start: this.start,
@@ -244,10 +287,48 @@ export default {
       });
     }
   },
+  created () {
+    this.getCollaboratorUnavailabilities();
+  },
   methods: {
+    toggleCollaboratorUnavailabilityHiding (rcsID) {
+      if (this.hiding.includes(rcsID)) {
+        this.hiding.splice(this.hiding.indexOf(rcsID), 1);
+      } else {
+        this.hiding.push(rcsID);
+      }
+    },
+    async getCollaboratorUnavailabilities () {
+      if (!this.assessment.shared) return;
+
+      this.loading = true;
+
+      let response;
+      try {
+        response = await this.$http.get(
+          '/assignments/a/' + this.assessment._id + '/collaborators'
+        );
+      } catch (e) {
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        });
+        return;
+      }
+
+      this.collaboratorUnavailabilities = response.data.unavailabilities;
+
+      this.loading = false;
+    },
     async select (start, end) {
       // Only confirm with user if they are trying to add work block to the past
-      if (moment(start).isBefore(moment())) {
+      if (this.assessment.shared) {
+        this.$dialog.confirm({
+          message: 'Schedule work block for everyone in this group assignment?',
+          onConfirm: () => this.addWorkBlock(start, end),
+          onCancel: () => this.$refs.calendar.fireMethod('unselect')
+        });
+      } else if (moment(start).isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Add work block to the past?',
           onConfirm: () => this.addWorkBlock(start, end),
@@ -265,7 +346,9 @@ export default {
       const endStr = moment(calEvent.end).format('h:mm a');
 
       this.$dialog.confirm({
-        message: `Unschedule ${dateStr} from <b>${startStr}</b> to <b>${endStr}</b>?`,
+        message: `Unschedule ${dateStr} from <b>${startStr}</b> to <b>${endStr}</b>${
+          this.assessment.shared ? ' for everyone' : ''
+        }?`,
         onConfirm: () => this.removeWorkBlock(calEvent.blockID)
       });
     },
@@ -274,7 +357,8 @@ export default {
       if (calEvent.end.isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Move this past work block?',
-          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onConfirm: () =>
+            this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
           onCancel: revertFunc
         });
       } else {
@@ -285,7 +369,8 @@ export default {
       if (calEvent.end.isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Edit this past work block?',
-          onConfirm: () => this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
+          onConfirm: () =>
+            this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
           onCancel: revertFunc
         });
       } else {
@@ -321,9 +406,7 @@ export default {
 
       let message = 'Rescheduled work block!';
 
-      if (
-        !this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
-      ) {
+      if (!this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
         message = 'Edited past work block!';
         // Updated past assessment, send up to parent overview
         this.$emit('updated-assessment', updatedAssessment);
@@ -365,5 +448,9 @@ export default {
 <style lang="scss" scoped>
 .box.percents {
   padding: 10px;
+}
+
+.collaborator {
+  cursor: pointer;
 }
 </style>

@@ -8,15 +8,15 @@ const getters = {
   current_unavailability: state => {
     return state.unavailabilities;
   },
-  getUnavailabilityAsEvents: state => {
-    return state.unavailabilities.map(p =>
-      Object.assign({}, p, {
-        id: p._id,
-        editable: false, // TODO: https://github.com/fullcalendar/fullcalendar/issues/4127
-        eventType: 'unavailability',
-        color: 'black'
-      })
-    );
+  mapUnavailabilityToEvent: state => unavailability =>
+    Object.assign({}, unavailability, {
+      id: unavailability._id,
+      editable: false, // TODO: https://github.com/fullcalendar/fullcalendar/issues/4127
+      eventType: 'unavailability',
+      color: 'black'
+    }),
+  getUnavailabilityAsEvents: (state, getters) => {
+    return state.unavailabilities.map(getters.mapUnavailabilityToEvent);
   }
 };
 

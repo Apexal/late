@@ -12,7 +12,7 @@
         <router-link
           id="logo"
           class="navbar-item"
-          to="/dashboard"
+          :to="{ name: 'home' }"
           active-class
           exact-active-class
         >
@@ -22,6 +22,21 @@
             title="LATE is still in active development!"
           >BETA</span>
         </router-link>
+        <a
+          v-if="loggedIn"
+          class="navbar-item announcement-icon is-hidden-desktop"
+          :title="announcementsCount + ' new announcements'"
+          @click="openAnnouncementsModal"
+        >
+          <span class="icon">
+            <i
+              class="fa-bell announcement-bell-icon"
+              :class="[
+                announcementsCount === 0 ? 'far' : 'fas new-announcements'
+              ]"
+            />
+          </span>
+        </a>
         <a
           :class="{ 'is-active': navbarExpanded }"
           role="button"
@@ -46,7 +61,7 @@
           <template v-if="loggedIn">
             <router-link
               class="navbar-item"
-              to="/dashboard"
+              :to="{ name: 'home' }"
               title="View your dashboard"
             >
               <span class="icon">
@@ -58,13 +73,24 @@
             <router-link
               v-if="onBreak"
               class="navbar-item"
-              to="/about"
+              :to="{ name: 'about' }"
               title="Learn more about LATE and its creators"
             >
               <span class="icon">
                 <i class="fas fa-question-circle" />
               </span>
               About
+            </router-link>
+
+            <router-link
+              :to="{ name: 'tools' }"
+              class="navbar-item"
+              title="Tools to calculate grades and to help you work/study for assignments and exams!"
+            >
+              <span class="icon">
+                <i class="fas fa-toolbox" />
+              </span>
+              Tools
             </router-link>
 
             <div
@@ -143,65 +169,23 @@
               About
             </router-link>
           </template>
-          <div class="navbar-item has-dropdown is-hoverable">
-            <router-link
-              :to="{ name: 'tools' }"
-              class="navbar-link"
-              title="Tools to calculate grades and to help you work/study for assignments and exams!"
-            >
-              <span class="icon">
-                <i class="fas fa-toolbox" />
-              </span>
-              Tools
-            </router-link>
-
-            <div class="navbar-dropdown">
-              <router-link
-                v-if="onBreak"
-                class="navbar-item"
-                to="/checklist"
-                title="Make checklists for move in!"
-              >
-                Move In Checklist
-              </router-link>
-              <router-link
-                class="navbar-item"
-                to="/quicklinks"
-                title="Useful RPI related links!"
-              >
-                Quick Links
-              </router-link>
-              <router-link
-                class="navbar-item"
-                to="/studytools"
-                title="Work/study timer and scratchpad"
-              >
-                Study Timer
-              </router-link>
-              <router-link
-                class="navbar-item"
-                to="/academicutils"
-                title="GPA calculator and course grade estimator"
-              >
-                Grade Calculators
-              </router-link>
-            </div>
-          </div>
         </div>
 
         <div class="navbar-end">
           <template v-if="loggedIn">
             <a
-              class="navbar-item announcementIcon"
+              class="navbar-item announcement-icon is-hidden-touch"
               :title="announcementsCount + ' new announcements'"
               @click="openAnnouncementsModal"
             >
-              <i
-                class="fa-bell announcement-bell-icon"
-                :class="[
-                  announcementsCount === 0 ? 'far' : 'fas new-announcements'
-                ]"
-              />
+              <span class="icon">
+                <i
+                  class="fa-bell announcement-bell-icon"
+                  :class="[
+                    announcementsCount === 0 ? 'far' : 'fas new-announcements'
+                  ]"
+                />
+              </span>
             </a>
             <div class="navbar-item has-dropdown is-hoverable">
               <a
@@ -238,7 +222,7 @@
                 <router-link
                   v-if="user.admin"
                   class="navbar-item"
-                  to="/admin"
+                  :to="{ name: 'admin-student-list' }"
                   title="View the administrator page"
                 >
                   <span class="icon">
@@ -400,6 +384,7 @@ export default {
 .navbar-brand {
   .beta-tag {
     margin-left: 5px;
+    margin-bottom: -2px;
     transition: background-color 0.2s;
     background-color: #70cad1;
   }
@@ -424,8 +409,13 @@ export default {
 
   .navbar-item {
     span.icon {
-      margin-right: 3px;
+      margin-right: 1px;
+      margin-left: 1px;
     }
+  }
+
+  .announcement-icon {
+    padding: 0.5rem 0.2rem;
   }
 
   span.tag.assignment-count,

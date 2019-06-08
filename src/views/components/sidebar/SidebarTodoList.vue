@@ -20,9 +20,7 @@
     >
       <span class="is-fullwidth">
         <small class="todo-time is-pulled-right has-text-grey">
-          {{
-            fromNow(t.addedAt)
-          }}
+          {{ fromNow(t.addedAt) }}
         </small>
         {{ t.text }}
       </span>
@@ -50,21 +48,22 @@ export default {
       newTodo: ''
     };
   },
-  computed: {
-    now () {
-      return this.$store.state.now;
-    }
-  },
   methods: {
     async addTodo () {
       if (!this.newTodo) return;
 
       try {
         await this.$store.dispatch('ADD_TODO', this.newTodo);
-        this.$toasted.show(`Added to-do '${this.newTodo}'.`);
+        this.$toast.open({
+          type: 'is-success',
+          message: `Added to-do '${this.newTodo}'.`
+        });
         this.newTodo = '';
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
     },
     async removeTodo (todo) {

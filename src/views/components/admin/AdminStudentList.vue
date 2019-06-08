@@ -133,7 +133,7 @@ export default {
       try {
         request = await this.$http.get('/students');
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
         this.students = [];
         this.loading = false;
         return;

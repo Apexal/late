@@ -11,16 +11,15 @@ const google = require('./modules/google');
 const btoa = require('btoa');
 const logger = require('./modules/logger');
 
+const exceptions = ['/students/loginas', '/students/counts', '/quicklinks'];
+
 module.exports = router => {
   // router.use(path, router);
   router.use(
     '/api',
     async function (ctx, next) {
       if (
-        !ctx.request.url.startsWith('/api/students/loginas') &&
-        !ctx.request.url.startsWith('/api/students/counts') &&
-        !ctx.request.url.startsWith('/api/checklists') &&
-        !ctx.request.url.startsWith('/api/quicklinks') &&
+        exceptions.every(url => !ctx.request.url.startsWith('/api' + url)) &&
         !ctx.session.cas_user
       ) {
         return ctx.unauthorized('You must be logged in to use the API.');

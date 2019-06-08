@@ -15,7 +15,8 @@
           <img
             src="https://github.com/Apexal/old-ontrac/blob/master/client/public/images/logos/logo128x128.png?raw=true"
             style="max-height: 15px; max-width: 15px;"
-          > </span>In memory of
+          >
+        </span>In memory of
         <a
           href="https://github.com/Apexal/old-ontrac/"
           target="_blank"
@@ -68,17 +69,24 @@ export default {
 <style lang="scss">
 //Adjusts padding for footer to display columns closer together
 .footer {
-  padding: 2rem 6rem 2rem !important;
+  //Desktop styles
+  @media screen and (min-width: 769px) {
+    padding: 2rem 6rem 2rem !important;
+    //Bottom padding to set the h1 ("An RCOS Project!") apart from the columns below
+    h1 {
+      padding-bottom: 1rem;
+    }
+  }
+
+  //Mobile styles
+  @media screen and (max-width: 768px) {
+    padding: 1rem 0rem 1rem !important;
+  }
 
   //Centers and clumps footer elements together
   .columns {
     max-width: 1000px;
     margin: 0 auto;
-  }
-
-  //Bottom padding to set the h1 ("An RCOS Project!") apart from the columns below
-  h1 {
-    padding-bottom: 1rem;
   }
 
   //Mobile styling to bring the footer columns closer together when stacked.

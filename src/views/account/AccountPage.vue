@@ -122,4 +122,9 @@ export default {
   text-align: center;
   margin: 1.5em 0em 1em 0em;
 }
+
+.child-view {
+  max-width: 75vw;
+  margin: 0 auto;
+}
 </style>

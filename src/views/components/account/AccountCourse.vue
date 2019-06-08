@@ -10,10 +10,9 @@
             {{ course.summary }}
           </span>
           {{ course.title }}
-          <small
-            class="has-text-grey"
-          >
-            {{ course.periods.length }} periods | {{ course.links.length }} links
+          <small class="has-text-grey">
+            {{ course.periods.length }} periods |
+            {{ course.links.length }} links
           </small>
           <b-taglist class="is-pulled-right">
             <b-tag v-if="course.credits">
@@ -21,7 +20,7 @@
             </b-tag>
             <b-tag
               rounded
-              :style="{'background-color': course.color, 'color': 'white'}"
+              :style="{ 'background-color': course.color, color: 'white' }"
               :title="'You are in Section ' + course.sectionId"
             >
               Section {{ course.sectionId }}
@@ -204,7 +203,7 @@
                       :key="i"
                       :value="i - 1"
                     >
-                      {{ day(i-1) }}
+                      {{ day(i - 1) }}
                     </option>
                   </b-select>
                 </td>
@@ -275,7 +274,7 @@
                       :key="i"
                       :value="i - 1"
                     >
-                      {{ day(i-1) }}
+                      {{ day(i - 1) }}
                     </option>
                   </b-select>
                 </td>
@@ -349,11 +348,9 @@
 
 <script>
 import moment from 'moment';
-import InputTag from 'vue-input-tag';
 
 export default {
   name: 'AccountCourse',
-  components: { InputTag },
   props: {
     course: {
       type: Object,
@@ -395,9 +392,7 @@ export default {
     saved () {
       return (
         JSON.stringify(this.currentCourse) ===
-        JSON.stringify(
-          this.updatedCourse
-        )
+        JSON.stringify(this.updatedCourse)
       );
     },
     currentCourse () {
@@ -430,8 +425,9 @@ export default {
       this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
     },
     highlighted (newHighlighted) {
-      alert(newHighlighted);
-      if (newHighlighted) { this.open = true; }
+      if (newHighlighted) {
+        this.open = true;
+      }
     }
   },
   methods: {
@@ -477,9 +473,10 @@ export default {
         this.courseData.title.length === 0 ||
         this.courseData.sectionId.length === 0
       ) {
-        this.$toasted.error(
-          'You cannot set an empty name or section for a course!'
-        );
+        this.$toast.open({
+          type: 'is-danger',
+          message: 'You cannot set an empty name or section for a course!'
+        });
         return;
       }
 
@@ -490,7 +487,7 @@ export default {
           this.updatedCourse
         );
       } catch (e) {
-        let message = (e.response ? e.response.data.message : e.message);
+        let message = e.response ? e.response.data.message : e.message;
         this.$toast.open({
           duration: 5000,
           message,
@@ -511,13 +508,26 @@ export default {
     removePeriod (periodToRemove) {
       this.$dialog.confirm({
         title: 'Confirm Remove Period',
-        message: `Remove <b>${this.courseData.title} ${this.type(periodToRemove.type)}</b> period on ${this.day(periodToRemove.day)} from <b>${moment(periodToRemove.start, 'Hmm', true).format('h:mma')}</b> to <b>${moment(periodToRemove.end, 'Hmm', true).format('h:mma')}</b>?`,
+        message: `Remove <b>${this.courseData.title} ${this.type(
+          periodToRemove.type
+        )}</b> period on ${this.day(periodToRemove.day)} from <b>${moment(
+          periodToRemove.start,
+          'Hmm',
+          true
+        ).format('h:mma')}</b> to <b>${moment(
+          periodToRemove.end,
+          'Hmm',
+          true
+        ).format('h:mma')}</b>?`,
         confirmText: 'Yes',
         type: 'is-danger',
         onConfirm: () => {
           // Remove period by filtering by day and start time
           this.editedPeriods = this.editedPeriods.filter(
-            p => !(p.day === periodToRemove.day && p.start === periodToRemove.start)
+            p =>
+              !(
+                p.day === periodToRemove.day && p.start === periodToRemove.start
+              )
           );
         }
       });
@@ -529,7 +539,10 @@ export default {
         !this.newPeriod.start ||
         !this.newPeriod.end
       ) {
-        this.$toasted.error('Make sure the time and location is set!');
+        this.$toast.open({
+          type: 'is-danger',
+          message: 'Make sure the time and location is set!'
+        });
         return;
       }
       // Remeber to convert start/end from HH:mm to Hmm

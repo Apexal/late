@@ -7,17 +7,20 @@
       <i class="fas fa-umbrella-beach no-classes-icon" />
       <div class="panel-block has-text-grey no-hover">
         <span v-if="!nextTerm">No courses over break!</span>
-        <span
-          v-else
-        >{{ daysUntilNextTerm }} days left of break until
-          {{ nextTerm.name }}!</span>
+        <span v-else>
+          {{ daysUntilNextTerm }} days left of break until
+          {{ nextTerm.name }}!
+        </span>
       </div>
     </div>
     <div
       v-else-if="!setup"
-      class="panel-block has-text-grey no-hover"
+      class="no-classes"
     >
-      You have not set your course schedule yet!
+      <i class="far fa-frown no-classes-icon" />
+      <div class="panel-block has-text-grey no-hover">
+        You have not set your course schedule yet!
+      </div>
     </div>
     <div
       v-else
@@ -48,7 +51,7 @@
           passed: hasPassed(event.end),
           clickable: event.link
         }"
-        @click="eventClicked(event)"
+        @click="$store.commit('OPEN_COURSE_MODAL', event.course); eventClicked(event)"
       >
         <CourseAssessmentDot :course="event.course" />
         <span
@@ -61,13 +64,8 @@
           "
         >
           <template v-if="event.eventType === 'period'">
-            <b
-              class="period-title"
-              @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
-            >{{ event.course.title }}</b>
-            <span class="has-text-grey">
-              {{ periodType(event.period.type) }}
-            </span>
+            <b class="period-title">{{ event.course.title }}</b>
+            <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
           </template>
           <template v-else-if="event.eventType === 'work-block'">
             <span>
@@ -90,7 +88,7 @@
       </div>
     </div>
     <div
-      v-if="!onBreak"
+      v-if="!onBreak && setup"
       class="panel-block has-background-light has-text-centered no-hover"
     >
       <b-button
@@ -105,12 +103,23 @@
         {{ showPassed ? "Hide" : "Show" }} Passed
       </b-button>
     </div>
+    <div
+      v-if="!onBreak && !setup"
+      class="panel-block has-background-light has-text-centered no-hover"
+    >
+      <router-link
+        class="button is-secondary is-fullwidth showPassedButton"
+        to="/account"
+      >
+        <i class="show-passed-icon far fa-edit" />
+        Account Setup
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
-import 'bulma-switch';
 
 export default {
   name: 'SidebarSchedule',
@@ -136,9 +145,6 @@ export default {
     },
     daysUntilNextTerm () {
       return moment(this.nextTerm.start).diff(this.now, 'days');
-    },
-    now () {
-      return this.$store.state.now;
     },
     schedule () {
       return this.$store.state.schedule;
@@ -202,11 +208,13 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.panel-block.is-active {
+  border-left: 3px solid #3273dc;
+}
+
 .event {
   padding: 10px;
-  &.clickable {
-    cursor: pointer;
-  }
+  cursor: pointer;
   &.has-background-success {
     font-weight: bold;
     color: white;

@@ -154,7 +154,16 @@ div.tabs.is-centered {
 h2.subtitle.course-title {
   margin-bottom: 0;
 }
+
+.tag {
+  margin-left: 4px;
+}
 .section-tag {
+  height: 27px;
+  border-radius: 4px 0px 0px 4px;
   color: white;
+}
+.button.is-small {
+  border-radius: 0px 4px 4px 0px;
 }
 </style>

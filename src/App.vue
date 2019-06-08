@@ -26,12 +26,7 @@
           />
         </span>
       </transition>
-      <div
-        :class="[
-          loggedIn && expanded ? 'columns is-marginless' : 'container',
-          { homepage }
-        ]"
-      >
+      <div :class="appClass">
         <transition name="slide-fade">
           <div
             v-if="loggedIn && expanded"
@@ -137,6 +132,13 @@ export default {
     homepage () {
       return this.$route.name === 'home' && !this.loggedIn;
     },
+    appClass () {
+      return {
+        'columns is-marginless': this.loggedIn && this.expanded,
+        container: this.loggedIn && !this.expanded,
+        homepage: this.homepage
+      };
+    },
     studyToolsTimerOpen () {
       return (
         this.$store.state.studytoolstimer.open &&
@@ -196,10 +198,9 @@ export default {
       await this.$store.dispatch('GET_TERMS');
       const calls = [];
       if (!this.$store.getters.onBreak) {
+        await this.$store.dispatch('GET_COURSES');
         calls.concat([
-          this.$store.dispatch('GET_COURSES'),
           this.$store.dispatch('GET_UNAVAILABILITIES'),
-          this.$store.dispatch('AUTO_UPDATE_SCHEDULE'),
           this.$store.dispatch('AUTO_GET_UPCOMING_WORK')
         ]);
       }
@@ -245,6 +246,7 @@ export default {
 /*-------------------------------------------*/
 * {
   word-wrap: break-word;
+  outline: 0;
 }
 
 .is-fullwidth {
@@ -309,6 +311,19 @@ section.section {
   height: 1.5em;
 }
 
+.toggle-sidebar i {
+  transition: 0.1s;
+  -webkit-transition: 0.1s;
+  -moz-transition: 0.1s;
+}
+
+.toggle-sidebar:hover i {
+  margin-right: -6px;
+  transition: 0.1s;
+  -webkit-transition: 0.1s;
+  -moz-transition: 0.1s;
+}
+
 /* TRANSITIONS */
 .fade-enter-active,
 .fade-leave-active {
@@ -355,5 +370,9 @@ section.section {
 
 .modal-content {
   max-width: 800px;
+}
+
+.exam-event {
+  font-weight: bold;
 }
 </style>

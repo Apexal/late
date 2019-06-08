@@ -80,7 +80,7 @@
                     cols="30"
                     rows="10"
                     class="input"
-                    placeholder="Long description of the exam here! You can use Markdown!"
+                    placeholder="Long description of the exam"
                   />
                 </div>
               </div>
@@ -264,9 +264,10 @@ export default {
 
       let updatedExam;
       try {
-        updatedExam = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.initialExam, {
+        updatedExam = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.initialExam._id,
+          assessmentType: 'exam',
+          updates: {
             title: this.exam.title,
             description: this.exam.description,
             date: moment(
@@ -277,8 +278,8 @@ export default {
             courseCRN: this.exam.courseCRN,
             timeEstimate: this.exam.timeEstimate,
             priority: this.exam.priority
-          })
-        );
+          }
+        });
       } catch (e) {
         this.loading = false;
         this.$toast.open({

@@ -50,7 +50,10 @@ export default {
           }
         });
       } catch (e) {
-        this.$toasted.error(`Failed to load related ${this.assessmentType}s.`);
+        this.$toast.open({
+          message: `Failed to load related ${this.assessmentType}s.`,
+          type: 'is-danger'
+        });
         this.related = [];
         this.loading = false;
         return;

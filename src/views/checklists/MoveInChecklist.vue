@@ -3,7 +3,19 @@
     <h1 class="title has-text-centered-mobile">
       Move In Checklist
     </h1>
+    <details
+      v-if="!loggedIn"
+      class="notification is-warning"
+    >
+      <summary>
+        <i class="fas fa-info-circle" />
 
+        <b>Info</b>
+      </summary>
+      Your checklist is only saved on your current device.
+      <b>RPI Students</b> can login to <b>LATE</b> below to save their checklist
+      to their account and access all the other features of the site!
+    </details>
     <form @submit.prevent="addCategory">
       <b-field>
         <b-input
@@ -31,11 +43,11 @@
 
     <hr>
 
-    <div class="columns is-multiline categories">
+    <div class="columns is-desktop is-multiline categories">
       <div
         v-for="(category, index) in checklist.categories"
         :key="index"
-        class="column is-one-third"
+        class="column is-one-third-fullhd is-half-desktop is-full"
       >
         <Category
           :category-index="index"
@@ -50,6 +62,19 @@
       <b-button @click="clearChecklist">
         Clear
       </b-button>
+      <b-button
+        v-if="loggedIn"
+        type="is-link"
+      >
+        Share
+      </b-button>
+      <a
+        v-else
+        class="button is-success"
+        href="/auth/login"
+      >
+        <b>RPI Students:</b> Login to Save
+      </a>
     </div>
   </section>
 </template>
@@ -88,9 +113,12 @@ export default {
       return this.checklist.categories.map(cat => cat.title);
     }
   },
+  created () {
+    this.$store.dispatch('GET_CHECKLIST');
+  },
   methods: {
     clearChecklist () {
-      this.$store.commit('CLEAR_CHECKLIST');
+      this.$store.dispatch('CLEAR_CHECKLIST');
     },
     addCategory () {
       if (this.categoryTitles.includes(this.newCategory)) {
@@ -100,7 +128,7 @@ export default {
         });
         return;
       }
-      this.$store.commit('ADD_CATEGORY', this.newCategory);
+      this.$store.dispatch('ADD_CATEGORY', this.newCategory);
       this.newCategory = '';
     }
   }

@@ -160,15 +160,18 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.info('Saved personal info!');
+      this.$toast.open({ type: 'is-success', message: 'Saved personal info!' });
 
-      this.$router.push({ name: 'setup-course-schedule' });
+      this.$router.push({ name: 'setup-terms' });
 
       // this.saved = true;
       this.loading = false;

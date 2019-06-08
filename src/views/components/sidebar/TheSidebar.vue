@@ -175,9 +175,6 @@ export default {
     },
     todos () {
       return this.$store.state.todos.todos;
-    },
-    now () {
-      return this.$store.state.now;
     }
   },
   mounted () {
@@ -272,6 +269,17 @@ export default {
     width: 2.5em;
     height: 1.5em;
   }
+
+  .local-toggle-sidebar:hover {
+    background-color: rgb(252, 252, 252);
+  }
+
+  .local-toggle-sidebar:hover i {
+    margin-left: -6px;
+    transition: 0.1s;
+    -webkit-transition: 0.1s;
+    -moz-transition: 0.1s;
+  }
   .countdown {
     height: 2.5em;
     width: 6em;
@@ -301,6 +309,24 @@ export default {
   }
   a:hover {
     background-color: #dbdbdb;
+  }
+}
+
+@media only screen and (max-width: 769px) {
+  //Very hardcodey solution to sidebar on mobile.
+  #sidebar {
+    width: calc(100vw + 1px) !important;
+    min-width: 300px;
+    padding: 0px !important;
+    margin-left: -12px !important;
+    margin-top: -1rem !important;
+    border-radius: 0px;
+  }
+
+  .panel
+    .is-size-7
+    div:last-child:not(.control):not(.course-panel-block):not(.event):not(.has-text-grey) {
+    border-radius: 0px !important;
   }
 }
 </style>

@@ -8,6 +8,11 @@
       @add-work-block="addWorkBlock"
       @close-modal="selectModal.open = false"
     />
+    <DashboardCalendarEventModal
+      :open="eventModal.open"
+      :event="eventModal.event"
+      @close-modal="eventModal.open = false"
+    />
     <FullCalendar
       ref="calendar"
       :events="events"
@@ -33,10 +38,15 @@ import 'fullcalendar/dist/fullcalendar.css';
 import moment from 'moment';
 
 import DashboardCalendarSelectModal from '@/views/components/dashboard/DashboardCalendarSelectModal';
+import DashboardCalendarEventModal from '@/views/components/dashboard/DashboardCalendarEventModal';
 
 export default {
   name: 'DashboardCalendar',
-  components: { DashboardCalendarSelectModal, FullCalendar },
+  components: {
+    DashboardCalendarSelectModal,
+    DashboardCalendarEventModal,
+    FullCalendar
+  },
   data () {
     return {
       selectModal: {
@@ -44,6 +54,11 @@ export default {
         start: moment(),
         end: moment()
       },
+      eventModal: {
+        open: false,
+        event: {}
+      },
+      academicCalendarEvents: [],
       calendar: {
         header: {
           center: 'agendaThreeDay, agendaFiveDay, agendaWeek'
@@ -141,7 +156,8 @@ export default {
       return courseSchedule
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
-        .concat(workBlocks);
+        .concat(workBlocks)
+        .concat(this.academicCalendarEvents);
     },
     earliest () {
       let earliest = this.$store.state.auth.user.earliestWorkTime;
@@ -175,10 +191,34 @@ export default {
       );
     }
   },
-  created () {
+  async created () {
     this.calendar.config.scrollTime = this.earliest;
+
+    const response = await this.$http.get('/integrations/academiccalendar');
+    const parsed = response.data.events;
+    const events = [];
+    for (let id in parsed) {
+      if (parsed[id].summary) {
+        events.push(this.mapICalObjectToEvent(id, parsed[id]));
+      }
+    }
+    this.academicCalendarEvents = events;
   },
   methods: {
+    mapICalObjectToEvent (id, obj) {
+      const event = {
+        id,
+        title: obj.summary,
+        eventType: 'academic-calendar-event',
+        start: moment(obj.start),
+        editable: false,
+        eventURL: `http://events.rpi.edu/cal/event/eventView.do?b=de&calPath=%2Fpublic%2Fcals%2FMainCal&guid=${id}`
+      };
+      if (obj.end) event.end = moment(obj.end);
+      else event.allDay = true;
+
+      return event;
+    },
     toggleFullscreen () {
       if (document.fullscreenElement) {
         document.exitFullscreen();
@@ -195,7 +235,9 @@ export default {
             event.course.startDate,
             event.course.endDate
           )
-        ) { return false; }
+        ) {
+          return false;
+        }
 
         if (event.period.type === 'TES') {
           return !!this.$store.state.assessments.upcomingAssessments.find(
@@ -205,6 +247,15 @@ export default {
               moment(assessment.date).isSame(event.start, 'day')
           );
         }
+
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-graduation-cap';
+        el.find('.fc-title').prepend(icon);
+
+        const locationElement = document.createElement('i');
+        locationElement.className = 'event-period-location';
+        locationElement.innerText = event.period.location;
+        el.find('.fc-content').append(locationElement);
       } else if (event.eventType === 'work-block') {
         const deleteButton = document.createElement('span');
         deleteButton.classList.add('remove-work-block');
@@ -227,6 +278,24 @@ export default {
           });
         };
         el.find('.fc-content').append(deleteButton);
+
+        if (event.assessment.shared) {
+          const sharedIcon = document.createElement('i');
+          sharedIcon.className = 'fas fa-users margin-left';
+          el.find('.fc-title').append(sharedIcon);
+        }
+      } else if (event.eventType === 'assignment') {
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-clipboard-check';
+        el.find('.fc-content').prepend(icon);
+      } else if (event.eventType === 'exam') {
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-exclamation-triangle';
+        el.find('.fc-content').prepend(icon);
+      } else if (event.eventType === 'academic-calendar-event') {
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-info-circle';
+        el.find('.fc-content').prepend(icon);
       }
     },
     select (start, end, jsEvent, view) {
@@ -287,6 +356,9 @@ export default {
             params: { examID: calEvent.exam._id }
           });
         }
+      } else if (calEvent.eventType === 'academic-calendar-event') {
+        this.eventModal.event = calEvent;
+        this.eventModal.open = true;
       }
     },
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
@@ -358,6 +430,23 @@ export default {
 }
 .work-block-event {
   border-width: 3px !important;
+
+  .margin-left {
+    margin-left: 5px;
+  }
+}
+
+.event-period-location {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.fc-event {
+  &:hover {
+    .event-period-location {
+      opacity: 1;
+    }
+  }
 }
 
 .fc-content {
@@ -439,7 +528,7 @@ export default {
 }
 
 #calendar-holder {
-  height: 700px;
+  height: 800px;
   .show-fullscreen {
     display: none;
   }

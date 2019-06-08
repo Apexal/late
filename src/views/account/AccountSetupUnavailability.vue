@@ -46,10 +46,11 @@
               <div class="control">
                 <input
                   id="latest"
-                  v-model="latest"
+                  :value="originalLatest"
                   type="time"
                   class="input is-small"
                   required
+                  @input="setLatest"
                 >
               </div>
             </div>
@@ -142,16 +143,24 @@ export default {
         this.$store.getters.getUnavailabilityAsEvents
       );
     },
+    originalLatest () {
+      const parts = this.latest.split(':');
+      const hours = parseInt(parts[0]);
+      if (hours >= 24) {
+        const fixedHours = String(hours - 24).padStart(2, '0');
+        const minutes = parts[1];
+        return `${fixedHours}:${minutes}`;
+      }
+
+      return this.latest;
+    },
     fixedLatest () {
       const rawEnd = moment(this.latest, 'HH:mm', true);
-
       if (rawEnd.isBefore(moment(this.earliest, 'HH:mm', true))) {
         let hours = (24 + rawEnd.hours()).toString();
         let minutes = rawEnd.minutes().toString();
-
         return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
       }
-
       return this.latest;
     }
   },
@@ -177,6 +186,9 @@ export default {
     this.calendar.events = this.$store.getters.getUnavailabilityAsEvents.slice();
   },
   methods: {
+    setLatest (event) {
+      this.latest = event.target.value;
+    },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType !== 'unavailability') return;
 
@@ -202,7 +214,8 @@ export default {
           const unavailability = {
             title: title || 'Busy',
             start: start.format('HH:mm'),
-            end: end.format('HH:mm'),
+            end:
+              end.format('HH:mm') === '00:00' ? '24:00' : end.format('HH:mm'),
             dow: [start.day()],
             isOneTime: false
           };
@@ -221,17 +234,21 @@ export default {
           unavailability
         );
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         return;
       }
 
       this.$store.commit('SET_USER', request.data.updatedUser);
 
-      this.$toasted.success(
-        `Added "${
+      this.$toast.open({
+        type: 'is-success',
+        message: `Added "${
           request.data.createdUnavailability.title
         }" to your unavailability.`
-      );
+      });
     },
     async removeUnavailability (unavailability) {
       let request;
@@ -241,19 +258,21 @@ export default {
           unavailability
         );
       } catch (e) {
-        this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         return;
       }
-
-      this.$toasted.success(
-        `Removed "${
+      this.$toast.open({
+        type: 'is-success',
+        message: `Removed "${
           request.data.deletedUnavailability.title
         }" from your unavailability.`
-      );
+      });
     },
     async saveTimePreferences () {
       this.loading = true;
-
       let request;
       try {
         request = await this.$http.post('/account/timepreference', {
@@ -262,16 +281,18 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        });
       }
-
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
-
       // Notify user of success
-      this.$toasted.show('Your study/work time limits have been saved.');
-
+      this.$toast.open({
+        type: 'is-success',
+        message: 'Your study/work time limits have been saved.'
+      });
       this.$router.push({ name: 'setup-integrations' });
-
       this.loading = false;
       this.saved = true;
     }

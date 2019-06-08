@@ -172,7 +172,10 @@ export default {
               description: 'This calender was created by LATE.'
             });
           } catch (e) {
-            this.$toasted.error(e.response.data.message);
+            this.$toast.open({
+              message: e.response.data.message,
+              type: 'is-danger'
+            });
             this.loading = false;
             return;
           }
@@ -184,9 +187,12 @@ export default {
 
           await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-          this.$toasted.success(
-            `Added '${createdCalendar.summary}' to your Google Calendar!`
-          );
+          this.$toast.open({
+            message: `Added '${
+              createdCalendar.summary
+            }' to your Google Calendar!`,
+            type: 'is-success'
+          });
 
           this.loading = false;
         }
@@ -206,7 +212,10 @@ export default {
               description: 'This calender was created by LATE.'
             });
           } catch (e) {
-            this.$toasted.error(e.response.data.message);
+            this.$toast.open({
+              message: e.response.data.message,
+              type: 'is-danger'
+            });
             this.loading = false;
             return;
           }
@@ -217,9 +226,12 @@ export default {
 
           await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-          this.$toasted.success(
-            `Added '${createdCalendar.summary}' to your Google Calendar!`
-          );
+          this.$toast.open({
+            message: `Added '${
+              createdCalendar.summary
+            }' to your Google Calendar!`,
+            type: 'is-success'
+          });
 
           this.loading = false;
         }
@@ -257,18 +269,24 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
 
       // Notify user of success
-      this.$toasted.show('Saved Google Calendar settings!');
+      this.$toast.open({
+        type: 'is-success',
+        message: 'Saved Google Calendar settings!'
+      });
 
       this.loading = false;
     },
     async reset (calendarType) {
-      this.$toasted.show('Coming soon...');
+      this.$toast.open({ type: 'is-success', message: 'Coming soon...' });
     }
   }
 };

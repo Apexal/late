@@ -142,7 +142,8 @@ const schema = new Schema(
         default: false
       } // when the student has connected their Google account
     },
-    terms: { // termCodes for all the terms they will be at school (able to use LATE)
+    terms: {
+      // termCodes for all the terms they will be at school (able to use LATE)
       type: Array,
       default: []
     },
@@ -175,13 +176,15 @@ schema.query.byDiscordID = function (discordID) {
 
 /* METHODS */
 
-schema.methods.courseFromCRN = function (currentTermCode, crn) {
-  return this.semester_schedules[currentTermCode].find(c => c.crn === crn);
+schema.methods.courseFromCRN = function (termCode, crn) {
+  return this.model('Course')
+    .findOne({ _student: this._id, termCode, crn })
+    .exec();
 };
 
 schema.methods.getAssignments = function (start, end, title, courseCRN) {
   let query = {
-    _student: this._id
+    $or: [{ _student: this._id }, { sharedWith: this.rcs_id }]
   };
 
   if (start) {
@@ -205,6 +208,7 @@ schema.methods.getAssignments = function (start, end, title, courseCRN) {
   return this.model('Assignment')
     .find(query)
     .populate('_blocks')
+    .populate('_student', '_id rcs_id name grad_year')
     .sort('dueDate')
     .sort('-priority')
     .exec();
@@ -236,6 +240,7 @@ schema.methods.getExams = function (start, end, title, courseCRN) {
   return this.model('Exam')
     .find(query)
     .populate('_blocks')
+    .populate('_student', '_id rcs_id name grad_year')
     .sort('date')
     .sort('-timeRemaining')
     .exec();

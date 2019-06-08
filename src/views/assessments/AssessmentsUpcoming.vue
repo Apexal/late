@@ -23,7 +23,9 @@
         <div class="panel">
           <p
             class="panel-heading is-unselectable key-heading"
-            :class="{ 'has-background-dark has-text-white' : groupBy === 'date' }"
+            :class="{
+              'has-background-dark has-text-white': groupBy === 'date'
+            }"
             :style="headerStyle(key)"
           >
             <span
@@ -62,7 +64,8 @@
     >
       <hr>
       <p class="has-text-centered has-text-grey">
-        {{ filteredFarFutureAssessments.length }} far future items {{ showingFutureAssessments ? 'shown' : 'hidden' }}
+        {{ filteredFarFutureAssessments.length }} far future items
+        {{ showingFutureAssessments ? "shown" : "hidden" }}
         <a
           @click="showingFutureAssessments = !showingFutureAssessments"
         >Toggle</a>
@@ -106,9 +109,6 @@ export default {
     };
   },
   computed: {
-    now () {
-      return this.$store.state.now;
-    },
     none () {
       return Object.keys(this.filteredLimitedAssessments).length === 0;
     },

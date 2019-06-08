@@ -7,20 +7,29 @@
         @click="$emit('toggle-assignment', assessment)"
       >
         <span
-          :class="[ assessment.completed ? 'fas fa-check-circle' : 'far fa-circle' ]"
+          :class="[
+            assessment.completed ? 'fas fa-check-circle' : 'far fa-circle'
+          ]"
           :title="toggleAssignmentTitle"
-          :style="{ 'color': course.color }"
+          :style="{ color: course.color }"
         />
       </span>
       <router-link
         class="assessment-link"
-        :title="(assessment.priority === 1 ? '(OPTIONAL) ' : '') + assessment.description.substring(0, 500)"
+        :title="
+          (assessment.priority === 1 ? '(OPTIONAL) ' : '') +
+            assessment.description.substring(0, 500)
+        "
         :to="linkToParams"
-        :class="{ [assessment.assessmentType]: true, 'priority': assessment.priority > 3, 'has-text-grey is-italic': assessment.priority === 1 }"
+        :class="{
+          [assessment.assessmentType]: true,
+          priority: assessment.priority > 3,
+          'has-text-grey is-italic': assessment.priority === 1
+        }"
       >
         <span
           v-if="assessmentType === 'exam'"
-          :style="{ 'color': course.color }"
+          :style="{ color: course.color }"
           class="icon exam-icon"
           :title="`${course.title} Exam`"
         >
@@ -28,10 +37,19 @@
         </span>
         <b class="course-title is-hidden-tablet">{{ course.title }}</b>
         {{ assessment.title }}
+        <i
+          v-if="assessmentType === 'assignment' && assessment.shared"
+          class="fas fa-users has-text-grey-light"
+          title="Shared assignment"
+        />
       </router-link>
       <span
         class="is-tooltip-left icon has-text-danger is-pulled-right"
-        :class="{ 'tooltip': assessmentType === 'exam' || (assessmentType === 'assignment' && !assessment.completed) }"
+        :class="{
+          tooltip:
+            assessmentType === 'exam' ||
+            (assessmentType === 'assignment' && !assessment.completed)
+        }"
         :data-tooltip="scheduleWarningTitle"
       >
         <i
@@ -42,7 +60,9 @@
       <small
         v-if="groupBy === 'date'"
         class="is-pulled-right has-text-grey"
-      >{{ timeFormat(assessment.date) }}</small>
+      >{{
+        timeFormat(assessment.date)
+      }}</small>
       <small
         v-else
         class="is-pulled-right tooltip is-tooltip-left has-text-grey"
@@ -70,9 +90,6 @@ export default {
     assessmentType () {
       return this.assessment.assessmentType;
     },
-    now () {
-      return this.$store.state.now;
-    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
     },
@@ -81,7 +98,9 @@ export default {
         this.course.title +
         ' Assignment' +
         (this.assessment.completedAt
-          ? ` | Completed ${this.shortDateTimeFormat(this.assessment.completedAt)}`
+          ? ` | Completed ${this.shortDateTimeFormat(
+            this.assessment.completedAt
+          )}`
           : '')
       );
     },
@@ -151,7 +170,8 @@ export default {
     cursor: pointer;
   }
 
-  .priority, .exam {
+  .priority,
+  .exam {
     font-weight: 500;
   }
 }

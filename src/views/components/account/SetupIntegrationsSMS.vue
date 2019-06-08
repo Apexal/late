@@ -143,10 +143,13 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
-      this.$toasted.info(request.data.message);
+      this.$toast.open({ type: 'is-success', message: request.data.message });
 
       this.loading = false;
       this.awaitingVerification = true;
@@ -163,16 +166,20 @@ export default {
         });
       } catch (e) {
         this.loading = false;
-        return this.$toasted.error(e.response.data.message);
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser);
 
-      this.$toasted.success(
-        `Successfully verified your phone number ${
+      this.$toast.open({
+        type: 'is-success',
+        message: `Successfully verified your phone number ${
           request.data.updatedUser.integrations.sms.phoneNumber
         }!`
-      );
+      });
 
       this.loading = false;
     },
@@ -187,22 +194,23 @@ export default {
             request = await this.$http.delete('/integrations/sms');
           } catch (e) {
             this.loading = false;
-            return this.$toasted.error(e.response.data.message);
+            return this.$toast.open({
+              message: e.response.data.message,
+              type: 'is-danger'
+            });
           }
 
           await this.$store.dispatch('SET_USER', request.data.updatedUser);
-          this.$toasted.success('Successfully disabled SMS integration!');
-
+          this.$toast.open({
+            type: 'is-success',
+            message: 'Successfully disabled SMS integration!'
+          });
           this.loading = false;
         }
       });
     },
     async resetPhoneNumber () {
-      this.$toasted.error('Coming soon!', {
-        icon: 'frown',
-        duration: 1000,
-        fullWidth: false
-      });
+      this.$toast.open({ type: 'is-danger', message: 'Coming soon!' });
     }
   }
 };

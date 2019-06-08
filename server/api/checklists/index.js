@@ -3,8 +3,9 @@ const router = new Router();
 
 const Ctrl = require('./checklists.controller');
 
-router.get('/', Ctrl.getChecklists);
-// router.post('/', Ctrl.createChecklist);
+router.get('/', Ctrl.getStudentChecklist);
+router.put('/', Ctrl.createOrUpdateChecklist);
+router.get('/:checklistID', Ctrl.getChecklist);
 // router.delete('/:checklistID', Ctrl.removeChecklist);
 
 module.exports = router.routes();

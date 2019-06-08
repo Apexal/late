@@ -11,7 +11,9 @@ async function getExamMiddleware (ctx, next) {
     exam = await Exam.findOne({
       _id: examID,
       _student: ctx.state.user._id
-    }).populate('_blocks');
+    })
+      .populate('_student', '_id rcs_id name grad_year')
+      .populate('_blocks');
   } catch (e) {
     logger.error(
       `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`

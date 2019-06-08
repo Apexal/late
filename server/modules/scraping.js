@@ -302,4 +302,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
   return courses;
 }
 
-module.exports = { scrapeSISForCourseSchedule, scrapePeriodTypesFromCRNs };
+module.exports = {
+  scrapeSISForCourseSchedule,
+  scrapePeriodTypesFromCRNs
+};

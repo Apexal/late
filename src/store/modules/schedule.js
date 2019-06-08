@@ -111,9 +111,11 @@ const actions = {
 
     return response.data.createdTerm;
   },
-  async GET_COURSES ({ commit }) {
+  async GET_COURSES ({ commit, dispatch }) {
     const response = await axios.get('/courses');
     commit('SET_COURSES', response.data.courses);
+
+    await dispatch('AUTO_UPDATE_SCHEDULE');
 
     return response.data.courses;
   },
@@ -159,7 +161,6 @@ const actions = {
       .map(course => course.periods.filter(p => p.day === day))
       .flat()
       .sort((a, b) => parseInt(a.start) - parseInt(b.start));
-
     // Check for current class
     const currentPeriod = dayPeriods.find(p => {
       const start = moment(dateStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true);

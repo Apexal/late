@@ -16,10 +16,7 @@
           :class="{ 'is-active': tab === 'overview' }"
           @click="tab = 'overview'"
         >
-          <a
-            title="(WIP) View your weekly schedule"
-            style="cursor: not-allowed;"
-          >Your Week</a>
+          <a title="View a detailed overview of the next few days">Overview</a>
         </li>
         <li
           :class="{ 'is-active': tab === 'calendar' }"
@@ -119,26 +116,9 @@ export default {
   margin-left: 5px;
 }
 
-#calendar-holder {
-  height: 700px;
-  .show-fullscreen {
-    display: none;
+@media only screen and (max-width: 769px) {
+  .fc-center {
+    margin-top: 10px;
   }
-  &:fullscreen {
-    padding: 15px;
-    background-color: white;
-    height: 95%;
-    .show-fullscreen {
-      display: initial;
-    }
-    .hide-fullscreen {
-      display: none;
-    }
-  }
-}
-.fullscreen-toggle {
-  float: right;
-  margin-top: -35px;
-  z-index: 10;
 }
 </style>

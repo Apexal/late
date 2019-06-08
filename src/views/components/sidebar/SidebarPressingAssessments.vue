@@ -39,7 +39,7 @@
         }"
       >
         <span class="is-fullwidth">
-          <i
+          <!-- <i
             class="fas"
             :class="[
               assessment.assessmentType === 'assignment'
@@ -51,11 +51,23 @@
             @click.prevent="
               $store.commit('OPEN_COURSE_MODAL', course(assessment))
             "
+          /> -->
+
+          <CourseAssessmentDot
+            :assessment="assessment"
+            :course="course(assessment)"
           />
           <b class="course-title is-hidden-tablet">
             {{ course(assessment).title }}
           </b>
           {{ assessment.title }}
+          <i
+            v-if="
+              assessment.assessmentType === 'assignment' && assessment.shared
+            "
+            class="fas fa-users has-text-grey-light"
+            title="Shared assignment"
+          />
           <small
             class="has-text-grey is-pulled-right tooltip is-tooltip-left"
             :data-tooltip="
@@ -88,11 +100,6 @@ export default {
       type: Array,
       default: () => [],
       required: true
-    }
-  },
-  computed: {
-    now () {
-      return this.$store.state.now;
     }
   },
   methods: {

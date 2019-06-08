@@ -41,9 +41,13 @@ async function addWorkBlock (ctx) {
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
-        _student: ctx.state.user._id,
+        $or: [
+          { _student: ctx.state.user._id },
+          { sharedWith: ctx.state.user.rcs_id }
+        ],
         _id: assessmentID
       })
+      .populate('_student', '_id rcs_id name grad_year')
       .populate('_blocks');
   } catch (e) {
     logger.error(
@@ -111,7 +115,6 @@ async function editWorkBlock (ctx) {
   const { startTime, endTime } = ctx.request.body;
 
   const editedBlock = await Block.findOne({
-    _student: ctx.state.user._id,
     _id: blockID
   });
 
@@ -131,9 +134,14 @@ async function editWorkBlock (ctx) {
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
-        _student: ctx.state.user._id,
+        $or: [
+          { _student: ctx.state.user._id },
+          { sharedWith: ctx.state.user.rcs_id }
+        ],
         _id: assessmentID
       })
+      .populate('_student', '_id rcs_id name grad_year')
+
       .populate('_blocks');
   } catch (e) {
     logger.error(
@@ -183,7 +191,6 @@ async function deleteWorkBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params;
 
   const removedBlock = await Block.findOne({
-    _student: ctx.state.user._id,
     _id: blockID
   });
   removedBlock.remove();
@@ -193,11 +200,14 @@ async function deleteWorkBlock (ctx) {
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
-        _student: ctx.state.user._id,
+        $or: [
+          { _student: ctx.state.user._id },
+          { sharedWith: ctx.state.user.rcs_id }
+        ],
         _id: assessmentID
       })
+      .populate('_student', '_id rcs_id name grad_year')
       .populate('_blocks');
-
     assessment._blocks = assessment._blocks.filter(
       b => b._id !== removedBlock._id
     );

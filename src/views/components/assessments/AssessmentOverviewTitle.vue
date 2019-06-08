@@ -1,42 +1,69 @@
 <template>
-  <div class="assessment-overview-title is-flex-tablet">
-    <router-link
-      :to="{ name: 'coursework-upcoming' }"
-      class="button is-link tooltip is-tooltip-bottom backButton"
-      :data-tooltip="`Browse all course work.`"
-    >
-      <span class="icon">
-        <i class="fas fa-angle-left" />
-      </span>
-    </router-link>
-
+  <div class="assessment-overview-title is-flex-desktop">
     <div
       v-if="!editing"
-      class="has-text-centered-mobile"
+      class="has-text-centered-touch"
     >
+      <router-link
+        :to="{ name: 'coursework-upcoming' }"
+        class="button is-link tooltip is-tooltip-bottom back-button"
+        data-tooltip="Browse all course work."
+      >
+        <span class="icon">
+          <i class="fas fa-angle-left" />
+        </span>
+      </router-link>
       <span
-        class="tag is-medium course-tag"
+        class="tag is-medium tooltip is-tooltip-bottom course-tag"
         :style="{ 'background-color': course.color }"
+        :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
         @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
         <b class="course-title">{{ course.title }}</b>
-        {{ assessment.passed ? "Past " : ""
-        }}{{
-          assessmentType === "assignment" && assessment.isRecurring
-            ? "Recurring "
-            : ""
-        }}{{ capitalizedAssessmentType }}
+        <span>
+          {{ assessment.passed ? "Past " : ""
+          }}{{
+            assessmentType === "assignment" && assessment.isRecurring
+              ? "Recurring "
+              : ""
+          }}
+        </span>
+        <i
+          class="fas"
+          :class="
+            assessmentType === 'assignment'
+              ? 'fa-clipboard-check'
+              : 'fa-exclamation-triangle'
+          "
+        />
       </span>
+      <b-button
+        v-if="assessmentType === 'assignment'"
+        class="is-hidden-desktop touch-complete-button"
+        type="is-success"
+        :outlined="!assessment.completed"
+        :disabled="!isOwner"
+        @click="$emit('toggle-completed')"
+      >
+        <i
+          class="fa-check-square"
+          :class="[assessment.completed ? 'fas' : 'far']"
+        />
+      </b-button>
     </div>
     <h1
       v-if="!editing"
-      class="title assessment-title has-text-centered-mobile"
+      class="title assessment-title has-text-centered-touch"
       style="flex: 1"
     >
-      <span class="pad">
-        {{ assessment.title }}
-      </span>
+      <span class="pad">{{ assessment.title }} </span>
       <i
+        v-if="assessmentType === 'assignment' && assessment.shared"
+        class="fas fa-users has-text-grey-light"
+        title="Shared assignment"
+      />
+      <i
+        v-if="assessmentType === 'exam' || isOwner"
         title="Edit title"
         class="fas fa-pencil-alt edit-title-icon has-text-grey"
         @click="editing = true"
@@ -74,19 +101,20 @@
 
     <div
       v-if="assessmentType === 'assignment'"
-      class="has-text-centered-mobile"
+      class="is-hidden-touch"
     >
       <button
         :title="toggleButtonTitle"
         class="button is-success toggle-complete"
         :class="{ 'is-outlined': !assessment.completed }"
+        :disabled="!isOwner"
         @click="$emit('toggle-completed')"
       >
         <i
           class="fa-check-square"
           :class="[assessment.completed ? 'fas' : 'far']"
         />
-        {{ assessment.completed ? "Completed" : "Incomplete" }}
+        {{ assessment.completed ? "Mark Incomplete" : "Mark Complete" }}
       </button>
     </div>
   </div>
@@ -109,6 +137,13 @@ export default {
     };
   },
   computed: {
+    isOwner () {
+      return (
+        this.assessment._student &&
+        (this.assessment._student === this.user._id ||
+        this.assessment._student._id === this.user._id)
+      );
+    },
     assessmentType () {
       return this.assessment.assessmentType;
     },
@@ -133,8 +168,9 @@ export default {
   methods: {
     async save () {
       if (
-        this.tempCourseCRN === this.assessment.courseCRN &&
-        this.tempTitle === this.assessment.title
+        (this.tempCourseCRN === this.assessment.courseCRN &&
+        this.tempTitle === this.assessment.title) ||
+        !this.isOwner
       ) {
         this.editing = false;
         return;
@@ -142,13 +178,14 @@ export default {
 
       let updatedAssessment;
       try {
-        updatedAssessment = await this.$store.dispatch(
-          'UPDATE_ASSESSMENT',
-          Object.assign(this.assessment, {
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessmentType,
+          updates: {
             title: this.tempTitle,
             courseCRN: this.tempCourseCRN
-          })
-        );
+          }
+        });
       } catch (e) {
         this.editing = false;
         this.$toast.open({
@@ -171,9 +208,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.backButton {
+.back-button {
   height: 2em;
-  margin-right: 5px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.touch-complete-button {
+  height: 2em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .edit-title-icon {
@@ -197,8 +241,9 @@ export default {
 
   .pad {
     background-color: white;
-    border-radius: 10px;
+    border-radius: 4px;
     padding: 0 10px;
+    margin-right: -10px;
   }
 
   &:hover {
@@ -228,11 +273,10 @@ export default {
 .course-tag {
   cursor: pointer;
   color: white;
+  border-radius: 0;
 
   .course-title {
     margin-right: 5px;
   }
-
-  margin-right: 10px;
 }
 </style>

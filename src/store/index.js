@@ -47,7 +47,6 @@ export default new Vuex.Store({
       let events = state.schedule.periods
         .filter(p => {
           if (p.type !== 'TES') return true;
-
           // Check if there is a test scheduled this day
           return !!state.assessments.upcomingAssessments.find(
             assessment =>

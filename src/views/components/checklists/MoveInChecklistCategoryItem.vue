@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     updateItemProgress (progress) {
-      this.$store.commit('UPDATE_CHECKLIST_ITEM', {
+      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
         updates: { progress }
@@ -62,12 +62,12 @@ export default {
     margin: 0;
   }
 
-  border-left: 5px solid rgb(255, 175, 175);
+  border-left: 3px solid rgb(255, 175, 175);
   &.completed {
-    border-left: 5px solid lightgreen;
+    border-left: 3px solid lightgreen;
   }
   &.in-progress {
-    border-left: 5px solid rgb(255, 253, 163);
+    border-left: 3px solid rgb(255, 253, 163);
   }
 }
 </style>
