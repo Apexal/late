@@ -322,7 +322,13 @@ export default {
     },
     async select (start, end) {
       // Only confirm with user if they are trying to add work block to the past
-      if (moment(start).isBefore(moment())) {
+      if (this.assessment.shared) {
+        this.$dialog.confirm({
+          message: 'Schedule work block for everyone in this group assignment?',
+          onConfirm: () => this.addWorkBlock(start, end),
+          onCancel: () => this.$refs.calendar.fireMethod('unselect')
+        });
+      } else if (moment(start).isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Add work block to the past?',
           onConfirm: () => this.addWorkBlock(start, end),
@@ -340,7 +346,9 @@ export default {
       const endStr = moment(calEvent.end).format('h:mm a');
 
       this.$dialog.confirm({
-        message: `Unschedule ${dateStr} from <b>${startStr}</b> to <b>${endStr}</b>?`,
+        message: `Unschedule ${dateStr} from <b>${startStr}</b> to <b>${endStr}</b>${
+          this.assessment.shared ? ' for everyone' : ''
+        }?`,
         onConfirm: () => this.removeWorkBlock(calEvent.blockID)
       });
     },
