@@ -34,10 +34,6 @@
             class="column is-3 sidebar-holder"
           >
             <TheSidebar ref="sidebar" />
-            <!-- <StudyToolsTimerOverlay
-              v-if="$route.path != '/studytools'"
-              :open="studyToolsTimerOpen"
-            /> -->
           </div>
         </transition>
 
@@ -73,6 +69,10 @@
             />
             <SISMan />
             <AssessmentsAddFAB v-if="!onBreak" />
+            <StudyToolsTimerOverlay
+              v-if="$route.path != '/studytools'"
+              :open="studyToolsTimerOpen"
+            />
           </template>
           <transition
             name="fade"

@@ -67,7 +67,7 @@
 
 <script>
 export default {
-  name: 'StudyToolsTimer',
+  name: 'StudyToolsTimerOverlay',
   props: {
     open: {
       type: Boolean,
@@ -99,15 +99,18 @@ export default {
 
 <style lang="scss" scoped>
 .study-tools-timer-overlay {
+  position: fixed;
+  left: 15px;
+  bottom: 15px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   z-index: 30;
   border-radius: 10px 0px 0px 0px;
   padding: 0;
-  width: 50%;
+  width: 10%;
   min-width: 300px;
   max-width: 600px;
   margin: 0 auto;
-  font-size: 5rem;
+  font-size: 2rem;
   .padding {
     padding: 0 35px 0px 15px;
   }
@@ -136,8 +139,9 @@ export default {
     font-weight: 100;
   }
 
-  .stage-title:after {
-    content: "- ";
+  @media only screen and (max-width: 768px) {
+    position: initial;
+    width: 100%;
   }
 }
 </style>
