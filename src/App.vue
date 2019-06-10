@@ -210,6 +210,8 @@ export default {
         this.$store.dispatch('AUTO_UPDATE_NOW')
       ]);
       await Promise.all(calls);
+
+      this.$socket.emit('authenticate', this.user._id);
     }
 
     this.loading = false;

@@ -6,9 +6,7 @@
     >
       <li class="chat-message notice">
         <i class="fas fa-smile-beam notice-icon" />
-        <div
-          class="panel-block has-text-grey no-hover"
-        >
+        <div class="panel-block has-text-grey no-hover">
           Please be courteous and helpful to your fellow students.
         </div>
       </li>
@@ -48,33 +46,31 @@
 </template>
 
 <script>
-import io from 'socket.io-client';
-
 export default {
   name: 'Chat',
   data () {
     return {
       messages: [],
       newMessage: '',
-      onlineCount: 0,
-      socket: io('localhost:3000')
+      onlineCount: 0
     };
   },
   created () {
-    this.socket.on('messages', messages => {
+    this.$socket.emit('get messages');
+    this.$socket.on('messages', messages => {
       this.messages = messages;
       this.$nextTick(() => {
         this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
       });
     });
 
-    this.socket.on('online count', onlineCount => {
+    this.$socket.on('online count', onlineCount => {
       this.onlineCount = onlineCount;
     });
   },
   methods: {
     sendMessage () {
-      this.socket.emit('message', {
+      this.$socket.emit('message', {
         author: this.user.first_name,
         text: this.newMessage
       });
