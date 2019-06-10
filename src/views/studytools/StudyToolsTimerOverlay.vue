@@ -1,8 +1,7 @@
 <template>
   <div
     v-if="open"
-    class="study-tools-timer has-background-dark has-text-white has-text-centered"
-    :class="{ detached }"
+    class="study-tools-timer-overlay has-background-dark has-text-white has-text-centered"
   >
     <audio
       ref="audio"
@@ -18,7 +17,6 @@
     </progress>
 
     <span
-      v-if="detached"
       title="Dismiss the timer"
       class="delete dismiss-timer"
       @click="$store.dispatch('SET_STUDY_TOOLS_TIMER_OPEN', false)"
@@ -33,36 +31,32 @@
     </div>
     <div class="buttons has-addons is-flex is-fullwidth">
       <button
-        class="button"
+        class="button is-small"
         title="Skip to prev stage"
-        :class="{ 'is-small': detached }"
         @click="$store.commit('STUDY_TOOLS_TIMER_PREV_STAGE')"
       >
         <i class="fas fa-step-backward" />
       </button>
       <button
-        class="button is-success"
+        class="button is-success is-small"
         title="Play/pause timer"
-        :class="{ 'is-small': detached }"
         @click="$store.dispatch('TOGGLE_STUDY_TOOLS_TIMER')"
       >
         <i
           class="fas"
-          :class="[ paused ? 'fa-play' : 'fa-pause' ]"
+          :class="[paused ? 'fa-play' : 'fa-pause']"
         />
       </button>
       <button
         title="Reset current stage"
-        class="button is-danger"
-        :class="{ 'is-small': detached }"
+        class="button is-danger is-small"
         @click="$store.commit('RESET_STUDY_TOOLS_TIMER')"
       >
         <i class="fas fa-history" />
       </button>
       <button
-        class="button"
+        class="button is-small"
         title="Skip to next stage"
-        :class="{ 'is-small': detached }"
         @click="$store.commit('STUDY_TOOLS_TIMER_NEXT_STAGE')"
       >
         <i class="fas fa-step-forward" />
@@ -75,10 +69,6 @@
 export default {
   name: 'StudyToolsTimer',
   props: {
-    detached: {
-      type: Boolean,
-      default: false
-    },
     open: {
       type: Boolean,
       default: true
@@ -108,8 +98,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.study-tools-timer {
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+.study-tools-timer-overlay {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   z-index: 30;
   border-radius: 10px 0px 0px 0px;
   padding: 0;
@@ -120,18 +110,6 @@ export default {
   font-size: 5rem;
   .padding {
     padding: 0 35px 0px 15px;
-  }
-  &.detached {
-    position: fixed;
-    bottom: 8px;
-
-    right: 0px;
-    @media screen and (max-width: 1280px) {
-      right: unset;
-      left: 10px;
-    }
-    font-size: 2rem;
-    width: fit-content;
   }
 
   button {

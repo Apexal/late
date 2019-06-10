@@ -37,6 +37,10 @@
               ref="sidebar"
               @sidebar-loaded="onResize"
             />
+            <!-- <StudyToolsTimerOverlay
+              v-if="$route.path != '/studytools'"
+              :open="studyToolsTimerOpen"
+            /> -->
           </div>
         </transition>
 
@@ -48,11 +52,6 @@
         >
           <template v-if="loggedIn">
             <PinnedAnnouncements v-if="loggedIn" />
-            <StudyToolsTimer
-              v-if="$route.path != '/studytools'"
-              :detached="true"
-              :open="studyToolsTimerOpen"
-            />
             <AssignmentsModalAdd
               v-if="!onBreak"
               :open="addAssignmentModalExpanded"
@@ -102,7 +101,7 @@ import CourseModal from '@/views/components/courses/CourseModal';
 import PinnedAnnouncements from '@/views/components/announcements/PinnedAnnouncements';
 import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
 
-import StudyToolsTimer from '@/views/studytools/StudyToolsTimerOverlay';
+import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
 import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB';
 
 import SISMan from '@/views/components/sisman/SISMan';
@@ -119,7 +118,7 @@ export default {
     AnnouncementsModal,
     PinnedAnnouncements,
     AssessmentsAddFAB,
-    StudyToolsTimer,
+    StudyToolsTimerOverlay,
     SISMan
   },
   data () {
