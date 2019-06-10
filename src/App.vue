@@ -33,10 +33,7 @@
             id="sidebar-column"
             class="column is-3 sidebar-holder"
           >
-            <TheSidebar
-              ref="sidebar"
-              @sidebar-loaded="onResize"
-            />
+            <TheSidebar ref="sidebar" />
             <!-- <StudyToolsTimerOverlay
               v-if="$route.path != '/studytools'"
               :open="studyToolsTimerOpen"
@@ -170,10 +167,6 @@ export default {
     }
   },
   async mounted () {
-    if (typeof window.orientation === 'undefined') {
-      window.addEventListener('resize', this.resizeThrottler, false);
-    }
-
     if (this.$route.query.accountLocked) {
       this.loading = false;
       return this.$toast.open({
@@ -212,26 +205,6 @@ export default {
     }
 
     this.loading = false;
-  },
-  methods: {
-    resizeThrottler () {
-      // ignore resize events as long as an actualResizeHandler execution is in the queue
-      if (!this.resizeTimeout) {
-        this.resizeTimeout = setTimeout(() => {
-          this.resizeTimeout = null;
-          this.onResize();
-          // The actualResizeHandler will execute at a rate of 15fps
-        }, 66);
-      }
-    },
-    onResize () {
-      // if (document.getElementById('sidebar').style.position === 'fixed') {
-      if (document.getElementById('sidebar-column')) {
-        document.getElementById('sidebar').style.width =
-          document.getElementById('sidebar-column').offsetWidth - 15 + 'px';
-      }
-      // }
-    }
   }
 };
 </script>

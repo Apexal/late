@@ -4,7 +4,9 @@
     class="menu"
   >
     <div class="panel">
-      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
+      <p
+        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
+      >
         <span
           class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
           title="Toggle sidebar"
@@ -169,7 +171,7 @@ export default {
     }
   },
   mounted () {
-    this.$emit('sidebar-loaded');
+    // this.$emit('sidebar-loaded');
   },
   methods: {
     updatedCount ({ tab, count }) {
@@ -197,6 +199,13 @@ export default {
 
 <style lang='scss'>
 #sidebar {
+  @media only screen and (min-width: 768px) {
+    position: sticky;
+    width: 100%;
+    top: 70px;
+    padding: 20px 15px;
+  }
+
   .panel {
     background-color: white;
   }
@@ -222,14 +231,7 @@ export default {
     border-radius: 0px 0px 4px 4px;
   }
 
-  position: fixed;
-
-  @media only screen and (max-width: 768px) {
-    position: initial;
-  }
-
   z-index: 2;
-  padding: 19px 15px;
 
   .panel-tabs {
     display: flex;
@@ -299,24 +301,6 @@ export default {
   }
   a:hover {
     background-color: #dbdbdb;
-  }
-}
-
-@media only screen and (max-width: 769px) {
-  //Very hardcodey solution to sidebar on mobile.
-  #sidebar {
-    width: calc(100vw + 1px) !important;
-    min-width: 300px;
-    padding: 0px !important;
-    margin-left: -12px !important;
-    margin-top: -1rem !important;
-    border-radius: 0px;
-  }
-
-  .panel
-    .is-size-7
-    div:last-child:not(.control):not(.course-panel-block):not(.event):not(.has-text-grey) {
-    border-radius: 0px !important;
   }
 }
 </style>
