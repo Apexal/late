@@ -279,7 +279,7 @@ export default {
         };
         el.find('.fc-content').append(deleteButton);
 
-        if (event.assessment.shared) {
+        if (event.assessment.shared && event.block.shared) {
           const sharedIcon = document.createElement('i');
           sharedIcon.className = 'fas fa-users margin-left';
           el.find('.fc-title').append(sharedIcon);

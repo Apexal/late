@@ -12,6 +12,7 @@ const schema = new Schema(
       ref: 'Student',
       required: true
     },
+    shared: { type: Boolean, default: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     locked: { type: Boolean, default: false },

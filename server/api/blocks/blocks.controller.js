@@ -18,7 +18,7 @@ const google = require('../../modules/google');
  */
 async function addWorkBlock (ctx) {
   const { assessmentType, assessmentID } = ctx.params;
-  const { startTime, endTime } = ctx.request.body;
+  const { startTime, endTime, shared } = ctx.request.body;
 
   const newBlock = new Block({
     _student: ctx.state.user._id,
@@ -26,7 +26,8 @@ async function addWorkBlock (ctx) {
     endTime,
     completed: false,
     locked: false,
-    notified: false
+    notified: false,
+    shared
   });
 
   try {

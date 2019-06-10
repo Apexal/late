@@ -186,6 +186,16 @@ export default {
                 event.course.endDate
               );
             }
+
+            if (
+              event.eventType === 'work-block' &&
+              this.assessment.shared &&
+              event.block.shared
+            ) {
+              const sharedIcon = document.createElement('i');
+              sharedIcon.className = 'fas fa-users margin-left';
+              el.find('.fc-title').append(sharedIcon);
+            }
           },
           buttonText: {
             agendaWeek: 'Weekly Agenda'
@@ -324,9 +334,12 @@ export default {
       // Only confirm with user if they are trying to add work block to the past
       if (this.assessment.shared) {
         this.$dialog.confirm({
-          message: 'Schedule work block for everyone in this group assignment?',
+          message:
+            'Schedule work block for everyone in this group assignment or just you?',
+          cancelText: 'Just Me',
+          confirmText: 'Group',
           onConfirm: () => this.addWorkBlock(start, end),
-          onCancel: () => this.$refs.calendar.fireMethod('unselect')
+          onCancel: () => this.addWorkBlock(start, end, false)
         });
       } else if (moment(start).isBefore(moment())) {
         this.$dialog.confirm({
@@ -377,11 +390,12 @@ export default {
         this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
       }
     },
-    async addWorkBlock (start, end) {
+    async addWorkBlock (start, end, shared = true) {
       const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
         assessment: this.assessment,
         start,
-        end
+        end,
+        shared
       });
 
       this.$emit('updated-assessment', updatedAssessment);
