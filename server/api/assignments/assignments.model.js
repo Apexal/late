@@ -64,46 +64,6 @@ const schema = new Schema(
 schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });
 
-schema.statics.getAllMissedAssignmentsForDay = function (day) {
-  const now = new Date();
-  let query = {
-    _student: '5bd388faa64e550215f688ca', // matraf for testing
-    completed: false,
-    dueDate: {
-      $gte: day,
-      $lt: now
-    }
-  };
-
-  return this.model('Assignment')
-    .find(query)
-    .select(
-      '_student courseCRN title description dueDate priority timeRemaining'
-    )
-    .populate('_student', 'name semester_schedules rcs_id rin integrations')
-    .populate('_blocks')
-    .populate('_student', '_id rcs_id name grad_year')
-    .sort('dueDate')
-    .sort('-priority')
-    .exec();
-};
-
-schema.statics.getAllUpcomingAssignments = function () {
-  let query = {
-    dueDate: {
-      $gte: new Date()
-    }
-  };
-
-  return this.model('Assignment')
-    .find(query)
-    .populate('_blocks')
-    .populate('_student', '_id rin name grad_year rcs_id rin integrations')
-    .sort('dueDate')
-    .sort('-priority')
-    .exec();
-};
-
 schema.virtual('assessmentType').get(function () {
   return 'assignment';
 });

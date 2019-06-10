@@ -49,7 +49,19 @@ async function addWorkBlock (ctx) {
         _id: assessmentID
       })
       .populate('_student', '_id rcs_id name grad_year')
-      .populate('_blocks');
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} to add new work block for ${
@@ -143,7 +155,19 @@ async function editWorkBlock (ctx) {
       })
       .populate('_student', '_id rcs_id name grad_year')
 
-      .populate('_blocks');
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} for work block edit for ${
@@ -208,7 +232,19 @@ async function deleteWorkBlock (ctx) {
         _id: assessmentID
       })
       .populate('_student', '_id rcs_id name grad_year')
-      .populate('_blocks');
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
     assessment._blocks = assessment._blocks.filter(
       b => b._id !== removedBlock._id
     );

@@ -23,7 +23,19 @@ async function getAssignmentMiddleware (ctx, next) {
         { shared: true, sharedWith: ctx.state.user.rcs_id }
       ]
     })
-      .populate('_blocks')
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: ctx.state.user._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      })
       .populate('_student', '_id rcs_id name grad_year')
       .populate('comments._student', '_id rcs_id name grad_year');
   } catch (e) {
@@ -47,7 +59,7 @@ async function getAssignmentMiddleware (ctx, next) {
   }
 
   ctx.state.assignment = assignment;
-  ctx.state.isAssignmentOwner = assignment._id === ctx.state.user._id;
+  ctx.state.isAssignmentOwner = assignment._id.equals(ctx.state.user._id);
 
   await next();
 }

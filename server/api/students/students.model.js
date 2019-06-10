@@ -207,7 +207,19 @@ schema.methods.getAssignments = function (start, end, title, courseCRN) {
 
   return this.model('Assignment')
     .find(query)
-    .populate('_blocks')
+    .populate({
+      path: '_blocks',
+      match: {
+        $or: [
+          {
+            _student: this._id
+          },
+          {
+            shared: true
+          }
+        ]
+      }
+    })
     .populate('_student', '_id rcs_id name grad_year')
     .sort('dueDate')
     .sort('-priority')
