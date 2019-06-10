@@ -384,10 +384,7 @@ export default {
         end
       });
 
-      if (!this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
-        // Updated past assessment, send up to parent overview
-        this.$emit('updated-assessment', updatedAssessment);
-      }
+      this.$emit('updated-assessment', updatedAssessment);
 
       this.$toast.open({
         message: 'Added work block to your schedule!',
@@ -406,11 +403,7 @@ export default {
 
       let message = 'Rescheduled work block!';
 
-      if (!this.$store.getters.getUpcomingAssessmentById(this.assessment._id)) {
-        message = 'Edited past work block!';
-        // Updated past assessment, send up to parent overview
-        this.$emit('updated-assessment', updatedAssessment);
-      }
+      this.$emit('updated-assessment', updatedAssessment);
 
       this.$toast.open({
         message,
@@ -428,13 +421,7 @@ export default {
       });
       let message = 'Removed work block from your schedule!';
 
-      if (
-        // eslint-disable-next-line
-        !this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
-      ) {
-        message = 'Removed work block from your past schedule!';
-        this.$emit('updated-assessment', updatedAssessment);
-      }
+      this.$emit('updated-assessment', updatedAssessment);
 
       this.$toast.open({
         message,
