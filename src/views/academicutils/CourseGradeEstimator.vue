@@ -9,6 +9,20 @@
       @submit.prevent="addCategory"
     >
       <b-field grouped>
+        <b-field v-if="loggedIn">
+          <b-select
+            v-model="selectedCourseCRN"
+            placeholder="Choose course"
+          >
+            <option
+              v-for="(course, index) in courses"
+              :key="course.crn"
+              :value="course.crn"
+            >
+              {{ course.title }}
+            </option>
+          </b-select>
+        </b-field>
         <b-field>
           <b-input
             v-model.trim="newCategory"
@@ -101,6 +115,19 @@
         Add grades for each category!
       </span>
     </div>
+
+    <hr>
+
+    <div
+      v-if="loggedIn && selectedCourse"
+      class="buttons"
+    >
+      <b-button
+        @click="save"
+      >
+        Save Categories for {{ selectedCourse.title }}
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -109,11 +136,15 @@ export default {
   name: 'CourseGradeEstimator',
   data () {
     return {
+      selectedCourseCRN: '00000',
       newCategory: '',
       categories: []
     };
   },
   computed: {
+    selectedCourse () {
+      return this.courses.find(c => c.crn === this.selectedCourseCRN);
+    },
     totalWeight () {
       return this.categories.reduce(
         (acc, category) => acc + category.weight,
@@ -139,7 +170,58 @@ export default {
       );
     }
   },
+  watch: {
+    courses: 'getCategories',
+    selectedCourseCRN: 'getCategories'
+  },
+  mounted () {
+    this.getCategories();
+  },
   methods: {
+    getCategories () {
+      if (this.loggedIn) {
+        if (this.selectedCourse) {
+          this.categories = this.selectedCourse.gradingCategories.map(cat => ({
+            ...cat,
+            values: []
+          }));
+        }
+      } else {
+        return JSON.parse(
+          localStorage.getItem('courseGradeEstimatorCategories')
+        );
+      }
+    },
+    async save () {
+      if (this.loggedIn) {
+        let updatedCourse;
+        try {
+          updatedCourse = await this.$store.dispatch(
+            'UPDATE_COURSE',
+            Object.assign({}, this.selectedCourse, {
+              gradingCategories: this.categories
+            })
+          );
+        } catch (e) {
+          let message = e.response ? e.response.data.message : e.message;
+          this.$toast.open({
+            duration: 5000,
+            message,
+            type: 'is-danger'
+          });
+        }
+
+        this.$toast.open({
+          type: 'is-success',
+          message: 'Saved grading categories for ' + this.selectedCourse.title
+        });
+      } else {
+        localStorage.setItem(
+          'courseGradeEstimatorCategories',
+          JSON.stringify(this.categories)
+        );
+      }
+    },
     relativeSizeClass (weight) {
       if (weight >= 90) {
         return 'is-size-1';
@@ -179,6 +261,8 @@ export default {
         values: []
       });
       this.newCategory = '';
+
+      if (!this.loggedIn) this.save();
     }
   }
 };
