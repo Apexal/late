@@ -1,3 +1,4 @@
+<!--Courses: Course calendar-->
 <template>
   <div class="course-schedule-calendar">
     <FullCalendar
@@ -40,7 +41,10 @@ export default {
   methods: {
     eventRender (event) {
       if (event.eventType === 'course') {
-        return moment(event.end).isBetween(event.course.startDate, event.course.endDate);
+        return moment(event.end).isBetween(
+          event.course.startDate,
+          event.course.endDate
+        );
       }
     },
     eventClick (calEvent, jsEvent, view) {
@@ -53,5 +57,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

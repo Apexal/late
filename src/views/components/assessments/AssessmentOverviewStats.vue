@@ -1,7 +1,6 @@
+<!--Assessments: assessment overview priority and due date module-->
 <template>
-  <nav
-    class="box level assessment-stats has-background-grey-darker has-text-white"
-  >
+  <nav class="box level assessment-stats has-background-grey-darker has-text-white">
     <div class="level-item has-text-centered">
       <div>
         <p

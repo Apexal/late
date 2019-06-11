@@ -1,3 +1,4 @@
+<!--Modals: View all announcements-->
 <template>
   <b-modal
     has-modal-card

@@ -1,3 +1,4 @@
+<!--Modal: Course overview modal-->
 <template>
   <b-modal
     class="course-modal"

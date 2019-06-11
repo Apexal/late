@@ -1,3 +1,4 @@
+<!--Not found page-->
 <template>
   <div class="not-found">
     <section class="section">

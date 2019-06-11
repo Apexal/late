@@ -1,3 +1,4 @@
+<!--Assessment: Overview page action buttons module-->
 <template>
   <div class="assessment-actions clearfix">
     <b-button

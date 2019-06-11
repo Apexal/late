@@ -1,6 +1,7 @@
+<!--Admin: User overview module-->
 <template>
   <div
-    class="user-overview "
+    class="user-overview"
     @toggle="getStats()"
   >
     <b-taglist class="setup-checks">

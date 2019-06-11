@@ -1,3 +1,4 @@
+<!--Modal: Calendar event modal-->
 <template>
   <b-modal
     :active="open"
@@ -13,10 +14,10 @@
         :href="event.eventURL"
         target="_blank"
       >More info</a>
-      <span
-        class="has-text-grey"
-      >{{ longDateFormat(event.start) }}
-        {{ event.allDay ? "" : "to " + longDateFormat(event.end) }}</span>
+      <span class="has-text-grey">
+        {{ longDateFormat(event.start) }}
+        {{ event.allDay ? "" : "to " + longDateFormat(event.end) }}
+      </span>
     </div>
   </b-modal>
 </template>

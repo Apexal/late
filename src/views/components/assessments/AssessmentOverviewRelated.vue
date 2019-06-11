@@ -1,3 +1,4 @@
+<!--Assessments: assessment overview related assignments module-->
 <template>
   <div class="related-assessments">
     <AssessmentsTable

@@ -1,3 +1,4 @@
+<!--Admin: Student list module-->
 <template>
   <div class="admin-user-list">
     <b-loading
@@ -16,7 +17,6 @@
       </small>
     </h2>
 
-
     <b-table
       ref="table"
       :data="students"
@@ -30,18 +30,14 @@
           label="RCS ID"
           width="40"
         >
-          <a @click="toggle(props.row)">
-            {{ props.row.rcs_id }}
-          </a>
+          <a @click="toggle(props.row)">{{ props.row.rcs_id }}</a>
         </b-table-column>
 
         <b-table-column
           field="name.first"
           label="First Name"
         >
-          <span v-if="props.row.name">
-            {{ props.row.name.first || '---' }}
-          </span>
+          <span v-if="props.row.name">{{ props.row.name.first || '---' }}</span>
           <span v-else>---</span>
         </b-table-column>
 
@@ -49,9 +45,7 @@
           field="name.last"
           label="Last Name"
         >
-          <span v-if="props.row.name">
-            {{ props.row.name.last || '---' }}
-          </span>
+          <span v-if="props.row.name">{{ props.row.name.last || '---' }}</span>
           <span v-else>---</span>
         </b-table-column>
 
@@ -133,7 +127,10 @@ export default {
       try {
         request = await this.$http.get('/students');
       } catch (e) {
-        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
         this.students = [];
         this.loading = false;
         return;

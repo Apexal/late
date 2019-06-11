@@ -1,3 +1,4 @@
+<!--Account: Notifications preferences module-->
 <template>
   <div class="integrations-preferences">
     <form @submit.prevent="save">

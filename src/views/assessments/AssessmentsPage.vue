@@ -1,3 +1,4 @@
+<!--Assessments: All assessments list page-->
 <template>
   <section class="section assessment-list">
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">

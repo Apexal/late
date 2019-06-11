@@ -1,3 +1,4 @@
+<!--Admin: Log module-->
 <template>
   <div class="admin-log content">
     <b-loading

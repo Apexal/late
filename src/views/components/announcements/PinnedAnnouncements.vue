@@ -1,3 +1,4 @@
+<!--Pinned announcement module-->
 <template>
   <section
     v-if="pinnedAnnouncements.length > 0"
@@ -79,6 +80,5 @@ export default {
   //     margin-bottom: 3px;
   //   }
   // }
-
 }
 </style>

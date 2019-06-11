@@ -1,3 +1,4 @@
+<!--Sidebar: Course list module-->
 <template>
   <div class="sidebar-course-list">
     <div

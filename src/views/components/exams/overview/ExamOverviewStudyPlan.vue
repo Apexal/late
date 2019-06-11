@@ -1,3 +1,4 @@
+<!--Assessments: Overview exam study plan module-->
 <template>
   <div class="exam-overview-study-plan">
     <b-notification
@@ -13,8 +14,11 @@
           <b>Study Plan Help</b>
         </summary>You can keep track of your plan of attack for studying for exams here.
         Use this to plan out categorically how you will study. You can create
-        categories such as <code>Chapter 1</code>, <code>Chapter 2</code>, etc.
-        with checkpoints for each such as <code>Reread textbook</code>,
+        categories such as
+        <code>Chapter 1</code>,
+        <code>Chapter 2</code>, etc.
+        with checkpoints for each such as
+        <code>Reread textbook</code>,
         <code>Do pratice test</code>, etc. You can also add multiple
         categories/checkpoints at the same time by separating them with a
         semicolon, e.g.

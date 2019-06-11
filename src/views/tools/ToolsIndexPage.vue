@@ -1,3 +1,4 @@
+<!--Tools: Main listing page-->
 <template>
   <section class="section tools-page">
     <h1 class="title has-text-centered-mobile">
@@ -53,7 +54,8 @@
               Quick Links
             </p>
             <p class="subtitle">
-              Student curated list of useful <b>RPI</b> related links
+              Student curated list of useful
+              <b>RPI</b> related links
             </p>
           </router-link>
           <router-link

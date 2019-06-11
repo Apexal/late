@@ -1,3 +1,4 @@
+<!--Assessments: assessment overview comments module-->
 <template>
   <div class="assessment-comments">
     <div

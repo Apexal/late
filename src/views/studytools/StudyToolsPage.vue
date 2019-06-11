@@ -1,3 +1,4 @@
+<!--Tools: Timer page-->
 <template>
   <div
     v-if="open"
@@ -31,8 +32,12 @@
         <li class="subtitle">
           How to use the Pomodoro Technique:
         </li>
-        <li><i class="fas fa-tasks" />Decide on one task to complete.</li>
-        <li><i class="fas fa-clock" />Start the work timer.</li>
+        <li>
+          <i class="fas fa-tasks" />Decide on one task to complete.
+        </li>
+        <li>
+          <i class="fas fa-clock" />Start the work timer.
+        </li>
         <li>
           <i class="fas fa-cogs" />Work on that task until the timer rings.
         </li>
@@ -47,9 +52,7 @@
     </section>
 
     <div class="column tools-container">
-      <div
-        class="study-tools-timer has-background-dark has-text-white has-text-centered"
-      >
+      <div class="study-tools-timer has-background-dark has-text-white has-text-centered">
         <audio
           ref="audio"
           src="/foghorn.wav"

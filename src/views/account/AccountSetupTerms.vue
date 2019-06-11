@@ -1,3 +1,4 @@
+<!--Account Setup: Term selection-->
 <template>
   <div class="account-setup-terms">
     <h2 class="is-size-4 integration-note">

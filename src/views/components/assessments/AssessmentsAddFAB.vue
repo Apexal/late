@@ -1,3 +1,4 @@
+<!--Dashboard: Add assessment FAB-->
 <template>
   <div class="fab is-hidden-widescreen">
     <span class="fab-action-button">
@@ -66,20 +67,20 @@ export default {
   display: block;
   width: 56px;
   height: 56px;
-  background-color: #29B6F6;
+  background-color: #29b6f6;
   border-radius: 50%;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
+    0 3px 1px -2px rgba(0, 0, 0, 0.2);
   i {
     width: 100%;
     text-align: center;
     line-height: 56px;
     vertical-align: middle;
-    transition:0.1s;
+    transition: 0.1s;
     transition-timing-function: ease-in-out;
     color: white;
   }
 }
-
 
 //Spin effect
 .fab-action-button:hover i {
@@ -89,7 +90,7 @@ export default {
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
   cursor: pointer;
-  transition:0.1s;
+  transition: 0.1s;
   transition-timing-function: ease-out;
 }
 
@@ -119,12 +120,13 @@ export default {
   text-decoration: none;
   background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
+    0 3px 1px -2px rgba(0, 0, 0, 0.2);
   transform: scaleY(0.5) scaleX(0.5) translateY(10px) translateX(0px);
-  -moz-transition: .3s;
-  -webkit-transition: .3s;
-  -o-transition: .3s;
-  transition: .3s;
+  -moz-transition: 0.3s;
+  -webkit-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
 
   i {
     width: 100%;
@@ -141,7 +143,6 @@ export default {
     transition-timing-function: ease-out;
   }
 }
-
 
 [data-tooltip]:before {
   top: 50%;
@@ -162,7 +163,7 @@ export default {
   right: 100%;
   white-space: nowrap;
   transform-origin: top right;
-  transition: all .3s cubic-bezier(.25, .8, .25, 1);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 [data-tooltip]:hover:before {
@@ -177,5 +178,4 @@ export default {
   width: 40px;
   height: 40px;
 }
-
 </style>

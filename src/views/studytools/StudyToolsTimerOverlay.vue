@@ -1,3 +1,4 @@
+<!--Tools: Timer overlay module-->
 <template>
   <div
     v-if="open"
@@ -22,9 +23,7 @@
       @click="$store.dispatch('SET_STUDY_TOOLS_TIMER_OPEN', false)"
     />
     <div class="padding">
-      <span class="stage-title">
-        {{ currentStage.title }}
-      </span>
+      <span class="stage-title">{{ currentStage.title }}</span>
       <span class="minutes">{{ minutes }}</span>
       <span class="separator">:</span>
       <span class="seconds">{{ seconds }}</span>

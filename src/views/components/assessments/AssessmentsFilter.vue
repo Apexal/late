@@ -1,3 +1,4 @@
+<!--Assessments: assessment list filter module-->
 <template>
   <details
     class="assessments-filter has-background-light box"

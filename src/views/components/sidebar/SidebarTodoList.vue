@@ -1,3 +1,4 @@
+<!--Sidebar: To-do list module-->
 <template>
   <div class="todos">
     <form @submit.prevent="addTodo">
@@ -19,9 +20,7 @@
       @click="removeTodo(t)"
     >
       <span class="is-fullwidth">
-        <small class="todo-time is-pulled-right has-text-grey">
-          {{ fromNow(t.addedAt) }}
-        </small>
+        <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.addedAt) }}</small>
         {{ t.text }}
       </span>
     </div>

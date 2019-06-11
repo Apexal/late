@@ -1,3 +1,4 @@
+<!--Dashboard: Main calendar view-->
 <template>
   <div id="calendar-holder">
     <DashboardCalendarSelectModal

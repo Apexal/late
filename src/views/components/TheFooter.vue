@@ -1,3 +1,4 @@
+<!--Footer module-->
 <template>
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">

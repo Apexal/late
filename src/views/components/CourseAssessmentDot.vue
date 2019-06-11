@@ -1,3 +1,4 @@
+<!--Sidebar/Assessments: Colored course dot module-->
 <template>
   <i
     class="course-assessment-dot"

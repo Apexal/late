@@ -1,3 +1,4 @@
+<!--Assessments: assessment overview title module-->
 <template>
   <div class="assessment-overview-title is-flex-desktop">
     <div
@@ -56,7 +57,7 @@
       class="title assessment-title has-text-centered-touch"
       style="flex: 1"
     >
-      <span class="pad">{{ assessment.title }} </span>
+      <span class="pad">{{ assessment.title }}</span>
       <i
         v-if="assessmentType === 'assignment' && assessment.shared"
         class="fas fa-users has-text-grey-light"

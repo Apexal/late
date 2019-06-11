@@ -1,3 +1,4 @@
+<!--Assessments: Exam overview tabs module-->
 <template>
   <div
     id="exam-overview-tabs"
@@ -10,12 +11,12 @@
           @click="$emit('set-tab', 'schedule')"
         >
           <a>
-            <span
-              class="icon is-small"
-            ><i
-              class="fas fa-calendar-alt"
-              aria-hidden="true"
-            /></span>
+            <span class="icon is-small">
+              <i
+                class="fas fa-calendar-alt"
+                aria-hidden="true"
+              />
+            </span>
             <span>Work Schedule</span>
 
             <span
@@ -30,15 +31,13 @@
           @click="$emit('set-tab', 'studyPlan')"
         >
           <a>
-            <span
-              class="icon is-small"
-            ><i
-              class="fas fa-list-ol"
-              aria-hidden="true"
-            /></span>
-            <span>
-              Study Plan
+            <span class="icon is-small">
+              <i
+                class="fas fa-list-ol"
+                aria-hidden="true"
+              />
             </span>
+            <span>Study Plan</span>
             <span
               v-if="studyPlanMade"
               class="tag is-success"
@@ -55,19 +54,21 @@
           @click="$emit('set-tab', 'comments')"
         >
           <a>
-            <span
-              class="icon is-small"
-            ><i
-              class="fas fa-comments"
-              aria-hidden="true"
-            /></span>
+            <span class="icon is-small">
+              <i
+                class="fas fa-comments"
+                aria-hidden="true"
+              />
+            </span>
             <span>Comments</span>
             <span
               v-if="hasComments"
               class="tag is-dark comment-count"
-            >{{
-              exam.comments.length
-            }}</span>
+            >
+              {{
+                exam.comments.length
+              }}
+            </span>
           </a>
         </li>
       </ul>

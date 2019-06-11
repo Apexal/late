@@ -1,3 +1,4 @@
+<!--Sidebar: Daily schedule module-->
 <template>
   <div class="sidebar-schedule">
     <div

@@ -1,3 +1,4 @@
+<!--Dashboard: Overview map module-->
 <template>
   <GmapMap
     :center="commons"
@@ -46,10 +47,12 @@ export default {
       return { lat: 42.728342, lng: -73.674254 };
     },
     markers () {
-      return [{
-        position: { lat: 42.729551, lng: -73.679074 },
-        infoText: 'Lecture in DCC 208 at 3pm'
-      }];
+      return [
+        {
+          position: { lat: 42.729551, lng: -73.679074 },
+          infoText: 'Lecture in DCC 208 at 3pm'
+        }
+      ];
     }
   },
   methods: {
@@ -59,7 +62,8 @@ export default {
       // check if its the same marker that was selected if yes toggle
       if (this.currentMidx === idx) {
         this.infoWinOpen = !this.infoWinOpen;
-      } else { // if different marker set infowindow to open and reset current marker index
+      } else {
+        // if different marker set infowindow to open and reset current marker index
         this.infoWinOpen = true;
         this.currentMidx = idx;
       }

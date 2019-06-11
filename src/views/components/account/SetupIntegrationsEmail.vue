@@ -1,3 +1,4 @@
+<!--Account: Email integration module -->
 <template>
   <div class="email-setup">
     <label

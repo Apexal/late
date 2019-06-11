@@ -1,3 +1,4 @@
+<!--Account: SMS integration module-->
 <template>
   <div class="sms-setup">
     <div

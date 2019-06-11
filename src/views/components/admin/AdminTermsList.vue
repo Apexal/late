@@ -1,3 +1,4 @@
+<!--Admin: Edit terms module-->
 <template>
   <div class="admin-terms-list">
     <h2 class="subtitle">

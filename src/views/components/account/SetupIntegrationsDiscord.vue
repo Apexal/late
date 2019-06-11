@@ -1,3 +1,4 @@
+<!--Account: Discord integration module-->
 <template>
   <div class="discord-setup">
     <div
@@ -10,7 +11,7 @@
       >
         <img
           src="https://discordapp.com/assets/28174a34e77bb5e5310ced9f95cb480b.png"
-          alt=""
+          alt
         >
         Connect to Discord
       </a>
@@ -30,14 +31,12 @@
           :src="discordAvatarURL"
           alt="Your Avatar"
         >
-        <b
-          class="is-size-3"
-        >{{ discordUser.username }}
-          <span class="has-text-grey">#{{ discordUser.discriminator }}</span></b>
+        <b class="is-size-3">
+          {{ discordUser.username }}
+          <span class="has-text-grey">#{{ discordUser.discriminator }}</span>
+        </b>
         <div class="right">
-          <b-button>
-            Disconnect
-          </b-button>
+          <b-button>Disconnect</b-button>
         </div>
       </div>
     </div>

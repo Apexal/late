@@ -1,3 +1,4 @@
+<!--Modals: Select course-->
 <template>
   <div class="columns is-multiline">
     <div

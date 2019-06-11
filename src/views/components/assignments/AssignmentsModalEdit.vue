@@ -1,3 +1,4 @@
+<!--Modals: Edit Assignment (Deprecated?)-->
 <template>
   <div
     :class="{ 'is-active': open }"
@@ -170,16 +171,12 @@
           <button
             class="button is-warning"
             @click="$emit('toggle-modal')"
-          >
-            Cancel
-          </button>
+          >Cancel</button>
           <button
             form="edit-assignment-form"
             class="button is-success"
             :class="{ 'is-loading': loading }"
-          >
-            Save
-          </button>
+          >Save</button>
         </span>
       </footer>
     </div>

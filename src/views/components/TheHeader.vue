@@ -1,3 +1,4 @@
+<!--Header module-->
 <template>
   <header
     id="header"

@@ -1,3 +1,4 @@
+<!--Stats: Line Chart module-->
 <template>
   <div
     v-if="!loading"

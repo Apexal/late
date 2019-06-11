@@ -1,3 +1,4 @@
+<!-- Tools: Move-in page category module-->
 <template>
   <details class="panel category">
     <summary class="panel-heading has-background-dark has-text-white">

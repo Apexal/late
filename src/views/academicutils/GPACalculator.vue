@@ -1,3 +1,4 @@
+<!--Tools: GPA Calculator-->
 <template>
   <div class="gpa-calculator box">
     <h2 class="subtitle">

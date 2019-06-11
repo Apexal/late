@@ -1,3 +1,4 @@
+<!--Account Setup: Course schedule setup page-->
 <template>
   <div class="setup-course-schedule">
     <template v-if="onBreak">

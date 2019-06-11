@@ -1,12 +1,11 @@
+<!--Sidebar: Sidebar container-->
 <template>
   <aside
     id="sidebar"
     class="menu"
   >
     <div class="panel">
-      <p
-        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
-      >
+      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         {{ onBreak ? "On Break" : currentTerm.name }}
         <span
           v-if="currentEvent"

@@ -1,3 +1,4 @@
+<!--Modals: Calendar module-->
 <template>
   <div>
     <FullCalendar

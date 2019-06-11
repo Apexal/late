@@ -1,3 +1,4 @@
+<!--About page-->
 <template>
   <div class="container">
     <h1 class="title">
@@ -94,14 +95,10 @@
               <a href="https://github.com/Apexal/late/">Contribute on GitHub</a>
             </li>
             <li>
-              <a
-                href="https://rcos.io/projects/apexal/late/profile"
-              >View us on Observatory</a>
+              <a href="https://rcos.io/projects/apexal/late/profile">View us on Observatory</a>
             </li>
             <li>
-              <a
-                href="https://github.com/Apexal/late/wiki"
-              >Read our development setup guide</a>
+              <a href="https://github.com/Apexal/late/wiki">Read our development setup guide</a>
             </li>
             <li>
               <strike>

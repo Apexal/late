@@ -1,3 +1,4 @@
+<!--Modals: Add exam (2.0)-->
 <template>
   <b-modal
     has-modal-card

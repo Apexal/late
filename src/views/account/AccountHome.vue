@@ -1,9 +1,13 @@
+<!--Start setup page-->
+
 <template>
   <div class="account-home">
     <h1 class="is-size-5 integration-note">
-      For <b>LATE</b> to function, it must know basic info about yourself, your
+      For
+      <b>LATE</b> to function, it must know basic info about yourself, your
       course schedule, your work/study schedule, and (optionally) accounts you
-      want to integrate <b>LATE</b> with.
+      want to integrate
+      <b>LATE</b> with.
     </h1>
     <br>
     <router-link

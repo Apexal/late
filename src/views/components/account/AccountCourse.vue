@@ -1,3 +1,4 @@
+<!--Courses: Individual course view-->
 <template>
   <div class="course box">
     <template v-if="!editing">
@@ -6,9 +7,7 @@
           class="is-clearfix is-unselectable"
           style="cursor:pointer;"
         >
-          <span class="has-text-grey">
-            {{ course.summary }}
-          </span>
+          <span class="has-text-grey">{{ course.summary }}</span>
           {{ course.title }}
           <small class="has-text-grey">
             {{ course.periods.length }} periods |
@@ -53,9 +52,7 @@
                 <td>{{ day(p.day) }}</td>
                 <td>
                   {{ time(p.start) }}
-                  <span class="has-text-grey-light">
-                    -
-                  </span>
+                  <span class="has-text-grey-light">-</span>
                   {{ time(p.end) }}
                 </td>
                 <td>{{ p.location }}</td>
@@ -75,9 +72,7 @@
                 :href="l"
                 target="_blank"
                 style="color: white"
-              >
-                {{ l }}
-              </a>
+              >{{ l }}</a>
             </b-tag>
           </b-taglist>
         </div>
@@ -98,9 +93,7 @@
             </h1>
           </div>
           <div class="column">
-            <label :for="'course-title-' + elementID">
-              Title
-            </label>
+            <label :for="'course-title-' + elementID">Title</label>
             <input
               :id="'course-title-' + elementID"
               v-model.trim="courseData.title"
@@ -113,9 +106,7 @@
         </div>
         <div class="columns">
           <div class="column">
-            <label :for="'course-section-' + elementID">
-              Section
-            </label>
+            <label :for="'course-section-' + elementID">Section</label>
             <input
               :id="'course-section-' + elementID"
               v-model.number="courseData.sectionId"
@@ -128,9 +119,7 @@
             >
           </div>
           <div class="column">
-            <label :for="'course-color-' + elementID">
-              Color
-            </label>
+            <label :for="'course-color-' + elementID">Color</label>
             <input
               :id="'course-color-' + elementID"
               v-model="courseData.color"
@@ -149,9 +138,7 @@
           </b-checkbox>
         </div>
         <div class="course-links">
-          <label :for="'course-links-' + elementID">
-            Links
-          </label>
+          <label :for="'course-links-' + elementID">Links</label>
           <b-taglist>
             <b-tag
               v-for="(link, index) in editedLinks"
@@ -169,7 +156,8 @@
             :id="'course-links-' + elementID"
             v-model="newLink"
             type="text"
-          ><i
+          >
+          <i
             class="fa fa-plus"
             @click="addLink"
           />
@@ -215,9 +203,7 @@
                     required
                     @change="changePeriodTime(p, 'start', $event.target.value)"
                   >
-                  <span class="has-text-grey-light">
-                    -
-                  </span>
+                  <span class="has-text-grey-light">-</span>
                   <input
                     class="input is-small time-input"
                     :value="formatToInputTime(p.end)"
@@ -284,9 +270,7 @@
                     class="input time-input is-small"
                     type="time"
                   >
-                  <span class="has-text-grey-light">
-                    -
-                  </span>
+                  <span class="has-text-grey-light">-</span>
                   <input
                     v-model="newPeriod.end"
                     class="input time-input is-small"

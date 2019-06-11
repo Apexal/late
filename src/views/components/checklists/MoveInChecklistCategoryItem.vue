@@ -1,3 +1,4 @@
+<!--Tools: Move-in page checklist category item module-->
 <template>
   <div
     class="panel-block is-flex item"

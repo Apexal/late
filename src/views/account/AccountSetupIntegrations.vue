@@ -1,3 +1,4 @@
+<!--Account Setup: Notifications and Integrations-->
 <template>
   <div class="integrations-setup">
     <h2 class="is-size-4 integration-note">

@@ -1,5 +1,6 @@
+<!--Tools: Course Grade Calculator-->
 <template>
-  <div class="course-grade-estimator ">
+  <div class="course-grade-estimator">
     <h2 class="subtitle">
       Course Grade Estimator
     </h2>
@@ -93,13 +94,13 @@
                   placeholder="Add your grades, or just your singular average"
                 />
                 <p class="control">
-                  <span
-                    class="button is-static"
-                  >{{
-                    categoryAverages[category.title]
-                      ? round(categoryAverages[category.title], 2)
-                      : "?"
-                  }}%</span>
+                  <span class="button is-static">
+                    {{
+                      categoryAverages[category.title]
+                        ? round(categoryAverages[category.title], 2)
+                        : "?"
+                    }}%
+                  </span>
                 </p>
               </b-field>
             </b-field>
@@ -112,19 +113,17 @@
           FINAL GRADE
           <h1 class="is-size-1">{{ round(totalWeightedAverage) }}%</h1>
         </span>
-        <span v-else-if="totalWeight !== 100">
-          The category weights don't add up to 100%!
-        </span>
-        <span v-else>
-          Add grades for each category to see your overall course grade!
-        </span>
+        <span v-else-if="totalWeight !== 100">The category weights don't add up to 100%!</span>
+        <span v-else>Add grades for each category to see your overall course grade!</span>
       </div>
     </div>
     <p
       v-else
       class="has-text-centered has-text-grey"
     >
-      Add categories above, e.g. <b>45% Homework</b> and <b>10% Quizzes</b>.
+      Add categories above, e.g.
+      <b>45% Homework</b> and
+      <b>10% Quizzes</b>.
     </p>
     <hr>
 

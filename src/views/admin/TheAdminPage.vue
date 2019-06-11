@@ -1,3 +1,4 @@
+<!--Admin: Main administration page-->
 <template>
   <section
     id="admin-page"

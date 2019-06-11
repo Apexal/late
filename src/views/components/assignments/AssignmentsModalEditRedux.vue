@@ -1,3 +1,4 @@
+<!--Modals: Edit Assignment (2.0)-->
 <template>
   <div
     :class="{ 'is-active': open }"

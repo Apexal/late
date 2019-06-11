@@ -1,6 +1,7 @@
+<!--Assessments: assessment overview work schedule module-->
 <template>
   <div class="assessment-work-schedule">
-    <div class="box ">
+    <div class="box">
       <div class="columns percents">
         <div
           class="column is-one-half tooltip"
@@ -55,12 +56,14 @@
         :title="`Toggle showing ${rcsID}'s unavailability'`"
         :class="!hiding.includes(rcsID) ? 'is-dark' : ''"
         @click="toggleCollaboratorUnavailabilityHiding(rcsID)"
-      >{{ rcsID }}
+      >
+        {{ rcsID }}
         {{
           collaboratorUnavailabilities[rcsID]
             ? ` | ${collaboratorUnavailabilities[rcsID].length}`
             : ""
-        }}</span>
+        }}
+      </span>
     </b-taglist>
 
     <FullCalendar

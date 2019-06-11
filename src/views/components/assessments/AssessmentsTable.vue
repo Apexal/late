@@ -1,3 +1,4 @@
+<!--Assessments: assessment list module-->
 <template>
   <b-table
     :data="assessments"
@@ -11,7 +12,9 @@
         :data-tooltip="fromNow(props.row.date)"
       >
         {{ shortDateFormat(props.row.date) }}
-        <span class="has-text-grey">{{ timeFormat(props.row.date) }}</span>
+        <span
+          class="has-text-grey"
+        >{{ timeFormat(props.row.date) }}</span>
       </b-table-column>
 
       <b-table-column

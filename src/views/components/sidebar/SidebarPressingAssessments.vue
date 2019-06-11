@@ -1,3 +1,4 @@
+<!--Sidebar: Pressing Assignments module-->
 <template>
   <div class="sidebar-pressing-assessments">
     <template v-if="onBreak">
@@ -14,7 +15,9 @@
         class="no-work"
       >
         <i class="far fa-check-square no-work-icon" />
-        <div class="panel-block has-text-grey no-hover has-text-centered">
+        <div
+          class="panel-block has-text-grey no-hover has-text-centered"
+        >
           No pressing assignments or exams!
         </div>
       </div>
@@ -51,15 +54,13 @@
             @click.prevent="
               $store.commit('OPEN_COURSE_MODAL', course(assessment))
             "
-          /> -->
+          />-->
 
           <CourseAssessmentDot
             :assessment="assessment"
             :course="course(assessment)"
           />
-          <b class="course-title is-hidden-tablet">
-            {{ course(assessment).title }}
-          </b>
+          <b class="course-title is-hidden-tablet">{{ course(assessment).title }}</b>
           {{ assessment.title }}
           <i
             v-if="

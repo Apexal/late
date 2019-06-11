@@ -1,3 +1,4 @@
+<!--Modals: Course overview modal upcoming courses module-->
 <template>
   <div class="upcoming">
     <p
@@ -23,9 +24,8 @@
           }"
           :title="assessmentLinkTitle(assessment)"
         >
-          <span
-            style="flex: 1"
-          >{{ assessment.title }}
+          <span style="flex: 1">
+            {{ assessment.title }}
             <i
               v-if="
                 assessment.assessmentType === 'assignment' && assessment.shared

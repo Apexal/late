@@ -1,3 +1,4 @@
+<!--Assessments: Individual assessment page-->
 <template>
   <div class="assessment-overview">
     <canvas id="confetti-canvas" />

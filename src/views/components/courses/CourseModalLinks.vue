@@ -1,3 +1,4 @@
+<!--Modals: Course overview modal links module-->
 <template>
   <div class="course-links">
     <ul
@@ -12,9 +13,7 @@
           :href="l"
           target="_blank"
           :title="l"
-        >
-          {{ l }}
-        </a>
+        >{{ l }}</a>
       </li>
     </ul>
     <p

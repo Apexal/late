@@ -1,3 +1,4 @@
+<!--Modals: Select calendar assignment modal(?)-->
 <template>
   <b-modal
     :active="open"
@@ -26,9 +27,7 @@
           <span
             class="tag assessment-type-tag"
             :style="{ 'background-color': course(assessment.courseCRN).color }"
-          >
-            {{ assessment.assessmentType }}
-          </span>
+          >{{ assessment.assessmentType }}</span>
           {{ assessment.title }}
           <i
             v-if="
@@ -38,9 +37,9 @@
             title="Shared assignment"
           />
         </span>
-        <span class="has-text-grey is-pulled-right">
-          due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}
-        </span>
+        <span
+          class="has-text-grey is-pulled-right"
+        >due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}</span>
       </div>
       <template v-if="hasExtra">
         <div v-if="showingExtra">
@@ -56,9 +55,7 @@
                 :style="{
                   'background-color': course(assessment.courseCRN).color
                 }"
-              >
-                {{ assessment.assessmentType }}
-              </span>
+              >{{ assessment.assessmentType }}</span>
               {{ assessment.title }}
             </span>
             <span class="has-text-grey is-pulled-right">
