@@ -3,37 +3,45 @@
     <h2 class="subtitle">
       GPA Calculator
     </h2>
-    <div class="buttons">
-      <b-button
-        v-if="!onBreak"
-        type="is-dark"
-        @click="fillCourses"
-      >
-        Auto Fill Courses
-      </b-button>
-      <b-button
-        type="is-warning"
-        @click="enteredCourses = []"
-      >
-        Clear Courses
-      </b-button>
-    </div>
+
     <form
       class="form"
       @submit.prevent="addCourse"
     >
-      <b-field>
-        <b-input
-          v-model.trim="newCourseTitle"
-          type="text"
-          placeholder="Add a course"
-          required
-        />
-        <p class="control">
-          <button class="button is-success">
-            Add
-          </button>
-        </p>
+      <b-field
+        grouped
+        class="is-block-touch"
+      >
+        <b-field>
+          <b-input
+            v-model.trim="newCourseTitle"
+            type="text"
+            placeholder="Add a course"
+            required
+          />
+          <p class="control">
+            <button class="button is-success">
+              Add
+            </button>
+          </p>
+        </b-field>
+        <b-field>
+          <div class="buttons">
+            <b-button
+              v-if="!onBreak"
+              type="is-dark"
+              @click="fillCourses"
+            >
+              Auto Fill Courses
+            </b-button>
+            <b-button
+              type="is-warning"
+              @click="enteredCourses = []"
+            >
+              Clear Courses
+            </b-button>
+          </div>
+        </b-field>
       </b-field>
     </form>
     <hr>
@@ -179,6 +187,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.subtitle {
+  font-weight: bold;
+}
+
 .remove-course {
   cursor: pointer;
   height: 36px;

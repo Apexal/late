@@ -8,7 +8,10 @@
       class="form"
       @submit.prevent="addCategory"
     >
-      <b-field grouped>
+      <b-field
+        grouped
+        class="is-block-touch"
+      >
         <b-field v-if="loggedIn && !onBreak">
           <b-select
             v-model="selectedCourseCRN"
@@ -110,10 +113,10 @@
           <h1 class="is-size-1">{{ round(totalWeightedAverage) }}%</h1>
         </span>
         <span v-else-if="totalWeight !== 100">
-          The weights don't add up to 100%!
+          The category weights don't add up to 100%!
         </span>
         <span v-else>
-          Add grades for each category!
+          Add grades for each category to see your overall course grade!
         </span>
       </div>
     </div>
@@ -289,6 +292,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.subtitle {
+  font-weight: bold;
+}
 .category {
   position: relative;
 
