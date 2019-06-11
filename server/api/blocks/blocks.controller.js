@@ -125,13 +125,13 @@ async function addWorkBlock (ctx) {
  */
 async function editWorkBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params;
-  const { startTime, endTime } = ctx.request.body;
+  const { startTime, endTime, location } = ctx.request.body;
 
   const editedBlock = await Block.findOne({
     _id: blockID
   });
 
-  editedBlock.set({ startTime, endTime });
+  editedBlock.set(ctx.request.body);
 
   try {
     await editedBlock.save();

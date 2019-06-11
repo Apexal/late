@@ -201,15 +201,18 @@ const actions = {
   },
   async EDIT_WORK_BLOCK (
     { commit, getters },
-    { assessment, blockID, start, end }
+    { assessment, blockID, start, end, location }
   ) {
+    const updates = {
+      startTime: start,
+      endTime: end,
+      assessmentType: assessment.assessmentType
+    };
+    if (location) updates.location = location;
+
     const request = await axios.patch(
       `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`,
-      {
-        startTime: start,
-        endTime: end,
-        assessmentType: assessment.assessmentType
-      }
+      updates
     );
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {

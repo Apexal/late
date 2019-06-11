@@ -66,6 +66,7 @@ export default new Vuex.Store({
             .filter(e => moment(e.start).isSame(state.now, 'day'))
             .map(e => ({
               eventType: 'work-block',
+              block: e.block,
               assessmentType: e.assessmentType,
               assessment: e.assessment,
               course: getters.getCourseFromCRN(e.assessment.courseCRN),

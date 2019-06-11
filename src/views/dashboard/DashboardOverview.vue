@@ -68,8 +68,11 @@
                     </router-link>
                     <br>
                     <i
+                      v-if="event.block.location"
                       class="has-text-grey"
-                    >For {{ eventDuration(event) }} minutes</i>
+                    >{{
+                      event.block.location
+                    }}</i>
                   </template>
                   <template v-else-if="event.eventType === 'period'">
                     <b class="course-title">{{ event.course.title }}</b>

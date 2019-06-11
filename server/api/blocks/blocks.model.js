@@ -16,7 +16,8 @@ const schema = new Schema(
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     locked: { type: Boolean, default: false },
-    notified: { type: Boolean, default: false }
+    notified: { type: Boolean, default: false },
+    location: { type: String, trim: true, minlength: 1, maxlength: 200 }
   },
   { timestamps: true }
 );
