@@ -9,7 +9,7 @@
       @submit.prevent="addCategory"
     >
       <b-field grouped>
-        <b-field v-if="loggedIn">
+        <b-field v-if="loggedIn && !onBreak">
           <b-select
             v-model="selectedCourseCRN"
             placeholder="Choose course"
@@ -28,6 +28,7 @@
             v-model.trim="newCategory"
             type="text"
             placeholder="15% Homework"
+            :disabled="totalWeight === 100"
             required
           />
           <div class="control">
@@ -43,88 +44,92 @@
         >
           Clear
         </b-button>
+
+        <b-tag
+          size="is-medium"
+          :type="totalWeight === 100 ? 'is-success' : 'is-warning'"
+        >
+          Total Weight {{ totalWeight }}%
+        </b-tag>
       </b-field>
     </form>
     <hr>
-    <div
-      v-if="categories.length"
-      class="columns is-multiline"
-    >
-      <div
-        v-for="(category, index) in categories"
-        :key="index"
-        class="column is-half"
-      >
-        <div class="box category">
-          <span
-            class="category-weight"
-            :class="relativeSizeClass(category.weight)"
-          >{{ category.weight }}%</span>
-          <span
-            class="delete category-remove"
-            @click="categories.splice(index, 1)"
-          />
-          <h2 class="subtitle category-title">
-            {{ category.title }}
-          </h2>
+    <div v-if="categories.length">
+      <div class="columns is-multiline">
+        <div
+          v-for="(category, index) in categories"
+          :key="index"
+          class="column is-half"
+        >
+          <div class="box category">
+            <span
+              class="category-weight"
+              :class="relativeSizeClass(category.weight)"
+              @click="changeWeight(index)"
+            >{{ category.weight }}%</span>
+            <span
+              class="delete category-remove"
+              @click="categories.splice(index, 1)"
+            />
+            <h2 class="subtitle category-title">
+              {{ category.title }}
+            </h2>
 
-          <b-field
-            label="Your Grades"
-            expanded
-          >
-            <b-field expanded>
-              <b-taginput
-                v-model="category.values"
-                :allow-duplicates="true"
-                :attached="true"
-                :before-adding="validateValue"
-                ellipsis
-                icon="label"
-                placeholder="Add your grades, or just your singular average"
-              />
-              <p class="control">
-                <span
-                  class="button is-static"
-                >{{
-                  categoryAverages[category.title]
-                    ? round(categoryAverages[category.title], 2)
-                    : "?"
-                }}%</span>
-              </p>
+            <b-field
+              label="Your Grades"
+              expanded
+            >
+              <b-field expanded>
+                <b-taginput
+                  v-model="category.values"
+                  :allow-duplicates="true"
+                  :attached="true"
+                  :before-adding="validateValue"
+                  ellipsis
+                  icon="label"
+                  placeholder="Add your grades, or just your singular average"
+                />
+                <p class="control">
+                  <span
+                    class="button is-static"
+                  >{{
+                    categoryAverages[category.title]
+                      ? round(categoryAverages[category.title], 2)
+                      : "?"
+                  }}%</span>
+                </p>
+              </b-field>
             </b-field>
-          </b-field>
+          </div>
         </div>
       </div>
-    </div>
-    <b>Total Weights:</b><b-tag :type="totalWeight === 100 ? 'is-success' : 'is-warning'">
-      {{ totalWeight }}%
-    </b-tag>
 
-    <div
-      v-if="categories.length"
-      class="box has-background-dark has-text-white has-text-centered"
+      <div class="box has-background-dark has-text-white has-text-centered">
+        <span v-if="totalWeight === 100 && !isNaN(totalWeightedAverage)">
+          FINAL GRADE
+          <h1 class="is-size-1">{{ round(totalWeightedAverage) }}%</h1>
+        </span>
+        <span v-else-if="totalWeight !== 100">
+          The weights don't add up to 100%!
+        </span>
+        <span v-else>
+          Add grades for each category!
+        </span>
+      </div>
+    </div>
+    <p
+      v-else
+      class="has-text-centered has-text-grey"
     >
-      <span v-if="totalWeight === 100 && !isNaN(totalWeightedAverage)">
-        FINAL GRADE
-        <h1 class="is-size-1">{{ round(totalWeightedAverage) }}%</h1>
-      </span>
-      <span v-else-if="totalWeight !== 100">
-        The weights don't add up to 100%!
-      </span>
-      <span v-else>
-        Add grades for each category!
-      </span>
-    </div>
-
+      Add categories above, e.g. <b>45% Homework</b> and <b>10% Quizzes</b>.
+    </p>
     <hr>
 
     <div
       v-if="loggedIn && selectedCourse"
       class="buttons"
     >
-      <b-button
-        @click="save"
-      >
+      <b-button @click="save">
         Save Categories for {{ selectedCourse.title }}
       </b-button>
     </div>
@@ -178,6 +183,19 @@ export default {
     this.getCategories();
   },
   methods: {
+    changeWeight (categoryIndex) {
+      this.$dialog.prompt({
+        message: `Change weight of ${this.categories[categoryIndex].title}`,
+        inputAttrs: {
+          type: 'number',
+          placeholder: '%',
+          value: this.categories[categoryIndex].weight,
+          maxlength: 2,
+          min: 0
+        },
+        onConfirm: value => (this.categories[categoryIndex].weight = +value)
+      });
+    },
     getCategories () {
       if (this.loggedIn) {
         if (this.selectedCourse) {
@@ -246,6 +264,8 @@ export default {
       }
     },
     addCategory () {
+      if (this.totalWeight === 100) return;
+
       const parts = this.newCategory.split('%');
       if (parts.length !== 2) {
         this.$toast.open({
