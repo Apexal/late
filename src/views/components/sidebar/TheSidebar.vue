@@ -7,13 +7,6 @@
       <p
         class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
       >
-        <span
-          class="icon button is-white has-text-dark local-toggle-sidebar is-pulled-right"
-          title="Toggle sidebar"
-          @click="$store.commit('TOGGLE_SIDEBAR')"
-        >
-          <i class="fas fa-chevron-up fa-rotate-270" />
-        </span>
         {{ onBreak ? "On Break" : currentTerm.name }}
         <span
           v-if="currentEvent"

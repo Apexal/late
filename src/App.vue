@@ -9,40 +9,17 @@
         :active="loading"
         :can-cancel="false"
       />
-      <transition name="slide-fade">
-        <span
-          v-if="loggedIn && !expanded"
-          class="icon button is-dark toggle-sidebar"
-          title="Toggle sidebar."
-          @click="$store.commit('TOGGLE_SIDEBAR')"
-        >
-          <i
-            :class="
-              'fas ' +
-                (expanded
-                  ? 'fas fa-chevron-up fa-rotate-270'
-                  : 'fas fa-chevron-up fa-rotate-90')
-            "
-          />
-        </span>
-      </transition>
-      <div :class="appClass">
-        <transition name="slide-fade">
-          <div
-            v-if="loggedIn && expanded"
-            id="sidebar-column"
-            class="column is-3 sidebar-holder"
-          >
-            <TheSidebar ref="sidebar" />
-          </div>
-        </transition>
 
+      <div :class="appClass">
         <div
-          :class="[
-            loggedIn && expanded ? 'column' : '',
-            { 'no-sidebar': !expanded }
-          ]"
+          v-if="loggedIn"
+          id="sidebar-column"
+          class="column is-3 sidebar-holder"
         >
+          <TheSidebar ref="sidebar" />
+        </div>
+
+        <div :class="[loggedIn ? 'column' : '']">
           <template v-if="loggedIn">
             <PinnedAnnouncements v-if="loggedIn" />
             <AssignmentsModalAdd
@@ -130,8 +107,8 @@ export default {
     },
     appClass () {
       return {
-        'columns is-marginless': this.loggedIn && this.expanded,
-        container: this.loggedIn && !this.expanded,
+        'columns is-marginless': this.loggedIn,
+        container: !this.loggedIn,
         homepage: this.homepage
       };
     },
@@ -158,9 +135,6 @@ export default {
     },
     addExamModalExpanded () {
       return this.$store.state.addExamModal.expanded;
-    },
-    expanded () {
-      return this.$store.state.sidebarExpanded;
     },
     isUserSetup () {
       return this.$store.getters.isUserSetup;

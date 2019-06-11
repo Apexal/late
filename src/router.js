@@ -310,7 +310,6 @@ const router = new Router({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR');
   if (store.state.courseModal.open) store.commit('CLOSE_COURSE_MODAL');
 
   if (!store.state.auth.isAuthenticated) await store.dispatch('GET_USER');
@@ -321,7 +320,7 @@ router.beforeEach(async (to, from, next) => {
   ) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    window.location = '/auth/login?redirectTo' + to.fullPath;
+    window.location = '/auth/login?redirectTo=' + to.fullPath;
     return;
   }
 
