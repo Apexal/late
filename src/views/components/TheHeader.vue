@@ -63,6 +63,7 @@
               class="navbar-item"
               :to="{ name: 'home' }"
               title="View your dashboard"
+              exact
             >
               <span class="icon">
                 <i class="fas fa-home" />
