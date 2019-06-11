@@ -7,7 +7,7 @@
       class="subtitle has-text-centered-mobile"
       style="padding-left: 5px;"
     >
-      Study tools to help you stay productive and informed
+      Student tools to help you stay productive and informed
     </h2>
 
     <div class="tile is-ancestor">
@@ -53,7 +53,7 @@
               Quick Links
             </p>
             <p class="subtitle">
-              Student curated list of useful RPI related links
+              Student curated list of useful <b>RPI</b> related links
             </p>
           </router-link>
           <router-link
@@ -129,11 +129,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.section {
-  max-width: 85vw;
-  margin: 0 auto;
-}
-
 .tools-button i {
   position: absolute;
   right: 30px;
@@ -158,9 +153,6 @@ export default {
 .tools-button,
 .tools-button::after,
 .tools-button i {
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  -o-transition: all 0.3s;
   transition: all 0.3s;
 }
 
@@ -183,12 +175,12 @@ export default {
 }
 
 .tools-button::after {
-  background-color: hsl(217, 71%, 53%);
+  background-color: #2e3b59;
   height: 100%;
   left: -35%;
   top: 0;
   transform: skew(50deg);
-  transition-duration: 0.2s;
+  transition-duration: 0.3s;
   transform-origin: top left;
   width: 0;
 }
