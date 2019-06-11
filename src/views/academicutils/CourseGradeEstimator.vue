@@ -41,30 +41,21 @@
         :key="index"
         class="column is-half"
       >
-        <div class="box">
-          <h2 class="subtitle">
+        <div class="box category">
+          <span
+            class="category-weight"
+            :class="relativeSizeClass(category.weight)"
+          >{{ category.weight }}%</span>
+          <span
+            class="delete category-remove"
+            @click="categories.splice(index, 1)"
+          />
+          <h2 class="subtitle category-title">
             {{ category.title }}
           </h2>
 
           <b-field
-            label="Weight"
-            expanded
-          >
-            <b-field expanded>
-              <input
-                v-model.number="category.weight"
-                class="is-fullwidth"
-                type="range"
-                min="0"
-                max="100"
-              >
-              <p class="control">
-                <span class="button is-static">{{ category.weight }}%</span>
-              </p>
-            </b-field>
-          </b-field>
-          <b-field
-            label="Values"
+            label="Your Grades"
             expanded
           >
             <b-field expanded>
@@ -75,7 +66,7 @@
                 :before-adding="validateValue"
                 ellipsis
                 icon="label"
-                placeholder="Add a tag"
+                placeholder="Add your grades, or just your singular average"
               />
               <p class="control">
                 <span
@@ -91,9 +82,7 @@
         </div>
       </div>
     </div>
-    <b>Total Weights:</b><b-tag
-      :type="totalWeight === 100 ? 'is-success' : 'is-warning'"
-    >
+    <b>Total Weights:</b><b-tag :type="totalWeight === 100 ? 'is-success' : 'is-warning'">
       {{ totalWeight }}%
     </b-tag>
 
@@ -151,6 +140,18 @@ export default {
     }
   },
   methods: {
+    relativeSizeClass (weight) {
+      if (weight >= 90) {
+        return 'is-size-1';
+      } else if (weight >= 70) {
+        return 'is-size-2';
+      } else if (weight >= 50) {
+        return 'is-size-3';
+      } else if (weight >= 30) {
+        return 'is-size-4';
+      }
+      return 'is-size-5';
+    },
     round (num) {
       return num.toFixed(2);
     },
@@ -184,4 +185,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.category {
+  position: relative;
+
+  .category-title {
+    font-weight: 600;
+    font-size: 2em;
+  }
+
+  .category-weight {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+  }
+
+  .category-remove {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  &:hover {
+    .category-remove {
+      opacity: 1;
+    }
+  }
+}
 </style>
