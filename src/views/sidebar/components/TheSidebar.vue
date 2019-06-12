@@ -5,7 +5,9 @@
     class="menu"
   >
     <div class="panel">
-      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
+      <p
+        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
+      >
         {{ onBreak ? "On Break" : currentTerm.name }}
         <span
           v-if="currentEvent"
@@ -195,7 +197,8 @@ export default {
     position: sticky;
     width: 100%;
     top: 70px;
-    padding: 20px 15px;
+    padding: 0;
+    margin-top: 30px;
   }
 
   .panel {
