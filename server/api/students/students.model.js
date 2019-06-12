@@ -184,7 +184,7 @@ schema.methods.courseFromCRN = function (termCode, crn) {
 
 schema.methods.getAssignments = function (start, end, title, courseCRN) {
   let query = {
-    $or: [{ _student: this._id }, { sharedWith: this.rcs_id }]
+    $or: [{ _student: this._id }, { shared: true, sharedWith: this.rcs_id }]
   };
 
   if (start) {
@@ -207,7 +207,19 @@ schema.methods.getAssignments = function (start, end, title, courseCRN) {
 
   return this.model('Assignment')
     .find(query)
-    .populate('_blocks')
+    .populate({
+      path: '_blocks',
+      match: {
+        $or: [
+          {
+            _student: this._id
+          },
+          {
+            shared: true
+          }
+        ]
+      }
+    })
     .populate('_student', '_id rcs_id name grad_year')
     .sort('dueDate')
     .sort('-priority')

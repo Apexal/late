@@ -1,3 +1,4 @@
+<!--Stats: Stats container page-->
 <template>
   <section class="section assessment-stats">
     <h1

@@ -1,3 +1,4 @@
+<!--Dashboard: Main calendar view-->
 <template>
   <div id="calendar-holder">
     <DashboardCalendarSelectModal
@@ -37,8 +38,8 @@ import 'fullcalendar/dist/fullcalendar.css';
 
 import moment from 'moment';
 
-import DashboardCalendarSelectModal from '@/views/components/dashboard/DashboardCalendarSelectModal';
-import DashboardCalendarEventModal from '@/views/components/dashboard/DashboardCalendarEventModal';
+import DashboardCalendarSelectModal from '@/views/dashboard/components/DashboardCalendarSelectModal';
+import DashboardCalendarEventModal from '@/views/dashboard/components/DashboardCalendarEventModal';
 
 export default {
   name: 'DashboardCalendar',
@@ -228,8 +229,9 @@ export default {
       }
     },
     eventRender (event, el) {
-      el.attr('title', event.period ? event.period.location : event.title);
+      // el.attr('title', event.period ? event.period.location : event.title);
       if (event.eventType === 'course') {
+        el.attr('title', `${event.title} | ${event.period.location}`);
         if (
           !moment(event.end).isBetween(
             event.course.startDate,
@@ -253,10 +255,21 @@ export default {
         el.find('.fc-title').prepend(icon);
 
         const locationElement = document.createElement('i');
-        locationElement.className = 'event-period-location';
+        locationElement.className = 'event-location';
         locationElement.innerText = event.period.location;
         el.find('.fc-content').append(locationElement);
       } else if (event.eventType === 'work-block') {
+        el.attr(
+          'title',
+          `${
+            event.assessment.assessmentType === 'assignment'
+              ? 'Work on'
+              : 'Study for'
+          } ${event.assessment.title}${
+            event.block.location ? ' | ' + event.block.location : ''
+          }`
+        );
+
         const deleteButton = document.createElement('span');
         deleteButton.classList.add('remove-work-block');
         deleteButton.classList.add('delete');
@@ -279,7 +292,41 @@ export default {
         };
         el.find('.fc-content').append(deleteButton);
 
-        if (event.assessment.shared) {
+        const locationEl = document.createElement('i');
+        locationEl.title = 'Click to set location';
+        if (event.block.location) {
+          locationEl.innerText = event.block.location;
+        } else {
+          locationEl.className = 'fas fa-map-marker-alt';
+        }
+        locationEl.classList.add('event-location');
+        locationEl.onclick = ev => {
+          ev.stopPropagation();
+          this.$dialog.prompt({
+            message: 'Where do you want this to be?',
+            inputAttrs: {
+              placeholder: event.block.location
+                ? event.block.location
+                : 'e.g. Bray Hall Classroom',
+              maxlength: 200
+            },
+            onConfirm: async location => {
+              const updatedAssessment = await this.$store.dispatch(
+                'EDIT_WORK_BLOCK',
+                {
+                  assessment: event.assessment,
+                  blockID: event.blockID,
+                  start: event.start,
+                  end: event.end,
+                  location
+                }
+              );
+            }
+          });
+        };
+        el.find('.fc-content').append(locationEl);
+
+        if (event.assessment.shared && event.block.shared) {
           const sharedIcon = document.createElement('i');
           sharedIcon.className = 'fas fa-users margin-left';
           el.find('.fc-title').append(sharedIcon);
@@ -436,14 +483,14 @@ export default {
   }
 }
 
-.event-period-location {
+.event-location {
   opacity: 0;
   transition: opacity 0.1s;
 }
 
 .fc-event {
   &:hover {
-    .event-period-location {
+    .event-location {
       opacity: 1;
     }
   }

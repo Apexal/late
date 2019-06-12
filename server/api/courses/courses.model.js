@@ -28,6 +28,12 @@ const schema = new Schema(
         location: { type: String, default: '???' }
       }
     ],
+    gradingCategories: [
+      {
+        title: { type: String, trim: true, minlength: 1, maxlength: 100 },
+        weight: { type: Number, required: true, min: 0, max: 100 }
+      }
+    ],
     hidden: { type: Boolean, default: false }
   },
   { timestamps: true }

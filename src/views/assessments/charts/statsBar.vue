@@ -1,3 +1,4 @@
+<!--Stats: Bar Chart module-->
 <template>
   <div
     v-if="!loading"

@@ -1,3 +1,5 @@
+<!--Account Setup: Main Account setup container-->
+
 <template>
   <div id="account">
     <section class="section">

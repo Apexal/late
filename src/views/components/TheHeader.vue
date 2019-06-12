@@ -1,3 +1,4 @@
+<!--Header module-->
 <template>
   <header
     id="header"
@@ -63,6 +64,7 @@
               class="navbar-item"
               :to="{ name: 'home' }"
               title="View your dashboard"
+              exact
             >
               <span class="icon">
                 <i class="fas fa-home" />
@@ -80,17 +82,6 @@
                 <i class="fas fa-question-circle" />
               </span>
               About
-            </router-link>
-
-            <router-link
-              :to="{ name: 'tools' }"
-              class="navbar-item"
-              title="Tools to calculate grades and to help you work/study for assignments and exams!"
-            >
-              <span class="icon">
-                <i class="fas fa-toolbox" />
-              </span>
-              Tools
             </router-link>
 
             <div
@@ -169,6 +160,16 @@
               About
             </router-link>
           </template>
+          <router-link
+            :to="{ name: 'tools' }"
+            class="navbar-item"
+            title="Student tools to calculate grades, help you work/study, and more!"
+          >
+            <span class="icon">
+              <i class="fas fa-toolbox" />
+            </span>
+            Tools
+          </router-link>
         </div>
 
         <div class="navbar-end">

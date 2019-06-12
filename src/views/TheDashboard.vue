@@ -1,3 +1,4 @@
+<!--Dashboard: Main dashboard container-->
 <template>
   <section class="section dasboard">
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">

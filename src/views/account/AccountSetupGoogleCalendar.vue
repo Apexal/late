@@ -1,3 +1,4 @@
+<!--Account Setup: Import google calendar-->
 <template>
   <div class="google-calendar-setup">
     <h2 class="is-size-4 integration-note">
@@ -52,7 +53,9 @@
               }"
             >{{ getCalendarById(calendarIDs.workBlocks).summary }}</b>
             calendar in your Google Calendar that will sync with your work
-            schedule in <b>LATE</b>. <br>It gets automatically updated when
+            schedule in
+            <b>LATE</b>.
+            <br>It gets automatically updated when
             you:
             <ul class="points">
               <li>create a work block on LATE</li>

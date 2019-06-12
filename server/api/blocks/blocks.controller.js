@@ -18,7 +18,7 @@ const google = require('../../modules/google');
  */
 async function addWorkBlock (ctx) {
   const { assessmentType, assessmentID } = ctx.params;
-  const { startTime, endTime } = ctx.request.body;
+  const { startTime, endTime, shared } = ctx.request.body;
 
   const newBlock = new Block({
     _student: ctx.state.user._id,
@@ -26,7 +26,8 @@ async function addWorkBlock (ctx) {
     endTime,
     completed: false,
     locked: false,
-    notified: false
+    notified: false,
+    shared
   });
 
   try {
@@ -43,12 +44,24 @@ async function addWorkBlock (ctx) {
       .findOne({
         $or: [
           { _student: ctx.state.user._id },
-          { sharedWith: ctx.state.user.rcs_id }
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
         ],
         _id: assessmentID
       })
       .populate('_student', '_id rcs_id name grad_year')
-      .populate('_blocks');
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} to add new work block for ${
@@ -112,13 +125,13 @@ async function addWorkBlock (ctx) {
  */
 async function editWorkBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params;
-  const { startTime, endTime } = ctx.request.body;
+  const { startTime, endTime, location } = ctx.request.body;
 
   const editedBlock = await Block.findOne({
     _id: blockID
   });
 
-  editedBlock.set({ startTime, endTime });
+  editedBlock.set(ctx.request.body);
 
   try {
     await editedBlock.save();
@@ -136,13 +149,25 @@ async function editWorkBlock (ctx) {
       .findOne({
         $or: [
           { _student: ctx.state.user._id },
-          { sharedWith: ctx.state.user.rcs_id }
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
         ],
         _id: assessmentID
       })
       .populate('_student', '_id rcs_id name grad_year')
 
-      .populate('_blocks');
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} for work block edit for ${
@@ -202,12 +227,24 @@ async function deleteWorkBlock (ctx) {
       .findOne({
         $or: [
           { _student: ctx.state.user._id },
-          { sharedWith: ctx.state.user.rcs_id }
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
         ],
         _id: assessmentID
       })
       .populate('_student', '_id rcs_id name grad_year')
-      .populate('_blocks');
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
     assessment._blocks = assessment._blocks.filter(
       b => b._id !== removedBlock._id
     );

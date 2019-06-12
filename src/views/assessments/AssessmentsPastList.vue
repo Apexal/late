@@ -1,3 +1,4 @@
+<!--Assessments: Previously completed assessments list page-->
 <template>
   <div class="past-assessments">
     <h2
@@ -89,8 +90,7 @@
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
-      >matching your filters
-      </i>
+      >matching your filters</i>
       <i
         v-if="filter.length <= 0"
         style="font-style:inherit"
@@ -101,7 +101,7 @@
 
 <script>
 import moment from 'moment';
-import AssessmentsTable from '@/views/components/assessments/AssessmentsTable';
+import AssessmentsTable from '@/views/assessments/components/AssessmentsTable';
 
 export default {
   name: 'AssessmentsPastList',
@@ -237,7 +237,10 @@ export default {
       } catch (e) {
         this.loading = false;
         this.currentAssessments = [];
-        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
       let currentExams = request.data.exams.filter(e => e.passed); // Only get passed exams
 
@@ -251,7 +254,10 @@ export default {
       } catch (e) {
         this.loading = false;
         this.currentAssessments = [];
-        return this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       let currentAssignments = request.data.assignments.filter(e => e.passed); // Only get passed exams

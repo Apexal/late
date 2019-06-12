@@ -1,3 +1,4 @@
+<!--Admin: Main administration page-->
 <template>
   <section
     id="admin-page"
@@ -37,8 +38,8 @@
 </template>
 
 <script>
-import AdminStudentList from '@/views/components/admin/AdminStudentList';
-import AdminLog from '@/views/components/admin/AdminLog';
+import AdminStudentList from '@/views/admin/components/AdminStudentList';
+import AdminLog from '@/views/admin/components/AdminLog';
 
 export default {
   name: 'TheAdminPage',

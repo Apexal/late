@@ -1,3 +1,4 @@
+<!--Tools: Quick links page-->
 <template>
   <section class="section quick-links">
     <b-loading
@@ -31,9 +32,7 @@
         class="column is-one-third-desktop is-full"
       >
         <div class="box category">
-          <h2
-            class="subtitle has-text-grey has-text-centered link-category-title"
-          >
+          <h2 class="subtitle has-text-grey has-text-centered link-category-title">
             {{ category }}
           </h2>
           <ul>

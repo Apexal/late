@@ -1,3 +1,4 @@
+<!-- Promo page-->
 <template>
   <section
     class="promo-container section"
@@ -9,7 +10,9 @@
     >
       <b>WAIT LIST</b> You are currently on the wait list and will be notified
       by email once LATE opens to the student body. Reach out to the
-      <a href="mailto:matraf@rpi.edu">project lead</a> if you have any
+      <a
+        href="mailto:matraf@rpi.edu"
+      >project lead</a> if you have any
       questions, or join the
       <a
         target="_blank"

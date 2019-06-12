@@ -16,6 +16,11 @@ router.get(
   Ctrl.getAssignmentMiddleware,
   Ctrl.getAssignmentCollaboratorInfo
 );
+router.post(
+  '/a/:assignmentID/collaborators',
+  Ctrl.getAssignmentMiddleware,
+  Ctrl.setAssignmentCollaborators
+);
 router.patch(
   '/a/:assignmentID',
   Ctrl.getAssignmentMiddleware,

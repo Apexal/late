@@ -1,3 +1,4 @@
+<!--Assessments: Calendar Module-->
 <template>
   <div class="assessment-calendar">
     <b-loading

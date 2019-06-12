@@ -1,3 +1,4 @@
+<!--Tools: Move-in checklist page-->
 <template>
   <section class="section move-in-checklist">
     <h1 class="title has-text-centered-mobile">
@@ -11,9 +12,9 @@
         <i class="fas fa-info-circle" />
 
         <b>Info</b>
-      </summary>
-      Your checklist is only saved on your current device.
-      <b>RPI Students</b> can login to <b>LATE</b> below to save their checklist
+      </summary>Your checklist is only saved on your current device.
+      <b>RPI Students</b> can login to
+      <b>LATE</b> below to save their checklist
       to their account and access all the other features of the site!
     </details>
     <form @submit.prevent="addCategory">
@@ -80,7 +81,7 @@
 </template>
 
 <script>
-import MoveInChecklistCategory from '@/views/components/checklists/MoveInChecklistCategory';
+import MoveInChecklistCategory from '@/views/checklists/components/MoveInChecklistCategory';
 
 export default {
   name: 'MoveInChecklist',

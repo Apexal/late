@@ -1,3 +1,4 @@
+<!--Dashboard: Overview page-->
 <template>
   <div class="dashboard-overview">
     <div class="box">
@@ -6,7 +7,9 @@
           <li class="is-active">
             <a>Today</a>
           </li>
-          <li><a>Tomorrow</a></li>
+          <li>
+            <a>Tomorrow</a>
+          </li>
         </ul>
       </div>
       <div
@@ -68,14 +71,21 @@
                     </router-link>
                     <br>
                     <i
+                      v-if="event.block.location"
                       class="has-text-grey"
-                    >For {{ eventDuration(event) }} minutes</i>
+                    >
+                      {{
+                        event.block.location
+                      }}
+                    </i>
                   </template>
                   <template v-else-if="event.eventType === 'period'">
                     <b class="course-title">{{ event.course.title }}</b>
-                    <span class="has-text-grey">{{
-                      periodType(event.period.type)
-                    }}</span>
+                    <span class="has-text-grey">
+                      {{
+                        periodType(event.period.type)
+                      }}
+                    </span>
                     <br>
                     <i class="has-text-grey">{{ event.period.location }}</i>
                   </template>
@@ -94,7 +104,7 @@
               <p class="heading">March 2017</p>
               <p>Timeline content - Can include any HTML element</p>
             </div>
-          </div> -->
+            </div>-->
             <div class="timeline-header">
               <span class="tag is-medium is-primary">Night</span>
             </div>
@@ -109,7 +119,8 @@
       </div>
       <div v-else>
         <p class="has-text-centered has-text-grey">
-          You have <b>nothing</b> on your agenda for today. No classes, working
+          You have
+          <b>nothing</b> on your agenda for today. No classes, working
           on assignments, or studying for exams scheduled!
         </p>
       </div>

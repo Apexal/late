@@ -1,3 +1,4 @@
+<!--Tools: Timer page-->
 <template>
   <div
     v-if="open"
@@ -8,16 +9,24 @@
         Study Timer
       </h1>
       <h2 class="subtitle has-text-centered-mobile">
-        Breaks down your work into 25 minute focus times and 5 minute breaks using the
+        Breaks down your work into 25 minute focus times and 5 minute breaks
+        using the
         <a
           href="https://en.wikipedia.org/wiki/Pomodoro_Technique"
         >Pomodoro Technique</a>
       </h2>
     </hgroup>
     <section class="description column is-one-half">
-      <h2>Studies have shown that this method helps with staying productive for long periods of time without getting burnt out.</h2>
+      <h2>
+        Studies have shown that this method helps with staying productive for
+        long periods of time without getting burnt out.
+      </h2>
       <br>
-      <h2>Below the timer is a scratchpad to scribble out your thoughts and work. Your text is automatically saved, so feel free to leave and come back to this page as needed.</h2>
+      <h2>
+        Below the timer is a scratchpad to scribble out your thoughts and work.
+        Your text is automatically saved, so feel free to leave and come back to
+        this page as needed.
+      </h2>
       <br>
       <ul class="instructions">
         <li class="subtitle">
@@ -36,16 +45,14 @@
           <i class="fas fa-mug-hot" />Switch to the next break timer and relax.
         </li>
         <li>
-          <i class="fas fa-circle-notch" />After about three of these cycles, take a longer 15 minute break.
+          <i class="fas fa-circle-notch" />After about three of these cycles,
+          take a longer 15 minute break.
         </li>
       </ul>
     </section>
 
     <div class="column tools-container">
-      <div
-        class="study-tools-timer has-background-dark has-text-white has-text-centered"
-        :class="{ detached }"
-      >
+      <div class="study-tools-timer has-background-dark has-text-white has-text-centered">
         <audio
           ref="audio"
           src="/foghorn.wav"
@@ -59,12 +66,6 @@
           {{ stageIndex / 7 }}%
         </progress>
 
-        <span
-          v-if="detached"
-          title="Dismiss the timer"
-          class="delete dismiss-timer"
-          @click="$store.dispatch('SET_STUDY_TOOLS_TIMER_OPEN', false)"
-        />
         <div class="padding">
           <span class="stage-title">{{ currentStage.title }}</span>
           <span class="minutes">{{ minutes }}</span>
@@ -75,7 +76,6 @@
           <button
             class="button"
             title="Skip to prev stage"
-            :class="{ 'is-small': detached }"
             @click="$store.commit('STUDY_TOOLS_TIMER_PREV_STAGE')"
           >
             <i class="fas fa-step-backward" />
@@ -83,18 +83,16 @@
           <button
             class="button is-success"
             title="Play/pause timer"
-            :class="{ 'is-small': detached }"
             @click="$store.dispatch('TOGGLE_STUDY_TOOLS_TIMER')"
           >
             <i
               class="fas"
-              :class="[ paused ? 'fa-play' : 'fa-pause' ]"
+              :class="[paused ? 'fa-play' : 'fa-pause']"
             />
           </button>
           <button
             title="Reset current stage"
             class="button is-danger"
-            :class="{ 'is-small': detached }"
             @click="$store.commit('RESET_STUDY_TOOLS_TIMER')"
           >
             <i class="fas fa-history" />
@@ -102,7 +100,6 @@
           <button
             class="button"
             title="Skip to next stage"
-            :class="{ 'is-small': detached }"
             @click="$store.commit('STUDY_TOOLS_TIMER_NEXT_STAGE')"
           >
             <i class="fas fa-step-forward" />
@@ -121,10 +118,6 @@
 export default {
   name: 'StudyToolsPage',
   props: {
-    detached: {
-      type: Boolean,
-      default: false
-    },
     open: {
       type: Boolean,
       default: true
@@ -219,18 +212,6 @@ hgroup {
     font-size: 3rem;
     .padding {
       padding: 0 20px;
-    }
-    &.detached {
-      position: fixed;
-      bottom: 10px;
-
-      right: 10px;
-      @media screen and (max-width: 1280px) {
-        right: unset;
-        left: 10px;
-      }
-      font-size: 2rem;
-      width: fit-content;
     }
 
     button {

@@ -1,3 +1,4 @@
+<!--Tools: Main selection page-->
 <template>
   <section class="section academic-utils">
     <h1
@@ -28,7 +29,9 @@
         </router-link>
       </ul>
     </div>
-    <h2 class="subtitle has-text-centered-mobile">
+    <h2
+      class="subtitle has-text-centered-mobile"
+    >
       Estimates your final course grades and cumulative grade point average
     </h2>
     <router-view />

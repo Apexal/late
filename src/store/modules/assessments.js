@@ -56,6 +56,7 @@ const getters = {
     state.upcomingAssessments.map(getters.mapAssessmentToEvent),
   mapWorkBlockToEvent: (state, getters) => (type, assessment, b) => ({
     blockID: b._id,
+    block: b,
     eventType: 'work-block',
     assessmentType: type,
     title: assessment.title,
@@ -183,10 +184,13 @@ const actions = {
     }
     return removedAssessments;
   },
-  async ADD_WORK_BLOCK ({ commit, getters }, { assessment, start, end }) {
+  async ADD_WORK_BLOCK (
+    { commit, getters },
+    { assessment, start, end, shared = true }
+  ) {
     const request = await axios.post(
       `/blocks/${assessment.assessmentType}/${assessment._id}`,
-      { startTime: start, endTime: end }
+      { startTime: start, endTime: end, shared }
     );
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
@@ -197,15 +201,18 @@ const actions = {
   },
   async EDIT_WORK_BLOCK (
     { commit, getters },
-    { assessment, blockID, start, end }
+    { assessment, blockID, start, end, location }
   ) {
+    const updates = {
+      startTime: start,
+      endTime: end,
+      assessmentType: assessment.assessmentType
+    };
+    if (location) updates.location = location;
+
     const request = await axios.patch(
       `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`,
-      {
-        startTime: start,
-        endTime: end,
-        assessmentType: assessment.assessmentType
-      }
+      updates
     );
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {

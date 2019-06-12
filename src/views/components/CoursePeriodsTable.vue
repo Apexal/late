@@ -1,3 +1,4 @@
+<!--Assessments: Table of course periods module-->
 <template>
   <table class="table is-fullwidth">
     <thead class="is-unselectable">
@@ -16,9 +17,7 @@
         <td>{{ day(p.day) }}</td>
         <td>
           {{ time(p.start) }}
-          <span class="has-text-grey-light">
-            -
-          </span>
+          <span class="has-text-grey-light">-</span>
           {{ time(p.end) }}
         </td>
         <td>{{ p.location }}</td>

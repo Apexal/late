@@ -38,8 +38,7 @@ Vue.use(
 Vue.component('CourseAssessmentDot', CourseAssessmentDot);
 Vue.use(wysiwyg, { hideModules: { image: true } });
 Vue.use(Buefy, {
-  defaultIconPack: 'fas',
-  defaultContainerElement: '#app'
+  defaultIconPack: 'fas'
 });
 
 const options = {

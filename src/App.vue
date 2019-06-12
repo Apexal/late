@@ -9,50 +9,19 @@
         :active="loading"
         :can-cancel="false"
       />
-      <transition name="slide-fade">
-        <span
-          v-if="loggedIn && !expanded"
-          class="icon button is-dark toggle-sidebar"
-          title="Toggle sidebar."
-          @click="$store.commit('TOGGLE_SIDEBAR')"
-        >
-          <i
-            :class="
-              'fas ' +
-                (expanded
-                  ? 'fas fa-chevron-up fa-rotate-270'
-                  : 'fas fa-chevron-up fa-rotate-90')
-            "
-          />
-        </span>
-      </transition>
-      <div :class="appClass">
-        <transition name="slide-fade">
-          <div
-            v-if="loggedIn && expanded"
-            id="sidebar-column"
-            class="column is-3 sidebar-holder"
-          >
-            <TheSidebar
-              ref="sidebar"
-              @sidebar-loaded="onResize"
-            />
-          </div>
-        </transition>
 
+      <div :class="appClass">
         <div
-          :class="[
-            loggedIn && expanded ? 'column' : '',
-            { 'no-sidebar': !expanded }
-          ]"
+          v-if="loggedIn"
+          id="sidebar-column"
+          class="column is-3 sidebar-holder"
         >
+          <TheSidebar ref="sidebar" />
+        </div>
+
+        <div :class="[loggedIn ? 'column' : '']">
           <template v-if="loggedIn">
             <PinnedAnnouncements v-if="loggedIn" />
-            <StudyToolsTimer
-              v-if="$route.path != '/studytools'"
-              :detached="true"
-              :open="studyToolsTimerOpen"
-            />
             <AssignmentsModalAdd
               v-if="!onBreak"
               :open="addAssignmentModalExpanded"
@@ -77,6 +46,10 @@
             />
             <SISMan />
             <AssessmentsAddFAB v-if="!onBreak" />
+            <StudyToolsTimerOverlay
+              v-if="$route.path != '/studytools'"
+              :open="studyToolsTimerOpen"
+            />
           </template>
           <transition
             name="fade"
@@ -95,17 +68,17 @@
 <script>
 import TheHeader from '@/views/components/TheHeader';
 import TheFooter from '@/views/components/TheFooter';
-import TheSidebar from '@/views/components/sidebar/TheSidebar';
-import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
-import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
-import CourseModal from '@/views/components/courses/CourseModal';
-import PinnedAnnouncements from '@/views/components/announcements/PinnedAnnouncements';
-import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
+import TheSidebar from '@/views/sidebar/components/TheSidebar';
+import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAddRedux';
+import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux';
+import CourseModal from '@/views/courses/components/CourseModal';
+import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements';
+import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal';
 
-import StudyToolsTimer from '@/views/studytools/StudyToolsTimerOverlay';
-import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB';
+import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
+import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
 
-import SISMan from '@/views/components/sisman/SISMan';
+import SISMan from '@/views/sisman/components/SISMan';
 
 export default {
   name: 'LATE',
@@ -119,7 +92,7 @@ export default {
     AnnouncementsModal,
     PinnedAnnouncements,
     AssessmentsAddFAB,
-    StudyToolsTimer,
+    StudyToolsTimerOverlay,
     SISMan
   },
   data () {
@@ -134,8 +107,8 @@ export default {
     },
     appClass () {
       return {
-        'columns is-marginless': this.loggedIn && this.expanded,
-        container: this.loggedIn && !this.expanded,
+        'columns is-marginless': this.loggedIn,
+        container: !this.loggedIn,
         homepage: this.homepage
       };
     },
@@ -163,18 +136,11 @@ export default {
     addExamModalExpanded () {
       return this.$store.state.addExamModal.expanded;
     },
-    expanded () {
-      return this.$store.state.sidebarExpanded;
-    },
     isUserSetup () {
       return this.$store.getters.isUserSetup;
     }
   },
   async mounted () {
-    if (typeof window.orientation === 'undefined') {
-      window.addEventListener('resize', this.resizeThrottler, false);
-    }
-
     if (this.$route.query.accountLocked) {
       this.loading = false;
       return this.$toast.open({
@@ -215,26 +181,6 @@ export default {
     }
 
     this.loading = false;
-  },
-  methods: {
-    resizeThrottler () {
-      // ignore resize events as long as an actualResizeHandler execution is in the queue
-      if (!this.resizeTimeout) {
-        this.resizeTimeout = setTimeout(() => {
-          this.resizeTimeout = null;
-          this.onResize();
-          // The actualResizeHandler will execute at a rate of 15fps
-        }, 66);
-      }
-    },
-    onResize () {
-      // if (document.getElementById('sidebar').style.position === 'fixed') {
-      if (document.getElementById('sidebar-column')) {
-        document.getElementById('sidebar').style.width =
-          document.getElementById('sidebar-column').offsetWidth - 15 + 'px';
-      }
-      // }
-    }
   }
 };
 </script>

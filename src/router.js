@@ -278,7 +278,7 @@ const router = new Router({
             title: 'Students'
           },
           component: () =>
-            import('@/views/components/admin/AdminStudentList.vue')
+            import('@/views/admin/components/AdminStudentList.vue')
         },
         {
           path: 'log',
@@ -286,7 +286,7 @@ const router = new Router({
           meta: {
             title: 'Server Log'
           },
-          component: () => import('@/views/components/admin/AdminLog.vue')
+          component: () => import('@/views/admin/components/AdminLog.vue')
         },
         {
           path: 'terms',
@@ -294,7 +294,7 @@ const router = new Router({
           meta: {
             title: 'School Terms'
           },
-          component: () => import('@/views/components/admin/AdminTermsList.vue')
+          component: () => import('@/views/admin/components/AdminTermsList.vue')
         }
       ]
     },
@@ -310,7 +310,6 @@ const router = new Router({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR');
   if (store.state.courseModal.open) store.commit('CLOSE_COURSE_MODAL');
 
   if (!store.state.auth.isAuthenticated) await store.dispatch('GET_USER');
@@ -321,7 +320,7 @@ router.beforeEach(async (to, from, next) => {
   ) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    window.location = '/auth/login?redirectTo' + to.fullPath;
+    window.location = '/auth/login?redirectTo=' + to.fullPath;
     return;
   }
 

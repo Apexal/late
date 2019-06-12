@@ -8,6 +8,9 @@ const Assignment = require('./assignments.model');
 const Student = require('../students/students.model');
 const Unavailability = require('../unavailabilities/unavailabilities.model');
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 async function getAssignmentMiddleware (ctx, next) {
   const assignmentID = ctx.params.assignmentID;
 
@@ -20,7 +23,19 @@ async function getAssignmentMiddleware (ctx, next) {
         { shared: true, sharedWith: ctx.state.user.rcs_id }
       ]
     })
-      .populate('_blocks')
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: ctx.state.user._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      })
       .populate('_student', '_id rcs_id name grad_year')
       .populate('comments._student', '_id rcs_id name grad_year');
   } catch (e) {
@@ -44,7 +59,7 @@ async function getAssignmentMiddleware (ctx, next) {
   }
 
   ctx.state.assignment = assignment;
-  ctx.state.isAssignmentOwner = assignment._id === ctx.state.user._id;
+  ctx.state.isAssignmentOwner = assignment._id.equals(ctx.state.user._id);
 
   await next();
 }
@@ -97,6 +112,63 @@ async function getAssignment (ctx) {
   ctx.ok({
     assessment: ctx.state.assignment,
     assignment: ctx.state.assignment
+  });
+}
+
+async function setAssignmentCollaborators (ctx) {
+  if (!ctx.state.assignment.shared) {
+    return ctx.badRequest('This assignment isn\'t shared!');
+  }
+
+  const { sharedWith } = ctx.request.body;
+  const existing = ctx.state.assignment.sharedWith;
+
+  // Determine students to add
+  const newStudents = sharedWith.filter(
+    newStudent => !existing.includes(newStudent)
+  );
+
+  const course = await ctx.state.user.courseFromCRN(
+    ctx.session.currentTerm.code,
+    ctx.state.assignment.courseCRN
+  );
+
+  if (newStudents.length > 0) {
+    sgMail.send({
+      to: newStudents.map(rcsID => rcsID + '@rpi.edu'),
+      from: 'LATE <thefrankmatranga@gmail.com>',
+      templateId: 'd-9c74c53a41fe4b868b7b10b241edcbba',
+      dynamic_template_data: {
+        sharer: ctx.state.user,
+        course,
+        assignment: ctx.state.assignment,
+        assignmentURL:
+          process.env.BASE_URL + '/coursework/a/' + ctx.state.assignment._id
+      }
+    });
+  }
+
+  // Determine students to remove
+  const removedStudents = existing.filter(
+    oldStudent => !sharedWith.includes(oldStudent)
+  );
+
+  ctx.state.assignment.sharedWith = sharedWith;
+
+  try {
+    await ctx.state.assignment.save();
+  } catch (e) {
+    logger.error(
+      `Failed to save collaborators for assignment ${
+        ctx.state.assignment._id
+      } for student ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.internalServerError('There was an error saving the assignment.');
+  }
+
+  ctx.ok({
+    updatedAssessment: ctx.state.assignment,
+    updatedAssignment: ctx.state.assignment
   });
 }
 
@@ -270,7 +342,7 @@ async function createAssignment (ctx) {
   }
 
   logger.info(
-    `Created new assigment '${newAssignment.title}' for ${
+    `Created new assignment '${newAssignment.title}' for ${
       ctx.state.user.rcs_id
     }`
   );
@@ -390,7 +462,7 @@ async function toggleAssignment (ctx) {
   }
 
   logger.info(
-    `Set assigment ${ctx.state.assignment._id} completion status to ${
+    `Set assignment ${ctx.state.assignment._id} completion status to ${
       ctx.state.assignment.completed
     } for ${ctx.state.user.rcs_id}.`
   );
@@ -562,6 +634,7 @@ module.exports = {
   getAssignments,
   getAssignment,
   getAssignmentCollaboratorInfo,
+  setAssignmentCollaborators,
   createAssignment,
   toggleAssignment,
   editAssignment,

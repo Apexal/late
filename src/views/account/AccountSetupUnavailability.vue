@@ -1,7 +1,10 @@
+<!--Account Setup: Unavailability Scheduling-->
 <template>
   <div class="setup-unavailability">
     <template v-if="onBreak">
-      <h2 class="subtitle has-text-centered">
+      <h2
+        class="subtitle has-text-centered"
+      >
         You will be able to set your new course schedule once break ends.
       </h2>
     </template>

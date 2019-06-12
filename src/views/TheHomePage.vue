@@ -1,3 +1,4 @@
+<!--Main container - Goes to dashboard if logged in, promo page if not-->
 <template>
   <div class="home">
     <TheDashboard v-if="loggedIn" />
