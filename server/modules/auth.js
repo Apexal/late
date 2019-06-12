@@ -3,6 +3,8 @@ const logger = require('./logger');
 
 const Student = require('../api/students/students.model');
 
+const { sendDiscordWebhookMessage } = require('./webhooks');
+
 const { sendNewUserEmail } = require('../integrations/email');
 
 const cas = new CAS({
@@ -48,6 +50,7 @@ async function loginStudent (ctx) {
     await student.save();
     logger.info(`Creating and adding new user to waitlist with rcs_id: ${student.rcs_id}`);
     sendNewUserEmail(student.rcs_id);
+    sendDiscordWebhookMessage(`**${student.rcs_id}** has joined the waitlist!`); // may fail
     ctx.session = null;
     return ctx.redirect('/?waitlisted=1');
   }

@@ -1,5 +1,37 @@
 const logger = require('../../modules/logger');
 const SMS = require('../../integrations/sms');
+const ical = require('node-ical');
+const request = require('request-promise');
+const moment = require('moment');
+
+const CALENDAR_URL = 'http://events.rpi.edu/cal/misc/export.gdo?b=de';
+
+async function getAcademicCalendarEvents (ctx) {
+  const response = await request.post(CALENDAR_URL, {
+    form: {
+      calPath: '/user/public-user/Academic Calendar',
+      nocache: 'no',
+      contentName: 'Academic Calendar.ics',
+      dateLimits: 'all'
+    }
+  });
+
+  const events = {};
+
+  let parsed = ical.parseICS(response);
+  for (let id in parsed) {
+    if (
+      moment(parsed[id].start).isBetween(
+        ctx.session.currentTerm.start,
+        ctx.session.currentTerm.end
+      )
+    ) {
+      events[id] = parsed[id];
+    }
+  }
+
+  return ctx.ok({ events });
+}
 
 /**
  * Get a SMS verification code and send it to the user's given phone number.
@@ -123,55 +155,6 @@ async function disableSMS (ctx) {
 }
 
 /**
- * Get a random verification code, save it to the user, and return it.
- *
- * @param {Koa context} ctx
- */
-async function startVerifyDiscord (ctx) {
-  const code = (ctx.state.user.integrations.discord.verificationCode = Math.random()
-    .toString(36)
-    .substr(2, 5));
-
-  try {
-    await ctx.state.user.save();
-  } catch (e) {
-    logger.error(
-      `Failed to start verifying Discord for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('Error getting verification code.');
-  }
-
-  logger.info(
-    `Generated Discord verification code for ${ctx.state.user.rcs_id}.`
-  );
-  ctx.ok({ verificationCode: code });
-}
-
-/**
- * Update Discord preferences passed in the request body.
- *
- * @param {Koa context} ctx
- */
-async function disableDiscord (ctx) {
-  ctx.state.user.integrations.discord = {
-    verified: false
-  };
-  ctx.state.user.setup.integrations = true;
-
-  try {
-    await ctx.state.user.save();
-  } catch (e) {
-    logger.error(
-      `Failed to disable Discord for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('Failed to disable Discord integration.');
-  }
-
-  logger.info(`Disabled Discord integration for ${ctx.state.user.rcs_id}.`);
-  ctx.ok({ updatedUser: ctx.state.user });
-}
-
-/**
  * Update user's notification preferences as passed in the request body.
  *
  * @param {Koa context} ctx
@@ -202,10 +185,9 @@ async function saveNotificationPreferences (ctx) {
 }
 
 module.exports = {
+  getAcademicCalendarEvents,
   submitSMS,
   verifySMS,
   disableSMS,
-  startVerifyDiscord,
-  disableDiscord,
   saveNotificationPreferences
 };

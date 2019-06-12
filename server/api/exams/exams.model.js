@@ -24,6 +24,18 @@ const schema = new Schema(
         body: { type: String, minlength: 1, maxlength: 2000, required: true }
       }
     ],
+    studyPlan: [
+      {
+        text: String, // Markdown
+        children: [
+          {
+            text: String,
+            completed: Boolean
+          }
+        ], // nested objects
+        completed: Boolean
+      }
+    ],
     _blocks: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -42,17 +54,22 @@ schema.virtual('scheduledTime').get(function () {
 });
 
 schema.virtual('scheduledTimeRemaing').get(function () {
-  return this._blocks.filter(b => !b.passed).reduce((acc, block) => acc + block.duration, 0);
+  return this._blocks
+    .filter(b => !b.passed)
+    .reduce((acc, block) => acc + block.duration, 0);
 });
 
 schema.virtual('passed').get(function () {
   return moment(this.date).isBefore(new Date());
 });
 
+schema.virtual('assessmentType').get(function () {
+  return 'exam';
+});
+
 schema.virtual('fullyScheduled').get(function () {
   return this.scheduledTime >= this.timeEstimate * 60;
 });
-
 
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the exam date now

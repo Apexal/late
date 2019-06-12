@@ -12,10 +12,12 @@ const schema = new Schema(
       ref: 'Student',
       required: true
     },
+    shared: { type: Boolean, default: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     locked: { type: Boolean, default: false },
-    notified: { type: Boolean, default: false }
+    notified: { type: Boolean, default: false },
+    location: { type: String, trim: true, minlength: 1, maxlength: 200 }
   },
   { timestamps: true }
 );
@@ -29,6 +31,20 @@ schema.virtual('passed').get(function () {
 
 schema.virtual('duration').get(function () {
   return moment(this.endTime).diff(this.startTime, 'minutes');
+});
+
+schema.virtual('asGoogleCalendarEvent').get(function () {
+  return {
+    id: this._id,
+    start: {
+      dateTime: this.startTime,
+      timezone: 'America/New_York'
+    },
+    end: {
+      dateTime: this.endTime,
+      timezone: 'America/New_York'
+    }
+  };
 });
 
 module.exports = mongoose.model('Block', schema);

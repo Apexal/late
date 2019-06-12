@@ -1,110 +1,109 @@
 <template>
   <div id="app">
-    <div id="content">
-      <vue-progress-bar />
-      <v-tour
-        name="page-tour"
-        :steps="tourSteps"
-      />
-      <TheHeader ref="header" />
-      <Loading
-        :active.sync="loading"
+    <vue-progress-bar />
+    <TheHeader ref="header" />
+
+    <main id="content">
+      <b-loading
         :is-full-page="true"
+        :active="loading"
+        :can-cancel="false"
       />
-      <template v-if="loggedIn">
-        <CourseModal
-          :open="courseModalOpen"
-          :course="courseModalData"
-        />
-      </template>
-      <template v-if="!loading">
-        <AssignmentsModalAdd
-          :open="addAssignmentModalExpanded"
-          @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-        />
-        <ExamsModalAdd
-          :open="addExamModalExpanded"
-          @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
-        />
-        <transition name="slide-fade">
-          <span
-            v-if="loggedIn && !expanded"
-            class="icon button is-dark toggle-sidebar"
-            title="Toggle sidebar."
-            @click="$store.commit('TOGGLE_SIDEBAR')"
-          >
-            <i :class="'fas ' + (expanded ? 'fa-arrow-left' : 'fa-arrow-right')" />
-          </span>
-        </transition>
-        <div
-          class="columns"
-          style="margin-right: initial;"
+
+      <div :class="appClass">
+        <span
+          v-if="!sidebarExpanded"
+          class="icon toggle-sidebar has-text-dark"
+          title="Open sidebar"
+          @click="$store.commit('TOGGLE_SIDEBAR')"
         >
-          <transition name="slide-fade">
-            <div
-              v-if="loggedIn && expanded"
-              id="sidebar-column"
-              class="column is-3 child-view sidebar-holder"
-            >
-              <TheSidebar
-                ref="sidebar"
-                @sidebar-loaded="onResize"
-              />
-            </div>
-          </transition>
-          <div
-            id="content"
-            :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
-            style="flex: 1;"
-          >
-            <section
-              v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
-              class="section no-bottom-padding"
-            >
-              <div class="notification is-warning">
-                <b>NOTICE:</b> You will not be able to use
-                <b>LATE</b> until you have
-                <router-link to="/profile">
-                  set up your account.
-                </router-link>
-              </div>
-            </section>
-            <transition
-              name="fade"
-              mode="out-in"
-            >
-              <router-view />
-            </transition>
-          </div>
+          <i class="fas fa-angle-right" />
+        </span>
+        <div
+          v-if="loggedIn && sidebarExpanded"
+          id="sidebar-column"
+          class="column is-3 sidebar-holder"
+        >
+          <TheSidebar ref="sidebar" />
         </div>
-      </template>
-    </div>
+
+        <div :class="[loggedIn ? 'column' : '']">
+          <template v-if="loggedIn">
+            <PinnedAnnouncements v-if="loggedIn" />
+            <AssignmentsModalAdd
+              v-if="!onBreak"
+              :open="addAssignmentModalExpanded"
+              @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+            />
+            <ExamsModalAddRedux
+              v-if="!onBreak"
+              :open="addExamModalExpanded"
+              @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+            />
+            <CourseModal
+              v-if="!onBreak"
+              :open="courseModalOpen"
+              :course="courseModalData"
+            />
+            <AnnouncementsModal
+              :open="announcementsModalOpen"
+              :announcements="announcements"
+              @close-modal="
+                $store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)
+              "
+            />
+            <SISMan />
+            <AssessmentsAddFAB v-if="!onBreak" />
+            <StudyToolsTimerOverlay
+              v-if="$route.path != '/studytools'"
+              :open="studyToolsTimerOpen"
+            />
+          </template>
+          <transition
+            name="fade"
+            mode="out-in"
+          >
+            <router-view />
+          </transition>
+        </div>
+      </div>
+    </main>
+
     <TheFooter id="footer" />
   </div>
 </template>
+
 <script>
 import TheHeader from '@/views/components/TheHeader';
 import TheFooter from '@/views/components/TheFooter';
-import TheSidebar from '@/views/components/sidebar/TheSidebar';
-import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
-import ExamsModalAdd from '@/views/components/exams/ExamsModalAdd';
-import CourseModal from '@/views/components/courses/CourseModal';
+import TheSidebar from '@/views/sidebar/components/TheSidebar';
+import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAddRedux';
+import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux';
+import CourseModal from '@/views/courses/components/CourseModal';
+import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements';
+import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal';
 
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
+import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
+import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
+
+import SISMan from '@/views/sisman/components/SISMan';
 
 import tours from '@/tours';
 
 export default {
   name: 'LATE',
   components: {
-    Loading,
     CourseModal,
     TheHeader,
     TheSidebar,
     TheFooter,
     AssignmentsModalAdd,
-    ExamsModalAdd
+    ExamsModalAddRedux,
+    AnnouncementsModal,
+    PinnedAnnouncements,
+    AssessmentsAddFAB,
+    StudyToolsTimerOverlay,
+    SISMan
   },
   data () {
     return {
@@ -113,17 +112,36 @@ export default {
     };
   },
   computed: {
+    sidebarExpanded () {
+      return this.$store.state.sidebarExpanded;
+    },
+    homepage () {
+      return this.$route.name === 'home' && !this.loggedIn;
+    },
+    appClass () {
+      return {
+        'columns is-marginless': this.loggedIn && this.sidebarExpanded,
+        container: !this.loggedIn || !this.sidebarExpanded,
+        homepage: this.homepage
+      };
+    },
+    studyToolsTimerOpen () {
+      return (
+        this.$store.state.studytoolstimer.open &&
+        this.$route.name !== 'study-tools-timer'
+      );
+    },
     courseModalData () {
       return this.$store.state.courseModal.current;
     },
     courseModalOpen () {
       return this.$store.state.courseModal.open;
     },
-    loggedIn () {
-      return this.$store.state.auth.isAuthenticated;
+    announcementsModalOpen () {
+      return this.$store.state.announcements.modalOpen;
     },
-    courses () {
-      return this.$store.getters.current_schedule;
+    announcements () {
+      return this.$store.getters.allAnnouncements;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
@@ -131,29 +149,26 @@ export default {
     addExamModalExpanded () {
       return this.$store.state.addExamModal.expanded;
     },
-    expanded () {
-      return this.$store.state.sidebarExpanded;
-    },
-    isSetup () {
+    isUserSetup () {
       return this.$store.getters.isUserSetup;
     },
     tourSteps () {
-      return this.$route.meta.tour && this.$route.meta.tour in tours ? tours[this.$route.meta.tour] : [];
+      return this.$route.meta.tour && this.$route.meta.tour in tours
+        ? tours[this.$route.meta.tour]
+        : [];
     }
   },
   watch: {
-    '$route': 'tour'
+    $route: 'tour'
   },
   async mounted () {
-    if (typeof window.orientation === 'undefined') {
-      window.addEventListener('resize', this.resizeThrottler, false);
-    }
-
     if (this.$route.query.accountLocked) {
       this.loading = false;
-      return this.$toasted.error(
-        'Your account has been locked by administrators.'
-      );
+      return this.$toast.open({
+        message: 'Your account has been locked by administrators.',
+        type: 'is-warning',
+        duration: 70000
+      });
     }
 
     if (
@@ -168,65 +183,74 @@ export default {
     await this.$store.dispatch('GET_USER');
     if (this.$store.state.auth.isAuthenticated) {
       await this.$store.dispatch('GET_TERMS');
-      await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
-      await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
-      await this.$store.dispatch('AUTO_UPDATE_NOW');
+      const calls = [];
+      if (!this.$store.getters.onBreak) {
+        await this.$store.dispatch('GET_COURSES');
+        calls.concat([
+          this.$store.dispatch('GET_UNAVAILABILITIES'),
+          this.$store.dispatch('AUTO_GET_UPCOMING_WORK')
+        ]);
+      }
+      calls.concat([
+        this.$store.dispatch('GET_TODOS'),
+        this.$store.dispatch('GET_ANNOUNCEMENTS'),
+        this.$store.dispatch('AUTO_UPDATE_NOW')
+      ]);
+      await Promise.all(calls);
     }
 
     this.loading = false;
-
-    this.tour();
-  },
-  methods: {
-    tour () {
-      this.$nextTick(function () {
-        this.$tours['page-tour'].start();
-      });
-    },
-    resizeThrottler () {
-      // ignore resize events as long as an actualResizeHandler execution is in the queue
-      if (!this.resizeTimeout) {
-        this.resizeTimeout = setTimeout(() => {
-          this.resizeTimeout = null;
-          this.onResize();
-          // The actualResizeHandler will execute at a rate of 15fps
-        }, 66);
-      }
-    },
-    onResize () {
-      if (document.getElementById('sidebar-column')) {
-        document.getElementById('sidebar').style.width =
-          document.getElementById('sidebar-column').offsetWidth - 15 + 'px';
-      }
-    }
   }
 };
 </script>
 
 <style lang="scss">
-/* These styles will apply to the whole app. */
-@import "@/assets/bulma.scss";
+@import "@/assets/late_theme.scss";
 
-html,body {
+/*-------------------------------------------*/
+/*               Global Styles
+/* These styles will apply to the whole app. */
+/*-------------------------------------------*/
+* {
+  word-wrap: break-word;
+  outline: 0;
+}
+
+.is-fullwidth {
+  width: 100%;
+}
+
+//Removes annoying outline around elements when clicked.
+// *:focus {
+//   outline: none;
+//   box-shadow: none !important;
+//   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+// }
+
+html,
+body {
   height: 100%;
 }
 
+/*-------------------------------------------*/
+/*             All other styles
+/*-------------------------------------------*/
 
-//Sticky Footer
+// Sticky Footer
 #app {
   display: flex;
-  //Dynamically calculate page height - header height (3.25rem)
-  min-height: calc(100vh - 3.25rem);
-  min-height: -webkit-calc(100vh - 3.25rem);
   flex-direction: column;
+  height: 100%;
 }
 
 #content {
-  flex: 1 1 auto;
+  flex: 1 0 auto;
 }
-
 #footer {
-  flex: 1 0 inherit;
+  flex-shrink: 0;
+}
+section.section {
+  padding: 1.5rem;
 }
 
 // Replace Fullcalendar ugly button style with Bulma's nice style
@@ -234,41 +258,16 @@ html,body {
   color: initial;
   background: none;
   text-shadow: none;
-  @extend .button;
-}
-
-//Removes annoying outline around elements when clicked.
-*:focus {
-  outline: none;
-}
-
-.is-full-width {
-  width: 100%;
+  //@extend .button;
 }
 
 .toggle-sidebar {
-  top: 70px;
+  cursor: pointer;
   z-index: 4;
   position: fixed;
-  @media only screen and (max-width: 768px) {
-    position: absolute;
-    top: 55px;
-  }
-
-  //Styling the toggle button to fit the theme
-  margin: 1em;
-  margin-top: 0.5em;
-  width: 2.5em;
-  height: 1.5em;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  cursor: pointer;
-  background-color: green;
-  display: inline-block;
+  left: 5px;
+  top: 60px;
+  font-size: 30px;
 }
 
 /* TRANSITIONS */
@@ -292,6 +291,7 @@ html,body {
   opacity: 0;
   -webkit-transform: translate(30px, 0);
   transform: translate(30px, 0);
+  margin-right: -30px;
 }
 .slide-left-leave-active,
 .slide-right-enter {
@@ -310,10 +310,15 @@ html,body {
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(-80px);
+  margin-right: -80px;
   opacity: 0;
 }
 
-.no-bottom-padding {
-  padding-bottom: 0;
+.modal-content {
+  max-width: 800px;
+}
+
+.exam-event {
+  font-weight: bold;
 }
 </style>

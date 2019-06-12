@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const moment = require('moment');
 
 const Block = require('../blocks/blocks.model');
+const Unavailability = require('../unavailabilities/unavailabilities.model');
 const Assignment = require('../assignments/assignments.model');
 const Exam = require('../exams/exams.model');
 
@@ -53,9 +54,7 @@ const schema = new Schema(
       type: Number,
       min: 2000,
       max: 3000
-      /*, required: true */
-    }, // maybe?
-    semester_schedules: { type: Object, default: {} },
+    },
     earliestWorkTime: {
       type: String,
       minlength: 5,
@@ -68,12 +67,11 @@ const schema = new Schema(
       maxlength: 5,
       default: '23:00'
     },
-    unavailability_schedules: { type: Object, default: {} },
     admin: { type: Boolean, default: false },
     notificationPreferences: {
       preWorkBlockReminders: {
         type: String,
-        enum: ['', 'sms', 'discord'],
+        enum: ['', 'google calendar', 'sms', 'discord'],
         default: ''
       },
       postWorkBlockReminders: {
@@ -81,14 +79,14 @@ const schema = new Schema(
         enum: ['', 'sms', 'discord'],
         default: ''
       },
-      morningReports: {
+      weeklyReports: {
         type: String,
         enum: ['', 'email', 'discord'],
         default: ''
       },
-      addAssignmentReminders: {
+      examReminder: {
         type: String,
-        enum: ['', 'sms', 'discord'],
+        enum: ['', 'email', 'sms', 'discord'],
         default: ''
       }
     },
@@ -98,21 +96,39 @@ const schema = new Schema(
         verificationCode: { type: String, minlength: 1 },
         phoneNumber: { type: String, minlength: 10, maxlength: 10 }
       },
+      google: {
+        tokens: {
+          refresh_token: String,
+          access_token: String,
+          expiry_date: Number
+        },
+        calendarIDs: {
+          courseSchedule: { type: String, default: '' },
+          workBlocks: { type: String, default: '' }
+        }
+      },
       discord: {
         verified: { type: Boolean, default: false },
-        verificationCode: { type: String, minlength: 1 },
-        userID: { type: String }
+        userID: String,
+        tokens: {
+          accessToken: String,
+          refreshToken: String
+        }
       }
     },
     setup: {
-      personal_info: {
+      profile: {
         type: Boolean,
         default: false
       }, // what CMS API will give us
       course_schedule: {
         type: Array,
         default: [] // semester codes like ['201809', '201901']
-      }, // what SIS and YACS will give us
+      }, // what SIS
+      terms: {
+        type: Boolean,
+        default: false // semester codes like ['201809', '201901']
+      },
       unavailability: {
         type: Array,
         default: [] // semester codes like ['201809', '201901']
@@ -120,7 +136,16 @@ const schema = new Schema(
       integrations: {
         type: Boolean,
         default: false
-      } // when the student has setup (or chosen not to setup) integrations
+      }, // when the student has setup (or chosen not to setup) integrations
+      google: {
+        type: Boolean,
+        default: false
+      } // when the student has connected their Google account
+    },
+    terms: {
+      // termCodes for all the terms they will be at school (able to use LATE)
+      type: Array,
+      default: []
     },
     joined_date: {
       type: Date,
@@ -151,13 +176,15 @@ schema.query.byDiscordID = function (discordID) {
 
 /* METHODS */
 
-schema.methods.courseFromCRN = function (currentTermCode, crn) {
-  return this.semester_schedules[currentTermCode].find(c => c.crn === crn);
+schema.methods.courseFromCRN = function (termCode, crn) {
+  return this.model('Course')
+    .findOne({ _student: this._id, termCode, crn })
+    .exec();
 };
 
 schema.methods.getAssignments = function (start, end, title, courseCRN) {
   let query = {
-    _student: this._id
+    $or: [{ _student: this._id }, { shared: true, sharedWith: this.rcs_id }]
   };
 
   if (start) {
@@ -180,7 +207,20 @@ schema.methods.getAssignments = function (start, end, title, courseCRN) {
 
   return this.model('Assignment')
     .find(query)
-    .populate('_blocks')
+    .populate({
+      path: '_blocks',
+      match: {
+        $or: [
+          {
+            _student: this._id
+          },
+          {
+            shared: true
+          }
+        ]
+      }
+    })
+    .populate('_student', '_id rcs_id name grad_year')
     .sort('dueDate')
     .sort('-priority')
     .exec();
@@ -212,8 +252,21 @@ schema.methods.getExams = function (start, end, title, courseCRN) {
   return this.model('Exam')
     .find(query)
     .populate('_blocks')
+    .populate('_student', '_id rcs_id name grad_year')
     .sort('date')
     .sort('-timeRemaining')
+    .exec();
+};
+
+schema.methods.getUnavailabilityForTerm = function (termCode) {
+  return this.model('Unavailabiliy')
+    .find({ _student: this._id, termCode })
+    .exec();
+};
+
+schema.methods.getCoursesForTerm = function (termCode) {
+  return this.model('Course')
+    .find({ _student: this._id, termCode })
     .exec();
 };
 
@@ -239,16 +292,16 @@ schema.virtual('setup_checks').get(function () {
 schema.virtual('grade_name').get(function () {
   // TODO: implement properly
   switch (this.grad_year) {
-  case 2022:
+  case 2023:
     return 'Freshman';
-  case 2021:
+  case 2022:
     return 'Sophomore';
-  case 2020:
+  case 2021:
     return 'Junior';
-  case 2019:
+  case 2020:
     return 'Senior';
   default:
-    return 'Unknown Grade';
+    return 'Alumn';
   }
 });
 

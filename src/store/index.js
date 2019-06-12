@@ -4,11 +4,17 @@ import moment from 'moment';
 
 /* MODULES */
 import auth from './modules/auth';
-import work from './modules/work';
+import assessments from './modules/assessments';
 import schedule from './modules/schedule';
 import addAssignmentModal from './modules/addAssignmentModal';
 import addExamModal from './modules/addExamModal';
 import courseModal from './modules/courseModal';
+import todos from './modules/todos';
+import unavailability from './modules/unavailability';
+import announcements from './modules/announcements';
+import studytoolstimer from './modules/studytoolstimer';
+import checklists from './modules/checklists';
+import SISMan from './modules/sisman';
 
 Vue.use(Vuex);
 
@@ -17,11 +23,17 @@ const debug = process.env.NODE_ENV !== 'production';
 export default new Vuex.Store({
   modules: {
     auth,
-    work,
+    assessments,
     schedule,
     addAssignmentModal,
     addExamModal,
-    courseModal
+    courseModal,
+    todos,
+    unavailability,
+    announcements,
+    studytoolstimer,
+    checklists,
+    SISMan
   },
   state: {
     navbarExpanded: false,
@@ -35,19 +47,16 @@ export default new Vuex.Store({
       let events = state.schedule.periods
         .filter(p => {
           if (p.type !== 'TES') return true;
-
           // Check if there is a test scheduled this day
-          return !!state.work.upcomingExams.find(
-            ex =>
-              ex.courseCRN === getters.getCourseFromPeriod(p).crn &&
-              moment(ex.date).isSame(moment(), 'day')
+          return !!state.assessments.upcomingAssessments.find(
+            assessment =>
+              assessment.assessmentType === 'exam' &&
+              assessment.courseCRN === getters.getCourseFromPeriod(p).crn &&
+              moment(assessment.date).isSame(moment(), 'day')
           );
         })
         .map(p => ({
           eventType: 'period',
-          title: `${
-            getters.getCourseFromPeriod(p).longname
-          } ${getters.periodType(p.type)}`,
           course: getters.getCourseFromPeriod(p),
           period: p,
           start: moment(p.start, 'Hmm', true),
@@ -58,14 +67,14 @@ export default new Vuex.Store({
             .filter(e => moment(e.start).isSame(state.now, 'day'))
             .map(e => ({
               eventType: 'work-block',
-              title: `${
-                e.assessmentType === 'exam' ? 'Study for' : 'Work on'
-              } ${e.assessment.title}`,
+              block: e.block,
+              assessmentType: e.assessmentType,
+              assessment: e.assessment,
               course: getters.getCourseFromCRN(e.assessment.courseCRN),
               start: moment(e.start),
               end: moment(e.end),
               link: {
-                name: `${e.assessmentType}s-overview`,
+                name: `${e.assessmentType}-overview`,
                 params: { [`${e.assessmentType}ID`]: e.assessment._id }
               }
             }))
@@ -82,8 +91,8 @@ export default new Vuex.Store({
   },
   mutations: {
     UPDATE_NOW: state => (state.now = new Date()),
-    TOGGLE_NAVBAR: state => (state.navbarExpanded = !state.navbarExpanded),
-    TOGGLE_SIDEBAR: state => (state.sidebarExpanded = !state.sidebarExpanded)
+    TOGGLE_SIDEBAR: state => (state.sidebarExpanded = !state.sidebarExpanded),
+    TOGGLE_NAVBAR: state => (state.navbarExpanded = !state.navbarExpanded)
   },
   actions: {
     AUTO_UPDATE_NOW ({ commit }) {

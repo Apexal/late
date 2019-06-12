@@ -1,3 +1,4 @@
+<!--Header module-->
 <template>
   <header
     id="header"
@@ -12,20 +13,33 @@
         <router-link
           id="logo"
           class="navbar-item"
-          to="/dashboard"
-          active-class=""
-          exact-active-class=""
+          :to="{ name: 'home' }"
+          active-class
+          exact-active-class
         >
           LATE
           <span
             class="tag is-primary beta-tag"
             title="LATE is still in active development!"
-          >
-            BETA
-          </span>
+          >BETA</span>
         </router-link>
         <a
-          :class="{'is-active': navbarExpanded}"
+          v-if="loggedIn"
+          class="navbar-item announcement-icon is-hidden-desktop"
+          :title="announcementsCount + ' new announcements'"
+          @click="openAnnouncementsModal"
+        >
+          <span class="icon">
+            <i
+              class="fa-bell announcement-bell-icon"
+              :class="[
+                announcementsCount === 0 ? 'far' : 'fas new-announcements'
+              ]"
+            />
+          </span>
+        </a>
+        <a
+          :class="{ 'is-active': navbarExpanded }"
           role="button"
           class="navbar-burger burger"
           aria-label="menu"
@@ -41,57 +55,72 @@
 
       <div
         id="top-navbar"
-        :class="{'is-active': navbarExpanded}"
+        :class="{ 'is-active': navbarExpanded }"
         class="navbar-menu is-unselectable"
       >
         <div class="navbar-start">
           <template v-if="loggedIn">
             <router-link
               class="navbar-item"
-              to="/dashboard"
+              :to="{ name: 'home' }"
               title="View your dashboard"
+              exact
             >
               <span class="icon">
                 <i class="fas fa-home" />
               </span>
               Dashboard
             </router-link>
+
+            <router-link
+              v-if="onBreak"
+              class="navbar-item"
+              :to="{ name: 'about' }"
+              title="Learn more about LATE and its creators"
+            >
+              <span class="icon">
+                <i class="fas fa-question-circle" />
+              </span>
+              About
+            </router-link>
+
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
-              <a class="navbar-link">
+              <a
+                class="navbar-link"
+                title="Manage your assignments and exams!"
+              >
                 <span class="icon">
-                  <i class="fas fa-clipboard-list" />
+                  <i class="fas fa-graduation-cap" />
                 </span>
-                Assignments
+                Coursework
                 <span
-                  v-if="assignmentCount > 0"
+                  v-if="assessmentCount > 0"
                   class="tag is-warning assignment-count"
-                >
-                  {{ assignmentCount }}
-                </span>
+                >{{ assessmentCount }}</span>
               </a>
 
               <div class="navbar-dropdown">
                 <router-link
                   class="navbar-item"
-                  to="/assignments/upcoming"
-                  title="View upcoming assignments"
+                  :to="{ name: 'coursework-upcoming' }"
+                  title="View upcoming assessments"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assignments/past"
-                  title="Browse all past assignments"
+                  :to="{ name: 'coursework-past' }"
+                  title="Browse all past assessments"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assignments/calendar"
-                  title="View a calendar of all your assignment due dates"
+                  :to="{ name: 'coursework-calendar' }"
+                  title="View a calendar of all your assessment due dates"
                 >
                   Calendar
                 </router-link>
@@ -102,77 +131,74 @@
                   @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-plus" />
+                    <i class="fas fa-clipboard-check" />
                   </span>
                   Add Assignment
                 </a>
-              </div>
-            </div>
-
-            <div
-              v-if="!onBreak"
-              class="navbar-item has-dropdown is-hoverable"
-            >
-              <a class="navbar-link">
-                <span class="icon">
-                  <i class="fas fa-file-alt" />
-                </span>
-                Exams
-                <span
-                  v-if="examCount > 0"
-                  class="tag is-danger exam-count"
-                >
-                  {{ examCount }}
-                </span>
-              </a>
-
-              <div class="navbar-dropdown">
-                <router-link
-                  class="navbar-item"
-                  to="/exams/upcoming"
-                  title="View upcoming exams"
-                >
-                  <b>Upcoming</b>
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/exams/past"
-                  title="Browse all past exams"
-                >
-                  Previous
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  to="/exams/calendar"
-                  title="View a calendar of all your exams"
-                >
-                  Calendar
-                </router-link>
-                <hr class="navbar-divider">
                 <a
                   class="navbar-item"
                   title="Add a new exam"
                   @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
                 >
                   <span class="icon">
-                    <i class="fas fa-plus" />
+                    <i class="fas fa-exclamation-triangle" />
                   </span>
                   Add Exam
                 </a>
               </div>
             </div>
           </template>
+          <template v-else>
+            <router-link
+              class="navbar-item"
+              :to="{ name: 'about' }"
+              title="Learn more about LATE and its creators"
+            >
+              <span class="icon">
+                <i class="fas fa-question-circle" />
+              </span>
+              About
+            </router-link>
+          </template>
+          <router-link
+            :to="{ name: 'tools' }"
+            class="navbar-item"
+            title="Student tools to calculate grades, help you work/study, and more!"
+          >
+            <span class="icon">
+              <i class="fas fa-toolbox" />
+            </span>
+            Tools
+          </router-link>
         </div>
 
         <div class="navbar-end">
           <template v-if="loggedIn">
+            <a
+              class="navbar-item announcement-icon is-hidden-touch"
+              :title="announcementsCount + ' new announcements'"
+              @click="openAnnouncementsModal"
+            >
+              <span class="icon">
+                <i
+                  class="fa-bell announcement-bell-icon"
+                  :class="[
+                    announcementsCount === 0 ? 'far' : 'fas new-announcements'
+                  ]"
+                />
+              </span>
+            </a>
             <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
+              <a
+                class="navbar-link"
+                style="padding-right: 3.2em;"
+              >
                 <span class="icon">
                   <i
                     class="fas"
                     :title="user.admin ? 'You are an administrator!' : ''"
-                    :class="[ user.admin ? 'fa-star' : 'fa-user-circle' ]"
+                    :class="[user.admin ? 'fa-star' : 'fa-user-circle']"
+                    :style="user.admin ? 'color:#e5c100' : 'color:#ffffff'"
                   />
                 </span>
                 {{ user.display_name }}
@@ -180,9 +206,24 @@
 
               <div class="navbar-dropdown is-right">
                 <router-link
+                  v-if="!onBreak"
+                  class="navbar-item"
+                  :to="{ name: 'coursework-stats' }"
+                  title="View stats on your coursework"
+                >
+                  <span class="icon">
+                    <i class="fas fa-chart-pie" />
+                  </span>
+                  Your Statistics
+                </router-link>
+                <hr
+                  v-if="!onBreak"
+                  class="navbar-divider"
+                >
+                <router-link
                   v-if="user.admin"
                   class="navbar-item"
-                  to="/admin"
+                  :to="{ name: 'admin-student-list' }"
                   title="View the administrator page"
                 >
                   <span class="icon">
@@ -193,14 +234,12 @@
 
                 <router-link
                   class="navbar-item"
-                  to="/profile"
-                  title="Edit your profile"
+                  to="/account"
+                  title="Edit your account"
                 >
-                  <i
-                    data-v-203ae283
-                    class="fas fa-pencil-alt"
-                    style="margin-right: 10px"
-                  />
+                  <span class="icon">
+                    <i class="fas fa-pencil-alt" />
+                  </span>
                   Edit Account
                 </router-link>
 
@@ -217,21 +256,6 @@
                     />
                   </span>
                   Report a bug
-                </a>
-
-                <a
-                  class="navbar-item"
-                  href="https://discord.gg/MnSmCde"
-                  target="none"
-                  title="Join the testing Discord server"
-                >
-                  <span class="icon">
-                    <i
-                      class="fas fa-comment"
-                      style="margin-right: 5px"
-                    />
-                  </span>
-                  Join Discord
                 </a>
 
                 <hr class="navbar-divider">
@@ -266,27 +290,39 @@
 <script>
 export default {
   name: 'TheHeader',
-  data () {
-    return {};
-  },
   computed: {
-    onBreak () {
-      return this.$store.getters.onBreak;
+    seenAnnouncementIDs () {
+      return this.$store.state.announcements.seenIDs;
+    },
+    announcementsCount () {
+      return this.$store.getters.allAnnouncements.filter(
+        a => !this.seenAnnouncementIDs.includes(a._id)
+      ).length;
+    },
+    isUserSetup () {
+      return this.$store.getters.isUserSetup;
     },
     navbarExpanded () {
       return this.$store.state.navbarExpanded;
     },
-    user () {
-      return this.$store.state.auth.user;
-    },
-    loggedIn () {
-      return this.$store.state.auth.isAuthenticated;
-    },
-    assignmentCount () {
-      return this.$store.getters.incompleteUpcomingAssignments.length;
-    },
-    examCount () {
-      return this.$store.state.work.upcomingExams.length;
+    assessmentCount () {
+      return this.$store.getters.limitedUpcomingAssessments.length;
+    }
+  },
+  methods: {
+    openAnnouncementsModal () {
+      // Mark all announcements as seen
+      localStorage.setItem(
+        'seenAnnouncementIDs',
+        JSON.stringify(this.$store.getters.allAnnouncements.map(ann => ann._id))
+      );
+
+      this.$store.commit(
+        'SET_SEEN_ANNOUNCEMENT_IDS',
+        this.$store.getters.allAnnouncements.map(ann => ann._id)
+      );
+
+      this.$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true);
     }
   }
 };
@@ -297,26 +333,68 @@ export default {
   margin-left: 5px;
 }
 
-.beta-tag {
-  margin-left: 5px;
-  transition: 0.2s;
-  background-color: #70cad1;
-  color: white;
-  line-height: 1.2em;
+@keyframes bellshake {
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(5deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  40% {
+    transform: rotate(4deg);
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+  80% {
+    transform: rotate(-2deg);
+  }
+  87% {
+    transform: rotate(1deg);
+  }
+  95% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
 }
 
-.has-dropdown .navbar-link::after { transition: 0.2s; }
+.announcement-bell-icon.new-announcements {
+  animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation-iteration-count: infinite;
+}
 
-.has-dropdown:hover .navbar-link::after {
-  transition: 0.2s;
+// Dropdown arrow transition
+.has-dropdown .navbar-link::after {
+  transition: transform 0.1s;
   transition-timing-function: ease-out;
 }
 
-.navbar-brand:hover .beta-tag {
-  background-color: #84edf5!important;
-  transition: 0.2s;
+.has-dropdown:hover .navbar-link::after {
+  transform: translateY(3px) rotate(135deg);
 }
+// ---------------------
 
+.navbar-brand {
+  .beta-tag {
+    margin-left: 5px;
+    margin-bottom: -2px;
+    transition: background-color 0.2s;
+    background-color: #70cad1;
+  }
+  &:hover {
+    .beta-tag {
+      background-color: #73dee6 !important;
+    }
+  }
+}
 .no-margin-left {
   margin-left: 0;
 }
@@ -332,16 +410,21 @@ export default {
 
   .navbar-item {
     span.icon {
-      margin-right: 3px;
+      margin-right: 1px;
+      margin-left: 1px;
     }
   }
 
+  .announcement-icon {
+    padding: 0.5rem 0.2rem;
+  }
+
   span.tag.assignment-count,
-  span.tag.exam-count {
+  span.tag.exam-count,
+  span.tag.announcement-count {
     padding-left: 5px;
     padding-right: 5px;
     margin-left: 7px;
   }
 }
-
 </style>

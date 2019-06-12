@@ -11,8 +11,8 @@ const Term = require('../../api/terms/terms.model');
 client.commands = new Discord.Collection();
 const commandFiles = fs
   .readdirSync(path.join(__dirname, 'commands/')) // Read *all* files in commands folder
-  .filter(file => file.endsWith('.js')) // Remove any non JavaScript files
-  .map(file => file.slice(0, -3)); // Remove the extension '.js' from each file name in the list
+  .filter(file => file.endsWith('.js')) // Delete any non JavaScript files
+  .map(file => file.slice(0, -3)); // Delete the extension '.js' from each file name in the list
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
@@ -30,7 +30,7 @@ client.on('message', async msg => {
   if (msg.content.startsWith(prefix)) {
     // Potentially a command
     let [commandName, ...args] = msg.content.split(/ +/);
-    commandName = commandName.substring(1); // Remove prefix
+    commandName = commandName.substring(1); // Delete prefix
 
     if (client.commands.has(commandName)) {
       const command = client.commands.get(commandName);

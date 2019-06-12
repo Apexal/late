@@ -1,16 +1,25 @@
-const { loginStudent, cas } = require('./modules/auth');
+/**
+ * This file consolidates all of the API routes with the authentication routes.
+ * For the API routes, it ensures that there must be a logged in user for the majority of the endpoints.
+ *
+ * CAS authentication, Google authentication, and Discord authentication is also handled here.
+ */
 
+const { loginStudent, cas } = require('./modules/auth');
+const request = require('request-promise');
 const google = require('./modules/google');
+const btoa = require('btoa');
+const logger = require('./modules/logger');
+
+const exceptions = ['/students/loginas', '/students/counts', '/quicklinks'];
 
 module.exports = router => {
   // router.use(path, router);
-
   router.use(
     '/api',
     async function (ctx, next) {
       if (
-        !ctx.request.url.startsWith('/api/students/loginas') &&
-        !ctx.request.url.startsWith('/api/students/counts') &&
+        exceptions.every(url => !ctx.request.url.startsWith('/api' + url)) &&
         !ctx.session.cas_user
       ) {
         return ctx.unauthorized('You must be logged in to use the API.');
@@ -38,14 +47,85 @@ module.exports = router => {
     ctx.redirect(google.createUrl(googleAuth));
   });
 
-  router.get('/google/auth/callback', async ctx => {
+  router.get('/auth/google/callback', async ctx => {
     const googleAuth = google.createConnection();
 
     const { code } = ctx.query;
     const { tokens } = await googleAuth.getToken(code);
 
-    ctx.session.googleAuthToken = tokens;
+    Object.assign(ctx.state.user.integrations.google.tokens, tokens);
+    ctx.state.user.setup.google = true;
 
-    ctx.ok(tokens);
+    await ctx.state.user.save();
+
+    ctx.redirect('/account/googlecalendar');
+  });
+
+  router.get('/auth/discord', ctx => {
+    ctx.redirect(process.env.DISCORD_REDIRECT_URL);
+  });
+
+  router.get('/auth/discord/callback', async ctx => {
+    const { code } = ctx.request.query;
+    const creds = btoa(
+      `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`
+    );
+    logger.info(`Authenticating ${ctx.state.user.rcs_id} through Discord...`);
+    const tokens = await request({
+      uri: `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${
+        process.env.DISCORD_CALLBACK_URL
+      }`,
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${creds}`
+      },
+      json: true
+    });
+
+    logger.info('Getting Discord user info...');
+    // Get info on user (mainly to get their user ID)
+    const me = await request({
+      uri: 'https://discordapp.com/api/users/@me',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokens.access_token}`
+      },
+      json: true
+    });
+
+    ctx.session.discord_tokens = tokens;
+    ctx.state.user.integrations.discord = {
+      verified: true,
+      userID: me.id,
+      tokens: {
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token
+      }
+    };
+
+    await ctx.state.user.save();
+
+    // Forcibly add the user to the LATE server ;)
+    const addToServer = await request({
+      uri: `https://discordapp.com/api/guilds/${
+        process.env.DISCORD_SERVER_ID
+      }/members/${me.id}`,
+      method: 'PUT',
+      headers: {
+        Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`
+      },
+      body: {
+        access_token: tokens.access_token,
+        nick: ctx.state.user.display_name,
+        roles: [process.env.DISCORD_USER_ROLE_ID]
+      },
+      json: true
+    });
+    logger.info(
+      `Added ${ctx.state.user.rcs_id} to the LATE Discord server as @${
+        ctx.state.user.display_name
+      }`
+    );
+    ctx.redirect('/account/integrations#discord');
   });
 };

@@ -11,7 +11,9 @@ async function getExamMiddleware (ctx, next) {
     exam = await Exam.findOne({
       _id: examID,
       _student: ctx.state.user._id
-    }).populate('_blocks');
+    })
+      .populate('_student', '_id rcs_id name grad_year')
+      .populate('_blocks');
   } catch (e) {
     logger.error(
       `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
@@ -113,6 +115,7 @@ async function createExam (ctx) {
 
   logger.info(`Added exam ${newExam._id} for ${ctx.state.user._id}`);
   ctx.created({
+    createdAssessent: newExam,
     createdExam: newExam
   });
 }
@@ -121,24 +124,26 @@ async function editExam (ctx) {
   const examID = ctx.params.examID;
   const updates = ctx.request.body;
 
-  const allowedProperties = [
-    'title',
-    'description',
-    'date',
-    'courseCRN',
-    'timeEstimate',
-    'priority'
-  ];
+  // const allowedProperties = [
+  //   '_id',
+  //   'title',
+  //   'description',
+  //   'date',
+  //   'courseCRN',
+  //   'timeEstimate',
+  //   'priority',
+  //   'studyPlan'
+  // ];
 
-  // Ensure no unallowed properties are passed to update
-  if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
-    logger.error(
-      `Failed to update exam for ${
-        ctx.state.user.rcs_id
-      } because of invalid update properties.`
-    );
-    return ctx.badRequest('Passed unallowed properties.');
-  }
+  // // Ensure no unallowed properties are passed to update
+  // if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
+  //   logger.error(
+  //     `Failed to update exam for ${
+  //       ctx.state.user.rcs_id
+  //     } because of invalid update properties.`
+  //   );
+  //   return ctx.badRequest('Passed unallowed properties.');
+  // }
 
   // Limit to this semester
   if (
@@ -172,6 +177,7 @@ async function editExam (ctx) {
   );
 
   ctx.ok({
+    updatedAssessment: ctx.state.exam,
     updatedExam: ctx.state.exam
   });
 }
@@ -184,10 +190,10 @@ async function editExam (ctx) {
  * @param {Koa context} ctx
  * @returns The removed exam.
  */
-async function removeExam (ctx) {
+async function deleteExam (ctx) {
   const examID = ctx.params.examID;
 
-  // Remove exam
+  // Delete exam
   try {
     ctx.state.exam.remove();
   } catch (e) {
@@ -195,7 +201,7 @@ async function removeExam (ctx) {
   }
 
   logger.info(
-    `Removed exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}`
+    `Deleted exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}`
   );
 
   ctx.ok({
@@ -230,7 +236,10 @@ async function addComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedExam: ctx.state.exam });
+  ctx.ok({
+    updatedAssessment: ctx.state.exam,
+    updatedExam: ctx.state.exam
+  });
 }
 
 /**
@@ -245,7 +254,7 @@ async function deleteComment (ctx) {
 
   const index = ctx.params.commentIndex;
 
-  // Remove the comment by its index
+  // Delete the comment by its index
   ctx.state.exam.comments.splice(index, 1);
 
   try {
@@ -257,7 +266,10 @@ async function deleteComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedExam: ctx.state.exam });
+  ctx.ok({
+    updatedAssessment: ctx.state.exam,
+    updatedExam: ctx.state.exam
+  });
 }
 
 module.exports = {
@@ -266,7 +278,7 @@ module.exports = {
   getExam,
   createExam,
   editExam,
-  removeExam,
+  deleteExam,
   addComment,
   deleteComment
 };

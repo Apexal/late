@@ -11,6 +11,16 @@ router.get(
   Ctrl.getAssignmentMiddleware,
   Ctrl.getAssignment
 );
+router.get(
+  '/a/:assignmentID/collaborators',
+  Ctrl.getAssignmentMiddleware,
+  Ctrl.getAssignmentCollaboratorInfo
+);
+router.post(
+  '/a/:assignmentID/collaborators',
+  Ctrl.getAssignmentMiddleware,
+  Ctrl.setAssignmentCollaborators
+);
 router.patch(
   '/a/:assignmentID',
   Ctrl.getAssignmentMiddleware,
@@ -24,7 +34,7 @@ router.post(
 router.delete(
   '/a/:assignmentID',
   Ctrl.getAssignmentMiddleware,
-  Ctrl.removeAssignment
+  Ctrl.deleteAssignment
 );
 
 /* Assignment Comments */

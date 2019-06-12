@@ -9,10 +9,11 @@ const Body = require('koa-body');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
 
+const google = require('./modules/google');
 const moment = require('moment');
 
 // Start the Discord bot
-require('./integrations/discord');
+// require('./integrations/discord');
 
 const logger = require('./modules/logger');
 
@@ -53,24 +54,51 @@ app.use(async (ctx, next) => {
   ctx.state.isAPI = ctx.request.url.startsWith('/api');
 
   if (ctx.session.cas_user) {
+    // Find the logged in user to make it available in all routes
     ctx.state.user = await Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
 
     // If first request, get terms
-    /* if (!ctx.session.terms) */ ctx.session.terms = await Term.find().exec();
+    if (ctx.state.env === 'development' || !ctx.session.terms) {
+      ctx.session.terms = await Term.find().exec();
+    }
 
     // Calculate current term on each request in case it changes (very unlikely but possible)
-    ctx.session.currentTerm = ctx.session.terms.find(t =>
-      moment().isBetween(moment(t.start), moment(t.end))
-    );
+    if (
+      ctx.state.env === 'development' ||
+      !ctx.session.currentTerm ||
+      (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
+    ) {
+      ctx.session.currentTerm = ctx.session.terms.find(t =>
+        moment().isBetween(moment(t.start), moment(t.end))
+      );
+    }
+    if (ctx.state.user) {
+      // console.log(ctx.session.currentTerm);
+      ctx.state.onBreak =
+        !ctx.session.currentTerm ||
+        !ctx.state.user.terms.includes(ctx.session.currentTerm.code);
+
+      // Create Google auth if logged in and setup
+      if (ctx.state.user && ctx.state.user.setup.google) {
+        const auth = google.createConnection();
+        auth.setCredentials(ctx.state.user.integrations.google.tokens);
+        ctx.state.googleAuth = auth;
+      }
+    } else {
+      console.error('User is NULL');
+      logger.error('User is NULL');
+    }
   }
   try {
     await next();
   } catch (e) {
     ctx.status = e.status || 500;
+    console.error(e);
     logger.error(e);
 
+    // Only send details of error if in development mode (to protect confidential info)
     ctx.send(
       ctx.status,
       ctx.state.env === 'development'

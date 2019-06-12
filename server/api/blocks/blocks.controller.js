@@ -3,6 +3,7 @@ const Assignment = require('../assignments/assignments.model');
 const Exam = require('../exams/exams.model');
 
 const logger = require('../../modules/logger');
+const google = require('../../modules/google');
 
 /**
  * Add a work block to a specific assignment and have the updated
@@ -17,7 +18,7 @@ const logger = require('../../modules/logger');
  */
 async function addWorkBlock (ctx) {
   const { assessmentType, assessmentID } = ctx.params;
-  const { startTime, endTime } = ctx.request.body;
+  const { startTime, endTime, shared } = ctx.request.body;
 
   const newBlock = new Block({
     _student: ctx.state.user._id,
@@ -25,7 +26,8 @@ async function addWorkBlock (ctx) {
     endTime,
     completed: false,
     locked: false,
-    notified: false
+    notified: false,
+    shared
   });
 
   try {
@@ -40,10 +42,26 @@ async function addWorkBlock (ctx) {
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
-        _student: ctx.state.user._id,
+        $or: [
+          { _student: ctx.state.user._id },
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
+        ],
         _id: assessmentID
       })
-      .populate('_blocks');
+      .populate('_student', '_id rcs_id name grad_year')
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} to add new work block for ${
@@ -70,10 +88,26 @@ async function addWorkBlock (ctx) {
 
   logger.info(`Adding work block for ${ctx.state.user.rcs_id}`);
 
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.createEventFromWorkBlock(
+        ctx,
+        assessment,
+        assessmentType,
+        newBlock
+      );
+    } catch (e) {
+      logger.error(
+        `Failed to add GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
+
   return ctx.ok({
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ['updated' +
-    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
+    createdBlock: newBlock,
+    updatedAssessment: assessment
   });
 }
 
@@ -91,14 +125,13 @@ async function addWorkBlock (ctx) {
  */
 async function editWorkBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params;
-  const { startTime, endTime } = ctx.request.body;
+  const { startTime, endTime, location } = ctx.request.body;
 
   const editedBlock = await Block.findOne({
-    _student: ctx.state.user._id,
     _id: blockID
   });
 
-  editedBlock.set({ startTime, endTime });
+  editedBlock.set(ctx.request.body);
 
   try {
     await editedBlock.save();
@@ -114,10 +147,27 @@ async function editWorkBlock (ctx) {
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
-        _student: ctx.state.user._id,
+        $or: [
+          { _student: ctx.state.user._id },
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
+        ],
         _id: assessmentID
       })
-      .populate('_blocks');
+      .populate('_student', '_id rcs_id name grad_year')
+
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} for work block edit for ${
@@ -131,25 +181,41 @@ async function editWorkBlock (ctx) {
 
   logger.info(`Edited work block for ${ctx.state.user.rcs_id}`);
 
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.patchEventFromWorkBlock(ctx, blockID, {
+        start: {
+          dateTime: startTime
+        },
+        end: {
+          dateTime: endTime
+        }
+      });
+    } catch (e) {
+      logger.error(
+        `Failed to patch GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
+
   return ctx.ok({
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ['updated' +
-    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
+    updatedAssessment: assessment
   });
 }
 
 /**
- * Remove a work block given its ID
+ * Delete a work block given its ID
  * @param {Koa context} ctx
- * @returns Removed block
+ * @returns Deleted block
  *
  * DELETE /:blockID
  */
-async function removeWorkBlock (ctx) {
+async function deleteWorkBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params;
 
   const removedBlock = await Block.findOne({
-    _student: ctx.state.user._id,
     _id: blockID
   });
   removedBlock.remove();
@@ -159,11 +225,26 @@ async function removeWorkBlock (ctx) {
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
       .findOne({
-        _student: ctx.state.user._id,
+        $or: [
+          { _student: ctx.state.user._id },
+          { shared: true, sharedWith: ctx.state.user.rcs_id }
+        ],
         _id: assessmentID
       })
-      .populate('_blocks');
-
+      .populate('_student', '_id rcs_id name grad_year')
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: this._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      });
     assessment._blocks = assessment._blocks.filter(
       b => b._id !== removedBlock._id
     );
@@ -180,17 +261,28 @@ async function removeWorkBlock (ctx) {
     );
   }
 
-  logger.info(`Removed work block for ${ctx.state.user.rcs_id}`);
+  logger.info(`Deleted work block for ${ctx.state.user.rcs_id}`);
+
+  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+    try {
+      await google.actions.deleteEventFromWorkBlock(ctx, blockID);
+    } catch (e) {
+      logger.error(
+        `Failed to delete GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      );
+    }
+  }
 
   return ctx.ok({
-    // eslint-disable-next-line standard/computed-property-even-spacing
-    ['updated' +
-    (assessmentType === 'assignment' ? 'Assignment' : 'Exam')]: assessment
+    removeBlock: removedBlock,
+    updatedAssessment: assessment
   });
 }
 
 module.exports = {
   addWorkBlock,
   editWorkBlock,
-  removeWorkBlock
+  deleteWorkBlock
 };

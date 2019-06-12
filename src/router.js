@@ -3,6 +3,9 @@ import Router from 'vue-router';
 
 import store from '@/store';
 
+import { Toast } from 'buefy/dist/components/toast';
+import { Snackbar } from 'buefy/dist/components/snackbar';
+
 Vue.use(Router);
 
 const router = new Router({
@@ -22,13 +25,74 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      alias: '/dashboard',
+      alias: ['/dashboard', '/frontpage'],
       name: 'home',
       component: () => import('@/views/TheHomePage.vue'),
       meta: {
         title: 'Home',
         tour: 'dashboard'
       }
+    },
+    {
+      path: '/tools',
+      component: () => import('@/views/tools/ToolsIndexPage.vue'),
+      name: 'tools',
+      meta: {
+        title: 'Quick Links'
+      }
+    },
+    {
+      path: '/quicklinks',
+      component: () => import('@/views/quicklinks/QuickLinks.vue'),
+      name: 'quick-links',
+      meta: {
+        title: 'Quick Links'
+      }
+    },
+    {
+      path: '/academicutils',
+      component: () => import('@/views/academicutils/AcademicUtilsPage.vue'),
+      meta: {
+        title: 'Academic Utilities'
+      },
+      children: [
+        {
+          path: '',
+          redirect: 'gpa-calculator'
+        },
+        {
+          path: 'gpa-calculator',
+          name: 'gpa-calculator',
+          component: () => import('@/views/academicutils/GPACalculator.vue')
+        },
+        {
+          path: 'coursegrade',
+          name: 'course-grade-estimator',
+          component: () =>
+            import('@/views/academicutils/CourseGradeEstimator.vue')
+        }
+      ]
+    },
+    {
+      path: '/studytools',
+      name: 'study-tools',
+      component: () => import('@/views/studytools/StudyToolsPage.vue'),
+      meta: {
+        title: 'Study Tools'
+      }
+    },
+    {
+      path: '/checklist',
+      component: () => import('@/views/checklists/MoveInChecklist.vue'),
+      meta: {
+        title: 'Move In Checklist'
+      },
+      children: [
+        {
+          path: '',
+          name: 'checklist'
+        }
+      ]
     },
     {
       path: '/about',
@@ -39,10 +103,11 @@ const router = new Router({
       component: () => import('@/views/TheAboutPage.vue')
     },
     {
-      path: '/assignments',
-      component: () => import('@/views/assignments/Assignments.vue'),
+      path: '/coursework',
+      component: () => import('@/views/assessments/AssessmentsPage.vue'),
       meta: {
-        title: 'Assignments',
+        title: 'Coursework',
+        cantViewOnBreak: true,
         requiresAuth: true
       },
       children: [
@@ -52,109 +117,110 @@ const router = new Router({
         },
         {
           path: 'calendar',
-          name: 'assignments-calendar',
+          name: 'coursework-calendar',
           meta: {
-
-            title: 'Assignment Calendar'
+            title: 'Coursework Calendar'
           },
-          component: () => import('@/views/assignments/AssignmentsCalendar.vue')
+          component: () => import('@/views/assessments/AssessmentsCalendar.vue')
         },
         {
           path: 'upcoming',
-          name: 'assignments-upcoming',
+          name: 'coursework-upcoming',
           meta: {
-            tour: 'upcoming-assignments',
-            title: 'Upcoming Assignments'
+            title: 'Upcoming Coursework'
           },
-          component: () => import('@/views/assignments/AssignmentsUpcoming.vue')
+          component: () => import('@/views/assessments/AssessmentsUpcoming.vue')
         },
         {
           path: 'past',
-          name: 'past-assignments',
+          name: 'coursework-past',
           meta: {
-            title: 'Past Assignments'
+            title: 'Past Coursework'
           },
-          component: () => import('@/views/assignments/AssignmentsPastList.vue')
+          component: () => import('@/views/assessments/AssessmentsPastList.vue')
         }
       ]
     },
     {
-      path: '/assignments/:assignmentID',
-      name: 'assignments-overview',
-      component: () => import('@/views/assignments/AssignmentsOverview.vue'),
+      path: '/coursework/stats',
+      name: 'coursework-stats',
+      redirect: 'coursework/stats/stats-pie',
       meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/exams',
-      component: () => import('@/views/exams/Exams.vue'),
-      meta: {
-        title: 'Exams',
+        title: 'Coursework Stats',
+        cantViewOnBreak: true,
         requiresAuth: true
       },
       children: [
         {
-          path: '',
-          redirect: 'upcoming'
+          path: 'stats-pie',
+          name: 'stats-pie',
+          component: () => import('@/views/assessments/charts/statsPie.vue')
         },
         {
-          path: 'upcoming',
-          name: 'exams-upcoming',
-          meta: {
-            title: 'Upcoming Exams'
-          },
-          component: () => import('@/views/exams/ExamsUpcoming.vue')
+          path: 'stats-bar',
+          name: 'stats-bar',
+          component: () => import('@/views/assessments/charts/statsBar.vue')
         },
         {
-          path: 'calendar',
-          name: 'exams-calendar',
-          meta: {
-            title: 'Exam Calendar'
-          },
-          component: () => import('@/views/exams/ExamsCalendar.vue')
-        },
-        {
-          path: 'past',
-          name: 'past-exams',
-          meta: {
-            title: 'Past Exams'
-          },
-          component: () => import('@/views/exams/ExamsPastList.vue')
+          path: 'stats-line',
+          name: 'stats-line',
+          component: () => import('@/views/assessments/charts/statsLine.vue')
         }
-      ]
+      ],
+      component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
     },
     {
-      path: '/exams/:examID',
-      name: 'exams-overview',
-      component: () => import('@/views/exams/ExamsOverview.vue'),
+      path: '/coursework/a/:assignmentID',
+      name: 'assignment-overview',
+      component: () =>
+        import('@/views/assessments/AssessmentsOverviewPage.vue'),
+      props: { assessmentType: 'assignment' },
       meta: {
+        cantViewOnBreak: true,
         requiresAuth: true
       }
     },
     {
-      path: '/profile',
-      component: () => import('@/views/profile/Profile.vue'),
+      path: '/coursework/e/:examID',
+      name: 'exam-overview',
+      component: () =>
+        import('@/views/assessments/AssessmentsOverviewPage.vue'),
+      props: { assessmentType: 'exam' },
+      meta: {
+        cantViewOnBreak: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/account',
+      component: () => import('@/views/account/AccountPage.vue'),
       meta: {
         requiresAuth: true
       },
       children: [
         {
           path: '',
-          name: 'profile',
+          name: 'account',
           meta: {
-            title: 'Your Profile'
+            title: 'Your Account'
           },
-          component: () => import('@/views/profile/ProfileHome.vue')
+          component: () => import('@/views/account/AccountHome.vue')
         },
         {
-          path: 'personalinfo',
-          name: 'setup-personal-info',
+          path: 'profile',
+          name: 'setup-profile',
           meta: {
-            title: 'Personal Info'
+            title: 'Profile'
           },
-          component: () =>
-            import('@/views/profile/ProfileSetupPersonalInfo.vue')
+          component: () => import('@/views/account/AccountSetupProfile.vue')
+        },
+        {
+          path: 'terms',
+          name: 'setup-terms',
+          meta: {
+            title: 'Terms'
+          },
+          component: () => import('@/views/account/AccountSetupTerms.vue')
         },
         {
           path: 'courseschedule',
@@ -163,7 +229,7 @@ const router = new Router({
             title: 'Course Schedule'
           },
           component: () =>
-            import('@/views/profile/ProfileSetupCourseSchedule.vue')
+            import('@/views/account/AccountSetupCourseSchedule.vue')
         },
         {
           path: 'unavailability',
@@ -172,7 +238,7 @@ const router = new Router({
             title: 'Study/Work Unavailability'
           },
           component: () =>
-            import('@/views/profile/ProfileSetupUnavailability.vue')
+            import('@/views/account/AccountSetupUnavailability.vue')
         },
         {
           path: 'integrations',
@@ -181,27 +247,57 @@ const router = new Router({
             title: 'Notifications'
           },
           component: () =>
-            import('@/views/profile/ProfileSetupIntegrations.vue')
+            import('@/views/account/AccountSetupIntegrations.vue')
+        },
+        {
+          path: 'googlecalendar',
+          name: 'setup-google-calendar',
+          meta: {
+            title: 'Google Calendar'
+          },
+          component: () =>
+            import('@/views/account/AccountSetupGoogleCalendar.vue')
         }
       ]
     },
     {
       path: '/admin',
-      name: 'AdminPage',
       meta: {
         requiresAuth: true,
         requiresAdmin: true
       },
       component: () => import('@/views/admin/TheAdminPage'),
-      beforeEnter: (to, from, next) => {
-        // this route requires admin
-        if (!store.state.auth.user.admin) {
-          next('/');
-          // Vue.$toasted.error('You are not an admin!');
-        } else {
-          next();
+      children: [
+        {
+          path: '',
+          redirect: 'students'
+        },
+        {
+          path: 'students',
+          name: 'admin-student-list',
+          meta: {
+            title: 'Students'
+          },
+          component: () =>
+            import('@/views/admin/components/AdminStudentList.vue')
+        },
+        {
+          path: 'log',
+          name: 'admin-log',
+          meta: {
+            title: 'Server Log'
+          },
+          component: () => import('@/views/admin/components/AdminLog.vue')
+        },
+        {
+          path: 'terms',
+          name: 'admin-terms',
+          meta: {
+            title: 'School Terms'
+          },
+          component: () => import('@/views/admin/components/AdminTermsList.vue')
         }
-      }
+      ]
     },
     {
       path: '*',
@@ -215,22 +311,51 @@ const router = new Router({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR');
   if (store.state.courseModal.open) store.commit('CLOSE_COURSE_MODAL');
 
   if (!store.state.auth.isAuthenticated) await store.dispatch('GET_USER');
   if (to.meta.title) document.title = to.meta.title + ' | LATE';
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (
+    to.matched.some(record => record.meta.requiresAuth) &&
+    !store.state.auth.isAuthenticated
+  ) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if (!store.state.auth.isAuthenticated) {
-      window.location = '/auth/login?redirectTo' + to.fullPath;
-    } else {
-      next();
-    }
-  } else {
-    next();
+    window.location = '/auth/login?redirectTo=' + to.fullPath;
+    return;
   }
+
+  if (
+    to.matched.some(record => record.meta.requiresAdmin) &&
+    !store.state.auth.user.admin
+  ) {
+    Toast.open({
+      message: 'Only admins can view this page!',
+      type: 'is-warning',
+      duration: 3000
+    });
+    return next('/');
+  }
+
+  if (
+    to.matched.some(record => record.meta.cantViewOnBreak) &&
+    store.getters.onBreak &&
+    store.state.schedule.terms.length > 0
+  ) {
+    Snackbar.open({
+      message: 'You cannot view this page while on break!',
+      type: 'is-warning',
+      duration: 8000,
+      position: 'is-bottom',
+      actionText: 'Not on Break?',
+      onAction: () => {
+        router.push({ name: 'setup-terms' });
+      }
+    });
+    return next('/');
+  }
+
+  next();
 });
 
 export default router;

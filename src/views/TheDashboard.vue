@@ -1,7 +1,8 @@
+<!--Dashboard: Main dashboard container-->
 <template>
   <section class="section dasboard">
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
-      The Dashboard
+      Your Dashboard
     </h1>
 
     <div class="tabs is-centered">
@@ -12,14 +13,16 @@
         >
           Your Dashboard
         </h1>
-        <li>
-          <a title="View your weekly schedule">
-            Your Week
-          </a>
+        <li
+          :class="{ 'is-active': tab === 'overview' }"
+          @click="tab = 'overview'"
+        >
+          <a title="View a detailed overview of the next few days">Overview</a>
         </li>
         <li
-          class="is-active"
+          :class="{ 'is-active': tab === 'calendar' }"
           title="View calendar"
+          @click="tab = 'calendar'"
         >
           <a>Calendar</a>
         </li>
@@ -30,317 +33,24 @@
         On Break
       </h2>
     </template>
-    <div
-      v-else
-      id="calendar-holder"
-    >
-      <DashboardCalendarSelectModal
-        :open="selectModal.open"
-        :start="selectModal.start"
-        :end="selectModal.end"
-        :assessments="filteredUpcomingAssessments"
-        @add-work-block="addWorkBlock"
-        @close-modal="selectModal.open = false"
-      />
-      <FullCalendar
-        ref="calendar"
-        :events="events"
-        :editable="true"
-        :selectable="true"
-        :header="calendar.header"
-        :config="calendar.config"
-      />
-      <button
-        id="fullscreen-button"
-        class="button"
-        @click="toggleFullscreen"
-      >
-        Fullscreen
-      </button>
-    </div>
+    <DashboardOverview v-else-if="tab === 'overview'" />
+    <DashboardCalendar v-else-if="tab === 'calendar'" />
   </section>
 </template>
 
 <script>
-import { FullCalendar } from 'vue-full-calendar';
-import 'fullcalendar/dist/fullcalendar.css';
-
-import moment from 'moment';
-
-import DashboardCalendarSelectModal from '@/views/components/dashboard/DashboardCalendarSelectModal';
+import DashboardOverview from '@/views/dashboard/DashboardOverview';
+import DashboardCalendar from '@/views/dashboard/DashboardCalendar';
 
 import tours from '@/tours';
 
 export default {
   name: 'TheDashboard',
-  components: { DashboardCalendarSelectModal, FullCalendar },
+  components: { DashboardOverview, DashboardCalendar },
   data () {
     return {
-      selectModal: {
-        open: false,
-        start: moment(),
-        end: moment()
-      },
-      calendar: {
-        header: {
-          center: 'agendaThreeDay, agendaFiveDay, agendaWeek'
-        },
-        config: {
-          views: {
-            agendaThreeDay: {
-              type: 'agenda',
-              duration: { days: 3 },
-              buttonText: '3-Day'
-            },
-            agendaFiveDay: {
-              type: 'agenda',
-              duration: { days: 5 },
-              buttonText: '5-Day'
-            }
-          },
-          validRange: {
-            start: this.$store.getters.currentTerm.start,
-            end: this.$store.getters.currentTerm.end
-          },
-          height: 'parent',
-          dayCount: 5,
-          allDayText: 'Due',
-          businessHours: {
-            dow: [0, 1, 2, 3, 4, 5, 6],
-            start: this.$store.state.auth.user.earliestWorkTime,
-            end: this.$store.state.auth.user.latestWorkTime
-          },
-          timezone: 'local',
-          defaultView: 'agendaFiveDay',
-          eventOverlap: true,
-          selectOverlap: true,
-          selectHelper: true,
-          nowIndicator: true,
-          timeFormat: 'h(:mm)t',
-          snapDuration: '00:15',
-          noEventsMessage: 'You\'ve got nothing to do. You can relax!',
-          eventRender: (event, el) => {
-            if (event.eventType === 'course') {
-              if (event.period.type === 'TES') {
-                return !!this.$store.state.work.upcomingExams.find(
-                  ex =>
-                    ex.courseCRN === event.course.crn &&
-                    moment(ex.date).isSame(event.start, 'day')
-                );
-              }
-
-              // No classes after classes end date
-              if (moment(event.start).isAfter(this.term.classesEnd)) {
-                return false;
-              }
-            }
-          },
-          buttonText: {
-            today: 'Today',
-            agendaWeek: 'Week'
-          },
-          /* dayClick: (date, jsEvent, view) => {
-            // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
-            // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
-          },
-          */
-          eventClick: this.eventClick,
-          eventDrop: this.eventDrop,
-          eventResize: this.eventResize,
-          select: this.select
-        }
-      }
+      tab: 'calendar'
     };
-  },
-  computed: {
-    isFullscreen () {
-      return document.fullscreenElement !== null;
-    },
-    onBreak () {
-      return this.$store.getters.onBreak;
-    },
-    term () {
-      return this.$store.getters.currentTerm;
-    },
-    filteredUpcomingAssessments () {
-      return this.$store.state.work.upcomingAssignments
-        .filter(
-          assignment =>
-            moment(this.selectModal.end).isBefore(assignment.dueDate) &&
-            !assignment.completed
-        )
-        .map(assignment =>
-          Object.assign({}, assignment, { assessmentType: 'assignment' })
-        )
-        .concat(
-          this.$store.state.work.upcomingExams
-            .filter(exam => this.selectModal.end < exam.date)
-            .map(exam => Object.assign({}, exam, { assessmentType: 'exam' }))
-        );
-    },
-    events () {
-      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
-
-      const incompleteUpcomingAssignments = this.$store.getters.getUpcomingAssigmentsAsEvents.filter(
-        c => !c.assignment.completed
-      );
-
-      const unavailabilitySchedule = this.$store.getters
-        .getUnavailabilityAsEvents;
-
-      const upcomingExams = this.$store.getters.getUpcomingExamsAsEvents;
-
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
-        Object.assign({}, e)
-      );
-
-      return courseSchedule
-        .concat(incompleteUpcomingAssignments)
-        .concat(unavailabilitySchedule)
-        .concat(upcomingExams)
-        .concat(workBlocks);
-    },
-    earliest () {
-      let earliest = this.$store.state.auth.user.earliestWorkTime;
-      const courses = this.$store.getters.getCourseScheduleAsEvents;
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
-        Object.assign({}, e)
-      );
-
-      let i;
-      for (i = 0; i < courses.length; i++) {
-        if (courses[i].start.localeCompare(earliest) < 0) {
-          earliest = courses[i].start;
-        }
-      }
-      for (i = 0; i < workBlocks.length; i++) {
-        if (workBlocks[i].start.localeCompare(earliest) < 0) {
-          earliest = workBlocks[i].start;
-        }
-      }
-
-      return earliest;
-    },
-    tour () {
-      return tours.dashboard;
-    }
-  },
-  watch: {
-    earliest (newEarliest) {
-      this.calendar.config.scrollTime = this.earliest;
-      this.$refs.calendar.fireMethod(
-        'option',
-        'scrollTime',
-        this.calendar.config.scrollTime
-      );
-    }
-  },
-  created () {
-    this.calendar.config.scrollTime = this.earliest;
-  },
-  mounted () {
-    // let alreadySeenTours = localStorage.getItem('tours') ? JSON.parse(localStorage.getItem('tours')) : [];
-    // if (!alreadySeenTours.includes('dashboard-tour')) {
-    //   alreadySeenTours.push('dashboard-tour');
-    //   localStorage.setItem('tours', JSON.stringify(alreadySeenTours));
-    //   this.$tours['dashboard-tour'].start();
-    // }
-  },
-  methods: {
-    toggleFullscreen () {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        let div = document.getElementById('calendar-holder');
-        div.requestFullscreen();
-      }
-    },
-    select (start, end, jsEvent, view) {
-      this.selectModal.open = true;
-      this.selectModal.start = start;
-      this.selectModal.end = end;
-    },
-    async addWorkBlock (assessment) {
-      if (!assessment || !this.selectModal.open) return;
-
-      const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessmentType: assessment.assessmentType,
-        assessment: assessment,
-        start: this.selectModal.start,
-        end: this.selectModal.end
-      });
-
-      this.$toasted.success('Added work block to your schedule!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-
-      this.selectModal.open = false;
-      this.$refs.calendar.fireMethod('unselect');
-    },
-    eventClick (calEvent, jsEvent, view) {
-      if (calEvent.eventType === 'course') {
-        this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-          dueDate: calEvent.start
-        });
-        this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
-      } else if (calEvent.eventType === 'assignment') {
-        this.$router.push({
-          name: 'assignments-overview',
-          params: { assignmentID: calEvent.assignment._id }
-        });
-      } else if (calEvent.eventType === 'exam') {
-        this.$router.push({
-          name: 'exams-overview',
-          params: { examID: calEvent.exam._id }
-        });
-      } else if (calEvent.eventType === 'work-block') {
-        if (calEvent.assessmentType === 'assignment') {
-          this.$router.push({
-            name: 'assignments-overview',
-            params: { assignmentID: calEvent.assignment._id }
-          });
-        } else if (calEvent.assessmentType === 'exam') {
-          this.$router.push({
-            name: 'exams-overview',
-            params: { examID: calEvent.exam._id }
-          });
-        }
-      }
-    },
-    eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
-      // Update work block on server
-      if (calEvent.end.isBefore(moment())) {
-        if (!confirm('Move this work block to your history?')) {
-          return revertFunc();
-        }
-      }
-      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
-    },
-    eventResize (calEvent, delta, revertFunc) {
-      if (moment(calEvent.end).isBefore(moment())) {
-        if (!confirm('Edit this work block from your history?')) {
-          return revertFunc();
-        }
-      }
-      this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
-    },
-    async editWorkBlock (blockID, start, end) {
-      const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
-        blockID,
-        start,
-        end
-      });
-
-      this.$toasted.show('Rescheduled work block!', {
-        icon: 'clock',
-        duration: 2000,
-        fullWidth: false,
-        position: 'top-right'
-      });
-    }
   }
 };
 </script>
@@ -371,6 +81,11 @@ export default {
   margin: 0 auto;
 }
 
+//Vertically "centers" date text w buttons
+.fc-left {
+  margin-top: 7px;
+}
+
 .fc-center,
 .fc-right {
   * {
@@ -380,6 +95,16 @@ export default {
 
   .fc-state-active {
     color: black;
+  }
+  .fc-state-active:nth-child(1) {
+    border-right: 1px solid #dbdbdb;
+  }
+  .fc-state-active:nth-child(2) {
+    border-right: 1px solid #dbdbdb;
+    border-left: 1px solid #dbdbdb;
+  }
+  .fc-state-active:nth-child(3) {
+    border-left: 1px solid #dbdbdb;
   }
 
   .fc-button:hover {
@@ -394,21 +119,9 @@ export default {
   margin-left: 5px;
 }
 
-#calendar-holder {
-  height: 700px;
-  .show-fullscreen {
-    display: none;
-  }
-  &:fullscreen {
-    padding: 15px;
-    background-color: white;
-    height: 95%;
-    .show-fullscreen {
-      display: initial;
-    }
-    .hide-fullscreen {
-      display: none;
-    }
+@media only screen and (max-width: 769px) {
+  .fc-center {
+    margin-top: 10px;
   }
 }
 </style>
