@@ -68,17 +68,17 @@
 <script>
 import TheHeader from '@/views/components/TheHeader';
 import TheFooter from '@/views/components/TheFooter';
-import TheSidebar from '@/views/components/sidebar/TheSidebar';
-import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
-import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
-import CourseModal from '@/views/components/courses/CourseModal';
-import PinnedAnnouncements from '@/views/components/announcements/PinnedAnnouncements';
-import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
+import TheSidebar from '@/views/sidebar/components/TheSidebar';
+import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAddRedux';
+import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux';
+import CourseModal from '@/views/courses/components/CourseModal';
+import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements';
+import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal';
 
 import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
-import AssessmentsAddFAB from '@/views/components/assessments/AssessmentsAddFAB';
+import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
 
-import SISMan from '@/views/components/sisman/SISMan';
+import SISMan from '@/views/sisman/components/SISMan';
 
 export default {
   name: 'LATE',

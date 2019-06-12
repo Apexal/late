@@ -64,9 +64,7 @@
             :title="assignment.title"
             :description="assignment.description"
             :title-place-holder="'Assignment title'"
-            :description-place-holder="
-              'Long description of the assignment'
-            "
+            :description-place-holder="'Long description of the assignment'"
             @update-title="assignment.title = $event"
             @update-desc="assignment.description = $event"
           />
@@ -138,10 +136,10 @@ import moment from 'moment';
 
 import 'bulma-steps';
 
-import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
-import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
-import ModalCalendar from '@/views/components/modal/ModalCalendar';
-import ModalTime from '@/views/components/modal/ModalTime';
+import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse';
+import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription';
+import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar';
+import ModalTime from '@/views/assessments/components/modal/ModalTime';
 
 export default {
   name: 'AssignmentsModalAddRedux',

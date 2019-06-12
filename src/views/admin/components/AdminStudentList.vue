@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import AdminStudentListOverview from '@/views/components/admin/AdminStudentListOverview.vue';
+import AdminStudentListOverview from '@/views/admin/components/AdminStudentListOverview.vue';
 export default {
   name: 'AdminStudentList',
   components: { AdminStudentListOverview },

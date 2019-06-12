@@ -101,7 +101,7 @@
 
 <script>
 import moment from 'moment';
-import AssessmentsTable from '@/views/components/assessments/AssessmentsTable';
+import AssessmentsTable from '@/views/assessments/components/AssessmentsTable';
 
 export default {
   name: 'AssessmentsPastList',

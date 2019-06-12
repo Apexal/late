@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import AssessmentsFilter from '@/views/components/assessments/AssessmentsFilter';
+import AssessmentsFilter from '@/views/assessments/components/AssessmentsFilter';
 
 export default {
   name: 'AssessmentsPage',

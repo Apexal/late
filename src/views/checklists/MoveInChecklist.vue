@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import MoveInChecklistCategory from '@/views/components/checklists/MoveInChecklistCategory';
+import MoveInChecklistCategory from '@/views/checklists/components/MoveInChecklistCategory';
 
 export default {
   name: 'MoveInChecklist',
