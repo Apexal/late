@@ -54,6 +54,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.modal-card-body {
+  padding: 0;
+}
+
 .panel-block.tour {
   cursor: pointer;
 }

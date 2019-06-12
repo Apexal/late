@@ -53,6 +53,7 @@
               v-if="tour"
               name="custom"
               :steps="tour.steps"
+              :callbacks="tourCallbacks"
             />
             <AnnouncementsModal
               :open="announcementsModalOpen"
@@ -117,7 +118,10 @@ export default {
   data () {
     return {
       resizeTimeout: null,
-      loading: true
+      loading: true,
+      tourCallbacks: {
+        onStop: this.onTourStop
+      }
     };
   },
   computed: {
@@ -214,6 +218,11 @@ export default {
     }
 
     this.loading = false;
+  },
+  methods: {
+    onTourStop () {
+      this.$store.commit('SET_TOUR_INDEX', -1);
+    }
   }
 };
 </script>
