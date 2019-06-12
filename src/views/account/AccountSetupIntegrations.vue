@@ -66,10 +66,10 @@
 </template>
 
 <script>
-import SetupIntegrationsPreferences from '@/views/components/account/SetupIntegrationsPreferences';
-import SetupIntegrationsSMS from '@/views/components/account/SetupIntegrationsSMS';
-import SetupIntegrationsEmail from '@/views/components/account/SetupIntegrationsEmail';
-import SetupIntegrationsDiscord from '@/views/components/account/SetupIntegrationsDiscord';
+import SetupIntegrationsPreferences from '@/views/account/components/SetupIntegrationsPreferences';
+import SetupIntegrationsSMS from '@/views/account/components/SetupIntegrationsSMS';
+import SetupIntegrationsEmail from '@/views/account/components/SetupIntegrationsEmail';
+import SetupIntegrationsDiscord from '@/views/account/components/SetupIntegrationsDiscord';
 
 export default {
   name: 'AccountSetupIntegrations',

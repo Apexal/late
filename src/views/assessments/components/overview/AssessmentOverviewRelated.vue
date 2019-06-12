@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import AssessmentsTable from '@/views/components/assessments/AssessmentsTable';
+import AssessmentsTable from '@/views/assessments/components/AssessmentsTable';
 
 export default {
   name: 'AssessmentOverviewRelated',

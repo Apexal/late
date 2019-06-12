@@ -110,10 +110,10 @@
 <script>
 import moment from 'moment';
 
-import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
-import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
-import ModalCalendar from '@/views/components/modal/ModalCalendar';
-import ModalTime from '@/views/components/modal/ModalTime';
+import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse';
+import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription';
+import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar';
+import ModalTime from '@/views/assessments/components/modal/ModalTime';
 
 export default {
   name: 'ExamsModalAddRedux',

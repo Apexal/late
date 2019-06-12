@@ -278,7 +278,7 @@ const router = new Router({
             title: 'Students'
           },
           component: () =>
-            import('@/views/components/admin/AdminStudentList.vue')
+            import('@/views/admin/components/AdminStudentList.vue')
         },
         {
           path: 'log',
@@ -286,7 +286,7 @@ const router = new Router({
           meta: {
             title: 'Server Log'
           },
-          component: () => import('@/views/components/admin/AdminLog.vue')
+          component: () => import('@/views/admin/components/AdminLog.vue')
         },
         {
           path: 'terms',
@@ -294,7 +294,7 @@ const router = new Router({
           meta: {
             title: 'School Terms'
           },
-          component: () => import('@/views/components/admin/AdminTermsList.vue')
+          component: () => import('@/views/admin/components/AdminTermsList.vue')
         }
       ]
     },

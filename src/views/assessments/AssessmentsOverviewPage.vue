@@ -82,16 +82,16 @@ import 'confetti-js';
 import VueMarkdown from 'vue-markdown';
 
 // Page components
-import AssessmentOverviewStats from '@/views/components/assessments/AssessmentOverviewStats';
-import AssessmentOverviewDescription from '@/views/components/assessments/AssessmentOverviewDescription';
-import AssessmentOverviewActionButtons from '@/views/components/assessments/AssessmentOverviewActionButtons';
-import AssessmentOverviewTitle from '@/views/components/assessments/AssessmentOverviewTitle';
+import AssessmentOverviewStats from '@/views/assessments/components/overview/AssessmentOverviewStats';
+import AssessmentOverviewDescription from '@/views/assessments/components/overview/AssessmentOverviewDescription';
+import AssessmentOverviewActionButtons from '@/views/assessments/components/overview/AssessmentOverviewActionButtons';
+import AssessmentOverviewTitle from '@/views/assessments/components/overview/AssessmentOverviewTitle';
 
-import AssignmentOverviewTabs from '@/views/components/assignments/overview/AssignmentOverviewTabs';
-import AssignmentsModalEdit from '@/views/components/assignments/AssignmentsModalEdit';
+import AssignmentOverviewTabs from '@/views/assignments/components/overview/AssignmentOverviewTabs';
+import AssignmentsModalEdit from '@/views/assignments/components/AssignmentsModalEdit';
 
-import ExamsModalEdit from '@/views/components/exams/ExamsModalEdit';
-import ExamOverviewTabs from '@/views/components/exams/overview/ExamOverviewTabs';
+import ExamsModalEdit from '@/views/exams/components/ExamsModalEdit';
+import ExamOverviewTabs from '@/views/exams/components/overview/ExamOverviewTabs';
 
 export default {
   name: 'AssessmentsOverviewPage',

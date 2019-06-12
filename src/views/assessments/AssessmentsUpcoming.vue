@@ -84,8 +84,8 @@
 <script>
 import moment from 'moment';
 
-import AssessmentPanelBlock from '@/views/components/assessments/upcoming/AssessmentPanelBlock';
-import AssessmentsTable from '@/views/components/assessments/AssessmentsTable.vue';
+import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock';
+import AssessmentsTable from '@/views/assessments/components/AssessmentsTable.vue';
 
 export default {
   name: 'AssessmentsUpcoming',

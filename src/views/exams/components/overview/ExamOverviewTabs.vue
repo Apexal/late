@@ -86,9 +86,9 @@
 
 <script>
 // Tabs
-import AssessmentOverviewWorkSchedule from '@/views/components/assessments/AssessmentOverviewWorkSchedule';
-import AssessmentOverviewComments from '@/views/components/assessments/AssessmentOverviewComments';
-import ExamOverviewStudyPlan from '@/views/components/exams/overview/ExamOverviewStudyPlan';
+import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overview/AssessmentOverviewWorkSchedule';
+import AssessmentOverviewComments from '@/views/assessments/components/overview/AssessmentOverviewComments';
+import ExamOverviewStudyPlan from '@/views/exams/components/overview/ExamOverviewStudyPlan';
 
 export default {
   name: 'ExamOverviewTabs',

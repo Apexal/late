@@ -77,10 +77,10 @@
 <script>
 import moment from 'moment';
 
-import SidebarSchedule from '@/views/components/sidebar/SidebarSchedule';
-import SidebarPressingAssessments from '@/views/components/sidebar/SidebarPressingAssessments';
-import SidebarTodoList from '@/views/components/sidebar/SidebarTodoList';
-import SidebarCourseList from '@/views/components/sidebar/SidebarCourseList';
+import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule';
+import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments';
+import SidebarTodoList from '@/views/sidebar/components/SidebarTodoList';
+import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList';
 
 export default {
   name: 'TheSidebar',

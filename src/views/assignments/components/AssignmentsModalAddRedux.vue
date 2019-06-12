@@ -117,10 +117,10 @@ import moment from 'moment';
 
 import 'bulma-steps';
 
-import ModalSelectCourse from '@/views/components/modal/ModalSelectCourse';
-import ModalCalendar from '@/views/components/modal/ModalCalendar';
-import ModalTitleAndDescription from '@/views/components/modal/ModalTitleAndDescription';
-import ModalTime from '@/views/components/modal/ModalTime';
+import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse';
+import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar';
+import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription';
+import ModalTime from '@/views/assessments/components/modal/ModalTime';
 
 export default {
   name: 'AssignmentsModalAdd',

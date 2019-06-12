@@ -38,8 +38,8 @@ import 'fullcalendar/dist/fullcalendar.css';
 
 import moment from 'moment';
 
-import DashboardCalendarSelectModal from '@/views/components/dashboard/DashboardCalendarSelectModal';
-import DashboardCalendarEventModal from '@/views/components/dashboard/DashboardCalendarEventModal';
+import DashboardCalendarSelectModal from '@/views/dashboard/components/DashboardCalendarSelectModal';
+import DashboardCalendarEventModal from '@/views/dashboard/components/DashboardCalendarEventModal';
 
 export default {
   name: 'DashboardCalendar',

@@ -88,10 +88,10 @@
 
 <script>
 // Tabs
-import AssessmentOverviewComments from '@/views/components/assessments/AssessmentOverviewComments';
-import AssessmentOverviewWorkSchedule from '@/views/components/assessments/AssessmentOverviewWorkSchedule';
-import AssessmentOverviewRelated from '@/views/components/assessments/AssessmentOverviewRelated';
-import AssignmentOverviewTabsSharedInfo from '@/views/components/assignments/overview/AssignmentOverviewTabsSharedInfo';
+import AssessmentOverviewComments from '@/views/assessments/components/overview/AssessmentOverviewComments';
+import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overview/AssessmentOverviewWorkSchedule';
+import AssessmentOverviewRelated from '@/views/assessments/components/overview/AssessmentOverviewRelated';
+import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo';
 
 export default {
   name: 'AssignmentOverviewTabs',
