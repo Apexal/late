@@ -54,12 +54,15 @@ export default {
   },
   mounted () {
     setTimeout(() => {
-      this.$store.dispatch('SUMMON_SISMAN', { message: 'Hey there...' });
+      this.$store.dispatch('SUMMON_SISMAN', {
+        message: 'Click me and I\'ll show you around!'
+      });
     }, Math.random() * 10000 * 1000);
   },
   methods: {
     click () {
       this.$store.dispatch('DISMISS_SISMAN');
+      this.$store.commit('TOGGLE_TOURS_MODAL');
     },
     moveSISMan () {
       if (this.moving) return;

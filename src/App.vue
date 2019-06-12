@@ -45,6 +45,15 @@
               :open="courseModalOpen"
               :course="courseModalData"
             />
+            <ToursModal
+              :open="toursModalOpen"
+              @close-modal="$store.commit('TOGGLE_TOURS_MODAL')"
+            />
+            <v-tour
+              v-if="tour"
+              name="custom"
+              :steps="tour.steps"
+            />
             <AnnouncementsModal
               :open="announcementsModalOpen"
               :announcements="announcements"
@@ -82,6 +91,7 @@ import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux';
 import CourseModal from '@/views/courses/components/CourseModal';
 import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements';
 import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal';
+import ToursModal from '@/views/components/ToursModal';
 
 import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
 import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
@@ -92,6 +102,7 @@ export default {
   name: 'LATE',
   components: {
     CourseModal,
+    ToursModal,
     TheHeader,
     TheSidebar,
     TheFooter,
@@ -110,6 +121,12 @@ export default {
     };
   },
   computed: {
+    tour () {
+      return this.$store.getters.currentTour;
+    },
+    toursModalOpen () {
+      return this.$store.state.tours.modalOpen;
+    },
     sidebarExpanded () {
       return this.$store.state.sidebarExpanded;
     },
@@ -149,6 +166,13 @@ export default {
     },
     isUserSetup () {
       return this.$store.getters.isUserSetup;
+    }
+  },
+  watch: {
+    tour (newTourIndex) {
+      this.$nextTick(() => {
+        if (this.tour) this.$tours.custom.start();
+      });
     }
   },
   async mounted () {

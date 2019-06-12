@@ -23,21 +23,32 @@
             title="LATE is still in active development!"
           >BETA</span>
         </router-link>
-        <a
-          v-if="loggedIn"
-          class="navbar-item announcement-icon is-hidden-desktop"
-          :title="announcementsCount + ' new announcements'"
-          @click="openAnnouncementsModal"
-        >
-          <span class="icon">
-            <i
-              class="fa-bell announcement-bell-icon"
-              :class="[
-                announcementsCount === 0 ? 'far' : 'fas new-announcements'
-              ]"
-            />
-          </span>
-        </a>
+        <template v-if="loggedIn">
+          <a
+            class="navbar-item announcement-icon is-hidden-desktop"
+            :title="announcementsCount + ' new announcements'"
+            @click="openAnnouncementsModal"
+          >
+            <span class="icon">
+              <i
+                class="fa-bell announcement-bell-icon"
+                :class="[
+                  announcementsCount === 0 ? 'far' : 'fas new-announcements'
+                ]"
+              />
+            </span>
+          </a>
+          <a
+            class="navbar-item help-icon is-hidden-desktop"
+            title="Show tours"
+            @click="$store.commit('TOGGLE_TOURS_MODAL')"
+          >
+            <span class="icon">
+              <i class="far fa-question-circle" />
+            </span>
+          </a>
+        </template>
+
         <a
           :class="{ 'is-active': navbarExpanded }"
           role="button"
@@ -79,7 +90,7 @@
               title="Learn more about LATE and its creators"
             >
               <span class="icon">
-                <i class="fas fa-question-circle" />
+                <i class="far fa-question-circle" />
               </span>
               About
             </router-link>
@@ -155,7 +166,7 @@
               title="Learn more about LATE and its creators"
             >
               <span class="icon">
-                <i class="fas fa-question-circle" />
+                <i class="far fa-question-circle" />
               </span>
               About
             </router-link>
@@ -186,6 +197,15 @@
                     announcementsCount === 0 ? 'far' : 'fas new-announcements'
                   ]"
                 />
+              </span>
+            </a>
+            <a
+              class="navbar-item help-icon is-hidden-touch"
+              title="Show tours"
+              @click="$store.commit('TOGGLE_TOURS_MODAL')"
+            >
+              <span class="icon">
+                <i class="far fa-question-circle" />
               </span>
             </a>
             <div class="navbar-item has-dropdown is-hoverable">

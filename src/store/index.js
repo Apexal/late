@@ -15,6 +15,7 @@ import announcements from './modules/announcements';
 import studytoolstimer from './modules/studytoolstimer';
 import checklists from './modules/checklists';
 import SISMan from './modules/sisman';
+import tours from './modules/tours';
 
 Vue.use(Vuex);
 
@@ -33,7 +34,8 @@ export default new Vuex.Store({
     announcements,
     studytoolstimer,
     checklists,
-    SISMan
+    SISMan,
+    tours
   },
   state: {
     navbarExpanded: false,
