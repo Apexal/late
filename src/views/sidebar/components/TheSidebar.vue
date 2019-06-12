@@ -4,6 +4,10 @@
     id="sidebar"
     class="menu"
   >
+    <v-tour
+      name="sidebar"
+      :steps="tourSteps"
+    />
     <div class="panel">
       <p
         class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
@@ -58,7 +62,7 @@
           v-for="(t, name) in tabs"
           :key="name"
           class="tooltip"
-          :class="{ 'is-active': tab === name }"
+          :class="[name, { 'is-active': tab === name }]"
           :data-tooltip="t.name"
           @click="tab = name"
         >
@@ -90,6 +94,8 @@ import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule';
 import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments';
 import SidebarTodoList from '@/views/sidebar/components/SidebarTodoList';
 import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList';
+
+import tours from '@/tours';
 
 export default {
   name: 'TheSidebar',
@@ -169,11 +175,12 @@ export default {
     },
     todos () {
       return this.$store.state.todos.todos;
+    },
+    tourSteps () {
+      return tours.sidebar;
     }
   },
-  mounted () {
-    // this.$emit('sidebar-loaded');
-  },
+  mounted () {},
   methods: {
     updatedCount ({ tab, count }) {
       this.externalCounts[tab] = count;

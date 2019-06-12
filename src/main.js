@@ -22,6 +22,8 @@ import sharedproperties from './mixins/sharedproperties';
 
 import * as VueGoogleMaps from 'vue2-google-maps';
 
+import 'vue-tour/dist/vue-tour.css';
+
 Vue.use(VueTour);
 
 Vue.component('CourseAssessmentDot', CourseAssessmentDot);

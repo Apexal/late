@@ -88,8 +88,6 @@ import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB'
 
 import SISMan from '@/views/sisman/components/SISMan';
 
-import tours from '@/tours';
-
 export default {
   name: 'LATE',
   components: {
@@ -151,15 +149,7 @@ export default {
     },
     isUserSetup () {
       return this.$store.getters.isUserSetup;
-    },
-    tourSteps () {
-      return this.$route.meta.tour && this.$route.meta.tour in tours
-        ? tours[this.$route.meta.tour]
-        : [];
     }
-  },
-  watch: {
-    $route: 'tour'
   },
   async mounted () {
     if (this.$route.query.accountLocked) {
@@ -320,5 +310,9 @@ section.section {
 
 .exam-event {
   font-weight: bold;
+}
+
+.v-tour .v-step {
+  z-index: 2;
 }
 </style>
