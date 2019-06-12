@@ -29,8 +29,7 @@ const router = new Router({
       name: 'home',
       component: () => import('@/views/TheHomePage.vue'),
       meta: {
-        title: 'Home',
-        tour: 'dashboard'
+        title: 'Home'
       }
     },
     {

@@ -260,6 +260,7 @@ body {
 /*-------------------------------------------*/
 
 // Sticky Footer
+
 #app {
   display: flex;
   flex-direction: column;
