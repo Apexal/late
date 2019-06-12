@@ -37,6 +37,7 @@ export default new Vuex.Store({
   },
   state: {
     navbarExpanded: false,
+    sidebarExpanded: true,
     now: new Date()
   },
   getters: {
@@ -90,6 +91,7 @@ export default new Vuex.Store({
   },
   mutations: {
     UPDATE_NOW: state => (state.now = new Date()),
+    TOGGLE_SIDEBAR: state => (state.sidebarExpanded = !state.sidebarExpanded),
     TOGGLE_NAVBAR: state => (state.navbarExpanded = !state.navbarExpanded)
   },
   actions: {

@@ -8,6 +8,13 @@
       <p
         class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
       >
+        <span
+          class="icon is-pulled-right local-toggle-sidebar"
+          title="Close sidebar"
+          @click="$store.commit('TOGGLE_SIDEBAR')"
+        >
+          <i class="fas fa-angle-left" />
+        </span>
         {{ onBreak ? "On Break" : currentTerm.name }}
         <span
           v-if="currentEvent"
@@ -198,7 +205,7 @@ export default {
     width: 100%;
     top: 70px;
     padding: 0;
-    margin-top: 30px;
+    //margin-top: 30px;
   }
 
   .panel {
@@ -253,20 +260,8 @@ export default {
   }
   .local-toggle-sidebar {
     cursor: pointer;
-    width: 2.5em;
-    height: 1.5em;
   }
 
-  .local-toggle-sidebar:hover {
-    background-color: rgb(252, 252, 252);
-  }
-
-  .local-toggle-sidebar:hover i {
-    margin-left: -6px;
-    transition: 0.1s;
-    -webkit-transition: 0.1s;
-    -moz-transition: 0.1s;
-  }
   .countdown {
     height: 2.5em;
     width: 6em;

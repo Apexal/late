@@ -11,8 +11,16 @@
       />
 
       <div :class="appClass">
+        <span
+          v-if="!sidebarExpanded"
+          class="icon toggle-sidebar has-text-dark"
+          title="Open sidebar"
+          @click="$store.commit('TOGGLE_SIDEBAR')"
+        >
+          <i class="fas fa-angle-right" />
+        </span>
         <div
-          v-if="loggedIn"
+          v-if="loggedIn && sidebarExpanded"
           id="sidebar-column"
           class="column is-3 sidebar-holder"
         >
@@ -102,13 +110,16 @@ export default {
     };
   },
   computed: {
+    sidebarExpanded () {
+      return this.$store.state.sidebarExpanded;
+    },
     homepage () {
       return this.$route.name === 'home' && !this.loggedIn;
     },
     appClass () {
       return {
-        'columns is-marginless': this.loggedIn,
-        container: !this.loggedIn,
+        'columns is-marginless': this.loggedIn && this.sidebarExpanded,
+        container: !this.loggedIn || !this.sidebarExpanded,
         homepage: this.homepage
       };
     },
@@ -242,32 +253,11 @@ section.section {
 
 .toggle-sidebar {
   cursor: pointer;
-  top: 70px;
   z-index: 4;
   position: fixed;
-  @media only screen and (max-width: 768px) {
-    position: absolute;
-    top: 55px;
-  }
-
-  //Styling the toggle button to fit the theme
-  margin: 1em;
-  margin-top: 0.5em;
-  width: 2.5em;
-  height: 1.5em;
-}
-
-.toggle-sidebar i {
-  transition: 0.1s;
-  -webkit-transition: 0.1s;
-  -moz-transition: 0.1s;
-}
-
-.toggle-sidebar:hover i {
-  margin-right: -6px;
-  transition: 0.1s;
-  -webkit-transition: 0.1s;
-  -moz-transition: 0.1s;
+  left: 5px;
+  top: 60px;
+  font-size: 30px;
 }
 
 /* TRANSITIONS */
