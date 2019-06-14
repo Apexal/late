@@ -72,7 +72,7 @@
         <div class="navbar-start">
           <template v-if="loggedIn">
             <router-link
-              class="navbar-item"
+              class="navbar-item home-link"
               :to="{ name: 'home' }"
               title="View your dashboard"
               exact
@@ -85,7 +85,7 @@
 
             <router-link
               v-if="onBreak"
-              class="navbar-item"
+              class="navbar-item about-link"
               :to="{ name: 'about' }"
               title="Learn more about LATE and its creators"
             >
@@ -100,7 +100,7 @@
               class="navbar-item has-dropdown is-hoverable"
             >
               <a
-                class="navbar-link"
+                class="navbar-link coursework-link"
                 title="Manage your assignments and exams!"
               >
                 <span class="icon">
@@ -173,7 +173,7 @@
           </template>
           <router-link
             :to="{ name: 'tools' }"
-            class="navbar-item"
+            class="navbar-item tools-link"
             title="Student tools to calculate grades, help you work/study, and more!"
           >
             <span class="icon">
@@ -200,7 +200,7 @@
               </span>
             </a>
             <a
-              class="navbar-item help-icon is-hidden-touch"
+              class="navbar-item help-icon is-hidden-touch tours-icon"
               title="Show tours"
               @click="$store.commit('TOGGLE_TOURS_MODAL')"
             >
@@ -208,7 +208,7 @@
                 <i class="far fa-question-circle" />
               </span>
             </a>
-            <div class="navbar-item has-dropdown is-hoverable">
+            <div class="navbar-item has-dropdown is-hoverable user-dropdown">
               <a
                 class="navbar-link"
                 style="padding-right: 3.2em;"
