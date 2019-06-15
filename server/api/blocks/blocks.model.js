@@ -2,9 +2,6 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const Schema = mongoose.Schema;
 
-// TODO: look into making this a subdocument
-// https://mongoosejs.com/docs/subdocs.html
-
 const schema = new Schema(
   {
     _student: {

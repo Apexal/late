@@ -189,7 +189,52 @@ export default {
                 event.course.endDate
               );
             }
+            if (event.eventType === 'work-block') {
+              el.attr(
+                'title',
+                `${
+                  event.assessment.assessmentType === 'assignment'
+                    ? 'Work on'
+                    : 'Study for'
+                } ${event.assessment.title}${
+                  event.block.location ? ' | ' + event.block.location : ''
+                }`
+              );
 
+              const locationEl = document.createElement('i');
+              locationEl.title = 'Click to set location';
+              if (event.block.location) {
+                locationEl.innerText = event.block.location;
+              } else {
+                locationEl.className = 'fas fa-map-marker-alt';
+              }
+              locationEl.classList.add('event-location');
+              locationEl.onclick = ev => {
+                ev.stopPropagation();
+                this.$dialog.prompt({
+                  message: 'Where do you want this to be?',
+                  inputAttrs: {
+                    placeholder: event.block.location
+                      ? event.block.location
+                      : 'e.g. Bray Hall Classroom',
+                    maxlength: 200
+                  },
+                  onConfirm: async location => {
+                    const updatedAssessment = await this.$store.dispatch(
+                      'EDIT_WORK_BLOCK',
+                      {
+                        assessment: event.assessment,
+                        blockID: event.blockID,
+                        start: event.start,
+                        end: event.end,
+                        location
+                      }
+                    );
+                  }
+                });
+              };
+              el.find('.fc-content').append(locationEl);
+            }
             if (
               event.eventType === 'work-block' &&
               this.assessment.shared &&
