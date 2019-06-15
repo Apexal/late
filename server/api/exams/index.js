@@ -6,6 +6,7 @@ const Ctrl = require('./exams.controller');
 router.get('/', Ctrl.getExams);
 router.post('/', Ctrl.createExam);
 
+router.get('/term/:termCode', Ctrl.getTermExams);
 router.get('/e/:examID', Ctrl.getExamMiddleware, Ctrl.getExam);
 router.patch('/e/:examID', Ctrl.getExamMiddleware, Ctrl.editExam);
 router.delete('/e/:examID', Ctrl.getExamMiddleware, Ctrl.deleteExam);

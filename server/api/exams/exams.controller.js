@@ -57,6 +57,39 @@ async function getExams (ctx) {
   });
 }
 
+async function getTermExams (ctx) {
+  const { termCode } = ctx.params;
+
+  const term = ctx.session.terms.find(term => term.code === termCode);
+
+  let exams;
+  try {
+    exams = await Exam.find({
+      _student: ctx.state.user._id,
+      $or: [
+        { termCode },
+        {
+          date: {
+            $gte: term.start,
+            $lt: term.end
+          }
+        }
+      ]
+    });
+  } catch (e) {
+    logger.error(`Failed to get exams: ${e}`);
+    return ctx.badRequest('There was an error getting the exams.');
+  }
+
+  logger.info(
+    `Sending all exams for term ${termCode} to ${ctx.state.user.rcs_id}`
+  );
+
+  ctx.ok({
+    exams
+  });
+}
+
 /**
  * Get an exam by its ID.
  *
@@ -275,6 +308,7 @@ async function deleteComment (ctx) {
 module.exports = {
   getExamMiddleware,
   getExams,
+  getTermExams,
   getExam,
   createExam,
   editExam,
