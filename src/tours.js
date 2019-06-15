@@ -201,7 +201,81 @@ const tours = [
         content:
           'Toggle sharing the assignment with other students to collaborate here.',
         params: {
-          placement: 'top'
+          placement: 'top',
+          enableScrolling: false
+        }
+      }
+    ]
+  },
+  {
+    title: 'GPA Calculator',
+    route: { name: 'gpa-calculator' },
+    steps: [
+      {
+        target: '.gpa-calculator .add-course',
+        content:
+          'Manually add your courses here, you will then specify how many credits it is worth.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.gpa-calculator .auto-fill-courses',
+        content: 'Fill in your actual courses and their credit counts.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.gpa-calculator .clear-courses',
+        content: 'Reset the courses here.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      }
+    ]
+  },
+  {
+    title: 'Course Grade Calculator',
+    route: { name: 'course-grade-estimator' },
+    steps: [
+      {
+        target: '.course-grade-estimator',
+        content:
+          'Use this <b>Course Grade Estimator</b> to take in the grading categories for a course and determine what final grade you will get.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.course-grade-estimator .choose-course',
+        content:
+          'Choose a course here and you can save the categories with the button below later on.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.course-grade-estimator .add-category',
+        content:
+          'Add grading categories and their weight here, e.g. <code>30% Homework</code> or <code>15% Quizzes</code> here.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.course-grade-estimator .total-weight',
+        content:
+          'This is the total weight of your added categories, it must add up to <b>100%</b> in order to see the calculated grade.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
         }
       }
     ]

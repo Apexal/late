@@ -224,6 +224,7 @@ export default {
   },
   methods: {
     onTourStop () {
+      this.$store.dispatch('MARK_TOUR_SEEN', this.tour);
       this.$store.commit('SET_TOUR_INDEX', -1);
     }
   }

@@ -13,7 +13,7 @@
         grouped
         class="is-block-touch"
       >
-        <b-field>
+        <b-field class="add-course">
           <b-input
             v-model.trim="newCourseTitle"
             type="text"
@@ -30,12 +30,14 @@
           <div class="buttons">
             <b-button
               v-if="!onBreak"
+              class="auto-fill-courses"
               type="is-dark"
               @click="fillCourses"
             >
               Auto Fill Courses
             </b-button>
             <b-button
+              class="clear-courses"
               type="is-warning"
               @click="enteredCourses = []"
             >

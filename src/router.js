@@ -339,6 +339,17 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
+  // Check if the route has a tour
+  let tour;
+  if (
+    (tour = store.getters.getTourFromRoute(to)) &&
+    !store.getters.seenTours.includes(tour.title)
+  ) {
+    store.dispatch('SUMMON_SISMAN', {
+      message: `Wanna take the ${tour.title} tour?`
+    });
+  }
+
   if (
     to.matched.some(record => record.meta.requiresAdmin) &&
     !store.state.auth.user.admin

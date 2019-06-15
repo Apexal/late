@@ -13,7 +13,10 @@
         grouped
         class="is-block-touch"
       >
-        <b-field v-if="loggedIn && !onBreak">
+        <b-field
+          v-if="loggedIn && !onBreak"
+          class="choose-course"
+        >
           <b-select
             v-model="selectedCourseCRN"
             placeholder="Choose course"
@@ -27,7 +30,7 @@
             </option>
           </b-select>
         </b-field>
-        <b-field>
+        <b-field class="add-category">
           <b-input
             v-model.trim="newCategory"
             type="text"
@@ -43,6 +46,7 @@
         </b-field>
 
         <b-button
+          class="clear-categories"
           :disabled="categories.length === 0"
           @click="categories = []"
         >
@@ -50,6 +54,7 @@
         </b-button>
 
         <b-tag
+          class="total-weight"
           size="is-medium"
           :type="totalWeight === 100 ? 'is-success' : 'is-warning'"
         >
@@ -113,8 +118,12 @@
           FINAL GRADE
           <h1 class="is-size-1">{{ round(totalWeightedAverage) }}%</h1>
         </span>
-        <span v-else-if="totalWeight !== 100">The category weights don't add up to 100%!</span>
-        <span v-else>Add grades for each category to see your overall course grade!</span>
+        <span
+          v-else-if="totalWeight !== 100"
+        >The category weights don't add up to 100%!</span>
+        <span
+          v-else
+        >Add grades for each category to see your overall course grade!</span>
       </div>
     </div>
     <p
@@ -122,8 +131,7 @@
       class="has-text-centered has-text-grey"
     >
       Add categories above, e.g.
-      <b>45% Homework</b> and
-      <b>10% Quizzes</b>.
+      <b>45% Homework</b> and <b>10% Quizzes</b>.
     </p>
     <hr>
 
