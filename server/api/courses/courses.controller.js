@@ -7,7 +7,18 @@ const logger = require('../../modules/logger');
  * @retuns A JSON list of unavailability blocks
  */
 async function getCourses (ctx) {
-  const termCode = ctx.request.query.termCode || ctx.session.currentTerm.code;
+  const courses = await Course.find({
+    _student: ctx.state.user._id,
+    termCode: ctx.session.currentTerm.code
+  }).sort('originalTitle');
+
+  logger.info(`Sending courses to ${ctx.state.user.rcs_id}`);
+
+  return ctx.ok({ courses });
+}
+
+async function getTermCourses (ctx) {
+  const termCode = ctx.params.termCode;
   const courses = await Course.find({
     _student: ctx.state.user._id,
     termCode
@@ -54,5 +65,6 @@ async function updateCourse (ctx) {
 
 module.exports = {
   getCourses,
+  getTermCourses,
   updateCourse
 };

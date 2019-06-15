@@ -3,7 +3,9 @@ const Router = require('koa-router');
 const router = new Router();
 
 const notOnBreak = (ctx, next) => {
-  if (ctx.state.onBreak) return ctx.badRequest('You are on break!');
+  if (ctx.state.onBreak && !ctx.request.url.includes('/term/')) {
+    return ctx.badRequest('You are on break!');
+  }
   return next();
 };
 

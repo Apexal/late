@@ -201,9 +201,12 @@ export default {
       // Get courses
       let response;
       try {
-        response = await this.$http.get('/courses?termCode=' + this.term.code);
+        response = await this.$http.get('/courses/term/' + this.term.code);
       } catch (e) {
-        this.$toast.open({ type: 'danger', message: e.response.data.message });
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        });
         this.loading = false;
         return;
       }
