@@ -11,6 +11,13 @@ const Unavailability = require('../unavailabilities/unavailabilities.model');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+/**
+ * This middleware assumes that the route has a 'assignmentID' parameter.
+ * It gets the assignment from this ID and makes it available to all subsequent routes
+ * as ctx.state.assignment
+ *
+ * @param {Koa context} ctx
+ */
 async function getAssignmentMiddleware (ctx, next) {
   const assignmentID = ctx.params.assignmentID;
 
@@ -49,6 +56,7 @@ async function getAssignmentMiddleware (ctx, next) {
     );
   }
 
+  // Ensure assignment exists
   if (!assignment) {
     logger.error(
       `Failed to find assignment with ID ${assignmentID} for ${
@@ -59,7 +67,7 @@ async function getAssignmentMiddleware (ctx, next) {
   }
 
   ctx.state.assignment = assignment;
-  ctx.state.isAssignmentOwner = assignment._id.equals(ctx.state.user._id);
+  ctx.state.isAssignmentOwner = assignment._id.equals(ctx.state.user._id); // Mongoose ID's must use .equals()
 
   await next();
 }
@@ -98,10 +106,25 @@ async function getAssignments (ctx) {
   });
 }
 
+/**
+ * Get all of the logged in student's assignments in a given term.
+ * The term code is passed in the route params as :termCode
+ *
+ * @param {Koa context} ctx
+ * @returns Array of the term's assignments
+ */
 async function getTermAssignments (ctx) {
   const { termCode } = ctx.params;
 
   const term = ctx.session.terms.find(term => term.code === termCode);
+  if (!term) {
+    logger.error(
+      `${
+        ctx.state.user.rcs_id
+      } tried to get assignments for non-existent term ${termCode}`
+    );
+    return ctx.badRequest(`Failed to find the term ${termCode}!`);
+  }
 
   let assignments;
   try {
@@ -233,6 +256,7 @@ async function getAssignmentCollaboratorInfo (ctx) {
     }`
   );
 
+  // Collect collaborators and their unavailabilities
   const unavailabilities = {};
   const collaborators = await Student.find({
     rcs_id: { $in: ctx.state.assignment.sharedWith }
@@ -253,7 +277,7 @@ async function getAssignmentCollaboratorInfo (ctx) {
 /**
  * Create an assignment given the assignment properies in the request body.
  * Request body:
- *  - title, description, dueDate, course_crn, time_estimate, priority
+ *  - title, description, dueDate, courseCRN, timEstimate, priority
  *
  * POST /assignments
  * @param {Koa context} ctx
@@ -536,8 +560,8 @@ async function deleteAssignment (ctx) {
       'You cannot delete shared assignments. Only the owner can!'
     );
   }
-  // Delete assignment
 
+  // Delete assignment
   try {
     ctx.state.assignment.remove();
   } catch (e) {

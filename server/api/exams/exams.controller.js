@@ -3,6 +3,13 @@ const logger = require('../../modules/logger');
 
 const Exam = require('./exams.model');
 
+/**
+ * This middleware assumes that the route has a 'examID' parameter.
+ * It gets the exam from this ID and makes it available to all subsequent routes
+ * as ctx.state.exam
+ *
+ * @param {Koa context} ctx
+ */
 async function getExamMiddleware (ctx, next) {
   const examID = ctx.params.examID;
 
@@ -57,6 +64,13 @@ async function getExams (ctx) {
   });
 }
 
+/**
+ * Get all of the logged in student's exams in a given term.
+ * The term code is passed in the route params as :termCode
+ *
+ * @param {Koa context} ctx
+ * @returns Array of the term's exams
+ */
 async function getTermExams (ctx) {
   const { termCode } = ctx.params;
 
