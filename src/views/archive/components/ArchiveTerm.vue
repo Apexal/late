@@ -36,6 +36,29 @@
     <h2 class="subtitle">
       Coursework
     </h2>
+
+    <div class="coursework">
+      <table class="table is-fullwidth">
+        <thead>
+          <tr>
+            <th>Due Date</th>
+            <th>Course</th>
+            <th>Title</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(assignment, index) in termAssignments"
+            :key="index"
+          >
+            <td>{{ shortDateTimeFormat(assignment.dueDate) }}</td>
+            <td>{{ termCourse(assignment.courseCRN).title }}</td>
+            <td>{{ assignment.title }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <hr>
 
     <h2 class="subtitle">
@@ -87,6 +110,9 @@ export default {
     this.getTermData();
   },
   methods: {
+    termCourse (courseCRN) {
+      return this.termCourses.find(course => course.crn === courseCRN);
+    },
     async getTermData () {
       if (this.terms.length === 0) return;
 
