@@ -2,7 +2,7 @@ import axios from '@/api';
 import moment from 'moment';
 
 const removedCourse = {
-  section_id: '000',
+  section_id: '00',
   originalTitle: 'Removed Course',
   title: 'Removed Course',
   summary: 'REMOVED',

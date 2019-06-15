@@ -44,6 +44,7 @@
             <th>Due Date</th>
             <th>Course</th>
             <th>Title</th>
+            <th>Completed</th>
           </tr>
         </thead>
         <tbody>
@@ -52,8 +53,22 @@
             :key="index"
           >
             <td>{{ shortDateTimeFormat(assignment.dueDate) }}</td>
-            <td>{{ termCourse(assignment.courseCRN).title }}</td>
+            <td>
+              <i
+                class="course-dot"
+                :style="{
+                  backgroundColor: termCourse(assignment.courseCRN).color
+                }"
+              />
+              {{ termCourse(assignment.courseCRN).title }}
+            </td>
             <td>{{ assignment.title }}</td>
+            <td :title="assignment.completedAt">
+              <i
+                class="fas"
+                :class="[assignment.completed ? 'fa-check' : 'fa-times']"
+              />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -101,6 +116,19 @@ export default {
     },
     terms () {
       return this.$store.state.schedule.terms;
+    },
+    removedCourse () {
+      return {
+        section_id: '00',
+        originalTitle: 'Removed Course',
+        title: 'Removed Course',
+        summary: 'REMOVED',
+        credits: 0,
+        crn: '00000',
+        color: 'grey',
+        periods: [],
+        links: []
+      };
     }
   },
   watch: {
@@ -111,7 +139,10 @@ export default {
   },
   methods: {
     termCourse (courseCRN) {
-      return this.termCourses.find(course => course.crn === courseCRN);
+      return (
+        this.termCourses.find(course => course.crn === courseCRN) ||
+        this.removedCourse
+      );
     },
     async getTermData () {
       if (this.terms.length === 0) return;
@@ -160,5 +191,13 @@ export default {
 
 .button .icon {
   margin-right: 3px !important;
+}
+
+.fa-check {
+  color: green;
+}
+
+.fa-times {
+  color: red;
 }
 </style>
