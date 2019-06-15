@@ -25,24 +25,10 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers';
 export default {
   name: 'SISMan',
   data () {
-    return {
-      messages: [
-        'Hey there',
-        'Who let you off the waitlist???',
-        'You better get working...',
-        'You better actually work on the stuff instead of just putting it down here',
-        'I\'ll be watching your progress.',
-        'Give me $5 and I\'ll do your homework for you',
-        'I\'ll be watching for academic integrity...',
-        'Why did they remove me...',
-        'Somebody let me out of this prison',
-        'ohhh yeah I\'m sure you\'ll get that done'
-      ]
-    };
+    return {};
   },
   computed: {
     message () {
@@ -52,28 +38,18 @@ export default {
       return this.$store.getters.SISManCSS;
     }
   },
-  mounted () {
-    setTimeout(() => {
-      this.$store.dispatch('SUMMON_SISMAN', { message: 'Hey there...' });
-    }, Math.random() * 10000 * 1000);
-  },
+  mounted () {},
   methods: {
     click () {
       this.$store.dispatch('DISMISS_SISMAN');
-    },
-    moveSISMan () {
-      if (this.moving) return;
+      const tour = this.$store.getters.getTourFromRoute(this.$route);
+      if (!tour) return;
 
-      this.showing = false;
-      this.moving = true;
-      this.position = Math.random() < 0.5 ? 'above' : 'below';
-      setTimeout(() => {
-        this.left = Math.floor(Math.random() * (85 - 10)) + 20;
-        this.showing = true;
-        this.moving = false;
-        this.message += 1;
-        if (this.message === this.messages.length) this.message = 0;
-      }, 1000 * (Math.round(Math.random() * 10) + 3));
+      const index = this.$store.state.tours.tours.indexOf(tour);
+
+      if (index) {
+        this.$store.commit('SET_TOUR_INDEX', index);
+      }
     }
   }
 };

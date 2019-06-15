@@ -45,6 +45,16 @@
               :open="courseModalOpen"
               :course="courseModalData"
             />
+            <ToursModal
+              :open="toursModalOpen"
+              @close-modal="$store.commit('TOGGLE_TOURS_MODAL')"
+            />
+            <v-tour
+              v-if="tour"
+              name="custom"
+              :steps="tour.steps"
+              :callbacks="tourCallbacks"
+            />
             <AnnouncementsModal
               :open="announcementsModalOpen"
               :announcements="announcements"
@@ -82,16 +92,19 @@ import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux';
 import CourseModal from '@/views/courses/components/CourseModal';
 import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements';
 import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal';
+import ToursModal from '@/views/components/ToursModal';
 
 import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
 import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
 
 import SISMan from '@/views/sisman/components/SISMan';
+import { setTimeout } from 'timers';
 
 export default {
   name: 'LATE',
   components: {
     CourseModal,
+    ToursModal,
     TheHeader,
     TheSidebar,
     TheFooter,
@@ -106,10 +119,19 @@ export default {
   data () {
     return {
       resizeTimeout: null,
-      loading: true
+      loading: true,
+      tourCallbacks: {
+        onStop: this.onTourStop
+      }
     };
   },
   computed: {
+    tour () {
+      return this.$store.getters.currentTour;
+    },
+    toursModalOpen () {
+      return this.$store.state.tours.modalOpen;
+    },
     sidebarExpanded () {
       return this.$store.state.sidebarExpanded;
     },
@@ -151,6 +173,15 @@ export default {
       return this.$store.getters.isUserSetup;
     }
   },
+  watch: {
+    tour (newTourIndex) {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.tour) this.$tours.custom.start();
+        }, 1000);
+      });
+    }
+  },
   async mounted () {
     if (this.$route.query.accountLocked) {
       this.loading = false;
@@ -190,6 +221,12 @@ export default {
     }
 
     this.loading = false;
+  },
+  methods: {
+    onTourStop () {
+      this.$store.dispatch('MARK_TOUR_SEEN', this.tour);
+      this.$store.commit('SET_TOUR_INDEX', -1);
+    }
   }
 };
 </script>
@@ -227,6 +264,7 @@ body {
 /*-------------------------------------------*/
 
 // Sticky Footer
+
 #app {
   display: flex;
   flex-direction: column;
@@ -310,5 +348,9 @@ section.section {
 
 .exam-event {
   font-weight: bold;
+}
+
+.v-tour .v-step {
+  z-index: 2;
 }
 </style>

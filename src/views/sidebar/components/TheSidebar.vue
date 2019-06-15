@@ -58,7 +58,7 @@
           v-for="(t, name) in tabs"
           :key="name"
           class="tooltip"
-          :class="{ 'is-active': tab === name }"
+          :class="[name, { 'is-active': tab === name }]"
           :data-tooltip="t.name"
           @click="tab = name"
         >
@@ -171,9 +171,7 @@ export default {
       return this.$store.state.todos.todos;
     }
   },
-  mounted () {
-    // this.$emit('sidebar-loaded');
-  },
+  mounted () {},
   methods: {
     updatedCount ({ tab, count }) {
       this.externalCounts[tab] = count;

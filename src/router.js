@@ -169,6 +169,21 @@ const router = new Router({
       component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
     },
     {
+      path: '/coursework/a/latest',
+      beforeEnter: (to, from, next) => {
+        // Find latest upcoming assignment
+        const latestAssignment = store.state.assessments.upcomingAssessments.find(
+          assessment => assessment.assessmentType === 'assignment'
+        );
+        if (latestAssignment) {
+          next({
+            name: 'assignment-overview',
+            params: { assignmentID: latestAssignment._id }
+          });
+        } else next('/coursework');
+      }
+    },
+    {
       path: '/coursework/a/:assignmentID',
       name: 'assignment-overview',
       component: () =>
@@ -322,6 +337,17 @@ router.beforeEach(async (to, from, next) => {
     // if not, redirect to login page.
     window.location = '/auth/login?redirectTo=' + to.fullPath;
     return;
+  }
+
+  // Check if the route has a tour
+  let tour;
+  if (
+    (tour = store.getters.getTourFromRoute(to)) &&
+    !store.getters.seenTours.includes(tour.title)
+  ) {
+    store.dispatch('SUMMON_SISMAN', {
+      message: `Wanna take the ${tour.title} tour?`
+    });
   }
 
   if (

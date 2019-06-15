@@ -11,6 +11,7 @@ import Buefy from 'buefy';
 import 'bulma-tooltip';
 
 import VueProgressBar from 'vue-progressbar';
+import VueTour from 'vue-tour';
 
 import CourseAssessmentDot from '@/views/components/CourseAssessmentDot';
 
@@ -20,6 +21,10 @@ import datemethods from './mixins/datemethods';
 import sharedproperties from './mixins/sharedproperties';
 
 import * as VueGoogleMaps from 'vue2-google-maps';
+
+import 'vue-tour/dist/vue-tour.css';
+
+Vue.use(VueTour);
 
 Vue.component('CourseAssessmentDot', CourseAssessmentDot);
 Vue.use(wysiwyg, { hideModules: { image: true } });

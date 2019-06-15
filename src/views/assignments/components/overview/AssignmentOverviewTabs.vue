@@ -6,6 +6,7 @@
     <div class="tabs">
       <ul>
         <li
+          class="schedule"
           :class="{ 'is-active': tab === 'schedule' }"
           @click="$emit('set-tab', 'schedule')"
         >
@@ -25,6 +26,7 @@
           </a>
         </li>
         <li
+          class="comments"
           :class="{ 'is-active': tab === 'comments' }"
           @click="$emit('set-tab', 'comments')"
         >
@@ -46,6 +48,7 @@
         </li>
         <li
           v-if="assignment.shared"
+          class="shared-info"
           :class="{ 'is-active': tab === 'shared-info' }"
           @click="$emit('set-tab', 'shared-info')"
         >
@@ -60,6 +63,7 @@
         </li>
         <li
           v-else
+          class="related"
           :class="{ 'is-active': tab === 'related' }"
           @click="$emit('set-tab', 'related')"
         >

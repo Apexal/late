@@ -3,7 +3,7 @@ const state = {
   peeking: false,
   moving: false,
   relativePosition: 80,
-  message: 'Hey there...',
+  message: 'Hey... click me!',
   side: 'bottom' // top, bottom, left, right
 };
 

@@ -49,6 +49,7 @@
     "vue-markdown": "^2.2.4",
     "vue-progressbar": "^0.7.5",
     "vue-router": "^3.0.6",
+    "vue-tour": "^1.1.0",
     "vue-wysiwyg": "^1.7.2",
     "vue2-google-maps": "^0.10.6",
     "vuedraggable": "^2.21.0",

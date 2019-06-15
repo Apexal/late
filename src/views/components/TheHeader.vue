@@ -23,21 +23,32 @@
             title="LATE is still in active development!"
           >BETA</span>
         </router-link>
-        <a
-          v-if="loggedIn"
-          class="navbar-item announcement-icon is-hidden-desktop"
-          :title="announcementsCount + ' new announcements'"
-          @click="openAnnouncementsModal"
-        >
-          <span class="icon">
-            <i
-              class="fa-bell announcement-bell-icon"
-              :class="[
-                announcementsCount === 0 ? 'far' : 'fas new-announcements'
-              ]"
-            />
-          </span>
-        </a>
+        <template v-if="loggedIn">
+          <a
+            class="navbar-item announcement-icon is-hidden-desktop"
+            :title="announcementsCount + ' new announcements'"
+            @click="openAnnouncementsModal"
+          >
+            <span class="icon">
+              <i
+                class="fa-bell announcement-bell-icon"
+                :class="[
+                  announcementsCount === 0 ? 'far' : 'fas new-announcements'
+                ]"
+              />
+            </span>
+          </a>
+          <a
+            class="navbar-item help-icon is-hidden-desktop"
+            title="Show tours"
+            @click="$store.commit('TOGGLE_TOURS_MODAL')"
+          >
+            <span class="icon">
+              <i class="far fa-question-circle" />
+            </span>
+          </a>
+        </template>
+
         <a
           :class="{ 'is-active': navbarExpanded }"
           role="button"
@@ -61,7 +72,7 @@
         <div class="navbar-start">
           <template v-if="loggedIn">
             <router-link
-              class="navbar-item"
+              class="navbar-item home-link"
               :to="{ name: 'home' }"
               title="View your dashboard"
               exact
@@ -74,12 +85,12 @@
 
             <router-link
               v-if="onBreak"
-              class="navbar-item"
+              class="navbar-item about-link"
               :to="{ name: 'about' }"
               title="Learn more about LATE and its creators"
             >
               <span class="icon">
-                <i class="fas fa-question-circle" />
+                <i class="far fa-question-circle" />
               </span>
               About
             </router-link>
@@ -89,7 +100,7 @@
               class="navbar-item has-dropdown is-hoverable"
             >
               <a
-                class="navbar-link"
+                class="navbar-link coursework-link"
                 title="Manage your assignments and exams!"
               >
                 <span class="icon">
@@ -155,14 +166,14 @@
               title="Learn more about LATE and its creators"
             >
               <span class="icon">
-                <i class="fas fa-question-circle" />
+                <i class="far fa-question-circle" />
               </span>
               About
             </router-link>
           </template>
           <router-link
             :to="{ name: 'tools' }"
-            class="navbar-item"
+            class="navbar-item tools-link"
             title="Student tools to calculate grades, help you work/study, and more!"
           >
             <span class="icon">
@@ -188,7 +199,16 @@
                 />
               </span>
             </a>
-            <div class="navbar-item has-dropdown is-hoverable">
+            <a
+              class="navbar-item help-icon is-hidden-touch tours-icon"
+              title="Show tours"
+              @click="$store.commit('TOGGLE_TOURS_MODAL')"
+            >
+              <span class="icon">
+                <i class="far fa-question-circle" />
+              </span>
+            </a>
+            <div class="navbar-item has-dropdown is-hoverable user-dropdown">
               <a
                 class="navbar-link"
                 style="padding-right: 3.2em;"
