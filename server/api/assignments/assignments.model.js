@@ -18,6 +18,9 @@ const schema = new Schema(
     timeEstimate: { type: Number, required: true, min: 0, max: 696969420 },
     timeRemaining: { type: Number, required: true },
     priority: { type: Number, min: 1, max: 5, default: 3 },
+    termCode: {
+      type: String
+    },
     comments: [
       {
         _student: {

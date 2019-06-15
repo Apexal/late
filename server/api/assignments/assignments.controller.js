@@ -98,6 +98,48 @@ async function getAssignments (ctx) {
   });
 }
 
+async function getTermAssignments (ctx) {
+  const { termCode } = ctx.params;
+
+  const term = ctx.session.terms.find(term => term.code === termCode);
+
+  let assignments;
+  try {
+    assignments = await Assignment.find({
+      $and: [
+        {
+          $or: [
+            { _student: ctx.state.user._id },
+            { shared: true, sharedWith: ctx.state.user.rcs_id }
+          ]
+        },
+        {
+          $or: [
+            { termCode },
+            {
+              dueDate: {
+                $gte: term.start,
+                $lt: term.end
+              }
+            }
+          ]
+        }
+      ]
+    });
+  } catch (e) {
+    logger.error(`Failed to get assignments: ${e}`);
+    return ctx.badRequest('There was an error getting the assignments.');
+  }
+
+  logger.info(
+    `Sending all assignments for term ${termCode} to ${ctx.state.user.rcs_id}`
+  );
+
+  ctx.ok({
+    assignments
+  });
+}
+
 /**
  * Given an assignment ID, return the assignment only if it belongs to the logged in user.
  *
@@ -631,6 +673,7 @@ async function deleteComment (ctx) {
 
 module.exports = {
   getAssignmentMiddleware,
+  getTermAssignments,
   getAssignments,
   getAssignment,
   getAssignmentCollaboratorInfo,

@@ -75,13 +75,21 @@ export default {
       return this.$store.state.schedule.terms.find(
         term => term.code === this.$route.params.termCode
       );
+    },
+    terms () {
+      return this.$store.state.schedule.terms;
     }
+  },
+  watch: {
+    terms: 'getTermData'
   },
   mounted () {
     this.getTermData();
   },
   methods: {
     async getTermData () {
+      if (this.terms.length === 0) return;
+
       this.loading = true;
 
       // Get courses
@@ -95,6 +103,20 @@ export default {
       }
 
       this.termCourses = response.data.courses;
+
+      // Get assignments
+      try {
+        response = await this.$http.get('/assignments/term/' + this.term.code);
+      } catch (e) {
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        });
+        this.loading = false;
+        return;
+      }
+
+      this.termAssignments = response.data.assignments;
 
       this.loading = false;
     }
