@@ -17,7 +17,7 @@
                 aria-hidden="true"
               />
             </span>
-            <span>Work Schedule</span>
+            <span>Study Schedule</span>
 
             <span
               v-if="!exam.passed && !fullyScheduled"
@@ -65,9 +65,7 @@
               v-if="hasComments"
               class="tag is-dark comment-count"
             >
-              {{
-                exam.comments.length
-              }}
+              {{ exam.comments.length }}
             </span>
           </a>
         </li>

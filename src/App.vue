@@ -98,6 +98,7 @@ import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
 import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
 
 import SISMan from '@/views/sisman/components/SISMan';
+import { setTimeout } from 'timers';
 
 export default {
   name: 'LATE',
@@ -175,7 +176,9 @@ export default {
   watch: {
     tour (newTourIndex) {
       this.$nextTick(() => {
-        if (this.tour) this.$tours.custom.start();
+        setTimeout(() => {
+          if (this.tour) this.$tours.custom.start();
+        }, 1000);
       });
     }
   },

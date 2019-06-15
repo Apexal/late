@@ -169,6 +169,21 @@ const router = new Router({
       component: () => import('@/views/assessments/AssessmentsStatsPage.vue')
     },
     {
+      path: '/coursework/a/latest',
+      beforeEnter: (to, from, next) => {
+        // Find latest upcoming assignment
+        const latestAssignment = store.state.assessments.upcomingAssessments.find(
+          assessment => assessment.assessmentType === 'assignment'
+        );
+        if (latestAssignment) {
+          next({
+            name: 'assignment-overview',
+            params: { assignmentID: latestAssignment._id }
+          });
+        } else next('/coursework');
+      }
+    },
+    {
       path: '/coursework/a/:assignmentID',
       name: 'assignment-overview',
       component: () =>

@@ -6,14 +6,16 @@ const tours = [
         target: '#sidebar .local-toggle-sidebar',
         content: 'This is the sidebar. It can be toggled with this button.',
         params: {
-          placement: 'bottom'
+          placement: 'bottom',
+          enableScrolling: false
         }
       },
       {
         target: '#sidebar .controls',
         content: 'Add assignments or exams quickly here',
         params: {
-          placement: 'right'
+          placement: 'right',
+          enableScrolling: false
         }
       },
       {
@@ -21,7 +23,8 @@ const tours = [
         content:
           '<b>Today\'s Agenda</b> shows your classes and schedule study/work times for the day',
         params: {
-          placement: 'right'
+          placement: 'right',
+          enableScrolling: false
         }
       },
       {
@@ -29,7 +32,8 @@ const tours = [
         content:
           '<b>Pressing Coursework</b> shows the most important assignments and exams coming up',
         params: {
-          placement: 'right'
+          placement: 'right',
+          enableScrolling: false
         }
       },
       {
@@ -37,14 +41,16 @@ const tours = [
         content:
           '<b>Courses</b> allows easy access to your courses and extra info by clicking on them',
         params: {
-          placement: 'right'
+          placement: 'right',
+          enableScrolling: false
         }
       },
       {
         target: '#sidebar .panel-tabs .todos',
         content: '<b>Todos</b> allows you to save to-dos for yourself',
         params: {
-          placement: 'right'
+          placement: 'right',
+          enableScrolling: false
         }
       }
     ]
@@ -57,7 +63,8 @@ const tours = [
         content:
           'The Dashboard shows a weekly <b>Calendar</b> of your courses, upcoming coursework, and scheduled study/work time as well as an <b>Overview</b> that shows a timeline of your current day and the locations of your events.',
         params: {
-          placement: 'bottom'
+          placement: 'bottom',
+          enableScrolling: false
         }
       },
       {
@@ -65,7 +72,8 @@ const tours = [
         content:
           '<b>Coursework</b> is where you manage all of your assignments and exams. You can view upcoming work, browse past work, and see a monthly calendar of the entire semester.',
         params: {
-          placement: 'bottom'
+          placement: 'bottom',
+          enableScrolling: false
         }
       },
       {
@@ -73,7 +81,8 @@ const tours = [
         content:
           '<b>Tools</b> contains a variety of useful tools such as a work/study timer, RPI quick links, and grade calculators!',
         params: {
-          placement: 'bottom'
+          placement: 'bottom',
+          enableScrolling: false
         }
       },
       {
@@ -81,7 +90,8 @@ const tours = [
         content:
           '<b>Announcements</b> holds announcements from the administrators about site updates and issues.',
         params: {
-          placement: 'bottom'
+          placement: 'bottom',
+          enableScrolling: false
         }
       },
       {
@@ -89,7 +99,8 @@ const tours = [
         content:
           '<b>Tours</b> lists all the tours (such as this current one) you can take.',
         params: {
-          placement: 'bottom'
+          placement: 'bottom',
+          enableScrolling: false
         }
       },
       {
@@ -97,7 +108,8 @@ const tours = [
         content:
           'Here you can edit your account, view statistics on your coursework, logout, etc.',
         params: {
-          placement: 'bottom'
+          placement: 'bottom',
+          enableScrolling: false
         }
       }
     ]
@@ -110,7 +122,8 @@ const tours = [
         target: '#calendar-holder',
         content: '[ FILL ME OUT ]',
         params: {
-          placement: 'top'
+          placement: 'top',
+          enableScrolling: false
         }
       },
       {
@@ -118,24 +131,81 @@ const tours = [
         content: '[ FILL ME OUT ]'
       }
     ]
+  },
+  {
+    title: 'Assignment Overview',
+    route: '/coursework/a/latest',
+    steps: [
+      {
+        target: '.assessment-overview-title .course-tag',
+        content: 'Click here to view info on the course.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.assessment-overview-title .pad',
+        content: 'You can view and edit the title here.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.assessment-overview-title .toggle-complete',
+        content:
+          'Mark the assignment as complete or incomplete with this button.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.assessment-stats',
+        content:
+          'View and edit the priority, due date, and scheduled work time left here.',
+        params: {
+          placement: 'bottom',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '#assignment-overview-tabs .schedule',
+        content:
+          'Schedule times to work on the assignment around your courses and unavailability here.',
+        params: {
+          placement: 'right',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '#assignment-overview-tabs .comments',
+        content:
+          'Leave comments with updates/details/links/etc on the assignment here.',
+        params: {
+          placement: 'right',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '#assignment-overview-tabs .related',
+        content: 'Browse similar assignments here.',
+        params: {
+          placement: 'right',
+          enableScrolling: false
+        }
+      },
+      {
+        target: '.assessment-actions .share-assignment',
+        content:
+          'Toggle sharing the assignment with other students to collaborate here.',
+        params: {
+          placement: 'top'
+        }
+      }
+    ]
   }
 ];
 
 export default tours;
-// export default {
-//   sidebar: ,
-//   'upcoming-assignments': [
-//     {
-//       target: '#calendar-holder',
-//       content: '[ FILL ME OUT ]',
-//       params: {
-//         placement: 'top'
-//       }
-//     },
-//     {
-//       target: '#fullscreen-button',
-//       content: '[ FILL ME OUT ]'
-//     }
-//   ],
-//   'upcoming-exams': []
-// };
