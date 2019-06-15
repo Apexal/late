@@ -4,6 +4,8 @@ const {
   scrapePeriodTypesFromCRNs
 } = require('../../modules/scraping');
 
+const colorThemes = require('../../modules/color_themes');
+
 const Course = require('../courses/courses.model');
 
 /**
@@ -135,6 +137,9 @@ async function importCourseSchedule (ctx) {
 
   // If reimporting, only update sectionId, start/end dates, credits, and periods
 
+  let colorThemeIndex = 0;
+  let colorTheme = colorThemes[colorThemeIndex];
+  let colorIndex = 0;
   const promises = courseSchedule.map(async course => {
     // Look for match in old course list
     let courseDoc = await Course.findOne({
@@ -153,11 +158,10 @@ async function importCourseSchedule (ctx) {
       });
     } else {
       // Generate a random color for a new course
-      course.color =
-        '#' +
-        Math.random()
-          .toString(16)
-          .substr(-6);
+      course.color = colorTheme[colorIndex];
+      colorIndex++;
+      if (colorIndex === colorTheme.length) colorIndex = 0;
+
       courseDoc = new Course(course);
     }
     courseDoc.save();
