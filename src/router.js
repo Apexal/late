@@ -275,6 +275,25 @@ const router = new Router({
       ]
     },
     {
+      path: '/archive',
+      meta: {
+        requiresAuth: true
+      },
+      component: () => import('@/views/archive/TheArchivePage'),
+      children: [
+        {
+          path: '',
+          name: 'archive-home',
+          component: () => import('@/views/archive/components/ArchiveHome')
+        },
+        {
+          path: ':termCode',
+          name: 'archive-term',
+          component: () => import('@/views/archive/components/ArchiveTerm')
+        }
+      ]
+    },
+    {
       path: '/admin',
       meta: {
         requiresAuth: true,

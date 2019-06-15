@@ -7,12 +7,13 @@ const logger = require('../../modules/logger');
  * @retuns A JSON list of unavailability blocks
  */
 async function getCourses (ctx) {
+  const termCode = ctx.request.query.termCode || ctx.session.currentTerm.code;
   const courses = await Course.find({
     _student: ctx.state.user._id,
-    termCode: ctx.session.currentTerm.code
+    termCode
   }).sort('originalTitle');
 
-  logger.info(`Sending courses to ${ctx.state.user.rcs_id}`);
+  logger.info(`Sending term ${termCode} courses to ${ctx.state.user.rcs_id}`);
 
   return ctx.ok({ courses });
 }
@@ -35,15 +36,15 @@ async function updateCourse (ctx) {
 
     const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle'];
     if (forbiddenProperties.some(prop => prop in forbiddenProperties)) {
-      throw new Error('You cannot change the id, owner, crn, or original title of a course!');
+      throw new Error(
+        'You cannot change the id, owner, crn, or original title of a course!'
+      );
     }
     course.set(ctx.request.body);
 
     await course.save();
   } catch (e) {
-    logger.error(
-      `Failed to update course for ${ctx.state.user.rcs_id}: ${e}`
-    );
+    logger.error(`Failed to update course for ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.badRequest('There was an error updating the course.');
   }
 

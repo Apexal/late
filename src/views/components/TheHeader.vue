@@ -236,6 +236,16 @@
                   </span>
                   Your Statistics
                 </router-link>
+                <router-link
+                  class="navbar-item"
+                  :to="{ name: 'archive-home' }"
+                  title="View your data from past semesters"
+                >
+                  <span class="icon">
+                    <i class="fas fa-archive" />
+                  </span>
+                  Archive
+                </router-link>
                 <hr
                   v-if="!onBreak"
                   class="navbar-divider"
