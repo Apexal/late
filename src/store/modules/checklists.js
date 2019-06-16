@@ -8,8 +8,12 @@ const state = {
 const getters = {};
 
 const actions = {
-  ADD_CATEGORY ({ commit, dispatch, rootGetters }, categoryTitle) {
-    commit('ADD_CATEGORY', categoryTitle);
+  ADD_CHECKLIST_CATEGORY ({ commit, dispatch, rootGetters }, categoryTitle) {
+    commit('ADD_CHECKLIST_CATEGORY', categoryTitle);
+    dispatch('SAVE_CHECKLIST');
+  },
+  REMOVE_CHECKLIST_CATEGORY ({ commit, dispatch, rootGetters }, payload) {
+    commit('REMOVE_CHECKLIST_CATEGORY', payload);
     dispatch('SAVE_CHECKLIST');
   },
   ADD_CHECKLIST_ITEM ({ commit, dispatch, getters }, payload) {
@@ -18,6 +22,10 @@ const actions = {
   },
   UPDATE_CHECKLIST_ITEM ({ commit, dispatch, getters }, payload) {
     commit('UPDATE_CHECKLIST_ITEM', payload);
+    dispatch('SAVE_CHECKLIST');
+  },
+  REMOVE_CHECKLIST_ITEM ({ commit, dispatch, getters }, payload) {
+    commit('REMOVE_CHECKLIST_ITEM', payload);
     dispatch('SAVE_CHECKLIST');
   },
   CLEAR_CHECKLIST ({ commit, dispatch, getters }) {
@@ -50,11 +58,14 @@ const mutations = {
   SET_CHECKLIST: (state, checklist) => {
     state.checklist = checklist;
   },
-  ADD_CATEGORY: (state, categoryTitle) => {
+  ADD_CHECKLIST_CATEGORY: (state, categoryTitle) => {
     state.checklist.categories.push({
       title: categoryTitle,
       items: []
     });
+  },
+  REMOVE_CHECKLIST_CATEGORY: (state, { categoryIndex }) => {
+    state.checklist.categories.splice(categoryIndex, 1);
   },
   ADD_CHECKLIST_ITEM: (state, { categoryIndex, item }) => {
     state.checklist.categories[categoryIndex].items.push({
@@ -67,6 +78,9 @@ const mutations = {
       state.checklist.categories[categoryIndex].items[itemIndex],
       updates
     );
+  },
+  REMOVE_CHECKLIST_ITEM: (state, { categoryIndex, itemIndex }) => {
+    state.checklist.categories[categoryIndex].items.splice(itemIndex, 1);
   },
   CLEAR_CHECKLIST: state => {
     state.checklist = {

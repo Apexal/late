@@ -13,11 +13,13 @@
 
         <b>Info</b>
       </summary>Your checklist is only saved on your current device.
-      <b>RPI Students</b> can login to
-      <b>LATE</b> below to save their checklist
+      <b>RPI Students</b> can login to <b>LATE</b> below to save their checklist
       to their account and access all the other features of the site!
     </details>
-    <form @submit.prevent="addCategory">
+    <form
+      v-if="editing"
+      @submit.prevent="addCategory"
+    >
       <b-field>
         <b-input
           v-model="newCategory"
@@ -53,15 +55,39 @@
         <Category
           :category-index="index"
           :category="category"
+          :editing="editing"
         />
       </div>
     </div>
+
+    <template v-if="checklist.categories.length === 0">
+      <p
+        v-if="editing"
+        class="has-text-grey has-text-cen"
+      >
+        Add categories above!
+      </p>
+      <p
+        v-else
+        class="has-text-grey has-text-cen"
+      >
+        No categories have been added yet! Go into edit mode and add categories
+        above!
+      </p>
+    </template>
 
     <hr>
 
     <div class="buttons">
       <b-button @click="clearChecklist">
         Clear
+      </b-button>
+      <b-button
+        v-if="loggedIn"
+        type="is-warning"
+        @click="editing = !editing"
+      >
+        {{ editing ? "Stop Editing" : "Edit" }}
       </b-button>
       <b-button
         v-if="loggedIn"
@@ -88,6 +114,7 @@ export default {
   components: { Category: MoveInChecklistCategory },
   data () {
     return {
+      editing: false,
       newCategory: '',
       recommendedCategories: [
         'Bedroom Items',
@@ -129,7 +156,7 @@ export default {
         });
         return;
       }
-      this.$store.dispatch('ADD_CATEGORY', this.newCategory);
+      this.$store.dispatch('ADD_CHECKLIST_CATEGORY', this.newCategory);
       this.newCategory = '';
     }
   }

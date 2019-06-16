@@ -6,12 +6,37 @@
   >
     <span class="item-title">{{ item.title }}</span>
 
-    <b-numberinput
-      :min="0"
-      :max="item.count"
-      :value="item.progress"
-      @input="updateItemProgress"
-    />
+    <template v-if="editing">
+      <input
+        class=" edit-item-count"
+        type="number"
+        :value="item.count"
+        min="0"
+        max="100"
+        @change="updateItemCount(+$event.target.value)"
+      >
+      <i
+        class="delete"
+        @click="removeItem"
+      />
+    </template>
+    <template v-else>
+      <span
+        class="icon subtract-progress"
+        :class="{ 'has-text-grey': item.progress - 1 < 0 }"
+        @click="updateItemProgress(item.progress - 1)"
+      >
+        <i class="fas fa-minus-circle" />
+      </span>
+      <span>{{ item.progress }} / {{ item.count }}</span>
+      <span
+        class="icon add-progress"
+        :class="{ 'has-text-grey': item.progress + 1 > item.count }"
+        @click="updateItemProgress(item.progress + 1)"
+      >
+        <i class="fas fa-plus-circle" />
+      </span>
+    </template>
   </div>
 </template>
 
@@ -19,6 +44,10 @@
 export default {
   name: 'MoveInChecklistCategoryItem',
   props: {
+    editing: {
+      type: Boolean,
+      required: true
+    },
     categoryIndex: {
       type: Number,
       required: true
@@ -43,10 +72,30 @@ export default {
   },
   methods: {
     updateItemProgress (progress) {
+      if (progress < 0 || progress > this.item.count) return;
+
       this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
         updates: { progress }
+      });
+    },
+    updateItemCount (count) {
+      if (count < 0 || count > 100) return;
+
+      const updates = { count };
+      if (this.item.progress > count) updates.progress = count;
+
+      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
+        categoryIndex: this.categoryIndex,
+        itemIndex: this.itemIndex,
+        updates
+      });
+    },
+    removeItem () {
+      this.$store.dispatch('REMOVE_CHECKLIST_ITEM', {
+        categoryIndex: this.categoryIndex,
+        itemIndex: this.itemIndex
       });
     }
   }
@@ -69,6 +118,25 @@ export default {
   }
   &.in-progress {
     border-left: 3px solid rgb(255, 253, 163);
+  }
+
+  .subtract-progress,
+  .add-progress {
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  &:hover {
+    .subtract-progress,
+    .add-progress {
+      opacity: 1;
+    }
+  }
+
+  .edit-item-count {
+    flex: 0;
+    width: 70px;
   }
 }
 </style>

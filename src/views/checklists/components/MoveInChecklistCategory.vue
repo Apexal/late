@@ -3,8 +3,16 @@
   <details class="panel category">
     <summary class="panel-heading has-background-dark has-text-white">
       {{ category.title }}
+      <i
+        v-if="editing"
+        class="delete is-pulled-right"
+        @click="deleteCategory"
+      />
     </summary>
-    <div class="panel-block">
+    <div
+      v-if="editing"
+      class="panel-block"
+    >
       <form
         class="is-fullwidth"
         @submit.prevent="addItem"
@@ -38,7 +46,14 @@
       :category-index="categoryIndex"
       :item-index="index"
       :item="item"
+      :editing="editing"
     />
+    <div
+      v-if="!editing && category.items.length === 0"
+      class="panel-block has-text-grey"
+    >
+      There are no items in this category! Add them in edit mode.
+    </div>
   </details>
 </template>
 
@@ -52,6 +67,10 @@ export default {
     open: {
       type: Boolean,
       default: true
+    },
+    editing: {
+      type: Boolean,
+      required: true
     },
     categoryIndex: {
       type: Number,
@@ -86,6 +105,11 @@ export default {
     }
   },
   methods: {
+    deleteCategory () {
+      this.$store.dispatch('REMOVE_CHECKLIST_CATEGORY', {
+        categoryIndex: this.categoryIndex
+      });
+    },
     addItem () {
       this.$store.dispatch('ADD_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
