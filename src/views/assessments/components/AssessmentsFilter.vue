@@ -1,7 +1,22 @@
 <!--Assessments: assessment list filter module-->
 <template>
   <div class="assessments-filter has-background-light box">
-    <div class="columns is-multiline">
+    <p
+      class="is-hidden-desktop has-text-centered"
+      @click="toggleExpanded"
+    >
+      <b>{{ expanded ? "Hide" : "Show" }} Filters</b>
+      <span class="icon">
+        <i
+          class="fas"
+          :class="expanded ? 'fa-angle-up' : 'fa-angle-down'"
+        />
+      </span>
+    </p>
+    <div
+      class="columns is-multiline"
+      :class="{ expanded }"
+    >
       <div class="column is-full-touch has-text-centered-touch courses">
         <span
           v-for="c in courses"
@@ -95,8 +110,8 @@ export default {
     }
   },
   methods: {
-    toggleExpanded (event) {
-      this.expanded = event.target.open;
+    toggleExpanded () {
+      this.expanded = !this.expanded;
       localStorage.setItem(
         'assessmentsShowFilters',
         JSON.stringify(this.expanded)
@@ -109,6 +124,15 @@ export default {
 <style lang="scss" scoped>
 .assessments-filter {
   padding: 5px;
+
+  .columns {
+    @media only screen and (max-width: 1023px) {
+      display: none;
+      &.expanded {
+        display: flex;
+      }
+    }
+  }
 }
 
 .bottom-filters {
