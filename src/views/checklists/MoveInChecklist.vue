@@ -141,8 +141,9 @@ export default {
       return this.checklist.categories.map(cat => cat.title);
     }
   },
-  created () {
-    this.$store.dispatch('GET_CHECKLIST');
+  async created () {
+    await this.$store.dispatch('GET_CHECKLIST');
+    if (this.checklist.categories.length === 0) this.editing = true;
   },
   methods: {
     clearChecklist () {
