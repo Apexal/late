@@ -1,32 +1,22 @@
 <!--Assessments: assessment list filter module-->
 <template>
-  <details
-    class="assessments-filter has-background-light box"
-    :open="expanded"
-    @toggle="toggleExpanded"
-  >
-    <summary class="has-text-centered">
-      Filters
-    </summary>
-    <div class="filters-body has-background-white">
-      <div class="is-flex">
-        <label class="hide-label">Filter:</label>
-        <div class="courses">
-          <span
-            v-for="c in courses"
-            :key="c.crn"
-            class="tag is-white course-tag level-item is-unselectable"
-            :class="{ 'filtered-out': filter.includes(c.crn) }"
-            :style="{ 'background-color': c.color }"
-            :title="c.title"
-            @click="$emit('toggle-filter', c)"
-          >
-            <span>{{ c.title }}</span>
-          </span>
-        </div>
+  <div class="assessments-filter has-background-light box">
+    <div class="columns is-multiline">
+      <div class="column is-full-touch has-text-centered-touch courses">
+        <span
+          v-for="c in courses"
+          :key="c.crn"
+          class="tag is-white course-tag level-item is-unselectable"
+          :class="{ 'filtered-out': filter.includes(c.crn) }"
+          :style="{ 'background-color': c.color }"
+          :title="c.title"
+          @click="$emit('toggle-filter', c)"
+        >
+          <span>{{ c.title }}</span>
+        </span>
       </div>
-      <div class="is-flex">
-        <div class="field">
+      <div class="column is-narrow-desktop has-text-centered bottom-filters">
+        <b-field>
           <b-checkbox
             :value="showCompleted"
             type="is-link"
@@ -34,33 +24,34 @@
           >
             Show Completed Assignments
           </b-checkbox>
-        </div>
-        <div
-          v-if="showGroupBy"
-          class="field"
-        >
-          <label for="group-by-select">Group Items by</label>
-          <select
-            id="group-by-select"
-            @change="$emit('change-group-by', $event.target.value)"
-          >
-            <option
-              value="date"
-              :selected="groupBy === 'date'"
+        </b-field>
+      </div>
+      <div class="column has-text-centered is-narrow-desktop">
+        <b-field v-if="showGroupBy">
+          <div class="select">
+            <select
+              id="group-by-select"
+              :value="groupBy"
+              @change="$emit('change-group-by', $event.target.value)"
             >
-              Date
-            </option>
-            <option
-              value="courseCRN"
-              :selected="groupBy === 'courseCRN'"
-            >
-              Course
-            </option>
-          </select>
-        </div>
+              <option
+                value="date"
+                :selected="groupBy === 'date'"
+              >
+                Group by Date
+              </option>
+              <option
+                value="courseCRN"
+                :selected="groupBy === 'courseCRN'"
+              >
+                Group by Course
+              </option>
+            </select>
+          </div>
+        </b-field>
       </div>
     </div>
-  </details>
+  </div>
 </template>
 
 <script>
@@ -116,48 +107,64 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.assessments-filter:hover {
-  cursor: pointer;
+.assessments-filter {
+  padding: 5px;
 }
 
-.assessments-filter {
-  padding: 0;
-  margin: 0;
-  margin-bottom: 20px;
-  margin-top: 10px;
-
-  .filters-body {
-    padding: 10px;
-    animation: fadein 0.3s;
-  }
-  .is-flex {
-    align-items: center;
-    justify-content: center;
-
-    &:not(:first-child) {
-      padding-top: 10px;
-    }
-  }
+.bottom-filters {
+  padding-top: 17px;
 
   .field {
+    text-align: center;
+    flex: 1;
     margin: 0;
-    padding: 0px 30px;
-  }
-
-  .subtitle {
-    margin: 0;
-  }
-
-  .hide-label {
-    font-weight: 500;
-    width: 60px;
-    align-self: flex-start;
-  }
-
-  #group-by-select {
-    margin-left: 5px;
   }
 }
+
+.courses {
+}
+// .assessments-filter:hover {
+//   cursor: pointer;
+// }
+
+// .assessments-filter {
+//   padding: 0;
+//   margin: 0;
+//   margin-bottom: 20px;
+//   margin-top: 10px;
+
+//   .filters-body {
+//     padding: 10px;
+//     animation: fadein 0.3s;
+//   }
+//   .is-flex {
+//     align-items: center;
+//     justify-content: center;
+
+//     &:not(:first-child) {
+//       padding-top: 10px;
+//     }
+//   }
+
+//   .field {
+//     margin: 0;
+//     padding: 0px 30px;
+//   }
+
+//   .subtitle {
+//     margin: 0;
+//   }
+
+//   .hide-label {
+//     font-weight: 500;
+//     width: 60px;
+//     align-self: flex-start;
+//   }
+
+//   #group-by-select {
+//     margin-left: 5px;
+//   }
+// }
 span.tag.course-tag {
   cursor: pointer;
   margin: 0 2px;
