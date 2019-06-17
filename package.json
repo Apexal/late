@@ -83,7 +83,7 @@
     "postinstall": "npm run build",
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development node index.js",
-    "test": "jest",
+    "test": "npm run lint",
     "serve": "cross-env PORT=8080 vue-cli-service serve",
     "frontend": "cross-env PORT=8080 vue-cli-service serve",
     "backend": "cross-env NODE_ENV=development node index.js",
