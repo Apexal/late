@@ -5,11 +5,9 @@
     class="menu"
   >
     <div class="panel">
-      <p
-        class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable"
-      >
+      <p class="panel-heading is-clearfix has-background-dark has-text-white is-unselectable">
         <span
-          class="icon is-pulled-right local-toggle-sidebar"
+          class="tag icon is-pulled-right local-toggle-sidebar"
           title="Close sidebar"
           @click="$store.commit('TOGGLE_SIDEBAR')"
         >
@@ -204,6 +202,13 @@ export default {
     top: 70px;
     padding: 0;
     //margin-top: 30px;
+  }
+
+  .tag {
+    width: 40px;
+    i {
+      font-size: 15px;
+    }
   }
 
   .panel {

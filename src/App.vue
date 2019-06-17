@@ -13,7 +13,7 @@
       <div :class="appClass">
         <span
           v-if="!sidebarExpanded"
-          class="icon toggle-sidebar has-text-dark"
+          class="tag icon toggle-sidebar has-text-dark"
           title="Open sidebar"
           @click="$store.commit('TOGGLE_SIDEBAR')"
         >
@@ -262,6 +262,17 @@ body {
 /*-------------------------------------------*/
 /*             All other styles
 /*-------------------------------------------*/
+
+//Toggle sidebar
+.toggle-sidebar {
+  margin-left: 15px;
+  margin-top: 20px;
+  width: 40px;
+  border: 1px solid rgb(207, 207, 207);
+  i {
+    font-size: 15px;
+  }
+}
 
 // Sticky Footer
 
