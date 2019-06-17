@@ -26,7 +26,6 @@
         >
           <TheSidebar ref="sidebar" />
         </div>
-
         <div :class="[loggedIn ? 'column' : '']">
           <template v-if="loggedIn">
             <PinnedAnnouncements v-if="loggedIn" />
@@ -263,17 +262,6 @@ body {
 /*             All other styles
 /*-------------------------------------------*/
 
-//Toggle sidebar
-.toggle-sidebar {
-  margin-left: 15px;
-  margin-top: 20px;
-  width: 40px;
-  border: 1px solid rgb(207, 207, 207);
-  i {
-    font-size: 15px;
-  }
-}
-
 // Sticky Footer
 
 #app {
@@ -300,13 +288,32 @@ section.section {
   //@extend .button;
 }
 
+//Toggle sidebar
 .toggle-sidebar {
+  transition: 0.2s !important;
+  transition-timing-function: ease-out;
+  background-color: white;
+  margin-left: 15px;
+  margin-top: 20px;
+  width: 40px;
+  border: 1px solid rgb(207, 207, 207);
   cursor: pointer;
   z-index: 4;
   position: fixed;
   left: 5px;
   top: 60px;
   font-size: 30px;
+  i {
+    font-size: 15px;
+  }
+}
+.toggle-sidebar:hover {
+  transition: 0.2s !important;
+  transition-timing-function: ease-out;
+  background-color: whitesmoke;
+  i {
+    transform: translateX(2px);
+  }
 }
 
 /* TRANSITIONS */
@@ -344,12 +351,13 @@ section.section {
   transition: all 0.2s ease;
 }
 .slide-fade-leave-active {
+  //0.15s
   transition: all 0.15s cubic-bezier(1, 0.5, 0.8, 1);
 }
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(-80px);
-  margin-right: -80px;
+  //margin-right: -80px;
   opacity: 0;
 }
 

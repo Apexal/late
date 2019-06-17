@@ -204,10 +204,17 @@ export default {
     //margin-top: 30px;
   }
 
-  .tag {
+  .local-toggle-sidebar {
+    background-color: white;
     width: 40px;
     i {
       font-size: 15px;
+    }
+  }
+  .local-toggle-sidebar:hover {
+    background-color: whitesmoke;
+    i {
+      transform: translateX(-2px);
     }
   }
 
