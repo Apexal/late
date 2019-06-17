@@ -187,7 +187,8 @@ schema.methods.getUserAssignments = function ({
   end,
   title,
   courseCRN,
-  completed
+  completed,
+  confirmed
 }) {
   let query = {
     $or: [{ _student: this._id }, { shared: true, sharedWith: this.rcs_id }]
@@ -209,6 +210,14 @@ schema.methods.getUserAssignments = function ({
 
   if (courseCRN) {
     query.courseCRN = courseCRN;
+  }
+
+  if (completed) {
+    query.completed = completed;
+  }
+
+  if (confirmed) {
+    query.confirmed = confirmed;
   }
 
   return this.model('Assignment')

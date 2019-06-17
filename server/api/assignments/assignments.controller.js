@@ -514,6 +514,7 @@ async function toggleAssignment (ctx) {
         .filter(b => b.endTime <= ctx.state.assignment.completedAt)
         .reduce((acc, b) => acc + b.duration, 0) / 60; // MUST BE IN HOURS
   }
+  ctx.state.assignment.confirmed = true;
 
   try {
     await ctx.state.assignment.save();

@@ -59,6 +59,10 @@ const schema = new Schema(
       // rcs_id's
       type: Array,
       default: []
+    },
+    confirmed: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }

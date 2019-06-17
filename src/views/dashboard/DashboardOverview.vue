@@ -1,6 +1,7 @@
 <!--Dashboard: Overview page-->
 <template>
   <div class="dashboard-overview">
+    <AssignmentsConfirm />
     <div class="box">
       <div class="tabs">
         <ul>
@@ -74,17 +75,13 @@
                       v-if="event.block.location"
                       class="has-text-grey"
                     >
-                      {{
-                        event.block.location
-                      }}
+                      {{ event.block.location }}
                     </i>
                   </template>
                   <template v-else-if="event.eventType === 'period'">
                     <b class="course-title">{{ event.course.title }}</b>
                     <span class="has-text-grey">
-                      {{
-                        periodType(event.period.type)
-                      }}
+                      {{ periodType(event.period.type) }}
                     </span>
                     <br>
                     <i class="has-text-grey">{{ event.period.location }}</i>
@@ -120,8 +117,8 @@
       <div v-else>
         <p class="has-text-centered has-text-grey">
           You have
-          <b>nothing</b> on your agenda for today. No classes, working
-          on assignments, or studying for exams scheduled!
+          <b>nothing</b> on your agenda for today. No classes, working on
+          assignments, or studying for exams scheduled!
         </p>
       </div>
     </div>
@@ -131,8 +128,11 @@
 <script>
 import moment from 'moment';
 
+import DashboardOverviewAssignmentsConfirm from './components/DashboardOverviewAssignmentsConfirm';
+
 export default {
   name: 'DashboardOverview',
+  components: { AssignmentsConfirm: DashboardOverviewAssignmentsConfirm },
   data () {
     return {
       zoom: 13,
