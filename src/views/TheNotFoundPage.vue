@@ -21,15 +21,33 @@
         </video>
       </div>
       <div class="subtitle has-text-centered">
-        <p>The page you are looking for does not exist! Try checking the URL for typos.</p>
+        <p>
+          The page you are looking for does not exist! Try checking the URL for
+          typos.
+        </p>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="column is-one-third is-full-touch">
+          <pre
+            class="has-text-centered"
+          ><b>Here's a haiku for your trouble</b><br>{{ randomHaiku }}</pre>
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script>
+import haikus from '@/haikus';
+
 export default {
-  name: 'TheNotFoundPage'
+  name: 'TheNotFoundPage',
+  computed: {
+    randomHaiku () {
+      return haikus[Math.floor(Math.random() * haikus.length)].join('\n');
+    }
+  }
 };
 </script>
 
