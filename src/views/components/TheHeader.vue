@@ -199,15 +199,6 @@
                 />
               </span>
             </a>
-            <a
-              class="navbar-item help-icon is-hidden-touch tours-icon"
-              title="Show tours"
-              @click="$store.commit('TOGGLE_TOURS_MODAL')"
-            >
-              <span class="icon">
-                <i class="far fa-question-circle" />
-              </span>
-            </a>
             <div class="navbar-item has-dropdown is-hoverable user-dropdown">
               <a
                 class="navbar-link"
@@ -225,31 +216,6 @@
               </a>
 
               <div class="navbar-dropdown is-right">
-                <router-link
-                  v-if="!onBreak"
-                  class="navbar-item"
-                  :to="{ name: 'coursework-stats' }"
-                  title="View stats on your coursework"
-                >
-                  <span class="icon">
-                    <i class="fas fa-chart-pie" />
-                  </span>
-                  Your Statistics
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  :to="{ name: 'archive-home' }"
-                  title="View your data from past semesters"
-                >
-                  <span class="icon">
-                    <i class="fas fa-archive" />
-                  </span>
-                  Archive
-                </router-link>
-                <hr
-                  v-if="!onBreak"
-                  class="navbar-divider"
-                >
                 <router-link
                   v-if="user.admin"
                   class="navbar-item"
@@ -289,6 +255,43 @@
                 </a>
 
                 <hr class="navbar-divider">
+
+                <router-link
+                  v-if="!onBreak"
+                  class="navbar-item"
+                  :to="{ name: 'coursework-stats' }"
+                  title="View stats on your coursework"
+                >
+                  <span class="icon">
+                    <i class="fas fa-chart-pie" />
+                  </span>
+                  Your Statistics
+                </router-link>
+                <router-link
+                  class="navbar-item"
+                  :to="{ name: 'archive-home' }"
+                  title="View your data from past semesters"
+                >
+                  <span class="icon">
+                    <i class="fas fa-archive" />
+                  </span>
+                  Archive
+                </router-link>
+
+                <a
+                  class="navbar-item help-icontours-icon"
+                  title="Show tours"
+                  @click="$store.commit('TOGGLE_TOURS_MODAL')"
+                >
+                  <span class="icon">
+                    <i class="far fa-question-circle" />
+                  </span>
+                  Site Tour
+                </a>
+                <hr
+                  v-if="!onBreak"
+                  class="navbar-divider"
+                >
 
                 <a
                   class="navbar-item"

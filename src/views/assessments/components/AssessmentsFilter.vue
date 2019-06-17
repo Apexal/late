@@ -14,7 +14,7 @@
       </span>
     </p>
     <div
-      class="columns is-multiline"
+      class="columns is-multiline courses-container"
       :class="{ expanded }"
     >
       <div class="column is-full-touch has-text-centered-touch courses">
@@ -123,6 +123,7 @@ export default {
 
 <style lang="scss" scoped>
 .assessments-filter {
+  margin-top: 8px;
   padding: 5px;
 
   .columns {
@@ -145,7 +146,12 @@ export default {
   }
 }
 
+.courses-container {
+  height: 60px;
+}
+
 .courses {
+  line-height: 2;
 }
 // .assessments-filter:hover {
 //   cursor: pointer;
