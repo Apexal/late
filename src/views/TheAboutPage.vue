@@ -95,15 +95,14 @@
               <a href="https://github.com/Apexal/late/">Contribute on GitHub</a>
             </li>
             <li>
-              <a href="https://rcos.io/projects/apexal/late/profile">View us on Observatory</a>
+              <a
+                href="https://rcos.io/projects/apexal/late/profile"
+              >View us on Observatory</a>
             </li>
             <li>
-              <a href="https://github.com/Apexal/late/wiki">Read our development setup guide</a>
-            </li>
-            <li>
-              <strike>
-                <a>Join our Discord Server</a>
-              </strike>
+              <a
+                href="https://github.com/Apexal/late/wiki"
+              >Read our development setup guide</a>
             </li>
           </ul>
         </div>
@@ -121,8 +120,7 @@ export default {
         'https://www.youtube.com/embed/E3RLHVNB81w',
         'https://www.youtube.com/embed/FhRSjxgsArA',
         'https://www.youtube.com/embed/YaydQTjpBZE',
-        'https://www.youtube.com/embed/aB93j7LUK0w',
-        'https://www.youtube.com/embed/YaydQTjpBZE'
+        'https://www.youtube.com/embed/aB93j7LUK0w'
       ],
       contributors: [
         'Frank Matranga',
