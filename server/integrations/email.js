@@ -37,10 +37,10 @@ const emailFunctions = {
       };
     });
 
-    const assignmentsDueToday = await student.getAssignments(
-      moment().startOf('day'),
-      moment().endOf('day')
-    );
+    const assignmentsDueToday = await student.getUserAssignments({
+      start: moment().startOf('day'),
+      end: moment().endOf('day')
+    });
 
     for (let a in assignmentsDueToday) {
       assignmentsDueToday[a] = assignmentsDueToday[a].toJSON();

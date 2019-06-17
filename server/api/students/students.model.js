@@ -182,7 +182,13 @@ schema.methods.courseFromCRN = function (termCode, crn) {
     .exec();
 };
 
-schema.methods.getAssignments = function (start, end, title, courseCRN) {
+schema.methods.getUserAssignments = function ({
+  start,
+  end,
+  title,
+  courseCRN,
+  completed
+}) {
   let query = {
     $or: [{ _student: this._id }, { shared: true, sharedWith: this.rcs_id }]
   };

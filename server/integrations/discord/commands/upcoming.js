@@ -25,7 +25,7 @@ module.exports = {
     }
 
     // Find upcoming assignments (dueDate is after current datetime)
-    const ass = await student.getAssignments(new Date());
+    const ass = await student.getUserAssignments({ start: new Date() });
     console.log(ass);
     const upcomingAssignments = ass.filter(a => !a.completed);
 

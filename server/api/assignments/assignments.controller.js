@@ -84,12 +84,7 @@ async function getAssignments (ctx) {
   let assignments;
 
   try {
-    assignments = await ctx.state.user.getAssignments(
-      ctx.query.start,
-      ctx.query.end,
-      ctx.query.title,
-      ctx.query.courseCRN
-    );
+    assignments = await ctx.state.user.getUserAssignments(ctx.query);
   } catch (e) {
     logger.error(
       `Failed to send assignments to ${ctx.state.user.rcs_id}: ${e}`
