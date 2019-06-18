@@ -6,7 +6,7 @@
       What's Next?
     </h2>
     <h1 class="is-size-5 has-text-centered subtitle">
-      Take an (optional) tour and get familiar with how
+      Take some (optional) tours and get familiar with how
       <b>LATE</b> can help you manage your academic life
     </h1>
     <br>
@@ -103,13 +103,13 @@
       Site tours available at any time in
       <b>Account</b> dropdown.
     </h2>
-    <div
+    <router-link
       class="button is-medium is-primary"
       :to="{ name: 'home' }"
     >
       Start using
       <b>LATE</b>
-    </div>
+    </router-link>
   </div>
 </template>
 
