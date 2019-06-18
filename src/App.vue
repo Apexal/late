@@ -293,8 +293,7 @@ section.section {
   transition: 0.2s !important;
   transition-timing-function: ease-out;
   background-color: white;
-  margin-left: 15px;
-  margin-top: 20px;
+
   width: 40px;
   border: 1px solid rgb(207, 207, 207);
   cursor: pointer;
