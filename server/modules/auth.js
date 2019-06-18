@@ -48,7 +48,9 @@ async function loginStudent (ctx) {
     );
     */
     await student.save();
-    logger.info(`Creating and adding new user to waitlist with rcs_id: ${student.rcs_id}`);
+    logger.info(
+      `Creating and adding new user to waitlist with rcs_id: ${student.rcs_id}`
+    );
     sendNewUserEmail(student.rcs_id);
     sendDiscordWebhookMessage(`**${student.rcs_id}** has joined the waitlist!`); // may fail
     ctx.session = null;
@@ -57,6 +59,13 @@ async function loginStudent (ctx) {
 
   student.last_login = new Date();
   await student.save();
+
+  try {
+    ctx.state.discordClient.guilds
+      .find(guild => guild.id === process.env.DISCORD_SERVER_ID)
+      .channels.find(channel => channel.name === 'log')
+      .send(`**${student.display_name}** *(${student.rcs_id})* has logged in.`);
+  } catch (e) {}
 
   ctx.redirect(ctx.query.redirectTo || '/');
 }

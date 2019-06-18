@@ -6,6 +6,7 @@ const { getStudent } = require('../utils');
 
 module.exports = {
   name: 'upcoming',
+  alias: 'u',
   uses: {
     'View your upcoming assignments.': ''
   },
@@ -23,10 +24,11 @@ module.exports = {
       );
       return;
     }
+    const currentTerm = terms.find(t => t.isCurrent);
 
     // Find upcoming assignments (dueDate is after current datetime)
     const ass = await student.getUserAssignments({ start: new Date() });
-    console.log(ass);
+    const courses = await student.getCoursesForTerm(currentTerm.code);
     const upcomingAssignments = ass.filter(a => !a.completed);
 
     // Group by due dates
@@ -43,26 +45,22 @@ module.exports = {
 
     // Create fancy embed message to display info better
     const embed = new Discord.RichEmbed()
-      .setTitle('Upcoming Assignments')
-      .setAuthor('LATE')
-      .setDescription(
-        `You have ${
-          upcomingAssignments.length
-        } incomplete upcoming assignments. Visit LATE to manage them.`
+      .setTitle(
+        `Upcoming Incomplete Assignments (${upcomingAssignments.length})`
       )
-      .setURL(process.env.BASE_URL + '/assignments/upcoming')
-      .setFooter(`As of ${moment().format('MM/DD/YY h:mm a')}`);
+      .setURL(process.env.BASE_URL + '/coursework/upcoming')
+      .setFooter(`As of ${moment().format('MM/DD/YY h:mm a')} on LATE`);
 
-    const currentTerm = terms.find(t => t.isCurrent);
     for (let date in grouped) {
       embed.addField(
-        '[ ' + moment(new Date(date)).format('dddd [the] Do') + ' ]',
+        moment(new Date(date)).format('dddd [the] Do'),
         grouped[date]
           .map(a => {
-            const course = student.courseFromCRN(currentTerm.code, a.courseCRN);
-            return `${course.longname}: *${a.title}* (${moment(
+            const course = courses.find(c => c.crn === a.courseCRN);
+
+            return `**${course.title}:** ${a.title} *(${moment(
               a.dueDate
-            ).format('h:mma')})`;
+            ).format('h:mma')})*`;
           })
           .join('\n'),
         true

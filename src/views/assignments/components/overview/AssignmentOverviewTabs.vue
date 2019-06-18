@@ -59,7 +59,9 @@
               class="fas fa-users"
               aria-hidden="true"
             /></span>
-            <span>Shared Assignment Info</span></a>
+            <span>{{
+              isOwner ? "Shared Assignment Info" : "Collaborators"
+            }}</span></a>
         </li>
         <li
           v-else
@@ -120,6 +122,13 @@ export default {
     }
   },
   computed: {
+    isOwner () {
+      return (
+        this.assignment._student &&
+        (this.assignment._student === this.user._id ||
+        this.assignment._student._id === this.user._id)
+      );
+    },
     hasComments () {
       return this.assignment.comments && this.assignment.comments.length > 0;
     },
