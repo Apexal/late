@@ -271,6 +271,15 @@ const router = new Router({
           },
           component: () =>
             import('@/views/account/AccountSetupGoogleCalendar.vue')
+        },
+        {
+          path: 'setupcomplete',
+          name: 'setup-complete',
+          meta: {
+            title: 'Setup Complete'
+          },
+          component: () =>
+            import('@/views/account/accountComplete.vue')
         }
       ]
     },
