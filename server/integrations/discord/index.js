@@ -32,7 +32,26 @@ client.on('message', async msg => {
     let [commandName, ...args] = msg.content.split(/ +/);
     commandName = commandName.substring(1); // Delete prefix
 
-    if (client.commands.has(commandName)) {
+    if (commandName === 'help') {
+      const commandTarget = args[0];
+      if (!commandTarget) {
+      }
+
+      const command = client.commands.get(commandTarget);
+      const lines = [
+        `**How to use ${
+          process.env.DISCORD_BOT_COMMAND_PREFIX
+        }${commandTarget}**`
+      ];
+      for (let use in command.uses) {
+        lines.push(
+          `\`${process.env.DISCORD_BOT_COMMAND_PREFIX}${commandTarget} ${
+            command.uses[use]
+          }\`: *${use}*`
+        );
+      }
+      msg.reply(lines.join('\n'));
+    } else if (client.commands.has(commandName)) {
       const command = client.commands.get(commandName);
 
       logger.info(`[Discord] Executing command \`${msg.content}\`.`);
