@@ -17,6 +17,7 @@ const commandFiles = fs
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
+  client.commands.set(command.alias, command);
 }
 logger.info(`Loaded ${commandFiles.length} Discord commands`);
 
@@ -35,6 +36,12 @@ client.on('message', async msg => {
     if (commandName === 'help') {
       const commandTarget = args[0];
       if (!commandTarget) {
+        msg.reply(
+          `Get help for a command with \`${
+            process.env.DISCORD_BOT_COMMAND_PREFIX
+          }help commandname\``
+        );
+        return;
       }
 
       const command = client.commands.get(commandTarget);
@@ -62,6 +69,7 @@ client.on('message', async msg => {
         await command.run(client, terms, msg, args);
       } catch (e) {
         logger.error(`[Discord] ${e}`);
+        console.log(e.stack);
         msg.reply(`**Command Failed:** ${e}`);
       }
     }

@@ -6,6 +6,7 @@ const { getStudent } = require('../utils');
 
 module.exports = {
   name: 'upcoming',
+  alias: 'u',
   uses: {
     'View your upcoming assignments.': ''
   },
