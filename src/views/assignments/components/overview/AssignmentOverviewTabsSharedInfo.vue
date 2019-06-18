@@ -1,63 +1,77 @@
 <template>
   <div class="shared-assignment-info">
-    <template v-if="isOwner">
-      <b>You are the owner of this shared assignment.</b>
-
-      <ul>
-        <li
-          v-for="(rcsId, index) in assessment.sharedWith"
-          :key="index"
-        >
-          {{ rcsId }} <span
+    <div class="columns is-multiline">
+      <div
+        v-for="student in [assessment._student].concat(collaborators)"
+        :key="student.rcs_id"
+        class="column is-one-third is-half-touch is-full-mobile"
+      >
+        <div class="box collaborator">
+          <i
+            v-if="isOwner && student._id !== assessment._student._id"
             class="delete"
-            @click="removeStudent(rcsId)"
+            @click="removeStudent(student.rcs_id)"
           />
-        </li>
-        <li>
-          <form @submit.prevent="addStudent">
-            <b-field>
-              <b-input
-                v-model.trim="newStudent"
-                type="text"
-                placeholder="RPI username of student, e.g. matraf"
-                required
-              />
-              <p class="control">
-                <button
-                  class="button"
-                  :class="{ 'is-loading': loading }"
-                >
-                  Add Student
-                </button>
-              </p>
-            </b-field>
-          </form>
-        </li>
-      </ul>
-    </template>
-    <template v-else>
-      This assignment was created by
-      <b
-        class="tooltip is-tooltip-top"
-        :data-tooltip="owner.rcsId"
-      >{{
-        owner.display_name
-      }}</b>. They have shared it with:
-      <ul>
-        <li
-          v-for="(rcsId, index) in assessment.sharedWith"
-          :key="index"
-        >
-          <b-tag type="is-primary">
-            {{ rcsId }}
-          </b-tag>
-        </li>
-      </ul>
+          <h2
+            class="subtitle"
+            :title="student.rcs_id"
+          >
+            {{ student.display_name }}
+            <small class="has-text-grey">{{
+              assessment._student._id === student._id ? "Owner" : "Collaborator"
+            }}</small>
+          </h2>
+          <p class="has-text-grey">
+            <a :href="'mailto:' + student.rcs_id + '@rpi.edu'">{{
+              student.rcs_id + "@rpi.edu"
+            }}</a>
+            <br>
+            <span
+              v-if="student.integrations.sms.verified"
+            >+1{{ student.integrations.sms.phoneNumber }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="unregistered-collaborators">
+      <b>Invited Students not yet on LATE</b>
+      <li
+        v-for="rcsId in unregisteredCollaborators"
+        :key="rcsId"
+      >
+        {{ rcsId }}
+        <i
+          v-if="isOwner"
+          class="delete"
+          @click="removeStudent(rcsId)"
+        />
+      </li>
+    </div>
 
-      Scheduling work blocks for this assignment places them in everybody's
-      schedule. <b>LATE</b> will also show everybody's availability to help you
-      find time slots that work for everyone.
+    <template v-if="isOwner">
+      <form @submit.prevent="addStudent">
+        <b-field>
+          <b-input
+            v-model.trim="newStudent"
+            type="text"
+            placeholder="RPI username of student, e.g. matraf"
+            required
+          />
+          <p class="control">
+            <button
+              class="button"
+              :class="{ 'is-loading': loading }"
+            >
+              Add Student
+            </button>
+          </p>
+        </b-field>
+      </form>
     </template>
+    <hr>
+    Scheduling work blocks for this assignment places them in everybody's
+    schedule. <b>LATE</b> will also show everybody's availability to help you
+    find time slots that work for everyone.
   </div>
 </template>
 
@@ -73,6 +87,7 @@ export default {
   data () {
     return {
       loading: false,
+      collaborators: [],
       newStudent: ''
     };
   },
@@ -82,7 +97,15 @@ export default {
     },
     isOwner () {
       return this.assessment._student._id === this.user._id;
+    },
+    unregisteredCollaborators () {
+      return this.assessment.sharedWith.filter(
+        rcsId => !this.collaborators.some(student => student.rcs_id === rcsId)
+      );
     }
+  },
+  created () {
+    this.getCollaborators();
   },
   methods: {
     async addStudent () {
@@ -129,6 +152,8 @@ export default {
         type: 'is-success'
       });
 
+      this.getCollaborators();
+
       this.newStudent = '';
       this.loading = false;
     },
@@ -160,12 +185,9 @@ export default {
 
       this.$emit('updated-assessment', response.data.updatedAssessment);
 
-      this.$toast.open({
-        message: `Shared this assignment with <b>${
-          this.newStudent
-        }</b>. They have been emailed.`,
-        type: 'is-success'
-      });
+      this.collaborators = this.collaborators.filter(
+        student => student.rcs_id !== rcsId
+      );
 
       this.newStudent = '';
 
@@ -173,10 +195,46 @@ export default {
         message: `Stopped sharing this assignment with <b>${rcsId}</b>. They have been notified.`,
         type: 'is-success'
       });
+    },
+    async getCollaborators () {
+      if (!this.assessment.shared) return;
+
+      this.loading = true;
+
+      let response;
+      try {
+        response = await this.$http.get(
+          '/assignments/a/' + this.assessment._id + '/collaborators'
+        );
+      } catch (e) {
+        this.$toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        });
+        return;
+      }
+
+      this.collaborators = response.data.collaborators;
+
+      this.loading = false;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.collaborator {
+  padding: 15px;
+  position: relative;
+
+  .subtitle {
+    margin-bottom: 5px;
+  }
+
+  i.delete {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+}
 </style>
