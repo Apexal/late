@@ -13,7 +13,7 @@ const google = require('./modules/google');
 const moment = require('moment');
 
 // Start the Discord bot
-// require('./integrations/discord');
+const discordClient = require('./integrations/discord').client;
 
 const logger = require('./modules/logger');
 
@@ -58,6 +58,8 @@ app.use(async (ctx, next) => {
     ctx.state.user = await Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
+
+    ctx.state.discordClient = discordClient;
 
     // If first request, get terms
     if (ctx.state.env === 'development' || !ctx.session.terms) {
