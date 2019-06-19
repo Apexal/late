@@ -18,7 +18,7 @@
       </div>
     </div>-->
     <img
-      src="http://eng.rpi.edu/sites/default/files/SISMan_0.png"
+      src="/sisman.svg"
       @click="click"
     >
   </div>
