@@ -28,6 +28,5 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.formatOnType": true,
-  "eslint.enable": false,
   "prettier.eslintIntegration": true
 }
