@@ -6,6 +6,7 @@ const logger = require('./logger');
 
 const SIS_LOGIN_URL = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin';
 const SIS_SCHEDULE_URL = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl';
+const SIS_TRANSCRIPT_URL = 'https://sis.rpi.edu/rss/bwskotrn.P_ViewTran';
 const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs'; // + term + '.htm'
 
 const PERIOD_TABLE_TYPE_COLUMN = 3;
@@ -28,17 +29,8 @@ function checkLogin ($) {
   return $('title').text() !== 'User Login';
 }
 
-/**
- * Given a student's id (their RIN) and their PIN,
- * login to SIS for them and navigate to their shedule page
- * and simply grab the CRNs of each of their courses and forget their credentials.
- **/
-async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
-  // The cookie jar to persist the login session
-  // Must be used with each request
+async function loginToSIS (RIN, PIN) {
   const jar = request.jar();
-
-  logger.info(`Getting courses for student ${RIN} from SIS.`);
 
   // Attempt to login to SIS
   let $ = await request({
@@ -64,8 +56,63 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
   // TODO: validate login
   if (!checkLogin($)) throw new Error(`Failed to login to SIS as ${RIN}.`);
 
+  return jar;
+}
+
+/**
+ * Given a student's id (their RIN) and their PIN,
+ * login to SIS for them and navigate to their unofficial transcript
+ * ...
+ **/
+async function scrapeSISForProfileInfo (RIN, PIN) {
+  // The cookie jar to persist the login session
+  // Must be used with each request
+  const jar = await loginToSIS(RIN, PIN);
+
+  logger.info(`Getting profile info for student ${RIN} from SIS.`);
+
+  let $ = await request({
+    uri: SIS_TRANSCRIPT_URL,
+    rejectUnauthorized: false,
+    method: 'POST',
+    form: {
+      levl: '',
+      tprt: 'UWEB'
+    },
+    transform: body => cheerio.load(body),
+    jar
+  });
+
+  // 'Frank J. Matranga' -> ['Frank', 'J.', 'Matranga']
+  const nameParts = $('table.datadisplaytable tbody tr th:contains("Name :")').next().text().split(' ');
+
+  const name = {
+    first: nameParts.slice(0, nameParts.length - 1).join(' '),
+    last: nameParts.slice(-1).join(' ')
+  };
+
+  const major = $('table.datadisplaytable tbody tr th:contains("Major:")').first().next().text();
+
+  return {
+    name,
+    major
+  };
+}
+
+/**
+ * Given a student's id (their RIN) and their PIN,
+ * login to SIS for them and navigate to their shedule page
+ * and simply grab the CRNs of each of their courses and forget their credentials.
+ **/
+async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
+  // The cookie jar to persist the login session
+  // Must be used with each request
+  const jar = await loginToSIS(RIN, PIN);
+
+  logger.info(`Getting courses for student ${RIN} from SIS.`);
+
   // Submit schedule form choosing the right term
-  $ = await request({
+  let $ = await request({
     uri: SIS_SCHEDULE_URL,
     rejectUnauthorized: false,
     method: 'POST',
@@ -116,16 +163,6 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
         .text()
     );
 
-    // const course = {
-    //   section_id: sectionId,
-    //   listing_id: '00',
-    //   original_longname: courseLongName,
-    //   summary: summary,
-    //   longname: courseLongName,
-    //   crn,
-    //   links: [],
-    //   periods: []
-    // };
     const course = {
       _student: user._id,
       sectionId,
@@ -303,6 +340,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
 }
 
 module.exports = {
+  scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,
   scrapePeriodTypesFromCRNs
 };
