@@ -50,6 +50,12 @@ const schema = new Schema(
       maxlength: 100,
       required: true
     },
+    major: {
+      type: String,
+      trim: true,
+      minlength: 1,
+      maxlength: 200
+    },
     grad_year: {
       type: Number,
       min: 2000,
