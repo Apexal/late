@@ -8,6 +8,7 @@ const Session = require('koa-session');
 const Body = require('koa-body');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
+const Compress = require('koa-compress');
 
 const google = require('./modules/google');
 const moment = require('moment');
@@ -28,6 +29,8 @@ app.use(Body({ multipart: true }));
 
 /* Adds useful ctx functions for API responses */
 app.use(Respond());
+
+app.use(Compress());
 
 app.keys = [process.env.SESSION_KEY];
 
