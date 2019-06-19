@@ -11,3 +11,8 @@ workbox.routing.registerRoute(
   '/api/announcements',
   new workbox.strategies.StaleWhileRevalidate()
 );
+
+workbox.routing.registerRoute(
+  new RegExp('/api(/[0-9a-zA-Z]+)+'),
+  new workbox.strategies.NetworkFirst()
+);
