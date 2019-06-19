@@ -6,7 +6,7 @@
   "author": "Frank Matranga <thefrankmatranga@gmail.com>",
   "scripts": {
     "serve": "cross-env PORT=8080 vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --target app --modern",
     "test": "npm run lint",
     "lint": "vue-cli-service lint",
     "backend": "cross-env NODE_ENV=development node index.js",
