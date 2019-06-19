@@ -25,8 +25,8 @@
   ],
   "vetur.format.defaultFormatter.html": "prettier",
   "vetur.format.defaultFormatter.js": "prettier-eslint",
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
-  "editor.formatOnType": true,
+  // "editor.formatOnSave": true,
+  // "editor.formatOnPaste": true,
+  // "editor.formatOnType": true,
   "prettier.eslintIntegration": true
 }

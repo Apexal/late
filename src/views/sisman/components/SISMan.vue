@@ -18,7 +18,7 @@
       </div>
     </div>-->
     <img
-      src="/sisman.svg"
+      src="@/assets/img/sisman.png"
       @click="click"
     >
   </div>
