@@ -29,7 +29,7 @@ app.use(Body({ multipart: true }));
 /* Adds useful ctx functions for API responses */
 app.use(Respond());
 
-app.keys = ['WE ARE GOING TO CHANGE THIS'];
+app.keys = [process.env.SESSION_KEY];
 
 /* Setup session */
 const CONFIG = {
