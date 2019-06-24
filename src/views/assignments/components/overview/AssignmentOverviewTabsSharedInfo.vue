@@ -26,9 +26,10 @@
               student.rcs_id + "@rpi.edu"
             }}</a>
             <br>
-            <span
+            <a
               v-if="student.integrations.sms.verified"
-            >+1{{ student.integrations.sms.phoneNumber }}</span>
+              :href="`tel:+1-${student.integrations.sms.phoneNumber}`"
+            >+1{{ student.integrations.sms.phoneNumber }}</a>
           </p>
         </div>
       </div>
