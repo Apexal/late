@@ -133,6 +133,13 @@
         >
           Save and Continue
         </b-button>
+        <b-button
+          type="is-secondary"
+          class="is-pulled-right"
+          @click="skip"
+        >
+          Skip Step
+        </b-button>
       </div>
     </div>
   </div>
