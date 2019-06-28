@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+self.__precacheManifest = [].concat(self.__precacheManifest || []);
+workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
 /* The RPI academic calendar rarely changes... */
 workbox.routing.registerRoute(
