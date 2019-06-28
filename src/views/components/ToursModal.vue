@@ -60,5 +60,10 @@ export default {
 
 .panel-block.tour {
   cursor: pointer;
+  transition:0.2;
+}
+.panel-block.tour:hover {
+  transition: 0.2;
+  background-color: #dbdbdb
 }
 </style>
