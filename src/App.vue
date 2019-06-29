@@ -6,7 +6,7 @@
     <main id="content">
       <b-loading
         :is-full-page="true"
-        :active="loading"
+        :active="!loaded"
         :can-cancel="false"
       />
 
@@ -97,7 +97,6 @@ import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
 import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
 
 import SISMan from '@/views/sisman/components/SISMan';
-import { setTimeout } from 'timers';
 
 export default {
   name: 'LATE',
@@ -118,13 +117,15 @@ export default {
   data () {
     return {
       resizeTimeout: null,
-      loading: true,
       tourCallbacks: {
         onStop: this.onTourStop
       }
     };
   },
   computed: {
+    loaded () {
+      return this.$store.state.loaded;
+    },
     tour () {
       return this.$store.getters.currentTour;
     },
@@ -173,7 +174,7 @@ export default {
     }
   },
   watch: {
-    tour (newTourIndex) {
+    tour () {
       this.$nextTick(() => {
         setTimeout(() => {
           if (this.tour) this.$tours.custom.start();
@@ -183,43 +184,12 @@ export default {
   },
   async mounted () {
     if (this.$route.query.accountLocked) {
-      this.loading = false;
       return this.$toast.open({
         message: 'Your account has been locked by administrators.',
         type: 'is-warning',
         duration: 70000
       });
     }
-
-    if (
-      process.env.NODE_ENV === 'development' &&
-      !this.$store.state.auth.isAuthenticated
-    ) {
-      const rcsID = prompt('Log in as what user? (rcs_id)');
-      await this.$http.get('/students/loginas?rcs_id=' + rcsID);
-    }
-
-    // Seems like we need the following line no matter what :/
-    await this.$store.dispatch('GET_USER');
-    if (this.$store.state.auth.isAuthenticated) {
-      await this.$store.dispatch('GET_TERMS');
-      const calls = [];
-      if (!this.$store.getters.onBreak) {
-        await this.$store.dispatch('GET_COURSES');
-        calls.concat([
-          this.$store.dispatch('GET_UNAVAILABILITIES'),
-          this.$store.dispatch('AUTO_GET_UPCOMING_WORK')
-        ]);
-      }
-      calls.concat([
-        this.$store.dispatch('GET_TODOS'),
-        this.$store.dispatch('GET_ANNOUNCEMENTS'),
-        this.$store.dispatch('AUTO_UPDATE_NOW')
-      ]);
-      await Promise.all(calls);
-    }
-
-    this.loading = false;
   },
   methods: {
     onTourStop () {

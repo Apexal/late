@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+import api from './api';
+
 import store from '@/store';
 
 import { Toast } from 'buefy/dist/components/toast';
@@ -354,8 +356,38 @@ const router = new Router({
 
 router.beforeEach(async (to, from, next) => {
   if (store.state.courseModal.open) store.commit('CLOSE_COURSE_MODAL');
+  if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR'); // Close the navbar if clicked on
 
-  if (!store.state.auth.isAuthenticated) await store.dispatch('GET_USER');
+  if (
+    process.env.NODE_ENV === 'development' &&
+    store.state.auth.isAuthenticated === null
+  ) {
+    const rcsID = prompt('Log in as what user? (rcs_id)');
+    const response = await api.get('/students/loginas?rcs_id=' + rcsID);
+    await store.dispatch('SET_USER', response.data.user);
+  } else if (store.state.auth.isAuthenticated === null) {
+    await store.dispatch('GET_USER');
+  }
+
+  if (store.state.auth.isAuthenticated && !store.state.loaded) {
+    await store.dispatch('GET_TERMS');
+    const calls = [];
+    if (!store.getters.onBreak) {
+      await store.dispatch('GET_COURSES');
+      calls.concat([
+        store.dispatch('GET_UNAVAILABILITIES'),
+        store.dispatch('AUTO_GET_UPCOMING_WORK')
+      ]);
+    }
+    calls.concat([
+      store.dispatch('GET_TODOS'),
+      store.dispatch('GET_ANNOUNCEMENTS'),
+      store.dispatch('AUTO_UPDATE_NOW')
+    ]);
+    await Promise.all(calls);
+    store.commit('SET_LOADED', true);
+  }
+
   if (to.meta.title) document.title = to.meta.title + ' | LATE';
   if (
     to.matched.some(record => record.meta.requiresAuth) &&
