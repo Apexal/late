@@ -1,6 +1,6 @@
 <!--About page-->
 <template>
-  <div class="container">
+  <section class="section">
     <h1 class="title">
       About Us
     </h1>
@@ -108,7 +108,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -153,11 +153,6 @@ export default {
   border-bottom-color: #dbdbdb;
   border-bottom-style: solid;
   border-bottom-width: 1px;
-}
-
-.container {
-  max-width: 70vw;
-  padding: 35px 0px 0px 15px;
 }
 
 ul {
