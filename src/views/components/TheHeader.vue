@@ -171,16 +171,51 @@
               About
             </router-link>
           </template>
-          <router-link
-            :to="{ name: 'tools' }"
-            class="navbar-item tools-link"
-            title="Student tools to calculate grades, help you work/study, and more!"
+          <div
+            class="navbar-item has-dropdown is-hoverable"
           >
-            <span class="icon">
-              <i class="fas fa-toolbox" />
-            </span>
-            Tools
-          </router-link>
+            <router-link
+              :to="{ name: 'tools' }"
+              class="navbar-link coursework-link"
+              title="Student tools to calculate grades, help you work/study, and more!"
+            >
+              <span class="icon">
+                <i class="fas fa-toolbox" />
+              </span>
+              Tools
+            </router-link>
+
+            <div class="navbar-dropdown">
+              <router-link
+                class="navbar-item"
+                :to="{ name: 'quick-links' }"
+                title="Student-curated RPI links"
+              >
+                RPI Quicklinks
+              </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{ name: 'study-tools' }"
+                title="Study timer and scratchpad"
+              >
+                Study Tools
+              </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{ name: 'gpa-calculator' }"
+                title="Calculate overall GPA and course grades"
+              >
+                Grade Calculators
+              </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{ name: 'checklist' }"
+                title="Create a checklist for dorm items for movein"
+              >
+                Dorm Checklist
+              </router-link>
+            </div>
+          </div>
         </div>
 
         <div class="navbar-end">
