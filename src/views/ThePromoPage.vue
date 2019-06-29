@@ -32,7 +32,7 @@
       Welcome to LATE
     </h1>
 
-    <p class="has-text-grey has-text-centered">
+    <p class="tester-count has-text-grey has-text-centered">
       <b-tag
         type="is-dark"
         class="counts"
@@ -283,6 +283,11 @@ export default {
 
     .title {
       margin-bottom: 5px;
+    }
+
+    .tester-count {
+      margin-top: 0px;
+      margin-bottom: 10px;
     }
 
     .tagline {
