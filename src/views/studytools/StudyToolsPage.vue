@@ -107,9 +107,11 @@
         </div>
       </div>
       <br>
-      <div class="study-tools-scratchpad">
-        <wysiwyg v-model="scratchHTML" />
-      </div>
+      <textarea
+        v-model="scratchHTML"
+        class="study-tools-scratchpad"
+        placeholder="Anything typed here will be remembered."
+      />
     </div>
   </div>
 </template>
@@ -160,8 +162,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~vue-wysiwyg/dist/vueWysiwyg.css";
-
 .tool-wrapper {
   padding: 35px 0px 0px 15px;
   margin: 0 auto;

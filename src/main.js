@@ -15,8 +15,6 @@ import VueTour from 'vue-tour';
 
 import CourseAssessmentDot from '@/views/components/CourseAssessmentDot';
 
-import wysiwyg from 'vue-wysiwyg';
-
 import datemethods from './mixins/datemethods';
 import sharedproperties from './mixins/sharedproperties';
 
@@ -28,7 +26,7 @@ import './sw/registerServiceWorker';
 Vue.use(VueTour);
 
 Vue.component('CourseAssessmentDot', CourseAssessmentDot);
-Vue.use(wysiwyg, { hideModules: { image: true } });
+
 Vue.use(Buefy, {
   defaultIconPack: 'fas'
 });
