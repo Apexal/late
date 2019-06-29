@@ -6,7 +6,7 @@
   >
     <audio
       ref="audio"
-      src="/foghorn.wav"
+      src="/audio/alarm.mp3"
     />
     <progress
       class="progress is-success"

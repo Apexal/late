@@ -13,7 +13,7 @@
 
 > Lazy Automatic Time Evaluator
 
-  <img align="right" src="./public/sisman.svg" width="150">
+  <img align="right" src="./src/assets/img/sisman.svg" width="150">
 
 
 #### Links

@@ -55,7 +55,7 @@
       <div class="study-tools-timer has-background-dark has-text-white has-text-centered">
         <audio
           ref="audio"
-          src="/foghorn.wav"
+          src="/audio/alarm.mp3"
         />
         <progress
           class="progress is-success"
