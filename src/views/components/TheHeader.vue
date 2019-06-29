@@ -324,7 +324,6 @@
                   Site Tour
                 </a>
                 <hr
-                  v-if="!onBreak"
                   class="navbar-divider"
                 >
 
