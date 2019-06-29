@@ -23,7 +23,7 @@ import sharedproperties from './mixins/sharedproperties';
 import * as VueGoogleMaps from 'vue2-google-maps';
 
 import 'vue-tour/dist/vue-tour.css';
-import './registerServiceWorker';
+import './sw/registerServiceWorker';
 
 Vue.use(VueTour);
 

@@ -21,7 +21,7 @@ module.exports = {
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: './src/service-worker.js'
+      swSrc: './src/sw/service-worker.js'
     },
     name: 'LATE',
     themeColor: '#70cad1',
