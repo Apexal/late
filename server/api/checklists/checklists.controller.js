@@ -24,6 +24,11 @@ async function getStudentChecklist (ctx) {
   });
 }
 
+/**
+ * Get a public checklist by its ID
+ *
+ * @param {Koa context} ctx
+ */
 async function getChecklist (ctx) {
   const { checklistID } = ctx.params;
 
@@ -31,14 +36,14 @@ async function getChecklist (ctx) {
   try {
     checklist = await Checklist.findOne({
       _id: checklistID,
-      _student: ctx.state.user._id
+      private: false
     });
   } catch (e) {
-    logger.error(`Failed to get checklist for ${ctx.state.user.rcs_id}: ${e}`);
+    logger.error(`Failed to get checklist ${checklistID} for ${ctx.state.user.rcs_id}: ${e}`);
     return ctx.badRequest('Could not find the checklist!');
   }
 
-  logger.info(`Sending checklist to ${ctx.state.user.rcs_id}`);
+  logger.info(`Sending checklist ${checklistID} to ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
     checklist
