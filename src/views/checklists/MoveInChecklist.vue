@@ -19,58 +19,14 @@
     <form
       @submit.prevent="addCategory"
     >
-      <div class="columns">
-        <div class="column is-narrow buttons">
-          <b-button
-            v-if="loggedIn"
-            type="is-warning"
-            @click="toggleEditing"
-          >
-            {{ editing ? "Save" : "Edit" }}
-          </b-button>
-        </div>
-        <div
-          v-if="!editing"
-          class="column"
+      <b-field grouped>
+        <b-button
+          type="is-warning"
+          @click="toggleEditing"
         >
-          <b-field
-            v-if="loggedIn"
-            data-tooltip="Your checklist can be viewed by anybody with this link!"
-            class="tooltip is-tooltip-bottom"
-          >
-            <b-button
-              :title="checklist.private ? 'Click to make public.' : 'Click to make private.'"
-              @click="togglePrivate"
-            >
-              <span class="icon">
-                <i
-                  class="fas"
-                  :class="checklist.private ? 'fa-lock' : 'fa-unlock'"
-                />
-              </span>
-              {{ checklist.private ? 'Private' : 'Public' }}
-            </b-button>
-            <input
-              v-if="!checklist.private"
-              type="text"
-              class="input checklist-url"
-              disabled
-              :value="'https://www.late.work/checklist/' + checklist._id"
-            >
-          </b-field>
-
-          <a
-            v-else
-            class="button is-success"
-            href="/auth/login"
-          >
-            <b>RPI Students:</b> Login to Save and Share
-          </a>
-        </div>
-        <div
-          v-if="editing"
-          class="column"
-        >
+          {{ editing ? "Save" : "Edit" }}
+        </b-button>
+        <template v-if="editing">
           <b-field>
             <b-input
               v-model="newCategory"
@@ -95,11 +51,48 @@
                 :disabled="checklist.categories.length === 0"
                 @click="clearChecklist"
               >
-                Clear Categories
+                Clear
               </b-button>
             </p>
           </b-field>
-        </div>
+        </template>
+        <template v-else>
+          <b-button
+            v-if="loggedIn"
+            :title="checklist.private ? 'Click to make public.' : 'Click to make private.'"
+            @click="togglePrivate"
+          >
+            <span class="icon">
+              <i
+                class="fas"
+                :class="checklist.private ? 'fa-lock' : 'fa-unlock'"
+              />
+            </span>
+            {{ checklist.private ? 'Private' : 'Public' }}
+          </b-button>
+          <input
+            v-if="loggedIn && !checklist.private"
+            type="text"
+            class="input checklist-url"
+            disabled
+            :value="'https://www.late.work/checklist/' + checklist._id"
+          >
+          <a
+            v-else-if="!loggedIn"
+            class="button is-success"
+            href="/auth/login"
+          >
+            <b>RPI Students:</b> Login to Share
+          </a>
+        </template>
+      </b-field>
+
+
+      <div class="columns">
+        <div
+          v-if="editing"
+          class="column"
+        />
       </div>
     </form>
 
