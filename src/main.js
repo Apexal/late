@@ -13,7 +13,7 @@ import 'bulma-tooltip';
 import VueProgressBar from 'vue-progressbar';
 import VueTour from 'vue-tour';
 
-import CourseAssessmentDot from '@/views/components/CourseAssessmentDot';
+import CourseAssessmentDot from '@/views/courses/components/CourseAssessmentDot';
 
 import datemethods from './mixins/datemethods';
 import sharedproperties from './mixins/sharedproperties';
