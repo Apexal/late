@@ -67,6 +67,7 @@
                 Add
               </button>
               <b-button
+                :disabled="checklist.categories.length === 0"
                 @click="clearChecklist"
               >
                 Clear Categories
@@ -154,7 +155,10 @@ export default {
   },
   methods: {
     clearChecklist () {
-      this.$store.commit('CLEAR_CHECKLIST');
+      this.$dialog.confirm({
+        message: 'Totally clear your checklist? All items will be lost.',
+        onConfirm: () => this.$store.commit('CLEAR_CHECKLIST')
+      });
     },
     addCategory () {
       if (this.categoryTitles.includes(this.newCategory)) {

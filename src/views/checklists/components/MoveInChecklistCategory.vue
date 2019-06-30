@@ -9,7 +9,7 @@
       <i
         v-if="editing"
         class="delete is-pulled-right"
-        @click="deleteCategory"
+        @click.stop="deleteCategory"
       />
       <b-tag
         type="is-white"
