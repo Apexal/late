@@ -2,7 +2,7 @@
 <template>
   <section class="section move-in-checklist">
     <h1 class="title has-text-centered-mobile">
-      Move In Checklist
+      Dorm Move In Checklist
     </h1>
     <details
       v-if="!loggedIn"

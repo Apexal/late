@@ -11,6 +11,12 @@
         class="delete is-pulled-right"
         @click="deleteCategory"
       />
+      <b-tag
+        type="is-white"
+        class="is-pulled-right"
+      >
+        {{ category.items.length }} items
+      </b-tag>
     </summary>
     <div
       v-if="editing"
