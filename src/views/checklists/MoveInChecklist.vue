@@ -117,6 +117,16 @@
     </template>
 
     <hr>
+
+    <div class="buttons">
+      <router-link
+        class="button is-link"
+        :to="{ name: 'tools' }"
+      >
+        <i class="fas fa-angle-left" />
+        All Tools
+      </router-link>
+    </div>
   </section>
 </template>
 
@@ -200,5 +210,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.button i.fas {
+  margin-right: 3px;
+}
 </style>

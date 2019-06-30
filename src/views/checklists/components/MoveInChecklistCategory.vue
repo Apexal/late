@@ -16,6 +16,9 @@
         class="is-pulled-right"
       >
         {{ category.items.length }} items
+        <span v-if="!editing">
+          / {{ Math.round(progress) }}%
+        </span>
       </b-tag>
     </summary>
     <div
