@@ -4,7 +4,7 @@
     class="panel category"
     open
   >
-    <summary class="panel-heading has-background-dark has-text-white">
+    <summary class="panel-heading has-background-dark has-text-white is-unselectable">
       {{ category.title }}
       <i
         v-if="editing"

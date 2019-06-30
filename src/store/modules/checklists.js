@@ -18,6 +18,10 @@ const actions = {
       commit('LOAD_LOCAL_CHECKLIST');
     }
   },
+  async UPDATE_CHECKLIST_ITEM ({ commit, dispatch }, payload) {
+    commit('UPDATE_CHECKLIST_ITEM', payload);
+    dispatch('SAVE_CHECKLIST');
+  },
   async SAVE_CHECKLIST ({ rootState, getters, commit, dispatch }) {
     if (rootState.auth.isAuthenticated) {
       dispatch('UPDATE_CHECKLIST');

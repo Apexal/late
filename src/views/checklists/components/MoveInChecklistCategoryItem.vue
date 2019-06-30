@@ -29,7 +29,7 @@
       >
         <i class="fas fa-minus-circle" />
       </span>
-      <span>{{ item.progress }} / {{ item.count }}</span>
+      <span class="is-unselectable">{{ item.progress }} / {{ item.count }}</span>
       <span
         class="icon add-progress"
         :class="{ 'has-text-grey': item.progress + 1 > item.count }"
@@ -75,7 +75,7 @@ export default {
     updateItemProgress (progress) {
       if (progress < 0 || progress > this.item.count) return;
 
-      this.$store.commit('UPDATE_CHECKLIST_ITEM', {
+      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
         updates: { progress }
