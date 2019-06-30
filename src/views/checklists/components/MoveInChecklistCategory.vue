@@ -106,9 +106,19 @@ export default {
   },
   methods: {
     deleteCategory () {
-      this.$store.dispatch('REMOVE_CHECKLIST_CATEGORY', {
-        categoryIndex: this.categoryIndex
-      });
+      if (this.category.items.length === 0) {
+        this.$store.dispatch('REMOVE_CHECKLIST_CATEGORY', {
+          categoryIndex: this.categoryIndex
+        });
+      } else {
+        // Confirm first
+        this.$dialog.confirm({
+          message: `Remove <b>${this.category.title}</b> and its <b>${this.category.items.length}</b> items?`,
+          onConfirm: () => this.$store.dispatch('REMOVE_CHECKLIST_CATEGORY', {
+            categoryIndex: this.categoryIndex
+          })
+        });
+      }
     },
     addItem () {
       this.$store.dispatch('ADD_CHECKLIST_ITEM', {
