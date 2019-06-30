@@ -2,7 +2,7 @@
 <template>
   <div
     class="panel-block is-flex item"
-    :class="[{ editing }, itemClass]"
+    :class="[{ editing, viewing }, itemClass]"
     :title="editing ? 'Drag me to reorder items!' : ''"
   >
     <span class="item-title">{{ item.title }}</span>
@@ -21,7 +21,7 @@
         @click="removeItem"
       />
     </template>
-    <template v-else>
+    <template v-else-if="!viewing">
       <span
         class="icon subtract-progress"
         :class="{ 'has-text-grey': item.progress - 1 < 0 }"
@@ -37,6 +37,9 @@
       >
         <i class="fas fa-plus-circle" />
       </span>
+    </template>
+    <template v-else>
+      <span class="is-unselectable">{{ item.count }}</span>
     </template>
   </div>
 </template>
@@ -60,6 +63,10 @@ export default {
     item: {
       type: Object,
       required: true
+    },
+    viewing: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -117,12 +124,14 @@ export default {
     margin: 0;
   }
 
-  border-left: 3px solid rgb(255, 175, 175);
-  &.completed {
-    border-left: 3px solid lightgreen;
-  }
-  &.in-progress {
-    border-left: 3px solid rgb(255, 253, 163);
+  &:not(.viewing) {
+    border-left: 3px solid rgb(255, 175, 175);
+    &.completed {
+      border-left: 3px solid lightgreen;
+    }
+    &.in-progress {
+      border-left: 3px solid rgb(255, 253, 163);
+    }
   }
 
   .subtract-progress,

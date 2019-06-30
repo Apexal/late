@@ -16,7 +16,7 @@
         class="is-pulled-right"
       >
         {{ category.items.length }} items
-        <span v-if="!editing">
+        <span v-if="!viewing && !editing">
           / {{ Math.round(progress) }}%
         </span>
       </b-tag>
@@ -66,6 +66,7 @@
         :item-index="index"
         :item="item"
         :editing="editing"
+        :viewing="viewing"
       />
     </Draggable>
     <div
@@ -101,6 +102,10 @@ export default {
     category: {
       type: Object,
       required: true
+    },
+    viewing: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -134,6 +139,7 @@ export default {
       return (totalCompletedItems / totalItems) * 100;
     },
     categoryTagType () {
+      if (this.viewing) return 'is-white';
       if (this.progress === 100) return 'is-success';
       if (this.progress > 0) return 'is-warning';
       return 'is-danger';

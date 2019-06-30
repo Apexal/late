@@ -84,16 +84,19 @@ const router = new Router({
     },
     {
       path: '/checklist',
+      name: 'checklist',
       component: () => import('@/views/checklists/MoveInChecklist.vue'),
       meta: {
         title: 'Move In Checklist'
-      },
-      children: [
-        {
-          path: '',
-          name: 'checklist'
-        }
-      ]
+      }
+    },
+    {
+      path: '/checklist/:checklistID',
+      name: 'view-checklist',
+      component: () => import('@/views/checklists/ViewChecklist.vue'),
+      meta: {
+        title: 'View Checklist'
+      }
     },
     {
       path: '/about',
