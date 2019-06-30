@@ -75,7 +75,7 @@ export default {
     updateItemProgress (progress) {
       if (progress < 0 || progress > this.item.count) return;
 
-      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
+      this.$store.commit('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
         updates: { progress }
@@ -87,14 +87,14 @@ export default {
       const updates = { count };
       if (this.item.progress > count) updates.progress = count;
 
-      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
+      this.$store.commit('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
         updates
       });
     },
     removeItem () {
-      this.$store.dispatch('REMOVE_CHECKLIST_ITEM', {
+      this.$store.commit('REMOVE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex
       });

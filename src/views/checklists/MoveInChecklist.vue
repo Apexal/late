@@ -24,9 +24,9 @@
           <b-button
             v-if="loggedIn"
             type="is-warning"
-            @click="editing = !editing"
+            @click="toggleEditing"
           >
-            {{ editing ? "Stop Editing" : "Edit" }}
+            {{ editing ? "Save" : "Edit" }}
           </b-button>
           <b-button
             v-if="loggedIn && !editing"
@@ -39,7 +39,7 @@
             class="button is-success"
             href="/auth/login"
           >
-            <b>RPI Students:</b> Login to Save
+            <b>RPI Students:</b> Login to Save and Share
           </a>
         </div>
         <div
@@ -104,7 +104,7 @@
         v-else
         class="has-text-grey has-text-cen"
       >
-        No categories have been added yet! Go into <a @click="editing = true">edit mode</a> and add categories
+        No categories have been added yet! Go into <a @click="toggleEditing">edit mode</a> and add categories
         above!
       </p>
     </template>
@@ -154,7 +154,7 @@ export default {
   },
   methods: {
     clearChecklist () {
-      this.$store.dispatch('CLEAR_CHECKLIST');
+      this.$store.commit('CLEAR_CHECKLIST');
     },
     addCategory () {
       if (this.categoryTitles.includes(this.newCategory)) {
@@ -164,8 +164,16 @@ export default {
         });
         return;
       }
-      this.$store.dispatch('ADD_CHECKLIST_CATEGORY', this.newCategory);
+      this.$store.commit('ADD_CHECKLIST_CATEGORY', this.newCategory);
       this.newCategory = '';
+    },
+    async toggleEditing () {
+      this.editing = !this.editing;
+
+      if (!this.editing) {
+        await this.$store.dispatch('SAVE_CHECKLIST');
+        this.$toast.open('Saved checklist!');
+      }
     }
   }
 };

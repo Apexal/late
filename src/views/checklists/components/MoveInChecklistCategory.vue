@@ -1,6 +1,9 @@
 <!-- Tools: Move-in page category module-->
 <template>
-  <details class="panel category">
+  <details
+    class="panel category"
+    open
+  >
     <summary class="panel-heading has-background-dark has-text-white">
       {{ category.title }}
       <i
@@ -105,7 +108,7 @@ export default {
         return this.category.items;
       },
       set (newItems) {
-        this.$store.dispatch('SET_CHECKLIST_CATEGORY_ITEMS', { categoryIndex: this.categoryIndex, items: newItems });
+        this.$store.commit('SET_CHECKLIST_CATEGORY_ITEMS', { categoryIndex: this.categoryIndex, items: newItems });
       }
     },
     progress () {
@@ -125,21 +128,21 @@ export default {
   methods: {
     deleteCategory () {
       if (this.category.items.length === 0) {
-        this.$store.dispatch('REMOVE_CHECKLIST_CATEGORY', {
+        this.$store.commit('REMOVE_CHECKLIST_CATEGORY', {
           categoryIndex: this.categoryIndex
         });
       } else {
         // Confirm first
         this.$dialog.confirm({
           message: `Remove <b>${this.category.title}</b> and its <b>${this.category.items.length}</b> items?`,
-          onConfirm: () => this.$store.dispatch('REMOVE_CHECKLIST_CATEGORY', {
+          onConfirm: () => this.$store.commit('REMOVE_CHECKLIST_CATEGORY', {
             categoryIndex: this.categoryIndex
           })
         });
       }
     },
     addItem () {
-      this.$store.dispatch('ADD_CHECKLIST_ITEM', {
+      this.$store.commit('ADD_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         item: this.newItem
       });
