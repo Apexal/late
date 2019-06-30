@@ -80,11 +80,17 @@
 
     <hr>
 
-    <div class="columns is-desktop is-multiline categories">
+    <Draggable
+      v-model="categories"
+      :disabled="!editing"
+      group="categories"
+      class="columns is-desktop is-multiline categories"
+    >
       <div
         v-for="(category, index) in checklist.categories"
         :key="index"
-        class="column is-one-third-fullhd is-half-desktop is-full"
+        class="column is-one-third-fullhd is-half-desktop is-full category-column"
+        :title="editing ? 'Drag me to reorder categories!' : ''"
       >
         <Category
           :category-index="index"
@@ -92,7 +98,7 @@
           :editing="editing"
         />
       </div>
-    </div>
+    </Draggable>
 
     <template v-if="checklist.categories.length === 0">
       <p
@@ -115,11 +121,13 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable';
+
 import MoveInChecklistCategory from '@/views/checklists/components/MoveInChecklistCategory';
 
 export default {
   name: 'MoveInChecklist',
-  components: { Category: MoveInChecklistCategory },
+  components: { Draggable, Category: MoveInChecklistCategory },
   data () {
     return {
       editing: false,
@@ -139,6 +147,14 @@ export default {
   computed: {
     checklist () {
       return this.$store.state.checklists.checklist;
+    },
+    categories: {
+      get () {
+        return this.checklist.categories;
+      },
+      set (newCategories) {
+        this.$store.commit('SET_CHECKLIST', { ...this.checklist, categories: newCategories });
+      }
     },
     remainingRecommendedCategories () {
       return this.recommendedCategories.filter(
