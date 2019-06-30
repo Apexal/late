@@ -17,31 +17,64 @@
       to their account and access all the other features of the site!
     </details>
     <form
-      v-if="editing"
       @submit.prevent="addCategory"
     >
-      <b-field>
-        <b-input
-          v-model="newCategory"
-          type="text"
-          placeholder="New category"
-          required
-          list="recommended-categories"
-        />
-        <datalist id="recommended-categories">
-          <option
-            v-for="(c, index) in remainingRecommendedCategories"
-            :key="index"
-            :value="c"
-          />
-        </datalist>
+      <div class="columns">
+        <div class="column is-narrow buttons">
+          <b-button
+            v-if="loggedIn"
+            type="is-warning"
+            @click="editing = !editing"
+          >
+            {{ editing ? "Stop Editing" : "Edit" }}
+          </b-button>
+          <b-button
+            v-if="loggedIn && !editing"
+            type="is-link"
+          >
+            Share
+          </b-button>
+          <a
+            v-else-if="!loggedIn"
+            class="button is-success"
+            href="/auth/login"
+          >
+            <b>RPI Students:</b> Login to Save
+          </a>
+        </div>
+        <div
+          v-if="editing"
+          class="column"
+        >
+          <b-field>
+            <b-input
+              v-model="newCategory"
+              type="text"
+              placeholder="New category"
+              required
+              list="recommended-categories"
+            />
+            <datalist id="recommended-categories">
+              <option
+                v-for="(c, index) in remainingRecommendedCategories"
+                :key="index"
+                :value="c"
+              />
+            </datalist>
 
-        <p class="control">
-          <button class="button is-success">
-            Add
-          </button>
-        </p>
-      </b-field>
+            <p class="control">
+              <button class="button is-success">
+                Add
+              </button>
+              <b-button
+                @click="clearChecklist"
+              >
+                Clear Categories
+              </b-button>
+            </p>
+          </b-field>
+        </div>
+      </div>
     </form>
 
     <hr>
@@ -65,44 +98,18 @@
         v-if="editing"
         class="has-text-grey has-text-cen"
       >
-        Add categories above!
+        Add categories above! You can then add items under each category, with a count of how many you need!
       </p>
       <p
         v-else
         class="has-text-grey has-text-cen"
       >
-        No categories have been added yet! Go into edit mode and add categories
+        No categories have been added yet! Go into <a @click="editing = true">edit mode</a> and add categories
         above!
       </p>
     </template>
 
     <hr>
-
-    <div class="buttons">
-      <b-button @click="clearChecklist">
-        Clear
-      </b-button>
-      <b-button
-        v-if="loggedIn"
-        type="is-warning"
-        @click="editing = !editing"
-      >
-        {{ editing ? "Stop Editing" : "Edit" }}
-      </b-button>
-      <b-button
-        v-if="loggedIn"
-        type="is-link"
-      >
-        Share
-      </b-button>
-      <a
-        v-else
-        class="button is-success"
-        href="/auth/login"
-      >
-        <b>RPI Students:</b> Login to Save
-      </a>
-    </div>
   </section>
 </template>
 
@@ -165,4 +172,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 </style>
