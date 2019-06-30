@@ -28,6 +28,10 @@ const actions = {
     commit('REMOVE_CHECKLIST_ITEM', payload);
     dispatch('SAVE_CHECKLIST');
   },
+  SET_CHECKLIST_CATEGORY_ITEMS ({ commit, dispatch }, payload) {
+    commit('SET_CHECKLIST_CATEGORY_ITEMS', payload);
+    dispatch('SAVE_CHECKLIST');
+  },
   CLEAR_CHECKLIST ({ commit, dispatch, getters }) {
     commit('CLEAR_CHECKLIST');
     dispatch('SAVE_CHECKLIST');
@@ -78,6 +82,9 @@ const mutations = {
       state.checklist.categories[categoryIndex].items[itemIndex],
       updates
     );
+  },
+  SET_CHECKLIST_CATEGORY_ITEMS: (state, { categoryIndex, items }) => {
+    state.checklist.categories[categoryIndex].items = items;
   },
   REMOVE_CHECKLIST_ITEM: (state, { categoryIndex, itemIndex }) => {
     state.checklist.categories[categoryIndex].items.splice(itemIndex, 1);

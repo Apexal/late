@@ -2,7 +2,8 @@
 <template>
   <div
     class="panel-block is-flex item"
-    :class="itemClass"
+    :class="[{ editing }, itemClass]"
+    :title="editing ? 'Drag me to reorder items!' : ''"
   >
     <span class="item-title">{{ item.title }}</span>
 
@@ -104,6 +105,10 @@ export default {
 
 <style lang="scss" scoped>
 .item {
+  &.editing {
+    cursor: move;
+  }
+
   .item-title {
     flex: 1;
   }

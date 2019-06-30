@@ -42,14 +42,20 @@
         </b-field>
       </form>
     </div>
-    <Item
-      v-for="(item, index) in category.items"
-      :key="index"
-      :category-index="categoryIndex"
-      :item-index="index"
-      :item="item"
-      :editing="editing"
-    />
+    <Draggable
+      v-model="items"
+      :disabled="!editing"
+      :group="`category-${categoryIndex}-items`"
+    >
+      <Item
+        v-for="(item, index) in category.items"
+        :key="index"
+        :category-index="categoryIndex"
+        :item-index="index"
+        :item="item"
+        :editing="editing"
+      />
+    </Draggable>
     <div
       v-if="!editing && category.items.length === 0"
       class="panel-block has-text-grey"
@@ -60,11 +66,13 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable';
+
 import MoveInChecklistCategoryItem from './MoveInChecklistCategoryItem';
 
 export default {
   name: 'MoveInChecklistCategory',
-  components: { Item: MoveInChecklistCategoryItem },
+  components: { Draggable, Item: MoveInChecklistCategoryItem },
   props: {
     open: {
       type: Boolean,
@@ -92,6 +100,14 @@ export default {
     };
   },
   computed: {
+    items: {
+      get () {
+        return this.category.items;
+      },
+      set (newItems) {
+        this.$store.dispatch('SET_CHECKLIST_CATEGORY_ITEMS', { categoryIndex: this.categoryIndex, items: newItems });
+      }
+    },
     progress () {
       if (this.category.items.length === 0) return 0;
       const totalItems = this.category.items.reduce(
