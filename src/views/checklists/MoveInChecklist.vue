@@ -28,14 +28,39 @@
           >
             {{ editing ? "Save" : "Edit" }}
           </b-button>
-          <b-button
-            v-if="loggedIn && !editing"
-            type="is-link"
+        </div>
+        <div
+          v-if="!editing"
+          class="column"
+        >
+          <b-field
+            v-if="loggedIn"
+            data-tooltip="Your checklist can be viewed by anybody with this link!"
+            class="tooltip is-tooltip-bottom"
           >
-            Share
-          </b-button>
+            <b-button
+              :title="checklist.private ? 'Click to make public.' : 'Click to make private.'"
+              @click="togglePrivate"
+            >
+              <span class="icon">
+                <i
+                  class="fas"
+                  :class="checklist.private ? 'fa-lock' : 'fa-unlock'"
+                />
+              </span>
+              {{ checklist.private ? 'Private' : 'Public' }}
+            </b-button>
+            <input
+              v-if="!checklist.private"
+              type="text"
+              class="input checklist-url"
+              disabled
+              :value="'https://www.late.work/checklist/' + checklist._id"
+            >
+          </b-field>
+
           <a
-            v-else-if="!loggedIn"
+            v-else
             class="button is-success"
             href="/auth/login"
           >
@@ -204,6 +229,15 @@ export default {
         await this.$store.dispatch('SAVE_CHECKLIST');
         this.$toast.open('Saved checklist!');
       }
+    },
+    togglePrivate () {
+      this.$store.commit('SET_CHECKLIST', { ...this.checklist, private: !this.checklist.private });
+      this.$store.dispatch('SAVE_CHECKLIST');
+
+      this.$toast.open({
+        type: 'is-success',
+        message: `Checklist is now ${this.checklist.private ? 'private!' : 'public! Share the link to let others see your list.'}`
+      });
     }
   }
 };
@@ -212,5 +246,13 @@ export default {
 <style lang="scss" scoped>
 .button i.fas {
   margin-right: 3px;
+}
+
+.private-field {
+  display: inline-block;
+}
+
+.checklist-url {
+  cursor: text;
 }
 </style>

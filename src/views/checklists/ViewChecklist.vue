@@ -5,27 +5,28 @@
       :active="loading"
       :can-cancel="false"
     />
+    <template v-if="!loading">
+      <h1 class="title has-text-centered-mobile">
+        <span :title="checklist._student.rcs_id">{{ owner }}</span>'s Dorm Move In Checklist
+      </h1>
 
-    <h1 class="title has-text-centered-mobile">
-      <span :title="checklist._student.rcs_id">{{ owner }}</span>'s Dorm Move In Checklist
-    </h1>
-
-    <div
-      class="columns is-desktop is-multiline categories"
-    >
       <div
-        v-for="(category, index) in checklist.categories"
-        :key="index"
-        class="column is-one-third-fullhd is-half-desktop is-full category-column"
+        class="columns is-desktop is-multiline categories"
       >
-        <Category
-          :category-index="index"
-          :category="category"
-          :editing="false"
-          :viewing="true"
-        />
+        <div
+          v-for="(category, index) in checklist.categories"
+          :key="index"
+          class="column is-one-third-fullhd is-half-desktop is-full category-column"
+        >
+          <Category
+            :category-index="index"
+            :category="category"
+            :editing="false"
+            :viewing="true"
+          />
+        </div>
       </div>
-    </div>
+    </template>
 
     <hr>
 
@@ -36,6 +37,13 @@
       >
         <i class="fas fa-angle-left" />
         All Tools
+      </router-link>
+      <router-link
+        class="button is-primary"
+        :to="{ name: 'checklist' }"
+      >
+        <i class="fas fa-angle-left" />
+        Your List
       </router-link>
     </div>
   </section>
@@ -82,7 +90,7 @@ export default {
         return;
       }
 
-      // if (response.data.checklist._student.rcs_id === this.user.rcs_id) return this.$router.push({ name: 'checklist' });
+      if (response.data.checklist._student.rcs_id === this.user.rcs_id) return this.$router.push({ name: 'checklist' });
 
 
       this.checklist = response.data.checklist;

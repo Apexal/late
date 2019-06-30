@@ -60,7 +60,7 @@ async function createOrUpdateChecklist (ctx) {
     });
   } catch (e) {
     logger.error(`Failed to get checklist for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.badRequest('Could not find the checklist!');
+    return ctx.badRequest('There was an error getting the checklist!');
   }
 
   const updates = {
@@ -72,7 +72,8 @@ async function createOrUpdateChecklist (ctx) {
   if (!checklist) {
     checklist = new Checklist({
       ...updates,
-      _student: ctx.state.user._id
+      _student: ctx.state.user._id,
+      private: true
     });
   } else {
     Object.assign(checklist, updates);

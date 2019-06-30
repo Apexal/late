@@ -33,7 +33,7 @@ const schema = new Schema(
       required: true
     },
     categories: [category],
-    private: { type: Boolean, default: false }
+    private: { type: Boolean, default: true }
   },
   { timestamps: true }
 );

@@ -73,7 +73,7 @@
       v-if="!editing && category.items.length === 0"
       class="panel-block has-text-grey"
     >
-      There are no items in this category! Add them in edit mode.
+      There are no items in this category! <span v-if="!viewing">Add them in edit mode.</span>
     </div>
   </details>
 </template>
