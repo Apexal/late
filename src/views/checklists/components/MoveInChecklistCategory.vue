@@ -19,6 +19,8 @@
       >
         <b-field>
           <b-input
+            :id="`category-${categoryIndex}-new-item-title`"
+            ref="new-item-title"
             v-model.trim="newItem.title"
             placeholder="Name of item"
             expanded
@@ -129,6 +131,8 @@ export default {
         title: '',
         count: 1
       };
+
+      this.$refs['new-item-title'].focus();
     }
   }
 };
