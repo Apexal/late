@@ -45,6 +45,12 @@
         <i class="fas fa-angle-left" />
         Your List
       </router-link>
+      <b-button
+        type="is-warning"
+        @click="copyChecklist"
+      >
+        Save Copy as Yours
+      </b-button>
     </div>
   </section>
 </template>
@@ -95,6 +101,21 @@ export default {
 
       this.checklist = response.data.checklist;
       this.loading = false;
+    },
+    async copyChecklist () {
+      this.$dialog.confirm({
+        message: 'Replace your checklist with a copy of this one? You will be able to edit it.',
+        onConfirm: async () => {
+          for (let i = 0; i < this.checklist.categories.length; i++) {
+            for (let j = 0; j < this.checklist.categories[i].items.length; j++) {
+              this.checklist.categories[i].items[j].progress = 0;
+            }
+          }
+          this.$store.commit('SET_CHECKLIST', this.checklist);
+          await this.$store.dispatch('SAVE_CHECKLIST');
+          this.$router.push({ name: 'checklist' });
+        }
+      });
     }
   }
 };
