@@ -12,7 +12,7 @@
         @click.stop="deleteCategory"
       />
       <b-tag
-        type="is-white"
+        :type="categoryTagType"
         class="is-pulled-right"
       >
         {{ category.items.length }} items
@@ -132,6 +132,11 @@ export default {
       );
 
       return (totalCompletedItems / totalItems) * 100;
+    },
+    categoryTagType () {
+      if (this.progress === 100) return 'is-success';
+      if (this.progress > 0) return 'is-warning';
+      return 'is-danger';
     }
   },
   methods: {
