@@ -35,6 +35,16 @@
       Estimates your final course grades and cumulative grade point average
     </h2>
     <router-view />
+    <hr>
+    <div class="buttons">
+      <router-link
+        class="button is-link"
+        :to="{ name: 'tools' }"
+      >
+        <i class="fas fa-angle-left" />
+        All Tools
+      </router-link>
+    </div>
   </section>
 </template>
 
@@ -51,6 +61,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.button i.fas {
+  margin-right: 3px;
+}
+
 .title {
   padding-bottom: 0px;
   padding-left: 0px;

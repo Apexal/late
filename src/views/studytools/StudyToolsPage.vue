@@ -192,55 +192,58 @@ hgroup {
 }
 
 
-  .study-tools-timer {
-    display: block;
-    z-index: 30;
-    border-radius: 10px;
-    padding: 0;
-    width: 100%;
-    min-width: 300px;
-    max-width: 600px;
-    max-height: 200px;
-    margin: 0 auto;
-    font-size: 3rem;
-    .padding {
-      padding: 0 20px;
-    }
-
-    button {
-      flex: 1;
-      margin: 0;
-      border-radius: 0px !important;
-    }
-
-    button:nth-child(1),
-    button:last-child {
-      border-radius: 0px 0px 5px 5px;
-    }
-
-    progress {
-      margin-bottom: 5px;
-      border-radius: 5px 5px 0px 0px;
-    }
-    .dismiss-timer {
-      position: absolute;
-      top: 20px;
-      right: 5px;
-    }
-
-    .stage-title {
-      width: 100%;
-      display: block;
-      border-bottom: 1px solid rgba(219, 219, 219, 0.7);
-    }
+.study-tools-timer {
+  display: block;
+  z-index: 30;
+  border-radius: 10px;
+  padding: 0;
+  width: 100%;
+  min-width: 300px;
+  max-width: 600px;
+  max-height: 200px;
+  margin: 0 auto;
+  font-size: 3rem;
+  .padding {
+    padding: 0 20px;
   }
 
-  .study-tools-scratchpad {
-    width: 100%;
-    min-width: 300px;
-    max-width: 600px;
-    display: block;
-    margin: 0 auto;
+  button {
+    flex: 1;
+    margin: 0;
+    border-radius: 0px !important;
   }
 
+  button:nth-child(1),
+  button:last-child {
+    border-radius: 0px 0px 5px 5px;
+  }
+
+  progress {
+    margin-bottom: 5px;
+    border-radius: 5px 5px 0px 0px;
+  }
+  .dismiss-timer {
+    position: absolute;
+    top: 20px;
+    right: 5px;
+  }
+
+  .stage-title {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid rgba(219, 219, 219, 0.7);
+  }
+}
+
+.study-tools-scratchpad {
+  width: 100%;
+  min-width: 300px;
+  max-width: 600px;
+  display: block;
+  margin: 0 auto;
+}
+
+.button i.fas {
+  margin-right: 3px;
+}
 </style>
