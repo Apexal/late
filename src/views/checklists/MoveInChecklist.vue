@@ -19,14 +19,27 @@
     <form
       @submit.prevent="addCategory"
     >
-      <b-field grouped>
-        <b-button
-          type="is-warning"
-          @click="toggleEditing"
-        >
-          {{ editing ? "Save" : "Edit" }}
-        </b-button>
+      <b-field
+        grouped
+        group-multiline
+      >
+        <div class="control">
+          <b-button
+            type="is-warning"
+            @click="toggleEditing"
+          >
+            {{ editing ? "Save" : "Edit" }}
+          </b-button>
+        </div>
         <template v-if="editing">
+          <div class="control">
+            <b-button
+              :disabled="checklist.categories.length === 0"
+              @click="clearChecklist"
+            >
+              Clear
+            </b-button>
+          </div>
           <b-field>
             <b-input
               v-model="newCategory"
@@ -47,12 +60,6 @@
               <button class="button is-success">
                 Add
               </button>
-              <b-button
-                :disabled="checklist.categories.length === 0"
-                @click="clearChecklist"
-              >
-                Clear
-              </b-button>
             </p>
           </b-field>
         </template>

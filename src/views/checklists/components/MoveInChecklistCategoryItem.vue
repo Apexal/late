@@ -124,13 +124,13 @@ export default {
     margin: 0;
   }
 
-  &:not(.viewing) {
-    border-left: 3px solid rgb(255, 175, 175);
+  &:not(.viewing):not(.editing) {
+    border-left: 2px solid rgb(255, 175, 175);
     &.completed {
-      border-left: 3px solid lightgreen;
+      border-left: 2px solid lightgreen;
     }
     &.in-progress {
-      border-left: 3px solid rgb(255, 253, 163);
+      border-left: 2px solid rgb(255, 253, 163);
     }
   }
 

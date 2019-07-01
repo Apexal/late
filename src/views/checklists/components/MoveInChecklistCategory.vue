@@ -139,7 +139,7 @@ export default {
       return (totalCompletedItems / totalItems) * 100;
     },
     categoryTagType () {
-      if (this.viewing) return 'is-white';
+      if (this.viewing || this.editing) return 'is-white';
       if (this.progress === 100) return 'is-success';
       if (this.progress > 0) return 'is-warning';
       return 'is-danger';
