@@ -39,13 +39,13 @@ async function getChecklist (ctx) {
       private: false
     }).populate('_student', 'rcs_id name grad_year');
   } catch (e) {
-    logger.error(`Failed to get checklist ${checklistID} for ${ctx.state.user.rcs_id}: ${e}`);
+    logger.error(`Failed to get checklist ${checklistID} for guest: ${e}`);
     return ctx.badRequest('Could not find the checklist!');
   }
 
   if (!checklist) return ctx.notFound('That checklist doesn\'t exist or isn\'t public!');
 
-  logger.info(`Sending checklist ${checklistID} to ${ctx.state.user.rcs_id}`);
+  logger.info(`Sending checklist ${checklistID} to guest`);
 
   ctx.ok({
     checklist
