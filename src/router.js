@@ -365,9 +365,15 @@ router.beforeEach(async (to, from, next) => {
     process.env.NODE_ENV === 'development' &&
     store.state.auth.isAuthenticated === null
   ) {
-    const rcsID = prompt('Log in as what user? (rcs_id)');
-    const response = await api.get('/students/loginas?rcs_id=' + rcsID);
-    await store.dispatch('SET_USER', response.data.user);
+    const rcsID = prompt('Log in as what user? (rcs_id) Leave blank to not login.');
+
+    if (rcsID) {
+      const response = await api.get('/students/loginas?rcs_id=' + rcsID);
+      await store.dispatch('SET_USER', response.data.user);
+    } else {
+      store.commit('UNSET_USER');
+      store.commit('SET_LOADED', true);
+    }
   } else if (store.state.auth.isAuthenticated === null) {
     await store.dispatch('GET_USER');
   }
