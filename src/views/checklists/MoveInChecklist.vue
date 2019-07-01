@@ -4,18 +4,6 @@
     <h1 class="title has-text-centered-mobile">
       Your Dorm Move In Checklist
     </h1>
-    <details
-      v-if="!loggedIn"
-      class="notification is-warning"
-    >
-      <summary>
-        <i class="fas fa-info-circle" />
-
-        <b>Info</b>
-      </summary>Your checklist is only saved on your current device.
-      <b>RPI Students</b> can login to <b>LATE</b> below to save their checklist
-      to their account and access all the other features of the site!
-    </details>
     <form
       @submit.prevent="addCategory"
     >
@@ -89,7 +77,7 @@
             class="button is-success"
             href="/auth/login"
           >
-            <b>RPI Students:</b> Login to Share
+            <b>RPI Students:</b>&nbsp;Login to Save to Account
           </a>
         </template>
       </b-field>
@@ -227,7 +215,7 @@ export default {
 
       if (!this.editing) {
         await this.$store.dispatch('SAVE_CHECKLIST');
-        this.$toast.open('Saved checklist!');
+        this.$toast.open(`Saved checklist ${this.loggedIn ? 'to your account!' : 'to this device!'}`);
       }
     },
     togglePrivate () {
