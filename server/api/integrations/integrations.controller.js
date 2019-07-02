@@ -39,7 +39,7 @@ async function getAcademicCalendarEvents (ctx) {
  * @param {Koa context} ctx
  */
 async function submitSMS (ctx) {
-  const phoneNumber = ctx.request.body.phoneNumber.replace(/-/g, '');
+  let phoneNumber = ctx.request.body.phoneNumber.replace(/-/g, '');
 
   if (!phoneNumber) {
     logger.error(

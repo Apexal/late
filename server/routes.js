@@ -11,7 +11,15 @@ const google = require('./modules/google');
 const btoa = require('btoa');
 const logger = require('./modules/logger');
 
-const exceptions = ['/students/loginas', '/students/counts', '/quicklinks', '/checklists'];
+
+const exceptions = [
+  '/students/loginas',
+  '/students/counts',
+  '/quicklinks',
+  '/sms',
+  '/checklists'
+];
+
 
 module.exports = router => {
   // router.use(path, router);
