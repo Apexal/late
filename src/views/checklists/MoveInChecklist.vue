@@ -213,7 +213,14 @@ export default {
     async toggleEditing () {
       this.editing = !this.editing;
 
-      if (!this.editing) {
+      if (this.editing) {
+        // Enable navigation prompt
+        window.onbeforeunload = function () {
+          return true;
+        };
+      } else {
+        // Remove navigation prompt
+        window.onbeforeunload = null;
         await this.$store.dispatch('SAVE_CHECKLIST');
         this.$toast.open(`Saved checklist ${this.loggedIn ? 'to your account!' : 'to this device!'}`);
       }

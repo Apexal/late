@@ -25,6 +25,7 @@
       <b class="is-unselectable item-count">{{ item.count }}</b>
       <b-checkbox
         v-model="complete"
+        title="Click to toggle!"
       />
     </template>
     <template v-else>
