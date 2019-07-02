@@ -33,6 +33,7 @@
           rows="10"
           class="input"
           :placeholder="descriptionPlaceholder"
+          @change="$emit('update-description', $event.target.value)"
           @keyup.ctrl.enter="$emit('next-step')"
         />
       </div>
@@ -41,8 +42,6 @@
 </template>
 
 <script>
-import SimpleMDE from 'simplemde';
-
 export default {
   name: 'ModalTitleAndDescription',
   props: {
@@ -70,26 +69,9 @@ export default {
       type: Set,
       default: () => new Set()
     }
-  },
-  data () {
-    return {
-      simplemde: null
-    };
-  },
-  watch: {},
-  mounted () {
-    this.simplemde = new SimpleMDE({
-      element: this.$refs.description,
-      initialValue: this.description
-    });
-
-    this.simplemde.codemirror.on('change', () => {
-      this.$emit('update-description', this.simplemde.value());
-    });
   }
 };
 </script>
 
 <style lang="scss" scoped>
-@import "~simplemde/dist/simplemde.min.css";
 </style>

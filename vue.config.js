@@ -17,5 +17,14 @@ module.exports = {
   },
   configureWebpack: {
     devtool: 'source-map'
+  },
+  pwa: {
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      swSrc: './src/sw/service-worker.js'
+    },
+    name: 'LATE',
+    themeColor: '#70cad1',
+    msTileColor: '#2e3b59'
   }
 };

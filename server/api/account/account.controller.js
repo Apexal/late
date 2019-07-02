@@ -1,5 +1,6 @@
 const logger = require('../../modules/logger');
 const {
+  scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,
   scrapePeriodTypesFromCRNs
 } = require('../../modules/scraping');
@@ -21,12 +22,31 @@ const Course = require('../courses/courses.model');
 async function setProfile (ctx) {
   const body = ctx.request.body;
 
-  // TODO: validate RIN
-  ctx.state.user.rin = body.rin;
-  ctx.state.user.name.first = body.first_name;
-  ctx.state.user.name.last = body.last_name;
+  // There are two methods:
+  // manual: the body has the fields given
+  // sis: the body has the RIN and PIN to scrape SIS
 
-  ctx.state.user.grad_year = parseInt(body.grad_year);
+  if (!body.method) {
+    return ctx.badRequest('You must supply a method!');
+  }
+
+  if (body.method === 'manual') {
+    // TODO: validate RIN
+    ctx.state.user.rin = body.rin;
+    ctx.state.user.name.first = body.first_name;
+    ctx.state.user.name.last = body.last_name;
+    ctx.state.user.major = body.major;
+
+    ctx.state.user.grad_year = parseInt(body.grad_year);
+  } else if (body.method === 'sis') {
+    const { rin, pin } = body;
+    ctx.state.user.rin = body.rin;
+
+    const scrapedInfo = await scrapeSISForProfileInfo(rin, pin);
+    ctx.state.user.set(scrapedInfo);
+  } else {
+    return ctx.badRequest('Invalid method.');
+  }
 
   ctx.state.user.setup.profile = true;
 

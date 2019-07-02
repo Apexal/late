@@ -1,13 +1,25 @@
 <!-- Tools: Move-in page category module-->
 <template>
-  <details class="panel category">
-    <summary class="panel-heading has-background-dark has-text-white">
+  <details
+    class="panel category"
+    open
+  >
+    <summary class="panel-heading has-background-dark has-text-white is-unselectable">
       {{ category.title }}
       <i
         v-if="editing"
         class="delete is-pulled-right"
-        @click="deleteCategory"
+        @click.stop="deleteCategory"
       />
+      <b-tag
+        :type="categoryTagType"
+        class="is-pulled-right"
+      >
+        {{ category.items.length }} items
+        <span v-if="!viewing && !editing">
+          / {{ Math.round(progress) }}%
+        </span>
+      </b-tag>
     </summary>
     <div
       v-if="editing"
@@ -18,12 +30,16 @@
         @submit.prevent="addItem"
       >
         <b-field>
-          <b-input
+          <input
+            :id="`category-${categoryIndex}-new-item-title`"
+            ref="new-item-title"
             v-model.trim="newItem.title"
-            placeholder="Name of item"
+            class="input is-small"
+            type="text"
+            placeholder="Name of new item"
             expanded
             required
-          />
+          >
           <b-input
             v-model.number="newItem.count"
             type="number"
@@ -40,29 +56,38 @@
         </b-field>
       </form>
     </div>
-    <Item
-      v-for="(item, index) in category.items"
-      :key="index"
-      :category-index="categoryIndex"
-      :item-index="index"
-      :item="item"
-      :editing="editing"
-    />
+    <Draggable
+      v-model="items"
+      :disabled="!editing"
+      :group="`category-${categoryIndex}-items`"
+    >
+      <Item
+        v-for="(item, index) in category.items"
+        :key="index"
+        :category-index="categoryIndex"
+        :item-index="index"
+        :item="item"
+        :editing="editing"
+        :viewing="viewing"
+      />
+    </Draggable>
     <div
       v-if="!editing && category.items.length === 0"
       class="panel-block has-text-grey"
     >
-      There are no items in this category! Add them in edit mode.
+      There are no items in this category! <span v-if="!viewing">Add them in edit mode.</span>
     </div>
   </details>
 </template>
 
 <script>
+import Draggable from 'vuedraggable';
+
 import MoveInChecklistCategoryItem from './MoveInChecklistCategoryItem';
 
 export default {
   name: 'MoveInChecklistCategory',
-  components: { Item: MoveInChecklistCategoryItem },
+  components: { Draggable, Item: MoveInChecklistCategoryItem },
   props: {
     open: {
       type: Boolean,
@@ -79,6 +104,10 @@ export default {
     category: {
       type: Object,
       required: true
+    },
+    viewing: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -90,28 +119,46 @@ export default {
     };
   },
   computed: {
+    items: {
+      get () {
+        return this.category.items;
+      },
+      set (newItems) {
+        this.$store.commit('SET_CHECKLIST_CATEGORY_ITEMS', { categoryIndex: this.categoryIndex, items: newItems });
+      }
+    },
     progress () {
       if (this.category.items.length === 0) return 0;
-      const totalItems = this.category.items.reduce(
-        (acc, item) => acc + item.count,
-        0
-      );
-      const totalCompletedItems = this.category.items.reduce(
-        (acc, item) => acc + item.progress,
-        0
-      );
 
-      return (totalCompletedItems / totalItems) * 100;
+      const completedCount = this.category.items.filter(i => i.complete).length;
+
+      return (completedCount / this.category.items.length) * 100;
+    },
+    categoryTagType () {
+      if (this.viewing || this.editing) return 'is-white';
+      if (this.progress === 100) return 'is-success';
+      if (this.progress > 0) return 'is-warning';
+      return 'is-danger';
     }
   },
   methods: {
     deleteCategory () {
-      this.$store.dispatch('REMOVE_CHECKLIST_CATEGORY', {
-        categoryIndex: this.categoryIndex
-      });
+      if (this.category.items.length === 0) {
+        this.$store.commit('REMOVE_CHECKLIST_CATEGORY', {
+          categoryIndex: this.categoryIndex
+        });
+      } else {
+        // Confirm first
+        this.$dialog.confirm({
+          message: `Remove <b>${this.category.title}</b> and its <b>${this.category.items.length}</b> items?`,
+          onConfirm: () => this.$store.commit('REMOVE_CHECKLIST_CATEGORY', {
+            categoryIndex: this.categoryIndex
+          })
+        });
+      }
     },
     addItem () {
-      this.$store.dispatch('ADD_CHECKLIST_ITEM', {
+      this.$store.commit('ADD_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         item: this.newItem
       });
@@ -119,6 +166,8 @@ export default {
         title: '',
         count: 1
       };
+
+      this.$refs['new-item-title'].focus();
     }
   }
 };

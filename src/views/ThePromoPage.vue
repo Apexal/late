@@ -10,9 +10,7 @@
     >
       <b>WAIT LIST</b> You are currently on the wait list and will be notified
       by email once LATE opens to the student body. Reach out to the
-      <a
-        href="mailto:matraf@rpi.edu"
-      >project lead</a> if you have any
+      <a href="mailto:matraf@rpi.edu">project lead</a> if you have any
       questions, or join the
       <a
         target="_blank"
@@ -23,7 +21,7 @@
     <p id="sis-man-holder">
       <img
         title="Better LATE than never!"
-        src="/sisman.png"
+        src="@/assets/img/sisman.png"
       >
     </p>
 
@@ -34,7 +32,7 @@
       Welcome to LATE
     </h1>
 
-    <p class="has-text-grey has-text-centered">
+    <p class="tester-count has-text-grey has-text-centered">
       <b-tag
         type="is-dark"
         class="counts"
@@ -285,6 +283,11 @@ export default {
 
     .title {
       margin-bottom: 5px;
+    }
+
+    .tester-count {
+      margin-top: 0px;
+      margin-bottom: 10px;
     }
 
     .tagline {

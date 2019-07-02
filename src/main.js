@@ -13,9 +13,7 @@ import 'bulma-tooltip';
 import VueProgressBar from 'vue-progressbar';
 import VueTour from 'vue-tour';
 
-import CourseAssessmentDot from '@/views/components/CourseAssessmentDot';
-
-import wysiwyg from 'vue-wysiwyg';
+import CourseAssessmentDot from '@/views/courses/components/CourseAssessmentDot';
 
 import datemethods from './mixins/datemethods';
 import sharedproperties from './mixins/sharedproperties';
@@ -23,11 +21,12 @@ import sharedproperties from './mixins/sharedproperties';
 import * as VueGoogleMaps from 'vue2-google-maps';
 
 import 'vue-tour/dist/vue-tour.css';
+import './sw/registerServiceWorker';
 
 Vue.use(VueTour);
 
 Vue.component('CourseAssessmentDot', CourseAssessmentDot);
-Vue.use(wysiwyg, { hideModules: { image: true } });
+
 Vue.use(Buefy, {
   defaultIconPack: 'fas'
 });

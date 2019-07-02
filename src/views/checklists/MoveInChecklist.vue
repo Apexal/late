@@ -2,55 +2,108 @@
 <template>
   <section class="section move-in-checklist">
     <h1 class="title has-text-centered-mobile">
-      Move In Checklist
+      Your Dorm Move In Checklist
     </h1>
-    <details
-      v-if="!loggedIn"
-      class="notification is-warning"
-    >
-      <summary>
-        <i class="fas fa-info-circle" />
-
-        <b>Info</b>
-      </summary>Your checklist is only saved on your current device.
-      <b>RPI Students</b> can login to <b>LATE</b> below to save their checklist
-      to their account and access all the other features of the site!
-    </details>
     <form
-      v-if="editing"
       @submit.prevent="addCategory"
     >
-      <b-field>
-        <b-input
-          v-model="newCategory"
-          type="text"
-          placeholder="New category"
-          required
-          list="recommended-categories"
-        />
-        <datalist id="recommended-categories">
-          <option
-            v-for="(c, index) in remainingRecommendedCategories"
-            :key="index"
-            :value="c"
-          />
-        </datalist>
+      <b-field
+        grouped
+        group-multiline
+      >
+        <div class="control">
+          <b-button
+            type="is-warning"
+            @click="toggleEditing"
+          >
+            {{ editing ? "Save" : "Edit" }}
+          </b-button>
+        </div>
+        <template v-if="editing">
+          <div class="control">
+            <b-button
+              :disabled="checklist.categories.length === 0"
+              @click="clearChecklist"
+            >
+              Clear
+            </b-button>
+          </div>
+          <b-field>
+            <b-input
+              v-model="newCategory"
+              type="text"
+              placeholder="New category"
+              required
+              list="recommended-categories"
+            />
+            <datalist id="recommended-categories">
+              <option
+                v-for="(c, index) in remainingRecommendedCategories"
+                :key="index"
+                :value="c"
+              />
+            </datalist>
 
-        <p class="control">
-          <button class="button is-success">
-            Add
-          </button>
-        </p>
+            <p class="control">
+              <button class="button is-success">
+                Add
+              </button>
+            </p>
+          </b-field>
+        </template>
+        <template v-else>
+          <b-button
+            v-if="loggedIn"
+            :title="checklist.private ? 'Click to make public.' : 'Click to make private.'"
+            @click="togglePrivate"
+          >
+            <span class="icon">
+              <i
+                class="fas"
+                :class="checklist.private ? 'fa-lock' : 'fa-unlock'"
+              />
+            </span>
+            {{ checklist.private ? 'Private' : 'Public' }}
+          </b-button>
+          <input
+            v-if="loggedIn && !checklist.private"
+            type="text"
+            class="input checklist-url"
+            disabled
+            :value="'https://www.late.work/checklist/' + checklist._id"
+          >
+          <a
+            v-else-if="!loggedIn"
+            class="button is-success"
+            href="/auth/login"
+          >
+            <b>RPI Students:</b>&nbsp;Login to Save to Account
+          </a>
+        </template>
       </b-field>
+
+
+      <div class="columns">
+        <div
+          v-if="editing"
+          class="column"
+        />
+      </div>
     </form>
 
     <hr>
 
-    <div class="columns is-desktop is-multiline categories">
+    <Draggable
+      v-model="categories"
+      :disabled="!editing"
+      group="categories"
+      class="columns is-desktop is-multiline categories"
+    >
       <div
         v-for="(category, index) in checklist.categories"
         :key="index"
-        class="column is-one-third-fullhd is-half-desktop is-full"
+        class="column is-one-third-fullhd is-half-desktop is-full category-column"
+        :title="editing ? 'Drag me to reorder categories!' : ''"
       >
         <Category
           :category-index="index"
@@ -58,20 +111,20 @@
           :editing="editing"
         />
       </div>
-    </div>
+    </Draggable>
 
     <template v-if="checklist.categories.length === 0">
       <p
         v-if="editing"
         class="has-text-grey has-text-cen"
       >
-        Add categories above!
+        Add categories above! You can then add items under each category, with a count of how many you need!
       </p>
       <p
         v-else
         class="has-text-grey has-text-cen"
       >
-        No categories have been added yet! Go into edit mode and add categories
+        No categories have been added yet! Go into <a @click="toggleEditing">edit mode</a> and add categories
         above!
       </p>
     </template>
@@ -79,39 +132,25 @@
     <hr>
 
     <div class="buttons">
-      <b-button @click="clearChecklist">
-        Clear
-      </b-button>
-      <b-button
-        v-if="loggedIn"
-        type="is-warning"
-        @click="editing = !editing"
+      <router-link
+        class="button is-link"
+        :to="{ name: 'tools' }"
       >
-        {{ editing ? "Stop Editing" : "Edit" }}
-      </b-button>
-      <b-button
-        v-if="loggedIn"
-        type="is-link"
-      >
-        Share
-      </b-button>
-      <a
-        v-else
-        class="button is-success"
-        href="/auth/login"
-      >
-        <b>RPI Students:</b> Login to Save
-      </a>
+        <i class="fas fa-angle-left" />
+        All Tools
+      </router-link>
     </div>
   </section>
 </template>
 
 <script>
+import Draggable from 'vuedraggable';
+
 import MoveInChecklistCategory from '@/views/checklists/components/MoveInChecklistCategory';
 
 export default {
   name: 'MoveInChecklist',
-  components: { Category: MoveInChecklistCategory },
+  components: { Draggable, Category: MoveInChecklistCategory },
   data () {
     return {
       editing: false,
@@ -132,6 +171,14 @@ export default {
     checklist () {
       return this.$store.state.checklists.checklist;
     },
+    categories: {
+      get () {
+        return this.checklist.categories;
+      },
+      set (newCategories) {
+        this.$store.commit('SET_CHECKLIST', { ...this.checklist, categories: newCategories });
+      }
+    },
     remainingRecommendedCategories () {
       return this.recommendedCategories.filter(
         cat => !this.categoryTitles.includes(cat)
@@ -147,7 +194,10 @@ export default {
   },
   methods: {
     clearChecklist () {
-      this.$store.dispatch('CLEAR_CHECKLIST');
+      this.$dialog.confirm({
+        message: 'Totally clear your checklist? All items will be lost.',
+        onConfirm: () => this.$store.commit('CLEAR_CHECKLIST')
+      });
     },
     addCategory () {
       if (this.categoryTitles.includes(this.newCategory)) {
@@ -157,12 +207,47 @@ export default {
         });
         return;
       }
-      this.$store.dispatch('ADD_CHECKLIST_CATEGORY', this.newCategory);
+      this.$store.commit('ADD_CHECKLIST_CATEGORY', this.newCategory);
       this.newCategory = '';
+    },
+    async toggleEditing () {
+      this.editing = !this.editing;
+
+      if (this.editing) {
+        // Enable navigation prompt
+        window.onbeforeunload = function () {
+          return true;
+        };
+      } else {
+        // Remove navigation prompt
+        window.onbeforeunload = null;
+        await this.$store.dispatch('SAVE_CHECKLIST');
+        this.$toast.open(`Saved checklist ${this.loggedIn ? 'to your account!' : 'to this device!'}`);
+      }
+    },
+    togglePrivate () {
+      this.$store.commit('SET_CHECKLIST', { ...this.checklist, private: !this.checklist.private });
+      this.$store.dispatch('SAVE_CHECKLIST');
+
+      this.$toast.open({
+        type: 'is-success',
+        message: `Checklist is now ${this.checklist.private ? 'private!' : 'public! Share the link to let others see your list.'}`
+      });
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.button i.fas {
+  margin-right: 3px;
+}
+
+.private-field {
+  display: inline-block;
+}
+
+.checklist-url {
+  cursor: text;
+}
 </style>

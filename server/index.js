@@ -8,12 +8,13 @@ const Session = require('koa-session');
 const Body = require('koa-body');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
+const Compress = require('koa-compress');
 
 const google = require('./modules/google');
 const moment = require('moment');
 
 // Start the Discord bot
-// require('./integrations/discord');
+const discordClient = require('./integrations/discord').client;
 
 const logger = require('./modules/logger');
 
@@ -29,7 +30,9 @@ app.use(Body({ multipart: true }));
 /* Adds useful ctx functions for API responses */
 app.use(Respond());
 
-app.keys = ['WE ARE GOING TO CHANGE THIS'];
+app.use(Compress());
+
+app.keys = [process.env.SESSION_KEY];
 
 /* Setup session */
 const CONFIG = {
@@ -58,6 +61,8 @@ app.use(async (ctx, next) => {
     ctx.state.user = await Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
+
+    ctx.state.discordClient = discordClient;
 
     // If first request, get terms
     if (ctx.state.env === 'development' || !ctx.session.terms) {

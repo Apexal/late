@@ -13,7 +13,7 @@
 
 > Lazy Automatic Time Evaluator
 
-  <img align="right" src="./public/sisman.svg" width="150">
+  <img align="right" src="./src/assets/img/sisman.svg" width="150">
 
 
 #### Links
@@ -21,7 +21,7 @@
 - [RCOS Project Profile](https://rcos.io/projects/apexal/late/profile)
 - [Project Proposal](https://docs.google.com/document/d/1bq5DBvEQhnIkPUz-keMvDHq_dEQ21vwJqSUVB9zdSYk/edit)
 - [RCOS Observatory](https://rcos.io/)
-- [Website](https://rpi-late.herokuapp.com/)
+- [Website](https://www.late.work/)
 
 ### Overview
 

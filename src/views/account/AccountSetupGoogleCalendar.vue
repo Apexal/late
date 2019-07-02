@@ -14,6 +14,14 @@
         href="/auth/google"
         class="button is-primary"
       >Login with Google</a>
+      <hr>
+      <b-button
+        type="is-secondary"
+        class="is-pulled-right"
+        @click="skip"
+      >
+        Skip Step
+      </b-button>
     </div>
     <div v-else>
       <div v-if="loading">
@@ -120,9 +128,17 @@
         <b-button
           type="is-primary"
           :disabled="saved"
+          class="is-pulled-right"
           @click="save"
         >
-          Save
+          Save and Continue
+        </b-button>
+        <b-button
+          type="is-secondary"
+          class="is-pulled-right"
+          @click="skip"
+        >
+          Skip Step
         </b-button>
       </div>
     </div>
@@ -286,7 +302,12 @@ export default {
         message: 'Saved Google Calendar settings!'
       });
 
+      this.$router.push({ name: 'setup-complete' });
+
       this.loading = false;
+    },
+    async skip () {
+      this.$router.push({ name: 'setup-complete' });
     },
     async reset (calendarType) {
       this.$toast.open({ type: 'is-success', message: 'Coming soon...' });

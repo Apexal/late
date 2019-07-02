@@ -2,7 +2,7 @@ import axios from '@/api';
 
 const state = {
   user: {},
-  isAuthenticated: false
+  isAuthenticated: null
 };
 const getters = {
   userSetup: (state, getters, rootState, rootGetters) => {
@@ -38,13 +38,15 @@ const getters = {
 };
 
 const actions = {
-  async GET_USER ({ dispatch }) {
+  async GET_USER ({ commit, dispatch }) {
     try {
       const response = await axios.get('/students/user');
       const user = response.data.user;
       await dispatch('SET_USER', user);
     } catch (e) {
       console.log('Not logged in!');
+      commit('UNSET_USER');
+      commit('SET_LOADED', true);
     }
   },
   async SET_USER ({ dispatch, commit }, user) {

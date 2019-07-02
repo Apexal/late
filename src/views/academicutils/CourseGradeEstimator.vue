@@ -11,6 +11,7 @@
     >
       <b-field
         grouped
+        group-multiline
         class="is-block-touch"
       >
         <b-field
@@ -60,6 +61,14 @@
         >
           Total Weight {{ totalWeight }}%
         </b-tag>
+        <div class="control">
+          <b-button
+            v-if="loggedIn && selectedCourse"
+            @click="save"
+          >
+            Save Categories for {{ selectedCourse.title }}
+          </b-button>
+        </div>
       </b-field>
     </form>
     <hr>
@@ -133,16 +142,6 @@
       Add categories above, e.g.
       <b>45% Homework</b> and <b>10% Quizzes</b>.
     </p>
-    <hr>
-
-    <div
-      v-if="loggedIn && selectedCourse"
-      class="buttons"
-    >
-      <b-button @click="save">
-        Save Categories for {{ selectedCourse.title }}
-      </b-button>
-    </div>
   </div>
 </template>
 

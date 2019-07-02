@@ -2,7 +2,8 @@
 <template>
   <div
     class="panel-block is-flex item"
-    :class="itemClass"
+    :class="[{ editing, viewing }, itemClass]"
+    :title="editing ? 'Drag me to reorder items!' : ''"
   >
     <span class="item-title">{{ item.title }}</span>
 
@@ -20,22 +21,15 @@
         @click="removeItem"
       />
     </template>
+    <template v-else-if="!viewing">
+      <b class="is-unselectable item-count">{{ item.count }}</b>
+      <b-checkbox
+        v-model="complete"
+        title="Click to toggle!"
+      />
+    </template>
     <template v-else>
-      <span
-        class="icon subtract-progress"
-        :class="{ 'has-text-grey': item.progress - 1 < 0 }"
-        @click="updateItemProgress(item.progress - 1)"
-      >
-        <i class="fas fa-minus-circle" />
-      </span>
-      <span>{{ item.progress }} / {{ item.count }}</span>
-      <span
-        class="icon add-progress"
-        :class="{ 'has-text-grey': item.progress + 1 > item.count }"
-        @click="updateItemProgress(item.progress + 1)"
-      >
-        <i class="fas fa-plus-circle" />
-      </span>
+      <span class="is-unselectable">{{ item.count }}</span>
     </template>
   </div>
 </template>
@@ -59,41 +53,43 @@ export default {
     item: {
       type: Object,
       required: true
+    },
+    viewing: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
-    itemClass () {
-      if (this.item.progress === 0) return '';
-      else if (this.item.progress === this.item.count) {
-        return 'completed';
+    complete: {
+      get () {
+        return this.item.complete;
+      },
+      set (newComplete) {
+        this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
+          categoryIndex: this.categoryIndex,
+          itemIndex: this.itemIndex,
+          updates: { complete: newComplete }
+        });
       }
-      return 'in-progress';
+    },
+    itemClass () {
+      return this.item.complete ? 'completed' : '';
     }
   },
   methods: {
-    updateItemProgress (progress) {
-      if (progress < 0 || progress > this.item.count) return;
-
-      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
-        categoryIndex: this.categoryIndex,
-        itemIndex: this.itemIndex,
-        updates: { progress }
-      });
-    },
     updateItemCount (count) {
       if (count < 0 || count > 100) return;
 
       const updates = { count };
-      if (this.item.progress > count) updates.progress = count;
 
-      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
+      this.$store.commit('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
         updates
       });
     },
     removeItem () {
-      this.$store.dispatch('REMOVE_CHECKLIST_ITEM', {
+      this.$store.commit('REMOVE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex
       });
@@ -104,33 +100,26 @@ export default {
 
 <style lang="scss" scoped>
 .item {
+  &.editing {
+    cursor: move;
+  }
+
   .item-title {
     flex: 1;
+  }
+
+  .item-count {
+    margin-right:5px;
   }
 
   input {
     margin: 0;
   }
 
-  border-left: 3px solid rgb(255, 175, 175);
-  &.completed {
-    border-left: 3px solid lightgreen;
-  }
-  &.in-progress {
-    border-left: 3px solid rgb(255, 253, 163);
-  }
-
-  .subtract-progress,
-  .add-progress {
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.1s;
-  }
-
-  &:hover {
-    .subtract-progress,
-    .add-progress {
-      opacity: 1;
+  &:not(.viewing):not(.editing) {
+    border-left: 2px solid rgb(255, 175, 175);
+    &.completed {
+      border-left: 2px solid lightgreen;
     }
   }
 

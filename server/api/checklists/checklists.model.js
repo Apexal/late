@@ -19,7 +19,8 @@ const category = new Schema({
         required: true
       },
       count: { type: Number, required: true },
-      progress: { type: Number, default: 0 }
+      buying: { type: Boolean, default: false },
+      complete: { type: Boolean, default: false }
     }
   ]
 });
@@ -33,7 +34,7 @@ const schema = new Schema(
       required: true
     },
     categories: [category],
-    private: { type: Boolean, default: false }
+    private: { type: Boolean, default: true }
   },
   { timestamps: true }
 );
