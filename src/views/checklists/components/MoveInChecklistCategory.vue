@@ -30,14 +30,16 @@
         @submit.prevent="addItem"
       >
         <b-field>
-          <b-input
+          <input
             :id="`category-${categoryIndex}-new-item-title`"
             ref="new-item-title"
             v-model.trim="newItem.title"
-            placeholder="Name of item"
+            class="input is-small"
+            type="text"
+            placeholder="Name of new item"
             expanded
             required
-          />
+          >
           <b-input
             v-model.number="newItem.count"
             type="number"
@@ -127,16 +129,10 @@ export default {
     },
     progress () {
       if (this.category.items.length === 0) return 0;
-      const totalItems = this.category.items.reduce(
-        (acc, item) => acc + item.count,
-        0
-      );
-      const totalCompletedItems = this.category.items.reduce(
-        (acc, item) => acc + item.progress,
-        0
-      );
 
-      return (totalCompletedItems / totalItems) * 100;
+      const completedCount = this.category.items.filter(i => i.complete).length;
+
+      return (completedCount / this.category.items.length) * 100;
     },
     categoryTagType () {
       if (this.viewing || this.editing) return 'is-white';

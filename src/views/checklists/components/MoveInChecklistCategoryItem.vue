@@ -22,21 +22,10 @@
       />
     </template>
     <template v-else-if="!viewing">
-      <span
-        class="icon subtract-progress"
-        :class="{ 'has-text-grey': item.progress - 1 < 0 }"
-        @click="updateItemProgress(item.progress - 1)"
-      >
-        <i class="fas fa-minus-circle" />
-      </span>
-      <span class="is-unselectable">{{ item.progress }} / {{ item.count }}</span>
-      <span
-        class="icon add-progress"
-        :class="{ 'has-text-grey': item.progress + 1 > item.count }"
-        @click="updateItemProgress(item.progress + 1)"
-      >
-        <i class="fas fa-plus-circle" />
-      </span>
+      <b class="is-unselectable item-count">{{ item.count }}</b>
+      <b-checkbox
+        v-model="complete"
+      />
     </template>
     <template v-else>
       <span class="is-unselectable">{{ item.count }}</span>
@@ -70,29 +59,27 @@ export default {
     }
   },
   computed: {
-    itemClass () {
-      if (this.item.progress === 0) return '';
-      else if (this.item.progress === this.item.count) {
-        return 'completed';
+    complete: {
+      get () {
+        return this.item.complete;
+      },
+      set (newComplete) {
+        this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
+          categoryIndex: this.categoryIndex,
+          itemIndex: this.itemIndex,
+          updates: { complete: newComplete }
+        });
       }
-      return 'in-progress';
+    },
+    itemClass () {
+      return this.item.complete ? 'completed' : '';
     }
   },
   methods: {
-    updateItemProgress (progress) {
-      if (progress < 0 || progress > this.item.count) return;
-
-      this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
-        categoryIndex: this.categoryIndex,
-        itemIndex: this.itemIndex,
-        updates: { progress }
-      });
-    },
     updateItemCount (count) {
       if (count < 0 || count > 100) return;
 
       const updates = { count };
-      if (this.item.progress > count) updates.progress = count;
 
       this.$store.commit('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
@@ -120,6 +107,10 @@ export default {
     flex: 1;
   }
 
+  .item-count {
+    margin-right:5px;
+  }
+
   input {
     margin: 0;
   }
@@ -128,23 +119,6 @@ export default {
     border-left: 2px solid rgb(255, 175, 175);
     &.completed {
       border-left: 2px solid lightgreen;
-    }
-    &.in-progress {
-      border-left: 2px solid rgb(255, 253, 163);
-    }
-  }
-
-  .subtract-progress,
-  .add-progress {
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.1s;
-  }
-
-  &:hover {
-    .subtract-progress,
-    .add-progress {
-      opacity: 1;
     }
   }
 

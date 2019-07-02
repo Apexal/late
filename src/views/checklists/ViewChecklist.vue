@@ -108,7 +108,7 @@ export default {
         onConfirm: async () => {
           for (let i = 0; i < this.checklist.categories.length; i++) {
             for (let j = 0; j < this.checklist.categories[i].items.length; j++) {
-              this.checklist.categories[i].items[j].progress = 0;
+              this.checklist.categories[i].items[j].complete = false;
             }
           }
           this.$store.commit('SET_CHECKLIST', this.checklist);
