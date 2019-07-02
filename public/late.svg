@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   preserveAspectRatio="xMidYMid meet"
+   viewBox="-1.0000000000002274 -1 644.0000000000002 643.9999999999998"
+   width="640"
+   height="640"
+   id="svg248"
+   sodipodi:docname="late.svg"
+   inkscape:version="0.92.4 (33fec40, 2019-01-16)">
+  <metadata
+     id="metadata252">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     id="namedview250"
+     showgrid="false"
+     inkscape:zoom="1.303125"
+     inkscape:cx="192.70039"
+     inkscape:cy="321.06066"
+     inkscape:window-x="1920"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g240" />
+  <defs
+     id="defs236">
+    <path
+       d="M640 320C640 496.61 496.61 640 320 640C143.39 640 0 496.61 0 320C0 143.39 143.39 0 320 0C496.61 0 640 143.39 640 320Z"
+       id="d9sQwOKHn" />
+    <path
+       d="M346.54 58.32L346.54 326.2L509.53 326.11L509.56 379.07L346.54 379.16L346.54 379.18L288.32 379.18L288.32 58.32L346.54 58.32Z"
+       id="bWapE1Rru" />
+  </defs>
+  <g
+     id="g246">
+    <g
+       id="g240">
+      <use
+         xlink:href="#d9sQwOKHn"
+         opacity="1"
+         fill="#8d5aa2"
+         fill-opacity="1"
+         id="use238"
+         style="fill:#2e3b59;fill-opacity:1" />
+    </g>
+    <g
+       id="g244">
+      <use
+         xlink:href="#bWapE1Rru"
+         opacity="1"
+         fill="#8ae0e2"
+         fill-opacity="1"
+         id="use242"
+         style="fill:#70cad1;fill-opacity:1" />
+    </g>
+  </g>
+</svg>
