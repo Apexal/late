@@ -58,7 +58,6 @@
     <router-link
       :to="{ name: 'setup-google-calendar' }"
       class="button is-primary is-pulled-right"
-      :class="{ 'is-loading': loading }"
     >
       Save and Continue
     </router-link>

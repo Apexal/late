@@ -12,6 +12,9 @@ export default {
     courses () {
       return this.$store.getters.current_courses;
     },
+    ongoingCourses () {
+      return this.$store.getters.ongoing_courses;
+    },
     currentTerm () {
       return this.$store.getters.currentTerm;
     },

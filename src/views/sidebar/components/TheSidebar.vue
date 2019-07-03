@@ -115,7 +115,7 @@ export default {
         },
         courseList: {
           component: SidebarCourseList,
-          name: 'Your Courses',
+          name: 'Current Courses',
           icon: 'fas fa-graduation-cap',
           tagColor: 'link'
         },

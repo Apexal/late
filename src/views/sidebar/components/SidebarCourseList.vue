@@ -15,7 +15,7 @@
       class="sidebar-body"
     >
       <div
-        v-for="c in courses"
+        v-for="c in selectedCourses"
         :key="c.crn"
         :title="c.originalTitle + ' - ' + c.summary + ' - ' + c.sectionId"
         class="panel-block course-panel-block"
@@ -24,6 +24,13 @@
         <CourseAssessmentDot :course="c" />
         {{ c.title }}
       </div>
+      <p
+        v-if="courses.length !== ongoingCourses.length"
+        class="panel-divider has-background-grey-lighter"
+        @click="showingAll = !showingAll"
+      >
+        Show {{ showingAll ? 'current' : 'all' }}
+      </p>
     </div>
     <div
       v-if="!onBreak"
@@ -42,11 +49,26 @@
 
 <script>
 export default {
-  name: 'SidebarCourseList'
+  name: 'SidebarCourseList',
+  data () {
+    return {
+      showingAll: false
+    };
+  },
+  computed: {
+    selectedCourses () {
+      return this.showingAll ? this.courses : this.ongoingCourses;
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+.panel-divider {
+  text-align: center;
+  cursor: pointer;
+}
+
 .course-panel-block {
   padding: 10px;
   cursor: pointer;
