@@ -32,7 +32,6 @@ async function setProfile (ctx) {
 
   if (body.method === 'manual') {
     // TODO: validate RIN
-    ctx.state.user.rin = body.rin;
     ctx.state.user.name.first = body.first_name;
     ctx.state.user.name.last = body.last_name;
     ctx.state.user.major = body.major;
@@ -40,7 +39,6 @@ async function setProfile (ctx) {
     ctx.state.user.grad_year = parseInt(body.grad_year);
   } else if (body.method === 'sis') {
     const { rin, pin } = body;
-    ctx.state.user.rin = body.rin;
 
     const scrapedInfo = await scrapeSISForProfileInfo(rin, pin);
     ctx.state.user.set(scrapedInfo);
@@ -115,7 +113,7 @@ async function importCourseSchedule (ctx) {
   let courseSchedule = [];
   try {
     courseSchedule = await scrapeSISForCourseSchedule(
-      ctx.state.user.rin,
+      body.rin,
       body.pin,
       ctx.session.currentTerm,
       ctx.state.user

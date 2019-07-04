@@ -12,18 +12,6 @@ const Exam = require('../exams/exams.model');
 const schema = new Schema(
   {
     accountLocked: { type: Boolean, default: false },
-    rin: {
-      type: String,
-      minlength: 9,
-      trim: true
-      // required: true
-      /* validate: {
-      validator: function(rin) {
-        return rpiValidator.isRIN(rin);
-      },
-      message: props => `${props.value} is not a valid RIN!`
-    } */
-    },
     name: {
       first: {
         type: String,

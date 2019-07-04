@@ -31,38 +31,49 @@
             </h2>
           </summary>
 
-          <div class="sis-method">
-            <div class="field">
-              <div class="control">
-                <label
-                  for="pin"
-                  class="label is-pulled-left"
-                >SIS PIN:</label>
-                <input
+          <form class="columns sis-method">
+            <div class="column">
+              <b-field>
+                <b-input
+                  id="rin"
+                  v-model.trim="rin"
+                  type="password"
+                  size="is-small"
+                  placeholder="Your RIN"
+                  @change="saved = false"
+                />
+              </b-field>
+            </div>
+
+            <div class="column">
+              <b-field>
+                <b-input
                   id="pin"
                   v-model.trim="pin"
                   type="password"
-                  class="input is-small"
+                  size="is-small"
                   placeholder="Enter your SIS password."
                   @change="saved = false"
-                >
-                <b-button
-                  size="is-small"
-                  type="is-primary"
-                  :loading="loading"
-                  :disabled="!canReset"
-                  @click="importSchedule"
-                >
-                  {{ user.setup.profile ? "Import Schedule" : "Save" }}
-                </b-button>
-              </div>
+                />
+              </b-field>
             </div>
-            <p class="help">
-              Your password will be used to log into SIS, navigate to your
-              current schedule page, and grab the CRNs of your courses. Your
-              password is never saved or logged anywhere.
-            </p>
-          </div>
+            <div class="column is-narrow has-text-centered">
+              <b-button
+                size="is-small"
+                type="is-primary"
+                :loading="loading"
+                :disabled="!canReset"
+                @click="importSchedule"
+              >
+                {{ user.setup.profile ? "Import Schedule" : "Save" }}
+              </b-button>
+            </div>
+          </form>
+          <p class="help">
+            Your RIN and password will be used to log into SIS, navigate to your
+            current schedule page, and grab the CRNs of your courses. Your
+            password and RIN is never saved or logged anywhere.
+          </p>
         </details>
       </form>
 
@@ -164,6 +175,7 @@ export default {
       saved: false,
       loading: false,
       method: 'sis',
+      rin: '',
       pin: '',
       openedCourseID: ''
     };
@@ -196,6 +208,7 @@ export default {
       let request;
       try {
         request = await this.$http.post('/account/courseschedule', {
+          rin: this.rin,
           pin: this.pin
         });
       } catch (e) {

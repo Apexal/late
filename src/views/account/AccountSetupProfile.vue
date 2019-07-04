@@ -6,7 +6,7 @@
     </h2>
     <form @submit.prevent="save">
       <div class="columns">
-        <div class="column is-half">
+        <div class="column is-full">
           <div class="field">
             <label
               class="label"
@@ -20,26 +20,6 @@
                 type="text"
                 placeholder="RCS ID"
                 disabled
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-half">
-          <div class="field">
-            <label
-              class="label"
-              for="rin"
-            >RIN</label>
-            <div class="control">
-              <input
-                id="rin"
-                v-model.trim="rin"
-                class="input"
-                type="text"
-                placeholder="RIN"
-                required
-                @change="saved = false"
               >
             </div>
           </div>
@@ -183,7 +163,6 @@ export default {
         ? this.$store.state.auth.user.name.last
         : '';
 
-      this.rin = this.$store.state.auth.user.rin || '';
       this.grad_year = this.$store.state.auth.user.grad_year || '';
       this.major = this.$store.state.auth.user.major || '';
     },
@@ -211,17 +190,11 @@ export default {
       });
     },
     startImportFromSIS () {
-      if (this.rin) {
+      this.promptRIN(rin => {
         this.promptPIN(pin => {
-          this.importFromSIS(this.rin, pin);
+          this.importFromSIS(rin, pin);
         });
-      } else {
-        this.promptRIN(rin => {
-          this.promptPIN(pin => {
-            this.importFromSIS(rin, pin);
-          });
-        });
-      }
+      });
     },
     async importFromSIS (rin, pin) {
       this.loading = true;
@@ -253,7 +226,6 @@ export default {
           method: 'manual',
           first_name: this.first_name,
           last_name: this.last_name,
-          rin: this.rin,
           grad_year: this.grad_year,
           major: this.major
         });
