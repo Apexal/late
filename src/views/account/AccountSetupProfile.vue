@@ -78,7 +78,7 @@
             <div class="control">
               <input
                 id="grad-year"
-                v-model.number="grad_year"
+                v-model.number="graduationYear"
                 type="number"
                 min="2000"
                 max="3000"
@@ -144,7 +144,7 @@ export default {
       first_name: '',
       last_name: '',
       rin: '',
-      grad_year: '',
+      graduationYear: '',
       major: ''
     };
   },
@@ -163,7 +163,7 @@ export default {
         ? this.$store.state.auth.user.name.last
         : '';
 
-      this.grad_year = this.$store.state.auth.user.grad_year || '';
+      this.graduationYear = this.$store.state.auth.user.graduationYear || '';
       this.major = this.$store.state.auth.user.major || '';
     },
     promptRIN (onConfirm) {
@@ -226,7 +226,7 @@ export default {
           method: 'manual',
           first_name: this.first_name,
           last_name: this.last_name,
-          grad_year: this.grad_year,
+          graduationYear: this.graduationYear,
           major: this.major
         });
       } catch (e) {

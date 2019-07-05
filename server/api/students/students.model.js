@@ -44,7 +44,7 @@ const schema = new Schema(
       minlength: 1,
       maxlength: 200
     },
-    grad_year: {
+    graduationYear: {
       type: Number,
       min: 2000,
       max: 3000
@@ -229,7 +229,7 @@ schema.methods.getUserAssignments = function ({
         ]
       }
     })
-    .populate('_student', '_id rcs_id name grad_year')
+    .populate('_student', '_id rcs_id name graduationYear')
     .sort('dueDate')
     .sort('-priority')
     .exec();
@@ -261,7 +261,7 @@ schema.methods.getExams = function (start, end, title, courseCRN) {
   return this.model('Exam')
     .find(query)
     .populate('_blocks')
-    .populate('_student', '_id rcs_id name grad_year')
+    .populate('_student', '_id rcs_id name graduationYear')
     .sort('date')
     .sort('-timeRemaining')
     .exec();
@@ -289,7 +289,7 @@ schema.virtual('full_name').get(function () {
 schema.virtual('display_name').get(function () {
   if (this.name.first) {
     return `${this.full_name} ${
-      this.grad_year ? '\'' + this.grad_year.toString().slice(-2) : ''
+      this.graduationYear ? '\'' + this.graduationYear.toString().slice(-2) : ''
     }`;
   } else return this.rcs_id;
 });
@@ -300,7 +300,7 @@ schema.virtual('setup_checks').get(function () {
 
 schema.virtual('grade_name').get(function () {
   // TODO: implement properly
-  switch (this.grad_year) {
+  switch (this.graduationYear) {
   case 2023:
     return 'Freshman';
   case 2022:

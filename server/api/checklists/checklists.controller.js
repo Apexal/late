@@ -37,7 +37,7 @@ async function getChecklist (ctx) {
     checklist = await Checklist.findOne({
       _id: checklistID,
       private: false
-    }).populate('_student', 'rcs_id name grad_year');
+    }).populate('_student', 'rcs_id name graduationYear');
   } catch (e) {
     logger.error(`Failed to get checklist ${checklistID} for guest: ${e}`);
     return ctx.badRequest('Could not find the checklist!');

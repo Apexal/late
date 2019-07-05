@@ -86,11 +86,11 @@ async function setAllFromSIS (ctx) {
   ctx.state.user.set(profileInfo);
   ctx.state.user.setup.profile = true;
 
-  if (!ctx.state.user.grad_year) {
+  if (!ctx.state.user.graduationYear) {
     // Guess graduation year
     try {
       const gradYear = parseInt(registeredTermCodes.sort()[0].substring(0, 4)) + 4;
-      ctx.state.user.grad_year = gradYear;
+      ctx.state.user.graduationYear = gradYear;
       logger.info(`Guessed graduation year to be ${gradYear}`);
     } catch (e) {
       logger.error('Could not guess graduation year.');
@@ -145,7 +145,7 @@ async function setAllFromSIS (ctx) {
  * - first_name
  * - last_name
  * - rin
- * - grad_year
+ * - graduationYear
  * Save it to the logged in user.
  *
  * @param {Koa context} ctx
@@ -166,7 +166,7 @@ async function setProfile (ctx) {
     ctx.state.user.name.last = body.last_name;
     ctx.state.user.major = body.major;
 
-    ctx.state.user.grad_year = parseInt(body.grad_year);
+    ctx.state.user.graduationYear = parseInt(body.graduationYear);
   } else if (body.method === 'sis') {
     const { rin, pin } = body;
 

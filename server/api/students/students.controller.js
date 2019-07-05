@@ -95,7 +95,7 @@ async function getStudent (ctx) {
  * Edit a student's properties iff the logged in user is an admin.
  *
  * Request body should be object of updates, e.g.:
- * { grad_year: 2022, name: { first: 'Foo', last: 'bar' } }
+ * { graduationYear: 2022, name: { first: 'Foo', last: 'bar' } }
  *
  * @param {Koa context} ctx
  * @returns The updated student

@@ -50,10 +50,10 @@
         </b-table-column>
 
         <b-table-column
-          field="grad_year"
+          field="graduationYear"
           label="Graduation Year"
         >
-          {{ props.row.grad_year || '---' }}
+          {{ props.row.graduationYear || '---' }}
         </b-table-column>
       </template>
 

@@ -19,7 +19,7 @@ async function getExamMiddleware (ctx, next) {
       _id: examID,
       _student: ctx.state.user._id
     })
-      .populate('_student', '_id rcs_id name grad_year')
+      .populate('_student', '_id rcs_id name graduationYear')
       .populate('_blocks');
   } catch (e) {
     logger.error(

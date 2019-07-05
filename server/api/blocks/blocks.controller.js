@@ -48,7 +48,7 @@ async function addWorkBlock (ctx) {
         ],
         _id: assessmentID
       })
-      .populate('_student', '_id rcs_id name grad_year')
+      .populate('_student', '_id rcs_id name graduationYear')
       .populate({
         path: '_blocks',
         match: {
@@ -153,7 +153,7 @@ async function editWorkBlock (ctx) {
         ],
         _id: assessmentID
       })
-      .populate('_student', '_id rcs_id name grad_year')
+      .populate('_student', '_id rcs_id name graduationYear')
 
       .populate({
         path: '_blocks',
@@ -231,7 +231,7 @@ async function deleteWorkBlock (ctx) {
         ],
         _id: assessmentID
       })
-      .populate('_student', '_id rcs_id name grad_year')
+      .populate('_student', '_id rcs_id name graduationYear')
       .populate({
         path: '_blocks',
         match: {
