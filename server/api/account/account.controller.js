@@ -1,5 +1,6 @@
 const logger = require('../../modules/logger');
 const {
+  scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,
   scrapePeriodTypesFromCRNs
@@ -7,7 +8,137 @@ const {
 
 const colorThemes = require('../../modules/color_themes');
 
+const Term = require('../terms/terms.model');
 const Course = require('../courses/courses.model');
+
+const generateOtherCourse = (user, term) => ({
+  _student: user._id,
+  sectionId: 0,
+  originalTitle: 'Other',
+  title: 'Other',
+  startDate: term.start,
+  endDate: term.end,
+  summary: 'OTHER',
+  termCode: term.code,
+  crn: '00000',
+  credits: 0,
+  periods: [],
+  links: []
+});
+
+/**
+ * Given an array of course objects, find their matches and update any info and create new courses.
+ *
+ * @param {ObjectID} studentID The user's ID
+ * @param {String} termCode The code of the term of the courses (e.g. '201901')
+ * @param {Array} newCourses The course object array
+ */
+async function updateCourses (studentID, termCode, newCourses) {
+  let colorThemeIndex = 0;
+  let colorTheme = colorThemes[colorThemeIndex];
+  let colorIndex = 0;
+  const promises = newCourses.map(async course => {
+    // Look for match in old course list
+    let courseDoc = await Course.findOne({
+      _student: studentID,
+      termCode,
+      crn: course.crn
+    });
+
+    if (courseDoc) {
+      Object.assign(courseDoc, {
+        sectionId: course.sectionId,
+        startDate: course.startDate,
+        endDate: course.endDate,
+        credits: course.credits,
+        periods: course.periods
+      });
+    } else {
+      // Generate a random color for a new course
+      course.color = colorTheme[colorIndex];
+      colorIndex++;
+      if (colorIndex === colorTheme.length) colorIndex = 0;
+
+      courseDoc = new Course(course);
+    }
+    courseDoc.save();
+
+    return courseDoc;
+  });
+
+  return Promise.all(promises);
+}
+
+async function setAllFromSIS (ctx) {
+  const { rin, pin } = ctx.request.body;
+
+  if (!rin || !pin) {
+    return ctx.badRequest('You must pass `rin` and `pin`!');
+  }
+
+  const terms = await Term.find();
+
+  let registeredTermCodes = await scrapeSISForRegisteredTerms(rin, pin);
+  ctx.state.user.terms = registeredTermCodes;
+  ctx.state.user.setup.terms = true;
+
+  const profileInfo = await scrapeSISForProfileInfo(rin, pin);
+  ctx.state.user.set(profileInfo);
+  ctx.state.user.setup.profile = true;
+
+  if (!ctx.state.user.grad_year) {
+    // Guess graduation year
+    try {
+      const gradYear = parseInt(registeredTermCodes.sort()[0].substring(0, 4)) + 4;
+      ctx.state.user.grad_year = gradYear;
+      logger.info(`Guessed graduation year to be ${gradYear}`);
+    } catch (e) {
+      logger.error('Could not guess graduation year.');
+    }
+  }
+
+  let currentCourses = [];
+
+  for (let termCode of registeredTermCodes) {
+    logger.info(`${termCode}: Getting courses`);
+
+    const term = terms.find(t => t.code === termCode);
+
+    let courseSchedule;
+    try {
+      courseSchedule = await scrapeSISForCourseSchedule(
+        rin,
+        pin,
+        term,
+        ctx.state.user._id
+      );
+    } catch (e) {
+      logger.error(e);
+      registeredTermCodes = registeredTermCodes.filter(code => code !== termCode);
+      ctx.state.user.terms = registeredTermCodes;
+      continue;
+    }
+    try {
+      courseSchedule = await scrapePeriodTypesFromCRNs(termCode, courseSchedule);
+    } catch (e) {
+      logger.error(`Failed to get period types for ${termCode}`);
+    }
+    courseSchedule.push(generateOtherCourse(ctx.state.user, term));
+    await updateCourses(ctx.state.user._id, termCode, courseSchedule);
+    ctx.state.user.setup.course_schedule.push(termCode);
+
+    logger.info(`Got ${courseSchedule.length} courses`);
+
+    if (termCode === ctx.session.currentTerm.code) currentCourses = courseSchedule;
+  }
+
+  await ctx.state.user.save();
+
+  ctx.ok({
+    updatedUser: ctx.state.user,
+    courses: currentCourses
+  });
+}
 
 /**
  * Given personal info in the request body:
@@ -31,7 +162,6 @@ async function setProfile (ctx) {
   }
 
   if (body.method === 'manual') {
-    // TODO: validate RIN
     ctx.state.user.name.first = body.first_name;
     ctx.state.user.name.last = body.last_name;
     ctx.state.user.major = body.major;
@@ -116,7 +246,7 @@ async function importCourseSchedule (ctx) {
       body.rin,
       body.pin,
       ctx.session.currentTerm,
-      ctx.state.user
+      ctx.state.user._id
     );
   } catch (e) {
     logger.error(
@@ -138,56 +268,10 @@ async function importCourseSchedule (ctx) {
   }
 
   // "Other" course
-  courseSchedule.push({
-    _student: ctx.state.user._id,
-    sectionId: 0,
-    originalTitle: 'Other',
-    title: 'Other',
-    startDate: ctx.session.currentTerm.start,
-    endDate: ctx.session.currentTerm.end,
-    summary: 'OTHER',
-    termCode,
-    crn: '00000',
-    credits: 0,
-    periods: [],
-    links: []
-  });
+  courseSchedule.push(generateOtherCourse(ctx.state.user, ctx.session.currentTerm));
 
   // If reimporting, only update sectionId, start/end dates, credits, and periods
-
-  let colorThemeIndex = 0;
-  let colorTheme = colorThemes[colorThemeIndex];
-  let colorIndex = 0;
-  const promises = courseSchedule.map(async course => {
-    // Look for match in old course list
-    let courseDoc = await Course.findOne({
-      _student: ctx.state.user._id,
-      termCode,
-      crn: course.crn
-    });
-
-    if (courseDoc) {
-      Object.assign(courseDoc, {
-        sectionId: course.sectionId,
-        startDate: course.startDate,
-        endDate: course.endDate,
-        credits: course.credits,
-        periods: course.periods
-      });
-    } else {
-      // Generate a random color for a new course
-      course.color = colorTheme[colorIndex];
-      colorIndex++;
-      if (colorIndex === colorTheme.length) colorIndex = 0;
-
-      courseDoc = new Course(course);
-    }
-    courseDoc.save();
-
-    return courseDoc;
-  });
-
-  const courses = await Promise.all(promises);
+  const courses = await updateCourses(ctx.state.user._id, ctx.session.currentTerm.code, courseSchedule);
 
   ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code);
   await ctx.state.user.save();
@@ -250,6 +334,7 @@ async function setGoogle (ctx) {
 }
 
 module.exports = {
+  setAllFromSIS,
   setProfile,
   setTerms,
   importCourseSchedule,

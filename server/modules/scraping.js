@@ -7,6 +7,8 @@ const logger = require('./logger');
 const SIS_LOGIN_URL = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin';
 const SIS_SCHEDULE_URL = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl';
 const SIS_TRANSCRIPT_URL = 'https://sis.rpi.edu/rss/bwskotrn.P_ViewTran';
+const SIS_SET_TERM_URL = 'https://sis.rpi.edu/rss/bwcklibs.P_StoreTerm';
+const SIS_VIEW_TERM_REGISTRATION_URL = ' https://sis.rpi.edu/rss/bwskrsta.P_RegsStatusDisp';
 const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs'; // + term + '.htm'
 
 const PERIOD_TABLE_TYPE_COLUMN = 3;
@@ -20,6 +22,17 @@ const DAY_INITIALS = {
   W: 3,
   R: 4,
   F: 5
+};
+
+const possibleTerms = () => {
+  const possibleTerms = [];
+  const nextYear = moment().year() + 1;
+  for (let year = nextYear; year > nextYear - 5; year--) {
+    possibleTerms.push(year + '09');
+    possibleTerms.push(year + '05');
+    possibleTerms.push(year + '01');
+  }
+  return possibleTerms;
 };
 
 /**
@@ -59,6 +72,32 @@ async function loginToSIS (RIN, PIN) {
   return jar;
 }
 
+async function scrapeSISForRegisteredTerms (RIN, PIN) {
+  const jar = await loginToSIS(RIN, PIN);
+
+  logger.info('Getting registered terms for student from SIS.');
+
+  const termCodes = possibleTerms();
+
+  const registeredCodes = [];
+  for (let termCode of termCodes) {
+    let $ = await request({
+      uri: SIS_VIEW_TERM_REGISTRATION_URL,
+      method: 'POST',
+      form: {
+        term_in: termCode
+      },
+      transform: body => cheerio.load(body),
+      jar
+    });
+
+    if ($('div.pagetitlediv h2').text().trim() === 'Check Your Registration Status:') {
+      registeredCodes.push(termCode);
+    }
+  }
+  return registeredCodes;
+}
+
 /**
  * Given a student's id (their RIN) and their PIN,
  * login to SIS for them and navigate to their unofficial transcript
@@ -69,7 +108,7 @@ async function scrapeSISForProfileInfo (RIN, PIN) {
   // Must be used with each request
   const jar = await loginToSIS(RIN, PIN);
 
-  logger.info(`Getting profile info for student ${RIN} from SIS.`);
+  logger.info('Getting profile info for student from SIS.');
 
   let $ = await request({
     uri: SIS_TRANSCRIPT_URL,
@@ -104,7 +143,7 @@ async function scrapeSISForProfileInfo (RIN, PIN) {
  * login to SIS for them and navigate to their shedule page
  * and simply grab the CRNs of each of their courses and forget their credentials.
  **/
-async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
+async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
   // The cookie jar to persist the login session
   // Must be used with each request
   const jar = await loginToSIS(RIN, PIN);
@@ -164,7 +203,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, user) {
     );
 
     const course = {
-      _student: user._id,
+      _student: studentID,
       sectionId,
       originalTitle: courseTitle,
       title: courseTitle,
@@ -340,6 +379,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
 }
 
 module.exports = {
+  scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,
   scrapePeriodTypesFromCRNs
