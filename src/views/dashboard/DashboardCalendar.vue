@@ -21,6 +21,7 @@
       :selectable="true"
       :header="calendar.header"
       :config="calendar.config"
+      @view-render="viewRender"
     />
     <b-button
       title="Toggle Fullscreen"
@@ -93,7 +94,7 @@ export default {
             end: this.$store.state.auth.user.latestWorkTime
           },
           timezone: 'local',
-          defaultView: 'agendaWeek',
+          defaultView: localStorage.getItem('dashboardCalendarDefaultView') || 'agendaWeek',
           eventOverlap: true,
           selectOverlap: true,
           selectHelper: true,
@@ -205,7 +206,19 @@ export default {
     }
     this.academicCalendarEvents = events;
   },
+  mounted () {
+    if (
+      typeof window.orientation !== 'undefined' ||
+      navigator.userAgent.indexOf('IEMobile') !== -1
+    ) {
+      // Only show three day view on mobile
+      this.$refs['dashboard-calendar'].fireMethod('changeView', 'agendaThreeDay');
+    }
+  },
   methods: {
+    viewRender (view, element) {
+      if (view.name !== localStorage.getItem('dashboardCalendarDefaultView')) { localStorage.setItem('dashboardCalendarDefaultView', view.name); }
+    },
     mapICalObjectToEvent (id, obj) {
       const event = {
         id,
