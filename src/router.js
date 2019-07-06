@@ -32,7 +32,23 @@ const router = new Router({
       component: () => import('@/views/TheHomePage.vue'),
       meta: {
         title: 'Home'
-      }
+      },
+      children: [
+        {
+          path: '',
+          redirect: '/overview'
+        },
+        {
+          path: 'overview',
+          name: 'dashboard-overview',
+          component: () => import('@/views/dashboard/DashboardOverview')
+        },
+        {
+          path: 'calendar',
+          name: 'dashboard-calendar',
+          component: () => import('@/views/dashboard/DashboardCalendar')
+        }
+      ]
     },
     {
       path: '/tools',

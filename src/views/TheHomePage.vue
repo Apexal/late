@@ -7,9 +7,8 @@
 </template>
 
 <script>
-import TheDashboard from '@/views/TheDashboard';
+import TheDashboard from '@/views/dashboard/TheDashboard';
 import ThePromoPage from '@/views/ThePromoPage';
-import { setTimeout } from 'timers';
 
 export default {
   name: 'TheHomePage',

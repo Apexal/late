@@ -1,6 +1,5 @@
 {
   "editor.tabSize": 2,
-  "vetur.validation.template": false,
   "eslint.validate": [
     {
       "language": "vue",
@@ -28,5 +27,6 @@
   // "editor.formatOnSave": true,
   // "editor.formatOnPaste": true,
   // "editor.formatOnType": true,
-  "prettier.eslintIntegration": true
+  "prettier.eslintIntegration": true,
+  "eslint.autoFixOnSave": true
 }

@@ -15,7 +15,7 @@
       @close-modal="eventModal.open = false"
     />
     <FullCalendar
-      ref="calendar"
+      ref="dashboard-calendar"
       :events="events"
       :editable="true"
       :selectable="true"
@@ -185,7 +185,7 @@ export default {
   watch: {
     earliest (newEarliest) {
       this.calendar.config.scrollTime = this.earliest;
-      this.$refs.calendar.fireMethod(
+      this.$refs['dashboard-calendar'].fireMethod(
         'option',
         'scrollTime',
         this.calendar.config.scrollTime
@@ -366,7 +366,7 @@ export default {
       });
 
       this.selectModal.open = false;
-      this.$refs.calendar.fireMethod('unselect');
+      this.$refs['dashboard-calendar'].fireMethod('unselect');
     },
     eventClick (calEvent, jsEvent, view) {
       if (calEvent.eventType === 'course') {

@@ -13,19 +13,18 @@
         >
           Your Dashboard
         </h1>
-        <li
-          :class="{ 'is-active': tab === 'overview' }"
-          @click="tab = 'overview'"
+        <router-link
+          :to="{ name: 'dashboard-overview' }"
+          tag="li"
         >
-          <a title="View a detailed overview of the next few days">Overview</a>
-        </li>
-        <li
-          :class="{ 'is-active': tab === 'calendar' }"
-          title="View calendar"
-          @click="tab = 'calendar'"
+          <a>Overview</a>
+        </router-link>
+        <router-link
+          :to="{ name: 'dashboard-calendar' }"
+          tag="li"
         >
           <a>Calendar</a>
-        </li>
+        </router-link>
       </ul>
     </div>
     <template v-if="onBreak">
@@ -33,22 +32,21 @@
         On Break
       </h2>
     </template>
-    <DashboardOverview v-else-if="tab === 'overview'" />
-    <DashboardCalendar v-else-if="tab === 'calendar'" />
+    <router-view v-else />
   </section>
 </template>
 
 <script>
-import DashboardOverview from '@/views/dashboard/DashboardOverview';
-import DashboardCalendar from '@/views/dashboard/DashboardCalendar';
+import DashboardOverview from './DashboardOverview';
+import DashboardCalendar from './DashboardCalendar';
 
 export default {
   name: 'TheDashboard',
   components: { DashboardOverview, DashboardCalendar },
-  data () {
-    return {
-      tab: 'calendar'
-    };
+  computed: {
+    tab () {
+      return this.$route.hash.substring(1) || 'calendar';
+    }
   }
 };
 </script>
