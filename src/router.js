@@ -347,6 +347,15 @@ const router = new Router({
       ]
     },
     {
+      path: '/privacypolicy',
+      name: 'PrivacyPolicy',
+      meta: {
+        title: 'LATE Privacy Policy',
+        requiresAuth: false
+      },
+      component: () => import('@/views/ThePrivacyPolicyPage.vue')
+    },
+    {
       path: '*',
       name: 'NotFound',
       meta: {
