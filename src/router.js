@@ -28,7 +28,6 @@ const router = new Router({
     {
       path: '/',
       alias: ['/dashboard', '/frontpage'],
-      name: 'home',
       component: () => import('@/views/TheHomePage.vue'),
       meta: {
         title: 'Home'
@@ -36,6 +35,7 @@ const router = new Router({
       children: [
         {
           path: '',
+          name: 'home',
           redirect: '/overview'
         },
         {
