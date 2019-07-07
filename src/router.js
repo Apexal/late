@@ -364,7 +364,7 @@ const router = new Router({
     },
     {
       path: '/privacypolicy',
-      name: 'PrivacyPolicy',
+      name: 'privacy-policy',
       meta: {
         title: 'LATE Privacy Policy',
         requiresAuth: false

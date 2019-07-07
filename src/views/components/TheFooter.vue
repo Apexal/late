@@ -26,14 +26,15 @@
       </p>
       <p class="column">
         <span class="icon">
-          <i class="fab fa-osi" />
+          <i class="fas fa-shield-alt" />
         </span>
-        Source code licensed
-        <a
-          href="https://opensource.org/licenses/mit-license.php"
-          target="_blank"
+        Read
+        <router-link
+          :to="{ name: 'privacy-policy' }"
           title="View source code license"
-        >MIT.</a>
+        >
+          Privacy Policy.
+        </router-link>
       </p>
       <p class="column">
         <span class="icon">
