@@ -155,6 +155,11 @@ export default {
         config: {
           snapDuration: '00:15',
           views: {
+            agendaThreeDay: {
+              type: 'agenda',
+              duration: { days: 3 },
+              buttonText: '3-Day'
+            },
             agendaFiveDay: {
               type: 'agenda',
               duration: { days: 5 },
@@ -347,6 +352,15 @@ export default {
   },
   created () {
     this.getCollaboratorUnavailabilities();
+  },
+  mounted () {
+    if (
+      typeof window.orientation !== 'undefined' ||
+      navigator.userAgent.indexOf('IEMobile') !== -1
+    ) {
+      // Show three day view on mobile
+      this.$refs.calendar.fireMethod('changeView', 'agendaThreeDay');
+    }
   },
   methods: {
     toggleCollaboratorUnavailabilityHiding (rcsID) {
