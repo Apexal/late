@@ -77,7 +77,6 @@
 </template>
 
 <script>
-import moment from 'moment';
 import 'confetti-js';
 import VueMarkdown from 'vue-markdown';
 
@@ -162,6 +161,9 @@ export default {
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
+      this.$nextTick(() => {
+        document.getElementById('assessment-work-schedule').scrollIntoView({ behavior: 'smooth' });
+      });
     },
     copyAssessment () {
       this.$store.dispatch(

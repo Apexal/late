@@ -202,8 +202,7 @@ export default {
     isCurrentEvent (event) {
       return moment(this.now).isBetween(event.start, event.end);
     },
-    duration: p => p.end.diff(p.start, 'minutes'),
-    timeFormat: datetime => datetime.format('h:mma')
+    duration: p => p.end.diff(p.start, 'minutes')
   }
 };
 </script>

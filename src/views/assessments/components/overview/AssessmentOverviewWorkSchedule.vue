@@ -1,6 +1,9 @@
 <!--Assessments: assessment overview work schedule module-->
 <template>
-  <div class="assessment-work-schedule">
+  <div
+    id="assessment-work-schedule"
+    class="assessment-work-schedule"
+  >
     <div class="box">
       <div class="columns percents">
         <div
