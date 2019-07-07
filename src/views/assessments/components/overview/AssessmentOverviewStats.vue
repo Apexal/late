@@ -1,134 +1,163 @@
 <!--Assessments: assessment overview priority and due date module-->
 <template>
-  <nav class="box level assessment-stats has-background-grey-darker has-text-white">
-    <div class="level-item has-text-centered">
-      <div>
-        <p
-          class="heading"
-          title="The importance of this assessment."
-        >
-          Priority
-        </p>
-        <p
-          class="subtitle priority"
-          :class="{ 'is-italic': assessment.priority === 1 }"
-          :style="{ 'font-weight': fontWeight }"
-        >
-          <i
-            v-if="assessmentType === 'exam' || isOwner"
-            v-show="assessment.priority - 1 in priorityStrings"
-            class="fas fa-minus has-text-grey decrease-priority"
-            :title="
-              'Decrease priority to ' + priorityStrings[assessment.priority - 1]
-            "
-            @click="changePriority(-1)"
-          />
-          {{ priorityString }}
-          <i
-            v-if="assessmentType === 'exam' || isOwner"
-            v-show="assessment.priority + 1 in priorityStrings"
-            class="fas fa-plus has-text-grey increase-priority"
-            :title="
-              'Increase priority to ' + priorityStrings[assessment.priority + 1]
-            "
-            @click="changePriority(1)"
-          />
-        </p>
-      </div>
-    </div>
-
-    <div class="level-item has-text-centered">
-      <div>
-        <p
-          class="heading"
-          title="When is this assessment due?"
-        >
-          {{
-            (assessment.passed ? "Was " : "") +
-              (assessmentType === "assignment" ? "Due" : "On")
-          }}
-        </p>
-        <form
-          v-if="editingDate"
-          class="control date"
-          @submit.prevent="updateDate"
-        >
-          <input
-            v-model="tempDateString"
-            :min="minDate"
-            :max="maxDate"
-            type="date"
+  <div>
+    <nav class="box level assessment-stats has-background-grey-darker has-text-white is-hidden-mobile">
+      <div class="level-item has-text-centered">
+        <div>
+          <p
+            class="heading"
+            title="The importance of this assessment."
           >
-          <input
-            v-model="tempTimeString"
-            type="time"
+            Priority
+          </p>
+          <p
+            class="subtitle priority"
+            :class="{ 'is-italic': assessment.priority === 1 }"
+            :style="{ 'font-weight': fontWeight }"
           >
-          <i
-            class="fas fa-check has-text-success save-date"
-            title="Save new date and time."
-            @click="updateDate"
-          />
-        </form>
-        <p
-          v-else
-          class="subtitle date tooltip is-tooltip-bottom"
-          :data-tooltip="timeLeft"
-        >
-          {{ shortDateFormat(assessment.date) }}
-          <i
-            v-if="assessmentType === 'exam' || isOwner"
-            class="fas fa-pencil-alt has-text-grey edit-date"
-            title="Edit date and time."
-            @click="editingDate = true"
-          />
-        </p>
+            <i
+              v-if="assessmentType === 'exam' || isOwner"
+              v-show="assessment.priority - 1 in priorityStrings"
+              class="fas fa-minus has-text-grey decrease-priority"
+              :title="
+                'Decrease priority to ' + priorityStrings[assessment.priority - 1]
+              "
+              @click="changePriority(-1)"
+            />
+            {{ priorityString }}
+            <i
+              v-if="assessmentType === 'exam' || isOwner"
+              v-show="assessment.priority + 1 in priorityStrings"
+              class="fas fa-plus has-text-grey increase-priority"
+              :title="
+                'Increase priority to ' + priorityStrings[assessment.priority + 1]
+              "
+              @click="changePriority(1)"
+            />
+          </p>
+        </div>
       </div>
-    </div>
-    <div
-      v-if="assessmentType === 'exam' && assessment.completed"
-      class="level-item has-text-centered"
-    >
-      <div>
-        <p class="heading">
-          Completed
-        </p>
-        <p
-          class="subtitle tooltip is-tooltip-bottom"
-          :data-tooltip="fromNow(assessment.completedAt)"
-        >
-          {{ shortDateTimeFormat(assessment.completedAt) }}
-        </p>
-      </div>
-    </div>
 
-    <div
-      v-else
-      class="level-item has-text-centered"
-    >
-      <div>
-        <p class="heading">
-          {{
-            assessment.fullyScheduled
-              ? "Scheduled " + assessmentActionTerm + " Left"
-              : assessmentActionTerm + " Schedule"
-          }}
-        </p>
-        <p
-          v-if="assessment.fullyScheduled"
-          class="subtitle"
-        >
-          {{ assessment.scheduledTimeRemaing }}
-          <span class="has-text-grey">min</span>
-        </p>
-        <p v-else>
-          <span
-            class="tag is-danger not-scheduled-tag"
-            @click="$emit('not-fully-scheduled-click')"
-          >Not fully scheduled!</span>
-        </p>
+      <div class="level-item has-text-centered">
+        <div>
+          <p
+            class="heading"
+            title="When is this assessment due?"
+          >
+            {{
+              (assessment.passed ? "Was " : "") +
+                (assessmentType === "assignment" ? "Due" : "On")
+            }}
+          </p>
+          <form
+            v-if="editingDate"
+            class="control date"
+            @submit.prevent="updateDate"
+          >
+            <input
+              v-model="tempDateString"
+              :min="minDate"
+              :max="maxDate"
+              type="date"
+            >
+            <input
+              v-model="tempTimeString"
+              type="time"
+            >
+            <i
+              class="fas fa-check has-text-success save-date"
+              title="Save new date and time."
+              @click="updateDate"
+            />
+          </form>
+          <p
+            v-else
+            class="subtitle date tooltip is-tooltip-bottom"
+            :data-tooltip="timeLeft"
+          >
+            {{ shortDateFormat(assessment.date) }}
+            <i
+              v-if="assessmentType === 'exam' || isOwner"
+              class="fas fa-pencil-alt has-text-grey edit-date"
+              title="Edit date and time."
+              @click="editingDate = true"
+            />
+          </p>
+        </div>
       </div>
+      <div
+        v-if="assessmentType === 'exam' && assessment.completed"
+        class="level-item has-text-centered"
+      >
+        <div>
+          <p class="heading">
+            Completed
+          </p>
+          <p
+            class="subtitle tooltip is-tooltip-bottom"
+            :data-tooltip="fromNow(assessment.completedAt)"
+          >
+            {{ shortDateTimeFormat(assessment.completedAt) }}
+          </p>
+        </div>
+      </div>
+
+      <div
+        v-else
+        class="level-item has-text-centered"
+      >
+        <div>
+          <p class="heading">
+            {{
+              assessment.fullyScheduled
+                ? "Scheduled " + assessmentActionTerm + " Left"
+                : assessmentActionTerm + " Schedule"
+            }}
+          </p>
+          <p
+            v-if="assessment.fullyScheduled"
+            class="subtitle"
+          >
+            {{ assessment.scheduledTimeRemaing }}
+            <span class="has-text-grey">min</span>
+          </p>
+          <p v-else>
+            <span
+              class="tag is-danger not-scheduled-tag"
+              @click="$emit('not-fully-scheduled-click')"
+            >Not fully scheduled!</span>
+          </p>
+        </div>
+      </div>
+    </nav>
+    <div class="box is-flex has-background-grey-darker has-text-white has-text-weight-medium has-text-centered is-hidden-tablet mobile-stats">
+      <span
+        class="tooltip is-tooltip-bottom"
+        :data-tooltip="priorityString + ' Priority'"
+      >
+        <i
+          v-for="n in assessment.priority"
+          :key="n"
+          class="fas fa-exclamation"
+        />
+      </span>
+      <span
+        class="tooltip is-tooltip-bottom"
+        :data-tooltip="fromNow(assessment.date) + (assessment.completed ? ` | Completed ${shortDateTimeFormat(assessment.completedAt)}` : '')"
+      >{{ shortDateTimeFormat(assessment.date) }}</span>
+      <span
+        class="tooltip is-tooltip-bottom"
+        :data-tooltip="(assessmentType === 'assignment' ? 'Work' : 'Study') + ' minutes left'"
+      >{{ assessment.scheduledTimeRemaing }}
+        <span class="has-text-grey">min</span>
+
+        <span
+          class="tag is-danger not-scheduled-tag"
+          @click="$emit('not-fully-scheduled-click')"
+        >!</span>
+      </span>
     </div>
-  </nav>
+  </div>
 </template>
 
 <script>
@@ -299,6 +328,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.mobile-stats {
+  margin-top: 10px;
+  padding: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  > span {
+    flex: 1;
+  }
+}
 .not-scheduled-tag {
   cursor: pointer;
 }
