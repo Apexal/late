@@ -84,12 +84,13 @@
       </router-link>
       <span
         class="tag is-medium tooltip is-tooltip-bottom course-tag"
+        :class="assessmentType"
         :style="{ 'background-color': course.color }"
         :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
         @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
         <b class="course-title">{{ course.title }}</b>
-        <span>
+        <span class="margin-right">
           {{ assessment.passed ? "Past " : ""
           }}{{
             assessmentType === "assignment" && assessment.isRecurring
@@ -229,6 +230,8 @@ export default {
   cursor: pointer;
   vertical-align: middle;
   font-size: 0.7em;
+  position: absolute;
+  top: 10px;
 }
 .save-title-icon {
   cursor: pointer;
@@ -279,8 +282,18 @@ export default {
   color: white;
   border-radius: 0;
 
+  &.exam {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
   .course-title {
     margin-right: 5px;
   }
+
+}
+
+.margin-right {
+  margin-right: 5px;
 }
 </style>
