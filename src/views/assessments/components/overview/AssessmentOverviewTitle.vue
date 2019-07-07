@@ -2,47 +2,13 @@
 <template>
   <div class="assessment-overview-title is-flex-desktop">
     <div
-      v-if="!editing"
-      class="has-text-centered-touch"
+      v-if="assessmentType === 'assignment'"
+      class="is-hidden-touch"
     >
-      <router-link
-        :to="{ name: 'coursework-upcoming' }"
-        class="button is-link tooltip is-tooltip-bottom back-button"
-        data-tooltip="Browse all course work."
-      >
-        <span class="icon">
-          <i class="fas fa-angle-left" />
-        </span>
-      </router-link>
-      <span
-        class="tag is-medium tooltip is-tooltip-bottom course-tag"
-        :style="{ 'background-color': course.color }"
-        :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
-        @click="$store.commit('OPEN_COURSE_MODAL', course)"
-      >
-        <b class="course-title">{{ course.title }}</b>
-        <span>
-          {{ assessment.passed ? "Past " : ""
-          }}{{
-            assessmentType === "assignment" && assessment.isRecurring
-              ? "Recurring "
-              : ""
-          }}
-        </span>
-        <i
-          class="fas"
-          :class="
-            assessmentType === 'assignment'
-              ? 'fa-clipboard-check'
-              : 'fa-exclamation-triangle'
-          "
-        />
-      </span>
-      <b-button
-        v-if="assessmentType === 'assignment'"
-        class="is-hidden-desktop touch-complete-button"
-        type="is-success"
-        :outlined="!assessment.completed"
+      <button
+        :title="toggleButtonTitle"
+        class="button is-success toggle-complete"
+        :class="{ 'is-outlined': !assessment.completed }"
         :disabled="!isOwner"
         @click="$emit('toggle-completed')"
       >
@@ -50,8 +16,11 @@
           class="fa-check-square"
           :class="[assessment.completed ? 'fas' : 'far']"
         />
-      </b-button>
+        {{ assessment.completed ? "Mark Incomplete" : "Mark Complete" }}
+      </button>
     </div>
+
+
     <h1
       v-if="!editing"
       class="title assessment-title has-text-centered-touch"
@@ -101,13 +70,47 @@
     </form>
 
     <div
-      v-if="assessmentType === 'assignment'"
-      class="is-hidden-touch"
+      v-if="!editing"
+      class="has-text-centered-touch"
     >
-      <button
-        :title="toggleButtonTitle"
-        class="button is-success toggle-complete"
-        :class="{ 'is-outlined': !assessment.completed }"
+      <router-link
+        :to="{ name: 'coursework-upcoming' }"
+        class="button is-link tooltip is-tooltip-bottom back-button"
+        data-tooltip="Browse all course work."
+      >
+        <span class="icon">
+          <i class="fas fa-angle-left" />
+        </span>
+      </router-link>
+      <span
+        class="tag is-medium tooltip is-tooltip-bottom course-tag"
+        :style="{ 'background-color': course.color }"
+        :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
+        @click="$store.commit('OPEN_COURSE_MODAL', course)"
+      >
+        <b class="course-title">{{ course.title }}</b>
+        <span>
+          {{ assessment.passed ? "Past " : ""
+          }}{{
+            assessmentType === "assignment" && assessment.isRecurring
+              ? "Recurring "
+              : ""
+          }}
+        </span>
+        <i
+          class="fas"
+          :class="
+            assessmentType === 'assignment'
+              ? 'fa-clipboard-check'
+              : 'fa-exclamation-triangle'
+          "
+        />
+      </span>
+      <b-button
+        v-if="assessmentType === 'assignment'"
+        class="is-hidden-desktop touch-complete-button"
+        type="is-success"
+        :outlined="!assessment.completed"
         :disabled="!isOwner"
         @click="$emit('toggle-completed')"
       >
@@ -115,8 +118,7 @@
           class="fa-check-square"
           :class="[assessment.completed ? 'fas' : 'far']"
         />
-        {{ assessment.completed ? "Mark Incomplete" : "Mark Complete" }}
-      </button>
+      </b-button>
     </div>
   </div>
 </template>
@@ -235,9 +237,10 @@ export default {
   font-size: 1.3em;
 }
 .assessment-overview-title {
+  flex-direction: row-reverse;
   z-index: 5;
   position: sticky;
-  top: 70px;
+  top: 60px;
   align-items: center;
 
   .pad {
