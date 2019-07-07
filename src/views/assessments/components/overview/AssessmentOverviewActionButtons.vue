@@ -1,32 +1,76 @@
 <!--Assessment: Overview page action buttons module-->
 <template>
-  <div class="assessment-actions clearfix">
-    <b-button
-      v-if="assessmentType === 'exam' || isOwner"
-      class="edit-assessment"
-      type="is-warning"
-      :title="editButtonTitle"
-      @click="$emit('toggle-editing')"
+  <div class="assessment-actions">
+    <div class="is-hidden-mobile clearfix">
+      <b-button
+        v-if="assessmentType === 'exam' || isOwner"
+        class="edit-assessment"
+        type="is-warning"
+        :title="editButtonTitle"
+        @click="$emit('toggle-editing')"
+      >
+        <i class="fas fa-edit" />
+        Edit {{ assessmentTypeCaps }}
+      </b-button>
+      <b-button
+        v-if="assessmentType === 'assignment' && isOwner"
+        type="is-link"
+        class="tooltip is-tooltip-top share-assignment"
+        data-tooltip="Collaborate on this assignment with other students!"
+        @click="toggleSharedClick"
+      >
+        <i class="fas fa-users" />
+        {{ assessment.shared ? "Stop Sharing" : "Share" }}
+      </b-button>
+      <b-button
+        class="is-pulled-right copy-assessment"
+        @click="$emit('copy-assessment')"
+      >
+        <i class="far fa-copy" />
+        Duplicate {{ assessmentTypeCaps }}
+      </b-button>
+    </div>
+
+    <b-dropdown
+      aria-role="list"
+      class="is-hidden-tablet"
     >
-      <i class="fas fa-edit" />
-      Edit {{ assessmentTypeCaps }}
-    </b-button>
-    <b-button
-      v-if="assessmentType === 'assignment' && isOwner"
-      type="is-link"
-      class="tooltip is-tooltip-top share-assignment"
-      data-tooltip="Collaborate on this assignment with other students!"
-      @click="toggleSharedClick"
-    >
-      <i class="fas fa-users" />
-      {{ assessment.shared ? "Stop Sharing" : "Share" }}
-    </b-button>
-    <b-button
-      class="is-pulled-right copy-assessment"
-      @click="$emit('copy-assessment')"
-    >
-      Duplicate {{ assessmentTypeCaps }}
-    </b-button>
+      <button
+        slot="trigger"
+        class="button is-dark"
+      >
+        <span>Actions</span>
+        <span class="icon">
+          <i class="fas fa-angle-down" />
+        </span>
+      </button>
+
+      <b-dropdown-item
+        v-if="assessmentType === 'exam' || isOwner"
+        aria-role="listitem"
+        @click="$emit('toggle-editing')"
+      >
+        <i class="fas fa-edit" />
+        Edit {{ assessmentTypeCaps }}
+      </b-dropdown-item>
+
+      <b-dropdown-item
+        v-if="assessmentType === 'assignment' && isOwner"
+        aria-role="listitem"
+        @click="toggleSharedClick"
+      >
+        <i class="fas fa-users" />
+        {{ assessment.shared ? "Stop Sharing" : "Share" }}
+      </b-dropdown-item>
+
+      <b-dropdown-item
+        aria-role="listitem"
+        @click="$emit('copy-assessment')"
+      >
+        <i class="far fa-copy" />
+        Duplicate {{ assessmentTypeCaps }}
+      </b-dropdown-item>
+    </b-dropdown>
   </div>
 </template>
 

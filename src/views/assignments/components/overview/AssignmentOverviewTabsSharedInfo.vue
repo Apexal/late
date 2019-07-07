@@ -4,7 +4,7 @@
       <div
         v-for="student in [assessment._student].concat(collaborators)"
         :key="student.rcs_id"
-        class="column is-one-third is-half-touch is-full-mobile"
+        class="column is-one-third is-full-mobile"
       >
         <div class="box collaborator">
           <i
