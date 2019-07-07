@@ -2,7 +2,7 @@ import moment from 'moment';
 import store from '@/store';
 
 const TIME_FORMAT = 'h:mm a';
-const SHORT_DATE_FORMAT = 'M/DD/YY';
+const SHORT_DATE_FORMAT = 'M/D/YY';
 const LONG_DATE_FORMAT = 'dddd, MMMM Do YYYY ';
 
 export default {
