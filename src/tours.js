@@ -116,7 +116,7 @@ const tours = [
   },
   {
     title: 'Dashboard',
-    route: { name: 'home' },
+    route: { name: 'dashboard-calendar' },
     steps: [
       {
         target: '#calendar-holder',

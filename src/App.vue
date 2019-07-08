@@ -136,7 +136,7 @@ export default {
       return this.$store.state.sidebarExpanded;
     },
     homepage () {
-      return this.$route.name === 'home' && !this.loggedIn;
+      return this.$route.meta.isHome && !this.loggedIn;
     },
     appClass () {
       return {

@@ -105,7 +105,7 @@
     </h2>
     <router-link
       class="button is-medium is-primary"
-      :to="{ name: 'home' }"
+      :to="{ name: 'dashboard-calendar' }"
     >
       Start using
       <b>LATE</b>

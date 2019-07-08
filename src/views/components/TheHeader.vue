@@ -13,7 +13,7 @@
         <router-link
           id="logo"
           class="navbar-item"
-          :to="{ name: 'home' }"
+          to="/"
           active-class
           exact-active-class
         >
@@ -73,7 +73,7 @@
           <template v-if="loggedIn">
             <router-link
               class="navbar-item home-link"
-              :to="{ name: 'home' }"
+              :to="{ name: 'dashboard-calendar' }"
               title="View your dashboard"
               exact
             >

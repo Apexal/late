@@ -30,16 +30,13 @@ const router = new Router({
       alias: ['/dashboard', '/frontpage'],
       component: () => import('@/views/TheHomePage.vue'),
       meta: {
-        title: 'Home'
+        title: 'Home',
+        isHome: true
       },
       children: [
         {
-          path: '',
-          name: 'home',
-          redirect: '/overview'
-        },
-        {
           path: 'overview',
+          alias: [''],
           name: 'dashboard-overview',
           component: () => import('@/views/dashboard/DashboardOverview')
         },
