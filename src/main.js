@@ -50,7 +50,6 @@ Vue.use(FullCalendar);
 Vue.config.productionTip = false;
 
 Vue.prototype.$http = Api;
-
 Vue.use(VueGoogleMaps, {
   load: {
     key: process.env.VUE_APP_GOOGLE_API_KEY

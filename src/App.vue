@@ -201,8 +201,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/late_theme.scss";
-
+@import '@/assets/late_theme.scss';
 /*-------------------------------------------*/
 /*               Global Styles
 /* These styles will apply to the whole app. */
