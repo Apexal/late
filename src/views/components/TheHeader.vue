@@ -221,6 +221,12 @@
         <div class="navbar-end">
           <template v-if="loggedIn">
             <a
+              class="navbar-item"
+              :title="`There are ${onlineUsers.length} users online.`"
+            >
+              <b-tag type="is-primary">{{ onlineUsers.length }} online</b-tag>
+            </a>
+            <a
               class="navbar-item announcement-icon is-hidden-touch"
               :title="announcementsCount + ' new announcements'"
               @click="openAnnouncementsModal"
@@ -358,6 +364,9 @@
 export default {
   name: 'TheHeader',
   computed: {
+    onlineUsers () {
+      return this.$store.state.socketio.onlineUsers;
+    },
     seenAnnouncementIDs () {
       return this.$store.state.announcements.seenIDs;
     },
