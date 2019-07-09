@@ -82,6 +82,7 @@
 
 <script>
 import moment from 'moment';
+import assessmentsMixin from '@/mixins/assessments';
 
 import 'fullcalendar/dist/fullcalendar.css';
 import { FullCalendar } from 'vue-full-calendar';
@@ -89,6 +90,7 @@ import { FullCalendar } from 'vue-full-calendar';
 export default {
   name: 'AsessmentOverviewTabsWorkSchedule',
   components: { FullCalendar },
+  mixins: [assessmentsMixin],
   props: {
     assessment: {
       type: Object,
@@ -104,9 +106,6 @@ export default {
     };
   },
   computed: {
-    assessmentType () {
-      return this.assessment.assessmentType;
-    },
     scheduledMinutes () {
       if (!this.assessment._blocks) return 0;
 
@@ -282,9 +281,6 @@ export default {
         color: this.course.color,
         allDay: true
       };
-    },
-    course () {
-      return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
     },
     courseScheduleEvents () {
       // Show course schedule events in they are the same course as the assessment

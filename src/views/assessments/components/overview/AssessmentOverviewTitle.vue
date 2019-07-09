@@ -125,8 +125,11 @@
 </template>
 
 <script>
+import assessmentsMixin from '@/mixins/assessments';
+
 export default {
   name: 'AssessmentOverviewTitle',
+  mixins: [assessmentsMixin],
   props: {
     assessment: {
       type: Object,
@@ -141,22 +144,6 @@ export default {
     };
   },
   computed: {
-    isOwner () {
-      return (
-        this.assessment._student &&
-        (this.assessment._student === this.user._id ||
-        this.assessment._student._id === this.user._id)
-      );
-    },
-    assessmentType () {
-      return this.assessment.assessmentType;
-    },
-    course () {
-      return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
-    },
-    capitalizedAssessmentType () {
-      return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
-    },
     toggleButtonTitle () {
       return this.assessment.completed
         ? `Completed ${this.shortDateTimeFormat(this.assessment.completedAt)}`

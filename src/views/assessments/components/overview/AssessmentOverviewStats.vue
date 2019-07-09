@@ -162,9 +162,11 @@
 
 <script>
 import moment from 'moment';
+import assessmentsMixin from '@/mixins/assessments';
 
 export default {
   name: 'AssessmentOverviewStats',
+  mixins: [assessmentsMixin],
   props: {
     assessment: {
       type: Object,
@@ -180,19 +182,6 @@ export default {
     };
   },
   computed: {
-    isOwner () {
-      return (
-        this.assessment._student &&
-        (this.assessment._student === this.user._id ||
-        this.assessment._student._id === this.user._id)
-      );
-    },
-    course () {
-      return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
-    },
-    assessmentType () {
-      return this.assessment.assessmentType;
-    },
     assessmentActionTerm () {
       return this.assessmentType === 'assignment' ? 'Work' : 'Study';
     },

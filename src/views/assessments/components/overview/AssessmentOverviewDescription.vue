@@ -37,9 +37,12 @@
 <script>
 import VueMarkdown from 'vue-markdown';
 
+import assessmentsMixin from '@/mixins/assessments';
+
 export default {
   name: 'AssessmentOverviewDescription',
   components: { VueMarkdown },
+  mixins: [assessmentsMixin],
   props: {
     assessment: {
       type: Object,
@@ -53,19 +56,7 @@ export default {
     };
   },
   computed: {
-    isOwner () {
-      return (
-        this.assessment._student &&
-        (this.assessment._student === this.user._id ||
-        this.assessment._student._id === this.user._id)
-      );
-    },
-    assessmentType () {
-      return this.assessment.assessmentType;
-    },
-    capitalizedAssessmentType () {
-      return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
-    }
+
   },
   methods: {
     async toggleEditing () {

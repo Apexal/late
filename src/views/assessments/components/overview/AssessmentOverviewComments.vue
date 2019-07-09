@@ -85,10 +85,12 @@
 
 <script>
 import VueMarkdown from 'vue-markdown';
+import assessmentsMixin from '@/mixins/assessments';
 
 export default {
   name: 'AssessmentOverviewComments',
   components: { VueMarkdown },
+  mixins: [assessmentsMixin],
   props: {
     assessment: {
       type: Object,
@@ -104,12 +106,6 @@ export default {
   computed: {
     hasComments () {
       return this.assessment.comments && this.assessment.comments.length > 0;
-    },
-    assessmentType () {
-      return this.assessment.assessmentType;
-    },
-    capitalizedAssessmentType () {
-      return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
     }
   },
   methods: {

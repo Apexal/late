@@ -11,10 +11,12 @@
 
 <script>
 import AssessmentsTable from '@/views/assessments/components/AssessmentsTable';
+import assessmentsMixin from '@/mixins/assessments';
 
 export default {
   name: 'AssessmentOverviewRelated',
   components: { AssessmentsTable },
+  mixins: [assessmentsMixin],
   props: {
     assessment: {
       type: Object,
@@ -28,9 +30,7 @@ export default {
     };
   },
   computed: {
-    assessmentType () {
-      return this.assessment.assessmentType;
-    }
+
   },
   watch: {
     assessment: 'getRelatedAssessments'

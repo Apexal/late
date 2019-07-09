@@ -10,7 +10,7 @@
         @click="$emit('toggle-editing')"
       >
         <i class="fas fa-edit" />
-        Edit {{ assessmentTypeCaps }}
+        Edit {{ capitalizedAssessmentType }}
       </b-button>
       <b-button
         v-if="assessmentType === 'assignment' && isOwner"
@@ -27,7 +27,7 @@
         @click="$emit('copy-assessment')"
       >
         <i class="far fa-copy" />
-        Duplicate {{ assessmentTypeCaps }}
+        Duplicate {{ capitalizedAssessmentType }}
       </b-button>
     </div>
 
@@ -51,7 +51,7 @@
         @click="$emit('toggle-editing')"
       >
         <i class="fas fa-edit" />
-        Edit {{ assessmentTypeCaps }}
+        Edit {{ capitalizedAssessmentType }}
       </b-dropdown-item>
 
       <b-dropdown-item
@@ -68,15 +68,18 @@
         @click="$emit('copy-assessment')"
       >
         <i class="far fa-copy" />
-        Duplicate {{ assessmentTypeCaps }}
+        Duplicate {{ capitalizedAssessmentType }}
       </b-dropdown-item>
     </b-dropdown>
   </div>
 </template>
 
 <script>
+import assessmentsMixin from '@/mixins/assessments';
+
 export default {
   name: 'AssessmentOverviewActionButtons',
+  mixins: [assessmentsMixin],
   props: {
     assessment: {
       type: Object,
@@ -88,19 +91,6 @@ export default {
     }
   },
   computed: {
-    isOwner () {
-      return (
-        this.assessment._student &&
-        (this.assessment._student === this.user._id ||
-        this.assessment._student._id === this.user._id)
-      );
-    },
-    assessmentType () {
-      return this.assessment.assessmentType;
-    },
-    assessmentTypeCaps () {
-      return this.assessmentType === 'assignment' ? 'Assignment' : 'Exam';
-    },
     editButtonTitle () {
       return this.assessment.updatedAt
         ? `Last edited ${this.shortDateTimeFormat(this.assessment.updatedAt)}`
