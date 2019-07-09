@@ -30,8 +30,7 @@ Vue.use(
     connection: process.env.BASE_URL,
     vuex: {
       store,
-      actionPrefix: 'SOCKET_',
-      mutationPrefix: 'SOCKET_'
+      actionPrefix: 'SOCKET_'
     },
     timeout: 10000
   })

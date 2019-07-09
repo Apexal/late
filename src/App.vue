@@ -180,6 +180,9 @@ export default {
           if (this.tour) this.$tours.custom.start();
         }, 1000);
       });
+    },
+    user () {
+      this.$socket.emit('authentication', this.user._id);
     }
   },
   async mounted () {

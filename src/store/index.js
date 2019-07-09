@@ -16,6 +16,7 @@ import studytoolstimer from './modules/studytoolstimer';
 import checklists from './modules/checklists';
 import SISMan from './modules/sisman';
 import tours from './modules/tours';
+import socketio from './modules/socketio';
 
 Vue.use(Vuex);
 
@@ -35,7 +36,8 @@ export default new Vuex.Store({
     studytoolstimer,
     checklists,
     SISMan,
-    tours
+    tours,
+    socketio
   },
   state: {
     navbarExpanded: false,
