@@ -26,7 +26,7 @@
     </p>
 
     <h1
-      class="is-size-1 title main-title"
+      class="title main-title"
       style="text-align: center"
     >
       Welcome to LATE
@@ -36,6 +36,7 @@
       <b-tag
         type="is-dark"
         class="counts"
+        size="is-medium"
       >
         <b>{{ testers }}</b> Current Testers |
         <b>{{ waitlist }}</b>
@@ -243,6 +244,10 @@ export default {
   background-color: darkgrey;
 }
 
+.main-title {
+  font-size: 3.5em;
+}
+
 .main-title,
 .main-subtitle {
   text-align: center;
@@ -252,7 +257,6 @@ export default {
 
 .promo-container .desc-container {
   background-color: white;
-  border-radius: 10px;
   padding: 20px 10px;
 }
 
@@ -307,7 +311,6 @@ export default {
 }
 
 .counts {
-  font-size: 1em;
   margin-top: 20px;
   margin-bottom: -10px;
 }
