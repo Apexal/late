@@ -148,9 +148,6 @@ export default {
       if (this.assessmentType === 'exam') return this.assessment.date;
       else return this.assessment.dueDate;
     },
-    term () {
-      return this.$store.getters.currentTerm;
-    },
     calendar () {
       return {
         header: {},
@@ -263,7 +260,7 @@ export default {
       };
     },
     start () {
-      return moment(this.$store.getters.currentTerm.start).startOf('day');
+      return moment(this.currentTerm.start).startOf('day');
     },
     end () {
       return moment(this.assessmentDate).endOf('day');
