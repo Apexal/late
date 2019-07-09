@@ -164,9 +164,10 @@ async function setProfile (ctx) {
   if (body.method === 'manual') {
     ctx.state.user.name.first = body.first_name;
     ctx.state.user.name.last = body.last_name;
-    ctx.state.user.major = body.major;
 
-    ctx.state.user.graduationYear = parseInt(body.graduationYear);
+    if ('major' in body) { ctx.state.user.major = body.major ? body.major : undefined; }
+
+    if ('graduationYear' in body) { ctx.state.user.graduationYear = isNaN(parseInt(body.graduationYear)) ? undefined : parseInt(body.graduationYear); }
   } else if (body.method === 'sis') {
     const { rin, pin } = body;
 
