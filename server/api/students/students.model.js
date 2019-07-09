@@ -286,6 +286,11 @@ schema.virtual('full_name').get(function () {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
 });
 
+// Used for chat
+schema.virtual('first_name').get(function () {
+  return (this.name.preferred || this.name.first);
+});
+
 schema.virtual('display_name').get(function () {
   if (this.name.first) {
     return `${this.full_name} ${
