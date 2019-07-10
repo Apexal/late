@@ -112,7 +112,6 @@
 
 <script>
 import VueMarkdown from 'vue-markdown';
-import moment from 'moment';
 
 export default {
   name: 'AnnouncementsModal',
@@ -164,6 +163,8 @@ export default {
         type: 'is-success',
         message: 'Posted new announcement.'
       });
+
+      this.$socket.emit('new announcement', request.data.createdAnnouncement);
 
       this.addingAnnouncement = {
         title: '',

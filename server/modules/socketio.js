@@ -35,6 +35,15 @@ module.exports = server => {
   io.on('connection', socket => {
     logger.debug('Client connected to Socket.io');
 
+    /* ANNOUNCEMENTS */
+    socket.on('new announcement', newAnnouncement => {
+      if (!socket.auth || !socket.client.user.admin) return;
+
+      socket.broadcast.emit('new announcement', newAnnouncement);
+    });
+    /* end ANNOUNCEMENTS */
+
+    /* ASSESSMENTS */
     socket.on('join assessment room', assessmentID => {
       if (!socket.auth) return;
 
@@ -48,7 +57,6 @@ module.exports = server => {
 
       logger.info(`${socket.client.user.rcs_id} is joining ${assessmentIDS.length} assessment rooms`);
       for (let id of assessmentIDS) {
-        console.log(`/assessments/${id}`);
         socket.join(`/assessments/${id}`);
       }
     });
@@ -66,6 +74,7 @@ module.exports = server => {
 
       socket.to(`/assessments/${assessment._id}`).emit('updated assessment', { assessment });
     });
+    /* end ASSESSMENTS */
 
     socket.on('disconnect', () => {
       logger.debug('Client disconnected from Socket.io');

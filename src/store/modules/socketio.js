@@ -11,6 +11,30 @@ const actions = {
   socket_online ({ commit }, online) {
     commit('SET_ONLINE_USERS', online);
   },
+  socket_newAnnouncement ({ commit }, newAnouncement) {
+    commit('ADD_ANNOUNCEMENT', newAnouncement);
+
+    if (newAnouncement.pinned) {
+      Snackbar.open({
+        duration: 2000,
+        message: 'A new announcement has been posted and pinned!',
+        type: 'is-info',
+        position: 'is-bottom-left'
+      });
+    } else {
+      Snackbar.open({
+        duration: 5000,
+        message: 'A new announcement has been posted!',
+        type: 'is-info',
+        position: 'is-bottom-left',
+        actionText: 'View',
+        queue: false,
+        onAction: () => {
+          commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true);
+        }
+      });
+    }
+  },
   async socket_updatedAssessment ({ rootState, getters, commit, dispatch }, { assessment }) {
     const cR = router.currentRoute;
     const currentlyViewing = cR.name === `${assessment.assessmentType}-overview` && cR.params[assessment.assessmentType + 'ID'] === assessment._id;
