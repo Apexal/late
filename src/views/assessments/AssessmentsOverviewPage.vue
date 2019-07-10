@@ -124,10 +124,34 @@ export default {
       confettiSettings: { target: 'confetti-canvas', clock: 75, max: 150 }
     };
   },
+  sockets: {
+    'collaborator joined assessment room' (rcsID) {
+      this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is now viewing this assignment.` });
+    },
+    'collaborator left assessment room' (rcsID) {
+      this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is no longer viewing this assignment.` });
+    },
+    'updated assessment' () {
+      this.$snackbar.open({
+        message: 'A collaborator just updated this assignment.',
+        type: 'is-info',
+        position: 'is-bottom',
+        actionText: 'Update',
+        indefinite: true,
+        onAction: () => {
+
+        }
+      });
+    }
+  },
   computed: {
     assessmentID () {
       return this.$route.params[this.assessmentType + 'ID'];
     }
+  },
+  beforeRouteLeave (to, from, next) {
+    this.$socket.emit('leave assessment room', this.assessment._id);
+    next();
   },
   watch: {
     $route: 'getAssessment',
@@ -158,6 +182,7 @@ export default {
     },
     async updatedAssessment (updatedAssessment) {
       this.assessment = updatedAssessment;
+      this.$socket.emit('updated assessment', updatedAssessment._id);
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
@@ -220,13 +245,12 @@ export default {
     async getAssessment () {
       // If its an upcoming assignment, we already have the data on it
       if (this.$store.getters.getUpcomingAssessmentById(this.assessmentID)) {
-        this.updatedAssessment(
-          this.$store.getters.getUpcomingAssessmentById(this.assessmentID)
-        );
+        this.assessment = this.$store.getters.getUpcomingAssessmentById(this.assessmentID);
         this.loading = false;
         this.isUpcoming = true;
 
         if (this.assessment.completed || this.passed) this.tab = 'comments';
+        this.$socket.emit('join assessment room', this.assessment._id);
         return;
       }
 
@@ -251,10 +275,11 @@ export default {
         });
       }
 
-      this.updatedAssessment(request.data[this.assessmentType]);
+      this.assessment = request.data[this.assessmentType];
+
       this.editedDescription = this.assessment.description;
       document.title = `${this.assessment.title} | LATE`;
-
+      this.$socket.emit('join assessment room', this.assessment._id);
       this.loading = false;
     },
     async removeAssessment () {
