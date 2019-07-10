@@ -41,6 +41,14 @@ module.exports = server => {
       socket.to(`/assessments/${assessmentID}`).emit('collaborator joined assessment room', socket.client.user.rcs_id);
     });
 
+    socket.on('join assessment rooms', assessmentIDS => {
+      logger.info(`${socket.client.user.rcs_id} is joining ${assessmentIDS.length} assessment rooms`);
+      for (let id of assessmentIDS) {
+        console.log(`/assessments/${id}`);
+        socket.join(`/assessments/${id}`);
+      }
+    });
+
     socket.on('leave assessment room', assessmentID => {
       logger.info(`${socket.client.user.rcs_id} is leaving assessment room: ${assessmentID}`);
       socket.leave(`/assessments/${assessmentID}`);
@@ -48,6 +56,7 @@ module.exports = server => {
     });
 
     socket.on('updated assessment', assessment => {
+      console.log('someone updated ' + assessment._id);
       socket.to(`/assessments/${assessment._id}`).emit('updated assessment', { assessment });
     });
 

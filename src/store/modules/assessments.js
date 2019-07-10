@@ -1,3 +1,4 @@
+import vm from '@/main';
 import axios from '@/api';
 import moment from 'moment';
 
@@ -156,6 +157,8 @@ const actions = {
       params: { start: moment().format('YYYY-MM-DD') }
     });
     const exams = response.data.exams;
+
+    vm.$socket.emit('join assessment rooms', assignments.map(a => a._id));
 
     commit('SET_UPCOMING_ASSESSMENTS', assignments.concat(exams));
     commit('SORT_UPCOMING_ASSESSMENTS');
