@@ -40,7 +40,10 @@
           </div>
         </nav>
       </div>
-      <div class="media-right">
+      <div
+        v-if="c._student._id === user._id"
+        class="media-right"
+      >
         <button
           title="Delete comment."
           class="delete"
