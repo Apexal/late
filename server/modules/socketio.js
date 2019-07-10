@@ -36,12 +36,16 @@ module.exports = server => {
     logger.debug('Client connected to Socket.io');
 
     socket.on('join assessment room', assessmentID => {
+      if (!socket.auth) return;
+
       logger.info(`${socket.client.user.rcs_id} is joining assessment room: ${assessmentID}`);
       socket.join(`/assessments/${assessmentID}`);
       socket.to(`/assessments/${assessmentID}`).emit('collaborator joined assessment room', socket.client.user.rcs_id);
     });
 
     socket.on('join assessment rooms', assessmentIDS => {
+      if (!socket.auth) return;
+
       logger.info(`${socket.client.user.rcs_id} is joining ${assessmentIDS.length} assessment rooms`);
       for (let id of assessmentIDS) {
         console.log(`/assessments/${id}`);
@@ -50,13 +54,16 @@ module.exports = server => {
     });
 
     socket.on('leave assessment room', assessmentID => {
+      if (!socket.auth) return;
+
       logger.info(`${socket.client.user.rcs_id} is leaving assessment room: ${assessmentID}`);
       socket.leave(`/assessments/${assessmentID}`);
       socket.to(`/assessments/${assessmentID}`).emit('collaborator left assessment room', socket.client.user.rcs_id);
     });
 
     socket.on('updated assessment', assessment => {
-      console.log('someone updated ' + assessment._id);
+      if (!socket.auth) return;
+
       socket.to(`/assessments/${assessment._id}`).emit('updated assessment', { assessment });
     });
 

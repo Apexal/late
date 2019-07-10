@@ -193,7 +193,7 @@ async function setAssignmentCollaborators (ctx) {
     ctx.state.assignment.courseCRN
   );
 
-  if (newStudents.length > 0) {
+  if (newStudents.length > 0 && process.env.NODE_ENV === 'production') {
     sgMail.send({
       to: newStudents.map(rcsID => rcsID + '@rpi.edu'),
       from: 'LATE <thefrankmatranga@gmail.com>',

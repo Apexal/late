@@ -229,7 +229,7 @@ schema.methods.getUserAssignments = function ({
         ]
       }
     })
-    .populate('_student', '_id rcs_id name graduationYear')
+    .populate('_student', '_id rcs_id name graduationYear integrations')
     .sort('dueDate')
     .sort('-priority')
     .exec();
@@ -261,7 +261,7 @@ schema.methods.getExams = function (start, end, title, courseCRN) {
   return this.model('Exam')
     .find(query)
     .populate('_blocks')
-    .populate('_student', '_id rcs_id name graduationYear')
+    .populate('_student', '_id rcs_id name graduationYear integrations')
     .sort('date')
     .sort('-timeRemaining')
     .exec();
