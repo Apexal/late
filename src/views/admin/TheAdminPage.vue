@@ -30,6 +30,12 @@
         >
           <a>School Terms</a>
         </router-link>
+        <router-link
+          :to="{ name: 'admin-fun' }"
+          tag="li"
+        >
+          <a>Fun</a>
+        </router-link>
       </ul>
     </div>
 

@@ -11,6 +11,9 @@ const actions = {
   socket_online ({ commit }, online) {
     commit('SET_ONLINE_USERS', online);
   },
+  socket_sisManMessage ({ dispatch }, message) {
+    dispatch('SUMMON_SISMAN', { message });
+  },
   socket_newAnnouncement ({ commit }, newAnouncement) {
     commit('ADD_ANNOUNCEMENT', newAnouncement);
 
