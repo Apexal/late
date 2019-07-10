@@ -55,7 +55,12 @@ module.exports = {
     const courseFilter = response => {
       return response.author.id === msg.author.id && courses.some(c => c.title.toLowerCase().startsWith(response.content.toLowerCase()));
     };
-    collected = await msg.channel.awaitMessages(courseFilter, { maxMatches: 1, time: 30000, errors: ['time'] });
+    try {
+      collected = await msg.channel.awaitMessages(courseFilter, { maxMatches: 1, time: 30000, errors: ['time'] });
+    } catch (e) {
+      controlMessage.edit('You didn\'t give a valid name. Cancelled.');
+      return;
+    }
     const courseNameMessage = collected.first();
     const course = courses.find(c => c.title.toLowerCase().startsWith(courseNameMessage.content.toLowerCase()));
     courseNameMessage.delete();
@@ -65,17 +70,27 @@ module.exports = {
     const titleFilter = response => {
       return response.author.id === msg.author.id;
     };
-    collected = await msg.channel.awaitMessages(titleFilter, { maxMatches: 1, time: 30000, errors: ['time'] });
+    try {
+      collected = await msg.channel.awaitMessages(titleFilter, { maxMatches: 1, time: 30000, errors: ['time'] });
+    } catch (e) {
+      controlMessage.edit('You didn\'t give a title. Cancelled');
+      return;
+    }
     const titleMessage = collected.first();
     const title = titleMessage.content;
     titleMessage.delete();
 
     // DATE
-    controlMessage.edit(`When's the ${assessmentType} **due**? *Must be this format \`9/7/19 6:45 pm\`*`);
+    controlMessage.edit(`When's the ${assessmentType} **due**? \`${moment().format('M/D/YY h:mm a')}\``);
     const dueFilter = response => {
       return response.author.id === msg.author.id && moment(response.content, 'M/D/YY h:mm a').isValid();
     };
-    collected = await msg.channel.awaitMessages(dueFilter, { maxMatches: 1, time: 30000, errors: ['time'] });
+    try {
+      collected = await msg.channel.awaitMessages(dueFilter, { maxMatches: 1, time: 30000, errors: ['time'] });
+    } catch (e) {
+      controlMessage.edit('You didn\'t give a valid date and time. Cancelled.');
+      return;
+    }
     const dueDateMessage = collected.first();
     const dueDate = moment(dueDateMessage.content, 'M/D/YY h:mm a');
     dueDateMessage.delete();
@@ -93,7 +108,11 @@ module.exports = {
         timeRemaining: 2
       };
       const newAssignment = new Assignment(assignmentData);
-      await newAssignment.save();
+      try {
+        await newAssignment.save();
+      } catch (e) {
+        controlMessage.edit(`There was an error... ${e}`);
+      }
 
       controlMessage.edit(`**Success!** | View the assignment at ${process.env.BASE_URL}/coursework/a/${newAssignment._id}`);
       logger.info(`Created new assignment for ${student.rcs_id} from Discord.`);
@@ -107,7 +126,11 @@ module.exports = {
         timeRemaining: 5
       };
       const newExam = new Exam(examData);
-      await newExam.save();
+      try {
+        await newExam.save();
+      } catch (e) {
+        controlMessage.edit(`There was an error... ${e}`);
+      }
 
       controlMessage.edit(`**Success!** | View the exam at ${process.env.BASE_URL}/coursework/e/${newExam._id}`);
       logger.info(`Created new exam for ${student.rcs_id} from Discord.`);
