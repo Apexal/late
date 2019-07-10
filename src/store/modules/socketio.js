@@ -5,7 +5,7 @@ const state = {
 const getters = {};
 
 const actions = {
-  SOCKET_online ({ commit }, online) {
+  socket_online ({ commit }, online) {
     commit('SET_ONLINE_USERS', online);
   }
 };

@@ -19,22 +19,14 @@ import datemethods from './mixins/datemethods';
 import sharedproperties from './mixins/sharedproperties';
 
 import * as VueGoogleMaps from 'vue2-google-maps';
-import VueSocketIO from 'vue-socket.io';
+
+import VueSocketio from 'vue-socket.io-extended';
+import io from 'socket.io-client';
 
 import 'vue-tour/dist/vue-tour.css';
 import './sw/registerServiceWorker';
 
-Vue.use(
-  new VueSocketIO({
-    debug: true,
-    connection: process.env.BASE_URL,
-    vuex: {
-      store,
-      actionPrefix: 'SOCKET_'
-    },
-    timeout: 10000
-  })
-);
+Vue.use(VueSocketio, io(process.env.BASE_URL), { store });
 
 Vue.use(VueTour);
 
