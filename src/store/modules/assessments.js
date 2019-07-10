@@ -99,6 +99,17 @@ const actions = {
     commit('ADD_UPCOMING_ASSESSMENT', newAssessment);
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
+  async GET_ASSESSMENT ({ getters, dispatch }, { assessmentType, assessmentID }) {
+    let request = await axios.get(
+      `/${assessmentType}s/${assessmentType.charAt(0)}/${assessmentID}`
+    );
+    const assessment = request.data.assessment;
+    if (getters.getUpcomingAssessmentById(assessment._id)) {
+      await dispatch('UPDATE_UPCOMING_ASSESSMENT', assessment);
+    }
+
+    return assessment;
+  },
   async UPDATE_ASSESSMENT (
     { dispatch, getters },
     { assessmentID, assessmentType, updates }

@@ -47,8 +47,8 @@ module.exports = server => {
       socket.to(`/assessments/${assessmentID}`).emit('collaborator left assessment room', socket.client.user.rcs_id);
     });
 
-    socket.on('updated assessment', assessmentID => {
-      socket.to(`/assessments/${assessmentID}`).emit('updated assessment');
+    socket.on('updated assessment', assessment => {
+      socket.to(`/assessments/${assessment._id}`).emit('updated assessment', { assessment });
     });
 
     socket.on('disconnect', () => {

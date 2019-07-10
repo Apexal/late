@@ -131,17 +131,8 @@ export default {
     'collaborator left assessment room' (rcsID) {
       this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is no longer viewing this assignment.` });
     },
-    'updated assessment' () {
-      this.$snackbar.open({
-        message: 'A collaborator just updated this assignment.',
-        type: 'is-info',
-        position: 'is-bottom',
-        actionText: 'Update',
-        indefinite: true,
-        onAction: () => {
-
-        }
-      });
+    'updated assessment' ({ assessment }) {
+      this.assessment = assessment;
     }
   },
   computed: {
@@ -182,7 +173,7 @@ export default {
     },
     async updatedAssessment (updatedAssessment) {
       this.assessment = updatedAssessment;
-      this.$socket.emit('updated assessment', updatedAssessment._id);
+      this.$socket.emit('updated assessment', updatedAssessment);
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
