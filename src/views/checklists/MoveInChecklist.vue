@@ -132,6 +132,9 @@
     <hr>
 
     <div class="buttons">
+      <b-button @click="download">
+        Download
+      </b-button>
       <router-link
         class="button is-link"
         :to="{ name: 'tools' }"
@@ -193,6 +196,33 @@ export default {
     if (this.checklist.categories.length === 0) this.editing = true;
   },
   methods: {
+    download () {
+      const lineArray = ['Category,Item,Count,Complete'];
+      for (let category of this.checklist.categories) {
+        for (let item of category.items) {
+          lineArray.push(`${category.title},${item.title},${item.count},${item.complete}`);
+        }
+      }
+
+      const csv = lineArray.join('\n');
+
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, 'checklist.csv');
+      } else {
+        var link = document.createElement('a');
+        if (link.download !== undefined) { // feature detection
+          // Browsers that support HTML5 download attribute
+          var url = URL.createObjectURL(blob);
+          link.setAttribute('href', url);
+          link.setAttribute('download', 'checklist.csv');
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
+    },
     clearChecklist () {
       this.$dialog.confirm({
         message: 'Totally clear your checklist? All items will be lost.',
