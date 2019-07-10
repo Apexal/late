@@ -20,7 +20,8 @@ async function getExamMiddleware (ctx, next) {
       _student: ctx.state.user._id
     })
       .populate('_student', '_id rcs_id name graduationYear')
-      .populate('_blocks');
+      .populate('_blocks')
+      .populate('comments._student', '_id rcs_id name graduationYear');
   } catch (e) {
     logger.error(
       `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`

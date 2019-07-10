@@ -16,7 +16,7 @@ const actions = {
     const currentlyViewing = cR.name === `${assessment.assessmentType}-overview` && cR.params[assessment.assessmentType + 'ID'] === assessment._id;
 
     // Check if the assessment owner stoped sharing with us!
-    if (!assessment.sharedWith.includes(rootState.auth.user.rcs_id)) {
+    if (assessment._student._id !== rootState.auth.user._id && !assessment.sharedWith.includes(rootState.auth.user.rcs_id)) {
       if (currentlyViewing) {
         router.push('/coursework');
       }

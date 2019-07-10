@@ -230,6 +230,7 @@ schema.methods.getUserAssignments = function ({
       }
     })
     .populate('_student', '_id rcs_id name graduationYear integrations')
+    .populate('comments._student', '_id rcs_id name graduationYear')
     .sort('dueDate')
     .sort('-priority')
     .exec();
