@@ -466,6 +466,7 @@ async function editAssignment (ctx) {
   }
 
   // Update assignment
+  delete updates._student;
   ctx.state.assignment.set(updates);
 
   try {
