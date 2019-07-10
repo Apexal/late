@@ -53,7 +53,7 @@
         </template>
         <template v-else>
           <b-button
-            v-if="loggedIn"
+            v-if="loggedIn && categories.length > 0"
             :title="checklist.private ? 'Click to make public.' : 'Click to make private.'"
             @click="togglePrivate"
           >
@@ -66,7 +66,7 @@
             {{ checklist.private ? 'Private' : 'Public' }}
           </b-button>
           <input
-            v-if="loggedIn && !checklist.private"
+            v-if="loggedIn && !checklist.private && categories.length > 0"
             type="text"
             class="input checklist-url"
             disabled
@@ -132,9 +132,6 @@
     <hr>
 
     <div class="buttons">
-      <b-button @click="download">
-        Download
-      </b-button>
       <router-link
         class="button is-link"
         :to="{ name: 'tools' }"
@@ -142,6 +139,15 @@
         <i class="fas fa-angle-left" />
         All Tools
       </router-link>
+      <b-button
+        :disabled="checklist.categories.length === 0"
+        @click="download"
+      >
+        <span class="icon">
+          <i class="fas fa-download" />
+        </span>
+        Download
+      </b-button>
     </div>
   </section>
 </template>
