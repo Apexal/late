@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     async toggleEditing () {
-      if (this.isOwner) {
+      if (!this.isOwner) {
         this.editing = false;
         return;
       }
