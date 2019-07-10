@@ -75,7 +75,7 @@
             class="subtitle date tooltip is-tooltip-bottom"
             :data-tooltip="timeLeft"
           >
-            {{ shortDateFormat(assessment.date) }}
+            {{ shortDateTimeFormat(assessment.date) }}
             <i
               v-if="assessmentType === 'exam' || isOwner"
               class="fas fa-pencil-alt has-text-grey edit-date"
