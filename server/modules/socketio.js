@@ -3,7 +3,8 @@ const Student = require('../api/students/students.model');
 const logger = require('./logger');
 
 module.exports = server => {
-  let online = [];
+  const sessionCounts = {}; // { matraf: 2 }
+  let online = []; // [matraf, matraff]
 
   const io = require('socket.io').listen(server);
   require('socketio-auth')(io, {
@@ -21,13 +22,26 @@ module.exports = server => {
       Student.findById(studentID, function (err, user) {
         if (err) return logger.error(err);
         socket.client.user = user;
-        online.push(user.rcs_id);
+
+        if (!sessionCounts[user.rcs_id]) {
+          online.push(user.rcs_id);
+          sessionCounts[user.rcs_id] = 1;
+        } else {
+          sessionCounts[user.rcs_id]++;
+        }
+
         io.emit('online', online);
       });
     },
     disconnect: function (socket) {
-      if (socket.client.user) { online = online.filter(rcsId => rcsId !== socket.client.user.rcs_id); }
-      io.emit('online', online);
+      if (socket.client.user) {
+        sessionCounts[socket.client.user.rcs_id]--;
+        if (sessionCounts[socket.client.user.rcs_id] === 0) {
+          delete sessionCounts[socket.client.user.rcs_id];
+          online = online.filter(rcsId => rcsId !== socket.client.user.rcs_id);
+          io.emit('online', online);
+        }
+      }
     },
     timeout: 10 * 1000
   });
