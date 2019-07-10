@@ -5,7 +5,7 @@ const logger = require('./logger');
 module.exports = server => {
   let online = [];
 
-  const io = require('socket.io')(server);
+  const io = require('socket.io').listen(server);
   require('socketio-auth')(io, {
     authenticate: function (socket, studentID, callback) {
       // get credentials sent by the client
