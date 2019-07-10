@@ -33,10 +33,20 @@ module.exports = server => {
   });
 
   io.on('connection', socket => {
-    console.log('Client connected to Socket.io');
+    logger.debug('Client connected to Socket.io');
+
+    socket.on('join assessment room', assessmentID => {
+      logger.info(`${socket.client.user.rcs_id} is joining assessment room: ${assessmentID}`);
+      socket.join(`/assessments/${assessmentID}`);
+      socket.to(`/assessments/${assessmentID}`).emit('collaborator joined room', socket.client.user.rcs_id);
+    });
+
+    socket.on('updated assessment', assessmentID => {
+      socket.to(`/assessments/${assessmentID}`).emit('updated assessment');
+    });
 
     socket.on('disconnect', () => {
-      console.log('Client disconnected from Socket.io');
+      logger.debug('Client disconnected from Socket.io');
     });
   });
 };
