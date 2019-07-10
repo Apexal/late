@@ -356,6 +356,14 @@ const router = new Router({
             title: 'School Terms'
           },
           component: () => import('@/views/admin/components/AdminTermsList.vue')
+        },
+        {
+          path: 'fun',
+          name: 'admin-fun',
+          meta: {
+            title: 'Admin Fun'
+          },
+          component: () => import('@/views/admin/components/AdminFun.vue')
         }
       ]
     },
@@ -429,17 +437,6 @@ router.beforeEach(async (to, from, next) => {
     // if not, redirect to login page.
     window.location = '/auth/login?redirectTo=' + to.fullPath;
     return;
-  }
-
-  // Check if the route has a tour
-  let tour;
-  if (
-    (tour = store.getters.getTourFromRoute(to)) &&
-    !store.getters.seenTours.includes(tour.title)
-  ) {
-    store.dispatch('SUMMON_SISMAN', {
-      message: `Wanna take the ${tour.title} tour?`
-    });
   }
 
   if (

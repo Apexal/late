@@ -7,6 +7,7 @@
     :style="SISManCSS.style"
   >
     <!-- <div class="speech-bubble">
+      {{ message }}
       <h1>Hey there</h1>
       <div class="options is-flex">
         <span
@@ -16,7 +17,7 @@
           @click="option.onclick"
         >{{ option.text }}</span>
       </div>
-    </div>-->
+    </div> -->
     <img
       src="@/assets/img/sisman.png"
       @click="click"
@@ -42,14 +43,14 @@ export default {
   methods: {
     click () {
       this.$store.dispatch('DISMISS_SISMAN');
-      const tour = this.$store.getters.getTourFromRoute(this.$route);
-      if (!tour) return;
+      // const tour = this.$store.getters.getTourFromRoute(this.$route);
+      // if (!tour) return;
 
-      const index = this.$store.state.tours.tours.indexOf(tour);
+      // const index = this.$store.state.tours.tours.indexOf(tour);
 
-      if (index) {
-        this.$store.commit('SET_TOUR_INDEX', index);
-      }
+      // if (index) {
+      //   this.$store.commit('SET_TOUR_INDEX', index);
+      // }
     }
   }
 };
