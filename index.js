@@ -10,7 +10,7 @@ const logger = require('./server/modules/logger');
 
 // Grab server configuration from environment variables
 const port = process.env.PORT;
-const host = process.env.HOST || '127.0.0.1';
+const host = process.env.HOST || '0.0.0.0';
 const server = require('http').createServer(app.callback());
 server.listen(port, host);
 
