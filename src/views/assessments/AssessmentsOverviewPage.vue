@@ -141,7 +141,9 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    this.$socket.emit('leave assessment room', this.assessment._id);
+    if (!this.isUpcoming) {
+      this.$socket.emit('leave assessment room', this.assessment._id);
+    }
     next();
   },
   watch: {
