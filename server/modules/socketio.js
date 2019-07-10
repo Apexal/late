@@ -19,7 +19,7 @@ module.exports = server => {
     },
     postAuthenticate: function (socket, studentID) {
       Student.findById(studentID, function (err, user) {
-        if (err) return console.log(err);
+        if (err) return logger.error(err);
         socket.client.user = user;
         online.push(user.rcs_id);
         socket.emit('online', online);

@@ -234,6 +234,13 @@ export default {
                         location
                       }
                     );
+
+                    this.$emit('updated-assessment', updatedAssessment);
+
+                    this.$toast.open({
+                      message: `Updated location to <b>${location}</b>!`,
+                      type: 'is-success'
+                    });
                   }
                 });
               };
