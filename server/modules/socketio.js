@@ -22,18 +22,27 @@ module.exports = server => {
         if (err) return logger.error(err);
         socket.client.user = user;
         online.push(user.rcs_id);
-        socket.emit('online', online);
+        io.emit('online', online);
       });
     },
     disconnect: function (socket) {
       if (socket.client.user) { online = online.filter(rcsId => rcsId !== socket.client.user.rcs_id); }
-      socket.emit('online', online);
+      io.emit('online', online);
     },
     timeout: 10 * 1000
   });
 
   io.on('connection', socket => {
     logger.debug('Client connected to Socket.io');
+
+    /* FUN */
+    socket.on('send sis man message', (targetRcsID, message) => {
+      const allSockets = io.sockets.sockets;
+      for (let sID in allSockets) {
+        if (allSockets[sID].auth && allSockets[sID].client.user.rcs_id === targetRcsID) { allSockets[sID].emit('sis man message', message); }
+      }
+    });
+    /* end FUN */
 
     /* ANNOUNCEMENTS */
     socket.on('new announcement', newAnnouncement => {
