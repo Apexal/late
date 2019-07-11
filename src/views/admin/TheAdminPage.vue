@@ -4,13 +4,16 @@
     id="admin-page"
     class="section"
   >
-    <div class="tabs is-right">
+    <h1 class="is-hidden-desktop has-text-centered is-marginless title">
+      Administration
+    </h1>
+    <div class="tabs is-centered">
       <ul>
         <h1
-          class="title"
-          style="flex: 1 1 0%;"
+          class="is-hidden-touch title"
+          style="flex: 1"
         >
-          Administrator Control Panel
+          Administration
         </h1>
         <router-link
           :to="{ name: 'admin-student-list' }"

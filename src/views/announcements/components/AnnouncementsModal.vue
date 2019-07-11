@@ -216,7 +216,6 @@ export default {
       try {
         request = await this.$http.delete(`/announcements/${announcement._id}`);
       } catch (e) {
-        console.error(e);
         this.$toast.open({ type: 'is-danger', message: e.request.data.message });
         return;
       }
