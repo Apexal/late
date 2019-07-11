@@ -55,7 +55,7 @@
 
     <template>
       <hr>
-      <div class="box is-clearfix">
+      <div class="is-clearfix">
         <form @submit.prevent="addComment">
           <div class="field">
             <div class="control">
@@ -63,8 +63,7 @@
                 id="new-comment"
                 v-model.trim="newComment"
                 placeholder="Write your comment here. Markdown is supported!"
-                cols="30"
-                rows="10"
+
                 class="input"
                 required
                 @keyup.ctrl.enter="addComment"
@@ -180,8 +179,10 @@ export default {
 }
 
 #new-comment {
-  max-width: 900px;
-  min-height: 100px;
-  max-height: 200px;
+  min-width: 100%;
+  max-width: 100px;
+  width: 100%;
+  min-height: 50px;
+  max-height: 150px;
 }
 </style>

@@ -262,11 +262,6 @@ export default {
     }
   }
 
-  .panel-block:not(.is-active):not(.control):not(.no-hover):not(.send-message)
-    :hover {
-    background-color: #f3f3f3;
-  }
-
   .tab-count {
     margin-left: 3px;
     transform: scale(0.8);
