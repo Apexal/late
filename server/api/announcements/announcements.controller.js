@@ -87,9 +87,10 @@ async function deleteAnnouncement (ctx) {
   }
   const { announcementID } = ctx.params;
   const deletedAnnouncement = await Announcement.findOne({
-    _id: announcementID,
-    _student: ctx.state.user._id
+    _id: announcementID
   });
+
+  if (!deletedAnnouncement) return ctx.notFound('Couldn\'t find the announcement!');
 
   deletedAnnouncement.remove();
 

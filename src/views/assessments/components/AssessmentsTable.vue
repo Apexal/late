@@ -136,7 +136,7 @@ export default {
           : '';
       let description =
         assessment.description.length > 500
-          ? assessment.description.substring(0, 500) + '...'
+          ? (assessment.description || '').substring(0, 500) + '...'
           : assessment.description;
 
       title += description || 'No description given.';

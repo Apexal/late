@@ -29,7 +29,7 @@
         tag="div"
         class="assessment assessment-link panel-block"
         :title="
-          assessment.description.substring(0, 500) ||
+          (assessment.description || '').substring(0, 500) ||
             `No description for this ${assessment.assessmentType} given.`
         "
         :to="{
