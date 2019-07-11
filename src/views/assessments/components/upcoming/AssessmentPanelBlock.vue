@@ -18,7 +18,7 @@
         class="assessment-link"
         :title="
           (assessment.priority === 1 ? '(OPTIONAL) ' : '') +
-            assessment.description.substring(0, 500)
+            (assessment.description || '').substring(0, 500)
         "
         :to="linkToParams"
         :class="{
