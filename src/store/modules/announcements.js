@@ -50,6 +50,9 @@ const mutations = {
   SET_ANNOUNCEMENTS_MODEL_OPEN: (state, isOpen) => {
     state.modalOpen = isOpen;
   },
+  UPDATE_ANNOUNCEMENT: (state, updatedAnnouncement) => {
+    Object.assign(state.announcements.find(ann => ann._id === updatedAnnouncement._id), updatedAnnouncement);
+  },
   SET_ANNOUNCEMENTS: (state, announcements) => {
     state.announcements = announcements;
   },
@@ -60,6 +63,9 @@ const mutations = {
       if (a.createdAt > b.createdAt) return -1;
       return 0;
     });
+  },
+  REMOVE_ANNOUNCEMENT: (state, announcement) => {
+    state.announcements = state.announcements.filter(ann => ann._id !== announcement._id);
   }
 };
 

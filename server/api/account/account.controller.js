@@ -171,6 +171,7 @@ async function setProfile (ctx) {
   } else if (body.method === 'sis') {
     const { rin, pin } = body;
 
+    // Grab as much info as possible from SIS
     const scrapedInfo = await scrapeSISForProfileInfo(rin, pin);
     ctx.state.user.set(scrapedInfo);
   } else {
@@ -190,10 +191,17 @@ async function setProfile (ctx) {
     logger.error(
       `Failed to save personal info for ${ctx.state.user.rcs_id}: ${err}`
     );
-    return ctx.badRequest('Failed to save personal info.');
+    return ctx.badRequest('There was an error saving your personal info.');
   }
 }
 
+/**
+ * Set the logged in user's terms that they are on campus.
+ * The term codes should be in the request body as `termCodes`
+ *
+ * @param {Koa context} ctx
+ * @retturns updatedUser
+ */
 async function setTerms (ctx) {
   const { termCodes } = ctx.request.body;
 
@@ -207,18 +215,18 @@ async function setTerms (ctx) {
       `Could not set terms for ${ctx.state.user.rcs_id}: Invalid term given.`
     );
     return ctx.badRequest(
-      'Failed to set terms. You gave an invalid term code!'
+      'Couldn\'t set terms. You gave an invalid term code!'
     );
   }
 
   ctx.state.user.setup.terms = true;
-  ctx.state.user.terms = termCodes.sort();
+  ctx.state.user.terms = termCodes.sort(); // this works even though they're strings
 
   try {
     await ctx.state.user.save();
   } catch (e) {
     logger.error(`Failed to save user ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.internalServerError('There was an issue saving the user.');
+    return ctx.internalServerError('There was an error saving the terms.');
   }
 
   ctx.ok({
@@ -284,14 +292,17 @@ async function importCourseSchedule (ctx) {
  * Set the study/work time preference of the logged in user.
  *
  * Body:
- * - events
+ * - earliest 'HH:mm'
+ * - latest 'HH:mm'
  * @param {Koa context} ctx
  */
 async function setTimePreference (ctx) {
-  const body = ctx.request.body;
+  const { earliest, latest } = ctx.request.body;
 
-  ctx.state.user.earliestWorkTime = body.earliest;
-  ctx.state.user.latestWorkTime = body.latest;
+  if (!earliest || !latest) return ctx.badRequest('You must give an earliest AND latest time.');
+
+  ctx.state.user.earliestWorkTime = earliest;
+  ctx.state.user.latestWorkTime = latest;
 
   if (
     !ctx.state.user.setup.unavailability.includes(ctx.session.currentTerm.code)

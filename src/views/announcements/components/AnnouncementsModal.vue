@@ -90,6 +90,25 @@
               Posted {{ fromNow(announcement.createdAt) }} by
               {{ announcement._student.display_name }}
             </small>
+            <template v-if="user.admin">
+              <hr>
+              <div class="buttons">
+                <b-button
+                  type="is-info"
+                  size="is-small"
+                  @click="togglePinned(announcement)"
+                >
+                  {{ announcement.isPinned ? 'Unpin' : 'Pin' }}
+                </b-button>
+                <b-button
+                  type="is-danger"
+                  size="is-small"
+                  @click="deleteAnnouncement(announcement)"
+                >
+                  Delete
+                </b-button>
+              </div>
+            </template>
           </article>
         </template>
       </section>
@@ -172,6 +191,38 @@ export default {
         isPinned: false
       };
       this.loading = false;
+    },
+    async togglePinned (announcement) {
+      if (!this.user.admin) return;
+
+      let request;
+      try {
+        request = await this.$http.patch(`/announcements/${announcement._id}`, {
+          isPinned: !announcement.isPinned
+        });
+      } catch (e) {
+        this.$toast.open({ type: 'is-danger', message: e.request.data.message });
+        return;
+      }
+
+      this.$store.commit('UPDATE_ANNOUNCEMENT', request.data.updatedAnnouncement);
+
+      this.$toast.open({ type: 'is-success', message: 'Updated announcement!' });
+    },
+    async deleteAnnouncement (announcement) {
+      if (!this.user.admin) return;
+
+      let request;
+      try {
+        request = await this.$http.delete(`/announcements/${announcement._id}`);
+      } catch (e) {
+        this.$toast.open({ type: 'is-danger', message: e.request.data.message });
+        return;
+      }
+
+      this.$store.commit('REMOVE_ANNOUNCEMENT', request.data.deletedAnnouncement);
+
+      this.$toast.open({ type: 'is-success', message: 'Deleted announcement!' });
     }
   }
 };

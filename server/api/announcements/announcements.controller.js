@@ -46,6 +46,35 @@ async function createAnnouncement (ctx) {
   return ctx.created({ createdAnnouncement });
 }
 
+async function editAnnouncement (ctx) {
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
+  const announcementID = ctx.params.announcementID;
+  const body = ctx.request.body;
+  const updatedAnnouncement = await Announcement.findOne({
+    _id: announcementID
+  });
+
+  if (!updatedAnnouncement) return ctx.notFound('Could not find announcement.');
+
+  if ('title' in body) updatedAnnouncement.title = body.title;
+  if ('body' in body) updatedAnnouncement.body = body.body;
+  if ('isPinned' in body) updatedAnnouncement.isPinned = body.isPinned;
+
+  try {
+    await updatedAnnouncement.save();
+  } catch (e) {
+    logger.error(
+      `Failed to save new announcement for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('There was an error editing the announcement.');
+  }
+
+  logger.info(`Edited announcement for ${ctx.state.user.rcs_id}`);
+  return ctx.ok({ updatedAnnouncement });
+}
+
 /**
  * Deletes an announcement given its ID.
  * Request parameters:
@@ -70,6 +99,7 @@ async function deleteAnnouncement (ctx) {
 
 module.exports = {
   getAnnouncements,
+  editAnnouncement,
   createAnnouncement,
   deleteAnnouncement
 };
