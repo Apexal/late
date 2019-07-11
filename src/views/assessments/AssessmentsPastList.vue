@@ -8,71 +8,69 @@
       Week of {{ weekOf }}
     </h2>
     <div class="is-flex-tablet">
-      <b-button
-        :disabled="!canGoPrev"
-        :loading="loading"
-        @click="shiftDates(-7)"
-      >
-        <span class="icon">
-          <i class="fas fa-chevron-left" />
-        </span>
-      </b-button>
-      <div class="field is-horizontal">
-        <div class="field-body">
-          <div class="control">
-            <input
-              id="start"
-              :value="startDate"
-              class="input"
-              type="date"
-              min="2018-09-01"
-              :max="endDate"
-              disabled
-            >
-          </div>
-        </div>
-      </div>
-
-      <div
-        style="flex: 1"
-        class="buttons is-centered"
-      >
-        <div class="field is-horizontal">
+      <b-field class="has-text-centered-touch">
+        <p class="control">
           <b-button
-            type="is-primary"
-            :disabled="isLastWeek"
-            @click="gotoLastWeek"
+            :disabled="!canGoPrev"
+            :loading="loading"
+            @click="shiftDates(-7)"
           >
-            Last Week
+            <span class="icon">
+              <i class="fas fa-chevron-left" />
+            </span>
           </b-button>
+        </p>
+        <div class="control">
+          <input
+            id="start"
+            :value="startDate"
+            class="input"
+            type="date"
+            min="2018-09-01"
+            :max="endDate"
+            disabled
+          >
         </div>
-      </div>
+      </b-field>
 
-      <div class="field is-horizontal">
-        <div class="field-body">
-          <div class="control">
-            <input
-              id="end"
-              :value="endDate"
-              class="input"
-              type="date"
-              min="2018-09-01"
-              :max="today"
-              disabled
-            >
-          </div>
-        </div>
-      </div>
-
-      <b-button
-        :loading="loading"
-        :disabled="!canGoForward"
-        @click="shiftDates(7)"
+      <b-field
+        style="flex: 1"
+        class="has-text-centered"
       >
-        <span class="icon">
-          <i class="fas fa-chevron-right" />
-        </span>
-      </b-button>
+        <b-button
+          type="is-primary"
+          :disabled="isLastWeek"
+          @click="gotoLastWeek"
+        >
+          Last Week
+        </b-button>
+      </b-field>
+
+
+      <b-field>
+        <div class="control">
+          <input
+            id="end"
+            :value="endDate"
+            class="input"
+            type="date"
+            min="2018-09-01"
+            :max="today"
+            disabled
+          >
+        </div>
+        <p class="control">
+          <b-button
+            :loading="loading"
+            :disabled="!canGoForward"
+            @click="shiftDates(7)"
+          >
+            <span class="icon">
+              <i class="fas fa-chevron-right" />
+            </span>
+          </b-button>
+        </p>
+      </b-field>
     </div>
 
     <AssessmentsTable
