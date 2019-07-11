@@ -133,7 +133,7 @@ export default {
           ? '(optional) '
           : '';
       let description =
-        assessment.description.length > 500
+        (assessment.description || '').length > 500
           ? (assessment.description || '').substring(0, 500) + '...'
           : assessment.description;
 
