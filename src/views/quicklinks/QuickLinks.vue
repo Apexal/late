@@ -140,7 +140,7 @@
     </div>
 
     <form @submit.prevent="submitLink">
-      <b-field>
+      <b-field class="submit-link-field">
         <b-select
           v-model="newLink.category"
           placeholder="Category"
@@ -385,4 +385,12 @@ export default {
     }
   }
 }
+
+@media only screen and (max-width: 768px) {
+  .submit-link-field {
+    flex-direction: column;
+  }
+}
+
+
 </style>
