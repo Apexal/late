@@ -35,17 +35,6 @@ async function loginAs (ctx) {
   }
   ctx.state.user = student;
 
-  try {
-    ctx.state.discordClient.guilds
-      .find(guild => guild.id === process.env.DISCORD_SERVER_ID)
-      .channels.find(channel => channel.name === 'log')
-      .send(
-        `**${student.display_name}** *(${
-          student.rcs_id
-        })* has logged in to the dev server.`
-      );
-  } catch (e) {}
-
   await getUser(ctx);
 }
 
