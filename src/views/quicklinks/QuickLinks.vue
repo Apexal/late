@@ -55,6 +55,12 @@
               >
                 <b>{{ link.title }}</b>
               </a>
+              <span
+                v-if="user.admin"
+                class="delete is-pulled-right"
+                :title="`Delete ${link.title}`"
+                @click="deleteQuickLink(link._id)"
+              />
               <blockquote
                 v-if="link.description"
                 class="blockquote link-description"
@@ -365,6 +371,17 @@ export default {
     }
     .link-description {
       padding: 5px;
+    }
+
+    .delete {
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover {
+      .delete {
+        opacity: 1;
+      }
     }
   }
 }
