@@ -61,6 +61,7 @@
                 $store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)
               "
             />
+
             <SISMan />
             <AssessmentsAddFAB v-if="!onBreak" />
             <StudyToolsTimerOverlay
@@ -113,6 +114,7 @@ export default {
     AssessmentsAddFAB,
     StudyToolsTimerOverlay,
     SISMan
+
   },
   data () {
     return {

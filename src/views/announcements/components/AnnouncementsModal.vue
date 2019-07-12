@@ -2,7 +2,7 @@
 <template>
   <b-modal
     has-modal-card
-    class="modal announcements-modal"
+    class="announcements-modal"
     :active="open"
     @close="$emit('close-modal')"
   >

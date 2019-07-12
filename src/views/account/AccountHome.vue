@@ -2,6 +2,12 @@
 
 <template>
   <div class="account-home">
+    <SISManModal
+      :open="showingModal"
+      @sis-import="startImportFromSIS"
+      @manual="$router.push({ name: 'setup-profile' })"
+      @close-modal="showingModal = false"
+    />
     <h1 class="is-size-5 integration-note">
       For
       <b>LATE</b> to function, it must know basic info about yourself, your
@@ -10,24 +16,43 @@
       <b>LATE</b> with.
     </h1>
     <br>
-    <div class="is-flex">
+    <div class="has-text-centered">
       <router-link
-        class="button is-medium is-primary"
+        class="button is-medium"
         :to="{ name: 'setup-profile' }"
       >
         Manual Setup
       </router-link>
+      <b-button
+        size="is-medium"
+        type="is-primary"
+        @click="startImportFromSIS"
+      >
+        Import from SIS
+      </b-button>
     </div>
   </div>
 </template>
 
 <script>
+import SISManModal from '@/views/sisman/components/SISManModal';
+
 export default {
   name: 'AccountHome',
+  components: { SISManModal },
   data () {
     return {
+      showingModal: false,
       loading: false
     };
+  },
+  watch: {
+    user (newUser) {
+      this.showingModal = !newUser.setup.profile;
+    }
+  },
+  mounted () {
+    this.showingModal = !this.user.setup.profile;
   },
   methods: {
     promptRIN (onConfirm) {
@@ -105,12 +130,7 @@ export default {
   margin: 0 auto;
 }
 
-/*Centers and resizes button*/
 .button {
-  margin: 0 auto;
-  display: block;
-  max-width: 500px;
-  height: 3em;
-  line-height: 2em;
+  margin-right: 20px;
 }
 </style>
