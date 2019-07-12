@@ -54,6 +54,9 @@ async function loginStudent (ctx) {
     sendNewUserEmail(student.rcs_id);
     sendDiscordWebhookMessage(`**${student.rcs_id}** has joined the waitlist!`); // may fail
     ctx.session = null;
+
+    ctx.query.redirectTo = '/account';
+
     return ctx.redirect('/?waitlisted=1');
   }
 
