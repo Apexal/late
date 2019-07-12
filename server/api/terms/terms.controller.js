@@ -33,6 +33,8 @@ async function getTerms (ctx) {
  * GET /
  **/
 async function createTerm (ctx) {
+  if (!ctx.state.user.admin) return ctx.unauthorized('Only admins can add terms.');
+
   const { name, code, start, classesEnd, end } = ctx.request.body;
 
   const createdTerm = new Term({

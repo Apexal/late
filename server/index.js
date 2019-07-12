@@ -19,9 +19,11 @@ const discordClient = require('./integrations/discord').client;
 const logger = require('./modules/logger');
 
 const app = new Koa();
+
+/* Server side routing (mainly used for API) */
 const router = new Router();
 
-// Connect to MongoDB
+/* Connect to MongoDB database */
 require('./db');
 
 /* Body Parser Setup */
@@ -92,7 +94,6 @@ app.use(async (ctx, next) => {
         ctx.state.googleAuth = auth;
       }
     } else {
-      console.error('User is NULL');
       logger.error('User is NULL');
     }
   }
@@ -100,7 +101,6 @@ app.use(async (ctx, next) => {
     await next();
   } catch (e) {
     ctx.status = e.status || 500;
-    console.error(e);
     logger.error(e);
 
     // Only send details of error if in development mode (to protect confidential info)

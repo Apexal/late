@@ -9,7 +9,7 @@ const logger = require('./modules/logger');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-const dbURL = process.env.MONGODB_URI;
+const dbURL = process.env.MONGODB_URI; // This better be set...
 
 const connection = mongoose
   .connect(
