@@ -254,14 +254,6 @@ section.section {
   padding: 1.5rem;
 }
 
-// Replace Fullcalendar ugly button style with Bulma's nice style
-.fc-button {
-  color: initial;
-  background: none;
-  text-shadow: none;
-  //@extend .button;
-}
-
 //Toggle sidebar
 .toggle-sidebar {
   transition: 0.2s !important;

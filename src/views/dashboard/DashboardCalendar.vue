@@ -16,12 +16,30 @@
     />
     <FullCalendar
       ref="dashboard-calendar"
+      :plugins="calendar.plugins"
       :events="events"
       :editable="true"
       :selectable="true"
       :header="calendar.header"
-      :config="calendar.config"
-      @view-render="viewRender"
+      :views="calendar.views"
+      :valid-range="calendar.validRange"
+      :business-hours="calendar.businessHours"
+      :day-count="5"
+      :default-view="calendar.defaultView"
+      height="parent"
+      time-format="h(:mm)t"
+      snap-duration="00:15"
+      :event-overlap="true"
+      :select-overlap="true"
+      :select-helper="true"
+      :scroll-time="calendar.scrollTime"
+      no-events-message="You've got nothing to do!"
+      time-zone="local"
+      all-day-text="Due"
+      :button-text="calendar.buttonText"
+      :event-render="eventRender"
+      :dates-render="datesRender"
+      @eventClick="eventClick"
     />
     <b-button
       title="Toggle Fullscreen"
@@ -34,10 +52,18 @@
 </template>
 
 <script>
-import { FullCalendar } from 'vue-full-calendar';
-import 'fullcalendar/dist/fullcalendar.css';
-
 import moment from 'moment';
+
+import fullcalendar from '@/mixins/fullcalendar';
+
+import FullCalendar from '@fullcalendar/vue';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+
+import '@fullcalendar/core/main.css';
+import '@fullcalendar/daygrid/main.css';
+import '@fullcalendar/timegrid/main.css';
 
 import DashboardCalendarSelectModal from '@/views/dashboard/components/DashboardCalendarSelectModal';
 import DashboardCalendarEventModal from '@/views/dashboard/components/DashboardCalendarEventModal';
@@ -49,6 +75,7 @@ export default {
     DashboardCalendarEventModal,
     FullCalendar
   },
+  mixins: [fullcalendar],
   data () {
     return {
       selectModal: {
@@ -62,70 +89,49 @@ export default {
       },
       academicCalendarEvents: [],
       calendar: {
+        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
         header: {
-          center: 'agendaThreeDay, agendaFiveDay, agendaWeek'
+          center: 'timeGridThreeDay,timeGridFiveDay,timeGridWeek'
         },
-        config: {
-          displayEventTime: true,
-          views: {
-            agendaThreeDay: {
-              type: 'agenda',
-              duration: { days: 3 },
-              buttonText: '3-Day'
-            },
-            agendaFiveDay: {
-              type: 'agenda',
-              duration: { days: 5 },
-              buttonText: '5-Day'
-            }
+        scrollTime: '08:00',
+        views: {
+          timeGridThreeDay: {
+            type: 'timeGrid',
+            duration: { days: 3 },
+            buttonText: '3-Day'
           },
-          validRange: {
-            start: this.$store.getters.currentTerm.start,
-            end: this.$store.getters.currentTerm.end
-          },
-          height: 'parent',
-          dayCount: 5,
-          allDayText: 'Due',
-          // minTime: this.$store.state.auth.user.earliestWorkTime + ':00',
-          // maxTime: this.$store.state.auth.user.latestWorkTime + ':00',
-          businessHours: {
-            dow: [0, 1, 2, 3, 4, 5, 6],
-            start: this.$store.state.auth.user.earliestWorkTime,
-            end: this.$store.state.auth.user.latestWorkTime
-          },
-          timezone: 'local',
-          defaultView: localStorage.getItem('dashboardCalendarDefaultView') || 'agendaWeek',
-          eventOverlap: true,
-          selectOverlap: true,
-          selectHelper: true,
-          nowIndicator: true,
-          timeFormat: 'h(:mm)t',
-          snapDuration: '00:15',
-          noEventsMessage: 'You\'ve got nothing to do. You can relax!',
-          eventRender: this.eventRender,
-          buttonText: {
-            today: 'Today',
-            agendaWeek: 'Week'
-          },
-          /* dayClick: (date, jsEvent, view) => {
-            // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_DUE_DATE', date);
-            // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
-          },
-          */
-          eventClick: this.eventClick,
-          eventDrop: this.eventDrop,
-          eventResize: this.eventResize,
-          select: this.select
+          timeGridFiveDay: {
+            type: 'timeGrid',
+            duration: { days: 5 },
+            buttonText: '5-Day'
+          }
+        },
+        validRange: {
+          start: this.$store.getters.currentTerm.start,
+          end: this.$store.getters.currentTerm.end
+        },
+        businessHours: {
+          daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+          startTime: this.$store.state.auth.user.earliestWorkTime,
+          endTime: this.$store.state.auth.user.latestWorkTime
+        },
+        defaultView: localStorage.getItem('dashboardCalendarDefaultView') || 'timeGridWeek',
+        buttonText: {
+          today: 'Today',
+          timeGridWeek: 'Week'
         }
+        // config: {
+        //   eventClick: this.eventClick,
+        //   eventDrop: this.eventDrop,
+        //   eventResize: this.eventResize,
+        //   select: this.select
+        // }
       }
     };
   },
   computed: {
     isFullscreen () {
       return document.fullscreenElement !== null;
-    },
-    term () {
-      return this.$store.getters.currentTerm;
     },
     filteredUpcomingAssessments () {
       return this.$store.state.assessments.upcomingAssessments.filter(
@@ -194,7 +200,7 @@ export default {
     }
   },
   async created () {
-    this.calendar.config.scrollTime = this.earliest;
+    this.calendar.scrollTime = this.earliest;
 
     const response = await this.$http.get('/integrations/academiccalendar');
     const parsed = response.data.events;
@@ -216,8 +222,8 @@ export default {
     }
   },
   methods: {
-    viewRender (view, element) {
-      if (view.name !== localStorage.getItem('dashboardCalendarDefaultView')) { localStorage.setItem('dashboardCalendarDefaultView', view.name); }
+    datesRender ({ view, el }) {
+      if (view.name !== localStorage.getItem('dashboardCalendarDefaultView')) { localStorage.setItem('dashboardCalendarDefaultView', view.type); }
     },
     mapICalObjectToEvent (id, obj) {
       const event = {
@@ -241,7 +247,7 @@ export default {
         div.requestFullscreen();
       }
     },
-    eventRender (event, el) {
+    oldEventRender (event, el) {
       // el.attr('title', event.period ? event.period.location : event.title);
       if (event.eventType === 'course') {
         el.attr('title', `${event.title} | ${event.period.location}`);
@@ -381,44 +387,50 @@ export default {
       this.selectModal.open = false;
       this.$refs['dashboard-calendar'].fireMethod('unselect');
     },
-    eventClick (calEvent, jsEvent, view) {
-      if (calEvent.eventType === 'course') {
+    eventClick ({ event, jsEvent, view }) {
+      const { eventType, assessment } = event.extendedProps;
+
+      if (eventType === 'course') {
         this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
           modalStep: 2,
-          dueDate: calEvent.start,
-          dueTime: moment(calEvent.start).format('HH:mm')
+          dueDate: event.start,
+          dueTime: moment(event.start).format('HH:mm')
         });
         this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
           modalStep: 2,
-          date: calEvent.start,
-          time: moment(calEvent.start).format('HH:mm')
+          date: event.start,
+          time: moment(event.start).format('HH:mm')
         });
-        this.$store.commit('OPEN_COURSE_MODAL', calEvent.course);
-      } else if (calEvent.eventType === 'assignment') {
+        this.$store.commit('OPEN_COURSE_MODAL', event.course);
+      } else if (eventType === 'assignment') {
         this.$router.push({
           name: 'assignment-overview',
-          params: { assignmentID: calEvent.assignment._id }
+          params: { assignmentID: assessment._id }
         });
-      } else if (calEvent.eventType === 'exam') {
+      } else if (eventType === 'exam') {
         this.$router.push({
           name: 'exam-overview',
-          params: { examID: calEvent.exam._id }
+          params: { examID: assessment._id }
         });
-      } else if (calEvent.eventType === 'work-block') {
-        if (calEvent.assessmentType === 'assignment') {
+      } else if (eventType === 'work-block') {
+        const { assessmentType } = assessment;
+
+        if (assessmentType === 'assignment') {
           this.$router.push({
             name: 'assignment-overview',
-            params: { assignmentID: calEvent.assignment._id }
+            params: { assignmentID: assessment._id }
           });
-        } else if (calEvent.assessmentType === 'exam') {
+        } else if (assessmentType === 'exam') {
           this.$router.push({
             name: 'exam-overview',
-            params: { examID: calEvent.exam._id }
+            params: { examID: assessment._id }
           });
         }
-      } else if (calEvent.eventType === 'academic-calendar-event') {
-        this.eventModal.event = calEvent;
+      } else if (eventType === 'academic-calendar-event') {
+        this.eventModal.event = event;
         this.eventModal.open = true;
+      } else if (eventType === 'unavailability') {
+        this.$router.push({ name: 'setup-unavailability' });
       }
     },
     eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
@@ -539,52 +551,6 @@ export default {
     background-color: white;
     cursor: pointer;
   }
-}
-
-.fc .fc-toolbar > * > * {
-  margin: 0 auto;
-}
-
-//Vertically "centers" date text w buttons
-.fc-left {
-  margin-top: 7px;
-}
-
-.fc-button {
-  box-shadow: none !important;
-}
-
-.fc-center,
-.fc-right {
-  * {
-    border-style: none;
-    color: #444444;
-  }
-
-  .fc-state-active {
-    color: black;
-  }
-  .fc-state-active:nth-child(1) {
-    border-right: 1px solid #dbdbdb;
-  }
-  .fc-state-active:nth-child(2) {
-    border-right: 1px solid #dbdbdb;
-    border-left: 1px solid #dbdbdb;
-  }
-  .fc-state-active:nth-child(3) {
-    border-left: 1px solid #dbdbdb;
-  }
-
-  .fc-button:hover {
-    color: black;
-  }
-  border: 1px solid #dbdbdb;
-  border-radius: 4px;
-}
-
-.fc-right .fc-button-group {
-  border-left: 1px solid #dbdbdb;
-  margin-left: 5px;
 }
 
 #calendar-holder {
