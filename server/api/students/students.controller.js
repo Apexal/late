@@ -9,6 +9,7 @@ const Block = require('../blocks/blocks.model');
 
 /**
  * Only available in development mode. Login as a user given their ID.
+ * The url query must have `loginAs` set to the student rcs_id
  *
  * @param {Koa session} ctx
  **/
@@ -38,6 +39,11 @@ async function loginAs (ctx) {
   await getUser(ctx);
 }
 
+/**
+ * Return the logged in user.
+ *
+ * @param {Koa context} ctx
+ */
 async function getUser (ctx) {
   logger.info(`Getting user info for ${ctx.state.user.rcs_id}`);
 
@@ -46,6 +52,11 @@ async function getUser (ctx) {
   });
 }
 
+/**
+ * For administrators, get all student documents.
+ *
+ * @param {Koa context} ctx
+ */
 async function getStudents (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!');
@@ -56,6 +67,13 @@ async function getStudents (ctx) {
   ctx.ok({ students });
 }
 
+/**
+ * For administrators, get a specific student's document.
+ * If the url query includes `counts` then it will return
+ * how many assignments, exams, and blocks the student owns.
+ *
+ * @param {*} ctx
+ */
 async function getStudent (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!');
