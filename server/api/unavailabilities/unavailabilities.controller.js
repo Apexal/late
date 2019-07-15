@@ -79,7 +79,7 @@ async function updateUnavailability (ctx) {
       _student: ctx.state.user._id
     });
 
-    updateUnavailability.set(ctx.request.body);
+    updatedUnavailability.set(ctx.request.body);
 
     await updatedUnavailability.save();
   } catch (e) {
@@ -90,7 +90,7 @@ async function updateUnavailability (ctx) {
   }
 
   logger.info(`Updated unavailability block for ${ctx.state.user.rcs_id}`);
-  return ctx.created({ updatedUnavailability });
+  return ctx.ok({ updatedUnavailability });
 }
 
 /**

@@ -70,12 +70,29 @@
       </p>
       <FullCalendar
         ref="calendar"
+        :plugins="calendar.plugins"
         :events="allEvents"
         :editable="true"
         :selectable="true"
-        :header="calendar.header"
-        :config="calendar.config"
-        @event-resize="eventResized"
+        :header="false"
+        :nav-links="false"
+        default-view="timeGridWeek"
+        :select-helper="true"
+        :select-overlap="false"
+        :event-overlap="false"
+        select-constraint="businessHours"
+        :select-mirror="true"
+        event-color="black"
+        :height="700"
+        time-zone="local"
+        :all-day-slot="false"
+        snap-duration="00:15"
+        time-format="h(:mm)t"
+        :business-hours="calendar.businessHours"
+        @eventResize="eventChanged"
+        @eventDrop="eventChanged"
+        @eventClick="eventClick"
+        @select="select"
       />
       <hr>
       <b-button
@@ -94,14 +111,22 @@
 
 <script>
 import moment from 'moment';
-import { FullCalendar } from 'vue-full-calendar';
-import 'fullcalendar/dist/fullcalendar.css';
 
-import TimeInput from '@/views/components/TimeInput';
+import FullCalendar from '@fullcalendar/vue';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+
+import fullcalendar from '@/mixins/fullcalendar';
+
+import '@fullcalendar/core/main.css';
+import '@fullcalendar/daygrid/main.css';
+import '@fullcalendar/timegrid/main.css';
 
 export default {
   name: 'AccountSetupUnavailability',
-  components: { FullCalendar, TimeInput },
+  components: { FullCalendar },
+  mixins: [fullcalendar],
   data () {
     return {
       loading: false,
@@ -109,33 +134,11 @@ export default {
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
-        events: [],
-        header: {
-          left: '',
-          center: '',
-          right: ''
-        },
-        config: {
-          timezone: 'local',
-          height: 700,
-          columnHeaderFormat: 'ddd',
-          allDaySlot: false,
-          snapDuration: '00:15',
-          businessHours: {
-            dow: [0, 1, 2, 3, 4, 5, 6],
-            start: this.$store.state.auth.user.earliestWorkTime,
-            end: this.$store.state.auth.user.latestWorkTime
-          },
-          navLinks: false,
-          defaultView: 'agendaWeek',
-          selectHelper: true,
-          eventOverlap: false,
-          selectOverlap: false,
-          selectConstraint: 'businessHours',
-          eventColor: 'black',
-          timeFormat: 'h(:mm)t',
-          eventClick: this.eventClick,
-          select: this.select
+        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        businessHours: {
+          daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+          start: this.$store.state.auth.user.earliestWorkTime,
+          end: this.$store.state.auth.user.latestWorkTime
         }
       }
     };
@@ -192,18 +195,26 @@ export default {
     setLatest (event) {
       this.latest = event.target.value;
     },
-    eventClick (calEvent, jsEvent, view) {
-      if (calEvent.eventType !== 'unavailability') return;
+    eventClick ({ event, jsEvent, view }) {
+      if (event.extendedProps.eventType !== 'unavailability') return;
 
       this.$dialog.confirm({
-        message: `Remove ${calEvent.title}?`,
-        onConfirm: () => this.removeUnavailability(calEvent)
+        message: `Remove ${event.title}?`,
+        onConfirm: () => this.removeUnavailability(event)
       });
     },
-    eventResized (calEvent) {
-      // TODO: can do
+    async eventChanged ({ event, revert }) {
+      try {
+        await this.updateUnavailability(event);
+      } catch (e) {
+        console.error(e);
+        revert();
+      }
     },
-    select (start, end) {
+    select ({ start, end }) {
+      start = moment(start);
+      end = moment(end);
+
       this.$dialog.prompt({
         message: `What are you doing ${start.format('h:mma')} to ${start.format(
           'h:mma'
@@ -216,15 +227,14 @@ export default {
         onConfirm: title => {
           const unavailability = {
             title: title || 'Busy',
-            start: start.format('HH:mm'),
-            end:
+            startTime: start.format('HH:mm'),
+            endTime:
               end.format('HH:mm') === '00:00' ? '24:00' : end.format('HH:mm'),
-            dow: [start.day()],
+            daysOfWeek: [start.day()],
             isOneTime: false
           };
 
           this.addUnavailability(unavailability);
-          this.$refs.calendar.fireMethod('unselect');
           this.saved = false;
         }
       });
@@ -253,12 +263,41 @@ export default {
         }" to your unavailability.`
       });
     },
-    async removeUnavailability (unavailability) {
+    async updateUnavailability (unavailability) {
+      let request;
+      try {
+        request = await this.$store.dispatch(
+          'UPDATE_UNAVAILABILITY',
+          { unavailabilityID: unavailability.id,
+            updates: {
+              startTime: moment(unavailability.start).format('HH:mm'),
+              endTime: moment(unavailability.end).format('HH:mm'),
+              title: unavailability.title,
+              daysOfWeek: unavailability.daysOfWeek
+            }
+          }
+        );
+      } catch (e) {
+        this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
+        throw e;
+      }
+
+      this.$toast.open({
+        type: 'is-success',
+        message: `Updated "${
+          request.data.updatedUnavailability.title
+        }" in your unavailability.`
+      });
+    },
+    async removeUnavailability (unavailabilityEvent) {
       let request;
       try {
         request = await this.$store.dispatch(
           'REMOVE_UNAVAILABILITY',
-          unavailability
+          unavailabilityEvent
         );
       } catch (e) {
         this.$toast.open({

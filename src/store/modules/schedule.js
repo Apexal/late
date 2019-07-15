@@ -84,7 +84,7 @@ const getters = {
             title: `${c.title} ${getters.periodType(p.type)}`,
             start,
             end,
-            dow: [p.day],
+            daysOfWeek: [p.day],
             color: c.color,
             editable: false,
             period: p,
