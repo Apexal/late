@@ -26,15 +26,6 @@ export default {
       if (eventType === 'course') {
         el.title = `${event.title} | ${period.location}`;
 
-        if (
-          !moment(event.end).isBetween(
-            course.startDate,
-            course.endDate
-          )
-        ) {
-          return false;
-        }
-
         if (period.type === 'TES') {
           return !!this.$store.state.assessments.upcomingAssessments.find(
             assessment =>
@@ -49,7 +40,7 @@ export default {
         const locationElement = document.createElement('i');
         locationElement.className = 'event-location';
         locationElement.innerText = period.location;
-        el.find('.fc-content').append(locationElement);
+        el.querySelector('.fc-content').append(locationElement);
       } else if (eventType === 'assignment') {
         addIcon('fa-clipboard-check');
 

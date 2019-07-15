@@ -82,6 +82,8 @@ const getters = {
             id: c._id,
             eventType: 'course',
             title: `${c.title} ${getters.periodType(p.type)}`,
+            startRecur: c.startDate,
+            endRecur: c.endDate,
             startTime: start,
             endTime: end,
             daysOfWeek: [p.day],
