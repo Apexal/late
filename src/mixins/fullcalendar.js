@@ -4,14 +4,15 @@ export default {
   methods: {
     eventRender ({ event, el, view }) {
       const { eventType, assessment, course, period, block } = event.extendedProps;
-      const { assessmentType } = assessment;
 
-      if (
-        this.filter && (this.filter.includes(assessment.courseCRN) ||
-        (eventType === 'assignment' &&
-        (!this.showCompleted && assessment.completed)))
-      ) {
-        return false;
+      if (view.type === 'dayGridMonth') {
+        if (
+          this.filter && (this.filter.includes(assessment.courseCRN) ||
+          (eventType === 'assignment' &&
+          (!this.showCompleted && assessment.completed)))
+        ) {
+          return false;
+        }
       }
 
       el.title = event.title;
@@ -23,7 +24,7 @@ export default {
       };
 
       if (eventType === 'course') {
-        el.title = `${event.title} | ${event.period.location}`;
+        el.title = `${event.title} | ${period.location}`;
 
         if (
           !moment(event.end).isBetween(
@@ -37,7 +38,7 @@ export default {
         if (period.type === 'TES') {
           return !!this.$store.state.assessments.upcomingAssessments.find(
             assessment =>
-              assessmentType === 'exam' &&
+              assessment.assessmentType === 'exam' &&
               assessment.courseCRN === course.crn &&
               moment(assessment.date).isSame(event.start, 'day')
           );
@@ -47,7 +48,7 @@ export default {
 
         const locationElement = document.createElement('i');
         locationElement.className = 'event-location';
-        locationElement.innerText = event.period.location;
+        locationElement.innerText = period.location;
         el.find('.fc-content').append(locationElement);
       } else if (eventType === 'assignment') {
         addIcon('fa-clipboard-check');
