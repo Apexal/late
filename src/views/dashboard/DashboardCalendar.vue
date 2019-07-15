@@ -169,35 +169,35 @@ export default {
     },
     earliest () {
       let earliest = this.$store.state.auth.user.earliestWorkTime;
-      const courses = this.$store.getters.getCourseScheduleAsEvents;
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
-        Object.assign({}, e)
-      );
+      // const courses = this.$store.getters.getCourseScheduleAsEvents;
+      // const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
+      //   Object.assign({}, e)
+      // );
 
-      let i;
-      for (i = 0; i < courses.length; i++) {
-        if (courses[i].start.localeCompare(earliest) < 0) {
-          earliest = courses[i].start;
-        }
-      }
-      for (i = 0; i < workBlocks.length; i++) {
-        if (workBlocks[i].start.localeCompare(earliest) < 0) {
-          earliest = workBlocks[i].start;
-        }
-      }
+      // let i;
+      // for (i = 0; i < courses.length; i++) {
+      //   if (courses[i].start.localeCompare(earliest) < 0) {
+      //     earliest = courses[i].start;
+      //   }
+      // }
+      // for (i = 0; i < workBlocks.length; i++) {
+      //   if (workBlocks[i].start.localeCompare(earliest) < 0) {
+      //     earliest = workBlocks[i].start;
+      //   }
+      // }
 
       return earliest;
     }
   },
   watch: {
-    earliest (newEarliest) {
-      this.calendar.config.scrollTime = this.earliest;
-      this.$refs['dashboard-calendar'].fireMethod(
-        'option',
-        'scrollTime',
-        this.calendar.config.scrollTime
-      );
-    }
+    // earliest (newEarliest) {
+    //   this.calendar.config.scrollTime = this.earliest;
+    //   this.$refs['dashboard-calendar'].fireMethod(
+    //     'option',
+    //     'scrollTime',
+    //     this.calendar.config.scrollTime
+    //   );
+    // }
   },
   async created () {
     this.calendar.scrollTime = this.earliest;
@@ -210,6 +210,7 @@ export default {
         events.push(this.mapICalObjectToEvent(id, parsed[id]));
       }
     }
+    alert(events.length);
     this.academicCalendarEvents = events;
   },
   mounted () {
@@ -230,11 +231,11 @@ export default {
         id,
         title: obj.summary,
         eventType: 'academic-calendar-event',
-        start: moment(obj.start),
+        start: obj.start,
         editable: false,
         eventURL: `http://events.rpi.edu/cal/event/eventView.do?b=de&calPath=%2Fpublic%2Fcals%2FMainCal&guid=${id}`
       };
-      if (obj.end) event.end = moment(obj.end);
+      if (obj.end) event.end = obj.end;
       else event.allDay = true;
 
       return event;
