@@ -17,10 +17,10 @@ export default {
 
       el.title = event.title;
 
-      const addIcon = (iconName, selector = '.fc-content') => {
+      const addIcon = (iconName, selector = '.fc-content', prepend = true) => {
         const icon = document.createElement('i');
         icon.className = 'fas ' + iconName;
-        el.querySelector(selector).prepend(icon);
+        el.querySelector(selector)[prepend ? 'prepend' : 'append'](icon);
       };
 
       if (eventType === 'course') {
@@ -49,6 +49,77 @@ export default {
         addIcon('fa-exclamation-triangle');
       } else if (eventType === 'academic-calendar-event') {
         addIcon('fa-info-circle');
+      } else if (eventType === 'work-block') {
+        el.title = `${
+          assessment.assessmentType === 'assignment'
+            ? 'Work on'
+            : 'Study for'
+        } ${assessment.title}${
+          block.location ? ' | ' + block.location : ''
+        }`;
+
+        // --- DELETE BUTTON ---
+        const deleteButton = document.createElement('span');
+        deleteButton.classList.add('remove-work-block');
+        deleteButton.classList.add('delete');
+        deleteButton.title = 'Remove from schedule';
+        deleteButton.onclick = async ev => {
+          ev.stopPropagation();
+
+          let updatedAssessment = await this.$store.dispatch(
+            'REMOVE_WORK_BLOCK',
+            {
+              assessment: assessment,
+              blockID: block._id
+            }
+          );
+
+          this.$toast.open({
+            message: 'Unscheduled work block!',
+            type: 'is-primary'
+          });
+        };
+        el.querySelector('.fc-content').append(deleteButton);
+        // ---------------------
+
+
+        // --- LOCATION ---
+        const locationEl = document.createElement('i');
+        locationEl.title = 'Click to set location';
+        if (block.location) {
+          locationEl.innerText = block.location;
+        } else {
+          locationEl.className = 'fas fa-map-marker-alt';
+        }
+        locationEl.classList.add('event-location');
+        locationEl.onclick = ev => {
+          ev.stopPropagation();
+          this.$dialog.prompt({
+            message: 'Where do you want this to be?',
+            inputAttrs: {
+              placeholder: block.location
+                ? block.location
+                : 'e.g. Bray Hall Classroom',
+              maxlength: 200
+            },
+            onConfirm: async location => {
+              const updatedAssessment = await this.$store.dispatch(
+                'EDIT_WORK_BLOCK',
+                {
+                  assessment: assessment,
+                  blockID: block._id,
+                  start: event.start,
+                  end: event.end,
+                  location
+                }
+              );
+            }
+          });
+        };
+        el.querySelector('.fc-content').append(locationEl);
+        // ----------------
+
+        if (assessment.shared && block.shared) addIcon('fa-users margin-left', '.fc-title', false);
       }
     },
     dateClick ({ date }) {
