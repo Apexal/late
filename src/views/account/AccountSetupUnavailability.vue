@@ -74,11 +74,15 @@
         :events="allEvents"
         :editable="true"
         :selectable="true"
+        :event-overlap="false"
+        :select-overlap="false"
         :header="false"
         :nav-links="false"
+        :column-header-format="calendar.columnHeaderFormat"
         default-view="timeGridWeek"
         :select-helper="true"
         select-constraint="businessHours"
+        event-constraint="businessHours"
         :business-hours="businessHours"
         :select-mirror="true"
         event-color="black"
@@ -92,7 +96,6 @@
         @eventDrop="eventChanged"
         @eventClick="eventClick"
         @select="select"
-        @datesRender="datesRender"
       />
       <hr>
       <b-button
@@ -134,7 +137,10 @@ export default {
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
-        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ]
+        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        columnHeaderFormat: {
+          weekday: 'short'
+        }
       }
     };
   },
