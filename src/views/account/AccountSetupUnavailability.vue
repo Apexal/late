@@ -78,8 +78,7 @@
         :nav-links="false"
         default-view="timeGridWeek"
         :select-helper="true"
-        :select-overlap="false"
-        :event-overlap="false"
+
         select-constraint="businessHours"
         :select-mirror="true"
         event-color="black"
@@ -88,6 +87,8 @@
         :all-day-slot="false"
         snap-duration="00:15"
         time-format="h(:mm)t"
+        :now-indicator="true"
+
         :business-hours="calendar.businessHours"
         @eventResize="eventChanged"
         @eventDrop="eventChanged"
@@ -273,7 +274,7 @@ export default {
               startTime: moment(unavailability.start).format('HH:mm'),
               endTime: moment(unavailability.end).format('HH:mm'),
               title: unavailability.title,
-              daysOfWeek: unavailability.daysOfWeek
+              daysOfWeek: [unavailability.start.getDay()]
             }
           }
         );
