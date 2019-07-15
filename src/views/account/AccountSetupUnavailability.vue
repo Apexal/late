@@ -78,8 +78,8 @@
         :nav-links="false"
         default-view="timeGridWeek"
         :select-helper="true"
-
         select-constraint="businessHours"
+        :business-hours="businessHours"
         :select-mirror="true"
         event-color="black"
         :height="700"
@@ -88,12 +88,11 @@
         snap-duration="00:15"
         time-format="h(:mm)t"
         :now-indicator="true"
-
-        :business-hours="calendar.businessHours"
         @eventResize="eventChanged"
         @eventDrop="eventChanged"
         @eventClick="eventClick"
         @select="select"
+        @datesRender="datesRender"
       />
       <hr>
       <b-button
@@ -135,16 +134,18 @@ export default {
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
-        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
-        businessHours: {
-          daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-          start: this.$store.state.auth.user.earliestWorkTime,
-          end: this.$store.state.auth.user.latestWorkTime
-        }
+        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ]
       }
     };
   },
   computed: {
+    businessHours () {
+      return {
+        daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+        startTime: this.earliest,
+        endTime: this.fixedLatest
+      };
+    },
     allEvents () {
       return this.$store.getters.getCourseScheduleAsEvents.concat(
         this.$store.getters.getUnavailabilityAsEvents
@@ -173,24 +174,23 @@ export default {
   },
   watch: {
     earliest (minTime) {
-      this.saved = false;
-      this.$refs.calendar.fireMethod('option', 'businessHours', {
-        dow: [0, 1, 2, 3, 4, 5, 6],
-        start: this.earliest,
-        end: this.fixedLatest
+      let calendarApi = this.$refs.calendar.getApi();
+      calendarApi.setOption('businessHours', {
+        daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+        startTime: this.earliest,
+        endTime: this.fixedLatest
       });
+      this.saved = false;
     },
     latest (maxTime) {
-      this.saved = false;
-      this.$refs.calendar.fireMethod('option', 'businessHours', {
-        dow: [0, 1, 2, 3, 4, 5, 6],
-        start: this.earliest,
-        end: this.fixedLatest
+      let calendarApi = this.$refs.calendar.getApi();
+      calendarApi.setOption('businessHours', {
+        daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+        startTime: this.earliest,
+        endTime: this.fixedLatest
       });
+      this.saved = false;
     }
-  },
-  created () {
-    this.calendar.events = this.$store.getters.getUnavailabilityAsEvents.slice();
   },
   methods: {
     setLatest (event) {
