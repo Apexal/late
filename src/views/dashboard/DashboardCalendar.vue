@@ -95,7 +95,8 @@ export default {
       calendar: {
         plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
         header: {
-          center: 'timeGridThreeDay,timeGridFiveDay,timeGridWeek'
+          center: 'timeGridThreeDay,timeGridFiveDay,timeGridWeek',
+          right: 'today,prev,next'
         },
         scrollTime: '08:00',
         views: {
@@ -402,6 +403,12 @@ export default {
 
   .margin-left {
     margin-left: 5px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .fc-toolbar.fc-header-toolbar {
+    flex-direction: column;
   }
 }
 
