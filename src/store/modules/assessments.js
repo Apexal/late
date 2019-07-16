@@ -62,7 +62,6 @@ const getters = {
     assessmentType: type,
     title: assessment.title,
     className: 'work-block-event',
-    // editable: moment(b.startTime).isAfter(moment()),
     color: 'black',
     borderColor: getters.getCourseFromCRN(assessment.courseCRN).color,
     start: b.startTime,

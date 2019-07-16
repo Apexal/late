@@ -253,7 +253,7 @@ export default {
         div.requestFullscreen();
       }
     },
-    select ({ start, end, jsEvent, view }) {
+    select ({ start, end }) {
       this.selectModal.start = moment(start);
       this.selectModal.end = moment(end);
       this.selectModal.open = true;
@@ -478,19 +478,5 @@ export default {
   float: right;
   margin-top: -35px;
   z-index: 10;
-}
-
-.fc-view {
-  animation: fade-in 0.7s;
-}
-
-@keyframes fade-in {
-  from {
-    transform: translateY(7px);
-    opacity: 0.3;
-  }
-  to {
-    opacity: 1;
-  }
 }
 </style>
