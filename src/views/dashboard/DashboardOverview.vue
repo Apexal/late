@@ -2,25 +2,13 @@
 <template>
   <div class="dashboard-overview">
     <AssignmentsConfirm />
-    <div class="box">
-      <div class="tabs">
-        <ul>
-          <li class="is-active">
-            <a>Today</a>
-          </li>
-          <li>
-            <a>Tomorrow</a>
-          </li>
-        </ul>
-      </div>
-      <div
-        v-if="todaysAgenda.length"
-        class="columns"
-      >
-        <div class="column">
+
+    <div class="tile is-ancestor">
+      <div class="tile is-parent">
+        <div class="tile is-child box">
           <div class="timeline">
             <header class="timeline-header">
-              <span class="tag is-medium is-primary">Morning</span>
+              <span class="tag is-medium is-primary">Today</span>
             </header>
             <div
               v-for="(event, index) in todaysAgenda"
@@ -90,7 +78,7 @@
               </div>
             </div>
 
-            <!-- <header class="timeline-header">
+          <!-- <header class="timeline-header">
             <span class="tag is-primary">End of Classes</span>
           </header>
           <div class="timeline-item">
@@ -101,32 +89,60 @@
               <p class="heading">March 2017</p>
               <p>Timeline content - Can include any HTML element</p>
             </div>
-            </div>-->
-            <div class="timeline-header">
-              <span class="tag is-medium is-primary">Night</span>
             </div>
+          <div class="timeline-header">
+            <span class="tag is-medium is-primary">Night</span>
+          </div>
+          -->
           </div>
         </div>
-        <div class="column">
-          <img
-            :src="imageURL"
-            alt="Map of locations of today's periods"
-          >
+      </div>
+      <div class="tile is-4 is-vertical is-parent">
+        <div
+          class="tile is-child notification"
+          :class="courseLoad.className"
+        >
+          <p class="subtitle is-marginless">
+            This Week
+          </p>
+          <p class="is-size-2">
+            {{ courseLoad.title }} Courseload
+          </p>
+          <span class="counts">0 assignments | 0 exams | <router-link
+            tag="b"
+            :to="{ name: 'coursework-upcoming' }"
+          >Browse</router-link></span>
+        </div>
+        <div class="tile is-child box">
+          <p class="title">
+            Two
+          </p>
         </div>
       </div>
-      <div v-else>
-        <p class="has-text-centered has-text-grey">
-          You have
-          <b>nothing</b> on your agenda for today. No classes, working on
-          assignments, or studying for exams scheduled!
-        </p>
-      </div>
+    </div>
+
+    <hr>
+
+    <div
+      v-if="todaysAgenda.length"
+      class="columns"
+    >
+      <div class="column is-narrow" />
+    </div>
+    <div v-else>
+      <p class="has-text-centered has-text-grey">
+        You have
+        <b>nothing</b> on your agenda for today. No classes, working on
+        assignments, or studying for exams scheduled!
+      </p>
     </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+
+import courseloads from '@/modules/courseloads';
 
 import DashboardOverviewAssignmentsConfirm from './components/DashboardOverviewAssignmentsConfirm';
 
@@ -169,6 +185,9 @@ export default {
         this.key
       }`;
       return encodeURI(url);
+    },
+    courseLoad () {
+      return courseloads.weights[Math.floor(Math.random() * courseloads.weights.length)];
     }
   },
   methods: {
