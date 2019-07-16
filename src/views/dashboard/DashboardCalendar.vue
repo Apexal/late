@@ -40,6 +40,8 @@
       :event-render="eventRender"
       :dates-render="datesRender"
       @eventClick="eventClick"
+      @eventDrop="eventDrop"
+      @eventResize="eventResize"
     />
     <b-button
       title="Toggle Fullscreen"
@@ -210,7 +212,6 @@ export default {
         events.push(this.mapICalObjectToEvent(id, parsed[id]));
       }
     }
-    alert(events.length);
     this.academicCalendarEvents = events;
   },
   mounted () {
@@ -317,49 +318,56 @@ export default {
         this.$router.push({ name: 'setup-unavailability' });
       }
     },
-    eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
-      // Update work block on server
-      if (calEvent.end.isBefore(moment())) {
-        this.$dialog.confirm({
-          message: 'Move this past work block?',
-          onConfirm: () =>
-            this.editWorkBlock(
-              calEvent.assessment,
-              calEvent.blockID,
-              calEvent.start,
-              calEvent.end
-            ),
-          onCancel: revertFunc
-        });
-      } else {
-        this.editWorkBlock(
-          calEvent.assessment,
-          calEvent.blockID,
-          calEvent.start,
-          calEvent.end
-        );
+    eventDrop ({ event, revert }) {
+      const { eventType, assessment, blockID } = event.extendedProps;
+
+      if (eventType === 'work-block') {
+        // Update work block on server
+        if (moment(event.end).isBefore(moment())) {
+          this.$dialog.confirm({
+            message: 'Move this past work block?',
+            onConfirm: () =>
+              this.editWorkBlock(
+                assessment,
+                blockID,
+                event.start,
+                event.end
+              ),
+            onCancel: revert
+          });
+        } else {
+          this.editWorkBlock(
+            assessment,
+            blockID,
+            event.start,
+            event.end
+          );
+        }
       }
     },
-    eventResize (calEvent, delta, revertFunc) {
-      if (calEvent.end.isBefore(moment())) {
-        this.$dialog.confirm({
-          message: 'Edit this past work block?',
-          onConfirm: () =>
-            this.editWorkBlock(
-              calEvent.assessment,
-              calEvent.blockID,
-              calEvent.start,
-              calEvent.end
-            ),
-          onCancel: revertFunc
-        });
-      } else {
-        this.editWorkBlock(
-          calEvent.assessment,
-          calEvent.blockID,
-          calEvent.start,
-          calEvent.end
-        );
+    eventResize ({ event, revert }) {
+      const { eventType, assessment, blockID } = event.extendedProps;
+      if (eventType === 'work-block') {
+        if (moment(event.end).isBefore(moment())) {
+          this.$dialog.confirm({
+            message: 'Edit this past work block?',
+            onConfirm: () =>
+              this.editWorkBlock(
+                assessment,
+                blockID,
+                event.start,
+                event.end
+              ),
+            onCancel: revert
+          });
+        } else {
+          this.editWorkBlock(
+            assessment,
+            blockID,
+            event.start,
+            event.end
+          );
+        }
       }
     },
     async editWorkBlock (assessment, blockID, start, end) {
