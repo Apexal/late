@@ -29,6 +29,7 @@
       height="parent"
       time-format="h(:mm)t"
       snap-duration="00:15"
+      :now-indicator="true"
       :event-overlap="true"
       :select-overlap="true"
       :select-helper="true"
@@ -42,6 +43,7 @@
       @eventClick="eventClick"
       @eventDrop="eventDrop"
       @eventResize="eventResize"
+      @select="select"
     />
     <b-button
       title="Toggle Fullscreen"
@@ -220,7 +222,8 @@ export default {
       navigator.userAgent.indexOf('IEMobile') !== -1
     ) {
       // Only show three day view on mobile
-      this.$refs['dashboard-calendar'].fireMethod('changeView', 'agendaThreeDay');
+      let calendarApi = this.$refs['dashboard-calendar'].getApi();
+      calendarApi.changeView('timeGridThreeDay');
     }
   },
   methods: {
@@ -249,9 +252,9 @@ export default {
         div.requestFullscreen();
       }
     },
-    select (start, end, jsEvent, view) {
-      this.selectModal.start = start;
-      this.selectModal.end = end;
+    select ({ start, end, jsEvent, view }) {
+      this.selectModal.start = moment(start);
+      this.selectModal.end = moment(end);
       this.selectModal.open = true;
     },
     async addWorkBlock (assessment) {
@@ -270,7 +273,9 @@ export default {
       });
 
       this.selectModal.open = false;
-      this.$refs['dashboard-calendar'].fireMethod('unselect');
+
+      let calendarApi = this.$refs['dashboard-calendar'].getApi();
+      calendarApi.unselect();
     },
     eventClick ({ event, jsEvent, view }) {
       const { eventType, assessment } = event.extendedProps;
@@ -437,7 +442,7 @@ export default {
     color: white;
   }
   b {
-    font-weight: normal;
+    font-weight: 500;
   }
   .panel-block {
     background-color: white;

@@ -55,21 +55,4 @@ export default {
 .tabs .title {
   margin: 0;
 }
-.work-block-event {
-  border-width: 3px !important;
-}
-
-.dashboard-calendar-select-modal .panel {
-  .assessment-type-tag {
-    text-transform: capitalize;
-    color: white;
-  }
-  b {
-    font-weight: normal;
-  }
-  .panel-block {
-    background-color: white;
-    cursor: pointer;
-  }
-}
 </style>

@@ -28,7 +28,8 @@
             class="tag assessment-type-tag"
             :style="{ 'background-color': course(assessment.courseCRN).color }"
           >{{ assessment.assessmentType }}</span>
-          {{ assessment.title }}
+          {{ assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for' }}
+          <b>{{ assessment.title }}</b>
           <i
             v-if="
               assessment.assessmentType === 'assignment' && assessment.shared
