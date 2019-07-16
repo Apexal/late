@@ -8,7 +8,7 @@
     "build": "vue-cli-service build --target app --modern",
     "test": "npm run lint",
     "lint": "vue-cli-service lint",
-    "backend": "cross-env NODE_ENV=development nodemon index.js",
+    "backend": "cross-env NODE_ENV=development nodemon --ignore './src/' index.js",
     "frontend": "cross-env PORT=8080 vue-cli-service serve",
     "start": "cross-env NODE_ENV=production node index.js"
   },
