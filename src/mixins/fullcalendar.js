@@ -3,6 +3,8 @@ import moment from 'moment';
 export default {
   methods: {
     eventRender ({ event, el, view }) {
+      if (event.rendering === 'background') return;
+
       const { eventType, assessment, course, period, block } = event.extendedProps;
 
       if (view.type === 'dayGridMonth') {
@@ -74,6 +76,8 @@ export default {
             }
           );
 
+          this.$emit('updated-assessment', updatedAssessment);
+
           this.$toast.open({
             message: 'Unscheduled work block!',
             type: 'is-primary'
@@ -113,6 +117,8 @@ export default {
                   location
                 }
               );
+
+              this.$emit('updated-assessment', updatedAssessment);
             }
           });
         };
