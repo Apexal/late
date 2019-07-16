@@ -12,6 +12,8 @@
       :header="calendar.header"
       :plugins="calendar.plugins"
       :events="events"
+      :week-numbers="true"
+      :week-numbers-within-days="true"
       :valid-range="calendar.validRange"
       time-format="h(:mm)t"
       time-zone="local"
