@@ -43,6 +43,10 @@ const router = new Router({
         {
           path: 'calendar',
           name: 'dashboard-calendar',
+          meta: {
+            title: 'Calendar',
+            isHome: true
+          },
           component: () => import('@/views/dashboard/DashboardCalendar')
         }
       ]
