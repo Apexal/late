@@ -1,5 +1,14 @@
 import moment from 'moment';
 
+const element = (tag, properties) => {
+  let el = document.createElement(tag);
+  for (let prop in properties) {
+    el[prop] = properties[prop];
+  }
+
+  return el;
+};
+
 export default {
   methods: {
     eventRender ({ event, el, view }) {
@@ -39,10 +48,7 @@ export default {
 
         addIcon('fa-graduation-cap', '.fc-title');
 
-        const locationElement = document.createElement('i');
-        locationElement.className = 'event-location';
-        locationElement.innerText = period.location;
-        el.querySelector('.fc-content').append(locationElement);
+        el.querySelector('.fc-content').append(element('i', { className: 'event-location', innerText: period.location }));
       } else if (eventType === 'assignment') {
         addIcon('fa-clipboard-check');
 
@@ -60,11 +66,12 @@ export default {
           block.location ? ' | ' + block.location : ''
         }`;
 
+        el
+          .querySelector('.fc-time')
+          .append(element('span', { innerText: ' | ' + (assessment.assessmentType === 'assignment' ? 'Work Block' : 'Study Block') }));
+
         // --- DELETE BUTTON ---
-        const deleteButton = document.createElement('span');
-        deleteButton.classList.add('remove-work-block');
-        deleteButton.classList.add('delete');
-        deleteButton.title = 'Remove from schedule';
+        const deleteButton = element('span', { className: 'delete remove-work-block', title: 'Unschedule' });
         deleteButton.onclick = async ev => {
           ev.stopPropagation();
 
@@ -77,6 +84,7 @@ export default {
           );
 
           this.$emit('updated-assessment', updatedAssessment);
+          this.$socket.emit('updated assessment', updatedAssessment);
 
           this.$toast.open({
             message: 'Unscheduled work block!',
@@ -119,13 +127,16 @@ export default {
               );
 
               this.$emit('updated-assessment', updatedAssessment);
+              this.$socket.emit('updated assessment', updatedAssessment);
             }
           });
         };
         el.querySelector('.fc-content').append(locationEl);
         // ----------------
 
+        // --- SHARED ICON ---
         if (assessment.shared && block.shared) addIcon('fa-users margin-left', '.fc-title', false);
+        // -------------------
       }
     },
     dateClick ({ date }) {
