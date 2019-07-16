@@ -57,6 +57,7 @@ export default {
         addIcon('fa-exclamation-triangle');
       } else if (eventType === 'academic-calendar-event') {
         addIcon('fa-info-circle');
+        el.title = 'Click for full message.';
       } else if (eventType === 'work-block') {
         el.title = `${
           assessment.assessmentType === 'assignment'
