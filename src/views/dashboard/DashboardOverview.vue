@@ -2,27 +2,33 @@
 <template>
   <div class="dashboard-overview">
     <div class="tile is-ancestor">
-      <div class="tile is-parent ">
+      <div class="tile is-5 is-parent ">
         <Timeline />
       </div>
-      <div class="tile is-4 is-vertical is-parent">
-        <div
-          class="tile is-child notification"
-          :class="courseLoad.className"
-        >
-          <p class="subtitle is-marginless">
-            This Week
-          </p>
-          <p class="is-size-2">
-            {{ courseLoad.title }} Courseload
-          </p>
-          <span class="counts">0 assignments | 0 exams | <router-link
-            tag="b"
-            :to="{ name: 'coursework-upcoming' }"
-          >Browse</router-link></span>
-        </div>
 
-        <AssignmentsConfirm />
+      <div class="tile is-vertical">
+        <div class="tile is-parent ">
+          <Current />
+        </div>
+        <div class="tile is-parent">
+          <div
+            class="tile is-child notification"
+            :class="courseLoad.className"
+          >
+            <p class="subtitle is-marginless">
+              This Week's Courseload
+            </p>
+            <p class="is-size-2">
+              {{ courseLoad.title }}
+            </p>
+            <span class="counts">0 assignments | 0 exams | <router-link
+              tag="b"
+              :to="{ name: 'coursework-upcoming' }"
+            >Browse</router-link></span>
+          </div>
+
+          <AssignmentsConfirm />
+        </div>
       </div>
     </div>
   </div>
@@ -33,10 +39,11 @@ import courseloads from '@/modules/courseloads';
 
 import DashboardOverviewAssignmentsConfirm from './components/DashboardOverviewAssignmentsConfirm';
 import DashboardOverviewTimeline from './components/DashboardOverviewTimeline';
+import DashboardOverviewCurrent from './components/DashboardOverviewCurrent';
 
 export default {
   name: 'DashboardOverview',
-  components: { AssignmentsConfirm: DashboardOverviewAssignmentsConfirm, Timeline: DashboardOverviewTimeline },
+  components: { AssignmentsConfirm: DashboardOverviewAssignmentsConfirm, Timeline: DashboardOverviewTimeline, Current: DashboardOverviewCurrent },
   data () {
     return {
       zoom: 13,

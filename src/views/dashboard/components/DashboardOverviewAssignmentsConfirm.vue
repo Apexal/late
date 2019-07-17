@@ -1,5 +1,5 @@
 <template>
-  <div class="tile is-child notification is-dark assignments-confirm">
+  <div class="tile is-child notification is-primary assignments-confirm">
     <p class="title">
       Confirm
     </p>
@@ -44,7 +44,7 @@
     </template>
     <template>
       <p class="subtitle">
-        Nothing to confirm!
+        Nothing to confirm! Incomplete assignments that are passed due will show up here.
       </p>
     </template>
   </div>
