@@ -145,7 +145,7 @@ export default {
       return this.$store.getters.nextTerm;
     },
     daysUntilNextTerm () {
-      return moment(this.nextTerm.start).diff(this.now, 'days');
+      return moment(this.nextTerm.start).diff(this.rightNow, 'days');
     },
     schedule () {
       return this.$store.state.schedule;
@@ -192,15 +192,15 @@ export default {
     },
     fromNow (datetime) {
       const time = moment(datetime, 'Hmm', true);
-      return `${time.isBefore(this.now) ? 'Started' : 'Starting'} ${time.from(
-        this.now
+      return `${time.isBefore(this.rightNow) ? 'Started' : 'Starting'} ${time.from(
+        this.rightNow
       )}`;
     },
     hasPassed (datetime) {
-      return datetime.isBefore(this.now);
+      return datetime.isBefore(this.rightNow);
     },
     isCurrentEvent (event) {
-      return moment(this.now).isBetween(event.start, event.end);
+      return moment(this.rightNow).isBetween(event.start, event.end);
     },
     duration: p => p.end.diff(p.start, 'minutes')
   }

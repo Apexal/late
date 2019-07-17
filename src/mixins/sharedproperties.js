@@ -18,7 +18,7 @@ export default {
     currentTerm () {
       return this.$store.getters.currentTerm;
     },
-    now () {
+    rightNow () {
       return this.$store.state.now;
     }
   }

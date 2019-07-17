@@ -124,7 +124,7 @@ export default {
     },
     daysAway () {
       return moment(this.assessmentDate).diff(
-        moment(this.now).startOf('day'),
+        moment(this.rightNow).startOf('day'),
         'days'
       );
     },

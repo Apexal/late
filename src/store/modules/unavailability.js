@@ -11,7 +11,7 @@ const getters = {
   mapUnavailabilityToEvent: state => unavailability =>
     Object.assign({}, unavailability, {
       id: unavailability._id,
-      editable: false, // TODO: https://github.com/fullcalendar/fullcalendar/issues/4127
+      editable: false,
       eventType: 'unavailability',
       color: 'black'
     }),
@@ -31,16 +31,18 @@ const actions = {
     commit('ADD_UNAVAILABILITY', response.data.createdUnavailability);
     return response;
   },
-  async UPDATE_UNAVAILABILITY ({ commit }, updatedUnavailability) {
-    commit('UPDATE_UNAVAILABILITY', updatedUnavailability);
-    return axios.patch(
-      '/unavailabilities/' + updatedUnavailability._id,
-      updatedUnavailability
-    );
+  async UPDATE_UNAVAILABILITY ({ commit }, { unavailabilityID, updates }) {
+    let request = await axios.patch('/unavailabilities/' + unavailabilityID,
+      updates);
+    commit('UPDATE_UNAVAILABILITY', request.data.updatedUnavailability);
+
+    return request;
   },
   async REMOVE_UNAVAILABILITY ({ commit }, unavailability) {
-    commit('REMOVE_UNAVAILABILITY', unavailability);
-    return axios.delete('/unavailabilities/' + unavailability._id);
+    let request = await axios.delete('/unavailabilities/' + unavailability.id);
+    commit('REMOVE_UNAVAILABILITY', request.data.deletedUnavailability);
+
+    return request;
   }
 };
 

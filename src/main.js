@@ -4,8 +4,6 @@ import router from './router';
 import store from './store';
 import Api from './api';
 
-import FullCalendar from 'vue-full-calendar';
-
 import Buefy from 'buefy';
 
 import 'bulma-tooltip';
@@ -51,7 +49,6 @@ const options = {
 };
 Vue.use(VueProgressBar, options);
 
-Vue.use(FullCalendar);
 Vue.config.productionTip = false;
 
 Vue.prototype.$http = Api;

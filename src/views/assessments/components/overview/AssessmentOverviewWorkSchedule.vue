@@ -71,11 +71,31 @@
 
     <FullCalendar
       ref="calendar"
+      default-view="timeGridFiveDay"
       :events="totalEvents"
       :editable="true"
       :selectable="true"
+      :plugins="calendar.plugins"
       :header="calendar.header"
-      :config="calendar.config"
+      :views="calendar.views"
+      :valid-range="validRange"
+      :select-constraint="selectConstraint"
+      :business-hours="calendar.businessHours"
+      :height="700"
+      all-day-text="Due"
+      :scroll-time="calendar.scrollTime"
+      :event-overlap="true"
+      :select-helper="true"
+      :now-indicator="true"
+      :button-text="calendar.buttonText"
+      time-format="h(:mm)t"
+      no-events-message="No work sessions set yet!"
+      snap-duration="00:15"
+      time-zone="local"
+      :event-render="eventRender"
+      @eventResize="eventResize"
+      @eventDrop="eventDrop"
+      @select="select"
     />
   </div>
 </template>
@@ -83,14 +103,21 @@
 <script>
 import moment from 'moment';
 import assessmentsMixin from '@/mixins/assessments';
+import fullcalendar from '@/mixins/fullcalendar';
 
-import 'fullcalendar/dist/fullcalendar.css';
-import { FullCalendar } from 'vue-full-calendar';
+import FullCalendar from '@fullcalendar/vue';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+
+import '@fullcalendar/core/main.css';
+import '@fullcalendar/daygrid/main.css';
+import '@fullcalendar/timegrid/main.css';
 
 export default {
   name: 'AsessmentOverviewTabsWorkSchedule',
   components: { FullCalendar },
-  mixins: [assessmentsMixin],
+  mixins: [fullcalendar, assessmentsMixin],
   props: {
     assessment: {
       type: Object,
@@ -102,10 +129,44 @@ export default {
       hiding: [],
       collaboratorUnavailabilities: {},
       loading: true,
-      saved: true
+      saved: true,
+      calendar: {
+        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        header: {
+          right: 'today,prev,next'
+        },
+        buttonText: {
+          today: 'Today'
+        },
+        views: {
+          timeGridThreeDay: {
+            type: 'timeGrid',
+            duration: { days: 3 },
+            buttonText: '3-Day'
+          },
+          timeGridFiveDay: {
+            type: 'timeGrid',
+            duration: { days: 5 },
+            buttonText: '5-Day'
+          }
+        },
+        businessHours: {
+          daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+          startTime: this.$store.state.auth.user.earliestWorkTime,
+          endTime: this.$store.state.auth.user.latestWorkTime
+        },
+        scrollTime: this.$store.state.auth.user.earliestWorkTime
+
+        // eventClick: this.eventClick,
+        // eventDrop: this.eventDrop
+
+      }
     };
   },
   computed: {
+    selectConstraint () {
+      return { end: this.assessmentDate };
+    },
     scheduledMinutes () {
       if (!this.assessment._blocks) return 0;
 
@@ -140,131 +201,9 @@ export default {
         return 0;
       }
     },
-    editable () {
-      if (this.assessmentType === 'exam') return !this.assessment.passed;
-      return !this.assessment.completed && !this.assessment.passed;
-    },
     assessmentDate () {
       if (this.assessmentType === 'exam') return this.assessment.date;
       else return this.assessment.dueDate;
-    },
-    calendar () {
-      return {
-        header: {},
-        config: {
-          snapDuration: '00:15',
-          views: {
-            agendaThreeDay: {
-              type: 'agenda',
-              duration: { days: 3 },
-              buttonText: '3-Day'
-            },
-            agendaFiveDay: {
-              type: 'agenda',
-              duration: { days: 5 },
-              buttonText: 'Week'
-            }
-          },
-          validRange: {
-            start: this.start,
-            end: this.end
-          },
-          selectConstraint: { end: this.assessmentDate },
-          height: 700,
-          allDay: false,
-          allDayText: 'Due',
-          businessHours: {
-            dow: [0, 1, 2, 3, 4, 5, 6],
-            start: this.$store.state.auth.user.earliestWorkTime,
-            end: this.$store.state.auth.user.latestWorkTime
-          },
-          scrollTime: this.$store.state.auth.user.earliestWorkTime,
-          timezone: 'local',
-          defaultView: 'agendaFiveDay',
-          eventOverlap: true,
-          selectHelper: false,
-          nowIndicator: true,
-          timeFormat: 'h(:mm)t',
-          noEventsMessage: 'No work periods set yet.',
-          eventRender: (event, el) => {
-            if (event.eventType === 'course') {
-              return moment(event.end).isBetween(
-                event.course.startDate,
-                event.course.endDate
-              );
-            }
-            if (event.eventType === 'work-block') {
-              el.attr(
-                'title',
-                `${
-                  event.assessment.assessmentType === 'assignment'
-                    ? 'Work on'
-                    : 'Study for'
-                } ${event.assessment.title}${
-                  event.block.location ? ' | ' + event.block.location : ''
-                }`
-              );
-
-              const locationEl = document.createElement('i');
-              locationEl.title = 'Click to set location';
-              if (event.block.location) {
-                locationEl.innerText = event.block.location;
-              } else {
-                locationEl.className = 'fas fa-map-marker-alt';
-              }
-              locationEl.classList.add('event-location');
-              locationEl.onclick = ev => {
-                ev.stopPropagation();
-                this.$dialog.prompt({
-                  message: 'Where do you want this to be?',
-                  inputAttrs: {
-                    placeholder: event.block.location
-                      ? event.block.location
-                      : 'e.g. Bray Hall Classroom',
-                    maxlength: 200
-                  },
-                  onConfirm: async location => {
-                    const updatedAssessment = await this.$store.dispatch(
-                      'EDIT_WORK_BLOCK',
-                      {
-                        assessment: event.assessment,
-                        blockID: event.blockID,
-                        start: event.start,
-                        end: event.end,
-                        location
-                      }
-                    );
-
-                    this.$emit('updated-assessment', updatedAssessment);
-
-                    this.$toast.open({
-                      message: `Updated location to <b>${location}</b>!`,
-                      type: 'is-success'
-                    });
-                  }
-                });
-              };
-              el.find('.fc-content').append(locationEl);
-            }
-            if (
-              event.eventType === 'work-block' &&
-              this.assessment.shared &&
-              event.block.shared
-            ) {
-              const sharedIcon = document.createElement('i');
-              sharedIcon.className = 'fas fa-users margin-left';
-              el.find('.fc-title').append(sharedIcon);
-            }
-          },
-          buttonText: {
-            agendaWeek: 'Weekly Agenda'
-          },
-          eventClick: this.eventClick,
-          eventDrop: this.eventDrop,
-          eventResize: this.eventResize,
-          select: this.select
-        }
-      };
     },
     start () {
       return moment(this.currentTerm.start).startOf('day');
@@ -280,8 +219,7 @@ export default {
           ' @ ' +
           moment(this.assessmentDate).format('h:mma'),
         editable: false,
-        start: moment(this.assessmentDate).startOf('day'),
-        // end: moment(this.assessmentDate).add(20, 'minute')
+        start: this.assessmentDate,
         color: this.course.color,
         allDay: true
       };
@@ -345,12 +283,6 @@ export default {
   watch: {
     assessment (newAssessment) {
       this.getCollaboratorUnavailabilities();
-    },
-    end (newEnd) {
-      this.$refs.calendar.fireMethod('option', 'validRange', {
-        start: this.start,
-        end: newEnd
-      });
     }
   },
   created () {
@@ -362,10 +294,17 @@ export default {
       navigator.userAgent.indexOf('IEMobile') !== -1
     ) {
       // Show three day view on mobile
-      this.$refs.calendar.fireMethod('changeView', 'agendaThreeDay');
+      let calendarApi = this.$refs.calendar.getApi();
+      calendarApi.changeView('timeGridThreeDay');
     }
   },
   methods: {
+    validRange (nowDate) {
+      return {
+        start: this.start.toDate(),
+        end: this.end.toDate()
+      };
+    },
     toggleCollaboratorUnavailabilityHiding (rcsID) {
       if (this.hiding.includes(rcsID)) {
         this.hiding.splice(this.hiding.indexOf(rcsID), 1);
@@ -395,7 +334,7 @@ export default {
 
       this.loading = false;
     },
-    async select (start, end) {
+    async select ({ start, end }) {
       // Only confirm with user if they are trying to add work block to the past
       if (this.assessment.shared) {
         this.$dialog.confirm({
@@ -410,7 +349,10 @@ export default {
         this.$dialog.confirm({
           message: 'Add work block to the past?',
           onConfirm: () => this.addWorkBlock(start, end),
-          onCancel: () => this.$refs.calendar.fireMethod('unselect')
+          onCancel: () => {
+            let calendarApi = this.$refs.calendar.getApi();
+            calendarApi.unselect();
+          }
         });
       } else {
         this.addWorkBlock(start, end);
@@ -430,29 +372,33 @@ export default {
         onConfirm: () => this.removeWorkBlock(calEvent.blockID)
       });
     },
-    eventDrop (calEvent, delta, revertFunc, jsEvent, ui, view) {
+    eventDrop ({ event, revert }) {
+      const { blockID } = event.extendedProps;
+
       // Update work block on server
-      if (calEvent.end.isBefore(moment())) {
+      if (moment(event.end).isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Move this past work block?',
           onConfirm: () =>
-            this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
-          onCancel: revertFunc
+            this.editWorkBlock(blockID, event.start, event.end),
+          onCancel: revert
         });
       } else {
-        this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
+        this.editWorkBlock(blockID, event.start, event.end);
       }
     },
-    eventResize (calEvent, delta, revertFunc) {
-      if (calEvent.end.isBefore(moment())) {
+    eventResize ({ event, revert }) {
+      const { blockID } = event.extendedProps;
+
+      if (moment(event.end).isBefore(moment())) {
         this.$dialog.confirm({
           message: 'Edit this past work block?',
           onConfirm: () =>
-            this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end),
-          onCancel: revertFunc
+            this.editWorkBlock(blockID, event.start, event.end),
+          onCancel: revert
         });
       } else {
-        this.editWorkBlock(calEvent.blockID, calEvent.start, calEvent.end);
+        this.editWorkBlock(blockID, event.start, event.end);
       }
     },
     async addWorkBlock (start, end, shared = true) {
@@ -467,10 +413,11 @@ export default {
 
       this.$toast.open({
         message: 'Added work block to your schedule!',
-        type: 'is-success'
+        type: 'is-primary'
       });
 
-      this.$refs.calendar.fireMethod('unselect');
+      let calendarApi = this.$refs.calendar.getApi();
+      calendarApi.unselect();
     },
     async editWorkBlock (blockID, start, end) {
       let updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {

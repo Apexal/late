@@ -3,19 +3,33 @@
   <div>
     <FullCalendar
       ref="calendar"
+      :plugins="calendar.plugins"
       :editable="false"
       :selectable="false"
       :events="selectedCourseScheduleEvents"
       :header="calendar.header"
-      :config="calendar.config"
+      :height="500"
+      :valid-range="calendar.validRange"
+      default-view="dayGridMonth"
+      time-format="h(:mm)t"
+      time-zone="local"
+      :day-render="dayRender"
+      @dateClick="dateClick"
+      @eventClick="eventClick"
     />
   </div>
 </template>
 
 <script>
 import moment from 'moment';
-import { FullCalendar } from 'vue-full-calendar';
-import 'fullcalendar/dist/fullcalendar.css';
+
+import FullCalendar from '@fullcalendar/vue';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+
+import '@fullcalendar/core/main.css';
+import '@fullcalendar/daygrid/main.css';
+import '@fullcalendar/timegrid/main.css';
 
 export default {
   name: 'ModalCalendar',
@@ -39,24 +53,18 @@ export default {
   data () {
     return {
       calendar: {
+        plugins: [dayGridPlugin, interactionPlugin],
         header: {
           left: 'title',
           center: '',
           right: 'today prev,next'
         },
-        config: {
-          validRange: {
-            start: this.$store.getters.currentTerm.start,
-            end: this.$store.getters.currentTerm.classesEnd
-          },
-          height: 500,
-          defaultView: 'month',
-          timeFormat: 'h(:mm)t',
-          timezone: 'local',
-          dayClick: this.dayClick,
-          eventClick: this.eventClick,
-          dayRender: this.dayRender
-        }
+        validRange: {
+          start: this.$store.getters.currentTerm.start,
+          end: this.$store.getters.currentTerm.end
+        },
+        timeFormat: 'h(:mm)t',
+        timezone: 'local'
       }
     };
   },
@@ -85,31 +93,21 @@ export default {
       return courseSchedule;
     }
   },
-  watch: {
-    courseCRN () {
-      this.$refs.calendar.fireMethod('prev');
-      this.$refs.calendar.fireMethod('next');
-    },
-    date () {
-      this.$refs.calendar.fireMethod('prev');
-      this.$refs.calendar.fireMethod('next');
-    }
-  },
   methods: {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);
     },
-    eventClick (calEvent, jsEvent, view) {
-      this.$emit('update-time', moment(calEvent.start).format('HH:mm'));
-      this.updateDate(moment(calEvent.start).startOf('day'));
+    eventClick ({ event }) {
+      this.$emit('update-time', moment(event.start).format('HH:mm'));
+      this.updateDate(moment(event.start).startOf('day'));
     },
-    dayRender (date, cell) {
+    dayRender ({ date, el }) {
       if (moment(date).isSame(this.date, 'day')) {
-        cell.css('background-color', this.course(this.courseCRN).color);
+        el.style.backgroundColor = this.course(this.courseCRN).color;
       }
     },
-    dayClick (date) {
-      this.updateDate(date);
+    dateClick ({ date }) {
+      this.updateDate(moment(date));
     },
     updateDate (date) {
       if (

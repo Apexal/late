@@ -254,14 +254,6 @@ section.section {
   padding: 1.5rem;
 }
 
-// Replace Fullcalendar ugly button style with Bulma's nice style
-.fc-button {
-  color: initial;
-  background: none;
-  text-shadow: none;
-  //@extend .button;
-}
-
 //Toggle sidebar
 .toggle-sidebar {
   transition: 0.2s !important;
@@ -345,4 +337,60 @@ section.section {
 .v-tour .v-step {
   z-index: 2;
 }
+
+
+// ------ FULLCALENDAR -------
+
+@media only screen and (max-width: 768px) {
+  .fc-toolbar.fc-header-toolbar {
+    flex-direction: column;
+  }
+}
+
+.work-block-event {
+  border-width: 3px !important;
+
+  .margin-left {
+    margin-left: 5px;
+  }
+}
+
+.event-location {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.fc-event {
+  &:hover {
+    .event-location {
+      opacity: 1;
+    }
+  }
+}
+
+.fc-content {
+  .remove-work-block {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .remove-work-block {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    &:hover {
+      background-color: red;
+    }
+  }
+
+  &:hover {
+    .remove-work-block {
+      display: block;
+    }
+  }
+}
+
 </style>

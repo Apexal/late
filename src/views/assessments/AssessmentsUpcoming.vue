@@ -221,7 +221,7 @@ export default {
       return moment(dueDate).format('dddd [the] Do');
     },
     daysAway (date) {
-      return moment(date).diff(moment(this.now).startOf('day'), 'days');
+      return moment(date).diff(moment(this.rightNow).startOf('day'), 'days');
     }
   }
 };

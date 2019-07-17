@@ -10,9 +10,9 @@ const schema = new Schema(
     },
     termCode: { type: String, required: true }, // code for semester, e.g. '201901'
     title: { type: String, required: true }, // title for event
-    dow: { type: Array, required: false }, // Days of week this occurs on e.g. [3, 5] (if it repeats)
-    start: { type: String, required: true }, // HH:mm
-    end: { type: String, required: true }, // HH:mm
+    daysOfWeek: { type: Array, required: false }, // Days of week this occurs on e.g. [3, 5] (if it repeats)
+    startTime: { type: String, required: true }, // HH:mm
+    endTime: { type: String, required: true }, // HH:mm
     isOneTime: { type: Boolean, required: true }
   },
   { timestamps: true }
