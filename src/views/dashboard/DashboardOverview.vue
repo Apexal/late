@@ -11,23 +11,8 @@
           <Current />
         </div>
         <div class="tile is-parent">
-          <div
-            class="tile is-child notification"
-            :class="courseLoad.className"
-          >
-            <p class="subtitle is-marginless">
-              This Week's Courseload
-            </p>
-            <p class="is-size-2">
-              {{ courseLoad.title }}
-            </p>
-            <span class="counts">0 assignments | 0 exams | <router-link
-              tag="b"
-              :to="{ name: 'coursework-upcoming' }"
-            >Browse</router-link></span>
-          </div>
-
           <AssignmentsConfirm />
+          <Courseload />
         </div>
       </div>
     </div>
@@ -35,15 +20,14 @@
 </template>
 
 <script>
-import courseloads from '@/modules/courseloads';
-
 import DashboardOverviewAssignmentsConfirm from './components/DashboardOverviewAssignmentsConfirm';
 import DashboardOverviewTimeline from './components/DashboardOverviewTimeline';
 import DashboardOverviewCurrent from './components/DashboardOverviewCurrent';
+import DashboardOverviewCourseload from './components/DashboardOverviewCourseload';
 
 export default {
   name: 'DashboardOverview',
-  components: { AssignmentsConfirm: DashboardOverviewAssignmentsConfirm, Timeline: DashboardOverviewTimeline, Current: DashboardOverviewCurrent },
+  components: { AssignmentsConfirm: DashboardOverviewAssignmentsConfirm, Timeline: DashboardOverviewTimeline, Current: DashboardOverviewCurrent, Courseload: DashboardOverviewCourseload },
   data () {
     return {
       zoom: 13,
@@ -77,9 +61,6 @@ export default {
         this.key
       }`;
       return encodeURI(url);
-    },
-    courseLoad () {
-      return courseloads.weights[Math.floor(Math.random() * courseloads.weights.length)];
     }
   },
   methods: {

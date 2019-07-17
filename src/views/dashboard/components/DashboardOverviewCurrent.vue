@@ -10,32 +10,56 @@
     >
       You are busy!
     </p>
-    <div v-else-if="currentStatus === 'work-block'">
-      <p
-        class="subtitle"
-      >
+    <template v-else-if="currentStatus === 'work-block'">
+      <p class="subtitle">
         For the next <b>{{ minutesLeft }} minutes</b> until <b>{{ timeFormat(currentEvent.end) }}</b>, you should be {{ currentEvent.assessment.assessmentType === 'assignment' ? 'working on' : 'studying for' }}
       </p>
-      <router-link
-        class="has-text-centered is-size-2 assessment-link"
-        :to="assessmentRoute(currentEvent.assessment)"
-      >
-        <CourseAssessmentDot
-          :assessment="currentEvent.assessment"
-          :course="course(currentEvent.assessment)"
-        />
-        {{ currentEvent.assessment.title }}
-      </router-link>
-    </div>
+      <div>
+        <router-link
+          class="has-text-centered is-size-2 assessment-link"
+          :to="assessmentRoute(currentEvent.assessment)"
+        >
+          <CourseAssessmentDot
+            :assessment="currentEvent.assessment"
+            :course="course(currentEvent.assessment)"
+          />
+          {{ currentEvent.assessment.title }}
+        </router-link>
+        <progress
+          class="progress is-small is-primary"
+          :value="percentThrough"
+          :title="percentThrough + '% through!'"
+          max="100"
+        >
+          {{ percentThrough }}%
+        </progress>
+      </div>
+    </template>
+    <template v-else-if="currentStatus === 'period'">
+      <p class="subtitle">
+        For the next <b>{{ minutesLeft }} minutes</b> until <b>{{ timeFormat(currentEvent.end) }}</b>, you should be in
+      </p>
+      <div>
+        <p class="has-text-centered is-size-3">
+          <i
+            class="fas fa-graduation-cap course-cap"
+            :style="{ color: currentEvent.course.color }"
+            @click="$store.commit('OPEN_COURSE_MODAL', currentEvent.course)"
+          />
+          {{ currentEvent.course.title }}
+          <span class="has-text-grey">{{ periodType(currentEvent.period) }}</span>
+        </p>
 
-    <progress
-      class="progress is-small is-primary"
-      :value="percentThrough"
-      :title="percentThrough + '% through!'"
-      max="100"
-    >
-      {{ percentThrough }}%
-    </progress>
+        <progress
+          class="progress is-small is-primary"
+          :value="percentThrough"
+          :title="percentThrough + '% through!'"
+          max="100"
+        >
+          {{ percentThrough }}%
+        </progress>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -56,9 +80,13 @@ export default {
       return this.todaysAgenda.find(this.isCurrentEvent);
     },
     minutesLeft () {
+      if (!this.currentEvent) return 0;
+
       return moment(this.currentEvent.end).diff(this.rightNow, 'minutes');
     },
     percentThrough () {
+      if (!this.currentEvent) return 0;
+
       return Math.round((1 - this.minutesLeft / moment(this.currentEvent.end).diff(this.currentEvent.start, 'minutes')) * 100);
     }
   },
@@ -76,14 +104,17 @@ export default {
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);
+    },
+    periodType (p) {
+      return this.$store.getters.periodType(p.type);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.title {
-  margin-bottom: 0.25rem;
+.course-cap {
+  cursor: pointer;
 }
 
 .progress {
