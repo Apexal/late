@@ -25,6 +25,12 @@
           />
           {{ currentEvent.assessment.title }}
         </router-link>
+        <p
+          v-if="currentEvent.block.location"
+          class="has-text-centered is-size-4 location"
+        >
+          @ {{ currentEvent.block.location }}
+        </p>
         <progress
           class="progress is-small is-primary"
           :value="percentThrough"
@@ -40,7 +46,7 @@
         For the next <b>{{ minutesLeft }} minutes</b> until <b>{{ timeFormat(currentEvent.end) }}</b>, you should be in
       </p>
       <div>
-        <p class="has-text-centered is-size-3">
+        <div class="has-text-centered is-size-3">
           <i
             class="fas fa-graduation-cap course-cap"
             :style="{ color: currentEvent.course.color }"
@@ -48,7 +54,13 @@
           />
           {{ currentEvent.course.title }}
           <span class="has-text-grey">{{ periodType(currentEvent.period) }}</span>
-        </p>
+          <p
+            v-if="currentEvent.period.location"
+            class="has-text-centered is-size-4 location"
+          >
+            @ {{ currentEvent.period.location }}
+          </p>
+        </div>
 
         <progress
           class="progress is-small is-primary"
@@ -113,6 +125,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.location {
+  font-style: italic;
+}
 .course-cap {
   cursor: pointer;
 }
