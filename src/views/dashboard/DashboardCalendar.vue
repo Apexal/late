@@ -284,7 +284,7 @@ export default {
       if (eventType === 'course') {
         this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
           modalStep: 2,
-          dueDate: event.start,
+          dueDate: moment(event.start),
           dueTime: moment(event.start).format('HH:mm')
         });
         this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
@@ -292,7 +292,7 @@ export default {
           date: event.start,
           time: moment(event.start).format('HH:mm')
         });
-        this.$store.commit('OPEN_COURSE_MODAL', event.course);
+        this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course);
       } else if (eventType === 'assignment') {
         this.$router.push({
           name: 'assignment-overview',

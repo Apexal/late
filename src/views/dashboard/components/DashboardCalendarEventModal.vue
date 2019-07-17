@@ -9,9 +9,9 @@
       <p>{{ event.title }}</p>
       <hr>
       <a
-        v-if="event.eventURL"
+        v-if="eventURL"
         class="is-pulled-right"
-        :href="event.eventURL"
+        :href="eventURL"
         target="_blank"
       >More info</a>
       <span class="has-text-grey">
@@ -33,6 +33,12 @@ export default {
     event: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    eventURL () {
+      if (!this.event.extendedProps) return;
+      return this.event.extendedProps.eventURL;
     }
   }
 };

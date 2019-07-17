@@ -94,14 +94,14 @@ export default {
     }
   },
   watch: {
-    courseCRN () {
-      this.$refs.calendar.fireMethod('prev');
-      this.$refs.calendar.fireMethod('next');
-    },
-    date () {
-      this.$refs.calendar.fireMethod('prev');
-      this.$refs.calendar.fireMethod('next');
-    }
+    // courseCRN () {
+    //   this.$refs.calendar.fireMethod('prev');
+    //   this.$refs.calendar.fireMethod('next');
+    // },
+    // date () {
+    //   this.$refs.calendar.fireMethod('prev');
+    //   this.$refs.calendar.fireMethod('next');
+    // }
   },
   methods: {
     course (crn) {
