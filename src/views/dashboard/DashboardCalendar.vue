@@ -72,6 +72,8 @@ import '@fullcalendar/timegrid/main.css';
 import DashboardCalendarSelectModal from '@/views/dashboard/components/DashboardCalendarSelectModal';
 import DashboardCalendarEventModal from '@/views/dashboard/components/DashboardCalendarEventModal';
 
+const viewNames = ['timeGridThreeDay', 'timeGridFiveDay', 'timeGridWeek'];
+
 export default {
   name: 'DashboardCalendar',
   components: {
@@ -120,7 +122,7 @@ export default {
           startTime: this.$store.state.auth.user.earliestWorkTime,
           endTime: this.$store.state.auth.user.latestWorkTime
         },
-        defaultView: localStorage.getItem('dashboardCalendarDefaultView') || 'timeGridWeek',
+        defaultView: viewNames.includes(localStorage.getItem('dashboardCalendarDefaultView')) ? localStorage.getItem('dashboardCalendarDefaultView') : 'timeGridWeek',
         buttonText: {
           today: 'Today',
           timeGridWeek: 'Week'
