@@ -15,6 +15,7 @@
       :week-numbers="true"
       :week-numbers-within-days="true"
       :valid-range="calendar.validRange"
+      :button-text="calendar.buttonText"
       time-format="h(:mm)t"
       time-zone="local"
       :editable="false"
@@ -61,9 +62,10 @@ export default {
       calendar: {
         plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
         header: {
-          left: 'title',
-          center: '',
-          right: 'today prev,next'
+          right: 'today,prev,next'
+        },
+        buttonText: {
+          today: 'Today'
         },
         validRange: {
           start: this.$store.getters.currentTerm.start,

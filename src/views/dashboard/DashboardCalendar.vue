@@ -398,50 +398,6 @@ export default {
 .tabs .title {
   margin: 0;
 }
-.work-block-event {
-  border-width: 3px !important;
-
-  .margin-left {
-    margin-left: 5px;
-  }
-}
-
-@media only screen and (max-width: 768px) {
-  .fc-toolbar.fc-header-toolbar {
-    flex-direction: column;
-  }
-}
-
-.event-location {
-  opacity: 0;
-  transition: opacity 0.1s;
-}
-
-.fc-event {
-  &:hover {
-    .event-location {
-      opacity: 1;
-    }
-  }
-}
-
-.fc-content {
-  .remove-work-block {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    &:hover {
-      background-color: red;
-    }
-  }
-
-  &:hover {
-    .remove-work-block {
-      display: block;
-    }
-  }
-}
 
 .dashboard-calendar-select-modal .panel {
   .assessment-type-tag {

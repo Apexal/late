@@ -69,7 +69,7 @@ export default {
 
         el
           .querySelector('.fc-time')
-          .append(element('span', { innerText: ' | ' + (assessment.assessmentType === 'assignment' ? 'Work Block' : 'Study Block') }));
+          .append(element('span', { innerText: ' | ' + (assessment.assessmentType === 'assignment' ? 'Work' : 'Study') }));
 
         // --- DELETE BUTTON ---
         const deleteButton = element('span', { className: 'delete remove-work-block', title: 'Unschedule' });

@@ -87,6 +87,7 @@
       :event-overlap="true"
       :select-helper="true"
       :now-indicator="true"
+      :button-text="calendar.buttonText"
       time-format="h(:mm)t"
       no-events-message="No work sessions set yet!"
       snap-duration="00:15"
@@ -131,7 +132,12 @@ export default {
       saved: true,
       calendar: {
         plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
-        header: {},
+        header: {
+          right: 'today,prev,next'
+        },
+        buttonText: {
+          today: 'Today'
+        },
         views: {
           timeGridThreeDay: {
             type: 'timeGrid',
@@ -459,12 +465,5 @@ export default {
 
 .collaborator {
   cursor: pointer;
-}
-
-.fc-content .remove-work-block {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 0;
 }
 </style>
