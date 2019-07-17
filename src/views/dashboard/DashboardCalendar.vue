@@ -125,12 +125,6 @@ export default {
           today: 'Today',
           timeGridWeek: 'Week'
         }
-        // config: {
-        //   eventClick: this.eventClick,
-        //   eventDrop: this.eventDrop,
-        //   eventResize: this.eventResize,
-        //   select: this.select
-        // }
       }
     };
   },
