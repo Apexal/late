@@ -1,13 +1,31 @@
 <template>
-  <div class="columns is-multiline assignments-confirm">
-    <div
-      v-for="(a, index) in unconfirmedAssignments"
-      :key="index"
-      class="column is-half is-full-touch"
-    >
-      <div class="notification is-primary">
-        Did you ever complete <b>{{ a.title }}?</b>
-        <div class="is-pulled-right">
+  <div class="tile is-child notification is-dark assignments-confirm">
+    <p class="title">
+      Confirm
+    </p>
+    <template v-if="unconfirmedAssignments.length > 0">
+      <p class="subtitle">
+        Did you ever complete:
+      </p>
+      <div
+        v-for="a in unconfirmedAssignments"
+        :key="a._id"
+        class="is-flex"
+      >
+        <p style="flex: 1">
+          <CourseAssessmentDot
+            :course="course(a)"
+            :assessment="a"
+          />
+          <router-link
+            class="assessment-link"
+            :to="assessmentRoute(a)"
+          >
+            {{ a.title }}?
+          </router-link>
+        </p>
+
+        <div class="confirm-buttons">
           <b-button
             size="is-small"
             @click="confirmAssignment(a._id, true)"
@@ -21,8 +39,14 @@
             No
           </b-button>
         </div>
+        <hr>
       </div>
-    </div>
+    </template>
+    <template>
+      <p class="subtitle">
+        Nothing to confirm!
+      </p>
+    </template>
   </div>
 </template>
 
@@ -76,10 +100,22 @@ export default {
         type: 'is-primary',
         message: 'Confirmed assignment\'s status!'
       });
+    },
+    assessmentRoute (a) {
+      return {
+        name: a.assessmentType + '-overview',
+        params: { [a.assessmentType + 'ID']: a._id }
+      };
+    },
+    course (a) {
+      return this.$store.getters.getCourseFromCRN(a.courseCRN);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.assessment-link {
+  text-decoration: none !important;
+}
 </style>

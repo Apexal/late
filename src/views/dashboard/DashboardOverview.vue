@@ -1,8 +1,6 @@
 <!--Dashboard: Overview page-->
 <template>
   <div class="dashboard-overview">
-    <AssignmentsConfirm />
-
     <div class="tile is-ancestor">
       <div class="tile is-parent">
         <div class="tile is-child box">
@@ -113,11 +111,8 @@
             :to="{ name: 'coursework-upcoming' }"
           >Browse</router-link></span>
         </div>
-        <div class="tile is-child box">
-          <p class="title">
-            Two
-          </p>
-        </div>
+
+        <AssignmentsConfirm />
       </div>
     </div>
 
