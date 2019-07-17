@@ -2,98 +2,8 @@
 <template>
   <div class="dashboard-overview">
     <div class="tile is-ancestor">
-      <div class="tile is-parent">
-        <div class="tile is-child box">
-          <div class="timeline">
-            <header class="timeline-header">
-              <span class="tag is-medium is-primary">Today</span>
-            </header>
-            <div
-              v-for="(event, index) in todaysAgenda"
-              :key="index"
-              class="timeline-item"
-              :class="timelineItemClass(event)"
-            >
-              <template v-if="event.eventType === 'work-block'">
-                <router-link
-                  tag="div"
-                  class="timeline-marker is-icon"
-                  :class="timelineItemClass(event)"
-                  :title="timelineItemTitle(event)"
-                  :to="timelineRoute(event)"
-                >
-                  <i
-                    class="fas"
-                    :class="markerIcon(event)"
-                  />
-                </router-link>
-              </template>
-              <template v-else-if="event.eventType === 'period'">
-                <div
-                  class="timeline-marker is-icon"
-                  :class="timelineItemClass(event)"
-                  :title="timelineItemTitle(event)"
-                  @click="$store.commit('OPEN_COURSE_MODAL', event.course)"
-                >
-                  <i
-                    class="fas"
-                    :class="markerIcon(event)"
-                  />
-                </div>
-              </template>
-
-              <div class="timeline-content">
-                <p class="heading">
-                  {{ timeFormat(event.start) }} to {{ timeFormat(event.end) }}
-                </p>
-                <p>
-                  <template v-if="event.eventType === 'work-block'">
-                    {{
-                      event.assessment.assessmentType === "assignment"
-                        ? "Work on"
-                        : "Study for"
-                    }}
-                    <router-link :to="timelineRoute(event)">
-                      <b class="course-title">{{ event.assessment.title }}</b>
-                    </router-link>
-                    <br>
-                    <i
-                      v-if="event.block.location"
-                      class="has-text-grey"
-                    >
-                      {{ event.block.location }}
-                    </i>
-                  </template>
-                  <template v-else-if="event.eventType === 'period'">
-                    <b class="course-title">{{ event.course.title }}</b>
-                    <span class="has-text-grey">
-                      {{ periodType(event.period.type) }}
-                    </span>
-                    <br>
-                    <i class="has-text-grey">{{ event.period.location }}</i>
-                  </template>
-                </p>
-              </div>
-            </div>
-
-          <!-- <header class="timeline-header">
-            <span class="tag is-primary">End of Classes</span>
-          </header>
-          <div class="timeline-item">
-            <div class="timeline-marker is-icon">
-              <i class="fa fa-flag"></i>
-            </div>
-            <div class="timeline-content">
-              <p class="heading">March 2017</p>
-              <p>Timeline content - Can include any HTML element</p>
-            </div>
-            </div>
-          <div class="timeline-header">
-            <span class="tag is-medium is-primary">Night</span>
-          </div>
-          -->
-          </div>
-        </div>
+      <div class="tile is-parent ">
+        <Timeline />
       </div>
       <div class="tile is-4 is-vertical is-parent">
         <div
@@ -115,35 +25,18 @@
         <AssignmentsConfirm />
       </div>
     </div>
-
-    <hr>
-
-    <div
-      v-if="todaysAgenda.length"
-      class="columns"
-    >
-      <div class="column is-narrow" />
-    </div>
-    <div v-else>
-      <p class="has-text-centered has-text-grey">
-        You have
-        <b>nothing</b> on your agenda for today. No classes, working on
-        assignments, or studying for exams scheduled!
-      </p>
-    </div>
   </div>
 </template>
 
 <script>
-import moment from 'moment';
-
 import courseloads from '@/modules/courseloads';
 
 import DashboardOverviewAssignmentsConfirm from './components/DashboardOverviewAssignmentsConfirm';
+import DashboardOverviewTimeline from './components/DashboardOverviewTimeline';
 
 export default {
   name: 'DashboardOverview',
-  components: { AssignmentsConfirm: DashboardOverviewAssignmentsConfirm },
+  components: { AssignmentsConfirm: DashboardOverviewAssignmentsConfirm, Timeline: DashboardOverviewTimeline },
   data () {
     return {
       zoom: 13,
@@ -152,9 +45,6 @@ export default {
     };
   },
   computed: {
-    todaysAgenda () {
-      return this.$store.getters.todaysAgenda;
-    },
     key () {
       return process.env.VUE_APP_GOOGLE_API_KEY;
     },
@@ -186,60 +76,11 @@ export default {
     }
   },
   methods: {
-    course (p) {
-      return this.$store.getters.getCourseFromPeriod(p);
-    },
-    eventDuration (event) {
-      return moment(event.end).diff(event.start, 'minutes');
-    },
-    timelineRoute (event) {
-      return {
-        name: `${event.assessment.assessmentType}-overview`,
-        params: {
-          [`${event.assessment.assessmentType}ID`]: event.assessment._id
-        }
-      };
-    },
-    timelineItemClass (event) {
-      if (moment(event.end).isSameOrBefore(this.rightNow)) {
-        return 'is-primary';
-      } else if (moment(this.rightNow).isBetween(event.start, event.end)) {
-        return 'is-warning';
-      }
-    },
-    timelineItemTitle (event) {
-      if (event.eventType === 'period') {
-        return `${event.course.title} ${this.periodType(event.period.type)}`;
-      } else if (event.eventType === 'work-block') {
-        return `${event.course.title} ${event.assessment.assessmentType}`;
-      }
-    },
-    markerIcon (event) {
-      if (event.eventType === 'period') {
-        return 'fa-graduation-cap';
-      } else if (event.eventType === 'work-block') {
-        return 'fa-clipboard-check';
-      }
 
-      return 'fa-question-circle';
-    },
-    periodType (type) {
-      return this.$store.getters.periodType(type);
-    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.timeline-marker {
-  cursor: pointer;
-}
 
-.course-title {
-  margin-right: 5px;
-}
-
-.timeline {
-  padding-left: 20px;
-}
 </style>
