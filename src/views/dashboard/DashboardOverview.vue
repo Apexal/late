@@ -206,9 +206,9 @@ export default {
       };
     },
     timelineItemClass (event) {
-      if (moment(event.end).isSameOrBefore(this.now)) {
+      if (moment(event.end).isSameOrBefore(this.rightNow)) {
         return 'is-primary';
-      } else if (moment(this.now).isBetween(event.start, event.end)) {
+      } else if (moment(this.rightNow).isBetween(event.start, event.end)) {
         return 'is-warning';
       }
     },

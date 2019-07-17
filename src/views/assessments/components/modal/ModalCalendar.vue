@@ -93,16 +93,6 @@ export default {
       return courseSchedule;
     }
   },
-  watch: {
-    // courseCRN () {
-    //   this.$refs.calendar.fireMethod('prev');
-    //   this.$refs.calendar.fireMethod('next');
-    // },
-    // date () {
-    //   this.$refs.calendar.fireMethod('prev');
-    //   this.$refs.calendar.fireMethod('next');
-    // }
-  },
   methods: {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn);

@@ -223,7 +223,7 @@ export default {
       return this.priorityStrings[this.assessment.priority] || 'Unknown';
     },
     timeLeft () {
-      const diff = moment.duration(moment(this.assessment.date).diff(this.now));
+      const diff = moment.duration(moment(this.assessment.date).diff(this.rightNow));
       return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
     },
     inputFormatDate () {

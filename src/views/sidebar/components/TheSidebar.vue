@@ -163,7 +163,7 @@ export default {
       if (!this.currentEvent);
 
       const diff = moment.duration(
-        moment(this.currentEvent.end).diff(this.now)
+        moment(this.currentEvent.end).diff(this.rightNow)
       );
       return `${diff.hours()}h ${diff.minutes()}m left`;
     },
@@ -187,7 +187,7 @@ export default {
       }
     },
     isCurrentEvent (event) {
-      return moment(this.now).isBetween(event.start, event.end);
+      return moment(this.rightNow).isBetween(event.start, event.end);
     },
     periodType (p) {
       return this.$store.getters.periodType(p.type);
