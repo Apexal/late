@@ -11,7 +11,7 @@ const getters = {
   mapUnavailabilityToEvent: state => unavailability =>
     Object.assign({}, unavailability, {
       id: unavailability._id,
-      // editable: false, // TODO: https://github.com/fullcalendar/fullcalendar/issues/4127
+      editable: false,
       eventType: 'unavailability',
       color: 'black'
     }),

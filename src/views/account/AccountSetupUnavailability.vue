@@ -92,6 +92,7 @@
         snap-duration="00:15"
         time-format="h(:mm)t"
         :now-indicator="true"
+        :event-render="eventRender"
         @eventResize="eventChanged"
         @eventDrop="eventChanged"
         @eventClick="eventClick"
@@ -152,9 +153,17 @@ export default {
         endTime: this.fixedLatest
       };
     },
+    unavailabilityEvents () {
+      return this.$store.getters.current_unavailability.map(unavailability => Object.assign({}, unavailability, {
+        id: unavailability._id,
+        editable: true,
+        eventType: 'unavailability',
+        color: 'black'
+      }));
+    },
     allEvents () {
       return this.$store.getters.getCourseScheduleAsEvents.concat(
-        this.$store.getters.getUnavailabilityAsEvents
+        this.unavailabilityEvents
       );
     },
     originalLatest () {
@@ -201,6 +210,9 @@ export default {
   methods: {
     setLatest (event) {
       this.latest = event.target.value;
+    },
+    eventRender ({ event, el }) {
+      el.title = 'Click to remove';
     },
     eventClick ({ event, jsEvent, view }) {
       if (event.extendedProps.eventType !== 'unavailability') return;
@@ -263,12 +275,8 @@ export default {
 
       this.$store.commit('SET_USER', request.data.updatedUser);
 
-      this.$toast.open({
-        type: 'is-success',
-        message: `Added "${
-          request.data.createdUnavailability.title
-        }" to your unavailability.`
-      });
+      let calendarApi = this.$refs.calendar.getApi();
+      calendarApi.unselect();
     },
     async updateUnavailability (unavailability) {
       let request;
@@ -291,13 +299,6 @@ export default {
         });
         throw e;
       }
-
-      this.$toast.open({
-        type: 'is-success',
-        message: `Updated "${
-          request.data.updatedUnavailability.title
-        }" in your unavailability.`
-      });
     },
     async removeUnavailability (unavailabilityEvent) {
       let request;
@@ -311,14 +312,7 @@ export default {
           message: e.response.data.message,
           type: 'is-danger'
         });
-        return;
       }
-      this.$toast.open({
-        type: 'is-success',
-        message: `Removed "${
-          request.data.deletedUnavailability.title
-        }" from your unavailability.`
-      });
     },
     async saveTimePreferences () {
       this.loading = true;
