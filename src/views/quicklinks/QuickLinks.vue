@@ -77,59 +77,60 @@
       <h2 class="subtitle">
         Unconfirmed Links
       </h2>
-
-      <table class="table is-fullwidth">
-        <thead>
-          <tr>
-            <th>Submitter</th>
-            <th>Category</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>URL</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="link in unconfirmedQuickLinks"
-            :key="link._id"
-          >
-            <td>
-              <span v-if="link._student">
-                <b>{{ link._student.rcs_id }}</b>
-              </span>
-              <span
-                v-else
-                class="has-text-grey"
-              >—</span>
-            </td>
-            <td>{{ link.category }}</td>
-            <td>{{ link.title }}</td>
-            <td>
-              <span v-if="link.description">{{ link.description }}</span>
-              <span
-                v-else
-                class="has-text-grey"
-              >—</span>
-            </td>
-            <td>{{ link.url }}</td>
-            <td>
-              <b-button
-                type="is-success"
-                @click="confirmQuickLink(link._id)"
-              >
-                <i class="fas fa-check" />
-              </b-button>
-              <b-button
-                type="is-danger"
-                @click="deleteQuickLink(link._id)"
-              >
-                <i class="fas fa-times" />
-              </b-button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow">
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>Submitter</th>
+              <th>Category</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>URL</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="link in unconfirmedQuickLinks"
+              :key="link._id"
+            >
+              <td>
+                <span v-if="link._student">
+                  <b>{{ link._student.rcs_id }}</b>
+                </span>
+                <span
+                  v-else
+                  class="has-text-grey"
+                >—</span>
+              </td>
+              <td>{{ link.category }}</td>
+              <td>{{ link.title }}</td>
+              <td>
+                <span v-if="link.description">{{ link.description }}</span>
+                <span
+                  v-else
+                  class="has-text-grey"
+                >—</span>
+              </td>
+              <td>{{ link.url }}</td>
+              <td>
+                <b-button
+                  type="is-success"
+                  @click="confirmQuickLink(link._id)"
+                >
+                  <i class="fas fa-check" />
+                </b-button>
+                <b-button
+                  type="is-danger"
+                  @click="deleteQuickLink(link._id)"
+                >
+                  <i class="fas fa-times" />
+                </b-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p
         v-if="unconfirmedQuickLinks.length === 0"
         class="has-text-grey has-text-centered"
@@ -392,5 +393,7 @@ export default {
   }
 }
 
-
+.overflow {
+  overflow: auto;
+}
 </style>
