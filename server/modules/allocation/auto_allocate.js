@@ -5,9 +5,9 @@ require('../db');
 */
 
 const moment = require('moment');
-const Term = require('../api/terms/terms.model');
-const Student = require('../api/students/students.model');
-const Block = require('../api/blocks/blocks.model');
+const Term = require('../../api/terms/terms.model');
+const Student = require('../../api/students/students.model');
+const Block = require('../../api/blocks/blocks.model');
 
 function duration (timeStr1, timeStr2) {
   return moment(timeStr2, 'HH:mm', true).diff(

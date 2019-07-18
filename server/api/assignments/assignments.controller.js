@@ -1,8 +1,6 @@
 const moment = require('moment');
 const logger = require('../../modules/logger');
 
-const { compileWeeklyOpenSchedule } = require('../../modules/auto_allocate');
-
 const Block = require('../blocks/blocks.model');
 const Assignment = require('./assignments.model');
 const Student = require('../students/students.model');

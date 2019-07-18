@@ -1,4 +1,4 @@
-var allocator = require('./allocate.js');
+var allocator = require('./allocation/allocate.js/index.js');
 
 // CHRASTERISTIC VAIRABLES
 // controls the input to the algorithm indimensions that vary freely in a production context

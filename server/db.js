@@ -3,7 +3,7 @@
  * The authentication for the database is taken from the .env file.
  *
  * All of the schemas are setup in their respective folders under ./api
- */
+ **/
 const logger = require('./modules/logger');
 
 const mongoose = require('mongoose');

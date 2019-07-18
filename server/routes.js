@@ -2,9 +2,9 @@
  * This file consolidates all of the API routes with the authentication routes.
  * For the API routes, it ensures that there must be a logged in user for the majority of the endpoints.
  *
- * CAS authentication, Google authentication, and Discord authentication is also handled here.
+ * The API routes are located in ./api
+ * The authentication routes are located in ./auth
  */
-
 
 const exceptions = [
   '/students/loginas',
@@ -13,7 +13,6 @@ const exceptions = [
   '/sms',
   '/checklists'
 ];
-
 
 module.exports = router => {
   // router.use(path, router);

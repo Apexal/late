@@ -54,7 +54,7 @@ const actions = {
         },
         extendedProperties: {
           private: {
-            scheduleByLATE: true,
+            scheduledByLATE: true,
             assessmentID: assessment._id // links this event to the assessment
           }
         },
@@ -158,7 +158,7 @@ const actions = {
             recurrence: [recurrence.toString()],
             extendedProperties: {
               private: {
-                scheduleByLATE: true,
+                scheduledByLATE: true,
                 courseID: course._id // links this event to the course
               }
             }
