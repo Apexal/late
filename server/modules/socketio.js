@@ -26,11 +26,14 @@ module.exports = server => {
         if (!sessionCounts[user.rcs_id]) {
           online.push(user.rcs_id);
           sessionCounts[user.rcs_id] = 1;
+          socket.to('notifications').emit('user online', user.rcs_id);
         } else {
           sessionCounts[user.rcs_id]++;
         }
 
         io.emit('online', online);
+
+        if (user.rcs_id === 'matraf') socket.join('notifications');
       });
     },
     disconnect: function (socket) {
@@ -40,6 +43,8 @@ module.exports = server => {
           delete sessionCounts[socket.client.user.rcs_id];
           online = online.filter(rcsId => rcsId !== socket.client.user.rcs_id);
           io.emit('online', online);
+
+          socket.to('notifications').emit('user offline', socket.client.user.rcs_id);
         }
       }
     },

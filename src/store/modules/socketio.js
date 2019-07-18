@@ -1,4 +1,5 @@
 import { Snackbar } from 'buefy/dist/components/snackbar';
+import { Toast } from 'buefy/dist/components/toast';
 import router from '@/router';
 
 const state = {
@@ -10,6 +11,12 @@ const getters = {};
 const actions = {
   socket_online ({ commit }, online) {
     commit('SET_ONLINE_USERS', online);
+  },
+  socket_userOnline ({ commit }, rcsID) {
+    Toast.open({ type: 'is-info', message: `${rcsID} is now online.` });
+  },
+  socket_userOffline ({ commit }, rcsID) {
+    Toast.open({ type: 'is-info', message: `${rcsID} is now offline.` });
   },
   socket_sisManMessage ({ dispatch }, message) {
     dispatch('SUMMON_SISMAN', { message });
