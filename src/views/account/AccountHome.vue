@@ -37,9 +37,12 @@
 <script>
 import SISManModal from '@/views/sisman/components/SISManModal';
 
+import accountMixin from '@/mixins/account';
+
 export default {
   name: 'AccountHome',
   components: { SISManModal },
+  mixins: [accountMixin],
   data () {
     return {
       showingModal: false,
@@ -55,29 +58,6 @@ export default {
     this.showingModal = !this.user.setup.profile;
   },
   methods: {
-    promptRIN (onConfirm) {
-      this.$dialog.prompt({
-        message: 'What is your RPI RIN?',
-        inputAttrs: {
-          type: 'text',
-          minlength: 1,
-          maxlength: 20
-        },
-        onConfirm
-      });
-    },
-    promptPIN (onConfirm) {
-      this.$dialog.prompt({
-        message: 'What is your RPI SIS password?',
-        inputAttrs: {
-          type: 'password',
-          minlength: 1,
-          placeholder: 'This is not saved anywhere ever.',
-          maxlength: 300
-        },
-        onConfirm
-      });
-    },
     startImportFromSIS () {
       this.promptRIN(rin => {
         this.promptPIN(pin => {

@@ -1,6 +1,11 @@
 <!--Account Setup: Course schedule setup page-->
 <template>
   <div class="setup-course-schedule">
+    <CustomCourseModal
+      :open="addingCustomCourse"
+      @add-custom-course="addCustomCourse"
+      @close-modal="addingCustomCourse = false"
+    />
     <template v-if="onBreak">
       <h2 class="subtitle has-text-centered">
         You will be able to set your new course schedule once break ends.
@@ -158,6 +163,17 @@
       >
         Save and Continue
       </router-link>
+      <div class="buttons">
+        <b-button
+          type="is-dark"
+          @click="startAddCustomCourse"
+        >
+          Add Course by CRN
+        </b-button>
+        <b-button type="is-dark">
+          Add Custom Course
+        </b-button>
+      </div>
     </template>
   </div>
 </template>
@@ -166,9 +182,14 @@
 import CourseScheduleCalendar from '@/views/courses/components/CourseScheduleCalendar';
 import AccountCourse from '@/views/account/components/AccountCourse';
 
+import CustomCourseModal from './components/CustomCourseModal';
+
+import accountMixin from '@/mixins/account';
+
 export default {
   name: 'AccountSetupCourseSchedule',
-  components: { AccountCourse, CourseScheduleCalendar },
+  components: { AccountCourse, CustomCourseModal, CourseScheduleCalendar },
+  mixins: [accountMixin],
   data () {
     return {
       tab: 'list',
@@ -177,7 +198,8 @@ export default {
       method: 'sis',
       rin: '',
       pin: '',
-      openedCourseID: ''
+      openedCourseID: '',
+      addingCustomCourse: false
     };
   },
   computed: {
@@ -201,6 +223,18 @@ export default {
     gotoCourse (courseID) {
       this.tab = 'list';
       this.openedCourseID = courseID;
+    },
+    startAddCustomCourse () {
+      this.promptRIN(rin => {
+        this.promptPIN(pin => {
+          this.rin = rin;
+          this.pin = pin;
+          this.addingCustomCourse = true;
+        });
+      });
+    },
+    addCustomCourse (courseData) {
+      alert(courseData);
     },
     async importSchedule () {
       this.loading = true;
