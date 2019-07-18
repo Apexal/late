@@ -1,4 +1,4 @@
-import tours from '@/tours';
+import tours from '@/modules/tours';
 
 const state = {
   tours,

@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import haikus from '@/haikus';
+import haikus from '@/modules/haikus';
 
 export default {
   name: 'TheNotFoundPage',
