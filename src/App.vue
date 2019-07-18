@@ -338,6 +338,10 @@ section.section {
   z-index: 2;
 }
 
+footer.footer {
+  margin-top: 30px;
+}
+
 
 // ------ FULLCALENDAR -------
 
