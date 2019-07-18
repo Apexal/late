@@ -8,7 +8,8 @@ const SIS_LOGIN_URL = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin';
 const SIS_SCHEDULE_URL = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl';
 const SIS_TRANSCRIPT_URL = 'https://sis.rpi.edu/rss/bwskotrn.P_ViewTran';
 const SIS_SET_TERM_URL = 'https://sis.rpi.edu/rss/bwcklibs.P_StoreTerm';
-const SIS_VIEW_TERM_REGISTRATION_URL = ' https://sis.rpi.edu/rss/bwskrsta.P_RegsStatusDisp';
+const SIS_COURSE_FROM_CRN_URL = 'https://sis.rpi.edu/rss/bwckschd.p_disp_listcrse?subj_in=&crse_in=';
+const SIS_VIEW_TERM_REGISTRATION_URL = 'https://sis.rpi.edu/rss/bwskrsta.P_RegsStatusDisp';
 const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs'; // + term + '.htm'
 
 const PERIOD_TABLE_TYPE_COLUMN = 3;
@@ -278,6 +279,117 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
   return courseSchedule;
 }
 
+
+/**
+ * Grab all the info for a particular course given the term and crn.
+ *
+ * @param {String} RIN A valid RIN
+ * @param {String} PIN The matching SIS PIN
+ * @param {Object} term The term object for the course
+ * @param {String} crn The CRN of the course
+ * @returns {Object} The compiled course object with every required property set except _student.
+ */
+async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
+  // The cookie jar to persist the login session
+  // Must be used with each request
+  const jar = await loginToSIS(RIN, PIN);
+
+  logger.info(`Getting course ${crn} for student ${RIN} from SIS.`);
+
+  // Submit schedule form choosing the right term
+  let $ = await request({
+    uri: SIS_COURSE_FROM_CRN_URL + `&term_in=${term.code}&crn_in=${crn}`,
+    rejectUnauthorized: false,
+    method: 'GET',
+    transform: body => cheerio.load(body),
+    jar
+  });
+
+  const courseTable = $('table[summary="This layout table is used to present the sections found"]');
+  if (courseTable.length === 0) throw new Error('No course found!');
+
+  const titleA = $('a', courseTable).first();
+  const parts = titleA.text().split(' - ');
+
+  const title = parts[0];
+  const sectionId = parts[3];
+  const summary = parts[2];
+
+  const text = $('a:contains(View Catalog Entry)').parent().contents().filter(function () { return this.type === 'text'; }).text().split(' ');
+  const credits = parseFloat(text[text.length - 2]);
+
+  let periods = [];
+
+  let startDate = moment(term.start);
+  let endDate = moment(term.end);
+
+  $('table[summary="This table lists the scheduled meeting times and assigned instructors for this class.."]')
+    .find('tr:not(:first-child)')
+    .each(function (i, el) {
+      const time = $(this)
+        .find('td:nth-child(2)')
+        .text()
+        .split(' - ');
+      const start = moment(time[0], 'h:mm a', true).format('Hmm');
+      const end = moment(time[1], 'h:mm a', true).format('Hmm');
+
+      if (start === 'Invalid date') return;
+
+      const days = $(this)
+        .find('td:nth-child(3)')
+        .text()
+        .split('')
+        .map(d => DAY_INITIALS[d]);
+
+      const location = $(this)
+        .find('td:nth-child(4)')
+        .text();
+
+      const dateRangeParts = $(this)
+        .find('td:nth-child(5)')
+        .text()
+        .split(' - ');
+
+      startDate = moment(dateRangeParts[0], 'MMM DD[,] YYYY');
+      endDate = moment(dateRangeParts[1], 'MMM DD[,] YYYY');
+
+      for (let day of days) {
+        const period = {
+          day,
+          start,
+          end,
+          type: 'LEC',
+          location
+        };
+        periods.push(period);
+      }
+    });
+
+  // Sort periods
+  periods = periods.sort((a, b) => {
+    if (a.day > b.day) return 1;
+    else if (a.day < b.day) return -1;
+    else if (parseInt(a.start) > parseInt(b.start)) return 1;
+    else if (parseInt(a.start) < parseInt(b.start)) return -1;
+
+    return 0;
+  });
+
+  return {
+    crn,
+    startDate: startDate.toDate(),
+    endDate: endDate.toDate(),
+    originalTitle: title,
+    title,
+    termCode: term.code,
+    credits,
+    sectionId,
+    summary,
+    links: [],
+    periods
+  };
+}
+
 /**
  * Given a term code and a list of CRNs to search for,
  * request the period list site and find the period type
@@ -382,5 +494,6 @@ module.exports = {
   scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,
+  scrapeSISForSingleCourse,
   scrapePeriodTypesFromCRNs
 };
