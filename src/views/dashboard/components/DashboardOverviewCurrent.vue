@@ -10,11 +10,13 @@
       v-if="currentStatus === 'busy'"
       class="subtitle"
     >
-      You are busy!
+      You are busy with <b>{{ currentUnavailability.title }}</b> for the next
+      <b>{{ duration(currentUnavailabilityDates.start, currentUnavailabilityDates.end) }} minutes</b>
+      until {{ timeFormat(currentUnavailabilityDates.end) }}!
     </p>
     <template v-else-if="currentStatus === 'work-block'">
       <p class="subtitle">
-        For the next <b>{{ minutesLeft }} minutes</b> until <b>{{ timeFormat(currentEvent.end) }}</b>, you should be {{ currentEvent.assessment.assessmentType === 'assignment' ? 'working on' : 'studying for' }}
+        For the next <b>{{ duration(currentEvent.start, currentEvent.end) }} minutes</b> until <b>{{ timeFormat(currentEvent.end) }}</b>, you should be {{ currentEvent.assessment.assessmentType === 'assignment' ? 'working on' : 'studying for' }}
       </p>
       <div>
         <router-link
@@ -85,8 +87,11 @@ export default {
   computed: {
     currentStatus () {
       if (this.currentEvent) return this.currentEvent.eventType;
-      // if () return 'busy';
+      if (this.currentUnavailability) return 'busy';
       return 'nothing';
+    },
+    currentUnavailability () {
+      return this.$store.getters.currentUnavailability;
     },
     todaysAgenda () {
       return this.$store.getters.todaysAgenda;
@@ -94,15 +99,18 @@ export default {
     currentEvent () {
       return this.todaysAgenda.find(this.isCurrentEvent);
     },
-    minutesLeft () {
-      if (!this.currentEvent) return 0;
-
-      return moment(this.currentEvent.end).diff(this.rightNow, 'minutes');
-    },
     percentThrough () {
       if (!this.currentEvent) return 0;
+      const total = moment(this.currentEvent.end).diff(this.currentEvent.start, 'minutes');
+      const minutesLeft = moment(this.currentEvent.end).diff(moment(), 'minutes');
 
-      return Math.round((1 - this.minutesLeft / moment(this.currentEvent.end).diff(this.currentEvent.start, 'minutes')) * 100);
+      return Math.round((1 - minutesLeft / total) * 100);
+    },
+    currentUnavailabilityDates () {
+      return {
+        start: moment(this.currentUnavailability.startTime, 'HH:mm'),
+        end: moment(this.currentUnavailability.endTime, 'HH:mm')
+      };
     }
   },
   watch: {
@@ -114,6 +122,9 @@ export default {
     this.$emit('current-status', this.currentStatus);
   },
   methods: {
+    duration (start, end) {
+      return moment(end).diff(start, 'minutes');
+    },
     isCurrentEvent (event) {
       return moment(this.rightNow).isBetween(event.start, event.end);
     },

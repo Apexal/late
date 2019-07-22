@@ -8,7 +8,7 @@
 
       <div class="tile is-vertical">
         <div
-          v-if="doingSomething"
+          v-show="doingSomething"
           class="tile is-parent "
         >
           <Current @current-status="doingSomething = arguments[0] !== 'nothing'" />

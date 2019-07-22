@@ -1,5 +1,7 @@
 import axios from '@/api';
 
+import moment from 'moment';
+
 const state = {
   unavailabilities: []
 };
@@ -17,6 +19,15 @@ const getters = {
     }),
   getUnavailabilityAsEvents: (state, getters) => {
     return state.unavailabilities.map(getters.mapUnavailabilityToEvent);
+  },
+  currentUnavailability: state => {
+    return state.unavailabilities.find(un => {
+      if (!un.daysOfWeek.includes(moment().day())) return false;
+      const start = moment(un.startTime, 'HH:mm', true);
+      const end = moment(un.endTime, 'HH:mm', true);
+      if (!moment().isBetween(start, end)) return false;
+      return true;
+    });
   }
 };
 
