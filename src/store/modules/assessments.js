@@ -1,31 +1,44 @@
+/**
+ * This Vuex module deals with assessments and work blocks.
+ * It stores all upcoming assessments (assignments and exams) in its state.
+ * It also provides all the getters for getting specific upcoming assignments,
+ * work blocks, groups of upcoming assignments, etc.
+ * Note that most getters and actions deal with upcoming assessments only because
+ * those are kept in state. Past assessments must be grabbed from the API.
+ */
+
 import vm from '@/main';
 import axios from '@/api';
 import moment from 'moment';
 
-const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14;
+const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14; // How many days away are "Far future assignments"
 
 const state = {
   upcomingAssessments: []
 };
 
 const getters = {
+  /**
+   * Given an UPCOMING assessment's ID, find it in the state and return it.
+   * @returns The found assessment object OR undefined if not found.
+   */
   getUpcomingAssessmentById: state => assessmentID =>
     state.upcomingAssessments.find(
       assessment => assessment._id === assessmentID
     ),
-  limitedUpcomingAssessments: (state, getters) => {
+  limitedUpcomingAssessments: state => {
     const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days');
     return state.upcomingAssessments.filter(assessment =>
       moment(assessment.dueDate || assessment.date).isBefore(cutoff)
     );
   },
-  farFutureUpcomingAssessments: (state, getters) => {
+  farFutureUpcomingAssessments: state => {
     const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days');
     return state.upcomingAssessments.filter(assessment =>
       moment(assessment.dueDate || assessment.date).isAfter(cutoff)
     );
   },
-  groupAssessments: (state, getters) => (groupBy, assessments) => {
+  groupAssessments: () => (groupBy, assessments) => {
     const grouped = {};
     for (let assessment of assessments) {
       const key =
@@ -72,6 +85,10 @@ const getters = {
     assessment,
     [type]: assessment
   }),
+  /**
+   * Get all the work blocks from all UPCOMING assessments in the state.
+   * @returns The array of work block objects
+   */
   getWorkBlocks: state => {
     return state.upcomingAssessments
       .map(assessment => assessment._blocks)
@@ -89,29 +106,52 @@ const getters = {
 };
 
 const actions = {
+  /**
+   * Every hour it grabs upcoming assignments from the API in case
+   * somehow they were added by another means or something.
+   */
   async AUTO_GET_UPCOMING_WORK ({ dispatch }) {
     await dispatch('GET_UPCOMING_ASSESSMENTS');
     setTimeout(() => {
       dispatch('GET_UPCOMING_ASSESSMENTS');
     }, 1000 * 60 * 60);
   },
+  /**
+   * Commits an upcoming assessment to the state and also
+   * sorts all the upcoming assessments.
+   *
+   * @param {Object} newAssessment The new assignment object returned from the API call creating it.
+   */
   async ADD_UPCOMING_ASSESSMENT ({ commit }, newAssessment) {
     commit('ADD_UPCOMING_ASSESSMENT', newAssessment);
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
+  /**
+   * Given an assessment's type and ID, grab it from the API and return it.
+   *
+   * @param {String} assessmentType Either 'assignment' or 'exam'
+   * @param {String} assessmentID The ID of the assessment
+   * @returns The assessment object
+   */
   async GET_ASSESSMENT ({ getters, dispatch }, { assessmentType, assessmentID }) {
     let request = await axios.get(
       `/${assessmentType}s/${assessmentType.charAt(0)}/${assessmentID}`
     );
-    const assessment = request.data.assessment;
-    if (getters.getUpcomingAssessmentById(assessment._id)) {
-      await dispatch('UPDATE_UPCOMING_ASSESSMENT', assessment);
-    }
 
-    return assessment;
+    return request.data.assessment;
   },
+  /**
+   * Update an assessment (upcoming or not) given its type, ID, and properties/values to update.
+   * It properly handles past and upcoming assessments as well as handling moving past assessments
+   * to the future and vice versa.
+   *
+   * @param {String} assessmentID The ID of the assessment to update
+   * @param {String} assessmentType Either 'assignment' or 'exam'
+   * @param {Object} updates The object specifying the assessment properties and values to update, e.g. { title: 'New Title', ... }
+   * @returns {Object} The updated assignment from the API
+   */
   async UPDATE_ASSESSMENT (
-    { dispatch, getters },
+    { dispatch, getters, commit },
     { assessmentID, assessmentType, updates }
   ) {
     let request = await axios.patch(
@@ -121,8 +161,15 @@ const actions = {
 
     let updatedAssessment = request.data.updatedAssessment;
 
+    // Check if the assessment is upcoming (therefore update it in the state) or if
+    // it was a past assessment but now is upcoming so it should be added to the state.
     if (getters.getUpcomingAssessmentById(updatedAssessment._id)) {
-      await dispatch('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
+      // Was it moved to the past?
+      if (moment(updatedAssessment.date).isBefore(moment().startOf('day'))) {
+        commit('REMOVE_UPCOMING_ASSESSMENT', updatedAssessment);
+      } else {
+        await dispatch('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
+      }
     } else if (
       moment(updatedAssessment.date).isSameOrAfter(moment().startOf('day'))
     ) {
@@ -131,11 +178,24 @@ const actions = {
 
     return updatedAssessment;
   },
+  /**
+   * Update an UPCOMING assessment in the state and then sort the upcoming assessments
+   * as their order might've changed with this new updated assessment.
+   *
+   * @param {Object} updatedAssessment The update assessment object returned from the API
+   */
   async UPDATE_UPCOMING_ASSESSMENT ({ commit }, updatedAssessment) {
     commit('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
-  async TOGGLE_ASSIGNMENT ({ commit, dispatch, getters }, assignmentToToggle) {
+  /**
+   * Given an assignment, toggle it's completion status with the API
+   * and update the state if its upcoming.
+   *
+   * @param {Object} assignmentToToggle Assignment to toggle
+   * @returns {Object} The toggled assignment
+   */
+  async TOGGLE_ASSIGNMENT ({ commit, getters }, assignmentToToggle) {
     const request = await axios.post(
       `/assignments/a/${assignmentToToggle._id}/toggle`
     );
@@ -146,22 +206,38 @@ const actions = {
     }
     return updatedAssignment;
   },
+  /**
+   * Grabs all upcoming assessments from the API by setting the start date to
+   * the current date. It then sets the assessments in the state and orders them.
+   * It also joins the client to socket.io rooms for all the upcoming assessments
+   * so that it receives any updates for them.
+   */
   async GET_UPCOMING_ASSESSMENTS ({ commit }) {
+    // Grab assignments
     let response = await axios.get('/assignments', {
       params: { start: moment().format('YYYY-MM-DD') }
     });
     const assignments = response.data.assignments;
 
+    // Grab exams
     response = await axios.get('/exams', {
       params: { start: moment().format('YYYY-MM-DD') }
     });
     const exams = response.data.exams;
 
+    // Tell the server to add us to the proper assessment rooms
     vm.$socket.emit('join assessment rooms', assignments.map(a => a._id));
 
     commit('SET_UPCOMING_ASSESSMENTS', assignments.concat(exams));
     commit('SORT_UPCOMING_ASSESSMENTS');
   },
+  /**
+   * Given and assessment object, delete it using the API and remove it
+   * from the state if it was upcoming.
+   *
+   * @param {*} assessmentToRemove The assessment object to remive
+   * @returns {Object} The removed assessment object
+   */
   async REMOVE_ASSESSMENT ({ commit }, assessmentToRemove) {
     const request = await axios.delete(
       `${

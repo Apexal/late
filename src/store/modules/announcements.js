@@ -14,6 +14,13 @@ const getters = {
     )
 };
 const actions = {
+  /**
+   * Grabs the announcements from the API and commits them to the state.
+   * It also commits to the state the IDs of seen announcements
+   * and dismissed announcements by grabbing from localStorage.
+   *
+   * @returns An array of the announcements
+   */
   async GET_ANNOUNCEMENTS ({ commit }) {
     const response = await axios.get('/announcements');
     commit('SET_ANNOUNCEMENTS', response.data.announcements);
@@ -38,6 +45,8 @@ const actions = {
         localStorage.removeItem('dismissedAnnouncementIDs');
       }
     }
+
+    return response.data.announcements;
   }
 };
 const mutations = {
