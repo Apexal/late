@@ -44,12 +44,12 @@ const actions = {
       const user = response.data.user;
       await dispatch('SET_USER', user);
     } catch (e) {
-      console.log('Not logged in!');
+      // console.log('Not logged in!');
       commit('UNSET_USER');
       commit('SET_LOADED', true);
     }
   },
-  async SET_USER ({ dispatch, commit }, user) {
+  async SET_USER ({ commit }, user) {
     commit('SET_USER', user);
   }
 };

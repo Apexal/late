@@ -1,10 +1,16 @@
+/**
+ * This Vuex module handles the announcement modal as well as all announcements.
+ * It stores all the announcements in its state and provides useful getters
+ * and actions to manipulate its state.
+ */
+
 import axios from '@/api';
 
 const state = {
-  modalOpen: false,
+  modalOpen: false, // Whether the announcements modal is open
   announcements: [],
-  seenIDs: [],
-  dismissedIDs: []
+  seenIDs: [], // The IDs of announcements that have been seen
+  dismissedIDs: [] // The IDs of the announcements that have been manually dismissed by the user
 };
 const getters = {
   allAnnouncements: state => state.announcements,
