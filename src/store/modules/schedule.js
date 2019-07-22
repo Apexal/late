@@ -160,7 +160,7 @@ const actions = {
 
     // Find periods for current day
     let dayPeriods = semesterSchedule
-      .map(course => course.periods.filter(p => p.day === day))
+      .map(course => moment().isBetween(course.startDate, course.endDate) && course.periods.filter(p => p.day === day))
       .flat()
       .sort((a, b) => parseInt(a.start) - parseInt(b.start));
     // Check for current class
