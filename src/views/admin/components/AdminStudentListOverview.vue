@@ -47,12 +47,12 @@
     <div class="dates">
       <span>
         <b>Joined:</b>
-        {{ shortDateTimeFormat(student.joined_date) }}
+        {{ shortDateTimeFormat(student.createdAt) }}
       </span>
       <br>
       <span>
         <b>Last Login:</b>
-        {{ shortDateTimeFormat(student.last_login) }}
+        {{ shortDateTimeFormat(student.lastLogin) }}
       </span>
     </div>
 

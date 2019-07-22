@@ -29,7 +29,7 @@ async function loginAs (ctx) {
     student = Student({
       rcs_id: ctx.session.cas_user,
       joined_date: new Date(),
-      last_login: new Date()
+      lastLogin: new Date()
     });
     await student.save();
     logger.info('Created new user for testing.');

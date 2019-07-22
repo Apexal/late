@@ -56,7 +56,7 @@ async function loginStudent (ctx) {
     return ctx.redirect('/?waitlisted=1');
   }
 
-  student.last_login = new Date();
+  student.lastLogin = new Date();
   await student.save();
 
   try {

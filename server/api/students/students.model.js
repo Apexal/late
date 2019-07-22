@@ -141,11 +141,8 @@ const schema = new Schema(
       type: Array,
       default: []
     },
-    joined_date: {
-      type: Date,
-      required: true
-    },
-    last_login: Date
+    lastLogin: Date,
+    lastSISUpdate: Date
   },
   { timestamps: true }
 );

@@ -283,6 +283,8 @@ async function importCourseSchedule (ctx) {
   const courses = await updateCourses(ctx.state.user._id, ctx.session.currentTerm.code, courseSchedule);
 
   ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code);
+  ctx.state.user.lastSISUpdate = new Date();
+
   await ctx.state.user.save();
 
   ctx.ok({ updatedUser: ctx.state.user, courses });

@@ -79,7 +79,7 @@ export default {
   data () {
     return {
       loading: true,
-      sortBy: 'joined_date',
+      sortBy: 'createdAt',
       sortAscending: true,
       students: []
     };
