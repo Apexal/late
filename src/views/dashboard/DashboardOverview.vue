@@ -7,8 +7,11 @@
       </div>
 
       <div class="tile is-vertical">
-        <div class="tile is-parent ">
-          <Current />
+        <div
+          v-if="doingSomething"
+          class="tile is-parent "
+        >
+          <Current @current-status="doingSomething = arguments[0] !== 'nothing'" />
         </div>
         <div class="tile is-parent">
           <AssignmentsConfirm />
@@ -30,6 +33,7 @@ export default {
   components: { AssignmentsConfirm: DashboardOverviewAssignmentsConfirm, Timeline: DashboardOverviewTimeline, Current: DashboardOverviewCurrent, Courseload: DashboardOverviewCourseload },
   data () {
     return {
+      doingSomething: true,
       zoom: 13,
       sizeX: 600,
       sizeY: 300

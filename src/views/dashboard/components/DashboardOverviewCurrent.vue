@@ -1,5 +1,7 @@
 <template>
-  <div class="tile is-child notification is-dark dashboard-overview-current">
+  <div
+    class="tile is-child notification is-dark dashboard-overview-current"
+  >
     <p class="title">
       Right Now
     </p>
@@ -83,7 +85,8 @@ export default {
   computed: {
     currentStatus () {
       if (this.currentEvent) return this.currentEvent.eventType;
-      return 'busy';
+      // if () return 'busy';
+      return 'nothing';
     },
     todaysAgenda () {
       return this.$store.getters.todaysAgenda;
@@ -101,6 +104,14 @@ export default {
 
       return Math.round((1 - this.minutesLeft / moment(this.currentEvent.end).diff(this.currentEvent.start, 'minutes')) * 100);
     }
+  },
+  watch: {
+    currentStatus (newCurrentStatus) {
+      this.$emit('current-status', newCurrentStatus);
+    }
+  },
+  mounted () {
+    this.$emit('current-status', this.currentStatus);
   },
   methods: {
     isCurrentEvent (event) {

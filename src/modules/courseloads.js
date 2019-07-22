@@ -12,7 +12,7 @@ export default {
   },
   weights: [
     {
-      className: 'is-white',
+      className: 'is-white box',
       title: 'Empty'
     },
     {
