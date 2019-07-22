@@ -1,3 +1,11 @@
+/**
+ * This Vuex module handles the add assignment modal and all of the
+ * values that the user sets for it when adding a new assignment.
+ * It stores in its state whether or not the modal is open, as well
+ * as the assignment model properties.
+ * It provides useful actions and mutations for the modal.
+ */
+
 const moment = require('moment');
 
 const state = {
