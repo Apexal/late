@@ -1,52 +1,48 @@
 <template>
-  <div class="tile is-child notification is-primary assignments-confirm">
+  <div
+    v-if="unconfirmedAssignments.length"
+    class="tile is-child notification is-primary assignments-confirm"
+  >
     <p class="title">
       Confirm
     </p>
-    <template v-if="unconfirmedAssignments.length > 0">
-      <p class="subtitle">
-        Did you ever complete:
+    <p class="subtitle">
+      Did you ever complete:
+    </p>
+    <div
+      v-for="a in unconfirmedAssignments"
+      :key="a._id"
+      class="is-flex"
+    >
+      <p style="flex: 1">
+        <CourseAssessmentDot
+          :course="course(a)"
+          :assessment="a"
+        />
+        <router-link
+          class="assessment-link"
+          :to="assessmentRoute(a)"
+        >
+          {{ a.title }}?
+        </router-link>
       </p>
-      <div
-        v-for="a in unconfirmedAssignments"
-        :key="a._id"
-        class="is-flex"
-      >
-        <p style="flex: 1">
-          <CourseAssessmentDot
-            :course="course(a)"
-            :assessment="a"
-          />
-          <router-link
-            class="assessment-link"
-            :to="assessmentRoute(a)"
-          >
-            {{ a.title }}?
-          </router-link>
-        </p>
 
-        <div class="confirm-buttons">
-          <b-button
-            size="is-small"
-            @click="confirmAssignment(a._id, true)"
-          >
-            Yes
-          </b-button>
-          <b-button
-            size="is-small"
-            @click="confirmAssignment(a._id, false)"
-          >
-            No
-          </b-button>
-        </div>
-        <hr>
+      <div class="confirm-buttons">
+        <b-button
+          size="is-small"
+          @click="confirmAssignment(a._id, true)"
+        >
+          Yes
+        </b-button>
+        <b-button
+          size="is-small"
+          @click="confirmAssignment(a._id, false)"
+        >
+          No
+        </b-button>
       </div>
-    </template>
-    <template>
-      <p class="subtitle">
-        Nothing to confirm! Incomplete assignments that are passed due will show up here.
-      </p>
-    </template>
+      <hr>
+    </div>
   </div>
 </template>
 
