@@ -2,11 +2,17 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const Schema = mongoose.Schema;
 
+const Student = require('../students/students.model');
+
 const schema = new Schema(
   {
     _student: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student',
+      required: true
+    },
+    _assessment: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true
     },
     shared: { type: Boolean, default: true },

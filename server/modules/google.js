@@ -21,30 +21,32 @@ function createUrl (auth) {
 const scopes = ['https://www.googleapis.com/auth/calendar'];
 
 const actions = {
-  async createEventFromWorkBlock (ctx, assessment, assessmentType, block) {
+  async createEventFromWorkBlock (googleAuth, currentTerm, user, assessment, block) {
+    const { assessmentType } = assessment;
     const calendar = google.calendar({
       version: 'v3',
-      auth: ctx.state.googleAuth
+      auth: googleAuth
     });
 
     const assessmentURL = `${
       process.env.BASE_URL
     }/coursework/${assessmentType.charAt(0)}/${assessment._id}`;
-    const course = await ctx.state.user.courseFromCRN(
-      ctx.session.currentTerm.code,
+    const course = await user.courseFromCRN(
+      currentTerm.code,
       assessment.courseCRN
     );
     const capitalizedAssessmentType =
-      assessmentType === 'assignment' ? 'Assignment' : 'Exam';
+    assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
     let request = await calendar.events.insert({
-      calendarId: ctx.state.user.integrations.google.calendarIDs.workBlocks,
+      calendarId: user.integrations.google.calendarIDs.workBlocks,
       requestBody: {
+
         summary: `${
-          assessmentType === 'assignment' ? 'Work on' : 'Study for'
+          assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for'
         } ${assessment.title}`,
         description: `<b>${
-          course.longname
+          course.title
         } ${capitalizedAssessmentType}</b> <i>${
           assessment.title
         }</i><br><br>${assessmentURL}`,
@@ -52,6 +54,12 @@ const actions = {
           title: assessment.title,
           url: assessmentURL
         },
+        organizer: {
+          displayName: user.display_name,
+          email: user.rcs_id + '@rpi.edu'
+        },
+        locked: true,
+        guestsCanInviteOthers: false,
         extendedProperties: {
           private: {
             scheduledByLATE: true,
@@ -62,16 +70,16 @@ const actions = {
       }
     });
 
-    logger.info(`Added GCal event for ${ctx.state.user.rcs_id}.`);
+    logger.info(`Added GCal event for ${user.rcs_id}.`);
     return request.data;
   },
-  async patchEventFromWorkBlock (ctx, blockID, updates) {
+  async patchEventFromWorkBlock (googleAuth, user, blockID, updates) {
     const calendar = google.calendar({
       version: 'v3',
-      auth: ctx.state.googleAuth
+      auth: googleAuth
     });
     let request = await calendar.events.patch({
-      calendarId: ctx.state.user.integrations.google.calendarIDs.workBlocks,
+      calendarId: user.integrations.google.calendarIDs.workBlocks,
       eventId: blockID,
       requestBody: updates
     });

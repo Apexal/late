@@ -22,6 +22,7 @@ async function addWorkBlock (ctx) {
 
   const newBlock = new Block({
     _student: ctx.state.user._id,
+    _assessment: assessmentID,
     startTime,
     endTime,
     completed: false,
@@ -91,12 +92,7 @@ async function addWorkBlock (ctx) {
 
   if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
     try {
-      await google.actions.createEventFromWorkBlock(
-        ctx,
-        assessment,
-        assessmentType,
-        newBlock
-      );
+      await google.actions.createEventFromWorkBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock);
     } catch (e) {
       logger.error(
         `Failed to add GCal event for work block for ${
@@ -185,7 +181,8 @@ async function editWorkBlock (ctx) {
 
   if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
     try {
-      await google.actions.patchEventFromWorkBlock(ctx, blockID, {
+      await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
+        location,
         start: {
           dateTime: startTime
         },
