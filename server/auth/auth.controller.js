@@ -63,7 +63,7 @@ async function loginStudent (ctx) {
     ctx.state.discordClient.guilds
       .find(guild => guild.id === process.env.DISCORD_SERVER_ID)
       .channels.find(channel => channel.name === 'log')
-      .send(`**${student.display_name}** *(${student.rcs_id})* has logged in.`);
+      .send(`**${student.displayName}** *(${student.rcs_id})* has logged in.`);
   } catch (e) {}
 
   ctx.redirect(ctx.query.redirectTo || '/');
@@ -143,14 +143,14 @@ async function discordAuth (ctx) {
     },
     body: {
       access_token: tokens.access_token,
-      nick: ctx.state.user.display_name,
+      nick: ctx.state.user.displayName,
       roles: [process.env.DISCORD_USER_ROLE_ID]
     },
     json: true
   });
   logger.info(
     `Added ${ctx.state.user.rcs_id} to the LATE Discord server as @${
-      ctx.state.user.display_name
+      ctx.state.user.displayName
     }`
   );
   ctx.redirect('/account/integrations#discord');

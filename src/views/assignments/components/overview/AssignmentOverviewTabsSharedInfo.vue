@@ -16,7 +16,7 @@
             class="subtitle"
             :title="student.rcs_id"
           >
-            {{ student.display_name }}
+            {{ student.displayName }}
             <small class="has-text-grey">{{
               assessment._student._id === student._id ? "Owner" : "Collaborator"
             }}</small>

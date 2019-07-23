@@ -253,7 +253,7 @@
                     :style="user.admin ? 'color:#e5c100' : 'color:#ffffff'"
                   />
                 </span>
-                {{ user.display_name }}
+                {{ user.displayName }}
               </a>
 
               <div class="navbar-dropdown is-right">

@@ -280,7 +280,7 @@ schema.methods.getCoursesForTerm = function (termCode) {
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
-schema.virtual('full_name').get(function () {
+schema.virtual('fullName').get(function () {
   return (this.name.preferred || this.name.first) + ' ' + this.name.last;
 });
 
@@ -289,9 +289,9 @@ schema.virtual('first_name').get(function () {
   return (this.name.preferred || this.name.first);
 });
 
-schema.virtual('display_name').get(function () {
+schema.virtual('displayName').get(function () {
   if (this.name.first) {
-    return `${this.full_name} ${
+    return `${this.fullName} ${
       this.graduationYear ? '\'' + this.graduationYear.toString().slice(-2) : ''
     }`;
   } else return this.rcs_id;

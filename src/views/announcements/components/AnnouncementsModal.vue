@@ -88,7 +88,7 @@
               class="tooltip has-text-grey"
             >
               Posted {{ fromNow(announcement.createdAt) }} by
-              {{ announcement._student.display_name }}
+              {{ announcement._student.displayName }}
             </small>
             <template v-if="user.admin">
               <hr>

@@ -30,7 +30,7 @@
               <b
                 class="tooltip is-tooltip-bottom"
                 :data-tooltip="c._student ? c._student.rcs_id : 'anonymous'"
-              >{{ c._student ? c._student.display_name : "Anonymous" }}</b>
+              >{{ c._student ? c._student.displayName : "Anonymous" }}</b>
               &nbsp;|&nbsp;
               <span
                 class="tooltip is-tooltip-right"

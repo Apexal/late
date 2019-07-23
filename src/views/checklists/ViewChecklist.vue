@@ -73,7 +73,7 @@ export default {
     },
     owner () {
       if (!this.checklist._student) return null;
-      return this.checklist._student.display_name;
+      return this.checklist._student.displayName;
     }
   },
   created () {

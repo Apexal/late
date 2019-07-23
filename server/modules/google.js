@@ -55,7 +55,7 @@ const actions = {
           url: assessmentURL
         },
         organizer: {
-          displayName: user.display_name,
+          displayName: user.displayName,
           email: user.rcs_id + '@rpi.edu'
         },
         locked: true,
