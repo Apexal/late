@@ -47,6 +47,21 @@
           </a>
         </li>
         <li
+          class="whiteboard"
+          :class="{ 'is-active': tab === 'whiteboard' }"
+          @click="$emit('set-tab', 'whiteboard')"
+        >
+          <a>
+            <span
+              class="icon is-small"
+            ><i
+              class="fas fa-chalkboard"
+              aria-hidden="true"
+            /></span>
+            <span>Whiteboard</span>
+          </a>
+        </li>
+        <li
           v-if="assignment.shared"
           class="shared-info"
           :class="{ 'is-active': tab === 'shared-info' }"
@@ -98,6 +113,7 @@ import AssessmentOverviewComments from '@/views/assessments/components/overview/
 import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overview/AssessmentOverviewWorkSchedule';
 import AssessmentOverviewRelated from '@/views/assessments/components/overview/AssessmentOverviewRelated';
 import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo';
+import AssessmentOverviewWhiteboard from '@/views/assessments/components/overview/AssessmentOverviewWhiteboard';
 
 export default {
   name: 'AssignmentOverviewTabs',
@@ -105,7 +121,8 @@ export default {
     AssessmentOverviewComments,
     AssessmentOverviewWorkSchedule,
     AssessmentOverviewRelated,
-    AssignmentOverviewTabsSharedInfo
+    AssignmentOverviewTabsSharedInfo,
+    AssessmentOverviewWhiteboard
   },
   props: {
     tab: {
@@ -151,7 +168,8 @@ export default {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule',
         related: 'AssessmentOverviewRelated',
-        'shared-info': 'AssignmentOverviewTabsSharedInfo'
+        'shared-info': 'AssignmentOverviewTabsSharedInfo',
+        whiteboard: 'AssessmentOverviewWhiteboard'
       }[this.tab];
     }
   },

@@ -102,6 +102,12 @@ module.exports = server => {
 
       socket.to(`/assessments/${assessment._id}`).emit('updated assessment', { assessment });
     });
+
+    socket.on('assessment whiteboard draw', (assessmentID, coords) => {
+      if (!socket.auth) return;
+
+      socket.to(`/assessments/${assessmentID}`).emit('assessment whiteboard draw', coords);
+    });
     /* end ASSESSMENTS */
 
     socket.on('disconnect', () => {
