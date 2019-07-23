@@ -3,7 +3,10 @@
     <p class="title">
       Today's Timeline
     </p>
-    <div class="timeline">
+    <div
+      v-if="todaysAgenda.length > 0"
+      class="timeline"
+    >
       <header class="timeline-header is-unselectable">
         <span class="tag is-medium is-primary">Morning</span>
       </header>
@@ -96,6 +99,12 @@
         <span class="tag is-medium is-primary">Night</span>
       </div>
     </div>
+    <p
+      v-else
+      class="has-text-grey"
+    >
+      No courses today and no working/studying scheduled for today!
+    </p>
   </div>
 </template>
 
