@@ -37,7 +37,7 @@ module.exports = {
     // Find periods for current day
     const day = moment().day();
     const currentTerm = terms.find(t => t.isCurrent);
-    const courses = await student.getCoursesForTerm(currentTerm.code);
+    const courses = await student.getCoursesForTerm(currentTerm.code).filter(course => moment().isBetween(course.startDate, course.endDate));
     const upcomingAssignments = await student.getUserAssignments({
       start: new Date()
     });
