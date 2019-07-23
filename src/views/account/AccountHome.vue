@@ -4,6 +4,7 @@
   <div class="account-home">
     <SISManModal
       :open="showingModal"
+      :reimporting="$route.query.importFromSIS"
       @sis-import="startImportFromSIS"
       @manual="$router.push({ name: 'setup-profile' })"
       @close-modal="showingModal = false"
@@ -55,7 +56,7 @@ export default {
     }
   },
   mounted () {
-    this.showingModal = !this.user.setup.profile;
+    if (this.$route.query.importFromSIS) { this.showingModal = true; } else { this.showingModal = !this.user.setup.profile; }
   },
   methods: {
     startImportFromSIS () {

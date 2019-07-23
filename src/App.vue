@@ -84,6 +84,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 import TheHeader from '@/views/components/TheHeader';
 import TheFooter from '@/views/components/TheFooter';
 import TheSidebar from '@/views/sidebar/components/TheSidebar';
@@ -98,6 +100,8 @@ import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
 import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
 
 import SISMan from '@/views/sisman/components/SISMan';
+
+import account from '@/mixins/account';
 
 export default {
   name: 'LATE',
@@ -116,6 +120,7 @@ export default {
     SISMan
 
   },
+  mixins: [account],
   data () {
     return {
       resizeTimeout: null,
@@ -194,6 +199,13 @@ export default {
         type: 'is-warning',
         duration: 70000
       });
+    }
+
+    if (this.loggedIn) {
+      // Check if time to reupdate from SIS
+      if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
+        this.$router.push({ name: 'account', query: { importFromSIS: true } });
+      }
     }
   },
   methods: {

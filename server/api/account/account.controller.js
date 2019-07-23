@@ -132,6 +132,7 @@ async function setAllFromSIS (ctx) {
     if (termCode === ctx.session.currentTerm.code) currentCourses = courseSchedule;
   }
 
+  ctx.state.user.lastSISUpdate = new Date();
   await ctx.state.user.save();
 
   ctx.ok({
