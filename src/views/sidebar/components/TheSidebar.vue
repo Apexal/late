@@ -135,7 +135,7 @@ export default {
       return {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
-        courseList: this.$store.getters.current_courses.length,
+        courseList: this.courses.length,
         todos: this.todos.length
       };
     },

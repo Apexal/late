@@ -44,7 +44,7 @@ export default {
       return process.env.VUE_APP_GOOGLE_API_KEY;
     },
     periods () {
-      return this.$store.state.schedule.periods;
+      return this.$store.getters.todayPeriods;
     },
     imageURL () {
       let markers = this.periods.map(period => {

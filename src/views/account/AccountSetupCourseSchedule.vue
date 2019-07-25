@@ -216,7 +216,7 @@ export default {
       return this.courses.filter(c => c.summary !== 'OTHER');
     },
     hiddenCourses () {
-      return this.$store.getters.current_courses_all.filter(c => c.hidden);
+      return this.$store.getters.allCourses.filter(c => c.hidden);
     }
   },
   methods: {

@@ -14,18 +14,8 @@ const removedCourse = {
 };
 
 const state = {
-  date: null,
   terms: [],
-  courses: [],
-  current: {
-    course: {},
-    period: false
-  },
-  next: {
-    course: {},
-    period: {}
-  },
-  periods: []
+  courses: []
 };
 
 const getters = {
@@ -38,30 +28,31 @@ const getters = {
       .filter(t => rootState.auth.user.terms.includes(t.code))
       .find(t => moment(t.start).isAfter(moment()));
   },
-  ongoing_courses: (state, getters, rootState) => {
+  ongoingCourses: (state, getters, rootState) => {
     return state.courses.filter(
       course =>
         !course.hidden &&
         moment(rootState.now).isBetween(course.startDate, course.endDate)
     );
   },
-  current_courses_all: state => {
-    return state.courses;
-  },
-  current_courses: state => {
-    return state.courses.filter(course => !course.hidden);
-  },
+  allCourses: state => state.courses.filter(course => !course.hidden),
   getCourseFromCRN: state => crn =>
     state.courses.find(c => c.crn === crn) || removedCourse,
   getCourseFromPeriod: state => period =>
     state.courses.find(c =>
       c.periods.find(p => p.day === period.day && p.start === period.start)
     ),
-  onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
-  inClass: state => state.current.period !== false,
-  classesOver: (state, getters) => {
-    return moment().isAfter(getters.currentTerm.classesEnd);
+  todayPeriods: (state, getters) => {
+    if (getters.onBreak || getters.classesOver) return [];
+
+    const day = moment().day();
+    return getters.ongoingCourses
+      .map(course => course.periods.filter(p => p.day === day))
+      .flat()
+      .sort((a, b) => parseInt(a.start) - parseInt(b.start));
   },
+  onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
+  classesOver: (state, getters) => moment().isAfter(getters.currentTerm.classesEnd),
   periodType: () => type =>
     ({
       LEC: 'Lecture',
@@ -117,8 +108,6 @@ const actions = {
     const response = await axios.get('/courses');
     commit('SET_COURSES', response.data.courses);
 
-    await dispatch('AUTO_UPDATE_SCHEDULE');
-
     return response.data.courses;
   },
   /**
@@ -132,56 +121,6 @@ const actions = {
     const updatedCourse = request.data.updatedCourse;
     commit('UPDATE_COURSE', updatedCourse);
     return updatedCourse;
-  },
-  AUTO_UPDATE_SCHEDULE ({ dispatch }) {
-    dispatch('UPDATE_SCHEDULE');
-    setInterval(() => {
-      dispatch('UPDATE_SCHEDULE');
-    }, 1000 * 60);
-  },
-  UPDATE_SCHEDULE ({ commit, getters, rootState }) {
-    // Reset all state values
-    const semesterSchedule = getters.ongoing_courses;
-
-    const now = moment(); // moment('1430', 'Hmm');
-    const dateStr = now.format('YYYY-MM-DD');
-    const day = now.day();
-
-    if (getters.onBreak || getters.classesOver) {
-      return commit('UPDATE_SCHEDULE', {
-        datetime: now,
-        current: {
-          course: false,
-          period: false
-        },
-        periods: []
-      });
-    }
-
-    // Find periods for current day
-    let dayPeriods = semesterSchedule
-      .map(course => moment().isBetween(course.startDate, course.endDate) && course.periods.filter(p => p.day === day))
-      .flat()
-      .sort((a, b) => parseInt(a.start) - parseInt(b.start));
-    // Check for current class
-    const currentPeriod = dayPeriods.find(p => {
-      const start = moment(dateStr + ' ' + p.start, 'YYYY-MM-DD Hmm', true);
-      const end = moment(dateStr + ' ' + p.end, 'YYYY-MM-DD Hmm', true);
-
-      return start < now && now < end;
-    });
-    const currentCourse = semesterSchedule.find(c =>
-      c.periods.includes(currentPeriod)
-    );
-
-    commit('UPDATE_SCHEDULE', {
-      datetime: now,
-      current: {
-        course: currentCourse,
-        period: currentPeriod || false
-      },
-      periods: dayPeriods
-    });
   }
 };
 
@@ -206,11 +145,6 @@ const mutations = {
       }
       return 0;
     });
-  },
-  UPDATE_SCHEDULE: (state, payload) => {
-    state.date = payload.datetime.toDate();
-    state.periods = payload.periods;
-    state.current = payload.current;
   }
 };
 

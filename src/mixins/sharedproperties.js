@@ -10,10 +10,10 @@ export default {
       return this.$store.getters.onBreak;
     },
     courses () {
-      return this.$store.getters.current_courses;
+      return this.$store.state.schedule.courses.filter(course => !course.hidden);
     },
     ongoingCourses () {
-      return this.$store.getters.ongoing_courses;
+      return this.$store.getters.ongoingCourses;
     },
     currentTerm () {
       return this.$store.getters.currentTerm;
