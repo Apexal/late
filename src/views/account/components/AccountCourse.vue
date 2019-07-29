@@ -86,35 +86,32 @@
         <div class="columns is-multiline">
           <div class="column">
             <h1 class="title has-text-centered-mobile">
-              {{ courseData.originalTitle }}
+              Edit {{ courseData.originalTitle }}
               <h2 class="subtitle has-text-grey has-text-centered-mobile">
-                {{ courseData.summary }}
+                {{ courseData.summary }} - Section {{ courseData.sectionId }}
               </h2>
             </h1>
           </div>
+          <div class="column is-narrow has-text-centered-mobile">
+            <div class="field">
+              <b-checkbox
+                v-model="courseData.hidden"
+                title="Hidden courses will not show in the course selection list"
+              >
+                Hide from course list
+              </b-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="columns">
           <div class="column">
-            <label :for="'course-title-' + elementID">Title</label>
+            <label :for="'course-title-' + elementID">Your Title</label>
             <input
               :id="'course-title-' + elementID"
               v-model.trim="courseData.title"
               type="text"
               :placeholder="courseData.originalTitle"
               class="input course-title-input"
-              required
-            >
-          </div>
-        </div>
-        <div class="columns">
-          <div class="column">
-            <label :for="'course-section-' + elementID">Section</label>
-            <input
-              :id="'course-section-' + elementID"
-              v-model.number="courseData.sectionId"
-              type="number"
-              min="1"
-              max="100"
-              placeholder="Section"
-              class="input course-section-input"
               required
             >
           </div>
@@ -129,14 +126,7 @@
             >
           </div>
         </div>
-        <div class="field">
-          <b-checkbox
-            v-model="courseData.hidden"
-            title="Hidden courses will not show in the course selection list"
-          >
-            Hide from course list
-          </b-checkbox>
-        </div>
+
         <div class="course-links">
           <label :for="'course-links-' + elementID">Links</label>
           <b-taglist>
