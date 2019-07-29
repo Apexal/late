@@ -168,7 +168,7 @@
       <div class="buttons">
         <b-button
           type="is-dark"
-          @click="startAddCustomCourse"
+          @click="startAddCourseByCRN"
         >
           Add Course by CRN
         </b-button>
@@ -227,13 +227,40 @@ export default {
       this.openedCourseID = courseID;
     },
     startAddCustomCourse () {
-      this.promptRIN(rin => {
-        this.promptPIN(pin => {
-          this.rin = rin;
-          this.pin = pin;
-          this.addingCustomCourse = true;
+      if (this.rin && this.pin) {
+        this.addingCustomCourse = true;
+      } else {
+        this.promptRIN(rin => {
+          this.promptPIN(pin => {
+            this.rin = rin;
+            this.pin = pin;
+            this.addingCustomCourse = true;
+          });
         });
-      });
+      }
+    },
+    startAddCourseByCRN () {
+      if (this.rin && this.pin) {
+        this.$dialog.prompt({
+          message: 'What is the course CRN?',
+          onConfirm: this.addCourseByCRN
+        });
+      } else {
+        this.promptRIN(rin => {
+          this.promptPIN(pin => {
+            this.rin = rin;
+            this.pin = pin;
+
+            this.$dialog.prompt({
+              message: 'What is the course CRN?',
+              onConfirm: this.addCourseByCRN
+            });
+          });
+        });
+      }
+    },
+    addCourseByCRN (crn) {
+      alert('yeet ' + crn);
     },
     addCustomCourse (courseData) {
       alert(courseData);

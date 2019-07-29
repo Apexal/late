@@ -39,7 +39,7 @@ const getters = {
     state.courses.find(c => c.crn === crn) || removedCourse,
   getCourseFromPeriod: state => period =>
     state.courses.find(c =>
-      c.periods.find(p => p.day === period.day && p.start === period.start)
+      c.periods.find(p => p._id === period._id)
     ),
   todayPeriods: (state, getters) => {
     if (getters.onBreak || getters.classesOver) return [];
