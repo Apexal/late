@@ -102,7 +102,7 @@ export default new Vuex.Store({
   },
   actions: {
     AUTO_UPDATE_NOW ({ commit }) {
-      setInterval(() => commit('UPDATE_NOW'), 30 * 1000);
+      setInterval(() => commit('UPDATE_NOW'), 60 * 1000);
     }
   },
   strict: debug

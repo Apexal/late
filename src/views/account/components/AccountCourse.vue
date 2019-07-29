@@ -302,19 +302,28 @@
           </table>
         </div>
 
-        <b-button
-          type="is-warning"
-          @click="cancel"
-        >
-          Cancel
-        </b-button>
-        <b-button
-          :disabled="saved"
-          type="is-primary"
-          @click="updateCourse"
-        >
-          Save
-        </b-button>
+        <div>
+          <b-button
+            type="is-warning"
+            @click="cancel"
+          >
+            Cancel
+          </b-button>
+          <b-button
+            :disabled="saved"
+            type="is-primary"
+            @click="updateCourse"
+          >
+            Save
+          </b-button>
+          <b-button
+            type="is-danger"
+            class="is-pulled-right"
+            @click="confirmRemoveCourse"
+          >
+            Remove
+          </b-button>
+        </div>
       </form>
     </template>
   </div>
@@ -441,6 +450,18 @@ export default {
       this.editedLinks = this.course.links.slice(0);
       this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
       this.editing = false;
+    },
+    confirmRemoveCourse () {
+      this.$dialog.confirm({
+        message: 'Are you sure you want to remove this course? You should only do this if you are no longer in the course. Otherwise, just mark the course as hidden.',
+        confirmText: 'Remove Course',
+        type: 'is-danger',
+        hasIcon: true,
+        icon: 'trash-alt',
+        onConfirm: () => {
+          this.$emit('remove-course');
+        }
+      });
     },
     async updateCourse () {
       if (

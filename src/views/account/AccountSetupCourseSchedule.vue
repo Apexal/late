@@ -126,6 +126,7 @@
             :key="c.crn"
             :course="c"
             :highlighted="openedCourseID === c._id"
+            @remove-course="removeCourse(c._id)"
           />
 
           <hr>
@@ -142,6 +143,7 @@
             v-for="c in hiddenCourses"
             :key="c.crn"
             :course="c"
+            @remove-course="removeCourse(c._id)"
           />
           <p
             v-if="hiddenCourses.length === 0"
@@ -216,7 +218,7 @@ export default {
       return this.courses.filter(c => c.summary !== 'OTHER');
     },
     hiddenCourses () {
-      return this.$store.getters.allCourses.filter(c => c.hidden);
+      return this.$store.state.schedule.courses.filter(c => c.hidden);
     }
   },
   methods: {
@@ -235,6 +237,17 @@ export default {
     },
     addCustomCourse (courseData) {
       alert(courseData);
+    },
+    async removeCourse (courseID) {
+      let removedCourse;
+      try {
+        removedCourse = await this.$store.dispatch('REMOVE_COURSE', courseID);
+      } catch (e) {
+        this.$toast.open({ message: e.request.data.message, type: 'is-danger' });
+        return;
+      }
+
+      this.$toast.open({ message: `Removed ${removedCourse.title}!`, type: 'is-success' });
     },
     async importSchedule () {
       this.loading = true;

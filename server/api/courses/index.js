@@ -6,5 +6,6 @@ const Ctrl = require('./courses.controller');
 router.get('/', Ctrl.getCourses);
 router.get('/term/:termCode', Ctrl.getTermCourses);
 router.post('/:courseID', Ctrl.updateCourse);
+router.delete('/:courseID', Ctrl.removeCourse);
 
 module.exports = router.routes();

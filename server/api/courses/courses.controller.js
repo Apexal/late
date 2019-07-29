@@ -63,8 +63,37 @@ async function updateCourse (ctx) {
   return ctx.created({ updatedCourse: course });
 }
 
+/**
+ * Given a course ID, remove the course from the database.
+ * Of course. make sure it belongs to the logged in student.
+ *
+ * @param {Koa context} ctx
+ * @returns {Object} The removed course
+ */
+async function removeCourse (ctx) {
+  const { courseID } = ctx.params;
+
+  let course;
+  try {
+    course = await Course.findOne({
+      _id: courseID,
+      _student: ctx.state.user._id
+    });
+  } catch (e) {
+    logger.error(`Failed to remove course ${courseID} for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.badRequest('There was an error getting the course.');
+  }
+
+  if (!course) return ctx.notFound('Couldn\'t find the course to delete!');
+
+  await course.remove();
+  logger.info(`Removed course ${course.originalTitle} for student ${ctx.state.user.rcs_id}`);
+  return ctx.ok({ removedCourse: course });
+}
+
 module.exports = {
   getCourses,
   getTermCourses,
-  updateCourse
+  updateCourse,
+  removeCourse
 };

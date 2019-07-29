@@ -35,7 +35,6 @@ const getters = {
         moment(rootState.now).isBetween(course.startDate, course.endDate)
     );
   },
-  allCourses: state => state.courses.filter(course => !course.hidden),
   getCourseFromCRN: state => crn =>
     state.courses.find(c => c.crn === crn) || removedCourse,
   getCourseFromPeriod: state => period =>
@@ -121,6 +120,12 @@ const actions = {
     const updatedCourse = request.data.updatedCourse;
     commit('UPDATE_COURSE', updatedCourse);
     return updatedCourse;
+  },
+  async REMOVE_COURSE ({ commit }, courseID) {
+    const request = await axios.delete(`/courses/${courseID}`);
+    const removedCourse = request.data.removedCourse;
+    commit('REMOVE_COURSE', removedCourse);
+    return removedCourse;
   }
 };
 
@@ -133,6 +138,9 @@ const mutations = {
       state.courses.find(c => c._id === updatedCourse._id),
       updatedCourse
     );
+  },
+  REMOVE_COURSE: (state, removedCourse) => {
+    state.courses = state.courses.filter(c => c._id !== removedCourse._id);
   },
   SET_TERMS: (state, terms) => {
     state.terms = terms;
