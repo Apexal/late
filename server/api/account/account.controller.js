@@ -3,7 +3,8 @@ const {
   scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,
-  scrapePeriodTypesFromCRNs
+  scrapePeriodTypesFromCRNs,
+  scrapeSISForSingleCourse
 } = require('../../modules/scraping');
 
 const colorThemes = require('../../modules/color_themes');
@@ -291,6 +292,27 @@ async function importCourseSchedule (ctx) {
   ctx.ok({ updatedUser: ctx.state.user, courses });
 }
 
+async function addCourseByCRN (ctx) {
+  const { crn } = ctx.params;
+  const { rin, pin } = ctx.request.body;
+
+  const courseData = await scrapeSISForSingleCourse(rin, pin, ctx.session.currentTerm, crn);
+
+  const course = new Course({
+    _student: ctx.state.user._id,
+    color: 'green',
+    ...courseData
+  });
+
+  await course.save();
+
+  logger.info(`Added new coure ${course.originalTitle} by CRN for ${ctx.state.user.rcs_id}`);
+
+  return ctx.created({
+    course
+  });
+}
+
 /**
  * Set the study/work time preference of the logged in user.
  *
@@ -353,6 +375,7 @@ module.exports = {
   setProfile,
   setTerms,
   importCourseSchedule,
+  addCourseByCRN,
   setTimePreference,
   setGoogle
 };

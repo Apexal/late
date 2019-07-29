@@ -259,8 +259,15 @@ export default {
         });
       }
     },
-    addCourseByCRN (crn) {
-      alert('yeet ' + crn);
+    async addCourseByCRN (crn) {
+      const request = await this.$http.put(`/account/courseschedule/${crn}`, {
+        rin: this.rin,
+        pin: this.pin
+      });
+
+      const newCourse = request.data.course;
+      this.$toast.open({ message: `Grabbed course ${newCourse.title} from SIS!` });
+      this.$store.commit('ADD_COURSE', newCourse);
     },
     addCustomCourse (courseData) {
       alert(courseData);

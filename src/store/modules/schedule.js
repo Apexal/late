@@ -133,6 +133,9 @@ const mutations = {
   SET_COURSES: (state, courses) => {
     state.courses = courses;
   },
+  ADD_COURSE: (state, course) => {
+    state.courses = [...state.courses, course];
+  },
   UPDATE_COURSE: (state, updatedCourse) => {
     Object.assign(
       state.courses.find(c => c._id === updatedCourse._id),

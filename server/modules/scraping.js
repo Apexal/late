@@ -281,13 +281,13 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
 
 
 /**
- * Grab all the info for a particular course given the term and crn.
+ * Grab all the info for a particular course given the term and crn. It does not grab the proper period types though.
  *
  * @param {String} RIN A valid RIN
  * @param {String} PIN The matching SIS PIN
  * @param {Object} term The term object for the course
  * @param {String} crn The CRN of the course
- * @returns {Object} The compiled course object with every required property set except _student.
+ * @returns {Object} The compiled course object with every required property set except _student and color.
  */
 async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
   // The cookie jar to persist the login session

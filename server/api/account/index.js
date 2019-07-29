@@ -7,6 +7,7 @@ router.post('/sisimport', Ctrl.setAllFromSIS);
 router.post('/profile', Ctrl.setProfile);
 router.post('/terms', Ctrl.setTerms);
 router.post('/courseschedule', Ctrl.importCourseSchedule);
+router.put('/courseschedule/:crn', Ctrl.addCourseByCRN);
 router.post('/timepreference', Ctrl.setTimePreference);
 router.post('/google', Ctrl.setGoogle);
 
