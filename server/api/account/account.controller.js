@@ -9,6 +9,8 @@ const {
 
 const colorThemes = require('../../modules/color_themes');
 
+const randomColor = require('randomcolor');
+
 const Term = require('../terms/terms.model');
 const Course = require('../courses/courses.model');
 
@@ -319,7 +321,7 @@ async function addCourseByCRN (ctx) {
 
   const course = new Course({
     _student: ctx.state.user._id,
-    color: 'green',
+    color: randomColor(),
     ...courseData
   });
 

@@ -166,7 +166,11 @@
           >
             Add Course by CRN
           </b-button>
-          <b-button type="is-dark">
+          <b-button
+            type="is-dark"
+            title="Coming soon..."
+            disabled
+          >
             Add Custom Course
           </b-button>
         </div>
