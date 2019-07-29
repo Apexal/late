@@ -201,7 +201,7 @@ export default {
           isPinned: !announcement.isPinned
         });
       } catch (e) {
-        this.$toast.open({ type: 'is-danger', message: e.request.data.message });
+        this.$toast.open({ type: 'is-danger', message: e.response.data.message });
         return;
       }
 
@@ -216,7 +216,7 @@ export default {
       try {
         request = await this.$http.delete(`/announcements/${announcement._id}`);
       } catch (e) {
-        this.$toast.open({ type: 'is-danger', message: e.request.data.message });
+        this.$toast.open({ type: 'is-danger', message: e.response.data.message });
         return;
       }
 

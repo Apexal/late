@@ -292,11 +292,30 @@ async function importCourseSchedule (ctx) {
   ctx.ok({ updatedUser: ctx.state.user, courses });
 }
 
+/**
+ * Given the CRN of a course in the URL params and the user's RIN and PIN in the request body,
+ * grab a course from SIS and add it to the student's list.
+ *
+ * @param {Koa context} ctx
+ * @returns {Object} The new course
+ */
 async function addCourseByCRN (ctx) {
   const { crn } = ctx.params;
   const { rin, pin } = ctx.request.body;
 
-  const courseData = await scrapeSISForSingleCourse(rin, pin, ctx.session.currentTerm, crn);
+  // First make sure that the student hasn't already added this course
+  const existingCourse = await Course.findOne({ _student: ctx.state.user._id, crn });
+  if (existingCourse) {
+    return ctx.badRequest('You already have added that course!');
+  }
+
+  let courseData;
+  try {
+    courseData = await scrapeSISForSingleCourse(rin, pin, ctx.session.currentTerm, crn);
+  } catch (e) {
+    logger.error(`Failed to scrape SIS for single course ${crn}: ${e}`);
+    return ctx.internalServerError('There was an error getting the course from SIS.');
+  }
 
   const course = new Course({
     _student: ctx.state.user._id,
@@ -304,9 +323,14 @@ async function addCourseByCRN (ctx) {
     ...courseData
   });
 
-  await course.save();
+  try {
+    await course.save();
+  } catch (e) {
+    logger.error(`Failed to save new course ${crn} for ${ctx.state.user.rcs_id}: ${e}`);
+    return ctx.badRequest('There was an issue saving the new course.');
+  }
 
-  logger.info(`Added new coure ${course.originalTitle} by CRN for ${ctx.state.user.rcs_id}`);
+  logger.info(`Added new course ${course.originalTitle} by CRN for ${ctx.state.user.rcs_id}`);
 
   return ctx.created({
     course

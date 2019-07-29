@@ -158,23 +158,27 @@
         />
       </template>
       <hr>
-      <router-link
-        :to="{ name: 'setup-unavailability' }"
-        class="button has-background-secondary is-pulled-right"
-        :class="{ 'is-loading': loading }"
-      >
-        Save and Continue
-      </router-link>
-      <div class="buttons">
-        <b-button
-          type="is-dark"
-          @click="startAddCourseByCRN"
-        >
-          Add Course by CRN
-        </b-button>
-        <b-button type="is-dark">
-          Add Custom Course
-        </b-button>
+      <div class="columns has-text-centered-mobile">
+        <div class="column buttons">
+          <b-button
+            type="is-dark"
+            @click="startAddCourseByCRN"
+          >
+            Add Course by CRN
+          </b-button>
+          <b-button type="is-dark">
+            Add Custom Course
+          </b-button>
+        </div>
+        <div class="column is-narrow">
+          <router-link
+            :to="{ name: 'setup-unavailability' }"
+            class="button has-background-secondary "
+            :class="{ 'is-loading': loading }"
+          >
+            Save and Continue
+          </router-link>
+        </div>
       </div>
     </template>
   </div>
@@ -260,10 +264,16 @@ export default {
       }
     },
     async addCourseByCRN (crn) {
-      const request = await this.$http.put(`/account/courseschedule/${crn}`, {
-        rin: this.rin,
-        pin: this.pin
-      });
+      let request;
+      try {
+        request = await this.$http.put(`/account/courseschedule/${crn}`, {
+          rin: this.rin,
+          pin: this.pin
+        });
+      } catch (e) {
+        this.$toast.open({ type: 'is-danger', message: e.response.data.message });
+        return;
+      }
 
       const newCourse = request.data.course;
       this.$toast.open({ message: `Grabbed course ${newCourse.title} from SIS!` });
@@ -277,7 +287,7 @@ export default {
       try {
         removedCourse = await this.$store.dispatch('REMOVE_COURSE', courseID);
       } catch (e) {
-        this.$toast.open({ message: e.request.data.message, type: 'is-danger' });
+        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
         return;
       }
 
