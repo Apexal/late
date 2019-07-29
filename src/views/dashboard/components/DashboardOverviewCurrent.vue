@@ -99,12 +99,14 @@ export default {
     currentEvent () {
       return this.todaysAgenda.find(this.isCurrentEvent);
     },
+    minutesLeft () {
+      return moment(this.currentEvent.end).diff(moment(), 'minutes');
+    },
     percentThrough () {
       if (!this.currentEvent) return 0;
       const total = moment(this.currentEvent.end).diff(this.currentEvent.start, 'minutes');
-      const minutesLeft = moment(this.currentEvent.end).diff(moment(), 'minutes');
 
-      return Math.round((1 - minutesLeft / total) * 100);
+      return Math.round((1 - this.minutesLeft / total) * 100);
     },
     currentUnavailabilityDates () {
       return {
