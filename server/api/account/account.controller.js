@@ -86,7 +86,16 @@ async function setAllFromSIS (ctx) {
   ctx.state.user.setup.terms = true;
 
   const profileInfo = await scrapeSISForProfileInfo(rin, pin);
-  ctx.state.user.set(profileInfo);
+  if (!ctx.state.user.name.first) {
+    ctx.state.user.name.first = profileInfo.name.first;
+  }
+  if (!ctx.state.user.name.last) {
+    ctx.state.user.name.first = profileInfo.name.last;
+  }
+  if (!ctx.state.user.major) {
+    ctx.state.user.major = profileInfo.major;
+  }
+
   ctx.state.user.setup.profile = true;
 
   if (!ctx.state.user.graduationYear) {

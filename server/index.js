@@ -58,6 +58,22 @@ app.use(async (ctx, next) => {
   ctx.state.env = process.env.NODE_ENV;
   ctx.state.isAPI = ctx.request.url.startsWith('/api');
 
+  // If first request, get terms
+  if (ctx.state.env === 'development' || !ctx.session.terms) {
+    ctx.session.terms = await Term.find().exec();
+  }
+
+  // Calculate current term on each request in case it changes (very unlikely but possible)
+  if (
+    ctx.state.env === 'development' ||
+    !ctx.session.currentTerm ||
+    (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
+  ) {
+    ctx.session.currentTerm = ctx.session.terms.find(t =>
+      moment().isBetween(moment(t.start), moment(t.end))
+    );
+  }
+
   if (ctx.session.cas_user) {
     // Find the logged in user to make it available in all routes
     ctx.state.user = await Student.findOne()
@@ -66,21 +82,7 @@ app.use(async (ctx, next) => {
 
     ctx.state.discordClient = discordClient;
 
-    // If first request, get terms
-    if (ctx.state.env === 'development' || !ctx.session.terms) {
-      ctx.session.terms = await Term.find().exec();
-    }
 
-    // Calculate current term on each request in case it changes (very unlikely but possible)
-    if (
-      ctx.state.env === 'development' ||
-      !ctx.session.currentTerm ||
-      (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
-    ) {
-      ctx.session.currentTerm = ctx.session.terms.find(t =>
-        moment().isBetween(moment(t.start), moment(t.end))
-      );
-    }
     if (ctx.state.user) {
       // console.log(ctx.session.currentTerm);
       ctx.state.onBreak =

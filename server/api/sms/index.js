@@ -3,6 +3,6 @@ const router = new Router();
 
 const Ctrl = require('./sms.controller');
 
-router.post('/', Ctrl.findStudentFromSMSMiddleware, Ctrl.receivedSMS);
+router.post('/actions/agenda', Ctrl.findStudentFromSMSMiddleware, Ctrl.agenda);
 
 module.exports = router.routes();

@@ -2,43 +2,80 @@ const logger = require('../../modules/logger');
 
 const Student = require('../students/students.model');
 
-const MessagingResponse = require('twilio').twiml.MessagingResponse;
+const moment = require('moment');
 
 async function findStudentFromSMSMiddleware (ctx, next) {
   // Find user with that phone number
   const student = await Student.findOne({
-    'integrations.sms.phoneNumber': ctx.request.body.From.substring(2)
+    'integrations.sms.phoneNumber': ctx.request.body.UserIdentifier.substring(2)
   });
   if (!student) {
-    const twiml = new MessagingResponse();
-
-    twiml.message(
-      'I don\'t know who you are... connect your phone number to LATE on the account page!'
-    );
-
-    ctx.set('status', 200);
-    ctx.set('Content-Type', 'text/xml');
-
-    ctx.body = twiml.toString();
+    return ctx.ok({
+      actions: [{
+        redirect: 'task://unknown_user'
+      }]
+    });
   } else {
     ctx.state.student = student;
     return next();
   }
 }
 
-async function receivedSMS (ctx) {
-  const body = ctx.request.body;
-  const twiml = new MessagingResponse();
+async function agenda (ctx) {
+  logger.info(`[autopilot] ${ctx.state.student.rcs_id} requested today's agenda`);
 
-  twiml.message(`Yes Master ${ctx.state.student.name.first}`);
+  const today = moment().day();
+  const courses = (await ctx.state.student.getCoursesForTerm(ctx.session.currentTerm.code))
+    .filter(course => moment().isBetween(course.startDate, course.endDate));
 
-  ctx.set('status', 200);
-  ctx.set('Content-Type', 'text/xml');
+  let events = [];
+  for (let course of courses) {
+    let periods = course.periods.filter(period => period.day === today);
+    if (periods.length === 0) continue;
 
-  ctx.body = twiml.toString();
+    for (let period of periods) {
+      events.push({ startTime: moment(period.start, 'Hmm'), text: `${course.title} ${period.type}` });
+    }
+  }
+
+  const upcomingAssignments = await ctx.state.student.getUserAssignments({
+    start: moment().format('YYYY-MM-DD'),
+    end: moment().add(3, 'weeks').format('YYYY-MM-DD')
+  });
+
+  for (let assignment of upcomingAssignments) {
+    for (let block of assignment._blocks.filter(block => moment().isSame(block.startTime, 'day'))) {
+      events.push({ startTime: moment(block.startTime, 'Hmm'), text: `Work on ${assignment.title}` });
+    }
+  }
+
+  const upcomingExams = await ctx.state.student.getExams(
+    moment().format('YYYY-MM-DD'),
+    moment().add(3, 'weeks').format('YYYY-MM-DD'));
+
+  for (let exam of upcomingExams) {
+    for (let block of exam._blocks.filter(block => moment().isSame(block.startTime, 'day'))) {
+      events.push({ startTime: moment(block.startTime, 'Hmm'), text: `Study for ${exam.title}` });
+    }
+  }
+
+  events = events.sort((a, b) => a.startTime - b.startTime);
+
+  const lines = events.map(ev => `[${ev.startTime.format('h:mm a')}] ${ev.text}`);
+
+  return ctx.ok({
+    actions: [
+      {
+        say: `You have ${events.length} events scheduled for today:\n\n` + lines.join(' \n') + '\n\nAnything else?'
+      },
+      {
+        listen: true
+      }
+    ]
+  });
 }
 
 module.exports = {
   findStudentFromSMSMiddleware,
-  receivedSMS
+  agenda
 };
