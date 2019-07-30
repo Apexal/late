@@ -21,6 +21,36 @@ async function findStudentFromSMSMiddleware (ctx, next) {
   }
 }
 
+async function upcoming (ctx) {
+  logger.info(`[autopilot] ${ctx.state.student.rcs_id} requested upcoming coursework`);
+
+  const courses = (await ctx.state.student.getCoursesForTerm(ctx.session.currentTerm.code));
+
+  const upcomingAssignments = await ctx.state.student.getUserAssignments({
+    start: moment().format('YYYY-MM-DD'),
+    end: moment().add(3, 'weeks').format('YYYY-MM-DD')
+  });
+
+  const upcomingExams = await ctx.state.student.getExams(
+    moment().format('YYYY-MM-DD'),
+    moment().add(3, 'weeks').format('YYYY-MM-DD'));
+
+  let assessments = upcomingAssignments.concat(upcomingExams).sort((a, b) => a.date - b.date);
+
+  const lines = assessments.map(as => `[${moment(as.date).format('D/M/YY')}] ${courses.find(c => c.crn === as.courseCRN).title}: ${as.title}`);
+
+  return ctx.ok({
+    actions: [
+      {
+        say: `You have ${assessments.length} upcoming assignments and exams:\n\n` + lines.join('\n') + '\n\nAnything else?'
+      },
+      {
+        listen: true
+      }
+    ]
+  });
+}
+
 async function agenda (ctx) {
   logger.info(`[autopilot] ${ctx.state.student.rcs_id} requested today's agenda`);
 
@@ -77,5 +107,6 @@ async function agenda (ctx) {
 
 module.exports = {
   findStudentFromSMSMiddleware,
+  upcoming,
   agenda
 };
