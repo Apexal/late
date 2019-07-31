@@ -2,7 +2,7 @@
 <template>
   <section class="section dasboard">
     <h1 class="is-hidden-desktop has-text-centered is-marginless title">
-      Your Dashboard
+      {{ onBreak ? `On Break${nextTerm ? (' - ' + nextTerm.name + ' Sneak Peek') : ''}` : "Your Dashboard" }}
     </h1>
 
     <div class="tabs is-centered">
@@ -11,7 +11,7 @@
           class="is-hidden-touch title"
           style="flex: 1"
         >
-          Your Dashboard
+          {{ onBreak ? `On Break${nextTerm ? (' - ' + nextTerm.name + ' Sneak Peek') : ''}` : "Your Dashboard" }}
         </h1>
         <router-link
           :to="{ name: 'dashboard-overview' }"
@@ -27,11 +27,7 @@
         </router-link>
       </ul>
     </div>
-    <template v-if="onBreak">
-      <h2 class="subtitle">
-        On Break
-      </h2>
-    </template>
+    <DashboardNextTermPreview v-if="onBreak && nextTerm" />
     <router-view v-else />
   </section>
 </template>
@@ -40,12 +36,17 @@
 import DashboardOverview from './DashboardOverview';
 import DashboardCalendar from './DashboardCalendar';
 
+import DashboardNextTermPreview from './components/DashboardNextTermPreview';
+
 export default {
   name: 'TheDashboard',
-  components: { DashboardOverview, DashboardCalendar },
+  components: { DashboardOverview, DashboardCalendar, DashboardNextTermPreview },
   computed: {
     tab () {
       return this.$route.hash.substring(1) || 'calendar';
+    },
+    nextTerm () {
+      return this.$store.getters.nextTerm;
     }
   }
 };

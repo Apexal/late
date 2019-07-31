@@ -22,8 +22,8 @@ const schema = new Schema(
     periods: [
       {
         day: { type: Number, required: true, min: 0, max: 6 },
-        start: { type: String, required: true }, // HHmm
-        end: { type: String, required: true }, // HHmm
+        start: { type: String, required: true }, // Hmm
+        end: { type: String, required: true }, // Hmm
         type: { type: String, default: 'LEC' }, // LEC, TES, STU, REC
         location: { type: String, default: '???' }
       }

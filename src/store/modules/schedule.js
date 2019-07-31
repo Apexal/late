@@ -60,30 +60,31 @@ const getters = {
       REC: 'Recitation',
       STU: 'Studio'
     }[type] || type),
-  getCourseScheduleAsEvents: (state, getters, rootState, rootGetters) => {
+  mapCourseToEvents: (state, getters, rootState, rootGetters) => course => {
+    return course.periods.map(p => {
+      let start = moment(p.start, 'Hmm', true).format('HH:mm');
+      let end = moment(p.end, 'Hmm', true).format('HH:mm');
+
+      return {
+        id: course._id,
+        eventType: 'course',
+        title: `${course.title} ${getters.periodType(p.type)}`,
+        startRecur: course.startDate,
+        endRecur: course.endDate,
+        startTime: start,
+        endTime: end,
+        daysOfWeek: [p.day],
+        color: course.color,
+        editable: false,
+        period: p,
+        course
+      };
+    });
+  },
+  getCourseScheduleAsEvents: (state, getters) => {
     // Turn periods into this week's schedule...
     const events = state.courses
-      .map(c =>
-        c.periods.map(p => {
-          let start = moment(p.start, 'Hmm', true).format('HH:mm');
-          let end = moment(p.end, 'Hmm', true).format('HH:mm');
-
-          return {
-            id: c._id,
-            eventType: 'course',
-            title: `${c.title} ${getters.periodType(p.type)}`,
-            startRecur: c.startDate,
-            endRecur: c.endDate,
-            startTime: start,
-            endTime: end,
-            daysOfWeek: [p.day],
-            color: c.color,
-            editable: false,
-            period: p,
-            course: c
-          };
-        })
-      )
+      .map(getters.mapCourseToEvents)
       .flat();
 
     return events;
