@@ -19,9 +19,10 @@
         >
           LATE
           <span
-            class="tag is-primary beta-tag"
+            class="tag beta-tag"
+            :class="[inDevMode ? 'is-warning' : 'is-primary']"
             title="LATE is still in active development!"
-          >BETA</span>
+          >{{ inDevMode ? 'DEV' : 'BETA' }}</span>
         </router-link>
         <template v-if="loggedIn">
           <a
@@ -383,6 +384,9 @@ export default {
     },
     assessmentCount () {
       return this.$store.getters.limitedUpcomingAssessments.length;
+    },
+    inDevMode () {
+      return process.env.NODE_ENV !== 'production';
     }
   },
   methods: {
@@ -463,10 +467,9 @@ export default {
     margin-left: 5px;
     margin-bottom: -2px;
     transition: background-color 0.2s;
-    background-color: #70cad1;
   }
   &:hover {
-    .beta-tag {
+    .beta-tag.is-primary {
       background-color: #73dee6 !important;
     }
   }
