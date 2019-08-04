@@ -2,7 +2,7 @@
 <template>
   <div class="columns is-multiline">
     <div
-      v-for="c in courses"
+      v-for="c in ongoingCourses"
       :key="c.crn"
       class="column course-column is-half"
     >
