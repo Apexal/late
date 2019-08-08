@@ -1,6 +1,9 @@
 <!--Sidebar: Pressing Assignments module-->
 <template>
-  <div class="sidebar-pressing-assessments">
+  <div
+    ref="sidebar-pressing-assessments"
+    class="sidebar-pressing-assessments"
+  >
     <template v-if="onBreak">
       <div class="no-work">
         <i class="fas fa-umbrella-beach no-work-icon" />
@@ -28,6 +31,8 @@
         :key="assessment._id"
         tag="div"
         class="assessment assessment-link panel-block"
+        :data-assessment-i-d="assessment.id"
+        :data-assessment-type="assessment.assessmentType"
         :title="
           (assessment.description || '').substring(0, 500) ||
             `No description for this ${assessment.assessmentType} given.`
@@ -92,6 +97,8 @@
 </template>
 
 <script>
+import { Draggable } from '@fullcalendar/interaction';
+
 export default {
   name: 'SidebarPressingAssessments',
   props: {
@@ -100,6 +107,26 @@ export default {
       default: () => [],
       required: true
     }
+  },
+  data () {
+    return {
+      draggable: null
+    };
+  },
+  mounted () {
+    this.draggable = new Draggable(this.$refs['sidebar-pressing-assessments'], {
+      itemSelector: '.assessment-link',
+      eventData: (eventEl) => {
+        return {
+          eventType: 'new-work-block',
+          title: 'Drop to schedule',
+          assessmentID: eventEl.dataset.assessmentID,
+          assessmentType: eventEl.dataset.assessmentType,
+          duration: { hours: 1 },
+          create: true
+        };
+      }
+    });
   },
   methods: {
     course (a) {

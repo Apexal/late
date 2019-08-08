@@ -39,8 +39,10 @@
       :button-text="calendar.buttonText"
       :event-render="eventRender"
       :dates-render="datesRender"
+      :droppable="true"
       @eventClick="eventClick"
       @eventDrop="eventDrop"
+      @eventReceive="eventReceive"
       @eventResize="eventResize"
       @select="select"
     />
@@ -319,9 +321,29 @@ export default {
         this.$router.push({ name: 'setup-unavailability' });
       }
     },
+    async eventReceive ({ event }) {
+      const { assessmentType, assessmentID } = event.extendedProps;
+      const assessment = this.$store.getters.getUpcomingAssessmentById(assessmentID);
+      try {
+        await this.$store.dispatch('ADD_WORK_BLOCK', { assessment, start: event.start, end: event.end });
+      } catch (e) {
+        this.$toast.open({
+          message: 'There was an error scheduling that work block...',
+          type: 'is-danger'
+        });
+        event.remove();
+        return;
+      }
+
+      event.remove();
+      this.$toast.open({
+        message: 'Added work block to your schedule!',
+        type: 'is-primary',
+        duration: 1000
+      });
+    },
     eventDrop ({ event, revert }) {
       const { eventType, assessment, blockID } = event.extendedProps;
-
       if (eventType === 'work-block') {
         // Update work block on server
         if (moment(event.end).isBefore(moment())) {
