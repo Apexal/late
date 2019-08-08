@@ -6,7 +6,7 @@ export default {
     } else if (weight < 10) {
       return this.weights[1];
     } else if (weight < 15) {
-      return this.weight[2];
+      return this.weights[2];
     }
     return this.weight[3];
   },
