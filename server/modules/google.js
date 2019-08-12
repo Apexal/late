@@ -50,7 +50,7 @@ const actions = {
     let request = await calendar.events.insert({
       calendarId: user.integrations.google.calendarID,
       requestBody: {
-
+        colorId: assessment.assessmentType === 'assignment' ? 9 : 11,
         summary: `${
           assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for'
         } ${assessment.title}`,
@@ -58,7 +58,7 @@ const actions = {
           course.title
         } ${capitalizedAssessmentType}</b> <i>${
           assessment.title
-        }</i><br><br>${assessmentURL}`,
+        }</i><br><blockquote>${assessment.description}</blockquote><br>${assessmentURL}`,
         source: {
           title: assessment.title,
           url: assessmentURL
