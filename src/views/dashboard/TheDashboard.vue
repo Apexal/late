@@ -14,12 +14,14 @@
           {{ onBreak ? `On Break${nextTerm ? (' - ' + nextTerm.name + ' Sneak Peek') : ''}` : "Your Dashboard" }}
         </h1>
         <router-link
+          v-if="!onBreak"
           :to="{ name: 'dashboard-overview' }"
           tag="li"
         >
           <a>Overview</a>
         </router-link>
         <router-link
+          v-if="!onBreak"
           :to="{ name: 'dashboard-calendar' }"
           tag="li"
         >
@@ -28,6 +30,18 @@
       </ul>
     </div>
     <DashboardNextTermPreview v-if="onBreak && nextTerm" />
+    <template v-else-if="onBreak">
+      <h2 class="subtitle">
+        Enjoy your break! LATE will be here for you when you return!
+      </h2>
+      <hr>
+      <router-link
+        :to="{ name: 'account' }"
+        class="button is-dark"
+      >
+        Continue Account Setup
+      </router-link>
+    </template>
     <router-view v-else />
   </section>
 </template>
