@@ -19,6 +19,7 @@
             :all-day-slot="false"
             min-time="08:00:00"
             max-time="20:00:00"
+            :event-render="eventRender"
           />
         </div>
       </div>
@@ -136,6 +137,17 @@ export default {
     this.nextTermCourses = request.data.courses;
   },
   methods: {
+    eventRender ({ event, el, view }) {
+      const { eventType, assessment, course, period, block } = event.extendedProps;
+
+      el.title = `${event.title} | ${period.location}`;
+
+      let locationEl = document.createElement('i');
+      locationEl.className = 'event-location';
+      locationEl.innerText = period.location;
+
+      el.querySelector('.fc-content').append(locationEl);
+    },
     async importToGoogleCalendar () {
       this.$dialog.confirm({
         title: 'Import?',
