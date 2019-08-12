@@ -127,11 +127,7 @@ const schema = new Schema(
       integrations: {
         type: Boolean,
         default: false
-      }, // when the student has setup (or chosen not to setup) integrations
-      google: {
-        type: Boolean,
-        default: false
-      } // when the student has connected their Google account
+      } // when the student has setup (or chosen not to setup) integrations
     },
     terms: {
       // termCodes for all the terms they will be at school (able to use LATE)

@@ -1,7 +1,15 @@
 <template>
   <div class="google-calendar-setup has-text-centered">
     <template v-if="verified">
-      yeet
+      <p>
+        You've connected your Google account to <b>LATE</b>. A calendar titled <code>Coursework (LATE)</code> has been added to your Google Calendar.
+        This will hold your course schedule for each term, as well as any study/work blocks you schedule.
+      </p>
+
+      <a
+        href="https://calendar.google.com/calendar/r"
+        target="_blank"
+      >Open Google Calendar</a>
     </template>
     <a
       v-else

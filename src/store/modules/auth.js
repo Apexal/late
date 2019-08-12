@@ -25,8 +25,7 @@ const getters = {
       unavailability: state.user.setup.unavailability.includes(
         rootGetters.currentTerm.code
       ),
-      integrations: state.user.setup.integrations,
-      google: state.user.setup.google
+      integrations: state.user.setup.integrations
     };
   },
   isUserSetup: (state, getters) => {

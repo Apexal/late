@@ -90,7 +90,7 @@ async function addWorkBlock (ctx) {
 
   logger.info(`Adding work block for ${ctx.state.user.rcs_id}`);
 
-  if (ctx.state.user.setup.google) {
+  if (ctx.state.user.integrations.google.calendarID) {
     try {
       await google.actions.createEventFromWorkBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock);
     } catch (e) {

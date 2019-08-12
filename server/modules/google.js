@@ -171,7 +171,7 @@ const actions = {
           location,
           source: {
             title: 'Course Page',
-            url: process.env.BASE_URL + '/account/courses'
+            url: process.env.BASE_URL + '/account/courseschedule'
           },
           start: {
             dateTime: start.toDate(),

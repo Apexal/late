@@ -90,7 +90,7 @@ app.use(async (ctx, next) => {
         !ctx.state.user.terms.includes(ctx.session.currentTerm.code);
 
       // Create Google auth if logged in and setup
-      if (ctx.state.user && ctx.state.user.setup.google) {
+      if (ctx.state.user && ctx.state.user.integrations.google.calendarID) {
         const auth = google.createConnection();
         auth.setCredentials(ctx.state.user.integrations.google.tokens);
         ctx.state.googleAuth = auth;

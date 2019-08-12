@@ -80,11 +80,6 @@ export default {
           label: 'Notifications',
           link: '/account/integrations',
           setup_check: 'integrations'
-        },
-        {
-          label: 'Google Calendar',
-          link: '/account/googlecalendar',
-          setup_check: 'google'
         }
       ]
     };

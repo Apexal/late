@@ -1,4 +1,7 @@
 const logger = require('../../modules/logger');
+
+const google = require('../../modules/google');
+
 const {
   scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
@@ -142,6 +145,16 @@ async function setAllFromSIS (ctx) {
     logger.info(`Got ${courseSchedule.length} courses`);
 
     if (termCode === ctx.session.currentTerm.code) currentCourses = courseSchedule;
+
+    // Handle GCal
+    if (ctx.state.user.integrations.google.calendarID) {
+      try {
+        await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarID, termCode, courseSchedule);
+        logger.info(`Updated GCal for ${ctx.state.user.rcs_id}`);
+      } catch (e) {
+        logger.error(`Couldn't update GCal for ${ctx.state.user.rcs_id}`);
+      }
+    }
   }
 
   ctx.state.user.lastSISUpdate = new Date();
@@ -297,6 +310,17 @@ async function importCourseSchedule (ctx) {
 
   ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code);
   ctx.state.user.lastSISUpdate = new Date();
+
+  // Handle GCal
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarID, termCode, courses);
+      logger.info(`Updated GCal for ${ctx.state.user.rcs_id}`);
+    } catch (e) {
+      logger.error(`Couldn't update GCal for ${ctx.state.user.rcs_id}`);
+    }
+  }
+
 
   await ctx.state.user.save();
 

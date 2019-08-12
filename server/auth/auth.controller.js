@@ -90,7 +90,7 @@ async function googleAuth (ctx) {
   });
 
   // Create calendar
-  if (!ctx.state.user.setup.google) {
+  if (!ctx.state.user.integrations.google.calendarID) {
     logger.info(`Creating Google Calendar for ${ctx.state.user.rcs_id}`);
     let request;
     try {
@@ -124,11 +124,9 @@ async function googleAuth (ctx) {
     }
   }
 
-  ctx.state.user.setup.google = true;
-
   await ctx.state.user.save();
 
-  ctx.redirect('/account/googlecalendar');
+  ctx.redirect('/account/integrations#google-calendar');
 }
 
 async function startDiscordAuth (ctx) {
