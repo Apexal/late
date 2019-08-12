@@ -178,9 +178,7 @@ export default {
   methods: {
     async createCourseScheduleCalendar () {
       this.$dialog.confirm({
-        message: `This will create a new calendar specifically for your <b>${
-          this.currentTerm.name
-        }</b> course schedule.`,
+        message: 'This will create a new calendar specifically for your course schedule.',
         onConfirm: async () => {
           this.loading = true;
           let request;

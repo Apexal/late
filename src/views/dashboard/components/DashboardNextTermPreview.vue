@@ -10,10 +10,12 @@
             ref="calendar"
             :plugins="calendar.plugins"
             default-view="timeGridWeek"
-            :height="700"
+            :height="695"
+            :header="calendar.header"
             :valid-range="validRange"
             :events="courseEvents"
             :weekends="false"
+            :custom-buttons="customButtons"
             :all-day-slot="false"
             min-time="08:00:00"
             max-time="20:00:00"
@@ -60,11 +62,22 @@ export default {
     return {
       nextTermCourses: [],
       calendar: {
-        plugins: [dayGridPlugin, timeGridPlugin]
+        plugins: [dayGridPlugin, timeGridPlugin],
+        header: {
+          right: 'import prev,next'
+        }
       }
     };
   },
   computed: {
+    customButtons () {
+      return {
+        import: {
+          text: 'Add to Google Calendar',
+          click: this.importToGoogleCalendar
+        }
+      };
+    },
     nextTerm () {
       return this.$store.getters.nextTerm;
     },
@@ -121,6 +134,32 @@ export default {
     }
 
     this.nextTermCourses = request.data.courses;
+  },
+  methods: {
+    async importToGoogleCalendar () {
+      this.$dialog.confirm({
+        title: 'Import?',
+        message: `Import your courses for <b>${this.nextTerm.code}</b> into your Google Calendar?`,
+        onConfirm: async () => {
+          try {
+            await this.$http.post('/google/courseschedule', {
+              termCode: this.nextTerm.code
+            });
+          } catch (e) {
+            this.$toast.open({
+              type: 'is-danger',
+              message: e.request.data.message
+            });
+            return;
+          }
+
+          this.$toast.open({
+            message: 'Done! Check your Google Calendar!',
+            type: 'is-success'
+          });
+        }
+      });
+    }
   }
 };
 </script>
