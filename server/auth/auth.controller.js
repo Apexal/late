@@ -81,6 +81,49 @@ async function googleAuth (ctx) {
   const { tokens } = await googleAuth.getToken(code);
 
   Object.assign(ctx.state.user.integrations.google.tokens, tokens);
+
+  googleAuth.setCredentials(tokens);
+
+  const calendar = google.apis.calendar({
+    version: 'v3',
+    auth: googleAuth
+  });
+
+  // Create calendar
+  if (!ctx.state.user.setup.google) {
+    logger.info(`Creating Google Calendar for ${ctx.state.user.rcs_id}`);
+    let request;
+    try {
+      request = await calendar.calendars.insert({
+        requestBody: {
+          summary: (process.env.NODE_ENV === 'development' ? '[DEV] ' : '') + 'Coursework (LATE)',
+          description: 'This calendar is managed by LATE. Course periods and work/study blocks appear here. Please don\'t edit any events from here.',
+          timeZone: 'America/New_York',
+          location: 'RPI'
+        }
+      });
+
+      await calendar.calendarList.patch({
+        calendarId: request.data.id,
+        requestBody: {
+          defaultReminders: [
+            {
+              method: 'popup',
+              minutes: 15
+            }
+          ]
+        }
+      });
+
+      ctx.state.user.integrations.google.calendarID = request.data.id;
+    } catch (e) {
+      logger.error(
+        `Failed to create new calendar for ${ctx.state.user.rcs_id}: ${e}`
+      );
+      return ctx.badRequest('Failed to create new Google Calendar.');
+    }
+  }
+
   ctx.state.user.setup.google = true;
 
   await ctx.state.user.save();

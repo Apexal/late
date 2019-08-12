@@ -122,7 +122,7 @@ const actions = {
     commit('UPDATE_COURSE', updatedCourse);
 
     // Check if GCal has to be updated
-    if (rootState.auth.user.integrations.google.calendarIDs.courseSchedule) {
+    if (rootState.auth.user.integrations.google.calendarID) {
       axios.post('/google/courseschedule', { termCode: course.termCode });
     }
 

@@ -90,7 +90,7 @@ async function addWorkBlock (ctx) {
 
   logger.info(`Adding work block for ${ctx.state.user.rcs_id}`);
 
-  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+  if (ctx.state.user.setup.google) {
     try {
       await google.actions.createEventFromWorkBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock);
     } catch (e) {
@@ -179,7 +179,7 @@ async function editWorkBlock (ctx) {
 
   logger.info(`Edited work block for ${ctx.state.user.rcs_id}`);
 
-  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+  if (ctx.state.user.integrations.google.calendarID) {
     try {
       await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
         location,
@@ -263,7 +263,7 @@ async function deleteWorkBlock (ctx) {
 
   logger.info(`Deleted work block for ${ctx.state.user.rcs_id}`);
 
-  if (ctx.state.user.integrations.google.calendarIDs.workBlocks) {
+  if (ctx.state.user.integrations.google.calendarID) {
     try {
       await google.actions.deleteEventFromWorkBlock(ctx, blockID);
     } catch (e) {

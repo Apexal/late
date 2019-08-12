@@ -385,32 +385,11 @@ async function setTimePreference (ctx) {
   ctx.ok({ updatedUser: ctx.state.user });
 }
 
-async function setGoogle (ctx) {
-  const { calendarIDs } = ctx.request.body;
-
-  Object.assign(ctx.state.user.integrations.google.calendarIDs, calendarIDs);
-
-  try {
-    await ctx.state.user.save();
-  } catch (e) {
-    logger.error(
-      `Failed to save Google integration settings for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
-    );
-    return ctx.badRequest('There was an error saving your Google settings.');
-  }
-
-  logger.info(`Set Google integration settings for ${ctx.state.user.rcs_id}`);
-  ctx.ok({ updatedUser: ctx.state.user });
-}
-
 module.exports = {
   setAllFromSIS,
   setProfile,
   setTerms,
   importCourseSchedule,
   addCourseByCRN,
-  setTimePreference,
-  setGoogle
+  setTimePreference
 };

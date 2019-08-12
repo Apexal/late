@@ -48,7 +48,7 @@ const actions = {
     assessmentType === 'assignment' ? 'Assignment' : 'Exam';
 
     let request = await calendar.events.insert({
-      calendarId: user.integrations.google.calendarIDs.workBlocks,
+      calendarId: user.integrations.google.calendarID,
       requestBody: {
 
         summary: `${
@@ -88,7 +88,7 @@ const actions = {
       auth: googleAuth
     });
     let request = await calendar.events.patch({
-      calendarId: user.integrations.google.calendarIDs.workBlocks,
+      calendarId: user.integrations.google.calendarID,
       eventId: blockID,
       requestBody: updates
     });
@@ -102,7 +102,7 @@ const actions = {
     });
 
     let request = await calendar.events.delete({
-      calendarId: ctx.state.user.integrations.google.calendarIDs.workBlocks,
+      calendarId: ctx.state.user.integrations.google.calendarID,
       eventId: blockID
     });
 

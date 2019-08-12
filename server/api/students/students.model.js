@@ -96,10 +96,7 @@ const schema = new Schema(
           access_token: String,
           expiry_date: Number
         },
-        calendarIDs: {
-          courseSchedule: { type: String, default: '' },
-          workBlocks: { type: String, default: '' }
-        }
+        calendarID: { type: String }
       },
       discord: {
         verified: { type: Boolean, default: false },

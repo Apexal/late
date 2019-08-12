@@ -49,6 +49,17 @@
                 </span>
               </a>
             </li>
+            <li :class="{ 'is-active': currentTab === 'SetupIntegrationsGoogleCalendar' }">
+              <a @click="setIntegration('google-calendar')">
+                Google Calendar
+                <span class="icon">
+                  <i
+                    class="fa integration-indicator"
+                    :class="integrations.google.calendarID ? 'fa-check' : 'fa-times'"
+                  />
+                </span>
+              </a>
+            </li>
           </ul>
         </div>
         <Component :is="currentTab" />
@@ -69,6 +80,7 @@ import SetupIntegrationsPreferences from '@/views/account/components/SetupIntegr
 import SetupIntegrationsSMS from '@/views/account/components/SetupIntegrationsSMS';
 import SetupIntegrationsEmail from '@/views/account/components/SetupIntegrationsEmail';
 import SetupIntegrationsDiscord from '@/views/account/components/SetupIntegrationsDiscord';
+import SetupIntegrationsGoogleCalendar from '@/views/account/components/SetupIntegrationsGoogleCalendar';
 
 export default {
   name: 'AccountSetupIntegrations',
@@ -76,7 +88,8 @@ export default {
     SetupIntegrationsPreferences,
     SetupIntegrationsSMS,
     SetupIntegrationsEmail,
-    SetupIntegrationsDiscord
+    SetupIntegrationsDiscord,
+    SetupIntegrationsGoogleCalendar
   },
   data () {
     return {
@@ -84,7 +97,8 @@ export default {
       map: {
         sms: 'SetupIntegrationsSMS',
         email: 'SetupIntegrationsEmail',
-        discord: 'SetupIntegrationsDiscord'
+        discord: 'SetupIntegrationsDiscord',
+        'google-calendar': 'SetupIntegrationsGoogleCalendar'
       }
     };
   },

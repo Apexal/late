@@ -286,15 +286,6 @@ const router = new Router({
             import('@/views/account/AccountSetupIntegrations.vue')
         },
         {
-          path: 'googlecalendar',
-          name: 'setup-google-calendar',
-          meta: {
-            title: 'Google Calendar'
-          },
-          component: () =>
-            import('@/views/account/AccountSetupGoogleCalendar.vue')
-        },
-        {
           path: 'setupcomplete',
           name: 'setup-complete',
           meta: {

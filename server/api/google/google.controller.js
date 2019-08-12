@@ -19,7 +19,7 @@ async function createCourseSchedule (ctx) {
 
   if (courses.length === 0) return ctx.badRequest('You have no courses for term ' + termCode);
 
-  await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarIDs.courseSchedule, termCode, courses);
+  await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarID, termCode, courses);
 
   logger.info(
     `Created recurring GCAL events for term ${termCode} for ${
@@ -53,57 +53,8 @@ async function listCalendars (ctx) {
   });
 }
 
-async function createCalendar (ctx) {
-  const calendar = google.apis.calendar({
-    version: 'v3',
-    auth: ctx.state.googleAuth
-  });
-
-  const { calendarType, summary, description } = ctx.request.body;
-
-  let request;
-  try {
-    request = await calendar.calendars.insert({
-      requestBody: {
-        summary: (process.env.NODE_ENV === 'development' ? '[DEV] ' : '') + summary,
-        description,
-        timeZone: 'America/New_York',
-        location: 'RPI'
-      }
-    });
-
-    await calendar.calendarList.patch({
-      calendarId: request.data.id,
-      requestBody: {
-        defaultReminders: [
-          {
-            method: 'popup',
-            minutes: 15
-          }
-        ]
-      }
-    });
-  } catch (e) {
-    logger.error(
-      `Failed to create new calendar for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('Failed to create new Google Calendar.');
-  }
-
-  ctx.state.user.integrations.google.calendarIDs[calendarType] =
-    request.data.id;
-  if (calendarType === 'workBlocks') {
-    ctx.state.user.notificationPreferences.preWorkBlockReminders =
-      'google calendar';
-  }
-  await ctx.state.user.save();
-
-  ctx.ok({ createdCalendar: request.data, updatedUser: ctx.state.user });
-}
-
 module.exports = {
   googleAuthMiddleware,
   listCalendars,
-  createCalendar,
   createCourseSchedule
 };
