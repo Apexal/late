@@ -10,12 +10,25 @@ async function googleAuthMiddleware (ctx, next) {
 }
 
 async function createCourseSchedule (ctx) {
-  const courses = await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code);
+  // Determine term
+  let { termCode } = ctx.request.body;
 
-  await google.actions.createRecurringEventsFromCourseSchedule(ctx, courses);
+  if (!termCode) termCode = ctx.session.currentTerm.code;
+
+  const courses = await ctx.state.user.getCoursesForTerm(termCode);
+
+  if (courses.length === 0) return ctx.badRequest('You have no courses for term ' + termCode);
+
+  await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarIDs.courseSchedule, termCode, courses);
+
+  logger.info(
+    `Created recurring GCAL events for term ${termCode} for ${
+      ctx.state.user.rcs_id
+    }`
+  );
 
   ctx.ok({
-    message: 'good'
+    message: 'Successfully made GCal events.'
   });
 }
 
@@ -52,7 +65,7 @@ async function createCalendar (ctx) {
   try {
     request = await calendar.calendars.insert({
       requestBody: {
-        summary,
+        summary: (process.env.NODE_ENV === 'development' ? '[DEV] ' : '') + summary,
         description,
         timeZone: 'America/New_York',
         location: 'RPI'

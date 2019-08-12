@@ -4,6 +4,15 @@ const moment = require('moment');
 
 const RRule = require('rrule').RRule;
 
+const dayAbbreviations = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+const periodTypes = {
+  LEC: 'Lecture',
+  LAB: 'Lab',
+  TES: 'Test',
+  REC: 'Recitation',
+  STU: 'Studio'
+};
+
 function createConnection () {
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -101,22 +110,29 @@ const actions = {
 
     return request.data;
   },
-  async createRecurringEventsFromCourseSchedule (ctx, courses) {
+  async createRecurringEventsFromCourseSchedule (googleAuth, calendarId, termCode, courses) {
     const calendar = google.calendar({
       version: 'v3',
-      auth: ctx.state.googleAuth
+      auth: googleAuth
     });
 
-    const dayAbbreviations = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-    const periodTypes = {
-      LEC: 'Lecture',
-      LAB: 'Lab',
-      TES: 'Test',
-      REC: 'Recitation',
-      STU: 'Studio'
-    };
-
     for (let course of courses) {
+      if (course.periods.length === 0) continue;
+
+      // Determine if this was done already
+      logger.info('Conditionally creating course events for ' + course.title);
+      let request = await calendar.events.list({
+        calendarId,
+        privateExtendedProperty: [
+          'createdBy=LATE',
+          'termCode=' + termCode,
+          'courseID=' + course._id
+        ]
+      });
+
+      const existingCourseCalendarEvents = request.data.items;
+      // console.log(existingCourseCalendarEvents.map(ev => ev.extendedProperties.private));
+
       const courseStart = moment(course.startDate);
       const courseEnd = moment(course.endDate);
 
@@ -141,44 +157,58 @@ const actions = {
           until: courseEnd.toDate()
         });
 
-        let request = await calendar.events.insert({
-          calendarId:
-            ctx.state.user.integrations.google.calendarIDs.courseSchedule,
-          requestBody: {
-            summary: `${course.title} ${periodTypes[period.type] ||
-              period.type}`,
-            description: `${course.summary} - ${course.sectionId} - ${
-              course.credits
-            } credits`,
-            location: period.location,
-            source: {
-              title: 'Course Page',
-              url: process.env.BASE_URL + '/account/courses'
-            },
-            start: {
-              dateTime: start.toDate(),
-              timeZone: 'America/New_York'
-            },
-            end: {
-              dateTime: end.toDate(),
-              timeZone: 'America/New_York'
-            },
-            recurrence: [recurrence.toString()],
-            extendedProperties: {
-              private: {
-                scheduledByLATE: true,
-                courseID: course._id // links this event to the course
-              }
+        let locationParts = period.location.split(' ');
+        let location =
+          locationParts.slice(0, locationParts.length - 1).join(' ') +
+          ', Troy, NY 12180';
+
+        const data = {
+          summary: `${course.title} ${periodTypes[period.type] ||
+            period.type}`,
+          description: `${course.summary} - ${course.sectionId} - ${
+            course.credits
+          } credits`,
+          location,
+          source: {
+            title: 'Course Page',
+            url: process.env.BASE_URL + '/account/courses'
+          },
+          start: {
+            dateTime: start.toDate(),
+            timeZone: 'America/New_York'
+          },
+          end: {
+            dateTime: end.toDate(),
+            timeZone: 'America/New_York'
+          },
+          recurrence: [recurrence.toString()],
+          extendedProperties: {
+            private: {
+              createdBy: 'LATE',
+              termCode,
+              courseID: course._id, // links this event to the course
+              periodType: period.type,
+              periodID: period.id
             }
           }
-        });
-      }
+        };
 
-      logger.debug(
-        `Created recurring GCAL events for course '${course.title}' for ${
-          ctx.state.user.rcs_id
-        }`
-      );
+        const calendarEvent = existingCourseCalendarEvents.find(ev => ev.extendedProperties.private.courseID === course.id && ev.extendedProperties.private.periodID === period.id);
+        if (calendarEvent) {
+          logger.info('Updating event');
+          let request = await calendar.events.patch({
+            calendarId,
+            eventId: calendarEvent.id,
+            requestBody: data
+          });
+        } else {
+          logger.info('Created event');
+          let request = await calendar.events.insert({
+            calendarId,
+            requestBody: data
+          });
+        }
+      }
     }
   }
 };

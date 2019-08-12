@@ -187,7 +187,7 @@ export default {
           try {
             request = await this.$http.post('/google/calendars', {
               calendarType: 'courseSchedule',
-              summary: `${this.currentTerm.name} Course Schedule`,
+              summary: 'Course Schedule [LATE]',
               description: 'This calender was created by LATE.'
             });
           } catch (e) {
@@ -227,7 +227,7 @@ export default {
           try {
             request = await this.$http.post('/google/calendars', {
               calendarType: 'workBlocks',
-              summary: 'LATE Study/Work',
+              summary: 'Study/Work [LATE]',
               description: 'This calender was created by LATE.'
             });
           } catch (e) {
