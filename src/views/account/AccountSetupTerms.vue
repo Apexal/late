@@ -89,7 +89,10 @@ export default {
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser);
-      if (!this.$store.getters.onBreak) {
+      if (this.$store.getters.onBreak) {
+        this.$store.commit('SET_UPCOMING_ASSESSMENTS', []);
+        this.$store.commit('SET_COURSES', []);
+      } else {
         await this.$store.dispatch('GET_COURSES');
         await this.$store.dispatch('GET_UNAVAILABILITIES');
         await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
