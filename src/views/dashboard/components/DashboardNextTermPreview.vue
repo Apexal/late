@@ -10,7 +10,7 @@
             ref="calendar"
             :plugins="calendar.plugins"
             default-view="timeGridWeek"
-            :height="500"
+            :height="700"
             :valid-range="validRange"
             :events="courseEvents"
             :weekends="false"
