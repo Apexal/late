@@ -195,14 +195,12 @@ const actions = {
 
         const calendarEvent = existingCourseCalendarEvents.find(ev => ev.extendedProperties.private.courseID === course.id && ev.extendedProperties.private.periodID === period.id);
         if (calendarEvent) {
-          logger.info('Updating event');
           let request = await calendar.events.patch({
             calendarId,
             eventId: calendarEvent.id,
             requestBody: data
           });
         } else {
-          logger.info('Created event');
           let request = await calendar.events.insert({
             calendarId,
             requestBody: data

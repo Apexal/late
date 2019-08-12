@@ -116,10 +116,16 @@ const actions = {
    * @param {Object} course The course to update with its new properties and values
    * @returns {Object} The updatedCourse returned from the POST api call
    */
-  async UPDATE_COURSE ({ commit }, course) {
+  async UPDATE_COURSE ({ commit, rootState }, course) {
     const request = await axios.post(`/courses/${course._id}`, course);
     const updatedCourse = request.data.updatedCourse;
     commit('UPDATE_COURSE', updatedCourse);
+
+    // Check if GCal has to be updated
+    if (rootState.auth.user.integrations.google.calendarIDs.courseSchedule) {
+      axios.post('/google/courseschedule', { termCode: course.termCode });
+    }
+
     return updatedCourse;
   },
   async REMOVE_COURSE ({ commit }, courseID) {
