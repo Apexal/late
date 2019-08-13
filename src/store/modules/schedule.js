@@ -88,6 +88,11 @@ const getters = {
       .flat();
 
     return events;
+  },
+  roomIntoLocation: state => location => {
+    const locationParts = location.split(' ');
+    return locationParts.slice(0, locationParts.length - 1).join(' ') +
+          ', Troy, NY 12180';
   }
 };
 

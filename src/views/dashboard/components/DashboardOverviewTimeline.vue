@@ -72,7 +72,12 @@
                 {{ periodType(event.period.type) }}
               </span>
               <br>
-              <i class="has-text-grey">{{ event.period.location }}</i>
+              <i class="has-text-grey">{{ event.period.location }}<a
+                class="icon fa fa-map-marker-alt location-link"
+                :href="'https://maps.google.com/?q=' + roomIntoLocation(event.period.location)"
+                title="Open in Google Maps"
+                target="_blank"
+              /></i>
             </template>
           </p>
         </div>
@@ -119,6 +124,9 @@ export default {
     }
   },
   methods: {
+    roomIntoLocation (location) {
+      return this.$store.getters.roomIntoLocation(location);
+    },
     course (p) {
       return this.$store.getters.getCourseFromPeriod(p);
     },
@@ -174,5 +182,15 @@ export default {
 
 .timeline {
   padding-left: 20px;
+}
+
+i .location-link {
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+i:hover .location-link {
+  opacity: 1;
 }
 </style>

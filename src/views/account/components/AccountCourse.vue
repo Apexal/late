@@ -55,7 +55,14 @@
                   <span class="has-text-grey-light">-</span>
                   {{ time(p.end) }}
                 </td>
-                <td>{{ p.location }}</td>
+                <td>
+                  {{ p.location }}<a
+                    class="icon fa fa-map-marker-alt location-link"
+                    :href="'https://maps.google.com/?q=' + roomIntoLocation(p.location)"
+                    title="Open in Google Maps"
+                    target="_blank"
+                  />
+                </td>
                 <td>{{ type(p.type) }}</td>
               </tr>
             </tbody>
@@ -414,6 +421,9 @@ export default {
     }
   },
   methods: {
+    roomIntoLocation (location) {
+      return this.$store.getters.roomIntoLocation(location);
+    },
     addLink () {
       this.editedLinks.push(this.newLink);
       this.newLink = '';
@@ -607,5 +617,15 @@ export default {
   .add-period {
     cursor: pointer;
   }
+}
+
+td .location-link {
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+td:hover .location-link {
+  opacity: 1;
 }
 </style>

@@ -20,7 +20,14 @@
           <span class="has-text-grey-light">-</span>
           {{ time(p.end) }}
         </td>
-        <td>{{ p.location }}</td>
+        <td>
+          {{ p.location }}<a
+            class="icon fa fa-map-marker-alt location-link"
+            :href="'https://maps.google.com/?q=' + roomIntoLocation(p.location)"
+            title="Open in Google Maps"
+            target="_blank"
+          />
+        </td>
         <td>{{ type(p.type) }}</td>
       </tr>
     </tbody>
@@ -39,6 +46,9 @@ export default {
     }
   },
   methods: {
+    roomIntoLocation (location) {
+      return this.$store.getters.roomIntoLocation(location);
+    },
     time: t => {
       const dt = moment(t, 'Hmm', true);
       if (dt.hours() === 12 && dt.minutes() === 0) {
@@ -66,4 +76,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+td .location-link {
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+td:hover .location-link {
+  opacity: 1;
+}
 </style>
