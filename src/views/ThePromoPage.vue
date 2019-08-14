@@ -50,7 +50,7 @@
       >
         <b>LATE</b> is currently in closed BETA and is not available to the
         general student body yet. Interested students can be added to the wait
-        list by logging in and will be notified when we publicly launch in
+        list below and will be notified when we publicly launch in
         <b>Fall 2019.</b>
       </p>
 
@@ -87,7 +87,7 @@
           class="column is-one-third-fullhd is-half"
         >
           <div
-            class="box has-background-dark promo"
+            class="box has-background-dark is-unselectable promo"
             @mouseenter="promoMouseEnter"
             @mouseleave="promoMouseLeave"
           >
@@ -146,12 +146,12 @@ export default {
         {
           title: 'Collaborate with your peers',
           description: 'Find students in your courses looking to form study groups, or create groups assignments to schedule group meetings to work. LATE will handle finding the rimes that work for everyone!',
-          imageName: 'availability.png'
+          videoName: 'collaborate.mp4'
         },
         {
           title: 'Use integrated student tools',
           description: 'Use LATE\'s grade calculators, work timers, and more tools which integrate with your courses and courseload. You don\'t even need to use LATE to use them!',
-          imageName: 'availability.png'
+          videoName: 'tools.mp4'
         },
         {
           title: 'And much, much more!',
@@ -198,9 +198,13 @@ export default {
   margin: 0;
   width: 100%;
   max-width: unset;
+
 }
 .promo-container {
   padding: 0px !important;
+  span.icon {
+    margin-right: 0 !important;
+  }
 }
 
 .splash {
@@ -247,7 +251,7 @@ export default {
 }
 
 .promo-container hr {
-  margin: 3em;
+  margin: 2em 0;
   background-color: darkgrey;
 }
 
@@ -265,21 +269,28 @@ export default {
 .promo-container .desc-container {
   background-color: white;
   padding: 20px 10px;
+
+  p.desc {
+    font-size: 1.2em;
+    padding: 15px 0;
+  }
 }
 
 .promos {
 
-  max-width: 95vw;
+  max-width: 90vw;
   .promo {
     transition: 0.2s;
     text-align: center;
     cursor: pointer;
+    //cursor:url('/img/icons/favicon.ico'), auto;
 
     .title {
       color: white;
     }
 
     .example {
+      //border: 2px solid white;
       border-radius: 6px;
       margin-top: 10px;
       overflow: hidden;
@@ -311,7 +322,5 @@ export default {
   margin-bottom: -10px;
 }
 
-span.icon {
-  margin-right: 0 !important;
-}
+
 </style>
