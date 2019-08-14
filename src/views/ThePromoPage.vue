@@ -59,97 +59,46 @@
           href="/auth/login"
           class="join-beta button is-primary is-large"
           title="Log in to LATE beta"
-        >Register</a>
+        >
+          <span class="icon">
+            <i class="fas fa-sign-in-alt" />
+          </span>
+          Join Waitlist</a>
         <a
           href="https://github.com/Apexal/late"
           class="the-other-button button is-secondary is-large"
           title="Check our our open-source repository"
-        >GitHub</a>
+          target="_blank"
+        >
+          <span class="icon">
+            <i class="fab fa-github" />
+
+          </span>
+
+          View Source</a>
       </p>
       <hr>
       <div
         class="columns is-multiline promos"
         style="margin: 0 auto; max-width: 80vw;"
       >
-        <div class="column promo is-third">
-          <h2 class="is-size-3 title">
-            Tell us when you would like to work.
-          </h2>
-          <h3 class="is-size-6 tagline">
-            Not everybody's a workaholic. Late will adjust itself to fit other
-            committments, your social life, or just you time :)
-          </h3>
-          <img
-            class="example"
-            src="/availability.png"
-          >
-        </div>
-        <div class="column promo is-third">
-          <h2 class="is-size-3 title">
-            Import schedule from SIS.
-          </h2>
-          <h3 class="is-size-6 tagline">
-            No more manual scheduling. LATE grabs your classes automatically
-            using your SIS login for hassle-free setup. Reimport your schedule
-            when you add or drop a class and we take care of the rest.
-          </h3>
-          <img
-            class="example"
-            src="/importSchedule.png"
-          >
-        </div>
-        <div class="column promo is-third">
-          <h2 class="is-size-3 title">
-            See a clear layout of your day.
-          </h2>
-          <h3 class="is-size-6 tagline">
-            All of your classes at a glance. Be the lazy student you always
-            dreamed of.
-          </h3>
-          <img
-            class="example"
-            src="/dailyWorkSchedule.png"
-          >
-        </div>
-        <div class="column promo is-third">
-          <h2 class="is-size-3 title">
-            Keeps track of upcoming assignments and tests.
-          </h2>
-          <h3 class="is-size-6 tagline">
-            No more planners or fiddling with syllabi. LATE helps you stay on
-            top of your work.
-          </h3>
-          <img
-            class="example"
-            src="/upcomingAssignments.png"
-          >
-        </div>
-        <div class="column promo is-third">
-          <h2 class="is-size-3 title">
-            Add, edit, and remove assignments and exams.
-          </h2>
-          <h3 class="is-size-6 tagline">
-            Quickly edit and remove your assessments and tests with the click of
-            a button.
-          </h3>
-          <img
-            class="example"
-            src="/addAssignments.png"
-          >
-        </div>
-        <div class="column promo is-third">
-          <h2 class="is-size-3 title">
-            Be notified when it's time to work.
-          </h2>
-          <h3 class="is-size-6 tagline">
-            Using integrations like SMS, email, and Discord, LATE will
-            automatically remind you of scheduled study blocks and upcoming
-            work.
-          </h3>
-          <img
-            class="example"
-            src="/notify.png"
-          >
+        <div
+          v-for="(promo, index) in promos"
+          :key="index"
+          class="column is-one-third"
+        >
+          <div class="box has-background-dark promo">
+            <h2 class="is-size-3 title">
+              {{ promo.title }}
+            </h2>
+            <h3 class="is-size-6 description">
+              {{ promo.description }}
+            </h3>
+            <img
+              class="example"
+              :src="'/img/promos/' + promo.imageName"
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -162,7 +111,39 @@ export default {
   data () {
     return {
       testers: 0,
-      waitlist: 0
+      waitlist: 0,
+      promos: [
+        {
+          title: 'Import your info from SIS',
+          description: 'You don\'t need to tell us your name or major or course schedule! Let us grab that for you!',
+          imageName: 'availability.png'
+        },
+        {
+          title: 'Manage your entire courseload',
+          description: 'Just tell LATE what assignments and tests you have and it will handle the rest.',
+          imageName: 'availability.png'
+        },
+        {
+          title: 'Get notified to study/work',
+          description: 'Connect to SMS, Discord, Google Calendar, and more to receive reminders and manage your courseload.',
+          imageName: 'availability.png'
+        },
+        {
+          title: 'Collaborate with your peers',
+          description: 'Find students in your courses looking to form study groups, or create groups assignments that .',
+          imageName: 'availability.png'
+        },
+        {
+          title: 'Use integrated student tools',
+          description: 'Use LATE\'s grade calculators, work timers, and more tools which integrate with your courses and courseload.',
+          imageName: 'availability.png'
+        },
+        {
+          title: 'And much, much more!',
+          description: 'New features are constantly being added to LATE by the student team that works on it!',
+          imageName: 'availability.png'
+        }
+      ]
     };
   },
   computed: {
@@ -245,7 +226,7 @@ export default {
 }
 
 .main-title {
-  font-size: 3.5em;
+  font-size: 4em;
 }
 
 .main-title,
@@ -261,52 +242,29 @@ export default {
 }
 
 .promos {
-  text-align: center;
+
   max-width: 95vw;
-
   .promo {
-    padding: 10px 20px 10px 20px;
-    min-width: 270px; //Adjust number of columns on devices. 300+ breaks mobile.
-    margin: 10px;
-
-    //Copied "box" styles
-    background-color: #fff;
-    border-radius: 6px;
-    -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1),
-      0 0 0 1px rgba(10, 10, 10, 0.1);
-    box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
-    color: #4a4a4a;
     transition: 0.2s;
-    -webkit-transition: 0.2s;
-
-    //Example images
-    .example {
-      width: 100%;
-      height: auto;
-    }
+    text-align: center;
+    cursor: pointer;
 
     .title {
-      margin-bottom: 5px;
+      color: white;
     }
 
-    .tester-count {
-      margin-top: 0px;
-      margin-bottom: 10px;
+    img.example {
+      border-radius: 6px;
+      margin-top: 10px;
     }
 
-    .tagline {
-      margin-bottom: 10px;
-      height: 6.7em; //Standardizes height so image offset is the same
-    }
+    color: white;
   }
 
-  .column:hover {
-    -webkit-box-shadow: 2px 3px 5px rgba(10, 10, 10, 0.3),
-      0 0 0 1px rgba(10, 10, 10, 0.1);
+  .promo:hover {
     box-shadow: 2px 3px 5px rgba(10, 10, 10, 0.3),
       0 0 0 1px rgba(10, 10, 10, 0.1);
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
+
   }
 }
 
