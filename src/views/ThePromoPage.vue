@@ -128,14 +128,14 @@ export default {
       waitlist: 0,
       promos: [
         {
-          title: 'Import your info from SIS',
-          description: 'You don\'t need to tell us your name or major or course schedule! Let us grab that for you! You can then fill in the blanks like what times weekly you are not able to study/work.',
+          title: 'Login with your RPI account',
+          description: 'No need to make an account! Plus, you don\'t need to tell us your name or major or course schedule! Let us grab that from SIS for you!',
           videoName: 'SIS.mp4'
         },
         {
           title: 'Manage your entire courseload',
           description: 'Just tell LATE what assignments and tests you have and it will handle the rest. You\'ll always have a clear overview of everything you need to do.',
-          imageName: 'availability.png'
+          videoName: 'coursework.mp4'
         },
         {
           title: 'Get notified to study/work',
