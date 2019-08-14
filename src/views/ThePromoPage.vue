@@ -272,4 +272,8 @@ export default {
   margin-top: 20px;
   margin-bottom: -10px;
 }
+
+span.icon {
+  margin-right: 0 !important;
+}
 </style>
