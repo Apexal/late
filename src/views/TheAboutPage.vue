@@ -2,7 +2,7 @@
 <template>
   <section class="section">
     <h1 class="title">
-      About Us
+      About LATE
     </h1>
     <div class="tile is-ancestor">
       <div class="tile is-8 is-vertical is-parent">
@@ -15,16 +15,21 @@
               The Goal
             </h1>
             <h4 class="subtitle has-text-grey">
-              What LATE can do for you
+              Making RPI a little less stressful
             </h4>
             <p>
-              LATE is an all-in-one academic planner, assignment tracker, and
-              class scheduler. LATE provides the user with a clear list of all
-              upcoming assignments and tests, automatically allocates free time
-              in a user’s calendar to work on/study for assignments/tests,
-              reminds users to follow the allocated study/work times through
-              multiple methods, and accounts for missing scheduled work by
-              reallocating work times, keeping your schedule in mind.
+              <b>LATE</b> is a free, open-source web app for RPI students that offers a variety of
+              functions and tools to make your life at RPI a little less stressful.
+              It manages all of your assignments and exams each semester, lets you
+              schedule when you want to work/study for them, provides you with recommendations
+              for working and studying, and keeps you on schedule by reaching out to you over SMS, Discord, or wherever you like!
+
+              It can also connect to your Google Calendar to add your course schedule and sync the times you are scheduled to work/study
+              on LATE with your Google Calendar!
+            </p>
+            <p>
+              It also provides a handful of useful student tools for users and non-users such as grade calculators, a work/study timer,
+              a move-in checklist creator, and more.
             </p>
           </div>
         </div>
@@ -63,6 +68,12 @@
             Project Contributors
           </h4>
           <ul>
+            <li>
+              <b-tag type="is-success">
+                Project Lead
+              </b-tag>
+              Frank Matranga
+            </li>
             <li
               v-for="c in contributors"
               :key="c"
@@ -123,7 +134,6 @@ export default {
         'https://www.youtube.com/embed/aB93j7LUK0w'
       ],
       contributors: [
-        'Frank Matranga',
         'Zach Love',
         'Christie Nero',
         'Abigail Medina',

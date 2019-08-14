@@ -64,18 +64,17 @@
             <i class="fas fa-sign-in-alt" />
           </span>
           Join Waitlist</a>
-        <a
-          href="https://github.com/Apexal/late"
+        <router-link
+          :to="{ name: 'about' }"
           class="the-other-button button is-secondary is-large"
-          title="Check our our open-source repository"
-          target="_blank"
+          title="What exactly is LATE?"
         >
           <span class="icon">
-            <i class="fab fa-github" />
-
+            <i class="fas fa-info" />
           </span>
 
-          View Source</a>
+          Learn More
+        </router-link>
       </p>
       <hr>
       <div
@@ -115,32 +114,32 @@ export default {
       promos: [
         {
           title: 'Import your info from SIS',
-          description: 'You don\'t need to tell us your name or major or course schedule! Let us grab that for you!',
+          description: 'You don\'t need to tell us your name or major or course schedule! Let us grab that for you! You can then fill in the blanks like what times weekly you are not able to study/work.',
           imageName: 'availability.png'
         },
         {
           title: 'Manage your entire courseload',
-          description: 'Just tell LATE what assignments and tests you have and it will handle the rest.',
+          description: 'Just tell LATE what assignments and tests you have and it will handle the rest. You\'ll always have a clear overview of everything you need to do.',
           imageName: 'availability.png'
         },
         {
           title: 'Get notified to study/work',
-          description: 'Connect to SMS, Discord, Google Calendar, and more to receive reminders and manage your courseload.',
+          description: 'Connect to SMS, Discord, Google Calendar, and more to receive reminders and manage your courseload. Chat with our bots to manage your work.',
           imageName: 'availability.png'
         },
         {
           title: 'Collaborate with your peers',
-          description: 'Find students in your courses looking to form study groups, or create groups assignments that .',
+          description: 'Find students in your courses looking to form study groups, or create groups assignments to schedule group meetings to work. LATE will handle finding the rimes that work for everyone!',
           imageName: 'availability.png'
         },
         {
           title: 'Use integrated student tools',
-          description: 'Use LATE\'s grade calculators, work timers, and more tools which integrate with your courses and courseload.',
+          description: 'Use LATE\'s grade calculators, work timers, and more tools which integrate with your courses and courseload. You don\'t even need to use LATE to use them!',
           imageName: 'availability.png'
         },
         {
           title: 'And much, much more!',
-          description: 'New features are constantly being added to LATE by the student team that works on it!',
+          description: 'New features are constantly being added to LATE by the student team that works on it! We add features that solve the problems we encounter each day on campus.',
           imageName: 'availability.png'
         }
       ]
