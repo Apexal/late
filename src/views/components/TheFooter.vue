@@ -2,7 +2,11 @@
 <template>
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">
-      An
+      A
+      <span
+        class="has-text-grey"
+        @click="changeAdjective"
+      >{{ randomAdjective }}</span>
       <router-link
         :to="{ name: 'about' }"
         title="View project proposal and contributors"
@@ -63,8 +67,20 @@
 </template>
 
 <script>
+import adjectives from '@/modules/adjectives';
+
 export default {
-  name: 'TheFooter'
+  name: 'TheFooter',
+  data () {
+    return {
+      randomAdjective: adjectives[Math.floor(Math.random() * adjectives.length)]
+    };
+  },
+  methods: {
+    changeAdjective () {
+      this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+    }
+  }
 };
 </script>
 
