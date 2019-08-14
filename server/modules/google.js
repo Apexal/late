@@ -116,7 +116,9 @@ const actions = {
       auth: googleAuth
     });
 
-    for (let course of courses) {
+    for (let i = 0; i < courses.length; i++) {
+      const course = courses[i];
+
       if (course.periods.length === 0) continue;
 
       // Determine if this was done already
@@ -159,8 +161,7 @@ const actions = {
 
         let locationParts = period.location.split(' ');
         let location =
-          locationParts.slice(0, locationParts.length - 1).join(' ') +
-          ', Troy, NY 12180';
+          `${locationParts.slice(0, locationParts.length - 1).join(' ')} #${locationParts[locationParts.length - 1]}, Troy, NY 12180`;
 
         const data = {
           summary: `${course.title} ${periodTypes[period.type] ||
@@ -169,6 +170,7 @@ const actions = {
             course.credits
           } credits`,
           location,
+          colorId: i % 12,
           source: {
             title: 'Course Page',
             url: process.env.BASE_URL + '/account/courseschedule'
