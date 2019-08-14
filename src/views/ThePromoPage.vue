@@ -94,9 +94,24 @@
               {{ promo.description }}
             </h3>
             <img
+              v-if="promo.imageName"
               class="example"
               :src="'/img/promos/' + promo.imageName"
             >
+            <div
+              v-else-if="promo.videoName"
+              class="example"
+            >
+              <video
+                @mouseover="e => e.target.play()"
+                @mouseout="e => e.target.load()"
+              >
+                <source
+                  :src="'/video/promos/' + promo.videoName"
+                  type="video/mp4"
+                >
+              </video>
+            </div>
           </div>
         </div>
       </div>
@@ -115,7 +130,7 @@ export default {
         {
           title: 'Import your info from SIS',
           description: 'You don\'t need to tell us your name or major or course schedule! Let us grab that for you! You can then fill in the blanks like what times weekly you are not able to study/work.',
-          imageName: 'availability.png'
+          videoName: 'SIS.mp4'
         },
         {
           title: 'Manage your entire courseload',
@@ -125,7 +140,7 @@ export default {
         {
           title: 'Get notified to study/work',
           description: 'Connect to SMS, Discord, Google Calendar, and more to receive reminders and manage your courseload. Chat with our bots to manage your work.',
-          imageName: 'availability.png'
+          videoName: 'SMS.mp4'
         },
         {
           title: 'Collaborate with your peers',
@@ -252,9 +267,10 @@ export default {
       color: white;
     }
 
-    img.example {
+    .example {
       border-radius: 6px;
       margin-top: 10px;
+      overflow: hidden;
     }
 
     color: white;
