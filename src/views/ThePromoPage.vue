@@ -84,9 +84,13 @@
         <div
           v-for="(promo, index) in promos"
           :key="index"
-          class="column is-one-third"
+          class="column is-one-third-fullhd is-half"
         >
-          <div class="box has-background-dark promo">
+          <div
+            class="box has-background-dark promo"
+            @mouseenter="promoMouseEnter"
+            @mouseleave="promoMouseLeave"
+          >
             <h2 class="is-size-3 title">
               {{ promo.title }}
             </h2>
@@ -102,10 +106,7 @@
               v-else-if="promo.videoName"
               class="example"
             >
-              <video
-                @mouseover="e => e.target.play()"
-                @mouseout="e => e.target.load()"
-              >
+              <video>
                 <source
                   :src="'/video/promos/' + promo.videoName"
                   type="video/mp4"
@@ -140,7 +141,7 @@ export default {
         {
           title: 'Get notified to study/work',
           description: 'Connect to SMS, Discord, Google Calendar, and more to receive reminders and manage your courseload. Chat with our bots to manage your work.',
-          videoName: 'SMS.mp4'
+          videoName: 'reminders.mp4'
         },
         {
           title: 'Collaborate with your peers',
@@ -174,6 +175,17 @@ export default {
       let request = await this.$http.get('/students/counts');
       this.testers = request.data.testers;
       this.waitlist = request.data.waitlist;
+    },
+    promoMouseEnter (e) {
+      const videoEl = e.target.querySelector('video');
+      if (!videoEl) return;
+      videoEl.play();
+    },
+    promoMouseLeave (e) {
+      const videoEl = e.target.querySelector('video');
+      if (!videoEl) return;
+      videoEl.pause();
+      videoEl.currentTime = 0;
     }
   }
 };
@@ -271,6 +283,17 @@ export default {
       border-radius: 6px;
       margin-top: 10px;
       overflow: hidden;
+
+      video {
+        filter: blur(2px);
+        transition: filter 0.5s;
+      }
+    }
+
+    &:hover {
+      .example video {
+        filter: blur(0);
+      }
     }
 
     color: white;
