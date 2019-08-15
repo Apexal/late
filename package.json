@@ -19,6 +19,7 @@
     "@fullcalendar/interaction": "^4.2.0",
     "@fullcalendar/timegrid": "^4.2.0",
     "@fullcalendar/vue": "^4.2.2",
+    "@octokit/rest": "^16.28.7",
     "@sendgrid/mail": "^6.4.0",
     "axios": "^0.18.1",
     "btoa": "^1.2.1",
