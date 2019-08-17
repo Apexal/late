@@ -87,7 +87,7 @@
           class="column is-one-third-fullhd is-half"
         >
           <div
-            class="box has-background-dark is-unselectable promo"
+            class="box is-unselectable promo"
             @mouseenter="promoMouseEnter"
             @mouseleave="promoMouseLeave"
           >
@@ -217,7 +217,11 @@ export default {
   z-index: -1;
   background: url(/splash-bg.png);
   background-size: cover;
-  filter: blur(5px);
+  //filter: blur(5px);
+}
+
+.tester-count {
+  margin-top: -20px;
 }
 
 #sis-man-holder {
@@ -266,6 +270,10 @@ export default {
   text-shadow: 0 1px 0 #52413c, 0px 0px 50px #52413c;
 }
 
+.desc-container {
+  margin-top: 10px;
+}
+
 .promo-container .desc-container {
   background-color: white;
   padding: 20px 10px;
@@ -285,9 +293,6 @@ export default {
     cursor: pointer;
     //cursor:url('/img/icons/favicon.ico'), auto;
 
-    .title {
-      color: white;
-    }
 
     .example {
       //border: 2px solid white;
@@ -296,18 +301,17 @@ export default {
       overflow: hidden;
 
       video {
-        filter: blur(2px);
+        filter: brightness(0.9);
         transition: filter 0.5s;
       }
     }
 
     &:hover {
       .example video {
-        filter: blur(0);
+        filter: brightness(1);
       }
     }
 
-    color: white;
   }
 
   .promo:hover {

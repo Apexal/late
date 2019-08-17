@@ -184,6 +184,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.tabs {
+  margin-top: 20px;
+}
+
 .comment-count {
   margin-left: 3px;
 }

@@ -205,6 +205,12 @@ export default {
   border-bottom-right-radius: 0;
 }
 
+.assignment {
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
 .touch-complete-button {
   height: 2em;
   border-top-left-radius: 0;
