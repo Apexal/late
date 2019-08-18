@@ -9,6 +9,7 @@ const Block = require('../blocks/blocks.model');
 
 /**
  * Only available in development mode. Login as a user given their ID.
+ * The url query must have `loginAs` set to the student rcs_id
  *
  * @param {Koa session} ctx
  **/
@@ -28,15 +29,21 @@ async function loginAs (ctx) {
     student = Student({
       rcs_id: ctx.session.cas_user,
       joined_date: new Date(),
-      last_login: new Date()
+      lastLogin: new Date()
     });
     await student.save();
     logger.info('Created new user for testing.');
   }
   ctx.state.user = student;
+
   await getUser(ctx);
 }
 
+/**
+ * Return the logged in user.
+ *
+ * @param {Koa context} ctx
+ */
 async function getUser (ctx) {
   logger.info(`Getting user info for ${ctx.state.user.rcs_id}`);
 
@@ -45,6 +52,11 @@ async function getUser (ctx) {
   });
 }
 
+/**
+ * For administrators, get all student documents.
+ *
+ * @param {Koa context} ctx
+ */
 async function getStudents (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!');
@@ -55,6 +67,13 @@ async function getStudents (ctx) {
   ctx.ok({ students });
 }
 
+/**
+ * For administrators, get a specific student's document.
+ * If the url query includes `counts` then it will return
+ * how many assignments, exams, and blocks the student owns.
+ *
+ * @param {*} ctx
+ */
 async function getStudent (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!');
@@ -83,7 +102,7 @@ async function getStudent (ctx) {
  * Edit a student's properties iff the logged in user is an admin.
  *
  * Request body should be object of updates, e.g.:
- * { grad_year: 2022, name: { first: 'Foo', last: 'bar' } }
+ * { graduationYear: 2022, name: { first: 'Foo', last: 'bar' } }
  *
  * @param {Koa context} ctx
  * @returns The updated student

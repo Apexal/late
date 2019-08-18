@@ -5,6 +5,6 @@ const Ctrl = require('./todos.controller');
 
 router.get('/', Ctrl.getTodos);
 router.post('/', Ctrl.createTodo);
-router.delete('/:todoID', Ctrl.removeTodo);
+router.delete('/:todoID', Ctrl.deleteTodo);
 
 module.exports = router.routes();

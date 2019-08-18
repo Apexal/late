@@ -12,14 +12,21 @@ const schema = new Schema(
       required: true
     },
     title: { type: String, required: true, minlength: 3, maxlength: 200 },
-    description: { type: String, maxlength: 4000 },
+    description: { type: String, maxlength: 4000, default: '' },
     dueDate: { type: Date, required: true },
     courseCRN: { type: String, required: true }, // CRN
     timeEstimate: { type: Number, required: true, min: 0, max: 696969420 },
     timeRemaining: { type: Number, required: true },
     priority: { type: Number, min: 1, max: 5, default: 3 },
+    termCode: {
+      type: String
+    },
     comments: [
       {
+        _student: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student'
+        },
         addedAt: { type: Date, required: true },
         body: { type: String, minlength: 1, maxlength: 2000, required: true }
       }
@@ -36,13 +43,26 @@ const schema = new Schema(
       type: Boolean,
       default: false
     },
-    recurringOriginal: {
+    _recurringOriginal: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Assignment'
     },
     recurringdays: {
       type: Array,
       default: []
+    },
+    shared: {
+      type: Boolean,
+      default: false
+    },
+    sharedWith: {
+      // rcs_id's
+      type: Array,
+      default: []
+    },
+    confirmed: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }
@@ -50,45 +70,6 @@ const schema = new Schema(
 
 schema.set('toObject', { getters: true, virtuals: true });
 schema.set('toJSON', { getters: true, virtuals: true });
-
-schema.statics.getAllMissedAssignmentsForDay = function (day) {
-  const now = new Date();
-  let query = {
-    _student: '5bd388faa64e550215f688ca', // matraf for testing
-    completed: false,
-    dueDate: {
-      $gte: day,
-      $lt: now
-    }
-  };
-
-  return this.model('Assignment')
-    .find(query)
-    .select(
-      '_student courseCRN title description dueDate priority timeRemaining'
-    )
-    .populate('_student', 'name semester_schedules rcs_id rin integrations')
-    .populate('_blocks')
-    .sort('dueDate')
-    .sort('-priority')
-    .exec();
-};
-
-schema.statics.getAllUpcomingAssignments = function () {
-  let query = {
-    dueDate: {
-      $gte: new Date()
-    }
-  };
-
-  return this.model('Assignment')
-    .find(query)
-    .populate('_student', 'rcs_id rin integrations')
-    .populate('_blocks')
-    .sort('dueDate')
-    .sort('-priority')
-    .exec();
-};
 
 schema.virtual('assessmentType').get(function () {
   return 'assignment';

@@ -1,146 +1,162 @@
 <template>
   <div id="app">
-    <div id="content">
-      <vue-progress-bar />
-      <TheHeader ref="header" />
-      <Loading
-        :active.sync="loading"
-        :is-full-page="true"
-      />
-      <template v-if="loggedIn">
-        <CourseModal
-          :open="courseModalOpen"
-          :course="courseModalData"
-        />
-        <AnnouncementsModal
-          :open="announcementsModalOpen"
-          :announcements="announcements"
-          @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
-        />
-      </template>
-      <template v-if="!loading">
-        <AssignmentsModalAdd
-          :open="addAssignmentModalExpanded"
-          @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-        />
-        <ExamsModalAddRedux
-          :open="addExamModalExpanded"
-          @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
-        />
-        <transition name="slide-fade">
-          <span
-            v-if="loggedIn && !expanded"
-            class="icon button is-dark toggle-sidebar"
-            title="Toggle sidebar."
-            @click="$store.commit('TOGGLE_SIDEBAR')"
-          >
-            <i
-              :class="'fas ' + (expanded ? 'fas fa-chevron-up fa-rotate-270' : 'fas fa-chevron-up fa-rotate-90')"
-            />
-          </span>
-        </transition>
-        <div
-          class="columns"
-          style="margin-right: initial;"
-        >
-          <transition name="slide-fade">
-            <div
-              v-if="loggedIn && expanded"
-              id="sidebar-column"
-              class="column is-3 child-view sidebar-holder"
-            >
-              <TheSidebar
-                ref="sidebar"
-                @sidebar-loaded="onResize"
-              />
-            </div>
-          </transition>
+    <vue-progress-bar />
+    <TheHeader ref="header" />
 
-          <div
-            id="content"
-            :class="[loggedIn && expanded ? 'columm' : 'container', {'no-sidebar': !expanded}]"
-            style="flex: 1;"
-          >
-            <section
-              v-if="loggedIn && !$route.path.includes('/profile') && !isSetup"
-              class="section no-bottom-padding"
-            >
-              <div class="notification is-warning">
-                <b>NOTICE:</b> You will not be able to use
-                <b>LATE</b> until you have
-                <router-link to="/profile">
-                  set up your account.
-                </router-link>
-              </div>
-            </section>
-            <section
-              v-if="pinnedAnnouncements.length > 0"
-              class="section pinned-announcements"
-              title="Pinned announcement"
-            >
-              <details
-                v-for="ann in pinnedAnnouncements"
-                :key="ann._id"
-                class="notification pinned-announcement is-primary"
-              >
-                <summary>
-                  <i class="fas fa-thumbtack" />
-                  <strong>Pinned Announcement:</strong>
-                  {{ ann.title }}
-                  <a
-                    class="delete is-pulled-right"
-                    @click="dismissPinnedAnnouncement(ann._id)"
-                  />
-                </summary>
-                {{ ann.body }}
-              </details>
-            </section>
-            <transition
-              name="fade"
-              mode="out-in"
-            >
-              <router-view />
-            </transition>
-          </div>
+    <main id="content">
+      <b-loading
+        :is-full-page="true"
+        :active="!loaded"
+        :can-cancel="false"
+      />
+
+      <div :class="appClass">
+        <span
+          v-if="!sidebarExpanded"
+          class="tag icon toggle-sidebar has-text-dark"
+          title="Open sidebar"
+          @click="$store.commit('TOGGLE_SIDEBAR')"
+        >
+          <i class="fas fa-angle-right" />
+        </span>
+        <div
+          v-if="loggedIn && sidebarExpanded"
+          id="sidebar-column"
+          class="column is-3 sidebar-holder"
+        >
+          <TheSidebar ref="sidebar" />
         </div>
-      </template>
-    </div>
+        <div :class="[loggedIn ? 'column' : '']">
+          <template v-if="loggedIn">
+            <PinnedAnnouncements v-if="loggedIn" />
+            <AssignmentsModalAdd
+              v-if="!onBreak"
+              :open="addAssignmentModalExpanded"
+              @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+            />
+            <ExamsModalAddRedux
+              v-if="!onBreak"
+              :open="addExamModalExpanded"
+              @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+            />
+            <CourseModal
+              v-if="!onBreak"
+              :open="courseModalOpen"
+              :course="courseModalData"
+            />
+            <ToursModal
+              :open="toursModalOpen"
+              @close-modal="$store.commit('TOGGLE_TOURS_MODAL')"
+            />
+            <v-tour
+              v-if="tour"
+              name="custom"
+              :steps="tour.steps"
+              :callbacks="tourCallbacks"
+            />
+            <AnnouncementsModal
+              :open="announcementsModalOpen"
+              :announcements="announcements"
+              @close-modal="
+                $store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)
+              "
+            />
+
+            <SISMan />
+            <AssessmentsAddFAB v-if="!onBreak" />
+            <StudyToolsTimerOverlay
+              v-if="$route.path != '/studytools'"
+              :open="studyToolsTimerOpen"
+            />
+          </template>
+          <transition
+            name="fade"
+            mode="out-in"
+          >
+            <router-view />
+          </transition>
+        </div>
+      </div>
+    </main>
+
     <TheFooter id="footer" />
   </div>
 </template>
+
 <script>
+import moment from 'moment';
+
 import TheHeader from '@/views/components/TheHeader';
 import TheFooter from '@/views/components/TheFooter';
-import TheSidebar from '@/views/components/sidebar/TheSidebar';
-import AssignmentsModalAdd from '@/views/components/assignments/AssignmentsModalAddRedux';
-import ExamsModalAddRedux from '@/views/components/exams/ExamsModalAddRedux';
-import CourseModal from '@/views/components/courses/CourseModal';
-import AnnouncementsModal from '@/views/components/announcements/AnnouncementsModal';
+import TheSidebar from '@/views/sidebar/components/TheSidebar';
+import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAddRedux';
+import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux';
+import CourseModal from '@/views/courses/components/CourseModal';
+import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements';
+import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal';
+import ToursModal from '@/views/components/ToursModal';
 
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
+import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
+import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
+
+import SISMan from '@/views/sisman/components/SISMan';
+
+import account from '@/mixins/account';
 
 export default {
   name: 'LATE',
   components: {
-    Loading,
     CourseModal,
+    ToursModal,
     TheHeader,
     TheSidebar,
     TheFooter,
     AssignmentsModalAdd,
     ExamsModalAddRedux,
-    AnnouncementsModal
+    AnnouncementsModal,
+    PinnedAnnouncements,
+    AssessmentsAddFAB,
+    StudyToolsTimerOverlay,
+    SISMan
+
   },
+  mixins: [account],
   data () {
     return {
       resizeTimeout: null,
-      loading: true
+      tourCallbacks: {
+        onStop: this.onTourStop
+      }
     };
   },
   computed: {
-    dismissedAnnouncementIDs () {
-      return this.$store.state.announcements.dismissedIDs;
+    loaded () {
+      return this.$store.state.loaded;
+    },
+    tour () {
+      return this.$store.getters.currentTour;
+    },
+    toursModalOpen () {
+      return this.$store.state.tours.modalOpen;
+    },
+    sidebarExpanded () {
+      return this.$store.state.sidebarExpanded;
+    },
+    homepage () {
+      return this.$route.meta.isHome && !this.loggedIn;
+    },
+    appClass () {
+      return {
+        'columns is-marginless': this.loggedIn && this.sidebarExpanded,
+        container: !this.loggedIn || !this.sidebarExpanded,
+        homepage: this.homepage
+      };
+    },
+    studyToolsTimerOpen () {
+      return (
+        this.$store.state.studytoolstimer.open &&
+        this.$route.name !== 'study-tools-timer'
+      );
     },
     courseModalData () {
       return this.$store.state.courseModal.current;
@@ -151,17 +167,8 @@ export default {
     announcementsModalOpen () {
       return this.$store.state.announcements.modalOpen;
     },
-    loggedIn () {
-      return this.$store.state.auth.isAuthenticated;
-    },
-    courses () {
-      return this.$store.getters.current_schedule;
-    },
     announcements () {
       return this.$store.getters.allAnnouncements;
-    },
-    pinnedAnnouncements () {
-      return this.$store.getters.pinnedAnnouncements;
     },
     addAssignmentModalExpanded () {
       return this.$store.state.addAssignmentModal.expanded;
@@ -169,168 +176,127 @@ export default {
     addExamModalExpanded () {
       return this.$store.state.addExamModal.expanded;
     },
-    expanded () {
-      return this.$store.state.sidebarExpanded;
-    },
-    isSetup () {
+    isUserSetup () {
       return this.$store.getters.isUserSetup;
+    },
+    sistext () {
+      return '                                              ,\n                                         ,⌐"▄└⌠ *▄\n                                       ╓▀  ▓▌▄▀ j█▀▄\n                                   ╓≈══▀═≡w█╓█▌ ▄███▄,,,\n                                 Ö███████████▀▀╜▀╙\'`. ╖`▀▀%\n                                 ▀███▀▀▀└   ,,▄▄▄▄▄▄▄`¥▀ ║  ▀▄\n                             ▄#*╙   ,▄▄#▀▀▀╙└,,,,"%███    ▌  `▀\n                         ,═"  ▄▄A▀╙`       ²█▀▀▀▀█  "█▌   █⌐╙▄▄▀\n                          ╓═"▄#MªΦµ          ,www,  `╗█   ║▌ █▀A█\n                      ,  █   ,+═══╓ ╓    ` A\'     █ ▌ █▌  ▐█ A▄▄█▄\n                      M ║⌐         ██▀  j█└  ╓▓Ω▌▄▀▄⌐▄█▌   █ ║█▄▐█\\,\n                     ▐  █  α, █▌▓▄█▀^    ⁿ▀w*▀▀▀▀▄▀,╣███   █H▐██ █▌█\n                     ▀ ▓M  ╙w▄▀█▌█                .ª└███   █▌▐██ ███Γ\n                    ▐ .█        JH   , , ,▓▄   ▓       █   █▌║██Γ███⌐\n                    ▌ ║█    ╓⌐   ▀▄▄▀█▄▄██▀l▄A▀▄▀╙½,   █   █▌▓██Γ███\n                    M ╡▌   Φ█▄═╓,  "▀▀█▄▄Φ▀└,Φ█▀¿ ▀   ▐▌   █M███▌██▀\n                 ,▄▀⌐ ╫▌    ▀▌▀▄▄▄└``  ,▄▄A▀▄▀▄╨      ╢M   █▄█▀██▓\n               ▄▀└¿▐⌐ █▌      "≈,▀▀▀▀▀▀▄▄#▀▄▄█▀Ä╓^ ▄▄▄█    ██▌¥╖ ▀═╓\n            ⁿ` ,A▀▄▀⌐ ╙▌        ⁿ═▄▄▄▌▄▄▄██████╨▄▄████½█═  ███▌▄▄ ,  "` \'▄\n         ^   ▄▌╝▀└  ⌐   "*═w▄▄╓╓,,J██████████▄▄██▀▀▀└¬╙   \'╙███▄ ║▌^    ▄▀\n         `µ ∩█       ⁿwç                        ,,▄▄▄▄▄▄██████▀█▀   ,═\n          ▓ ╞║∩        ╓▄█▀▀▀▀█▓▀███████████████▀▀▄████████▀█▓▀   ▄▀\n          ╙▌ Φ▌     ,*2÷▄▄▄▄▄▄█▄▄▄▄███▄▄▄▄▄▄▄▄▄▄████████▀▄#▀⌠▄*▄▄▀\n           ▀▄ ▀▄⌐ :╓▓#▀▀"└"═▄ ▄ ,,,▄▄▄▄▄▄██████████#K╨═   ▀▀▄▄████\n            `¥▀           `*▐▌ "*╙▀▀▀▀▀▀▀▀▀▀█▀▀▀▀L      ▄█▐█████▄▀\n             ▐⌐w█      └ "¥, ;▄▄▀ %      .▄▀ ▄▀╓▄⌐  ▄/½▄█▄▌█▄███▀\n               ╙▀▀▀K▀▀▀▓▀w;,▄█   " "  " "*▄ª╙ #^ «Φ╨ª▀██▌█▌█▀▓█\n              ,^    `    `    ` ─ ¬┘ ⁿ  ╨ ▌═Φ░╓A└,Γ ,▓█▀██`▄█└\n              *  -.╓▄J⌠⌠⌠,⌠,`   ```""""*****ⁿⁿⁿΦ▄▄▄⌐ █▀Γ``\n                              ▌`█⌐▌  -└╙╙▀█▀▀█▀▀▀▀▀▀▀\n                             AW▄▄█        ▌,,▐,\n                            ` \'╙██▀      ▐██═ ▐▌,▀▄█▄,         ,▄▄▄▄▄w,\n                      ▄▀▄▄¥ ▀  ▀█▄      .M██▀,▀█ █▀▄█▐▄∩^▄^▄ ^└      ╔▄▄╓\n   ,▄▄ΦK¥═≡≡≤, ╓≈╓▄╖▄Ñ▄█╙▓ ▄╙▀██▀▄█      ▄ ▄█▌▄█⌐▌██▌██▄█▌▄██═⌐ ╓▄#▀▀▀▀██▓\n ▄▀⌠           ▐M║█⌐█▌▐█▄█ ▀██ ██ ▀     ▐▌  █ ▀█.██ ▄▀╓▌ ███<*╙▄▄▓█████▀▀\n └ " Ö╓▄╓║▀▀▀▀███▄ █Ü╙▄ ███▓▄▄▄███╓▌     ▌  ║█▄███▄╓█w╝▀,▄▄▄███████▀▀\n  Φ████▄▓▄█▌██▀▀▀█▌w█ ║▄,████████▀▀       ▀ ╙▄▄▄▄█▓▄████████▀▀▀└`\n    ╙▀▀██████████████▄▄▄████████▓Φ███▄▄▄▄▄▄███████████▄▄══¬\n               ,▄≤≡▀▀██▀▀▀███▀▀▀███▀▀▀▀████▀▀▀████▀▀▀▀▀███▄▄▄==¬¬  .\n           ^`   ^^\'          `     `└';
+    }
+  },
+  watch: {
+    tour () {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.tour) this.$tours.custom.start();
+        }, 1000);
+      });
+    },
+    user () {
+      this.$socket.emit('authentication', this.user._id);
     }
   },
   async mounted () {
-    if (typeof window.orientation === 'undefined') {
-      window.addEventListener('resize', this.resizeThrottler, false);
-    }
-
     if (this.$route.query.accountLocked) {
-      this.loading = false;
-      return this.$toasted.error(
-        'Your account has been locked by administrators.'
-      );
+      return this.$toast.open({
+        message: 'Your account has been locked by administrators.',
+        type: 'is-warning',
+        duration: 70000
+      });
     }
 
-    if (
-      process.env.NODE_ENV === 'development' &&
-      !this.$store.state.auth.isAuthenticated
-    ) {
-      const rcsID = prompt('Log in as what user? (rcs_id)');
-      await this.$http.get('/students/loginas?rcs_id=' + rcsID);
+    if (this.loggedIn) {
+      // Check if time to reupdate from SIS
+      if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
+        this.$router.push({ name: 'account', query: { importFromSIS: true } });
+      }
     }
 
-    // Seems like we need the following line no matter what :/
-    await this.$store.dispatch('GET_USER');
-    if (this.$store.state.auth.isAuthenticated) {
-      await this.$store.dispatch('GET_TERMS');
-      await this.$store.dispatch('GET_UNAVAILABILITIES');
-      await this.$store.dispatch('AUTO_UPDATE_SCHEDULE');
-      await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
-      await this.$store.dispatch('GET_TODOS');
-      await this.$store.dispatch('GET_ANNOUNCEMENTS');
-      await this.$store.dispatch('AUTO_UPDATE_NOW');
-    }
-
-    this.loading = false;
+    console.log(this.sistext);
+    console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px');
   },
   methods: {
-    dismissPinnedAnnouncement (id) {
-      localStorage.setItem(
-        'dismissedAnnouncementIDs',
-        JSON.stringify(this.dismissedAnnouncementIDs.concat(id))
-      );
-
-      this.$store.commit(
-        'SET_DISMISSED_ANNOUNCEMENT_IDS',
-        this.dismissedAnnouncementIDs.concat(id)
-      );
-    },
-    resizeThrottler () {
-      // ignore resize events as long as an actualResizeHandler execution is in the queue
-      if (!this.resizeTimeout) {
-        this.resizeTimeout = setTimeout(() => {
-          this.resizeTimeout = null;
-          this.onResize();
-          // The actualResizeHandler will execute at a rate of 15fps
-        }, 66);
-      }
-    },
-    onResize () {
-      if (document.getElementById('sidebar-column')) {
-        document.getElementById('sidebar').style.width =
-          document.getElementById('sidebar-column').offsetWidth - 15 + 'px';
-      }
+    onTourStop () {
+      this.$store.dispatch('MARK_TOUR_SEEN', this.tour);
+      this.$store.commit('SET_TOUR_INDEX', -1);
     }
   }
 };
 </script>
 
 <style lang="scss">
+@import '@/assets/late_theme.scss';
+/*-------------------------------------------*/
+/*               Global Styles
 /* These styles will apply to the whole app. */
-@import "@/assets/bulma.scss";
+/*-------------------------------------------*/
+* {
+  word-wrap: break-word;
+  outline: 0;
+}
+
+.is-fullwidth {
+  width: 100%;
+}
+
+//Removes annoying outline around elements when clicked.
+// *:focus {
+//   outline: none;
+//   box-shadow: none !important;
+//   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+// }
 
 html,
 body {
   height: 100%;
 }
 
-//Sticky Footer
+/*-------------------------------------------*/
+/*             All other styles
+/*-------------------------------------------*/
+
+// Sticky Footer
+
 #app {
   display: flex;
-  //Dynamically calculate page height - header height (3.25rem)
-  min-height: calc(100vh - 3.25rem);
-  min-height: -webkit-calc(100vh - 3.25rem);
   flex-direction: column;
-}
-.pinned-announcements {
-  padding-bottom: 0;
-
-  .pinned-announcement {
-    padding: 10px;
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
-    .fas.fa-thumbtack {
-      margin-right: 5px;
-    }
-    summary {
-      cursor: pointer;
-    }
-  }
-
-  .pinned-announcement:hover {
-    background-color: #6abfc5;
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
-  }
+  height: 100%;
 }
 
 #content {
-  flex: 1 1 auto;
+  flex: 1 0 auto;
 }
-
 #footer {
-  flex: 1 0 inherit;
+  flex-shrink: 0;
+}
+section.section {
+  padding: 1.5rem;
 }
 
-// Replace Fullcalendar ugly button style with Bulma's nice style
-.fc-button {
-  color: initial;
-  background: none;
-  text-shadow: none;
-  @extend .button;
-}
-
-//Removes annoying outline around elements when clicked.
-*:focus {
-  outline: none;
-  box-shadow: none !important;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-}
-
-.is-full-width {
-  width: 100%;
-}
-
+//Toggle sidebar
 .toggle-sidebar {
-  top: 70px;
+  transition: 0.2s !important;
+  transition-timing-function: ease-out;
+  background-color: white;
+
+  width: 40px;
+  border: 1px solid rgb(207, 207, 207);
+  cursor: pointer;
   z-index: 4;
   position: fixed;
-  @media only screen and (max-width: 768px) {
-    position: absolute;
-    top: 55px;
+  left: 5px;
+  top: 60px;
+  font-size: 30px;
+  i {
+    font-size: 15px;
   }
-
-  //Styling the toggle button to fit the theme
-  margin: 1em;
-  margin-top: 0.5em;
-  width: 2.5em;
-  height: 1.5em;
 }
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  cursor: pointer;
-  background-color: green;
-  display: inline-block;
+.toggle-sidebar:hover {
+  transition: 0.2s !important;
+  transition-timing-function: ease-out;
+  background-color: whitesmoke;
+  i {
+    transform: translateX(2px);
+  }
 }
 
 /* TRANSITIONS */
@@ -354,6 +320,7 @@ body {
   opacity: 0;
   -webkit-transform: translate(30px, 0);
   transform: translate(30px, 0);
+  margin-right: -30px;
 }
 .slide-left-leave-active,
 .slide-right-enter {
@@ -367,15 +334,85 @@ body {
   transition: all 0.2s ease;
 }
 .slide-fade-leave-active {
+  //0.15s
   transition: all 0.15s cubic-bezier(1, 0.5, 0.8, 1);
 }
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(-80px);
+  //margin-right: -80px;
   opacity: 0;
 }
 
-.no-bottom-padding {
-  padding-bottom: 0;
+.modal-content {
+  max-width: 800px;
 }
+
+.exam-event {
+  font-weight: bold;
+}
+
+.v-tour .v-step {
+  z-index: 2;
+}
+
+footer.footer {
+  margin-top: 30px;
+}
+
+
+// ------ FULLCALENDAR -------
+
+@media only screen and (max-width: 768px) {
+  .fc-toolbar.fc-header-toolbar {
+    flex-direction: column;
+  }
+}
+
+.work-block-event {
+  border-width: 3px !important;
+
+  .margin-left {
+    margin-left: 5px;
+  }
+}
+
+.event-location {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.fc-event {
+  &:hover {
+    .event-location {
+      opacity: 1;
+    }
+  }
+}
+
+.fc-content {
+  .remove-work-block {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .remove-work-block {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    &:hover {
+      background-color: red;
+    }
+  }
+
+  &:hover {
+    .remove-work-block {
+      display: block;
+    }
+  }
+}
+
 </style>

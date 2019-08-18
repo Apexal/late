@@ -21,9 +21,11 @@ instance.interceptors.response.use(
     return response;
   },
   error => {
+    app.$Progress.finish();
     if (
       error.response.status === 401 &&
       error.response.config.url !== '/api/students/user' &&
+      !error.response.config.url.includes('discordapp') &&
       error.response.config.url !== '/api/students/loginas'
     ) {
       alert('Your session has expired! Refreshing...');

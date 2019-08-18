@@ -1,3 +1,4 @@
+<!--Modals/Assessments: Select a time module-->
 <template>
   <div class="time-input">
     <select

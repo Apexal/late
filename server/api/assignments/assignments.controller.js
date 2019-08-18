@@ -1,11 +1,21 @@
 const moment = require('moment');
 const logger = require('../../modules/logger');
 
-const { compileWeeklyOpenSchedule } = require('../../modules/auto_allocate');
-
 const Block = require('../blocks/blocks.model');
 const Assignment = require('./assignments.model');
+const Student = require('../students/students.model');
+const Unavailability = require('../unavailabilities/unavailabilities.model');
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+/**
+ * This middleware assumes that the route has a 'assignmentID' parameter.
+ * It gets the assignment from this ID and makes it available to all subsequent routes
+ * as ctx.state.assignment
+ *
+ * @param {Koa context} ctx
+ */
 async function getAssignmentMiddleware (ctx, next) {
   const assignmentID = ctx.params.assignmentID;
 
@@ -13,8 +23,26 @@ async function getAssignmentMiddleware (ctx, next) {
   try {
     assignment = await Assignment.findOne({
       _id: assignmentID,
-      _student: ctx.state.user._id
-    }).populate('_blocks');
+      $or: [
+        { _student: ctx.state.user._id },
+        { shared: true, sharedWith: ctx.state.user.rcs_id }
+      ]
+    })
+      .populate({
+        path: '_blocks',
+        match: {
+          $or: [
+            {
+              _student: ctx.state.user._id
+            },
+            {
+              shared: true
+            }
+          ]
+        }
+      })
+      .populate('_student', '_id rcs_id name graduationYear integrations')
+      .populate('comments._student', '_id rcs_id name graduationYear');
   } catch (e) {
     logger.error(
       `Error getting assignment ${assignmentID} for ${
@@ -26,6 +54,7 @@ async function getAssignmentMiddleware (ctx, next) {
     );
   }
 
+  // Ensure assignment exists
   if (!assignment) {
     logger.error(
       `Failed to find assignment with ID ${assignmentID} for ${
@@ -36,6 +65,8 @@ async function getAssignmentMiddleware (ctx, next) {
   }
 
   ctx.state.assignment = assignment;
+  ctx.state.isAssignmentOwner = assignment._id.equals(ctx.state.user._id); // Mongoose ID's must use .equals()
+
   await next();
 }
 
@@ -51,12 +82,7 @@ async function getAssignments (ctx) {
   let assignments;
 
   try {
-    assignments = await ctx.state.user.getAssignments(
-      ctx.query.start,
-      ctx.query.end,
-      ctx.query.title,
-      ctx.query.courseCRN
-    );
+    assignments = await ctx.state.user.getUserAssignments(ctx.query);
   } catch (e) {
     logger.error(
       `Failed to send assignments to ${ctx.state.user.rcs_id}: ${e}`
@@ -67,6 +93,63 @@ async function getAssignments (ctx) {
   }
 
   logger.info(`Sending assignments to ${ctx.state.user.rcs_id}`);
+
+  ctx.ok({
+    assignments
+  });
+}
+
+/**
+ * Get all of the logged in student's assignments in a given term.
+ * The term code is passed in the route params as :termCode
+ *
+ * @param {Koa context} ctx
+ * @returns Array of the term's assignments
+ */
+async function getTermAssignments (ctx) {
+  const { termCode } = ctx.params;
+
+  const term = ctx.session.terms.find(term => term.code === termCode);
+  if (!term) {
+    logger.error(
+      `${
+        ctx.state.user.rcs_id
+      } tried to get assignments for non-existent term ${termCode}`
+    );
+    return ctx.badRequest(`Failed to find the term ${termCode}!`);
+  }
+
+  let assignments;
+  try {
+    assignments = await Assignment.find({
+      $and: [
+        {
+          $or: [
+            { _student: ctx.state.user._id },
+            { shared: true, sharedWith: ctx.state.user.rcs_id }
+          ]
+        },
+        {
+          $or: [
+            { termCode },
+            {
+              dueDate: {
+                $gte: term.start,
+                $lt: term.end
+              }
+            }
+          ]
+        }
+      ]
+    });
+  } catch (e) {
+    logger.error(`Failed to get assignments: ${e}`);
+    return ctx.badRequest('There was an error getting the assignments.');
+  }
+
+  logger.info(
+    `Sending all assignments for term ${termCode} to ${ctx.state.user.rcs_id}`
+  );
 
   ctx.ok({
     assignments
@@ -85,14 +168,109 @@ async function getAssignment (ctx) {
   logger.info(`Sending assignment ${assignmentID} to ${ctx.state.user.rcs_id}`);
 
   ctx.ok({
+    assessment: ctx.state.assignment,
     assignment: ctx.state.assignment
+  });
+}
+
+async function setAssignmentCollaborators (ctx) {
+  if (!ctx.state.assignment.shared) {
+    return ctx.badRequest('This assignment isn\'t shared!');
+  }
+
+  const { sharedWith } = ctx.request.body;
+  const existing = ctx.state.assignment.sharedWith;
+
+  // Determine students to add
+  const newStudents = sharedWith.filter(
+    newStudent => !existing.includes(newStudent)
+  );
+
+  const course = await ctx.state.user.courseFromCRN(
+    ctx.session.currentTerm.code,
+    ctx.state.assignment.courseCRN
+  );
+
+  if (newStudents.length > 0 && process.env.NODE_ENV === 'production') {
+    sgMail.send({
+      to: newStudents.map(rcsID => rcsID + '@rpi.edu'),
+      from: 'LATE <thefrankmatranga@gmail.com>',
+      templateId: 'd-9c74c53a41fe4b868b7b10b241edcbba',
+      dynamic_template_data: {
+        sharer: ctx.state.user,
+        course,
+        assignment: ctx.state.assignment,
+        assignmentURL:
+          process.env.BASE_URL + '/coursework/a/' + ctx.state.assignment._id
+      }
+    });
+  }
+
+  // Determine students to remove
+  const removedStudents = existing.filter(
+    oldStudent => !sharedWith.includes(oldStudent)
+  );
+
+  ctx.state.assignment.sharedWith = sharedWith;
+
+  try {
+    await ctx.state.assignment.save();
+  } catch (e) {
+    logger.error(
+      `Failed to save collaborators for assignment ${
+        ctx.state.assignment._id
+      } for student ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.internalServerError('There was an error saving the assignment.');
+  }
+
+  ctx.ok({
+    updatedAssessment: ctx.state.assignment,
+    updatedAssignment: ctx.state.assignment
+  });
+}
+
+/**
+ * Given an assignment ID, return the assignment only if it belongs to the logged in user.
+ *
+ * GET /assignments/a/:assignmentID
+ * @param {Koa context} ctx
+ * @returns The assignment
+ */
+async function getAssignmentCollaboratorInfo (ctx) {
+  if (!ctx.state.assignment.shared) {
+    return ctx.badRequest('This assignment is not shared.');
+  }
+
+  const assignmentID = ctx.params.assignmentID;
+  logger.info(
+    `Sending assignment ${assignmentID} collaborator info to ${
+      ctx.state.user.rcs_id
+    }`
+  );
+
+  // Collect collaborators and their unavailabilities
+  const unavailabilities = {};
+  const collaborators = await Student.find({
+    rcs_id: { $in: ctx.state.assignment.sharedWith }
+  });
+  for (let collaborator of collaborators) {
+    unavailabilities[collaborator.rcs_id] = await Unavailability.find({
+      _student: collaborator._id,
+      termCode: ctx.session.currentTerm.code
+    });
+  }
+
+  ctx.ok({
+    collaborators,
+    unavailabilities
   });
 }
 
 /**
  * Create an assignment given the assignment properies in the request body.
  * Request body:
- *  - title, description, dueDate, course_crn, time_estimate, priority
+ *  - title, description, dueDate, courseCRN, timEstimate, priority
  *
  * POST /assignments
  * @param {Koa context} ctx
@@ -116,7 +294,7 @@ async function createAssignment (ctx) {
     );
   }
   const assignmentData = {
-    _student: ctx.state.user._id,
+    _student: ctx.state.user,
     title: body.title,
     description: body.description,
     dueDate: due.toDate(),
@@ -187,7 +365,7 @@ async function createAssignment (ctx) {
         while (nextFirst.isBefore(ctx.session.currentTerm.classesEnd)) {
           const recurringAssignment = new Assignment({
             ...assignmentData,
-            recurringOriginal: newAssignment._id,
+            _recurringOriginal: newAssignment._id,
             dueDate: nextFirst
           });
           await recurringAssignment.save();
@@ -223,12 +401,13 @@ async function createAssignment (ctx) {
   }
 
   logger.info(
-    `Created new assigment '${newAssignment.title}' for ${
+    `Created new assignment '${newAssignment.title}' for ${
       ctx.state.user.rcs_id
     }`
   );
 
   ctx.created({
+    createdAssessment: newAssignment,
     createdAssignment: newAssignment,
     recurringAssignments
   });
@@ -247,24 +426,25 @@ async function editAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
   const updates = ctx.request.body;
 
-  const allowedProperties = [
-    'title',
-    'description',
-    'dueDate',
-    'courseCRN',
-    'timeEstimate',
-    'priority'
-  ];
+  // const allowedProperties = [
+  //   '_id',
+  //   'title',
+  //   'description',
+  //   'dueDate',
+  //   'courseCRN',
+  //   'timeEstimate',
+  //   'priority'
+  // ];
 
-  // Ensure no unallowed properties are passed to update
-  if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
-    logger.error(
-      `Failed to update assignment for ${
-        ctx.state.user.rcs_id
-      } because of invalid update properties.`
-    );
-    return ctx.badRequest('Passed unallowed properties.');
-  }
+  // // Ensure no unallowed properties are passed to update
+  // if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
+  //   logger.error(
+  //     `Failed to update assignment for ${
+  //       ctx.state.user.rcs_id
+  //     } because of invalid update properties.`
+  //   );
+  //   return ctx.badRequest('Passed unallowed properties.');
+  // }
 
   // Limit to this semester
   if (
@@ -284,6 +464,7 @@ async function editAssignment (ctx) {
   }
 
   // Update assignment
+  delete updates._student;
   ctx.state.assignment.set(updates);
 
   try {
@@ -304,6 +485,7 @@ async function editAssignment (ctx) {
   );
 
   ctx.ok({
+    updatedAssessment: ctx.state.assignment,
     updatedAssignment: ctx.state.assignment
   });
 }
@@ -331,6 +513,7 @@ async function toggleAssignment (ctx) {
         .filter(b => b.endTime <= ctx.state.assignment.completedAt)
         .reduce((acc, b) => acc + b.duration, 0) / 60; // MUST BE IN HOURS
   }
+  ctx.state.assignment.confirmed = true;
 
   try {
     await ctx.state.assignment.save();
@@ -340,12 +523,13 @@ async function toggleAssignment (ctx) {
   }
 
   logger.info(
-    `Set assigment ${ctx.state.assignment._id} completion status to ${
+    `Set assignment ${ctx.state.assignment._id} completion status to ${
       ctx.state.assignment.completed
     } for ${ctx.state.user.rcs_id}.`
   );
 
   ctx.ok({
+    updatedAssessment: ctx.state.assignment,
     updatedAssignment: ctx.state.assignment
   });
 }
@@ -358,10 +542,21 @@ async function toggleAssignment (ctx) {
  * @param {Koa context} ctx
  * @returns The removed assignment.
  */
-async function removeAssignment (ctx) {
+async function deleteAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
-  // Remove assignment
+  if (!ctx.state.isAssignmentOwner) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete shared assignment ${assignmentID}`
+    );
+    return ctx.forbidden(
+      'You cannot delete shared assignments. Only the owner can!'
+    );
+  }
+
+  // Delete assignment
   try {
     ctx.state.assignment.remove();
   } catch (e) {
@@ -372,13 +567,35 @@ async function removeAssignment (ctx) {
   }
 
   logger.info(
-    `Removed assignment ${ctx.state.assignment._id} for ${
+    `Deleted assignment ${ctx.state.assignment._id} for ${
       ctx.state.user.rcs_id
     }`
   );
 
+  let removedRecurringAssignments = [];
+  if (ctx.request.query.removeRecurring) {
+    const rootAssignmentID = ctx.state.assignment._recurringOriginal;
+    const query = {
+      _student: ctx.state.user._id,
+      _recurringOriginal: rootAssignmentID
+    };
+
+    if (ctx.request.query.removeRecurring === 'future') {
+      query.dueDate = { $gt: ctx.state.assignment.dueDate };
+    }
+
+    removedRecurringAssignments = await Assignment.find(query);
+
+    // Delete all in series either past and future or just future
+    for (let a of removedRecurringAssignments) a.remove();
+
+    logger.info('Deleted recurring assignments');
+  }
+
   ctx.ok({
-    removedAssignment: ctx.state.assignment
+    removedAssessment: ctx.state.assignment,
+    removedAssignment: ctx.state.assignment,
+    removedRecurringAssignments
   });
 }
 
@@ -396,6 +613,7 @@ async function addComment (ctx) {
 
   // Add comment
   ctx.state.assignment.comments.push({
+    _student: ctx.state.user,
     addedAt: new Date(),
     body: text
   });
@@ -411,7 +629,10 @@ async function addComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedAssignment: ctx.state.assignment });
+  ctx.ok({
+    updatedAssessment: ctx.state.assignment,
+    updatedAssignment: ctx.state.assignment
+  });
 }
 
 /**
@@ -425,8 +646,31 @@ async function deleteComment (ctx) {
   const assignmentID = ctx.params.assignmentID;
 
   const index = ctx.params.commentIndex;
+  if (!ctx.state.assignment.comments[index]) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete nonexistent comment on assignment ${assignmentID}`
+    );
+    return ctx.badRequest('Could not find the comment to delete!');
+  }
 
-  // Remove the comment by its index
+  if (
+    !ctx.state.assignment.comments[index]._student ||
+    !ctx.state.assignment.comments[index]._student._id.equals(
+      ctx.state.user._id
+    )
+  ) {
+    logger.error(
+      `Student ${
+        ctx.state.user.rcs_id
+      } tried to delete other students comment on assignment ${assignmentID}`
+    );
+    return ctx.forbidden('You cannot delete somebody else\'s comment!');
+  }
+
+  // Delete the comment by its index
+
   ctx.state.assignment.comments.splice(index, 1);
 
   try {
@@ -440,17 +684,23 @@ async function deleteComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.');
   }
 
-  ctx.ok({ updatedAssignment: ctx.state.assignment });
+  ctx.ok({
+    updatedAssessment: ctx.state.assignment,
+    updatedAssignment: ctx.state.assignment
+  });
 }
 
 module.exports = {
   getAssignmentMiddleware,
+  getTermAssignments,
   getAssignments,
   getAssignment,
+  getAssignmentCollaboratorInfo,
+  setAssignmentCollaborators,
   createAssignment,
   toggleAssignment,
   editAssignment,
-  removeAssignment,
+  deleteAssignment,
   addComment,
   deleteComment
 };

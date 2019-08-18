@@ -1,10 +1,16 @@
+/**
+ * This Vuex module handles the announcement modal as well as all announcements.
+ * It stores all the announcements in its state and provides useful getters
+ * and actions to manipulate its state.
+ */
+
 import axios from '@/api';
 
 const state = {
-  modalOpen: false,
+  modalOpen: false, // Whether the announcements modal is open
   announcements: [],
-  seenIDs: [],
-  dismissedIDs: []
+  seenIDs: [], // The IDs of announcements that have been seen
+  dismissedIDs: [] // The IDs of the announcements that have been manually dismissed by the user
 };
 const getters = {
   allAnnouncements: state => state.announcements,
@@ -14,6 +20,13 @@ const getters = {
     )
 };
 const actions = {
+  /**
+   * Grabs the announcements from the API and commits them to the state.
+   * It also commits to the state the IDs of seen announcements
+   * and dismissed announcements by grabbing from localStorage.
+   *
+   * @returns An array of the announcements
+   */
   async GET_ANNOUNCEMENTS ({ commit }) {
     const response = await axios.get('/announcements');
     commit('SET_ANNOUNCEMENTS', response.data.announcements);
@@ -38,6 +51,8 @@ const actions = {
         localStorage.removeItem('dismissedAnnouncementIDs');
       }
     }
+
+    return response.data.announcements;
   }
 };
 const mutations = {
@@ -50,6 +65,9 @@ const mutations = {
   SET_ANNOUNCEMENTS_MODEL_OPEN: (state, isOpen) => {
     state.modalOpen = isOpen;
   },
+  UPDATE_ANNOUNCEMENT: (state, updatedAnnouncement) => {
+    Object.assign(state.announcements.find(ann => ann._id === updatedAnnouncement._id), updatedAnnouncement);
+  },
   SET_ANNOUNCEMENTS: (state, announcements) => {
     state.announcements = announcements;
   },
@@ -60,6 +78,9 @@ const mutations = {
       if (a.createdAt > b.createdAt) return -1;
       return 0;
     });
+  },
+  REMOVE_ANNOUNCEMENT: (state, announcement) => {
+    state.announcements = state.announcements.filter(ann => ann._id !== announcement._id);
   }
 };
 

@@ -1,18 +1,16 @@
+<!--Assessments: Upcoming assessments list-->
 <template>
   <div class="assessments-upcoming">
     <p
       v-if="none"
       class="has-text-centered has-text-grey"
     >
-      No upcoming assessments
+      No upcoming assignments or exams
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
-      >matching your filters.</i>
-      <i
-        v-else-if="filter.length <= 0"
-        style="font-style:inherit"
-      >for the next 2 weeks!</i>
+      >matching your filters</i>
+      for the next 2 weeks!
     </p>
     <div
       v-else
@@ -26,11 +24,14 @@
         <div class="panel">
           <p
             class="panel-heading is-unselectable key-heading"
-            :class="{ 'has-background-dark has-text-white' : groupBy === 'date' }"
+            :class="{
+              'has-background-dark has-text-white': groupBy === 'date'
+            }"
             :style="headerStyle(key)"
           >
             <span
               class="key"
+              :class="groupBy"
               :title="headerTitle(key)"
               @click="headerClick(key)"
             >{{ headerText(key) }}</span>
@@ -64,7 +65,8 @@
     >
       <hr>
       <p class="has-text-centered has-text-grey">
-        {{ filteredFarFutureAssessments.length }} far future items {{ showingFutureAssessments ? 'shown' : 'hidden' }}
+        {{ filteredFarFutureAssessments.length }} far future items
+        {{ showingFutureAssessments ? "shown" : "hidden" }}
         <a
           @click="showingFutureAssessments = !showingFutureAssessments"
         >Toggle</a>
@@ -73,6 +75,7 @@
       <AssessmentsTable
         v-if="showingFutureAssessments"
         :assessments="filteredFarFutureAssessments"
+        empty-message="No assignments or exams due in over 2 weeks."
       />
     </div>
   </div>
@@ -81,8 +84,8 @@
 <script>
 import moment from 'moment';
 
-import AssessmentPanelBlock from '@/views/components/assessments/upcoming/AssessmentPanelBlock';
-import AssessmentsTable from '@/views/components/assessments/AssessmentsTable.vue';
+import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock';
+import AssessmentsTable from '@/views/assessments/components/AssessmentsTable.vue';
 
 export default {
   name: 'AssessmentsUpcoming',
@@ -107,9 +110,6 @@ export default {
     };
   },
   computed: {
-    now () {
-      return this.$store.state.now;
-    },
     none () {
       return Object.keys(this.filteredLimitedAssessments).length === 0;
     },
@@ -146,14 +146,19 @@ export default {
       return this.$store.getters.getCourseFromCRN(crn);
     },
     headerTitle (key) {
-      return this.groupBy === 'courseCRN'
-        ? 'Open course modal'
-        : 'Coursework due on ' + moment(key, 'YYYY-MM-DD', true).format('M/DD/YY');
+      if (this.groupBy === 'courseCRN') {
+        return 'Open course modal';
+      } else {
+        const today = moment().startOf('day');
+        const day = moment(key, 'YYYY-MM-DD', true);
+        if (day.diff(today, 'days') > 1) return day.from(today);
+      }
+      return '';
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
-        ? this.course(key).longname
-        : this.toDateShortString(moment(key, 'YYYY-MM-DD', true));
+        ? this.course(key).title
+        : this.relativeDateFormat(moment(key, 'YYYY-MM-DD', true));
     },
     headerStyle (key) {
       if (this.groupBy === 'date') return {};
@@ -199,34 +204,24 @@ export default {
     },
     addAssessmentTitle (key, assessmentType) {
       if (this.groupBy === 'courseCRN') {
-        return `Add new ${this.course(key).longname} ${assessmentType}`;
+        return `Add new ${this.course(key).title} ${assessmentType}`;
       } else {
-        return `Add new ${assessmentType} on ${moment(key, 'YYYY-MM-DD', true).format('M/DD/YY')}`;
+        return `Add new ${assessmentType} on ${moment(
+          key,
+          'YYYY-MM-DD',
+          true
+        ).format('M/DD/YY')}`;
       }
     },
-    toggleAssignmentTitle (a) {
-      return (
-        this.course(a.courseCRN).longname +
-        (a.completedAt
-          ? ` | Completed ${moment(a.completedAt).format('M/DD/YY h:mma')}`
-          : '')
-      );
-    },
-    toDateShortString (dueDate) {
+    relativeDateFormat (dueDate) {
       if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
       if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) {
         return 'Tomorrow';
       }
       return moment(dueDate).format('dddd [the] Do');
     },
-    toTimeString (dueDate) {
-      return moment(dueDate).format('h:mma');
-    },
-    fromNow (date) {
-      return moment(date).fromNow();
-    },
     daysAway (date) {
-      return moment(date).diff(moment(this.now).startOf('day'), 'days');
+      return moment(date).diff(moment(this.rightNow).startOf('day'), 'days');
     }
   }
 };
@@ -234,7 +229,7 @@ export default {
 
 <style lang="scss" scoped>
 .key-heading {
-  span.key {
+  span.key.courseCRN {
     cursor: pointer;
   }
 
@@ -254,9 +249,5 @@ export default {
       opacity: 1;
     }
   }
-}
-
-.dot {
-  margin-right: 5px;
 }
 </style>

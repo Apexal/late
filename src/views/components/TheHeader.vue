@@ -1,3 +1,4 @@
+<!--Header module-->
 <template>
   <header
     id="header"
@@ -12,18 +13,45 @@
         <router-link
           id="logo"
           class="navbar-item"
-          to="/dashboard"
+          to="/"
           active-class
           exact-active-class
         >
           LATE
           <span
-            class="tag is-primary beta-tag"
+            class="tag beta-tag"
+            :class="[inDevMode ? 'is-warning' : 'is-primary']"
             title="LATE is still in active development!"
-          >BETA</span>
+          >{{ inDevMode ? 'DEV' : 'BETA' }}</span>
         </router-link>
+        <template v-if="loggedIn">
+          <a
+            class="navbar-item announcement-icon is-hidden-desktop"
+            :title="announcementsCount + ' new announcements'"
+            @click="openAnnouncementsModal"
+          >
+            <span class="icon">
+              <i
+                class="fa-bell announcement-bell-icon"
+                :class="[
+                  announcementsCount === 0 ? 'far' : 'fas new-announcements'
+                ]"
+              />
+            </span>
+          </a>
+          <a
+            class="navbar-item help-icon is-hidden-desktop"
+            title="Show tours"
+            @click="$store.commit('TOGGLE_TOURS_MODAL')"
+          >
+            <span class="icon">
+              <i class="far fa-question-circle" />
+            </span>
+          </a>
+        </template>
+
         <a
-          :class="{'is-active': navbarExpanded}"
+          :class="{ 'is-active': navbarExpanded }"
           role="button"
           class="navbar-burger burger"
           aria-label="menu"
@@ -39,15 +67,16 @@
 
       <div
         id="top-navbar"
-        :class="{'is-active': navbarExpanded}"
+        :class="{ 'is-active': navbarExpanded }"
         class="navbar-menu is-unselectable"
       >
         <div class="navbar-start">
           <template v-if="loggedIn">
             <router-link
-              class="navbar-item"
-              to="/dashboard"
+              class="navbar-item home-link"
+              :to="{ name: 'dashboard-calendar' }"
               title="View your dashboard"
+              exact
             >
               <span class="icon">
                 <i class="fas fa-home" />
@@ -55,12 +84,24 @@
               Dashboard
             </router-link>
 
+            <router-link
+              v-if="onBreak"
+              class="navbar-item about-link"
+              :to="{ name: 'about' }"
+              title="Learn more about LATE and its creators"
+            >
+              <span class="icon">
+                <i class="far fa-question-circle" />
+              </span>
+              About
+            </router-link>
+
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
               <a
-                class="navbar-link"
+                class="navbar-link coursework-link"
                 title="Manage your assignments and exams!"
               >
                 <span class="icon">
@@ -76,21 +117,21 @@
               <div class="navbar-dropdown">
                 <router-link
                   class="navbar-item"
-                  to="/assessments/upcoming"
+                  :to="{ name: 'coursework-upcoming' }"
                   title="View upcoming assessments"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assessments/past"
+                  :to="{ name: 'coursework-past' }"
                   title="Browse all past assessments"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  to="/assessments/calendar"
+                  :to="{ name: 'coursework-calendar' }"
                   title="View a calendar of all your assessment due dates"
                 >
                   Calendar
@@ -119,21 +160,88 @@
               </div>
             </div>
           </template>
+          <template v-else>
+            <router-link
+              class="navbar-item"
+              :to="{ name: 'about' }"
+              title="Learn more about LATE and its creators"
+            >
+              <span class="icon">
+                <i class="far fa-question-circle" />
+              </span>
+              About
+            </router-link>
+          </template>
+          <div
+            class="navbar-item has-dropdown is-hoverable"
+          >
+            <router-link
+              :to="{ name: 'tools' }"
+              class="navbar-link coursework-link"
+              title="Student tools to calculate grades, help you work/study, and more!"
+            >
+              <span class="icon">
+                <i class="fas fa-toolbox" />
+              </span>
+              Tools
+            </router-link>
+
+            <div class="navbar-dropdown">
+              <router-link
+                class="navbar-item"
+                :to="{ name: 'quick-links' }"
+                title="Student-curated RPI links"
+              >
+                RPI Quicklinks
+              </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{ name: 'study-tools' }"
+                title="Study timer and scratchpad"
+              >
+                Study Tools
+              </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{ name: 'gpa-calculator' }"
+                title="Calculate overall GPA and course grades"
+              >
+                Grade Calculators
+              </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{ name: 'checklist' }"
+                title="Create a checklist for dorm items for movein"
+              >
+                Dorm Checklist
+              </router-link>
+            </div>
+          </div>
         </div>
 
         <div class="navbar-end">
           <template v-if="loggedIn">
             <a
-              class="navbar-item announcementIcon"
+              class="navbar-item"
+              :title="`There are ${onlineUsers.length} users online.`"
+            >
+              <b-tag type="is-primary">{{ onlineUsers.length }} online</b-tag>
+            </a>
+            <a
+              class="navbar-item announcement-icon is-hidden-touch"
               :title="announcementsCount + ' new announcements'"
               @click="openAnnouncementsModal"
             >
-              <i
-                class="fa-bell announcement-bell-icon"
-                :class="[ announcementsCount === 0 ? 'far' : 'fas new-announcements' ]"
-              />
+              <span class="icon">
+                <i
+                  class="fa-bell announcement-bell-icon"
+                  :class="[
+                    announcementsCount === 0 ? 'far' : 'fas new-announcements'
+                  ]"
+                />
+              </span>
             </a>
-            <div class="navbar-item has-dropdown is-hoverable">
+            <div class="navbar-item has-dropdown is-hoverable user-dropdown">
               <a
                 class="navbar-link"
                 style="padding-right: 3.2em;"
@@ -142,29 +250,18 @@
                   <i
                     class="fas"
                     :title="user.admin ? 'You are an administrator!' : ''"
-                    :class="[ user.admin ? 'fa-star' : 'fa-user-circle' ]"
+                    :class="[user.admin ? 'fa-star' : 'fa-user-circle']"
                     :style="user.admin ? 'color:#e5c100' : 'color:#ffffff'"
                   />
                 </span>
-                {{ user.display_name }}
+                {{ user.displayName }}
               </a>
 
               <div class="navbar-dropdown is-right">
                 <router-link
-                  class="navbar-item"
-                  to="/assessments/stats"
-                  title="View stats on your coursework"
-                >
-                  <span class="icon">
-                    <i class="fas fa-chart-pie" />
-                  </span>
-                  Your Statistics
-                </router-link>
-                <hr class="navbar-divider">
-                <router-link
                   v-if="user.admin"
                   class="navbar-item"
-                  to="/admin"
+                  :to="{ name: 'admin-student-list' }"
                   title="View the administrator page"
                 >
                   <span class="icon">
@@ -175,13 +272,11 @@
 
                 <router-link
                   class="navbar-item"
-                  to="/profile"
-                  title="Edit your profile"
+                  to="/account"
+                  title="Edit your account"
                 >
                   <span class="icon">
-                    <i
-                      class="fas fa-pencil-alt"
-                    />
+                    <i class="fas fa-pencil-alt" />
                   </span>
                   Edit Account
                 </router-link>
@@ -202,6 +297,42 @@
                 </a>
 
                 <hr class="navbar-divider">
+
+                <router-link
+                  v-if="!onBreak"
+                  class="navbar-item"
+                  :to="{ name: 'coursework-stats' }"
+                  title="View stats on your coursework"
+                >
+                  <span class="icon">
+                    <i class="fas fa-chart-pie" />
+                  </span>
+                  Your Statistics
+                </router-link>
+                <router-link
+                  class="navbar-item"
+                  :to="{ name: 'archive-home' }"
+                  title="View your data from past semesters"
+                >
+                  <span class="icon">
+                    <i class="fas fa-archive" />
+                  </span>
+                  Archive
+                </router-link>
+
+                <a
+                  class="navbar-item help-icontours-icon"
+                  title="Show tours"
+                  @click="$store.commit('TOGGLE_TOURS_MODAL')"
+                >
+                  <span class="icon">
+                    <i class="far fa-question-circle" />
+                  </span>
+                  Site Tour
+                </a>
+                <hr
+                  class="navbar-divider"
+                >
 
                 <a
                   class="navbar-item"
@@ -234,6 +365,9 @@
 export default {
   name: 'TheHeader',
   computed: {
+    onlineUsers () {
+      return this.$store.state.socketio.onlineUsers;
+    },
     seenAnnouncementIDs () {
       return this.$store.state.announcements.seenIDs;
     },
@@ -242,20 +376,17 @@ export default {
         a => !this.seenAnnouncementIDs.includes(a._id)
       ).length;
     },
-    onBreak () {
-      return this.$store.getters.onBreak;
+    isUserSetup () {
+      return this.$store.getters.isUserSetup;
     },
     navbarExpanded () {
       return this.$store.state.navbarExpanded;
     },
-    user () {
-      return this.$store.state.auth.user;
-    },
-    loggedIn () {
-      return this.$store.state.auth.isAuthenticated;
-    },
     assessmentCount () {
       return this.$store.getters.limitedUpcomingAssessments.length;
+    },
+    inDevMode () {
+      return process.env.NODE_ENV !== 'production';
     }
   },
   methods: {
@@ -282,52 +413,67 @@ export default {
   margin-left: 5px;
 }
 
-.beta-tag {
-  margin-left: 5px;
-  transition: 0.2s;
-  background-color: #70cad1;
-  color: white;
-  line-height: 1.2em;
-}
-
 @keyframes bellshake {
-  0% { transform: rotate(0); }
-  10% { transform: rotate(5deg); }
-  25% { transform: rotate(-5deg); }
-  40% { transform: rotate(4deg); }
-  55% { transform: rotate(-4deg); }
-  70% { transform: rotate(2deg); }
-  80% { transform: rotate(-2deg); }
-  87% { transform: rotate(1deg); }
-  95% { transform: rotate(0); }
-  100% { transform: rotate(0); }
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(5deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  40% {
+    transform: rotate(4deg);
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+  80% {
+    transform: rotate(-2deg);
+  }
+  87% {
+    transform: rotate(1deg);
+  }
+  95% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
 }
 
 .announcement-bell-icon.new-announcements {
-  animation: bellshake 1s cubic-bezier(.36,.07,.19,.97) both;
+  animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   animation-iteration-count: infinite;
 }
 
+// Dropdown arrow transition
 .has-dropdown .navbar-link::after {
-  transition: 0.1s;
+  transition: transform 0.1s;
+  transition-timing-function: ease-out;
 }
 
 .has-dropdown:hover .navbar-link::after {
   transform: translateY(3px) rotate(135deg);
-  transition: 0.05s;
-  -webkit-transition: 0.05s;
 }
+// ---------------------
 
-.has-dropdown:hover .navbar-link::after {
-  transition: 0.2s;
-  transition-timing-function: ease-out;
+.navbar-brand {
+  .beta-tag {
+    margin-left: 5px;
+    margin-bottom: -2px;
+    transition: background-color 0.2s;
+  }
+  &:hover {
+    .beta-tag.is-primary {
+      background-color: #73dee6 !important;
+    }
+  }
 }
-
-.navbar-brand:hover .beta-tag {
-  background-color: #73dee6 !important;
-  transition: 0.2s;
-}
-
 .no-margin-left {
   margin-left: 0;
 }
@@ -343,9 +489,13 @@ export default {
 
   .navbar-item {
     span.icon {
-      margin-left: 3px;
-      margin-right: 5px;
+      margin-right: 1px;
+      margin-left: 1px;
     }
+  }
+
+  .announcement-icon {
+    padding: 0.5rem 0.2rem;
   }
 
   span.tag.assignment-count,

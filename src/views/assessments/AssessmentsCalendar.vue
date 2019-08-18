@@ -1,22 +1,51 @@
+<!--Assessments: Calendar Module-->
 <template>
   <div class="assessment-calendar">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
     <FullCalendar
       ref="calendar"
+      default-view="dayGridMonth"
+      :header="calendar.header"
+      :plugins="calendar.plugins"
+      :events="events"
+      :week-numbers="true"
+      :week-numbers-within-days="true"
+      :valid-range="calendar.validRange"
+      :button-text="calendar.buttonText"
+      time-format="h(:mm)t"
+      time-zone="local"
       :editable="false"
       :selectable="false"
-      :header="calendar.header"
-      :config="calendar.config"
+      :height="800"
+      :event-render="eventRender"
+      @dateClick="dateClick"
+      @eventClick="eventClick"
     />
   </div>
 </template>
 
 <script>
-import { FullCalendar } from 'vue-full-calendar';
-import 'fullcalendar/dist/fullcalendar.css';
+import moment from 'moment';
+
+import FullCalendar from '@fullcalendar/vue';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+
+import fullcalendar from '@/mixins/fullcalendar';
+
+import '@fullcalendar/core/main.css';
+import '@fullcalendar/daygrid/main.css';
+import '@fullcalendar/timegrid/main.css';
 
 export default {
   name: 'AssessmentsCalendar',
   components: { FullCalendar },
+  mixins: [fullcalendar],
   props: {
     showCompleted: {
       type: Boolean,
@@ -29,91 +58,87 @@ export default {
   },
   data () {
     return {
+      loading: true,
       calendar: {
+        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
         header: {
-          left: 'title',
-          center: '',
-          right: 'today prev,next'
+          right: 'today,prev,next'
         },
-        config: {
-          validRange: {
-            start: this.$store.getters.currentTerm.start,
-            end: this.$store.getters.currentTerm.end
-          },
-          height: 800,
-          events: this.events,
-          defaultView: 'month',
-          timeFormat: 'h(:mm)t',
-          eventClick: (calEvent, jsEvent, view) => {
-            this.$router.push({
-              name: calEvent.assessment.assessmentType + '-overview',
-              params: { [calEvent.assessment.assessmentType + 'ID']: calEvent.assessment._id }
-            });
-          },
-          eventRender: event => {
-            if (
-              this.filter.includes(event.assessment.courseCRN) ||
-              (event.type === 'assignment' &&
-              (!this.showCompleted && event.assignment.completed))
-            ) {
-              return false;
-            }
-          },
-          timezone: 'local',
-          dayClick: this.dayClick
+        buttonText: {
+          today: 'Today'
+        },
+        validRange: {
+          start: this.$store.getters.currentTerm.start,
+          end: this.$store.getters.currentTerm.end
         }
       }
     };
   },
   watch: {
     filter () {
-      this.$refs.calendar.fireMethod('rerenderEvents');
+      let calendarApi = this.$refs.calendar.getApi();
+      calendarApi.rerenderEvents();
     },
     showCompleted () {
-      this.$refs.calendar.fireMethod('rerenderEvents');
+      let calendarApi = this.$refs.calendar.getApi();
+      calendarApi.rerenderEvents();
     }
   },
   methods: {
-    async events (start, end, tz, callback) {
+    async events ({ start, end }, successCallback, failureCallback) {
+      this.loading = true;
+
       let request;
       const assessments = [];
       try {
         request = await this.$http.get('/assignments', {
           params: {
-            start: start.format('YYYY-MM-DD'),
-            end: end.format('YYYY-MM-DD')
+            start: moment(start).format('YYYY-MM-DD'),
+            end: moment(end).format('YYYY-MM-DD')
           }
         });
       } catch (e) {
-        return this.$toasted.error(e.response.data.message);
+        this.loading = false;
+        failureCallback(e);
+        return this.$toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
       assessments.push(...request.data.assignments);
 
       try {
         request = await this.$http.get('/exams', {
           params: {
-            start: start.format('YYYY-MM-DD'),
-            end: end.format('YYYY-MM-DD')
+            start: moment(start).format('YYYY-MM-DD'),
+            end: moment(end).format('YYYY-MM-DD')
           }
         });
       } catch (e) {
-        return this.$toasted.error(e.response.data.message);
+        this.loading = false;
+        failureCallback(e);
+        return this.$toast.error({
+          message: e.response.data.message,
+          type: 'is-danger'
+        });
       }
 
       assessments.push(...request.data.exams);
 
       const events = assessments.map(this.$store.getters.mapAssessmentToEvent);
 
-      this.events = events;
-      callback(events);
-    },
-    dayClick (date) {
-      this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: date });
-      this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', { date });
+      successCallback(events);
 
-      this.$toasted.info(
-        'Date set. Add a new assignment or exam with the buttons below the calendar!'
-      );
+      this.loading = false;
+    },
+    eventClick ({ event }) {
+      this.$router.push({
+        name: event.extendedProps.assessment.assessmentType + '-overview',
+        params: {
+          [event.extendedProps.assessment.assessmentType + 'ID']: event.extendedProps.assessment
+            ._id
+        }
+      });
     },
     course (a) {
       return this.$store.getters.getCourseFromCRN(a.courseCRN);

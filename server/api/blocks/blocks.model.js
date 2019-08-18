@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const Schema = mongoose.Schema;
 
-// TODO: look into making this a subdocument
-// https://mongoosejs.com/docs/subdocs.html
+const Student = require('../students/students.model');
 
 const schema = new Schema(
   {
@@ -12,10 +11,16 @@ const schema = new Schema(
       ref: 'Student',
       required: true
     },
+    _assessment: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
+    },
+    shared: { type: Boolean, default: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     locked: { type: Boolean, default: false },
-    notified: { type: Boolean, default: false }
+    notified: { type: Boolean, default: false },
+    location: { type: String, trim: true, minlength: 1, maxlength: 200 }
   },
   { timestamps: true }
 );

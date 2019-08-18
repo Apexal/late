@@ -1,9 +1,14 @@
+<!--Footer module-->
 <template>
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">
-      An
+      A
+      <span
+        class="has-text-grey"
+        @click="changeAdjective"
+      >{{ randomAdjective }}</span>
       <router-link
-        to="/about"
+        :to="{ name: 'about' }"
         title="View project proposal and contributors"
       >
         RCOS project!
@@ -25,14 +30,15 @@
       </p>
       <p class="column">
         <span class="icon">
-          <i class="fab fa-osi" />
+          <i class="fas fa-shield-alt" />
         </span>
-        Source code licensed
-        <a
-          href="https://opensource.org/licenses/mit-license.php"
-          target="_blank"
+        Read
+        <router-link
+          :to="{ name: 'privacy-policy' }"
           title="View source code license"
-        >MIT.</a>
+        >
+          Privacy Policy.
+        </router-link>
       </p>
       <p class="column">
         <span class="icon">
@@ -61,25 +67,44 @@
 </template>
 
 <script>
+import adjectives from '@/modules/adjectives';
+
 export default {
-  name: 'TheFooter'
+  name: 'TheFooter',
+  data () {
+    return {
+      randomAdjective: adjectives[Math.floor(Math.random() * adjectives.length)]
+    };
+  },
+  methods: {
+    changeAdjective () {
+      this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+    }
+  }
 };
 </script>
 
 <style lang="scss">
 //Adjusts padding for footer to display columns closer together
 .footer {
-  padding: 2rem 6rem 2rem !important;
+  //Desktop styles
+  @media screen and (min-width: 769px) {
+    padding: 2rem 6rem 2rem !important;
+    //Bottom padding to set the h1 ("An RCOS Project!") apart from the columns below
+    h1 {
+      padding-bottom: 1rem;
+    }
+  }
+
+  //Mobile styles
+  @media screen and (max-width: 768px) {
+    padding: 1rem 0rem 1rem !important;
+  }
 
   //Centers and clumps footer elements together
   .columns {
     max-width: 1000px;
     margin: 0 auto;
-  }
-
-  //Bottom padding to set the h1 ("An RCOS Project!") apart from the columns below
-  h1 {
-    padding-bottom: 1rem;
   }
 
   //Mobile styling to bring the footer columns closer together when stacked.

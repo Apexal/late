@@ -8,7 +8,8 @@ const logger = require('../../modules/logger');
  */
 async function getUnavailabilities (ctx) {
   const unavailabilities = await Unavailability.find({
-    _student: ctx.state.user._id
+    _student: ctx.state.user._id,
+    termCode: ctx.session.currentTerm.code
   });
   return ctx.ok({ unavailabilities });
 }
@@ -17,23 +18,30 @@ async function getUnavailabilities (ctx) {
  * Saves a new unavailability block.
  * Request body:
  *  - title: the event text
- *  - start
- *  - end
- *  - dow
+ *  - startTime
+ *  - endTime
+ *  - daysOfWeek
  *  - isOneTime
  * @param {Koa context} ctx
  */
 async function createUnavailability (ctx) {
-  const { title, start, end, dow, isOneTime } = ctx.request.body;
+  const { title, startTime, endTime, daysOfWeek, isOneTime } = ctx.request.body;
   const unavailability = Unavailability({
     _student: ctx.state.user._id,
     termCode: ctx.session.currentTerm.code,
     title,
-    dow,
-    start,
-    end,
+    daysOfWeek,
+    startTime,
+    endTime,
     isOneTime
   });
+
+  if (
+    !ctx.state.user.setup.unavailability.includes(ctx.session.currentTerm.code)
+  ) {
+    ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code);
+  }
+
   try {
     await unavailability.save();
   } catch (e) {
@@ -46,7 +54,10 @@ async function createUnavailability (ctx) {
   }
 
   logger.info(`Added unavailability block for ${ctx.state.user.rcs_id}`);
-  return ctx.created({ createdUnavailability: unavailability });
+  return ctx.created({
+    updatedUser: ctx.state.user,
+    createdUnavailability: unavailability
+  });
 }
 
 /**
@@ -56,9 +67,9 @@ async function createUnavailability (ctx) {
  * @param {Koa context} ctx
  */
 async function updateUnavailability (ctx) {
-  if ('_id' in ctx.request.body || '_student' in ctx.request.body) {
-    return ctx.badRequest();
-  }
+  delete ctx.request.body._id;
+  delete ctx.request.body._student;
+
   const { unavailabilityID } = ctx.params;
 
   let updatedUnavailability;
@@ -68,7 +79,7 @@ async function updateUnavailability (ctx) {
       _student: ctx.state.user._id
     });
 
-    updateUnavailability.set(ctx.request.body);
+    updatedUnavailability.set(ctx.request.body);
 
     await updatedUnavailability.save();
   } catch (e) {
@@ -79,11 +90,11 @@ async function updateUnavailability (ctx) {
   }
 
   logger.info(`Updated unavailability block for ${ctx.state.user.rcs_id}`);
-  return ctx.created({ updatedUnavailability });
+  return ctx.ok({ updatedUnavailability });
 }
 
 /**
- * Removes a unavailability given its ID.
+ * Deletes a unavailability given its ID.
  * Request parameters:
  *  - unavailabilityID: the unavailability block ID
  * @param {Koa context} ctx
@@ -97,7 +108,7 @@ async function removeUnavailability (ctx) {
 
   deletedUnavailability.remove();
 
-  logger.info(`Removed unavailability block for ${ctx.state.user.rcs_id}`);
+  logger.info(`Deleted unavailability block for ${ctx.state.user.rcs_id}`);
   ctx.ok({ deletedUnavailability });
 }
 

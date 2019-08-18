@@ -8,19 +8,22 @@ const Session = require('koa-session');
 const Body = require('koa-body');
 const Respond = require('koa-respond');
 const Send = require('koa-send');
+const Compress = require('koa-compress');
 
 const google = require('./modules/google');
 const moment = require('moment');
 
 // Start the Discord bot
-// require('./integrations/discord');
+const discordClient = require('./integrations/discord').client;
 
 const logger = require('./modules/logger');
 
 const app = new Koa();
+
+/* Server side routing (mainly used for API) */
 const router = new Router();
 
-// Connect to MongoDB
+/* Connect to MongoDB database */
 require('./db');
 
 /* Body Parser Setup */
@@ -29,7 +32,9 @@ app.use(Body({ multipart: true }));
 /* Adds useful ctx functions for API responses */
 app.use(Respond());
 
-app.keys = ['WE ARE GOING TO CHANGE THIS'];
+app.use(Compress());
+
+app.keys = [process.env.SESSION_KEY];
 
 /* Setup session */
 const CONFIG = {
@@ -53,28 +58,45 @@ app.use(async (ctx, next) => {
   ctx.state.env = process.env.NODE_ENV;
   ctx.state.isAPI = ctx.request.url.startsWith('/api');
 
+  // If first request, get terms
+  if (ctx.state.env === 'development' || !ctx.session.terms) {
+    ctx.session.terms = await Term.find().exec();
+  }
+
+  // Calculate current term on each request in case it changes (very unlikely but possible)
+  if (
+    ctx.state.env === 'development' ||
+    !ctx.session.currentTerm ||
+    (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
+  ) {
+    ctx.session.currentTerm = ctx.session.terms.find(t =>
+      moment().isBetween(moment(t.start), moment(t.end))
+    );
+  }
+
   if (ctx.session.cas_user) {
+    // Find the logged in user to make it available in all routes
     ctx.state.user = await Student.findOne()
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec();
 
-    // If first request, get terms
-    if (!ctx.session.terms) ctx.session.terms = await Term.find().exec();
+    ctx.state.discordClient = discordClient;
 
-    // Calculate current term on each request in case it changes (very unlikely but possible)
-    if (
-      !ctx.session.currentTerm ||
-      (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
-    ) {
-      ctx.session.currentTerm = ctx.session.terms.find(t =>
-        moment().isBetween(moment(t.start), moment(t.end))
-      );
-    }
 
-    if (ctx.state.user && ctx.state.user.setup.google) {
-      const auth = google.createConnection();
-      auth.setCredentials(ctx.state.user.integrations.google.tokens);
-      ctx.state.googleAuth = auth;
+    if (ctx.state.user) {
+      // console.log(ctx.session.currentTerm);
+      ctx.state.onBreak =
+        !ctx.session.currentTerm ||
+        !ctx.state.user.terms.includes(ctx.session.currentTerm.code);
+
+      // Create Google auth if logged in and setup
+      if (ctx.state.user && ctx.state.user.integrations.google.calendarID) {
+        const auth = google.createConnection();
+        auth.setCredentials(ctx.state.user.integrations.google.tokens);
+        ctx.state.googleAuth = auth;
+      }
+    } else {
+      logger.error('User is NULL');
     }
   }
   try {
@@ -83,6 +105,7 @@ app.use(async (ctx, next) => {
     ctx.status = e.status || 500;
     logger.error(e);
 
+    // Only send details of error if in development mode (to protect confidential info)
     ctx.send(
       ctx.status,
       ctx.state.env === 'development'

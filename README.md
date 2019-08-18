@@ -1,21 +1,36 @@
+![License](https://img.shields.io/github/license/Apexal/late.svg)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Apexal/late.svg?color=red)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/Apexal/late.svg)
+![Dependencies](https://img.shields.io/david/Apexal/late.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D%2011.0.0-brightgreen.svg)
+![Discord](https://img.shields.io/discord/514854227462324244.svg?label=discord)
+![GitHub stars](https://img.shields.io/github/stars/Apexal/late.svg)
+
+
+
 # LATE
 
+
 > Lazy Automatic Time Evaluator
+
+  <img align="right" src="./src/assets/img/sisman.svg" width="150">
+
 
 #### Links
 
 - [RCOS Project Profile](https://rcos.io/projects/apexal/late/profile)
 - [Project Proposal](https://docs.google.com/document/d/1bq5DBvEQhnIkPUz-keMvDHq_dEQ21vwJqSUVB9zdSYk/edit)
 - [RCOS Observatory](https://rcos.io/)
+- [Website](https://www.late.work/)
 
 ### Overview
 
-**LATE** is a web app that automatically distributes your homework/study time for you based on your calendar while also adapting if you fall off schedule.
+**LATE** is a web app that tracks and automatically distributes your homework/study time based on your calendar while also adapting if you fall off schedule.
 
 **Goals**
 
 - To provide the user with a clear list of all upcoming assignments and tests.
-- To automatically allocate free time in a user’s calendar to work on/study for assignments/tests.
+- To automatically use free time in a user’s calendar to work on/study for assignments/tests.
 - To remind users to follow the allocated study/work times through means including notifications, text messages, etc.
 - To account for missing scheduled work by reallocating work times
 
@@ -49,15 +64,5 @@ Make sure you have [Docker](https://docs.docker.com/install/) installed. WSL use
 - Run LATE with `$ ./docker-run --build`. Subsequent runs only need the `--build` flag when there are changes.
 - Go to url `http://localhost:3000` in your browser
 
-#### Overview
-Easily access daily classes and work blocks, pressing assignments, upcoming exams, and To-Do List:<br/>
-<img src="https://github.com/Apexal/late/blob/dev/public/Day_Overview_README.png" width="250" height="380">
-
-Add and edit work blocks via the Dashboard:<br/>
-<img src="https://github.com/Apexal/late/blob/dev/public/Dashboard_README.png" width="600" height="300">
-
-Conveniently view assignments for the near future:<br/>
-<img src="https://github.com/Apexal/late/blob/dev/public/Upcoming_assignments_README.png" width="600" height="300">
-
-Seamlessly integrate SMS/email reminders:<br/>
-<img src= "https://github.com/Apexal/late/blob/dev/public/Notification_Preferences_README.png" width="250" height="250">
+## License
+MIT

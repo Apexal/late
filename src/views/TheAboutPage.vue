@@ -1,26 +1,66 @@
+<!--About page-->
 <template>
-  <div class="about">
-    <section class="section">
-      <h1 class="is-size-2 title">
-        About Us
-      </h1>
-      <div class="columns">
-        <div
-          id="goal"
-          class="content column is-two-thirds"
-        >
-          <h1 class="title is-4">
-            The Goal
-          </h1>
-          <p>To provide the user with a clear list of all upcoming assignments and tests.</p>
-          <p>To automatically allocate free time in a user’s calendar to work on/study for assignments/tests.</p>
-          <p>To remind users to follow the allocated study/work times through means including notifications, text messages, etc.</p>
-          <p>To account for missing scheduled work by reallocating work times</p>
+  <section class="section">
+    <h1 class="title">
+      About LATE
+    </h1>
+    <div class="tile is-ancestor">
+      <div class="tile is-8 is-vertical is-parent">
+        <div class="tile is-child box">
+          <div
+            id="goal"
+            class="content"
+          >
+            <h1 class="title is-4">
+              The Goal
+            </h1>
+            <h4 class="subtitle has-text-grey">
+              Making RPI a little less stressful
+            </h4>
+            <p>
+              <b>LATE</b> is a free, open-source web app for RPI students that offers a variety of
+              functions and tools to make your life at RPI a little less stressful.
+              It manages all of your assignments and exams each semester, lets you
+              schedule when you want to work/study for them, provides you with recommendations
+              for working and studying, and keeps you on schedule by reaching out to you over SMS, Discord, or wherever you like!
+
+              It can also connect to your Google Calendar to add your course schedule and sync the times you are scheduled to work/study
+              on LATE with your Google Calendar!
+            </p>
+            <p>
+              It also provides a handful of useful student tools for users and non-users such as grade calculators, a work/study timer,
+              a move-in checklist creator, and more.
+            </p>
+          </div>
         </div>
-        <div
-          id="team"
-          class="content column"
-        >
+        <div class="tile is-child box">
+          <h1 class="title is-4">
+            Status Updates
+          </h1>
+          <h4 class="subtitle has-text-grey">
+            Check in with our development milestones
+          </h4>
+          <div class="tile is-parent status-updates">
+            <div
+              v-for="url in statusUpdateURLs"
+              :key="url"
+              class="iframe-container is-child is-6"
+            >
+              <iframe
+                :key="url"
+                width="600"
+                height="700"
+                :src="url"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tile is-parent is-vertical">
+        <div class="tile is-child box">
           <h1 class="title is-4">
             The Team
           </h1>
@@ -28,32 +68,58 @@
             Project Contributors
           </h4>
           <ul>
+            <li>
+              <b-tag type="is-success">
+                Project Lead
+              </b-tag>
+              Frank Matranga
+            </li>
             <li
               v-for="c in contributors"
               :key="c"
             >
+              <b-tag type="is-dark">
+                Developer
+              </b-tag>
               {{ c }}
+            </li>
+            <li
+              v-for="t in testers"
+              :key="t"
+            >
+              <b-tag type="is-primary">
+                Tester
+              </b-tag>
+              {{ t }}
+            </li>
+          </ul>
+        </div>
+        <div class="tile is-child box">
+          <h1 class="title is-4">
+            Develop LATE
+          </h1>
+          <h4 class="subtitle has-text-grey">
+            Get involved in development
+          </h4>
+          <ul>
+            <li>
+              <a href="https://github.com/Apexal/late/">Contribute on GitHub</a>
+            </li>
+            <li>
+              <a
+                href="https://rcos.io/projects/apexal/late/profile"
+              >View us on Observatory</a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/Apexal/late/wiki"
+              >Read our development setup guide</a>
             </li>
           </ul>
         </div>
       </div>
-    </section>
-    <section>
-      <h1 class="title">
-        Project Status Updates
-      </h1>
-      <iframe
-        v-for="url in statusUpdateURLs"
-        :key="url"
-        width="600"
-        height="700"
-        :src="url"
-        frameborder="0"
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      />
-    </section>
-  </div>
+    </div>
+  </section>
 </template>
 
 <script>
@@ -68,30 +134,54 @@ export default {
         'https://www.youtube.com/embed/aB93j7LUK0w'
       ],
       contributors: [
-        'Frank Matranga',
         'Zach Love',
-        'Abigail Medina',
         'Christie Nero',
-        'Tyler Machado',
+        'Abigail Medina',
         'Alexandra Rachiele',
+        'Tyler Machado',
         'Colton Zecca',
-        'Anglea Lopez',
+        'Angela Lopez',
         'Sam Fawcett',
         'Jose Deantes',
         'Gabe Benelli',
-        'Henry Heffernan'
-      ]
+        'Henry Heffernan',
+        'Seth Laurenceau',
+        'Ziyi Wang',
+        'Kikiola Sanusi',
+        'Bowen Wang'
+      ],
+      testers: ['Caitlin Bennett', 'Sarah Tedesco', 'Ben Sherman', 'Hannah Lim']
     };
   }
 };
 </script>
 
 <style lang="scss" scoped>
-iframe {
-  min-height: 300px;
-  height: 100%;
-  max-height: 500px;
+.title {
+  padding-bottom: 0px;
+  padding-left: 0px;
+  border-bottom-color: #dbdbdb;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
 
-  margin-bottom: 20px;
+ul {
+  list-style-type: circle;
+  margin-left: 20px;
+}
+
+//Disgusting way to tile iframes. Then again iframes are disgusting too.
+.status-updates {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  padding: 0px;
+}
+
+.status-updates .iframe-container {
+  position: relative;
+  overflow: hidden;
+  max-width: 250px;
+  flex: 1 1 auto;
 }
 </style>

@@ -46,30 +46,61 @@ async function createAnnouncement (ctx) {
   return ctx.created({ createdAnnouncement });
 }
 
+async function editAnnouncement (ctx) {
+  if (!ctx.state.user.admin) {
+    return ctx.forbidden('You are not an administrator!');
+  }
+  const announcementID = ctx.params.announcementID;
+  const body = ctx.request.body;
+  const updatedAnnouncement = await Announcement.findOne({
+    _id: announcementID
+  });
+
+  if (!updatedAnnouncement) return ctx.notFound('Could not find announcement.');
+
+  if ('title' in body) updatedAnnouncement.title = body.title;
+  if ('body' in body) updatedAnnouncement.body = body.body;
+  if ('isPinned' in body) updatedAnnouncement.isPinned = body.isPinned;
+
+  try {
+    await updatedAnnouncement.save();
+  } catch (e) {
+    logger.error(
+      `Failed to save new announcement for ${ctx.state.user.rcs_id}: ${e}`
+    );
+    return ctx.badRequest('There was an error editing the announcement.');
+  }
+
+  logger.info(`Edited announcement for ${ctx.state.user.rcs_id}`);
+  return ctx.ok({ updatedAnnouncement });
+}
+
 /**
- * Removes an announcement given its ID.
+ * Deletes an announcement given its ID.
  * Request parameters:
  *  - announcementID: the announcement ID
  * @param {Koa context} ctx
  */
-async function removeAnnouncement (ctx) {
+async function deleteAnnouncement (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!');
   }
   const { announcementID } = ctx.params;
   const deletedAnnouncement = await Announcement.findOne({
-    _id: announcementID,
-    _student: ctx.state.user._id
+    _id: announcementID
   });
+
+  if (!deletedAnnouncement) return ctx.notFound('Couldn\'t find the announcement!');
 
   deletedAnnouncement.remove();
 
-  logger.info(`Removed announcement for ${ctx.state.user.rcs_id}`);
+  logger.info(`Deleted announcement for ${ctx.state.user.rcs_id}`);
   ctx.ok({ deletedAnnouncement });
 }
 
 module.exports = {
   getAnnouncements,
+  editAnnouncement,
   createAnnouncement,
-  removeAnnouncement
+  deleteAnnouncement
 };
