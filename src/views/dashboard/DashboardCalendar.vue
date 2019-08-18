@@ -32,6 +32,7 @@
       :now-indicator="true"
       :event-overlap="true"
       :select-overlap="true"
+
       :scroll-time="calendar.scrollTime"
       no-events-message="You've got nothing to do!"
       time-zone="local"

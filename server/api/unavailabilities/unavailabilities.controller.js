@@ -101,7 +101,7 @@ async function updateUnavailability (ctx) {
  */
 async function removeUnavailability (ctx) {
   const { unavailabilityID } = ctx.params;
-  const deletedUnavailability = await Unavailability.findOne({
+  let deletedUnavailability = await Unavailability.findOne({
     _id: unavailabilityID,
     _student: ctx.state.user._id
   });
