@@ -8,8 +8,7 @@ const schema = new Schema(
       ref: 'Student',
       required: true
     },
-    text: { type: String, required: true },
-    addedAt: { type: Date, required: true }
+    text: { type: String, required: true }
   },
   { timestamps: true }
 );

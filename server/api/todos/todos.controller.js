@@ -23,8 +23,7 @@ async function createTodo (ctx) {
   const { text } = ctx.request.body;
   const todo = Todo({
     _student: ctx.state.user._id,
-    text,
-    addedAt: new Date()
+    text
   });
   try {
     await todo.save();

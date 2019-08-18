@@ -8,9 +8,9 @@ const schema = new Schema(
       ref: 'Student'
     },
     category: { type: String, required: true },
-    title: { type: String, required: true },
-    description: { type: String },
-    url: { type: String, required: true },
+    title: { type: String, minlength: 1, maxlength: 200, required: true },
+    description: { type: String, maxlength: 1000 },
+    url: { type: String, minlength: 1, maxlength: 300, required: true },
     confirmed: { type: Boolean, default: false }
   },
   { timestamps: true }

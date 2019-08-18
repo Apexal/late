@@ -20,7 +20,7 @@
       @click="removeTodo(t)"
     >
       <span class="is-fullwidth">
-        <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.addedAt) }}</small>
+        <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.createdAt) }}</small>
         {{ t.text }}
       </span>
     </div>
