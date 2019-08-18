@@ -155,7 +155,17 @@
           <option value="entertainment">
             Entertainment
           </option>
+          <option value="other">
+            Other
+          </option>
         </b-select>
+        <b-input
+          v-if="newLink.category === 'other'"
+          v-model="otherCategory"
+          type="text"
+          placeholder="Custom Category"
+          required
+        />
         <b-input
           v-model="newLink.title"
           type="text"
@@ -200,6 +210,7 @@ export default {
   data () {
     return {
       loading: true,
+      otherCategory: '',
       newLink: {
         category: 'school',
         title: '',
@@ -292,7 +303,7 @@ export default {
 
       let request;
       try {
-        request = await this.$http.post('/quicklinks', this.newLink);
+        request = await this.$http.post('/quicklinks', { ...this.newLink, category: this.newLink.category === 'other' ? this.otherCategory : this.newLink.category });
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
