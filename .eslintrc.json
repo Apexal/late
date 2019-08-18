@@ -75,7 +75,7 @@
     "vue/script-indent": "error",
     "vue/no-spaces-around-equal-signs-in-attribute": "error",
     "vue/no-unused-components": "off",
-    "vue/no-unused-vars": "warning"
+    "vue/no-unused-vars": 1
   },
   "parserOptions": {
     "parser": "babel-eslint"

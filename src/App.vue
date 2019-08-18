@@ -192,7 +192,7 @@ export default {
       });
     },
     user () {
-      this.$socket.emit('authentication', this.user._id);
+      this.$socket.client.emit('authentication', this.user._id);
     }
   },
   async mounted () {

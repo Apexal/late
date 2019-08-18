@@ -1,8 +1,8 @@
 import moment from 'moment';
 
 const element = (tag, properties) => {
-  let el = document.createElement(tag);
-  for (let prop in properties) {
+  const el = document.createElement(tag);
+  for (const prop in properties) {
     el[prop] = properties[prop];
   }
 
@@ -76,7 +76,7 @@ export default {
         deleteButton.onclick = async ev => {
           ev.stopPropagation();
 
-          let updatedAssessment = await this.$store.dispatch(
+          const updatedAssessment = await this.$store.dispatch(
             'REMOVE_WORK_BLOCK',
             {
               assessment: assessment,
@@ -85,7 +85,7 @@ export default {
           );
 
           this.$emit('updated-assessment', updatedAssessment);
-          this.$socket.emit('updated assessment', updatedAssessment);
+          this.$socket.client.emit('updated assessment', updatedAssessment);
 
           this.$toast.open({
             message: 'Unscheduled work block!',
@@ -128,7 +128,7 @@ export default {
               );
 
               this.$emit('updated-assessment', updatedAssessment);
-              this.$socket.emit('updated assessment', updatedAssessment);
+              this.$socket.client.emit('updated assessment', updatedAssessment);
             }
           });
         };

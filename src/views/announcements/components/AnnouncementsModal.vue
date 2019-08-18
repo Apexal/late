@@ -183,7 +183,7 @@ export default {
         message: 'Posted new announcement.'
       });
 
-      this.$socket.emit('new announcement', request.data.createdAnnouncement);
+      this.$socket.client.emit('new announcement', request.data.createdAnnouncement);
 
       this.addingAnnouncement = {
         title: '',

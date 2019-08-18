@@ -40,7 +40,7 @@ const getters = {
   },
   groupAssessments: () => (groupBy, assessments) => {
     const grouped = {};
-    for (let assessment of assessments) {
+    for (const assessment of assessments) {
       const key =
         groupBy === 'courseCRN'
           ? assessment.courseCRN
@@ -134,7 +134,7 @@ const actions = {
    * @returns The assessment object
    */
   async GET_ASSESSMENT ({ getters, dispatch }, { assessmentType, assessmentID }) {
-    let request = await axios.get(
+    const request = await axios.get(
       `/${assessmentType}s/${assessmentType.charAt(0)}/${assessmentID}`
     );
 
@@ -154,12 +154,12 @@ const actions = {
     { dispatch, getters, commit },
     { assessmentID, assessmentType, updates }
   ) {
-    let request = await axios.patch(
+    const request = await axios.patch(
       `/${assessmentType}s/${assessmentType.charAt(0)}/${assessmentID}`,
       updates
     );
 
-    let updatedAssessment = request.data.updatedAssessment;
+    const updatedAssessment = request.data.updatedAssessment;
 
     // Check if the assessment is upcoming (therefore update it in the state) or if
     // it was a past assessment but now is upcoming so it should be added to the state.
@@ -226,7 +226,7 @@ const actions = {
     const exams = response.data.exams;
 
     // Tell the server to add us to the proper assessment rooms
-    vm.$socket.emit('join assessment rooms', assignments.map(a => a._id));
+    vm.$socket.client.emit('join assessment rooms', assignments.map(a => a._id));
 
     commit('SET_UPCOMING_ASSESSMENTS', assignments.concat(exams));
     commit('SORT_UPCOMING_ASSESSMENTS');
@@ -266,7 +266,7 @@ const actions = {
       request.data.removedAssessment,
       ...request.data.removedRecurringAssignments
     ];
-    for (let assessment of removedAssessments) {
+    for (const assessment of removedAssessments) {
       if (getters.getUpcomingAssessmentById(assessment)) {
         commit('REMOVE_UPCOMING_ASSESSMENT', assessment);
       }
@@ -323,7 +323,7 @@ const actions = {
     { commit, getters },
     { assessment, newComment }
   ) {
-    let request = await axios.post(
+    const request = await axios.post(
       `/${assessment.assessmentType}s/${assessment.assessmentType.charAt(0)}/${
         assessment._id
       }/comments`,
@@ -340,7 +340,7 @@ const actions = {
     { commit, getters },
     { assessment, commentIndex }
   ) {
-    let request = await axios.delete(
+    const request = await axios.delete(
       `/${assessment.assessmentType}s/${assessment.assessmentType.charAt(0)}/${
         assessment._id
       }/comments/${commentIndex}`
@@ -360,8 +360,8 @@ const mutations = {
   },
   SORT_UPCOMING_ASSESSMENTS: () => {
     state.upcomingAssessments.sort((a, b) => {
-      let aDate = a.dueDate || a.date;
-      let bDate = b.dueDate || b.date;
+      const aDate = a.dueDate || a.date;
+      const bDate = b.dueDate || b.date;
 
       if (aDate > bDate) {
         return 1;

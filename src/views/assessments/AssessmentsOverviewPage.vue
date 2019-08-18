@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import 'confetti-js';
+import ConfettiGenerator from 'confetti-js';
 import VueMarkdown from 'vue-markdown';
 
 // Page components
@@ -142,7 +142,7 @@ export default {
   },
   beforeRouteLeave (to, from, next) {
     if (!this.isUpcoming) {
-      this.$socket.emit('leave assessment room', this.assessment._id);
+      this.$socket.client.emit('leave assessment room', this.assessment._id);
     }
     next();
   },
@@ -175,7 +175,7 @@ export default {
     },
     async updatedAssessment (updatedAssessment) {
       this.assessment = updatedAssessment;
-      this.$socket.emit('updated assessment', updatedAssessment);
+      this.$socket.client.emit('updated assessment', updatedAssessment);
     },
     notFullyScheduledClick () {
       this.tab = 'schedule';
@@ -243,7 +243,7 @@ export default {
         this.isUpcoming = true;
 
         if (this.assessment.completed || this.passed) this.tab = 'comments';
-        this.$socket.emit('join assessment room', this.assessment._id);
+        this.$socket.client.emit('join assessment room', this.assessment._id);
         return;
       }
 
@@ -254,7 +254,7 @@ export default {
       this.isUpcoming = false;
 
       let request;
-      let apiURL =
+      const apiURL =
         this.assessmentType === 'assignment' ? '/assignments/a/' : '/exams/e/';
       try {
         request = await this.$http.get(apiURL + this.assessmentID);
@@ -272,7 +272,7 @@ export default {
 
       this.editedDescription = this.assessment.description;
       document.title = `${this.assessment.title} | LATE`;
-      this.$socket.emit('join assessment room', this.assessment._id);
+      this.$socket.client.emit('join assessment room', this.assessment._id);
       this.loading = false;
     },
     async removeAssessment () {

@@ -43,14 +43,14 @@ const actions = {
     return response;
   },
   async UPDATE_UNAVAILABILITY ({ commit }, { unavailabilityID, updates }) {
-    let request = await axios.patch('/unavailabilities/' + unavailabilityID,
+    const request = await axios.patch('/unavailabilities/' + unavailabilityID,
       updates);
     commit('UPDATE_UNAVAILABILITY', request.data.updatedUnavailability);
 
     return request;
   },
   async REMOVE_UNAVAILABILITY ({ commit }, unavailability) {
-    let request = await axios.delete('/unavailabilities/' + unavailability.id);
+    const request = await axios.delete('/unavailabilities/' + unavailability.id);
     commit('REMOVE_UNAVAILABILITY', request.data.deletedUnavailability);
 
     return request;

@@ -58,7 +58,7 @@ export default {
   methods: {
     sendSISManMessage () {
       if (this.SISManMessage.length > 0) {
-        this.$socket.emit('send sis man message', this.selectedRCSID, this.SISManMessage);
+        this.$socket.client.emit('send sis man message', this.selectedRCSID, this.SISManMessage);
       }
       this.SISManMessage = '';
     }

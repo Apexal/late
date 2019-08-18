@@ -56,7 +56,7 @@ export default {
     };
   },
   created () {
-    this.$socket.emit('get messages');
+    this.$socket.client.emit('get messages');
     this.$socket.on('messages', messages => {
       this.messages = messages;
       this.$nextTick(() => {
@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     sendMessage () {
-      this.$socket.emit('message', {
+      this.$socket.client.emit('message', {
         author: this.user.first_name,
         text: this.newMessage
       });

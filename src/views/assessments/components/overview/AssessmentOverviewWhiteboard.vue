@@ -69,7 +69,7 @@ export default {
       this.context.stroke();
       this.context.closePath();
       if (emit) {
-        this.$socket.emit('assessment whiteboard draw', this.assessment._id, {
+        this.$socket.client.emit('assessment whiteboard draw', this.assessment._id, {
           x0: x0 / this.$refs.whiteboard.width,
           y0: y0 / this.$refs.whiteboard.height,
           x1: x1 / this.$refs.whiteboard.width,
