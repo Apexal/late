@@ -4,11 +4,13 @@
     class="promo-container section"
     style="margin-top: 24px"
   >
+    <canvas id="confetti-canvas" />
     <b-notification
       v-if="waitlisted"
+      class="waitlist-notification"
       type="is-info"
     >
-      <b>WAIT LIST</b> You are currently on the wait list and will be notified
+      <b>WELCOME TO THE WAIT LIST</b> You are currently on the wait list and will be notified
       by email once LATE opens to the student body. Reach out to the
       <a href="mailto:matraf@rpi.edu">project lead</a> if you have any
       questions, or join the
@@ -121,6 +123,9 @@
 </template>
 
 <script>
+import ConfettiGenerator from 'confetti-js';
+import { setTimeout } from 'timers';
+
 export default {
   name: 'ThePromoPage',
   data () {
@@ -170,9 +175,17 @@ export default {
     await this.getCounts();
     setTimeout(this.getCounts, 1000 * 60 * 15); // 15 minutes
   },
+  mounted () {
+    if (this.waitlisted) {
+      const confettiSettings = { target: 'confetti-canvas' };
+      const confetti = new ConfettiGenerator(confettiSettings);
+      confetti.render();
+      setTimeout(() => confetti.clear(), 5000);
+    }
+  },
   methods: {
     async getCounts () {
-      let request = await this.$http.get('/students/counts');
+      const request = await this.$http.get('/students/counts');
       this.testers = request.data.testers;
       this.waitlist = request.data.waitlist;
     },
@@ -326,5 +339,16 @@ export default {
   margin-bottom: -10px;
 }
 
+.waitlist-notification {
+  margin: 0 20px;
+}
 
+#confetti-canvas {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  pointer-events: none;
+}
 </style>
