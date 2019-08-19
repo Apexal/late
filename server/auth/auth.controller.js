@@ -35,8 +35,7 @@ async function loginStudent (ctx) {
     // TODO: CMS api to get personal info here
     student = Student({
       rcs_id: ctx.session.cas_user,
-      accountLocked: true, // WAIT LIST
-      joined_date: new Date()
+      accountLocked: true // WAIT LIST
     })
     /*
     logger.info(

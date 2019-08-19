@@ -28,7 +28,6 @@ async function loginAs (ctx) {
   if (!student) {
     student = Student({
       rcs_id: ctx.session.cas_user,
-      joined_date: new Date(),
       lastLogin: new Date()
     })
     await student.save()
