@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 
 // CHANGE THIS VALUE BEFORE EVERY DEPLOY
-const LATEST_VERSION = 'v0.1.0'
+const LATEST_VERSION = 'v0.2.0'
 
 workbox.core.setCacheNameDetails({
   prefix: 'late'

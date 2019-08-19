@@ -94,8 +94,6 @@
       :key="index"
       class="hero is-small promo"
       :class="promo.type || 'is-primary'"
-      @mouseenter="promoMouseEnter"
-      @mouseleave="promoMouseLeave"
     >
       <div class="hero-body">
         <div class="container">
@@ -135,7 +133,7 @@
 
 <script>
 import ConfettiGenerator from 'confetti-js'
-import { setTimeout } from 'timers'
+import { setTimeout, setInterval } from 'timers'
 
 export default {
   name: 'ThePromoPage',
@@ -144,6 +142,7 @@ export default {
       testers: 0,
       waitlist: 0,
       splashMovementStrength: 10,
+      interval: null,
       promos: [
         {
           type: 'is-dark',
@@ -200,6 +199,12 @@ export default {
       confetti.render()
       setTimeout(() => confetti.clear(), 5000)
     }
+
+    this.interval = setInterval(this.activateVideosInView, 300)
+  },
+  beforeRouteLeave () {
+    clearInterval(this.interval)
+    this.interval = null
   },
   methods: {
     async getCounts () {
@@ -208,6 +213,8 @@ export default {
       this.waitlist = request.data.waitlist
     },
     mouseMove (e) {
+      if (!this.$refs.splash) return
+
       const width = this.splashMovementStrength / window.innerWidth
       const height = this.splashMovementStrength / window.innerHeight
 
@@ -216,7 +223,6 @@ export default {
 
       const newValueX = width * pageX * -1
       const newValueY = height * pageY * -1
-      console.log(newValueX + ' ' + newValueY)
 
       this.$refs.splash.style.backgroundPositionX = newValueX + 'px'
       this.$refs.splash.style.backgroundPositionY = newValueY + 'px'
@@ -226,16 +232,58 @@ export default {
         behavior: 'smooth'
       })
     },
-    promoMouseEnter (e) {
-      const videoEl = e.target.querySelector('video')
-      if (!videoEl) return
-      videoEl.play()
-    },
-    promoMouseLeave (e) {
-      const videoEl = e.target.querySelector('video')
-      if (!videoEl) return
-      videoEl.pause()
-      videoEl.currentTime = 0
+    activateVideosInView () {
+      const promos = document.querySelectorAll('.promo')
+
+      let found = false
+      for (const promoEl of promos) {
+        const boundingBox = promoEl.getBoundingClientRect()
+        if ((boundingBox.top > 0 && boundingBox.bottom < window.innerHeight) || (boundingBox.top < 0 && boundingBox.bottom > window.innerHeight)) {
+          promoEl.classList.add('active')
+          const videoEl = promoEl.querySelector('video')
+          if (!videoEl || videoEl.playing) continue
+          videoEl.play()
+          found = promoEl
+        }
+      }
+
+      if (!found) {
+        // Find next closest
+        for (const promoEl of promos) {
+          const boundingBox = promoEl.getBoundingClientRect()
+          if (boundingBox.top > 0 && boundingBox.bottom < window.innerHeight) {
+            promoEl.classList.add('active')
+            const videoEl = promoEl.querySelector('video')
+            if (!videoEl || videoEl.playing) continue
+            videoEl.play()
+            found = promoEl
+          }
+        }
+      }
+
+      if (!found) {
+        // Find next closest
+        for (const promoEl of promos) {
+          const boundingBox = promoEl.getBoundingClientRect()
+          if (boundingBox.bottom < window.innerHeight) {
+            promoEl.classList.add('active')
+            const videoEl = promoEl.querySelector('video')
+            if (!videoEl || videoEl.playing) continue
+            videoEl.play()
+            found = promoEl
+          }
+        }
+      }
+
+      for (const promoEl of promos) {
+        if (promoEl === found) continue
+
+        promoEl.classList.remove('active')
+        const videoEl = promoEl.querySelector('video')
+        if (!videoEl) continue
+        videoEl.pause()
+        videoEl.currentTime = 0
+      }
     }
   }
 }
@@ -361,7 +409,7 @@ export default {
     display: inline-flex;
   }
 
-  &:hover .example {
+  &.active .example {
     transform: scale(1);
   }
 
