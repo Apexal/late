@@ -37,11 +37,11 @@ export default {
   },
   computed: {
     eventURL () {
-      if (!this.event.extendedProps) return;
-      return this.event.extendedProps.eventURL;
+      if (!this.event.extendedProps) return
+      return this.event.extendedProps.eventURL
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

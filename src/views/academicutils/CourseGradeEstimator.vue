@@ -153,35 +153,35 @@ export default {
       selectedCourseCRN: '00000',
       newCategory: '',
       categories: []
-    };
+    }
   },
   computed: {
     selectedCourse () {
-      return this.courses.find(c => c.crn === this.selectedCourseCRN);
+      return this.courses.find(c => c.crn === this.selectedCourseCRN)
     },
     totalWeight () {
       return this.categories.reduce(
         (acc, category) => acc + category.weight,
         0
-      );
+      )
     },
     categoryAverages () {
-      const averages = {};
+      const averages = {}
       this.categories.forEach(category => {
-        const values = category.values;
+        const values = category.values
 
         averages[category.title] =
           values.reduce((acc, v) => acc + (v ? parseInt(v) : 0), 0) /
-          values.length;
-      });
-      return averages;
+          values.length
+      })
+      return averages
     },
     totalWeightedAverage () {
       return this.categories.reduce(
         (acc, category) =>
           acc + (category.weight / 100) * this.categoryAverages[category.title],
         0
-      );
+      )
     }
   },
   watch: {
@@ -189,7 +189,7 @@ export default {
     selectedCourseCRN: 'getCategories'
   },
   mounted () {
-    this.getCategories();
+    this.getCategories()
   },
   methods: {
     changeWeight (categoryIndex) {
@@ -203,7 +203,7 @@ export default {
           min: 0
         },
         onConfirm: value => (this.categories[categoryIndex].weight = +value)
-      });
+      })
     },
     getCategories () {
       if (this.loggedIn) {
@@ -211,90 +211,89 @@ export default {
           this.categories = this.selectedCourse.gradingCategories.map(cat => ({
             ...cat,
             values: []
-          }));
+          }))
         }
       } else {
         return JSON.parse(
           localStorage.getItem('courseGradeEstimatorCategories')
-        );
+        )
       }
     },
     async save () {
       if (this.loggedIn) {
-        let updatedCourse;
         try {
-          updatedCourse = await this.$store.dispatch(
+          await this.$store.dispatch(
             'UPDATE_COURSE',
             Object.assign({}, this.selectedCourse, {
               gradingCategories: this.categories
             })
-          );
+          )
         } catch (e) {
-          const message = e.response ? e.response.data.message : e.message;
+          const message = e.response ? e.response.data.message : e.message
           this.$toast.open({
             duration: 5000,
             message,
             type: 'is-danger'
-          });
+          })
         }
 
         this.$toast.open({
           type: 'is-success',
           message: 'Saved grading categories for ' + this.selectedCourse.title
-        });
+        })
       } else {
         localStorage.setItem(
           'courseGradeEstimatorCategories',
           JSON.stringify(this.categories)
-        );
+        )
       }
     },
     relativeSizeClass (weight) {
       if (weight >= 90) {
-        return 'is-size-1';
+        return 'is-size-1'
       } else if (weight >= 70) {
-        return 'is-size-2';
+        return 'is-size-2'
       } else if (weight >= 50) {
-        return 'is-size-3';
+        return 'is-size-3'
       } else if (weight >= 30) {
-        return 'is-size-4';
+        return 'is-size-4'
       }
-      return 'is-size-5';
+      return 'is-size-5'
     },
     round (num) {
-      return num.toFixed(2);
+      return num.toFixed(2)
     },
     validateValue (val) {
       try {
-        parseInt(val);
-        return true;
+        parseInt(val)
+        return true
       } catch (e) {
-        return false;
+        return false
       }
     },
     addCategory () {
-      if (this.totalWeight === 100) return;
+      if (this.totalWeight === 100) return
 
-      const parts = this.newCategory.split('%');
+      const parts = this.newCategory.split('%')
       if (parts.length !== 2) {
         this.$toast.open({
           type: 'is-warning',
           message: 'That\'s not a valid category! Type it like "54% Tests"'
-        });
-        return;
+        })
+        return
       }
-      const weight = parseInt(parts[0]);
+      const weight = parseInt(parts[0])
       this.categories.push({
         title: parts[1].trim(),
         weight: weight,
         values: []
-      });
-      this.newCategory = '';
+      })
+      this.newCategory = ''
 
-      if (!this.loggedIn) this.save();
+      if (!this.loggedIn) this.save()
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

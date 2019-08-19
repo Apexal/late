@@ -14,9 +14,9 @@ export default {
   data () {
     return {
       selectedTerm: ''
-    };
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

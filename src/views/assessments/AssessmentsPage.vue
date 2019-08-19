@@ -16,14 +16,14 @@
 
         <router-link
           tag="li"
-          :to="{ name: 'coursework-upcoming' }"
+          :to="{name: 'coursework-upcoming'}"
           title="Switch to view upcoming assessments"
         >
           <a>Upcoming</a>
         </router-link>
         <router-link
           tag="li"
-          :to="{ name: 'coursework-past' }"
+          :to="{name: 'coursework-past'}"
           title="Switch to view past assessments"
         >
           <a>Past</a>
@@ -31,7 +31,7 @@
 
         <router-link
           tag="li"
-          :to="{ name: 'coursework-calendar' }"
+          :to="{name: 'coursework-calendar'}"
           title="Switch to view your assessment calendar"
         >
           <a>Calendar</a>
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import AssessmentsFilter from '@/views/assessments/components/AssessmentsFilter';
+import AssessmentsFilter from '@/views/assessments/components/AssessmentsFilter'
 
 export default {
   name: 'AssessmentsPage',
@@ -97,28 +97,28 @@ export default {
       groupBy: 'date',
       showCompleted: true,
       filter: []
-    };
+    }
   },
   computed: {
     view () {
-      return this.$route.name;
+      return this.$route.name
     },
     title () {
-      return this.$route.meta.title;
+      return this.$route.meta.title
     }
   },
   watch: {
     showCompleted (nowShowing) {
-      localStorage.setItem('assignmentsShowCompleted', nowShowing);
+      localStorage.setItem('assignmentsShowCompleted', nowShowing)
       this.$toast.open({
         message:
           (nowShowing ? 'Showing' : 'Hiding') + ' completed assignments.',
         type: 'is-info',
         duration: 1000
-      });
+      })
     },
     groupBy (newGroupBy) {
-      localStorage.setItem('assessmentsGroupBy', newGroupBy);
+      localStorage.setItem('assessmentsGroupBy', newGroupBy)
     }
   },
   mounted () {
@@ -126,21 +126,21 @@ export default {
       try {
         this.showCompleted = JSON.parse(
           localStorage.getItem('assignmentsShowCompleted')
-        );
+        )
       } catch (e) {
-        localStorage.removeItem('assignmentsShowCompleted');
+        localStorage.removeItem('assignmentsShowCompleted')
       }
     }
     if (localStorage.getItem('assessmentsGroupBy')) {
       try {
-        this.groupBy = localStorage.getItem('assessmentsGroupBy') || 'date';
+        this.groupBy = localStorage.getItem('assessmentsGroupBy') || 'date'
         if (this.groupBy !== 'courseCRN' && this.groupBy !== 'date') {
           throw new Error(
             'Invalid value for assessmentsGroupBy in localStorage'
-          );
+          )
         }
       } catch (e) {
-        localStorage.removeItem('assessmentsGroupBy');
+        localStorage.removeItem('assessmentsGroupBy')
       }
     }
   },
@@ -150,7 +150,7 @@ export default {
         const toggledAssignment = await this.$store.dispatch(
           'TOGGLE_ASSIGNMENT',
           assignment
-        );
+        )
 
         this.$snackbar.open({
           message: `Marked '${toggledAssignment.title}' as ${
@@ -163,42 +163,42 @@ export default {
             this.$router.push({
               name: 'assignment-overview',
               params: { assignmentID: assignment._id }
-            });
+            })
           }
-        });
+        })
       } catch (e) {
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
     },
     course (ex) {
-      return this.$store.getters.getCourseFromCRN(ex.courseCRN);
+      return this.$store.getters.getCourseFromCRN(ex.courseCRN)
     },
     isFiltered (c) {
-      return this.filter.includes(c.crn);
+      return this.filter.includes(c.crn)
     },
     toggleFilter (c) {
       // TODO change word assessments to exam or assignment depending on type
       if (this.filter.includes(c.crn)) {
-        this.filter.splice(this.filter.indexOf(c.crn), 1);
+        this.filter.splice(this.filter.indexOf(c.crn), 1)
         this.$toast.open({
           message: `Showing '${c.title}' coursework.`,
           type: 'is-info',
           duration: 1000
-        });
+        })
       } else {
-        this.filter.push(c.crn);
+        this.filter.push(c.crn)
         this.$toast.open({
           message: `Hiding '${c.title}' coursework.`,
           type: 'is-info',
           duration: 1000
-        });
+        })
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

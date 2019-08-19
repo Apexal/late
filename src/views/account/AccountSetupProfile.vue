@@ -36,7 +36,7 @@
             <div class="control">
               <input
                 id="first-name"
-                v-model.trim="first_name"
+                v-model.trim="firstName"
                 class="input"
                 type="text"
                 placeholder="First Name"
@@ -57,7 +57,7 @@
             <div class="control">
               <input
                 id="last-name"
-                v-model.trim="last_name"
+                v-model.trim="lastName"
                 class="input"
                 type="text"
                 placeholder="Last Name"
@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import accountMixin from '@/mixins/account';
+import accountMixin from '@/mixins/account'
 
 export default {
   name: 'AccountSetupProfile',
@@ -144,91 +144,91 @@ export default {
     return {
       saved: false,
       loading: false,
-      first_name: '',
-      last_name: '',
+      firstName: '',
+      lastName: '',
       rin: '',
       graduationYear: '',
       major: ''
-    };
+    }
   },
   watch: {
     user: 'updateFields'
   },
   created () {
-    this.updateFields();
+    this.updateFields()
   },
   methods: {
     updateFields () {
-      this.first_name = this.$store.state.auth.user.name
+      this.firstName = this.$store.state.auth.user.name
         ? this.$store.state.auth.user.name.first
-        : '';
-      this.last_name = this.$store.state.auth.user.name
+        : ''
+      this.lastName = this.$store.state.auth.user.name
         ? this.$store.state.auth.user.name.last
-        : '';
+        : ''
 
-      this.graduationYear = this.$store.state.auth.user.graduationYear || '';
-      this.major = this.$store.state.auth.user.major || '';
+      this.graduationYear = this.$store.state.auth.user.graduationYear || ''
+      this.major = this.$store.state.auth.user.major || ''
     },
     startImportFromSIS () {
       this.promptRIN(rin => {
         this.promptPIN(pin => {
-          this.importFromSIS(rin, pin);
-        });
-      });
+          this.importFromSIS(rin, pin)
+        })
+      })
     },
     async importFromSIS (rin, pin) {
-      this.loading = true;
-      let request;
+      this.loading = true
+      let request
       try {
         request = await this.$http.post('/account/profile', {
           method: 'sis',
           rin,
           pin
-        });
+        })
       } catch (e) {
-        this.loading = false;
+        this.loading = false
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+      await this.$store.dispatch('SET_USER', request.data.updatedUser)
 
-      this.loading = false;
+      this.loading = false
     },
     async save () {
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
       try {
         request = await this.$http.post('/account/profile', {
           method: 'manual',
-          first_name: this.first_name,
-          last_name: this.last_name,
+          first_name: this.firstName,
+          last_name: this.lastName,
           graduationYear: this.graduationYear,
           major: this.major
-        });
+        })
       } catch (e) {
-        this.loading = false;
+        this.loading = false
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+      await this.$store.dispatch('SET_USER', request.data.updatedUser)
 
       // Notify user of success
-      this.$toast.open({ type: 'is-success', message: 'Saved personal info!' });
+      this.$toast.open({ type: 'is-success', message: 'Saved personal info!' })
 
-      this.$router.push({ name: 'setup-terms' });
+      this.$router.push({ name: 'setup-terms' })
 
       // this.saved = true;
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -7,7 +7,7 @@
     <div class="tabs">
       <ul>
         <li
-          :class="{ 'is-active': tab === 'schedule' }"
+          :class="{'is-active': tab === 'schedule'}"
           @click="$emit('set-tab', 'schedule')"
         >
           <a>
@@ -27,7 +27,7 @@
           </a>
         </li>
         <li
-          :class="{ 'is-active': tab === 'studyPlan' }"
+          :class="{'is-active': tab === 'studyPlan'}"
           @click="$emit('set-tab', 'studyPlan')"
         >
           <a>
@@ -50,7 +50,7 @@
           </a>
         </li>
         <li
-          :class="{ 'is-active': tab === 'comments' }"
+          :class="{'is-active': tab === 'comments'}"
           @click="$emit('set-tab', 'comments')"
         >
           <a>
@@ -84,9 +84,9 @@
 
 <script>
 // Tabs
-import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overview/AssessmentOverviewWorkSchedule';
-import AssessmentOverviewComments from '@/views/assessments/components/overview/AssessmentOverviewComments';
-import ExamOverviewStudyPlan from '@/views/exams/components/overview/ExamOverviewStudyPlan';
+import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overview/AssessmentOverviewWorkSchedule'
+import AssessmentOverviewComments from '@/views/assessments/components/overview/AssessmentOverviewComments'
+import ExamOverviewStudyPlan from '@/views/exams/components/overview/ExamOverviewStudyPlan'
 
 export default {
   name: 'ExamOverviewTabs',
@@ -111,51 +111,51 @@ export default {
   },
   computed: {
     hasComments () {
-      return this.exam.comments && this.exam.comments.length > 0;
+      return this.exam.comments && this.exam.comments.length > 0
     },
     scheduledMinutes () {
-      if (!this.exam._blocks) return 0;
+      if (!this.exam._blocks) return 0
 
-      return this.exam._blocks.reduce((acc, block) => acc + block.duration, 0);
+      return this.exam._blocks.reduce((acc, block) => acc + block.duration, 0)
     },
     totalEstimatedMinutes () {
-      return this.exam.timeEstimate * 60;
+      return this.exam.timeEstimate * 60
     },
     fullyScheduled () {
-      return this.scheduledMinutes >= this.totalEstimatedMinutes;
+      return this.scheduledMinutes >= this.totalEstimatedMinutes
     },
     studyPlan () {
-      return this.exam.studyPlan;
+      return this.exam.studyPlan
     },
     studyPlanMade () {
-      if (!this.studyPlan) return false;
+      if (!this.studyPlan) return false
 
-      return Object.keys(this.studyPlan).length > 0;
+      return Object.keys(this.studyPlan).length > 0
     },
     studyPlanCompletedPercent () {
       const totalItemCount = this.studyPlan.reduce(
         (acc, item) => acc + 1 + item.children.length,
         0
-      );
+      )
       const totalCompleted = this.studyPlan.reduce(
         (acc, item) =>
           acc + item.completed + item.children.filter(c => c.completed).length,
         0
-      );
+      )
 
-      if (totalItemCount === 0) return 0;
+      if (totalItemCount === 0) return 0
 
-      return Math.round((totalCompleted / totalItemCount) * 100);
+      return Math.round((totalCompleted / totalItemCount) * 100)
     },
     componentName () {
       return {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule',
         studyPlan: 'ExamOverviewStudyPlan'
-      }[this.tab];
+      }[this.tab]
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -77,20 +77,20 @@
 </template>
 
 <script>
-import ConfettiGenerator from 'confetti-js';
+import ConfettiGenerator from 'confetti-js'
 // import VueMarkdown from 'vue-markdown';
 
 // Page components
-import AssessmentOverviewStats from '@/views/assessments/components/overview/AssessmentOverviewStats';
-import AssessmentOverviewDescription from '@/views/assessments/components/overview/AssessmentOverviewDescription';
-import AssessmentOverviewActionButtons from '@/views/assessments/components/overview/AssessmentOverviewActionButtons';
-import AssessmentOverviewTitle from '@/views/assessments/components/overview/AssessmentOverviewTitle';
+import AssessmentOverviewStats from '@/views/assessments/components/overview/AssessmentOverviewStats'
+import AssessmentOverviewDescription from '@/views/assessments/components/overview/AssessmentOverviewDescription'
+import AssessmentOverviewActionButtons from '@/views/assessments/components/overview/AssessmentOverviewActionButtons'
+import AssessmentOverviewTitle from '@/views/assessments/components/overview/AssessmentOverviewTitle'
 
-import AssignmentOverviewTabs from '@/views/assignments/components/overview/AssignmentOverviewTabs';
-import AssignmentsModalEdit from '@/views/assignments/components/AssignmentsModalEdit';
+import AssignmentOverviewTabs from '@/views/assignments/components/overview/AssignmentOverviewTabs'
+import AssignmentsModalEdit from '@/views/assignments/components/AssignmentsModalEdit'
 
-import ExamsModalEdit from '@/views/exams/components/ExamsModalEdit';
-import ExamOverviewTabs from '@/views/exams/components/overview/ExamOverviewTabs';
+import ExamsModalEdit from '@/views/exams/components/ExamsModalEdit'
+import ExamOverviewTabs from '@/views/exams/components/overview/ExamOverviewTabs'
 
 export default {
   name: 'AssessmentsOverviewPage',
@@ -122,165 +122,165 @@ export default {
       editing: false,
       confetti: null,
       confettiSettings: { target: 'confetti-canvas', clock: 75, max: 150 }
-    };
+    }
   },
   sockets: {
     'collaborator joined assessment room' (rcsID) {
-      this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is now viewing this assignment.` });
+      this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is now viewing this assignment.` })
     },
     'collaborator left assessment room' (rcsID) {
-      this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is no longer viewing this assignment.` });
+      this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is no longer viewing this assignment.` })
     },
     'updated assessment' ({ assessment }) {
-      this.assessment = assessment;
+      this.assessment = assessment
     }
   },
   computed: {
     assessmentID () {
-      return this.$route.params[this.assessmentType + 'ID'];
+      return this.$route.params[this.assessmentType + 'ID']
     }
   },
   beforeRouteLeave (to, from, next) {
     if (!this.isUpcoming) {
-      this.$socket.client.emit('leave assessment room', this.assessment._id);
+      this.$socket.client.emit('leave assessment room', this.assessment._id)
     }
-    next();
+    next()
   },
   watch: {
     $route: 'getAssessment',
     assessment (newAssessment) {
-      document.title = `${newAssessment.title} | LATE`;
-      this.editedDescription = newAssessment.description;
+      document.title = `${newAssessment.title} | LATE`
+      this.editedDescription = newAssessment.description
     }
   },
   mounted () {
     // eslint-disable-next-line no-undef
-    this.confetti = new ConfettiGenerator(this.confettiSettings);
+    this.confetti = new ConfettiGenerator(this.confettiSettings)
   },
   created () {
-    this.getAssessment();
+    this.getAssessment()
   },
   methods: {
     tabChanged (newTab) {
-      this.tab = newTab;
+      this.tab = newTab
     },
     toggleEditing () {
-      this.editing = !this.editing;
+      this.editing = !this.editing
     },
     scrollToTop () {
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
-      });
+      })
     },
     async updatedAssessment (updatedAssessment) {
-      this.assessment = updatedAssessment;
-      this.$socket.client.emit('updated assessment', updatedAssessment);
+      this.assessment = updatedAssessment
+      this.$socket.client.emit('updated assessment', updatedAssessment)
     },
     notFullyScheduledClick () {
-      this.tab = 'schedule';
+      this.tab = 'schedule'
       this.$nextTick(() => {
-        document.getElementById('assessment-work-schedule').scrollIntoView({ behavior: 'smooth' });
-      });
+        document.getElementById('assessment-work-schedule').scrollIntoView({ behavior: 'smooth' })
+      })
     },
     copyAssessment () {
       this.$store.dispatch(
         'COPY_' + this.assessmentType.toUpperCase() + '_TO_MODAL',
         this.assessment
-      );
+      )
       this.$store.commit(
         'TOGGLE_ADD_' + this.assessmentType.toUpperCase() + '_MODAL'
-      );
+      )
     },
     async toggleCompleted () {
-      if (this.assessmentType !== 'assignment') return;
+      if (this.assessmentType !== 'assignment') return
 
       this.$dialog.confirm({
         message: `Mark this assignment as <b>${
           this.assessment.completed ? 'incomplete' : 'complete'
         }</b>?`,
         onConfirm: async () => {
-          this.toggleLoading = true;
+          this.toggleLoading = true
 
-          let updatedAssessment;
+          let updatedAssessment
           try {
             updatedAssessment = await this.$store.dispatch(
               'TOGGLE_ASSIGNMENT',
               this.assessment
-            );
+            )
 
             this.$toast.open({
               message: updatedAssessment.completed
                 ? 'Marked as complete. Nice job!'
                 : 'Marked as incomplete.',
               type: 'is-primary'
-            });
+            })
 
             if (updatedAssessment.completed) {
-              this.confetti.render();
-              setTimeout(() => this.confetti.clear(), 2000);
+              this.confetti.render()
+              setTimeout(() => this.confetti.clear(), 2000)
             }
           } catch (e) {
             this.$toast.open({
               message: e.response.data.message,
               type: 'is-danger'
-            });
-            this.toggleLoading = false;
-            return;
+            })
+            this.toggleLoading = false
+            return
           }
 
-          this.updatedAssessment(updatedAssessment);
+          this.updatedAssessment(updatedAssessment)
 
-          this.toggleLoading = false;
+          this.toggleLoading = false
         }
-      });
+      })
     },
     async getAssessment () {
       // If its an upcoming assignment, we already have the data on it
       if (this.$store.getters.getUpcomingAssessmentById(this.assessmentID)) {
-        this.assessment = this.$store.getters.getUpcomingAssessmentById(this.assessmentID);
-        this.loading = false;
-        this.isUpcoming = true;
+        this.assessment = this.$store.getters.getUpcomingAssessmentById(this.assessmentID)
+        this.loading = false
+        this.isUpcoming = true
 
-        if (this.assessment.completed || this.passed) this.tab = 'comments';
-        this.$socket.client.emit('join assessment room', this.assessment._id);
-        return;
+        if (this.assessment.completed || this.passed) this.tab = 'comments'
+        this.$socket.client.emit('join assessment room', this.assessment._id)
+        return
       }
 
       // Not an upcoming assessment
 
-      this.tab = 'comments';
-      this.loading = true;
-      this.isUpcoming = false;
+      this.tab = 'comments'
+      this.loading = true
+      this.isUpcoming = false
 
-      let request;
+      let request
       const apiURL =
-        this.assessmentType === 'assignment' ? '/assignments/a/' : '/exams/e/';
+        this.assessmentType === 'assignment' ? '/assignments/a/' : '/exams/e/'
       try {
-        request = await this.$http.get(apiURL + this.assessmentID);
+        request = await this.$http.get(apiURL + this.assessmentID)
       } catch (e) {
-        this.loading = false;
-        this.$router.push('/coursework');
+        this.loading = false
+        this.$router.push('/coursework')
 
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      this.assessment = request.data[this.assessmentType];
+      this.assessment = request.data[this.assessmentType]
 
-      this.editedDescription = this.assessment.description;
-      document.title = `${this.assessment.title} | LATE`;
-      this.$socket.client.emit('join assessment room', this.assessment._id);
-      this.loading = false;
+      this.editedDescription = this.assessment.description
+      document.title = `${this.assessment.title} | LATE`
+      this.$socket.client.emit('join assessment room', this.assessment._id)
+      this.loading = false
     },
     async removeAssessment () {
       // Confirm user wants to remove assessment
       this.$dialog.confirm({
         message: `Permanently remove this ${this.assessmentType}?`,
         onConfirm: async () => {
-          const assessmentTitle = this.assessment.title;
+          const assessmentTitle = this.assessment.title
 
           if (this.assessment.isRecurring) {
             this.$dialog.confirm({
@@ -293,34 +293,34 @@ export default {
                   await this.$store.dispatch(
                     'REMOVE_ASSIGNMENT_AND_RECURRING',
                     this.assessment
-                  );
+                  )
                 } catch (e) {
                   this.$toast.open({
                     type: 'is-danger',
                     message: e.response.data.message
-                  });
-                  return;
+                  })
+                  return
                 }
                 this.$toast.open({
                   message: `Successfully removed repeating assignment <b>${assessmentTitle}</b> and future ones.`,
                   type: 'is-success',
                   duration: 3000
-                });
+                })
 
-                this.$router.push('/coursework');
+                this.$router.push('/coursework')
               },
               onCancel: async () => {
                 try {
                   await this.$store.dispatch(
                     'REMOVE_ASSESSMENT',
                     this.assessment
-                  );
+                  )
                 } catch (e) {
                   this.$toast.open({
                     type: 'is-danger',
                     message: e.response.data.message
-                  });
-                  return;
+                  })
+                  return
                 }
 
                 // Notify user of success
@@ -328,20 +328,20 @@ export default {
                   message: `Successfully removed single repeating assignment <b>${assessmentTitle}</b>.`,
                   type: 'is-success',
                   duration: 3000
-                });
+                })
 
-                this.$router.push('/coursework');
+                this.$router.push('/coursework')
               }
-            });
+            })
           } else {
             try {
-              await this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment);
+              await this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment)
             } catch (e) {
               this.$toast.open({
                 type: 'is-danger',
                 message: e.response.data.message
-              });
-              return;
+              })
+              return
             }
 
             // Notify user of success
@@ -351,15 +351,15 @@ export default {
               } <b>${assessmentTitle}</b>.`,
               type: 'is-success',
               duration: 3000
-            });
+            })
 
-            this.$router.push('/coursework');
+            this.$router.push('/coursework')
           }
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

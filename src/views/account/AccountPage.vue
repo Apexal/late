@@ -11,10 +11,10 @@
         <router-link
           v-for="s in setups"
           :key="s.component"
-          :to="{ path: s.link }"
+          :to="{path: s.link}"
           tag="div"
           class="step-item"
-          :class="{ 'is-completed': userSetup[s.setup_check] }"
+          :class="{'is-completed': userSetup[s.setup_check]}"
         >
           <div class="step-marker">
             <span class="icon">
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import 'bulma-steps';
+import 'bulma-steps'
 
 export default {
   name: 'AccountPage',
@@ -82,14 +82,14 @@ export default {
           setup_check: 'integrations'
         }
       ]
-    };
+    }
   },
   computed: {
     userSetup () {
-      return this.$store.getters.userSetup;
+      return this.$store.getters.userSetup
     }
   }
-};
+}
 </script>
 
 <style lang='scss' scoped>

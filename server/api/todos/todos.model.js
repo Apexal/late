@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const schema = new Schema(
   {
@@ -11,9 +11,9 @@ const schema = new Schema(
     text: { type: String, minlength: 1, maxlength: 3000, required: true }
   },
   { timestamps: true }
-);
+)
 
-schema.set('toObject', { getters: true, virtuals: true });
-schema.set('toJSON', { getters: true, virtuals: true });
+schema.set('toObject', { getters: true, virtuals: true })
+schema.set('toJSON', { getters: true, virtuals: true })
 
-module.exports = mongoose.model('Todo', schema);
+module.exports = mongoose.model('Todo', schema)

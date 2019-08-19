@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     isForAssessment () {
-      return Object.keys(this.assessment || {}).length > 0;
+      return Object.keys(this.assessment || {}).length > 0
     },
     classes () {
       if (this.isForAssessment) {
@@ -38,15 +38,15 @@ export default {
           this.assessment.assessmentType === 'assignment'
             ? 'fa-clipboard-check'
             : 'fa-exclamation-triangle'
-        ];
+        ]
       }
 
-      return ['dot', 'course'];
+      return ['dot', 'course']
     },
     style () {
       return {
         [this.isForAssessment ? 'color' : 'background-color']: this.course.color
-      };
+      }
     },
     title () {
       if (this.isForAssessment) {
@@ -55,20 +55,20 @@ export default {
           ' ' +
           this.assessment.assessmentType.charAt(0).toUpperCase() +
           this.assessment.assessmentType.slice(1)
-        );
+        )
       }
 
-      return this.course.title;
+      return this.course.title
     }
   },
   methods: {
     click () {
       if (this.onClickOpenModal) {
-        this.$store.commit('OPEN_COURSE_MODAL', this.course);
+        this.$store.commit('OPEN_COURSE_MODAL', this.course)
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

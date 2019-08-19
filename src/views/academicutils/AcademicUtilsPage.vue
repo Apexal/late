@@ -17,13 +17,13 @@
         </h1>
         <router-link
           tag="li"
-          :to="{ name: 'gpa-calculator' }"
+          :to="{name: 'gpa-calculator'}"
         >
           <a>GPA</a>
         </router-link>
         <router-link
           tag="li"
-          :to="{ name: 'course-grade-estimator' }"
+          :to="{name: 'course-grade-estimator'}"
         >
           <a>Course Grades</a>
         </router-link>
@@ -39,7 +39,7 @@
     <div class="buttons">
       <router-link
         class="button is-link"
-        :to="{ name: 'tools' }"
+        :to="{name: 'tools'}"
       >
         <i class="fas fa-angle-left" />
         All Tools
@@ -57,7 +57,7 @@ export default {
       default: false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

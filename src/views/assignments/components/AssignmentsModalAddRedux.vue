@@ -19,7 +19,7 @@
             <li
               v-for="(s, index) in steps"
               :key="index"
-              :class="{ 'is-active': index === step }"
+              :class="{'is-active': index === step}"
               @click="setStep(index)"
             >
               <a>
@@ -113,14 +113,14 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import 'bulma-steps';
+import 'bulma-steps'
 
-import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse';
-import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar';
-import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription';
-import ModalTime from '@/views/assessments/components/modal/ModalTime';
+import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse'
+import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar'
+import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription'
+import ModalTime from '@/views/assessments/components/modal/ModalTime'
 
 export default {
   name: 'AssignmentsModalAdd',
@@ -163,50 +163,50 @@ export default {
           component: 'ModalTime'
         }
       ]
-    };
+    }
   },
   computed: {
     step () {
-      return this.$store.state.addAssignmentModal.modalStep;
+      return this.$store.state.addAssignmentModal.modalStep
     },
     currentStep () {
-      return this.steps[this.step];
+      return this.steps[this.step]
     },
     isComplete () {
       if (!this.courseCRN || !this.title || !this.dueTime || !this.dueDate) {
-        return false;
+        return false
       }
-      return true;
+      return true
     },
     courseCRN () {
-      return this.$store.state.addAssignmentModal.courseCRN;
+      return this.$store.state.addAssignmentModal.courseCRN
     },
     course () {
-      return this.$store.getters.getCourseFromCRN(this.courseCRN);
+      return this.$store.getters.getCourseFromCRN(this.courseCRN)
     },
     dueDate () {
-      return this.$store.state.addAssignmentModal.dueDate;
+      return this.$store.state.addAssignmentModal.dueDate
     },
     dueTime () {
-      return this.$store.state.addAssignmentModal.dueTime;
+      return this.$store.state.addAssignmentModal.dueTime
     },
     title () {
-      return this.$store.state.addAssignmentModal.title;
+      return this.$store.state.addAssignmentModal.title
     },
     description () {
-      return this.$store.state.addAssignmentModal.description;
+      return this.$store.state.addAssignmentModal.description
     },
     timeEstimate () {
-      return this.$store.state.addAssignmentModal.timeEstimate;
+      return this.$store.state.addAssignmentModal.timeEstimate
     },
     priority () {
-      return this.$store.state.addAssignmentModal.priority;
+      return this.$store.state.addAssignmentModal.priority
     },
     isRecurring () {
-      return this.$store.state.addAssignmentModal.isRecurring;
+      return this.$store.state.addAssignmentModal.isRecurring
     },
     recurringDays () {
-      return this.$store.state.addAssignmentModal.recurringDays;
+      return this.$store.state.addAssignmentModal.recurringDays
     },
     completedChecks () {
       return {
@@ -214,63 +214,63 @@ export default {
         ModalCalendar: !!this.dueDate,
         ModalTitleAndDescription: this.title.length > 0,
         ModalTime: true
-      };
+      }
     }
   },
   watch: {
     async course (newCourse) {
-      if (this.oldCRN === newCourse.crn) return;
+      if (this.oldCRN === newCourse.crn) return
 
       const request = await this.$http.get(
         '/assignments?courseCRN=' + newCourse.crn
-      );
+      )
 
       this.oldTitles = new Set(
         request.data.assignments
           .reverse()
           .slice(0, 5)
           .map(a => a.title)
-      );
-      this.oldCRN = newCourse.crn;
+      )
+      this.oldCRN = newCourse.crn
     }
   },
   methods: {
     cancelClicked () {
-      this.$store.commit('RESET_ADD_ASSIGNMENT_MODAL_VALUES');
-      this.$emit('toggle-modal');
+      this.$store.commit('RESET_ADD_ASSIGNMENT_MODAL_VALUES')
+      this.$emit('toggle-modal')
     },
     nextStep () {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
         modalStep: this.step + 1
-      });
+      })
     },
     lastStep () {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
         modalStep: this.step - 1
-      });
+      })
     },
     setStep (modalStep) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
         modalStep
-      });
+      })
     },
     setValue (property, value) {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
         [property]: value
-      });
+      })
     },
     async save () {
-      this.loading = true;
+      this.loading = true
 
       if (!this.isComplete) {
         this.$toast.open({
           type: 'is-danger',
           message: 'Make sure you complete every step!'
-        });
-        return;
+        })
+        return
       }
 
-      let request;
+      let request
       try {
         request = await this.$http.post('/assignments', {
           title: this.title,
@@ -285,15 +285,15 @@ export default {
           priority: this.priority,
           isRecurring: this.isRecurring,
           recurringDays: this.isRecurring ? this.recurringDays : undefined
-        });
+        })
       } catch (e) {
         this.$toast.open({
           message:
             'There was an error adding the assignment. Please try again later.',
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
       // Update global state if they are not in the past
@@ -305,11 +305,11 @@ export default {
         this.$store.dispatch(
           'ADD_UPCOMING_ASSESSMENT',
           request.data.createdAssignment
-        );
+        )
 
         if (request.data.recurringAssignments.length > 0) {
           for (const a of request.data.recurringAssignments) {
-            this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', a);
+            this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', a)
           }
         }
       }
@@ -324,12 +324,12 @@ export default {
         timeEstimate: 1.0,
         priority: 3,
         isRecurring: false
-      });
+      })
 
-      this.loading = false;
+      this.loading = false
 
       // Close modal
-      this.$emit('toggle-modal');
+      this.$emit('toggle-modal')
 
       // Notify user
       this.$snackbar.open({
@@ -350,14 +350,13 @@ export default {
           this.$router.push({
             name: 'assignment-overview',
             params: { assignmentID: request.data.createdAssignment._id }
-          });
+          })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
-
 
 <style lang="scss" scoped>
 .modal-card-body {

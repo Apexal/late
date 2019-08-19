@@ -119,102 +119,102 @@ export default {
         this.$store.state.auth.user.integrations.sms.phoneNumber || '',
       verificationCode: '',
       awaitingVerification: false
-    };
+    }
   },
   computed: {
     verified () {
-      return this.$store.state.auth.user.integrations.sms.verified;
+      return this.$store.state.auth.user.integrations.sms.verified
     },
     saved () {
-      return false;
+      return false
     }
   },
   methods: {
     async submitPhoneNumber () {
-      if (!this.phoneNumber) return;
-      this.loading = true;
+      if (!this.phoneNumber) return
+      this.loading = true
 
       // Verify phone number as a phone number
 
       // POST to server
-      let request;
+      let request
       try {
         request = await this.$http.post('/integrations/sms/submit', {
           phoneNumber: this.phoneNumber
-        });
+        })
       } catch (e) {
-        this.loading = false;
+        this.loading = false
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      this.$toast.open({ type: 'is-success', message: request.data.message });
+      this.$toast.open({ type: 'is-success', message: request.data.message })
 
-      this.loading = false;
-      this.awaitingVerification = true;
+      this.loading = false
+      this.awaitingVerification = true
     },
     async verify () {
-      if (!this.verificationCode) return;
+      if (!this.verificationCode) return
 
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
       try {
         request = await this.$http.post('/integrations/sms/verify', {
           verificationCode: this.verificationCode
-        });
+        })
       } catch (e) {
-        this.loading = false;
+        this.loading = false
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      this.$store.dispatch('SET_USER', request.data.updatedUser);
+      this.$store.dispatch('SET_USER', request.data.updatedUser)
 
       this.$toast.open({
         type: 'is-success',
         message: `Successfully verified your phone number ${
           request.data.updatedUser.integrations.sms.phoneNumber
         }!`
-      });
+      })
 
-      this.loading = false;
+      this.loading = false
     },
     async disable () {
       this.$dialog.confirm({
         message: 'Are you sure you want to disable SMS integration?',
         onConfirm: async () => {
-          this.loading = true;
+          this.loading = true
 
-          let request;
+          let request
           try {
-            request = await this.$http.delete('/integrations/sms');
+            request = await this.$http.delete('/integrations/sms')
           } catch (e) {
-            this.loading = false;
+            this.loading = false
             return this.$toast.open({
               message: e.response.data.message,
               type: 'is-danger'
-            });
+            })
           }
 
-          await this.$store.dispatch('SET_USER', request.data.updatedUser);
+          await this.$store.dispatch('SET_USER', request.data.updatedUser)
           this.$toast.open({
             type: 'is-success',
             message: 'Successfully disabled SMS integration!'
-          });
-          this.loading = false;
+          })
+          this.loading = false
         }
-      });
+      })
     },
     async resetPhoneNumber () {
-      this.$toast.open({ type: 'is-danger', message: 'Coming soon!' });
+      this.$toast.open({ type: 'is-danger', message: 'Coming soon!' })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

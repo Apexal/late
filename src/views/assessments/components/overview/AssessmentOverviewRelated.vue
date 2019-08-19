@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import AssessmentsTable from '@/views/assessments/components/AssessmentsTable';
-import assessmentsMixin from '@/mixins/assessments';
+import AssessmentsTable from '@/views/assessments/components/AssessmentsTable'
+import assessmentsMixin from '@/mixins/assessments'
 
 export default {
   name: 'AssessmentOverviewRelated',
@@ -27,7 +27,7 @@ export default {
     return {
       loading: true,
       related: []
-    };
+    }
   },
   computed: {
 
@@ -36,38 +36,38 @@ export default {
     assessment: 'getRelatedAssessments'
   },
   async created () {
-    await this.getRelatedAssessments();
+    await this.getRelatedAssessments()
   },
   methods: {
     async getRelatedAssessments () {
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
       try {
         request = await this.$http.get(`/${this.assessmentType}s`, {
           params: {
             title: this.assessment.title,
             courseCRN: this.assessment.courseCRN
           }
-        });
+        })
       } catch (e) {
         this.$toast.open({
           message: `Failed to load related ${this.assessmentType}s.`,
           type: 'is-danger'
-        });
-        this.related = [];
-        this.loading = false;
-        return;
+        })
+        this.related = []
+        this.loading = false
+        return
       }
 
       this.related = request.data[this.assessmentType + 's']
         .filter(assessment => assessment._id !== this.assessment._id)
-        .reverse();
+        .reverse()
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

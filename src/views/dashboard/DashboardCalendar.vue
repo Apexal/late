@@ -58,23 +58,23 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import fullcalendar from '@/mixins/fullcalendar';
+import fullcalendar from '@/mixins/fullcalendar'
 
-import FullCalendar from '@fullcalendar/vue';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/vue'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
-import '@fullcalendar/core/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
 
-import DashboardCalendarSelectModal from '@/views/dashboard/components/DashboardCalendarSelectModal';
-import DashboardCalendarEventModal from '@/views/dashboard/components/DashboardCalendarEventModal';
+import DashboardCalendarSelectModal from '@/views/dashboard/components/DashboardCalendarSelectModal'
+import DashboardCalendarEventModal from '@/views/dashboard/components/DashboardCalendarEventModal'
 
-const viewNames = ['timeGridThreeDay', 'timeGridFiveDay', 'timeGridWeek'];
+const viewNames = ['timeGridThreeDay', 'timeGridFiveDay', 'timeGridWeek']
 
 export default {
   name: 'DashboardCalendar',
@@ -130,11 +130,11 @@ export default {
           timeGridWeek: 'Week'
         }
       }
-    };
+    }
   },
   computed: {
     isFullscreen () {
-      return document.fullscreenElement !== null;
+      return document.fullscreenElement !== null
     },
     filteredUpcomingAssessments () {
       return this.$store.state.assessments.upcomingAssessments.filter(
@@ -145,33 +145,33 @@ export default {
           (assessment.assessmentType === 'exam' ||
           (assessment.assessmentType === 'assignment' &&
           !assessment.completed))
-      );
+      )
     },
     events () {
-      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents;
+      const courseSchedule = this.$store.getters.getCourseScheduleAsEvents
 
       const unavailabilitySchedule = this.$store.getters
-        .getUnavailabilityAsEvents;
+        .getUnavailabilityAsEvents
 
       const upcomingAssessments = this.$store.getters.getUpcomingAssessmentsAsEvents.filter(
         event => {
           if (event.eventType === 'assignment') {
-            return !event.assignment.completed;
+            return !event.assignment.completed
           }
-          return true;
+          return true
         }
-      );
+      )
 
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents;
+      const workBlocks = this.$store.getters.getWorkBlocksAsEvents
 
       return courseSchedule
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
         .concat(workBlocks)
-        .concat(this.academicCalendarEvents);
+        .concat(this.academicCalendarEvents)
     },
     earliest () {
-      const earliest = this.$store.state.auth.user.earliestWorkTime;
+      const earliest = this.$store.state.auth.user.earliestWorkTime
       // const courses = this.$store.getters.getCourseScheduleAsEvents;
       // const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
       //   Object.assign({}, e)
@@ -189,7 +189,7 @@ export default {
       //   }
       // }
 
-      return earliest;
+      return earliest
     }
   },
   watch: {
@@ -203,17 +203,17 @@ export default {
     // }
   },
   async created () {
-    this.calendar.scrollTime = this.earliest;
+    this.calendar.scrollTime = this.earliest
 
-    const response = await this.$http.get('/integrations/academiccalendar');
-    const parsed = response.data.events;
-    const events = [];
+    const response = await this.$http.get('/integrations/academiccalendar')
+    const parsed = response.data.events
+    const events = []
     for (const id in parsed) {
       if (parsed[id].summary) {
-        events.push(this.mapICalObjectToEvent(id, parsed[id]));
+        events.push(this.mapICalObjectToEvent(id, parsed[id]))
       }
     }
-    this.academicCalendarEvents = events;
+    this.academicCalendarEvents = events
   },
   mounted () {
     if (
@@ -221,13 +221,13 @@ export default {
       navigator.userAgent.indexOf('IEMobile') !== -1
     ) {
       // Only show three day view on mobile
-      const calendarApi = this.$refs['dashboard-calendar'].getApi();
-      calendarApi.changeView('timeGridThreeDay');
+      const calendarApi = this.$refs['dashboard-calendar'].getApi()
+      calendarApi.changeView('timeGridThreeDay')
     }
   },
   methods: {
     datesRender ({ view, el }) {
-      if (view.name !== localStorage.getItem('dashboardCalendarDefaultView')) { localStorage.setItem('dashboardCalendarDefaultView', view.type); }
+      if (view.name !== localStorage.getItem('dashboardCalendarDefaultView')) { localStorage.setItem('dashboardCalendarDefaultView', view.type) }
     },
     mapICalObjectToEvent (id, obj) {
       const event = {
@@ -237,114 +237,114 @@ export default {
         start: obj.start,
         editable: false,
         eventURL: `http://events.rpi.edu/cal/event/eventView.do?b=de&calPath=%2Fpublic%2Fcals%2FMainCal&guid=${id}`
-      };
-      if (obj.end) event.end = obj.end;
-      else event.allDay = true;
+      }
+      if (obj.end) event.end = obj.end
+      else event.allDay = true
 
-      return event;
+      return event
     },
     toggleFullscreen () {
       if (document.fullscreenElement) {
-        document.exitFullscreen();
+        document.exitFullscreen()
       } else {
-        const div = document.getElementById('calendar-holder');
-        div.requestFullscreen();
+        const div = document.getElementById('calendar-holder')
+        div.requestFullscreen()
       }
     },
     select ({ start, end }) {
-      this.selectModal.start = moment(start);
-      this.selectModal.end = moment(end);
-      this.selectModal.open = true;
+      this.selectModal.start = moment(start)
+      this.selectModal.end = moment(end)
+      this.selectModal.open = true
     },
     async addWorkBlock (assessment) {
-      if (!assessment || !this.selectModal.open) return;
+      if (!assessment || !this.selectModal.open) return
 
-      const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
+      await this.$store.dispatch('ADD_WORK_BLOCK', {
         assessment,
         start: this.selectModal.start,
         end: this.selectModal.end
-      });
+      })
 
       this.$toast.open({
         message: 'Added work block to your schedule!',
         type: 'is-primary',
         duration: 1000
-      });
+      })
 
-      this.selectModal.open = false;
+      this.selectModal.open = false
 
-      const calendarApi = this.$refs['dashboard-calendar'].getApi();
-      calendarApi.unselect();
+      const calendarApi = this.$refs['dashboard-calendar'].getApi()
+      calendarApi.unselect()
     },
     eventClick ({ event, jsEvent, view }) {
-      const { eventType, assessment } = event.extendedProps;
+      const { eventType, assessment } = event.extendedProps
 
       if (eventType === 'course') {
         this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
           modalStep: 2,
           dueDate: moment(event.start),
           dueTime: moment(event.start).format('HH:mm')
-        });
+        })
         this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
           modalStep: 2,
           date: event.start,
           time: moment(event.start).format('HH:mm')
-        });
-        this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course);
+        })
+        this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
       } else if (eventType === 'assignment') {
         this.$router.push({
           name: 'assignment-overview',
           params: { assignmentID: assessment._id }
-        });
+        })
       } else if (eventType === 'exam') {
         this.$router.push({
           name: 'exam-overview',
           params: { examID: assessment._id }
-        });
+        })
       } else if (eventType === 'work-block') {
-        const { assessmentType } = assessment;
+        const { assessmentType } = assessment
 
         if (assessmentType === 'assignment') {
           this.$router.push({
             name: 'assignment-overview',
             params: { assignmentID: assessment._id }
-          });
+          })
         } else if (assessmentType === 'exam') {
           this.$router.push({
             name: 'exam-overview',
             params: { examID: assessment._id }
-          });
+          })
         }
       } else if (eventType === 'academic-calendar-event') {
-        this.eventModal.event = event;
-        this.eventModal.open = true;
+        this.eventModal.event = event
+        this.eventModal.open = true
       } else if (eventType === 'unavailability') {
-        this.$router.push({ name: 'setup-unavailability' });
+        this.$router.push({ name: 'setup-unavailability' })
       }
     },
     async eventReceive ({ event }) {
-      const { assessmentType, assessmentID } = event.extendedProps;
-      const assessment = this.$store.getters.getUpcomingAssessmentById(assessmentID);
+      const { assessmentID } = event.extendedProps
+      const assessment = this.$store.getters.getUpcomingAssessmentById(assessmentID)
       try {
-        await this.$store.dispatch('ADD_WORK_BLOCK', { assessment, start: event.start, end: event.end });
+        await this.$store.dispatch('ADD_WORK_BLOCK', { assessment, start: event.start, end: event.end })
       } catch (e) {
         this.$toast.open({
           message: 'There was an error scheduling that work block...',
           type: 'is-danger'
-        });
-        event.remove();
-        return;
+        })
+        event.remove()
+        return
       }
 
-      event.remove();
+      event.remove()
       this.$toast.open({
         message: 'Added work block to your schedule!',
         type: 'is-primary',
         duration: 1000
-      });
+      })
     },
     eventDrop ({ event, revert }) {
-      const { eventType, assessment, blockID } = event.extendedProps;
+      const { eventType, assessment, blockID } = event.extendedProps
       if (eventType === 'work-block') {
         // Update work block on server
         if (moment(event.end).isBefore(moment())) {
@@ -358,19 +358,19 @@ export default {
                 event.end
               ),
             onCancel: revert
-          });
+          })
         } else {
           this.editWorkBlock(
             assessment,
             blockID,
             event.start,
             event.end
-          );
+          )
         }
       }
     },
     eventResize ({ event, revert }) {
-      const { eventType, assessment, blockID } = event.extendedProps;
+      const { eventType, assessment, blockID } = event.extendedProps
       if (eventType === 'work-block') {
         if (moment(event.end).isBefore(moment())) {
           this.$dialog.confirm({
@@ -383,33 +383,33 @@ export default {
                 event.end
               ),
             onCancel: revert
-          });
+          })
         } else {
           this.editWorkBlock(
             assessment,
             blockID,
             event.start,
             event.end
-          );
+          )
         }
       }
     },
     async editWorkBlock (assessment, blockID, start, end) {
-      const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+      await this.$store.dispatch('EDIT_WORK_BLOCK', {
         assessment,
         blockID,
         start,
         end
-      });
+      })
 
       this.$toast.open({
         message: 'Rescheduled work block!',
         type: 'is-primary',
         duration: 1000
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>

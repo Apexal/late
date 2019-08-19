@@ -29,18 +29,18 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import FullCalendar from '@fullcalendar/vue';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/vue'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
-import fullcalendar from '@/mixins/fullcalendar';
+import fullcalendar from '@/mixins/fullcalendar'
 
-import '@fullcalendar/core/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
 
 export default {
   name: 'AssessmentsCalendar',
@@ -72,40 +72,40 @@ export default {
           end: this.$store.getters.currentTerm.end
         }
       }
-    };
+    }
   },
   watch: {
     filter () {
-      const calendarApi = this.$refs.calendar.getApi();
-      calendarApi.rerenderEvents();
+      const calendarApi = this.$refs.calendar.getApi()
+      calendarApi.rerenderEvents()
     },
     showCompleted () {
-      const calendarApi = this.$refs.calendar.getApi();
-      calendarApi.rerenderEvents();
+      const calendarApi = this.$refs.calendar.getApi()
+      calendarApi.rerenderEvents()
     }
   },
   methods: {
     async events ({ start, end }, successCallback, failureCallback) {
-      this.loading = true;
+      this.loading = true
 
-      let request;
-      const assessments = [];
+      let request
+      const assessments = []
       try {
         request = await this.$http.get('/assignments', {
           params: {
             start: moment(start).format('YYYY-MM-DD'),
             end: moment(end).format('YYYY-MM-DD')
           }
-        });
+        })
       } catch (e) {
-        this.loading = false;
-        failureCallback(e);
+        this.loading = false
+        failureCallback(e)
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
-      assessments.push(...request.data.assignments);
+      assessments.push(...request.data.assignments)
 
       try {
         request = await this.$http.get('/exams', {
@@ -113,23 +113,23 @@ export default {
             start: moment(start).format('YYYY-MM-DD'),
             end: moment(end).format('YYYY-MM-DD')
           }
-        });
+        })
       } catch (e) {
-        this.loading = false;
-        failureCallback(e);
+        this.loading = false
+        failureCallback(e)
         return this.$toast.error({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      assessments.push(...request.data.exams);
+      assessments.push(...request.data.exams)
 
-      const events = assessments.map(this.$store.getters.mapAssessmentToEvent);
+      const events = assessments.map(this.$store.getters.mapAssessmentToEvent)
 
-      successCallback(events);
+      successCallback(events)
 
-      this.loading = false;
+      this.loading = false
     },
     eventClick ({ event }) {
       this.$router.push({
@@ -138,13 +138,13 @@ export default {
           [event.extendedProps.assessment.assessmentType + 'ID']: event.extendedProps.assessment
             ._id
         }
-      });
+      })
     },
     course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+      return this.$store.getters.getCourseFromCRN(a.courseCRN)
     }
   }
-};
+}
 </script>
 
 <style>

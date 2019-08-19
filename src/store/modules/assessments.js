@@ -7,15 +7,15 @@
  * those are kept in state. Past assessments must be grabbed from the API.
  */
 
-import vm from '@/main';
-import axios from '@/api';
-import moment from 'moment';
+import vm from '@/main'
+import axios from '@/api'
+import moment from 'moment'
 
-const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14; // How many days away are "Far future assignments"
+const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14 // How many days away are "Far future assignments"
 
 const state = {
   upcomingAssessments: []
-};
+}
 
 const getters = {
   /**
@@ -27,28 +27,28 @@ const getters = {
       assessment => assessment._id === assessmentID
     ),
   limitedUpcomingAssessments: state => {
-    const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days');
+    const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days')
     return state.upcomingAssessments.filter(assessment =>
       moment(assessment.dueDate || assessment.date).isBefore(cutoff)
-    );
+    )
   },
   farFutureUpcomingAssessments: state => {
-    const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days');
+    const cutoff = moment().add(UPCOMING_ASSESSMENTS_DAYS_CUTOFF, 'days')
     return state.upcomingAssessments.filter(assessment =>
       moment(assessment.dueDate || assessment.date).isAfter(cutoff)
-    );
+    )
   },
   groupAssessments: () => (groupBy, assessments) => {
-    const grouped = {};
+    const grouped = {}
     for (const assessment of assessments) {
       const key =
         groupBy === 'courseCRN'
           ? assessment.courseCRN
-          : moment(assessment.dueDate || assessment.date).format('YYYY-MM-DD');
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(assessment);
+          : moment(assessment.dueDate || assessment.date).format('YYYY-MM-DD')
+      if (!grouped[key]) grouped[key] = []
+      grouped[key].push(assessment)
     }
-    return grouped;
+    return grouped
   },
   incompleteUpcomingAssignments: state =>
     state.upcomingAssessments.filter(
@@ -92,18 +92,18 @@ const getters = {
   getWorkBlocks: state => {
     return state.upcomingAssessments
       .map(assessment => assessment._blocks)
-      .flat();
+      .flat()
   },
   getWorkBlocksAsEvents: (state, getters) => {
     const assessmentWorkBlocks = state.upcomingAssessments.map(assessment =>
       assessment._blocks.map(b =>
         getters.mapWorkBlockToEvent(assessment.assessmentType, assessment, b)
       )
-    );
+    )
 
-    return assessmentWorkBlocks.flat();
+    return assessmentWorkBlocks.flat()
   }
-};
+}
 
 const actions = {
   /**
@@ -111,10 +111,10 @@ const actions = {
    * somehow they were added by another means or something.
    */
   async AUTO_GET_UPCOMING_WORK ({ dispatch }) {
-    await dispatch('GET_UPCOMING_ASSESSMENTS');
+    await dispatch('GET_UPCOMING_ASSESSMENTS')
     setTimeout(() => {
-      dispatch('GET_UPCOMING_ASSESSMENTS');
-    }, 1000 * 60 * 60);
+      dispatch('GET_UPCOMING_ASSESSMENTS')
+    }, 1000 * 60 * 60)
   },
   /**
    * Commits an upcoming assessment to the state and also
@@ -123,8 +123,8 @@ const actions = {
    * @param {Object} newAssessment The new assignment object returned from the API call creating it.
    */
   async ADD_UPCOMING_ASSESSMENT ({ commit }, newAssessment) {
-    commit('ADD_UPCOMING_ASSESSMENT', newAssessment);
-    commit('SORT_UPCOMING_ASSESSMENTS');
+    commit('ADD_UPCOMING_ASSESSMENT', newAssessment)
+    commit('SORT_UPCOMING_ASSESSMENTS')
   },
   /**
    * Given an assessment's type and ID, grab it from the API and return it.
@@ -136,9 +136,9 @@ const actions = {
   async GET_ASSESSMENT ({ getters, dispatch }, { assessmentType, assessmentID }) {
     const request = await axios.get(
       `/${assessmentType}s/${assessmentType.charAt(0)}/${assessmentID}`
-    );
+    )
 
-    return request.data.assessment;
+    return request.data.assessment
   },
   /**
    * Update an assessment (upcoming or not) given its type, ID, and properties/values to update.
@@ -157,26 +157,26 @@ const actions = {
     const request = await axios.patch(
       `/${assessmentType}s/${assessmentType.charAt(0)}/${assessmentID}`,
       updates
-    );
+    )
 
-    const updatedAssessment = request.data.updatedAssessment;
+    const updatedAssessment = request.data.updatedAssessment
 
     // Check if the assessment is upcoming (therefore update it in the state) or if
     // it was a past assessment but now is upcoming so it should be added to the state.
     if (getters.getUpcomingAssessmentById(updatedAssessment._id)) {
       // Was it moved to the past?
       if (moment(updatedAssessment.date).isBefore(moment().startOf('day'))) {
-        commit('REMOVE_UPCOMING_ASSESSMENT', updatedAssessment);
+        commit('REMOVE_UPCOMING_ASSESSMENT', updatedAssessment)
       } else {
-        await dispatch('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
+        await dispatch('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment)
       }
     } else if (
       moment(updatedAssessment.date).isSameOrAfter(moment().startOf('day'))
     ) {
-      await dispatch('ADD_UPCOMING_ASSESSMENT', updatedAssessment);
+      await dispatch('ADD_UPCOMING_ASSESSMENT', updatedAssessment)
     }
 
-    return updatedAssessment;
+    return updatedAssessment
   },
   /**
    * Update an UPCOMING assessment in the state and then sort the upcoming assessments
@@ -185,8 +185,8 @@ const actions = {
    * @param {Object} updatedAssessment The update assessment object returned from the API
    */
   async UPDATE_UPCOMING_ASSESSMENT ({ commit }, updatedAssessment) {
-    commit('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment);
-    commit('SORT_UPCOMING_ASSESSMENTS');
+    commit('UPDATE_UPCOMING_ASSESSMENT', updatedAssessment)
+    commit('SORT_UPCOMING_ASSESSMENTS')
   },
   /**
    * Given an assignment, toggle it's completion status with the API
@@ -198,13 +198,13 @@ const actions = {
   async TOGGLE_ASSIGNMENT ({ commit, getters }, assignmentToToggle) {
     const request = await axios.post(
       `/assignments/a/${assignmentToToggle._id}/toggle`
-    );
-    const updatedAssignment = request.data.updatedAssignment;
+    )
+    const updatedAssignment = request.data.updatedAssignment
 
     if (getters.getUpcomingAssessmentById(updatedAssignment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', updatedAssignment);
+      commit('UPDATE_UPCOMING_ASSESSMENT', updatedAssignment)
     }
-    return updatedAssignment;
+    return updatedAssignment
   },
   /**
    * Grabs all upcoming assessments from the API by setting the start date to
@@ -216,20 +216,20 @@ const actions = {
     // Grab assignments
     let response = await axios.get('/assignments', {
       params: { start: moment().format('YYYY-MM-DD') }
-    });
-    const assignments = response.data.assignments;
+    })
+    const assignments = response.data.assignments
 
     // Grab exams
     response = await axios.get('/exams', {
       params: { start: moment().format('YYYY-MM-DD') }
-    });
-    const exams = response.data.exams;
+    })
+    const exams = response.data.exams
 
     // Tell the server to add us to the proper assessment rooms
-    vm.$socket.client.emit('join assessment rooms', assignments.map(a => a._id));
+    vm.$socket.client.emit('join assessment rooms', assignments.map(a => a._id))
 
-    commit('SET_UPCOMING_ASSESSMENTS', assignments.concat(exams));
-    commit('SORT_UPCOMING_ASSESSMENTS');
+    commit('SET_UPCOMING_ASSESSMENTS', assignments.concat(exams))
+    commit('SORT_UPCOMING_ASSESSMENTS')
   },
   /**
    * Given and assessment object, delete it using the API and remove it
@@ -245,14 +245,14 @@ const actions = {
       }s/${assessmentToRemove.assessmentType.charAt(0)}/${
         assessmentToRemove._id
       }`
-    );
+    )
 
-    const removedAssessment = request.data.removedAssessment;
+    const removedAssessment = request.data.removedAssessment
     if (getters.getUpcomingAssessmentById(removedAssessment._id)) {
-      commit('REMOVE_UPCOMING_ASSESSMENT', removedAssessment);
+      commit('REMOVE_UPCOMING_ASSESSMENT', removedAssessment)
     }
 
-    return removedAssessment;
+    return removedAssessment
   },
   async REMOVE_ASSIGNMENT_AND_RECURRING ({ commit }, assessmentToRemove) {
     const request = await axios.delete(
@@ -261,17 +261,17 @@ const actions = {
       }s/${assessmentToRemove.assessmentType.charAt(0)}/${
         assessmentToRemove._id
       }?removeRecurring=future`
-    );
+    )
     const removedAssessments = [
       request.data.removedAssessment,
       ...request.data.removedRecurringAssignments
-    ];
+    ]
     for (const assessment of removedAssessments) {
       if (getters.getUpcomingAssessmentById(assessment)) {
-        commit('REMOVE_UPCOMING_ASSESSMENT', assessment);
+        commit('REMOVE_UPCOMING_ASSESSMENT', assessment)
       }
     }
-    return removedAssessments;
+    return removedAssessments
   },
   async ADD_WORK_BLOCK (
     { commit, getters },
@@ -280,13 +280,13 @@ const actions = {
     const request = await axios.post(
       `/blocks/${assessment.assessmentType}/${assessment._id}`,
       { startTime: start, endTime: end, shared }
-    );
+    )
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
     }
 
-    return request.data.updatedAssessment;
+    return request.data.updatedAssessment
   },
   async EDIT_WORK_BLOCK (
     { commit, getters },
@@ -296,28 +296,28 @@ const actions = {
       startTime: start,
       endTime: end,
       assessmentType: assessment.assessmentType
-    };
-    if (location) updates.location = location;
+    }
+    if (location) updates.location = location
 
     const request = await axios.patch(
       `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`,
       updates
-    );
+    )
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
     }
 
-    return request.data.updatedAssessment;
+    return request.data.updatedAssessment
   },
   async REMOVE_WORK_BLOCK ({ commit, getters }, { assessment, blockID }) {
     const request = await axios.delete(
       `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`
-    );
+    )
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
     }
-    return request.data.updatedAssessment;
+    return request.data.updatedAssessment
   },
   async ADD_ASSESSMENT_COMMENT (
     { commit, getters },
@@ -328,13 +328,13 @@ const actions = {
         assessment._id
       }/comments`,
       { comment: newComment }
-    );
+    )
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
     }
 
-    return request.data.updatedAssessment;
+    return request.data.updatedAssessment
   },
   async REMOVE_ASSESSMENT_COMMENT (
     { commit, getters },
@@ -344,35 +344,35 @@ const actions = {
       `/${assessment.assessmentType}s/${assessment.assessmentType.charAt(0)}/${
         assessment._id
       }/comments/${commentIndex}`
-    );
+    )
 
     if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment);
+      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
     }
 
-    return request.data.updatedAssessment;
+    return request.data.updatedAssessment
   }
-};
+}
 
 const mutations = {
   SET_UPCOMING_ASSESSMENTS: (state, assessments) => {
-    state.upcomingAssessments = assessments;
+    state.upcomingAssessments = assessments
   },
   SORT_UPCOMING_ASSESSMENTS: () => {
     state.upcomingAssessments.sort((a, b) => {
-      const aDate = a.dueDate || a.date;
-      const bDate = b.dueDate || b.date;
+      const aDate = a.dueDate || a.date
+      const bDate = b.dueDate || b.date
 
       if (aDate > bDate) {
-        return 1;
+        return 1
       } else if (aDate < bDate) {
-        return -1;
+        return -1
       }
-      return 0;
-    });
+      return 0
+    })
   },
   ADD_UPCOMING_ASSESSMENT: (state, assignment) => {
-    state.upcomingAssessments.push(assignment);
+    state.upcomingAssessments.push(assignment)
   },
   UPDATE_UPCOMING_ASSESSMENT: (state, updatedAssessment) => {
     Object.assign(
@@ -380,18 +380,18 @@ const mutations = {
         assessment => assessment._id === updatedAssessment._id
       ),
       updatedAssessment
-    );
+    )
   },
   REMOVE_UPCOMING_ASSESSMENT: (state, removedAssignment) => {
     state.upcomingAssessments = state.upcomingAssessments.filter(
       assessment => assessment._id !== removedAssignment._id
-    );
+    )
   }
-};
+}
 
 export default {
   state,
   getters,
   actions,
   mutations
-};
+}

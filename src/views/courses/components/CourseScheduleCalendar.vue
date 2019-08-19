@@ -22,15 +22,15 @@
 </template>
 
 <script>
-import FullCalendar from '@fullcalendar/vue';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
+import FullCalendar from '@fullcalendar/vue'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
 
-import fullcalendar from '@/mixins/fullcalendar';
+import fullcalendar from '@/mixins/fullcalendar'
 
-import '@fullcalendar/core/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
 
 export default {
   name: 'CourseScheduleCalendar',
@@ -57,11 +57,11 @@ export default {
           end: this.$store.getters.currentTerm.end
         }
       }
-    };
+    }
   },
   computed: {
     courseEvents () {
-      return this.$store.getters.getCourseScheduleAsEvents;
+      return this.$store.getters.getCourseScheduleAsEvents
     }
   },
   mounted () {
@@ -70,18 +70,18 @@ export default {
       navigator.userAgent.indexOf('IEMobile') !== -1
     ) {
       // Only show three day view on mobile
-      const calendarApi = this.$refs.calendar.getApi();
-      calendarApi.changeView('timeGridThreeDay');
+      const calendarApi = this.$refs.calendar.getApi()
+      calendarApi.changeView('timeGridThreeDay')
     }
   },
   methods: {
     eventClick ({ event }) {
       if (event.extendedProps.eventType === 'course') {
-        this.$emit('goto-course', event.extendedProps.course._id);
+        this.$emit('goto-course', event.extendedProps.course._id)
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -9,7 +9,7 @@ export default {
           maxlength: 20
         },
         onConfirm
-      });
+      })
     },
     promptPIN (onConfirm) {
       this.$dialog.prompt({
@@ -21,7 +21,7 @@ export default {
           maxlength: 300
         },
         onConfirm
-      });
+      })
     }
   }
-};
+}

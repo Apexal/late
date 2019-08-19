@@ -19,7 +19,7 @@
         <hr class="title-divider">
         <div class="tabs">
           <ul>
-            <li :class="{ 'is-active': currentTab === 'SetupIntegrationsSMS' }">
+            <li :class="{'is-active': currentTab === 'SetupIntegrationsSMS'}">
               <a @click="setIntegration('sms')">
                 SMS
                 <span class="icon">
@@ -30,7 +30,7 @@
                 </span>
               </a>
             </li>
-            <li :class="{ 'is-active': currentTab === 'SetupIntegrationsEmail' }">
+            <li :class="{'is-active': currentTab === 'SetupIntegrationsEmail'}">
               <a @click="setIntegration('email')">
                 Email
                 <span class="icon">
@@ -38,7 +38,7 @@
                 </span>
               </a>
             </li>
-            <li :class="{ 'is-active': currentTab === 'SetupIntegrationsDiscord' }">
+            <li :class="{'is-active': currentTab === 'SetupIntegrationsDiscord'}">
               <a @click="setIntegration('discord')">
                 Discord
                 <span class="icon">
@@ -49,7 +49,7 @@
                 </span>
               </a>
             </li>
-            <li :class="{ 'is-active': currentTab === 'SetupIntegrationsGoogleCalendar' }">
+            <li :class="{'is-active': currentTab === 'SetupIntegrationsGoogleCalendar'}">
               <a @click="setIntegration('google-calendar')">
                 Google Calendar
                 <span class="icon">
@@ -67,7 +67,7 @@
     </div>
     <hr>
     <router-link
-      :to="{ name: 'setup-google-calendar' }"
+      :to="{name: 'setup-google-calendar'}"
       class="button is-primary is-pulled-right"
     >
       Save and Continue
@@ -76,11 +76,11 @@
 </template>
 
 <script>
-import SetupIntegrationsPreferences from '@/views/account/components/SetupIntegrationsPreferences';
-import SetupIntegrationsSMS from '@/views/account/components/SetupIntegrationsSMS';
-import SetupIntegrationsEmail from '@/views/account/components/SetupIntegrationsEmail';
-import SetupIntegrationsDiscord from '@/views/account/components/SetupIntegrationsDiscord';
-import SetupIntegrationsGoogleCalendar from '@/views/account/components/SetupIntegrationsGoogleCalendar';
+import SetupIntegrationsPreferences from '@/views/account/components/SetupIntegrationsPreferences'
+import SetupIntegrationsSMS from '@/views/account/components/SetupIntegrationsSMS'
+import SetupIntegrationsEmail from '@/views/account/components/SetupIntegrationsEmail'
+import SetupIntegrationsDiscord from '@/views/account/components/SetupIntegrationsDiscord'
+import SetupIntegrationsGoogleCalendar from '@/views/account/components/SetupIntegrationsGoogleCalendar'
 
 export default {
   name: 'AccountSetupIntegrations',
@@ -100,25 +100,25 @@ export default {
         discord: 'SetupIntegrationsDiscord',
         'google-calendar': 'SetupIntegrationsGoogleCalendar'
       }
-    };
+    }
   },
   computed: {
     integrations () {
-      return this.$store.state.auth.user.integrations;
+      return this.$store.state.auth.user.integrations
     }
   },
   created () {
     if (this.$route.hash) {
-      this.currentTab = this.map[this.$route.hash.substring(1)] || 'SMSSetup';
+      this.currentTab = this.map[this.$route.hash.substring(1)] || 'SMSSetup'
     }
   },
   methods: {
     setIntegration (i) {
-      this.currentTab = this.map[i];
-      location.hash = i;
+      this.currentTab = this.map[i]
+      location.hash = i
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

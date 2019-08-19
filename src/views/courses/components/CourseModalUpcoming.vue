@@ -20,7 +20,7 @@
           class="box assessment-box is-flex"
           :to="{
             name: assessment.assessmentType + '-overview',
-            params: { [assessment.assessmentType + 'ID']: assessment._id }
+            params: {[assessment.assessmentType + 'ID']: assessment._id}
           }"
           :title="assessmentLinkTitle(assessment)"
         >
@@ -73,8 +73,6 @@
 </template>
 
 <script>
-import moment from 'moment';
-
 export default {
   name: 'CourseModalUpcoming',
   props: {
@@ -90,13 +88,13 @@ export default {
   methods: {
     assessmentLinkTitle (assessment) {
       if (assessment.assessmentType === 'exam') {
-        return 'Exam on ' + this.shortDateFormat(assessment.date);
+        return 'Exam on ' + this.shortDateFormat(assessment.date)
       } else if (assessment.assessmentType === 'assignment') {
-        return 'Assignment due ' + this.shortDateFormat(assessment.dueDate);
+        return 'Assignment due ' + this.shortDateFormat(assessment.dueDate)
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

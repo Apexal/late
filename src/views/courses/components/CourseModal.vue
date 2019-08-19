@@ -10,14 +10,14 @@
       <div class="box">
         <router-link
           title="Edit course info and links"
-          :to="{ name: 'setup-course-schedule' }"
+          :to="{name: 'setup-course-schedule'}"
           class="button is-small margin-left is-pulled-right"
         >
           <i class="fas fa-pencil-alt" />
         </router-link>
         <div
           class="tag section-tag is-pulled-right"
-          :style="{ 'background-color': course.color }"
+          :style="{'background-color': course.color}"
           :title="'You are in Section ' + course.sectionId"
         >
           Section {{ course.sectionId }}
@@ -34,7 +34,7 @@
         <div class="tabs is-centered">
           <ul>
             <li
-              :class="{ 'is-active': activeTab === 'CourseModalUpcoming' }"
+              :class="{'is-active': activeTab === 'CourseModalUpcoming'}"
               @click="activeTab = 'CourseModalUpcoming'"
             >
               <a>
@@ -50,7 +50,7 @@
             </li>
             <li
               v-if="course.periods"
-              :class="{ 'is-active': activeTab === 'CourseModalSchedule' }"
+              :class="{'is-active': activeTab === 'CourseModalSchedule'}"
               @click="activeTab = 'CourseModalSchedule'"
             >
               <a>
@@ -65,7 +65,7 @@
               </a>
             </li>
             <li
-              :class="{ 'is-active': activeTab === 'CourseModalLinks' }"
+              :class="{'is-active': activeTab === 'CourseModalLinks'}"
               @click="activeTab = 'CourseModalLinks'"
             >
               <a>
@@ -94,12 +94,12 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 // Tabs
-import CourseModalUpcoming from './CourseModalUpcoming';
-import CourseModalSchedule from './CourseModalSchedule';
-import CourseModalLinks from './CourseModalLinks';
+import CourseModalUpcoming from './CourseModalUpcoming'
+import CourseModalSchedule from './CourseModalSchedule'
+import CourseModalLinks from './CourseModalLinks'
 
 export default {
   name: 'CourseModal',
@@ -114,38 +114,38 @@ export default {
   data () {
     return {
       activeTab: 'CourseModalUpcoming'
-    };
+    }
   },
   computed: {
     upcomingAssessments () {
-      const limit = moment().add(2, 'week');
+      const limit = moment().add(2, 'week')
       const assessments = this.$store.state.assessments.upcomingAssessments.filter(
         assessment =>
           moment(assessment.dueDate || assessment.date).isBefore(limit) &&
           assessment.courseCRN === this.course.crn
-      );
-      return assessments;
+      )
+      return assessments
     },
     links () {
-      return this.course.links || [];
+      return this.course.links || []
     }
   },
   methods: {
     addAssessment (assessmentType) {
-      this.$store.commit('CLOSE_COURSE_MODAL');
+      this.$store.commit('CLOSE_COURSE_MODAL')
       this.$store.commit(
         'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_VALUES',
         {
           courseCRN: this.course.crn
         }
-      );
+      )
 
       this.$store.commit(
         'TOGGLE_ADD_' + assessmentType.toUpperCase() + '_MODAL'
-      );
+      )
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

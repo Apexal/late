@@ -19,7 +19,7 @@
             </b-tag>
             <b-tag
               rounded
-              :style="{ 'background-color': course.color, color: 'white' }"
+              :style="{'background-color': course.color, color: 'white'}"
               :title="'You are in Section ' + course.sectionId"
             >
               Section {{ course.sectionId }}
@@ -337,7 +337,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'AccountCourse',
@@ -368,22 +368,22 @@ export default {
         location: '',
         type: 'LEC'
       }
-    };
+    }
   },
   computed: {
     elementID () {
-      return this.course._id;
+      return this.course._id
     },
     sortedPeriods () {
       return this.course.periods
         .concat()
-        .sort((a, b) => parseInt(a.day) - parseInt(b.day));
+        .sort((a, b) => parseInt(a.day) - parseInt(b.day))
     },
     saved () {
       return (
         JSON.stringify(this.currentCourse) ===
         JSON.stringify(this.updatedCourse)
-      );
+      )
     },
     currentCourse () {
       return {
@@ -394,7 +394,7 @@ export default {
         links: this.course.links,
         periods: this.course.periods,
         hidden: this.course.hidden
-      };
+      }
     },
     updatedCourse () {
       return {
@@ -405,31 +405,31 @@ export default {
         links: this.editedLinks,
         periods: this.editedPeriods,
         hidden: this.courseData.hidden
-      };
+      }
     }
   },
   watch: {
     course (newCourse) {
-      this.courseData = Object.assign({}, this.course);
-      this.editedLinks = this.course.links.slice(0);
-      this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
+      this.courseData = Object.assign({}, this.course)
+      this.editedLinks = this.course.links.slice(0)
+      this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods))
     },
     highlighted (newHighlighted) {
       if (newHighlighted) {
-        this.open = true;
+        this.open = true
       }
     }
   },
   methods: {
     roomIntoLocation (location) {
-      return this.$store.getters.roomIntoLocation(location);
+      return this.$store.getters.roomIntoLocation(location)
     },
     addLink () {
-      this.editedLinks.push(this.newLink);
-      this.newLink = '';
+      this.editedLinks.push(this.newLink)
+      this.newLink = ''
     },
     changePeriodTime (p, startOrEnd, inputFormat) {
-      p[startOrEnd] = moment(inputFormat, 'HH:mm', true).format('Hmm');
+      p[startOrEnd] = moment(inputFormat, 'HH:mm', true).format('Hmm')
     },
     day: num =>
       [
@@ -442,24 +442,24 @@ export default {
         'Saturday'
       ][num],
     time: t => {
-      const dt = moment(t, 'Hmm', true);
+      const dt = moment(t, 'Hmm', true)
       if (dt.hours() === 12 && dt.minutes() === 0) {
-        return 'Noon';
+        return 'Noon'
       } else if (dt.minutes() === 0) {
-        return dt.format('ha');
+        return dt.format('ha')
       }
-      return dt.format('h:mma');
+      return dt.format('h:mma')
     },
     formatToInputTime: oldFormat =>
       moment(oldFormat, 'Hmm', true).format('HH:mm'),
     type (pType) {
-      return this.$store.getters.periodType(pType);
+      return this.$store.getters.periodType(pType)
     },
     cancel () {
-      this.courseData = Object.assign({}, this.course);
-      this.editedLinks = this.course.links.slice(0);
-      this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods));
-      this.editing = false;
+      this.courseData = Object.assign({}, this.course)
+      this.editedLinks = this.course.links.slice(0)
+      this.editedPeriods = JSON.parse(JSON.stringify(this.course.periods))
+      this.editing = false
     },
     confirmRemoveCourse () {
       this.$dialog.confirm({
@@ -469,9 +469,9 @@ export default {
         hasIcon: true,
         icon: 'trash-alt',
         onConfirm: () => {
-          this.$emit('remove-course');
+          this.$emit('remove-course')
         }
-      });
+      })
     },
     async updateCourse () {
       if (
@@ -481,34 +481,34 @@ export default {
         this.$toast.open({
           type: 'is-danger',
           message: 'You cannot set an empty name or section for a course!'
-        });
-        return;
+        })
+        return
       }
 
-      let updatedCourse;
+      let updatedCourse
       try {
         updatedCourse = await this.$store.dispatch(
           'UPDATE_COURSE',
           this.updatedCourse
-        );
+        )
       } catch (e) {
-        const message = e.response ? e.response.data.message : e.message;
+        const message = e.response ? e.response.data.message : e.message
         this.$toast.open({
           duration: 5000,
           message,
           type: 'is-danger'
-        });
-        return;
+        })
+        return
       }
 
       this.$toast.open({
         duration: 2000,
         message: `Updated '${updatedCourse.title}'`,
         type: 'is-success'
-      });
+      })
 
-      this.editing = false;
-      this.open = true;
+      this.editing = false
+      this.open = true
     },
     removePeriod (periodToRemove) {
       this.$dialog.confirm({
@@ -533,9 +533,9 @@ export default {
               !(
                 p.day === periodToRemove.day && p.start === periodToRemove.start
               )
-          );
+          )
         }
-      });
+      })
     },
     addPeriod () {
       // Validate
@@ -547,8 +547,8 @@ export default {
         this.$toast.open({
           type: 'is-danger',
           message: 'Make sure the time and location is set!'
-        });
-        return;
+        })
+        return
       }
       // Remeber to convert start/end from HH:mm to Hmm
       this.editedPeriods.push(
@@ -556,7 +556,7 @@ export default {
           start: moment(this.newPeriod.start, 'HH:mm', true).format('Hmm'),
           end: moment(this.newPeriod.end, 'HH:mm', true).format('Hmm')
         })
-      );
+      )
 
       this.newPeriod = {
         day: 1,
@@ -564,10 +564,10 @@ export default {
         end: '09:50',
         location: '',
         type: 'LEC'
-      };
+      }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

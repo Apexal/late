@@ -31,7 +31,7 @@
 <script>
 export default {
   name: 'AssessmentsAddFAB'
-};
+}
 </script>
 
 <style scoped lang="scss">

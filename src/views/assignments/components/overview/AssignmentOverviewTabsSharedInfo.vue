@@ -61,7 +61,7 @@
           <p class="control">
             <button
               class="button"
-              :class="{ 'is-loading': loading }"
+              :class="{'is-loading': loading}"
             >
               Add Student
             </button>
@@ -90,137 +90,137 @@ export default {
       loading: false,
       collaborators: [],
       newStudent: ''
-    };
+    }
   },
   computed: {
     owner () {
-      return this.assessment._student;
+      return this.assessment._student
     },
     isOwner () {
-      return this.assessment._student._id === this.user._id;
+      return this.assessment._student._id === this.user._id
     },
     unregisteredCollaborators () {
       return this.assessment.sharedWith.filter(
         rcsId => !this.collaborators.some(student => student.rcs_id === rcsId)
-      );
+      )
     }
   },
   created () {
-    this.getCollaborators();
+    this.getCollaborators()
   },
   methods: {
     async addStudent () {
-      this.loading = true;
+      this.loading = true
 
       if (
         this.assessment.sharedWith.includes(this.newStudent) ||
         this.newStudent === this.user.rcsId
       ) {
-        this.loading = false;
-        this.newStudent = '';
-        return;
+        this.loading = false
+        this.newStudent = ''
+        return
       }
 
-      let response;
+      let response
       try {
         response = await this.$http.post(
           `/assignments/a/${this.assessment._id}/collaborators`,
           { sharedWith: [...this.assessment.sharedWith, this.newStudent] }
-        );
+        )
         if (
           this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
         ) {
           await this.$store.dispatch(
             'UPDATE_UPCOMING_ASSESSMENT',
             response.data.updatedAssessment
-          );
+          )
         }
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.$emit('updated-assessment', response.data.updatedAssessment);
+      this.$emit('updated-assessment', response.data.updatedAssessment)
 
       this.$toast.open({
         message: `Shared this assignment with <b>${
           this.newStudent
         }</b>. They have been notified.`,
         type: 'is-success'
-      });
+      })
 
-      this.getCollaborators();
+      this.getCollaborators()
 
-      this.newStudent = '';
-      this.loading = false;
+      this.newStudent = ''
+      this.loading = false
     },
     async removeStudent (rcsId) {
-      let response;
+      let response
       try {
         response = await this.$http.post(
           `/assignments/a/${this.assessment._id}/collaborators`,
           {
             sharedWith: this.assessment.sharedWith.filter(rid => rid !== rcsId)
           }
-        );
+        )
         if (
           this.$store.getters.getUpcomingAssessmentById(this.assessment._id)
         ) {
           await this.$store.dispatch(
             'UPDATE_UPCOMING_ASSESSMENT',
             response.data.updatedAssessment
-          );
+          )
         }
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.$emit('updated-assessment', response.data.updatedAssessment);
+      this.$emit('updated-assessment', response.data.updatedAssessment)
 
       this.collaborators = this.collaborators.filter(
         student => student.rcs_id !== rcsId
-      );
+      )
 
-      this.newStudent = '';
+      this.newStudent = ''
 
       this.$toast.open({
         message: `Stopped sharing this assignment with <b>${rcsId}</b>. They have been notified.`,
         type: 'is-success'
-      });
+      })
     },
     async getCollaborators () {
-      if (!this.assessment.shared) return;
+      if (!this.assessment.shared) return
 
-      this.loading = true;
+      this.loading = true
 
-      let response;
+      let response
       try {
         response = await this.$http.get(
           '/assignments/a/' + this.assessment._id + '/collaborators'
-        );
+        )
       } catch (e) {
         this.$toast.open({
           type: 'is-danger',
           message: e.response.data.message
-        });
-        return;
+        })
+        return
       }
 
-      this.collaborators = response.data.collaborators;
+      this.collaborators = response.data.collaborators
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

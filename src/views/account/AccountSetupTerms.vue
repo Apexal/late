@@ -14,7 +14,7 @@
       >
         <div
           class="box term is-unselectable"
-          :class="{ 'has-background-primary': selected.includes(term.code) }"
+          :class="{'has-background-primary': selected.includes(term.code)}"
         >
           <b>{{ term.name }}</b>
           <span
@@ -46,70 +46,70 @@ export default {
   data () {
     return {
       selected: []
-    };
+    }
   },
   computed: {
     currentSelections () {
-      return this.$store.state.auth.user.terms;
+      return this.$store.state.auth.user.terms
     },
     saved () {
       return (
         JSON.stringify(this.currentSelections) === JSON.stringify(this.selected)
-      );
+      )
     },
     terms () {
-      return this.$store.state.schedule.terms;
+      return this.$store.state.schedule.terms
     }
   },
   created () {
-    this.selected = this.currentSelections.slice(0);
+    this.selected = this.currentSelections.slice(0)
   },
   methods: {
     toggleTerm (termCode) {
       if (this.selected.includes(termCode)) {
-        this.selected.splice(this.selected.indexOf(termCode), 1);
+        this.selected.splice(this.selected.indexOf(termCode), 1)
       } else {
-        this.selected.push(termCode);
+        this.selected.push(termCode)
       }
     },
     async save () {
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
       try {
         request = await this.$http.post('/account/terms', {
           termCodes: this.selected
-        });
+        })
       } catch (e) {
-        this.loading = false;
+        this.loading = false
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+      await this.$store.dispatch('SET_USER', request.data.updatedUser)
       if (this.$store.getters.onBreak) {
-        this.$store.commit('SET_UPCOMING_ASSESSMENTS', []);
-        this.$store.commit('SET_COURSES', []);
+        this.$store.commit('SET_UPCOMING_ASSESSMENTS', [])
+        this.$store.commit('SET_COURSES', [])
       } else {
-        await this.$store.dispatch('GET_COURSES');
-        await this.$store.dispatch('GET_UNAVAILABILITIES');
-        await this.$store.dispatch('AUTO_GET_UPCOMING_WORK');
+        await this.$store.dispatch('GET_COURSES')
+        await this.$store.dispatch('GET_UNAVAILABILITIES')
+        await this.$store.dispatch('AUTO_GET_UPCOMING_WORK')
       }
 
       // Notify user of success
       this.$toast.open({
         message: 'Saved terms!',
         type: 'is-success'
-      });
+      })
 
-      this.$router.push({ name: 'setup-course-schedule' });
+      this.$router.push({ name: 'setup-course-schedule' })
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const schema = new Schema(
   {
@@ -14,6 +14,6 @@ const schema = new Schema(
     isPinned: { type: Boolean, default: false } // Whether or not the announcement shows up at the top of the page or just in the modal
   },
   { timestamps: true }
-);
+)
 
-module.exports = mongoose.model('Announcement', schema);
+module.exports = mongoose.model('Announcement', schema)

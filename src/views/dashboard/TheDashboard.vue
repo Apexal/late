@@ -15,14 +15,14 @@
         </h1>
         <router-link
           v-if="!onBreak"
-          :to="{ name: 'dashboard-overview' }"
+          :to="{name: 'dashboard-overview'}"
           tag="li"
         >
           <a>Overview</a>
         </router-link>
         <router-link
           v-if="!onBreak"
-          :to="{ name: 'dashboard-calendar' }"
+          :to="{name: 'dashboard-calendar'}"
           tag="li"
         >
           <a>Calendar</a>
@@ -36,7 +36,7 @@
       </h2>
       <hr>
       <router-link
-        :to="{ name: 'account' }"
+        :to="{name: 'account'}"
         class="button is-dark"
       >
         Continue Account Setup
@@ -47,20 +47,20 @@
 </template>
 
 <script>
-import DashboardNextTermPreview from './components/DashboardNextTermPreview';
+import DashboardNextTermPreview from './components/DashboardNextTermPreview'
 
 export default {
   name: 'TheDashboard',
   components: { DashboardNextTermPreview },
   computed: {
     tab () {
-      return this.$route.hash.substring(1) || 'calendar';
+      return this.$route.hash.substring(1) || 'calendar'
     },
     nextTerm () {
-      return this.$store.getters.nextTerm;
+      return this.$store.getters.nextTerm
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>

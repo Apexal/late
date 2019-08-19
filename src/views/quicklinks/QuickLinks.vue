@@ -195,7 +195,7 @@
     <div class="buttons">
       <router-link
         class="button is-link"
-        :to="{ name: 'tools' }"
+        :to="{name: 'tools'}"
       >
         <i class="fas fa-angle-left" />
         All Tools
@@ -218,70 +218,70 @@ export default {
         url: ''
       },
       quickLinks: []
-    };
+    }
   },
   computed: {
     confirmedQuickLinks () {
-      return this.quickLinks.filter(link => link.confirmed);
+      return this.quickLinks.filter(link => link.confirmed)
     },
     unconfirmedQuickLinks () {
-      return this.quickLinks.filter(link => !link.confirmed);
+      return this.quickLinks.filter(link => !link.confirmed)
     },
     categories () {
-      const categories = {};
+      const categories = {}
       for (const link of this.confirmedQuickLinks) {
-        categories[link.category] = categories[link.category] || [];
-        categories[link.category].push(link);
+        categories[link.category] = categories[link.category] || []
+        categories[link.category].push(link)
       }
 
-      return categories;
+      return categories
     }
   },
   mounted () {
-    this.getQuickLinks();
+    this.getQuickLinks()
   },
   methods: {
     async deleteQuickLink (quickLinkID) {
-      this.loading = true;
+      this.loading = true
 
-      let response;
+      let response
       try {
-        response = await this.$http.delete('/quicklinks/' + quickLinkID);
+        response = await this.$http.delete('/quicklinks/' + quickLinkID)
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
       this.quickLinks = this.quickLinks.filter(
         quickLink => quickLink._id !== response.data.deletedQuickLink._id
-      );
+      )
 
       this.$toast.open({
         message: 'Deleted submitted quick link!',
         type: 'is-success'
-      });
+      })
 
-      this.loading = false;
+      this.loading = false
     },
     async confirmQuickLink (quickLinkID) {
-      this.loading = true;
+      this.loading = true
 
-      let response;
+      let response
       try {
         response = await this.$http.patch('/quicklinks/' + quickLinkID, {
           confirmed: true
-        });
+        })
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
       Object.assign(
@@ -289,32 +289,32 @@ export default {
           link => link._id === response.data.updatedQuickLink._id
         ),
         response.data.updatedQuickLink
-      );
+      )
 
       this.$toast.open({
         message: 'Confirmed submitted quick link!',
         type: 'is-success'
-      });
+      })
 
-      this.loading = false;
+      this.loading = false
     },
     async submitLink () {
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
       try {
-        request = await this.$http.post('/quicklinks', { ...this.newLink, category: this.newLink.category === 'other' ? this.otherCategory : this.newLink.category });
+        request = await this.$http.post('/quicklinks', { ...this.newLink, category: this.newLink.category === 'other' ? this.otherCategory : this.newLink.category })
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
       if (request.data.createdQuickLink.confirmed) {
-        this.quickLinks.push(request.data.createdQuickLink);
+        this.quickLinks.push(request.data.createdQuickLink)
       }
 
       this.$toast.open({
@@ -322,38 +322,38 @@ export default {
           'Submitted link! It will be reviewed by an admin before being added.',
         type: 'is-warning',
         duration: 5000
-      });
+      })
 
       this.newLink = {
         title: '',
         description: '',
         url: ''
-      };
+      }
 
-      this.loading = false;
+      this.loading = false
     },
     async getQuickLinks () {
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
 
       try {
-        request = await this.$http.get('/quicklinks');
+        request = await this.$http.get('/quicklinks')
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.quickLinks = request.data.quickLinks;
+      this.quickLinks = request.data.quickLinks
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

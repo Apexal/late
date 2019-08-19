@@ -17,7 +17,7 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map'
   },
-
+  lintOnSave: 'error',
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
@@ -27,4 +27,4 @@ module.exports = {
     themeColor: '#70cad1',
     msTileColor: '#2e3b59'
   }
-};
+}

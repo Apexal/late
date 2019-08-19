@@ -1,9 +1,9 @@
-const Block = require('./blocks.model');
-const Assignment = require('../assignments/assignments.model');
-const Exam = require('../exams/exams.model');
+const Block = require('./blocks.model')
+const Assignment = require('../assignments/assignments.model')
+const Exam = require('../exams/exams.model')
 
-const logger = require('../../modules/logger');
-const google = require('../../modules/google');
+const logger = require('../../modules/logger')
+const google = require('../../modules/google')
 
 /**
  * Add a work block to a specific assignment and have the updated
@@ -17,8 +17,8 @@ const google = require('../../modules/google');
  * POST /
  */
 async function addWorkBlock (ctx) {
-  const { assessmentType, assessmentID } = ctx.params;
-  const { startTime, endTime, shared } = ctx.request.body;
+  const { assessmentType, assessmentID } = ctx.params
+  const { startTime, endTime, shared } = ctx.request.body
 
   const newBlock = new Block({
     _student: ctx.state.user._id,
@@ -29,16 +29,16 @@ async function addWorkBlock (ctx) {
     locked: false,
     notified: false,
     shared
-  });
+  })
 
   try {
-    await newBlock.save();
+    await newBlock.save()
   } catch (e) {
-    logger.error(`Failed to save new block for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.badRequest('There was an error scheduling the work block.');
+    logger.error(`Failed to save new block for ${ctx.state.user.rcs_id}: ${e}`)
+    return ctx.badRequest('There was an error scheduling the work block.')
   }
 
-  let assessment;
+  let assessment
   // Get assessment
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
@@ -63,49 +63,49 @@ async function addWorkBlock (ctx) {
             }
           ]
         }
-      });
+      })
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} to add new work block for ${
         ctx.state.user.rcs_id
       }: ${e}`
-    );
+    )
     return ctx.internalServerError(
       `There was an error getting the ${assessmentType}.`
-    );
+    )
   }
 
-  assessment._blocks.push(newBlock);
+  assessment._blocks.push(newBlock)
 
   try {
-    await assessment.save();
+    await assessment.save()
   } catch (e) {
     logger.error(
       `Failed to save ${assessmentType} with new work block for ${
         ctx.state.user.rcs_id
       }: ${e}`
-    );
-    return ctx.badRequest('There was an error scheduling the work block.');
+    )
+    return ctx.badRequest('There was an error scheduling the work block.')
   }
 
-  logger.info(`Adding work block for ${ctx.state.user.rcs_id}`);
+  logger.info(`Adding work block for ${ctx.state.user.rcs_id}`)
 
   if (ctx.state.user.integrations.google.calendarID) {
     try {
-      await google.actions.createEventFromWorkBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock);
+      await google.actions.createEventFromWorkBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock)
     } catch (e) {
       logger.error(
         `Failed to add GCal event for work block for ${
           ctx.state.user.rcs_id
         }: ${e}`
-      );
+      )
     }
   }
 
   return ctx.ok({
     createdBlock: newBlock,
     updatedAssessment: assessment
-  });
+  })
 }
 
 /**
@@ -121,25 +121,25 @@ async function addWorkBlock (ctx) {
  * PATCH /:blockID
  */
 async function editWorkBlock (ctx) {
-  const { assessmentType, assessmentID, blockID } = ctx.params;
-  const { startTime, endTime, location } = ctx.request.body;
+  const { assessmentType, assessmentID, blockID } = ctx.params
+  const { startTime, endTime, location } = ctx.request.body
 
   const editedBlock = await Block.findOne({
     _id: blockID
-  });
+  })
 
-  editedBlock.set(ctx.request.body);
+  editedBlock.set(ctx.request.body)
 
   try {
-    await editedBlock.save();
+    await editedBlock.save()
   } catch (e) {
     logger.error(
       `Failed to edit work block for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('There was an error updatng the work block.');
+    )
+    return ctx.badRequest('There was an error updatng the work block.')
   }
 
-  let assessment;
+  let assessment
   // Get assessment
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
@@ -165,19 +165,19 @@ async function editWorkBlock (ctx) {
             }
           ]
         }
-      });
+      })
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} for work block edit for ${
         ctx.state.user.rcs_id
       }: ${e}`
-    );
+    )
     return ctx.internalServerError(
       'There was an error editing the work block.'
-    );
+    )
   }
 
-  logger.info(`Edited work block for ${ctx.state.user.rcs_id}`);
+  logger.info(`Edited work block for ${ctx.state.user.rcs_id}`)
 
   if (ctx.state.user.integrations.google.calendarID) {
     try {
@@ -189,19 +189,19 @@ async function editWorkBlock (ctx) {
         end: {
           dateTime: endTime
         }
-      });
+      })
     } catch (e) {
       logger.error(
         `Failed to patch GCal event for work block for ${
           ctx.state.user.rcs_id
         }: ${e}`
-      );
+      )
     }
   }
 
   return ctx.ok({
     updatedAssessment: assessment
-  });
+  })
 }
 
 /**
@@ -212,14 +212,14 @@ async function editWorkBlock (ctx) {
  * DELETE /:blockID
  */
 async function deleteWorkBlock (ctx) {
-  const { assessmentType, assessmentID, blockID } = ctx.params;
+  const { assessmentType, assessmentID, blockID } = ctx.params
 
   const removedBlock = await Block.findOne({
     _id: blockID
-  });
-  removedBlock.remove();
+  })
+  removedBlock.remove()
 
-  let assessment;
+  let assessment
   // Get assessment
   try {
     assessment = await (assessmentType === 'assignment' ? Assignment : Exam)
@@ -244,45 +244,45 @@ async function deleteWorkBlock (ctx) {
             }
           ]
         }
-      });
+      })
     assessment._blocks = assessment._blocks.filter(
       b => b._id !== removedBlock._id
-    );
+    )
 
-    await assessment.save();
+    await assessment.save()
   } catch (e) {
     logger.error(
       `Failed to get ${assessmentType} for work block remove for ${
         ctx.state.user.rcs_id
       }: ${e}`
-    );
+    )
     return ctx.internalServerError(
       'There was an error removing the work block.'
-    );
+    )
   }
 
-  logger.info(`Deleted work block for ${ctx.state.user.rcs_id}`);
+  logger.info(`Deleted work block for ${ctx.state.user.rcs_id}`)
 
   if (ctx.state.user.integrations.google.calendarID) {
     try {
-      await google.actions.deleteEventFromWorkBlock(ctx, blockID);
+      await google.actions.deleteEventFromWorkBlock(ctx, blockID)
     } catch (e) {
       logger.error(
         `Failed to delete GCal event for work block for ${
           ctx.state.user.rcs_id
         }: ${e}`
-      );
+      )
     }
   }
 
   return ctx.ok({
     removeBlock: removedBlock,
     updatedAssessment: assessment
-  });
+  })
 }
 
 module.exports = {
   addWorkBlock,
   editWorkBlock,
   deleteWorkBlock
-};
+}

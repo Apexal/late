@@ -26,7 +26,7 @@
         <span style="flex: 1">
           <span
             class="tag assessment-type-tag"
-            :style="{ 'background-color': course(assessment.courseCRN).color }"
+            :style="{'background-color': course(assessment.courseCRN).color}"
           >{{ assessment.assessmentType }}</span>
           {{ assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for' }}
           <b>{{ assessment.title }}</b>
@@ -105,7 +105,7 @@ export default {
     return {
       limit: 10,
       showingExtra: false
-    };
+    }
   },
   computed: {
     dateStrs () {
@@ -114,25 +114,25 @@ export default {
         end: this.start.isSame(this.end, 'day')
           ? this.timeFormat(this.end)
           : this.shortDateTimeFormat(this.end)
-      };
+      }
     },
     limitedAssessments () {
-      return this.assessments.slice(0, this.limit);
+      return this.assessments.slice(0, this.limit)
     },
     extraAssessments () {
-      if (!this.hasExtra) return [];
-      return this.assessments.slice(this.limit, this.assessments.length);
+      if (!this.hasExtra) return []
+      return this.assessments.slice(this.limit, this.assessments.length)
     },
     hasExtra () {
-      return this.assessments.length > this.limit;
+      return this.assessments.length > this.limit
     }
   },
   methods: {
     course (crn) {
-      return this.$store.getters.getCourseFromCRN(crn);
+      return this.$store.getters.getCourseFromCRN(crn)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

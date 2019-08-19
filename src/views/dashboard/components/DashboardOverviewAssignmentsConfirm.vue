@@ -47,17 +47,17 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'DashboardOverviewAssignmentsConfirm',
   data () {
     return {
       unconfirmedAssignments: []
-    };
+    }
   },
   async mounted () {
-    let response;
+    let response
     try {
       response = await this.$http.get('/assignments', {
         params: {
@@ -66,48 +66,52 @@ export default {
           completed: false,
           confirmed: false
         }
-      });
+      })
     } catch (e) {
-      this.$toast.open({ type: 'is-danger', message: e.response.data.message });
-      return;
+      this.$toast.open({ type: 'is-danger', message: e.response.data.message })
+      return
     }
 
-    this.unconfirmedAssignments = response.data.assignments;
+    this.unconfirmedAssignments = response.data.assignments
   },
   methods: {
     async confirmAssignment (assignmentID, didComplete) {
-      let response;
-      if (didComplete) {
-        response = await this.$http.post(
-          '/assignments/a/' + assignmentID + '/toggle'
-        );
-      } else {
-        response = await this.$http.patch('/assignments/a/' + assignmentID, {
-          confirmed: true,
-          completed: false
-        });
+      try {
+        if (didComplete) {
+          await this.$http.post(
+            '/assignments/a/' + assignmentID + '/toggle'
+          )
+        } else {
+          await this.$http.patch('/assignments/a/' + assignmentID, {
+            confirmed: true,
+            completed: false
+          })
+        }
+      } catch (e) {
+        this.$toast.open({ type: 'is-error', message: e.response.data.message })
+        return
       }
 
       this.unconfirmedAssignments = this.unconfirmedAssignments.filter(
         a => a._id !== assignmentID
-      );
+      )
 
       this.$toast.open({
         type: 'is-primary',
         message: 'Confirmed assignment\'s status!'
-      });
+      })
     },
     assessmentRoute (a) {
       return {
         name: a.assessmentType + '-overview',
         params: { [a.assessmentType + 'ID']: a._id }
-      };
+      }
     },
     course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+      return this.$store.getters.getCourseFromCRN(a.courseCRN)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

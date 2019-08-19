@@ -71,7 +71,7 @@
         <b-button
           type="is-warning"
           size="is-small"
-          @click="updateStudent({ accountLocked: !student.accountLocked })"
+          @click="updateStudent({accountLocked: !student.accountLocked})"
         >
           Lock Account
         </b-button>
@@ -96,7 +96,7 @@
           <b-button
             type="is-success"
             size="is-small"
-            @click="updateStudent({ admin: !student.admin })"
+            @click="updateStudent({admin: !student.admin})"
           >
             {{ student.admin ? "Remove" : "Make" }} Admin
           </b-button>
@@ -107,11 +107,9 @@
 </template>
 
 <script>
-import moment from 'moment';
-
 export default {
   name: 'AdminStudentListOverview',
-  props: { student: {type: Object, required: true } },
+  props: { student: { type: Object, required: true } },
   data () {
     return {
       confirming: false,
@@ -120,7 +118,7 @@ export default {
         exams: 0,
         blocks: 0
       }
-    };
+    }
   },
   computed: {
     setupCheckNames () {
@@ -131,7 +129,7 @@ export default {
         unavailability: 'Unavailability',
         integrations: 'Notifications',
         google: 'Google'
-      };
+      }
     },
     hasSetupCheck () {
       return {
@@ -139,66 +137,65 @@ export default {
         course_schedule: this.student.setup.course_schedule.length > 0,
         unavailability: this.student.setup.unavailability.length > 0,
         integrations: this.student.setup.integrations
-      };
+      }
     }
   },
   created () {
-    this.getStats();
+    this.getStats()
   },
   methods: {
     async getStats () {
-      let request;
+      let request
 
       request = await this.$http.get(`/students/${this.student._id}`, {
         params: { counts: true }
-      });
-      this.counts = request.data.counts;
+      })
+      this.counts = request.data.counts
     },
     async updateStudent (updates) {
-      if (!confirm('Update student?')) return;
+      if (!confirm('Update student?')) return
 
-      let request;
+      let request
       try {
         request = await this.$http.patch(
           '/students/' + this.student._id,
           updates
-        );
+        )
       } catch (e) {
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      this.$emit('update-student', request.data.updatedStudent);
-      this.$toast.open({ type: 'is-success', message: 'Updated student.' });
+      this.$emit('update-student', request.data.updatedStudent)
+      this.$toast.open({ type: 'is-success', message: 'Updated student.' })
     },
     async deleteStudent () {
       this.$dialog.confirm({
         message:
           'Are you sure you want to delete this student account? This is IRREVERSIBLE',
         onConfirm: async () => {
-          let request;
           try {
-            request = await this.$http.delete('/students/' + this.student._id);
+            await this.$http.delete('/students/' + this.student._id)
           } catch (e) {
             return this.$toast.open({
               message: e.response.data.message,
               type: 'is-danger'
-            });
+            })
           }
 
-          this.$emit('delete-student', this.student._id);
+          this.$emit('delete-student', this.student._id)
           this.$toast.open({
             type: 'is-success',
             message: `Deleted student ${this.student.rcs_id}.`
-          });
+          })
         },
         onCancel: () => (this.confirming = false)
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -39,16 +39,16 @@
 </template>
 
 <script>
-import haikus from '@/modules/haikus';
+import haikus from '@/modules/haikus'
 
 export default {
   name: 'TheNotFoundPage',
   computed: {
     randomHaiku () {
-      return haikus[Math.floor(Math.random() * haikus.length)].join('\n');
+      return haikus[Math.floor(Math.random() * haikus.length)].join('\n')
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

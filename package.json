@@ -7,11 +7,11 @@
   "scripts": {
     "build": "vue-cli-service build --target app --modern",
     "test": "npm run lint",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint --fix",
     "backend": "cross-env NODE_ENV=development nodemon --ignore './src/' index.js",
+    "fix-watch": "echo fs.inotify.max_user_watches=16384 | tee -a /etc/sysctl.conf",
     "frontend": "cross-env PORT=8080 vue-cli-service serve",
-    "start": "cross-env NODE_ENV=production node index.js",
-    "fix-watch": "echo fs.inotify.max_user_watches=16384 | tee -a /etc/sysctl.conf"
+    "start": "cross-env NODE_ENV=production node index.js"
   },
   "main": "index.js",
   "dependencies": {
@@ -80,20 +80,21 @@
     "@vue/cli-plugin-eslint": "^3.10.0",
     "@vue/cli-plugin-pwa": "^3.10.0",
     "@vue/cli-service": "^3.10.0",
-    "@vue/eslint-config-prettier": "^5.0.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.1",
     "cross-env": "^5.2.0",
-    "eslint": "^6.1.0",
+    "eslint": "^6.2.0",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
-    "eslint-plugin-vue": "^5.2.3",
+    "eslint-plugin-vue": "^5.0.0",
+    "fibers": "^4.0.1",
     "jest": "^24.9.0",
-    "lint-staged": "^9.2.3",
+    "lint-staged": "^8.1.5",
     "node-sass": "^4.12.0",
     "nodemon": "^1.19.1",
-    "prettier-eslint": "^9.0.0",
     "sass-loader": "^7.2.0",
     "vue-template-compiler": "^2.6.10"
   },
@@ -126,11 +127,7 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "*.js": [
-      "vue-cli-service lint",
-      "git add"
-    ],
-    "*.vue": [
+    "*.{js,vue}": [
       "vue-cli-service lint",
       "git add"
     ]

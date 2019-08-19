@@ -4,16 +4,16 @@ require('dotenv').config();
 require('../db');
 */
 
-const moment = require('moment');
-const Term = require('../../api/terms/terms.model');
-const Student = require('../../api/students/students.model');
-const Block = require('../../api/blocks/blocks.model');
+const moment = require('moment')
+const Term = require('../../api/terms/terms.model')
+const Student = require('../../api/students/students.model')
+const Block = require('../../api/blocks/blocks.model')
 
 function duration (timeStr1, timeStr2) {
   return moment(timeStr2, 'HH:mm', true).diff(
     moment(timeStr1, 'HH:mm', true),
     'minutes'
-  );
+  )
 }
 
 /**
@@ -34,7 +34,7 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
         .add(10, 'minutes') // We add ten minutes because classes end 10 to the hour
         .format('HH:mm'),
       day: p.day
-    }));
+    }))
 
   // eslint-disable-next-line standard/computed-property-even-spacing
   const unavailabilitySchedule = student.unavailability_schedules[
@@ -43,27 +43,27 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
     start: p.start,
     end: p.end,
     day: p.dow[0]
-  }));
+  }))
 
   const busySchedule = courseSchedule
     .concat(unavailabilitySchedule)
     .sort((p1, p2) => {
-      if (p1.start < p2.start) return -1;
-      else if (p1.start > p2.start) return 1;
-      else return 0;
-    });
+      if (p1.start < p2.start) return -1
+      else if (p1.start > p2.start) return 1
+      else return 0
+    })
 
-  const openSchedule = [];
-  const startTime = student.earliestWorkTime;
-  const endTime = student.latestWorkTime;
+  const openSchedule = []
+  const startTime = student.earliestWorkTime
+  const endTime = student.latestWorkTime
   for (let day = 0; day < 7; day++) {
     // Loop through each day
-    const dayBusy = busySchedule.filter(p => p.day === day);
+    const dayBusy = busySchedule.filter(p => p.day === day)
 
     // Find empty blocks and add them to openSchedule
-    let prevEnd = startTime;
+    let prevEnd = startTime
     for (let i = 0; i < dayBusy.length; i++) {
-      const period = dayBusy[i];
+      const period = dayBusy[i]
 
       if (prevEnd !== period.start) {
         // Gap!!!!
@@ -72,9 +72,9 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
           start: prevEnd,
           end: period.start,
           duration: duration(prevEnd, period.start)
-        });
+        })
       }
-      prevEnd = period.end;
+      prevEnd = period.end
     }
 
     // Check for end of day block
@@ -84,16 +84,16 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
         start: prevEnd,
         end: endTime,
         duration: duration(prevEnd, endTime)
-      });
+      })
     }
   }
 
-  return openSchedule;
+  return openSchedule
 }
 
 module.exports = {
   compileWeeklyOpenSchedule
-};
+}
 
 /*
 (async function () {

@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const moment = require('moment');
+const moment = require('moment')
 
 const schema = new Schema(
   {
@@ -12,10 +12,10 @@ const schema = new Schema(
     end: { type: Date, required: true }
   },
   { timestamps: true }
-);
+)
 
 schema.virtual('isCurrent').get(function () {
-  return moment().isBetween(this.start, this.end);
-});
+  return moment().isBetween(this.start, this.end)
+})
 
-module.exports = mongoose.model('Term', schema);
+module.exports = mongoose.model('Term', schema)

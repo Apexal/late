@@ -105,7 +105,7 @@
     </h2>
     <router-link
       class="button is-medium is-primary"
-      :to="{ name: 'dashboard-calendar' }"
+      :to="{name: 'dashboard-calendar'}"
     >
       Start using
       <b>LATE</b>
@@ -120,18 +120,18 @@ export default {
   name: 'AccountComplete',
   computed: {
     tours () {
-      return this.$store.state.tours.tours;
+      return this.$store.state.tours.tours
     }
   },
   methods: {
     startTour (index) {
-      const tour = this.tours[index];
+      const tour = this.tours[index]
 
-      if (tour.route) this.$router.push(tour.route);
-      this.$store.commit('SET_TOUR_INDEX', index);
+      if (tour.route) this.$router.push(tour.route)
+      this.$store.commit('SET_TOUR_INDEX', index)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -19,7 +19,7 @@
             <li
               v-for="(s, index) in steps"
               :key="index"
-              :class="{ 'is-active': index === step }"
+              :class="{'is-active': index === step}"
               @click="setStep(index)"
             >
               <a>
@@ -108,12 +108,12 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse';
-import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription';
-import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar';
-import ModalTime from '@/views/assessments/components/modal/ModalTime';
+import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse'
+import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription'
+import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar'
+import ModalTime from '@/views/assessments/components/modal/ModalTime'
 
 export default {
   name: 'ExamsModalAddRedux',
@@ -154,44 +154,44 @@ export default {
           component: 'ModalTime'
         }
       ]
-    };
+    }
   },
   computed: {
     step () {
-      return this.$store.state.addExamModal.modalStep;
+      return this.$store.state.addExamModal.modalStep
     },
     currentStep () {
-      return this.steps[this.step];
+      return this.steps[this.step]
     },
     isComplete () {
       if (!this.courseCRN || !this.title || !this.time || !this.date) {
-        return false;
+        return false
       }
-      return true;
+      return true
     },
     courseCRN () {
-      return this.$store.state.addExamModal.courseCRN;
+      return this.$store.state.addExamModal.courseCRN
     },
     course () {
-      return this.$store.getters.getCourseFromCRN(this.courseCRN);
+      return this.$store.getters.getCourseFromCRN(this.courseCRN)
     },
     date () {
-      return this.$store.state.addExamModal.date;
+      return this.$store.state.addExamModal.date
     },
     time () {
-      return this.$store.state.addExamModal.time;
+      return this.$store.state.addExamModal.time
     },
     title () {
-      return this.$store.state.addExamModal.title;
+      return this.$store.state.addExamModal.title
     },
     description () {
-      return this.$store.state.addExamModal.description;
+      return this.$store.state.addExamModal.description
     },
     timeEstimate () {
-      return this.$store.state.addExamModal.timeEstimate;
+      return this.$store.state.addExamModal.timeEstimate
     },
     priority () {
-      return this.$store.state.addExamModal.priority;
+      return this.$store.state.addExamModal.priority
     },
     completedChecks () {
       return {
@@ -199,42 +199,42 @@ export default {
         ModalCalendar: !!this.date,
         ModalTitleAndDescription: this.title.length > 0,
         ModalTime: true
-      };
+      }
     }
   },
   methods: {
     nextStep () {
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
         modalStep: this.step + 1
-      });
+      })
     },
     lastStep () {
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
         modalStep: this.step - 1
-      });
+      })
     },
     setStep (modalStep) {
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
         modalStep
-      });
+      })
     },
     setValue (property, value) {
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', {
         [property]: value
-      });
+      })
     },
     async save () {
-      this.loading = true;
+      this.loading = true
 
       if (!this.isComplete) {
         this.$toast.open({
           type: 'is-danger',
           message: 'Make sure you complete every step!'
-        });
-        return;
+        })
+        return
       }
 
-      let request;
+      let request
       try {
         request = await this.$http.post('/exams', {
           title: this.title,
@@ -247,14 +247,14 @@ export default {
           courseCRN: this.courseCRN,
           priority: this.priority,
           timeEstimate: this.timeEstimate
-        });
+        })
       } catch (e) {
         this.$toast.open({
           type: 'is-danger',
           message: 'There was an error adding the exam. Please try again later.'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
       // Update global state if they are not in the past
@@ -266,7 +266,7 @@ export default {
         this.$store.dispatch(
           'ADD_UPCOMING_ASSESSMENT',
           request.data.createdExam
-        );
+        )
       }
 
       // Reset important fields
@@ -278,15 +278,15 @@ export default {
         description: '',
         timeEstimate: 5.0,
         priority: 2
-      });
+      })
 
-      this.loading = false;
+      this.loading = false
 
-      this.$emit('toggle-modal');
+      this.$emit('toggle-modal')
 
       const message = `Added exam '${request.data.createdExam.title}' ${moment(
         request.data.createdExam.date
-      ).fromNow()}.`;
+      ).fromNow()}.`
 
       this.$snackbar.open({
         message,
@@ -298,12 +298,12 @@ export default {
           this.$router.push({
             name: 'exam-overview',
             params: { examID: request.data.createdExam._id }
-          });
+          })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

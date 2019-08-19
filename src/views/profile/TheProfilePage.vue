@@ -5,7 +5,7 @@
 <script>
 export default {
   name: 'TheProfilePage'
-};
+}
 </script>
 
 <style lang="scss" scoped>

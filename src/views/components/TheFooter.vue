@@ -8,7 +8,7 @@
         @click="changeAdjective"
       >{{ randomAdjective }}</span>
       <router-link
-        :to="{ name: 'about' }"
+        :to="{name: 'about'}"
         title="View project proposal and contributors"
       >
         RCOS project!
@@ -34,7 +34,7 @@
         </span>
         Read
         <router-link
-          :to="{ name: 'privacy-policy' }"
+          :to="{name: 'privacy-policy'}"
           title="View source code license"
         >
           Privacy Policy.
@@ -67,21 +67,21 @@
 </template>
 
 <script>
-import adjectives from '@/modules/adjectives';
+import adjectives from '@/modules/adjectives'
 
 export default {
   name: 'TheFooter',
   data () {
     return {
       randomAdjective: adjectives[Math.floor(Math.random() * adjectives.length)]
-    };
+    }
   },
   methods: {
     changeAdjective () {
-      this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+      this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

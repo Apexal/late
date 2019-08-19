@@ -1,7 +1,7 @@
-const moment = require('moment');
-const logger = require('../../modules/logger');
+const moment = require('moment')
+const logger = require('../../modules/logger')
 
-const Exam = require('./exams.model');
+const Exam = require('./exams.model')
 
 /**
  * This middleware assumes that the route has a 'examID' parameter.
@@ -11,9 +11,9 @@ const Exam = require('./exams.model');
  * @param {Koa context} ctx
  */
 async function getExamMiddleware (ctx, next) {
-  const examID = ctx.params.examID;
+  const examID = ctx.params.examID
 
-  let exam;
+  let exam
   try {
     exam = await Exam.findOne({
       _id: examID,
@@ -21,24 +21,24 @@ async function getExamMiddleware (ctx, next) {
     })
       .populate('_student', '_id rcs_id name graduationYear')
       .populate('_blocks')
-      .populate('comments._student', '_id rcs_id name graduationYear');
+      .populate('comments._student', '_id rcs_id name graduationYear')
   } catch (e) {
     logger.error(
       `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.internalServerError('Failed to get exam.');
+    )
+    return ctx.internalServerError('Failed to get exam.')
   }
 
   if (!exam) {
     logger.error(
       `Failed to find exam with ID ${examID} for ${ctx.state.user.rcs_id}.`
-    );
-    return ctx.notFound('Could not find exam.');
+    )
+    return ctx.notFound('Could not find exam.')
   }
 
-  ctx.state.exam = exam;
+  ctx.state.exam = exam
 
-  await next();
+  await next()
 }
 
 /**
@@ -49,20 +49,20 @@ async function getExamMiddleware (ctx, next) {
  * @param {Koa context} ctx
  */
 async function getExams (ctx) {
-  let exams;
-  let { start, end, title, courseCRN } = ctx.query;
+  let exams
+  const { start, end, title, courseCRN } = ctx.query
   try {
-    exams = await ctx.state.user.getExams(start, end, title, courseCRN);
+    exams = await ctx.state.user.getExams(start, end, title, courseCRN)
   } catch (e) {
-    logger.error(`Failed to send exams to ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.internalServerError('There was an error loading your exams.');
+    logger.error(`Failed to send exams to ${ctx.state.user.rcs_id}: ${e}`)
+    return ctx.internalServerError('There was an error loading your exams.')
   }
 
-  logger.info(`Sending exams to ${ctx.state.user.rcs_id}`);
+  logger.info(`Sending exams to ${ctx.state.user.rcs_id}`)
 
   ctx.ok({
     exams
-  });
+  })
 }
 
 /**
@@ -73,11 +73,11 @@ async function getExams (ctx) {
  * @returns Array of the term's exams
  */
 async function getTermExams (ctx) {
-  const { termCode } = ctx.params;
+  const { termCode } = ctx.params
 
-  const term = ctx.session.terms.find(term => term.code === termCode);
+  const term = ctx.session.terms.find(term => term.code === termCode)
 
-  let exams;
+  let exams
   try {
     exams = await Exam.find({
       _student: ctx.state.user._id,
@@ -90,19 +90,19 @@ async function getTermExams (ctx) {
           }
         }
       ]
-    });
+    })
   } catch (e) {
-    logger.error(`Failed to get exams: ${e}`);
-    return ctx.badRequest('There was an error getting the exams.');
+    logger.error(`Failed to get exams: ${e}`)
+    return ctx.badRequest('There was an error getting the exams.')
   }
 
   logger.info(
     `Sending all exams for term ${termCode} to ${ctx.state.user.rcs_id}`
-  );
+  )
 
   ctx.ok({
     exams
-  });
+  })
 }
 
 /**
@@ -111,13 +111,13 @@ async function getTermExams (ctx) {
  * @param {Koa context} ctx
  */
 async function getExam (ctx) {
-  const examID = ctx.params.examID;
+  const examID = ctx.params.examID
 
-  logger.info(`Sending exam ${examID} to ${ctx.state.user.rcs_id}`);
+  logger.info(`Sending exam ${examID} to ${ctx.state.user.rcs_id}`)
 
   ctx.ok({
     exam: ctx.state.exam
-  });
+  })
 }
 
 /**
@@ -126,8 +126,8 @@ async function getExam (ctx) {
  * @param {Koa context} ctx
  */
 async function createExam (ctx) {
-  const body = ctx.request.body;
-  const date = moment(body.date);
+  const body = ctx.request.body
+  const date = moment(body.date)
 
   // Limit to this semester
   if (
@@ -138,8 +138,8 @@ async function createExam (ctx) {
   ) {
     logger.error(
       `${ctx.state.user.rcs_id} tried to add exam outside of current semester.`
-    );
-    return ctx.badRequest('You cannot add an exam outisde of this semester.');
+    )
+    return ctx.badRequest('You cannot add an exam outisde of this semester.')
   }
 
   const newExam = new Exam({
@@ -152,25 +152,25 @@ async function createExam (ctx) {
     timeEstimate: body.timeEstimate,
     timeRemaining: body.timeEstimate,
     comments: []
-  });
+  })
 
   try {
-    await newExam.save();
+    await newExam.save()
   } catch (e) {
-    logger.error(`Failed to add exam for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.badRequest(`Failed to add exam ${body.title}`);
+    logger.error(`Failed to add exam for ${ctx.state.user.rcs_id}: ${e}`)
+    return ctx.badRequest(`Failed to add exam ${body.title}`)
   }
 
-  logger.info(`Added exam ${newExam._id} for ${ctx.state.user._id}`);
+  logger.info(`Added exam ${newExam._id} for ${ctx.state.user._id}`)
   ctx.created({
     createdAssessent: newExam,
     createdExam: newExam
-  });
+  })
 }
 
 async function editExam (ctx) {
-  const examID = ctx.params.examID;
-  const updates = ctx.request.body;
+  const examID = ctx.params.examID
+  const updates = ctx.request.body
 
   // const allowedProperties = [
   //   '_id',
@@ -202,32 +202,32 @@ async function editExam (ctx) {
   ) {
     logger.error(
       `${ctx.state.user.rcs_id} tried to set exam outside of current semester.`
-    );
+    )
     return ctx.badRequest(
       'You cannot set an exam due outisde of this semester.'
-    );
+    )
   }
 
   // Update exam
-  ctx.state.exam.set(updates);
+  ctx.state.exam.set(updates)
 
   try {
-    await ctx.state.exam.save();
+    await ctx.state.exam.save()
   } catch (e) {
     logger.error(
       `Failed to update exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('There was an error updating the exam.');
+    )
+    return ctx.badRequest('There was an error updating the exam.')
   }
 
   logger.info(
     `Updated exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}.`
-  );
+  )
 
   ctx.ok({
     updatedAssessment: ctx.state.exam,
     updatedExam: ctx.state.exam
-  });
+  })
 }
 
 /**
@@ -239,22 +239,22 @@ async function editExam (ctx) {
  * @returns The removed exam.
  */
 async function deleteExam (ctx) {
-  const examID = ctx.params.examID;
+  const examID = ctx.params.examID
 
   // Delete exam
   try {
-    ctx.state.exam.remove();
+    ctx.state.exam.remove()
   } catch (e) {
-    return ctx.internalServerError('There was an error removing the exam.');
+    return ctx.internalServerError('There was an error removing the exam.')
   }
 
   logger.info(
     `Deleted exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}`
-  );
+  )
 
   ctx.ok({
     removedExam: ctx.state.exam
-  });
+  })
 }
 
 /* COMMENTS */
@@ -266,28 +266,28 @@ async function deleteExam (ctx) {
  * @returns The updated exam
  */
 async function addComment (ctx) {
-  const examID = ctx.params.examID;
-  const text = ctx.request.body.comment;
+  const examID = ctx.params.examID
+  const text = ctx.request.body.comment
 
   // Add comment
   ctx.state.exam.comments.push({
     addedAt: new Date(),
     body: text
-  });
+  })
 
   try {
-    await ctx.state.exam.save();
+    await ctx.state.exam.save()
   } catch (e) {
     logger.error(
       `Failed to save exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('There was an error adding the comment.');
+    )
+    return ctx.badRequest('There was an error adding the comment.')
   }
 
   ctx.ok({
     updatedAssessment: ctx.state.exam,
     updatedExam: ctx.state.exam
-  });
+  })
 }
 
 /**
@@ -298,26 +298,26 @@ async function addComment (ctx) {
  * @returns The updated exam
  */
 async function deleteComment (ctx) {
-  const examID = ctx.params.examID;
+  const examID = ctx.params.examID
 
-  const index = ctx.params.commentIndex;
+  const index = ctx.params.commentIndex
 
   // Delete the comment by its index
-  ctx.state.exam.comments.splice(index, 1);
+  ctx.state.exam.comments.splice(index, 1)
 
   try {
-    await ctx.state.exam.save();
+    await ctx.state.exam.save()
   } catch (e) {
     logger.error(
       `Failed to save exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('There was an error adding the comment.');
+    )
+    return ctx.badRequest('There was an error adding the comment.')
   }
 
   ctx.ok({
     updatedAssessment: ctx.state.exam,
     updatedExam: ctx.state.exam
-  });
+  })
 }
 
 module.exports = {
@@ -330,4 +330,4 @@ module.exports = {
   deleteExam,
   addComment,
   deleteComment
-};
+}

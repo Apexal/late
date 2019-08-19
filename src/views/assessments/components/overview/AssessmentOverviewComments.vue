@@ -22,7 +22,7 @@
           :source="c.body"
           :html="false"
           :emoji="true"
-          :anchor-attributes="{ target: '_blank' }"
+          :anchor-attributes="{target: '_blank'}"
         />
         <nav class="level is-mobile">
           <div class="level-left">
@@ -86,8 +86,8 @@
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown';
-import assessmentsMixin from '@/mixins/assessments';
+import VueMarkdown from 'vue-markdown'
+import assessmentsMixin from '@/mixins/assessments'
 
 export default {
   name: 'AssessmentOverviewComments',
@@ -103,72 +103,72 @@ export default {
     return {
       newComment: '',
       loading: false
-    };
+    }
   },
   computed: {
     hasComments () {
-      return this.assessment.comments && this.assessment.comments.length > 0;
+      return this.assessment.comments && this.assessment.comments.length > 0
     }
   },
   methods: {
     async addComment () {
-      if (!this.newComment) return;
+      if (!this.newComment) return
 
-      this.loading = true;
-      let updatedAssessment;
+      this.loading = true
+      let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch(
           'ADD_ASSESSMENT_COMMENT',
           { assessment: this.assessment, newComment: this.newComment }
-        );
+        )
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.$emit('updated-assessment', updatedAssessment);
+      this.$emit('updated-assessment', updatedAssessment)
 
       this.$toast.open({
         message: 'Added comment!',
         type: 'is-success'
-      });
+      })
 
-      this.newComment = '';
-      this.loading = false;
+      this.newComment = ''
+      this.loading = false
     },
     async deleteComment (commentIndex) {
-      this.loading = true;
+      this.loading = true
 
-      let updatedAssessment;
+      let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch(
           'REMOVE_ASSESSMENT_COMMENT',
           { assessment: this.assessment, commentIndex }
-        );
+        )
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.$emit('updated-assessment', updatedAssessment);
+      this.$emit('updated-assessment', updatedAssessment)
 
       this.$toast.open({
         message: 'Removed comment!',
         type: 'is-success'
-      });
+      })
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

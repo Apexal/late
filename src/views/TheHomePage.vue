@@ -7,12 +7,11 @@
 </template>
 
 <script>
-import TheDashboard from '@/views/dashboard/TheDashboard';
-import ThePromoPage from '@/views/ThePromoPage';
+import TheDashboard from '@/views/dashboard/TheDashboard'
+import ThePromoPage from '@/views/ThePromoPage'
 
 export default {
   name: 'TheHomePage',
   components: { TheDashboard, ThePromoPage }
-};
+}
 </script>
-

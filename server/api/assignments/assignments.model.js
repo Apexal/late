@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const moment = require('moment');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const moment = require('moment')
 
-const Block = require('../blocks/blocks.model');
+const Block = require('../blocks/blocks.model')
 
 const schema = new Schema(
   {
@@ -66,36 +66,36 @@ const schema = new Schema(
     }
   },
   { timestamps: true }
-);
+)
 
-schema.set('toObject', { getters: true, virtuals: true });
-schema.set('toJSON', { getters: true, virtuals: true });
+schema.set('toObject', { getters: true, virtuals: true })
+schema.set('toJSON', { getters: true, virtuals: true })
 
 schema.virtual('assessmentType').get(function () {
-  return 'assignment';
-});
+  return 'assignment'
+})
 
 schema.virtual('date').get(function () {
-  return this.dueDate;
-});
+  return this.dueDate
+})
 
 schema.virtual('passed').get(function () {
-  return moment(this.dueDate).isBefore(new Date());
-});
+  return moment(this.dueDate).isBefore(new Date())
+})
 
 schema.virtual('scheduledTime').get(function () {
-  return this._blocks.reduce((acc, block) => acc + block.duration, 0);
-});
+  return this._blocks.reduce((acc, block) => acc + block.duration, 0)
+})
 
 schema.virtual('scheduledTimeRemaing').get(function () {
   return this._blocks
     .filter(b => !b.passed)
-    .reduce((acc, block) => acc + block.duration, 0);
-});
+    .reduce((acc, block) => acc + block.duration, 0)
+})
 
 schema.virtual('fullyScheduled').get(function () {
-  return this.scheduledTime >= this.timeEstimate * 60;
-});
+  return this.scheduledTime >= this.timeEstimate * 60
+})
 
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the assignment date now
@@ -107,21 +107,21 @@ schema.pre('save', async function () {
         { endTime: { $gt: this.dueDate } },
         { endTime: { $gt: this.completedAt } }
       ]
-    });
+    })
 
-    this._blocks = this._blocks.filter(b => b.endTime <= this.dueDate);
+    this._blocks = this._blocks.filter(b => b.endTime <= this.dueDate)
     if (this.completed) {
-      this._blocks = this._blocks.filter(b => b.endTime <= this.completedAt);
+      this._blocks = this._blocks.filter(b => b.endTime <= this.completedAt)
     }
   }
-});
+})
 
 schema.pre('remove', async function () {
   // Delete any work blocks for this assignment
   await Block.deleteMany({
     _student: this._student,
     _id: { $in: this._blocks }
-  });
-});
+  })
+})
 
-module.exports = mongoose.model('Assignment', schema);
+module.exports = mongoose.model('Assignment', schema)

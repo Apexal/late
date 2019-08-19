@@ -53,31 +53,31 @@ export default {
       messages: [],
       newMessage: '',
       onlineCount: 0
-    };
+    }
   },
   created () {
-    this.$socket.client.emit('get messages');
+    this.$socket.client.emit('get messages')
     this.$socket.on('messages', messages => {
-      this.messages = messages;
+      this.messages = messages
       this.$nextTick(() => {
-        this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
-      });
-    });
+        this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+      })
+    })
 
     this.$socket.on('online count', onlineCount => {
-      this.onlineCount = onlineCount;
-    });
+      this.onlineCount = onlineCount
+    })
   },
   methods: {
     sendMessage () {
       this.$socket.client.emit('message', {
         author: this.user.first_name,
         text: this.newMessage
-      });
-      this.newMessage = '';
+      })
+      this.newMessage = ''
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

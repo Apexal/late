@@ -31,7 +31,7 @@
           :title="assessmentTitle(props.row)"
           :to="{
             name: props.row.assessmentType + '-overview',
-            params: { [props.row.assessmentType + 'ID']: props.row._id }
+            params: {[props.row.assessmentType + 'ID']: props.row._id}
           }"
         >
           {{ props.row.title }}
@@ -114,10 +114,10 @@ export default {
   },
   methods: {
     course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+      return this.$store.getters.getCourseFromCRN(a.courseCRN)
     },
     assessmentDate (a) {
-      return a.dueDate || a.date;
+      return a.dueDate || a.date
     },
     assessmentClasses (assessment) {
       return [
@@ -125,26 +125,26 @@ export default {
         assessment.assessmentType === 'assignment' && assessment.priority === 1
           ? 'optional'
           : ''
-      ];
+      ]
     },
     assessmentTitle (assessment) {
       let title =
         assessment.assessmentType === 'assignment' && assessment.priority === 1
           ? '(optional) '
-          : '';
+          : ''
       const description =
         (assessment.description || '').length > 500
           ? (assessment.description || '').substring(0, 500) + '...'
-          : assessment.description;
+          : assessment.description
 
-      title += description || 'No description given.';
-      return title;
+      title += description || 'No description given.'
+      return title
     },
     capitalize (str) {
-      return str.charAt(0).toUpperCase() + str.substring(1, str.length);
+      return str.charAt(0).toUpperCase() + str.substring(1, str.length)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

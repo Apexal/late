@@ -21,18 +21,18 @@
         <div class="buttons has-addons is-centered">
           <span
             class="button is-small"
-            :class="{ 'is-active': time === datePeriodStart}"
+            :class="{'is-active': time === datePeriodStart}"
             :disabled="!datePeriod"
             @click="datePeriod && $emit('update-time', datePeriodStart)"
           >Start of Class</span>
           <span
             class="button is-small"
-            :class="{ 'is-active': time === '23:59'}"
+            :class="{'is-active': time === '23:59'}"
             @click="$emit('update-time', '23:59')"
           >Midnight</span>
           <span
             class="button is-small"
-            :class="{ 'is-active': time === datePeriodEnd}"
+            :class="{'is-active': time === datePeriodEnd}"
             :disabled="!datePeriod"
             @click="datePeriod && $emit('update-time', datePeriodEnd)"
           >End of Class</span>
@@ -109,7 +109,7 @@
                 v-for="(day, index) in dayNames"
                 :key="index"
                 class="button"
-                :class="{ 'is-primary': index === date.day(), 'is-active': recurringDays.includes(index) }"
+                :class="{'is-primary': index === date.day(), 'is-active': recurringDays.includes(index)}"
                 :title="`Repeat this assignment every ${day} each week.`"
                 @click="recurringDayClick(index)"
               >{{ day.charAt(0) }}</a>
@@ -126,7 +126,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'ModalTime',
@@ -178,7 +178,7 @@ export default {
         3: 'is-primary',
         4: 'is-dark',
         5: 'is-danger'
-      }[this.priority];
+      }[this.priority]
     },
     priorityString () {
       if (this.assessmentType === 'assignment') {
@@ -188,31 +188,31 @@ export default {
           3: 'Normal',
           4: 'High',
           5: '𝙊𝙃 𝙂𝙊𝘿'
-        }[this.priority];
+        }[this.priority]
       } else {
         return {
           1: 'Low',
           2: 'Normal',
           3: 'High'
-        }[this.priority];
+        }[this.priority]
       }
     },
     datePeriodStart () {
-      if (!this.datePeriod) return '00:00';
-      const time = moment(this.datePeriod.start, 'Hmm', true);
-      return time.format('HH:mm');
+      if (!this.datePeriod) return '00:00'
+      const time = moment(this.datePeriod.start, 'Hmm', true)
+      return time.format('HH:mm')
     },
     datePeriodEnd () {
-      if (!this.datePeriod) return '00:00';
-      const time = moment(this.datePeriod.end, 'Hmm', true);
-      return time.format('HH:mm');
+      if (!this.datePeriod) return '00:00'
+      const time = moment(this.datePeriod.end, 'Hmm', true)
+      return time.format('HH:mm')
     },
     datePeriod () {
-      if (!this.courseCRN) return false;
+      if (!this.courseCRN) return false
       const course = this.courses.find(
         course => course.crn === this.courseCRN
-      );
-      return course.periods.find(p => p.day === moment(this.date).day());
+      )
+      return course.periods.find(p => p.day === moment(this.date).day())
     },
     dayNames () {
       return [
@@ -223,31 +223,31 @@ export default {
         'Thursday',
         'Friday',
         'Saturday'
-      ];
+      ]
     }
   },
   methods: {
     recurringDayClick (index) {
       if (this.recurringDays.includes(index)) {
-        if (index === this.date.day()) return;
+        if (index === this.date.day()) return
 
         this.$emit(
           'update-recurring-days',
           this.recurringDays.filter(dayIndex => dayIndex !== index)
-        );
+        )
       } else {
-        this.$emit('update-recurring-days', [index, ...this.recurringDays]);
+        this.$emit('update-recurring-days', [index, ...this.recurringDays])
       }
     },
     formatHours: function (val) {
       if (val > 1) {
-        return val + ' hours';
+        return val + ' hours'
       } else {
-        return val + ' hour';
+        return val + ' hour'
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

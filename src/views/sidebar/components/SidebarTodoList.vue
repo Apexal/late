@@ -45,24 +45,24 @@ export default {
   data () {
     return {
       newTodo: ''
-    };
+    }
   },
   methods: {
     async addTodo () {
-      if (!this.newTodo) return;
+      if (!this.newTodo) return
 
       try {
-        await this.$store.dispatch('ADD_TODO', this.newTodo);
+        await this.$store.dispatch('ADD_TODO', this.newTodo)
         this.$toast.open({
           type: 'is-success',
           message: `Added to-do '${this.newTodo}'.`
-        });
-        this.newTodo = '';
+        })
+        this.newTodo = ''
       } catch (e) {
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
     },
     async removeTodo (todo) {
@@ -70,22 +70,22 @@ export default {
         message: `Done with <i>${todo.text}</i>?`,
         onConfirm: async () => {
           try {
-            await this.$store.dispatch('REMOVE_TODO', todo);
+            await this.$store.dispatch('REMOVE_TODO', todo)
             this.$toast.open({
               message: `Completed to-do '${todo.text}'.`,
               type: 'is-success'
-            });
+            })
           } catch (e) {
             this.$toast.open({
               message: e.response.data.message,
               type: 'is-danger'
-            });
+            })
           }
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

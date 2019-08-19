@@ -14,7 +14,7 @@
     </template>
     <template v-else>
       <div
-        v-if="pressing.length == 0"
+        v-if="pressing.length === 0"
         class="no-work"
       >
         <i class="far fa-check-square no-work-icon" />
@@ -39,7 +39,7 @@
         "
         :to="{
           name: assessment.assessmentType + '-overview',
-          params: { [assessment.assessmentType + 'ID']: assessment._id }
+          params: {[assessment.assessmentType + 'ID']: assessment._id}
         }"
         :class="{
           [assessment.assessmentType]: true,
@@ -85,7 +85,7 @@
 
       <div class="panel-block has-background-light no-hover">
         <router-link
-          :to="{ name: 'coursework-upcoming' }"
+          :to="{name: 'coursework-upcoming'}"
           class="button is-fullwidth browseAssessmentsButton"
           title="Browse your coursework"
         >
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { Draggable } from '@fullcalendar/interaction';
+import { Draggable } from '@fullcalendar/interaction'
 
 export default {
   name: 'SidebarPressingAssessments',
@@ -111,7 +111,7 @@ export default {
   data () {
     return {
       draggable: null
-    };
+    }
   },
   mounted () {
     this.draggable = new Draggable(this.$refs['sidebar-pressing-assessments'], {
@@ -124,16 +124,16 @@ export default {
           assessmentType: eventEl.dataset.assessmentType,
           duration: { hours: 1 },
           create: true
-        };
+        }
       }
-    });
+    })
   },
   methods: {
     course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+      return this.$store.getters.getCourseFromCRN(a.courseCRN)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -58,13 +58,13 @@ export default {
   name: 'SetupIntegrationsPreferences',
   filters: {
     capitalize: function (value) {
-      if (!value) return '';
-      if (value === 'sms') return 'SMS';
-      value = value.toString();
+      if (!value) return ''
+      if (value === 'sms') return 'SMS'
+      value = value.toString()
       return value
         .split(' ')
         .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-        .join(' ');
+        .join(' ')
     }
   },
   data () {
@@ -74,32 +74,32 @@ export default {
         {},
         this.$store.state.auth.user.notificationPreferences
       )
-    };
+    }
   },
   computed: {
     saved () {
-      if (!this.$store.getters.userSetup.integrations) return false;
+      if (!this.$store.getters.userSetup.integrations) return false
 
       return (
         JSON.stringify(this.preferences) ===
         JSON.stringify(this.user.notificationPreferences)
-      );
+      )
     },
     enabledIntegrations () {
-      const enabled = {};
+      const enabled = {}
       for (const key in this.notifications) {
         enabled[key] = this.notifications[key].integrations.filter(i => {
-          if (i === 'email') return true;
+          if (i === 'email') return true
           if (
             !this.user.integrations[i] ||
             this.user.integrations[i].verified
           ) {
-            return true;
+            return true
           }
-          return false;
-        });
+          return false
+        })
       }
-      return enabled;
+      return enabled
     },
     notifications () {
       return {
@@ -127,38 +127,38 @@ export default {
             'Receive a reminder 1 week before an exam to remind you that its coming!',
           integrations: ['email', 'sms', 'discord']
         }
-      };
+      }
     }
   },
   methods: {
     async save () {
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
       try {
         request = await this.$http.post(
           '/integrations/preferences',
           this.preferences
-        );
+        )
       } catch (e) {
-        this.loading = false;
+        this.loading = false
         return this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      this.$store.dispatch('SET_USER', request.data.updatedUser);
+      this.$store.dispatch('SET_USER', request.data.updatedUser)
 
       this.$toast.open({
         type: 'is-success',
         message: 'Successfully updated your notification preferences!'
-      });
+      })
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

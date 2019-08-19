@@ -81,9 +81,9 @@
 </template>
 
 <script>
-import Draggable from 'vuedraggable';
+import Draggable from 'vuedraggable'
 
-import MoveInChecklistCategoryItem from './MoveInChecklistCategoryItem';
+import MoveInChecklistCategoryItem from './MoveInChecklistCategoryItem'
 
 export default {
   name: 'MoveInChecklistCategory',
@@ -116,29 +116,29 @@ export default {
         title: '',
         count: 1
       }
-    };
+    }
   },
   computed: {
     items: {
       get () {
-        return this.category.items;
+        return this.category.items
       },
       set (newItems) {
-        this.$store.commit('SET_CHECKLIST_CATEGORY_ITEMS', { categoryIndex: this.categoryIndex, items: newItems });
+        this.$store.commit('SET_CHECKLIST_CATEGORY_ITEMS', { categoryIndex: this.categoryIndex, items: newItems })
       }
     },
     progress () {
-      if (this.category.items.length === 0) return 0;
+      if (this.category.items.length === 0) return 0
 
-      const completedCount = this.category.items.filter(i => i.complete).length;
+      const completedCount = this.category.items.filter(i => i.complete).length
 
-      return (completedCount / this.category.items.length) * 100;
+      return (completedCount / this.category.items.length) * 100
     },
     categoryTagType () {
-      if (this.viewing || this.editing) return 'is-white';
-      if (this.progress === 100) return 'is-success';
-      if (this.progress > 0) return 'is-warning';
-      return 'is-danger';
+      if (this.viewing || this.editing) return 'is-white'
+      if (this.progress === 100) return 'is-success'
+      if (this.progress > 0) return 'is-warning'
+      return 'is-danger'
     }
   },
   methods: {
@@ -146,7 +146,7 @@ export default {
       if (this.category.items.length === 0) {
         this.$store.commit('REMOVE_CHECKLIST_CATEGORY', {
           categoryIndex: this.categoryIndex
-        });
+        })
       } else {
         // Confirm first
         this.$dialog.confirm({
@@ -154,23 +154,23 @@ export default {
           onConfirm: () => this.$store.commit('REMOVE_CHECKLIST_CATEGORY', {
             categoryIndex: this.categoryIndex
           })
-        });
+        })
       }
     },
     addItem () {
       this.$store.commit('ADD_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         item: this.newItem
-      });
+      })
       this.newItem = {
         title: '',
         count: 1
-      };
+      }
 
-      this.$refs['new-item-title'].focus();
+      this.$refs['new-item-title'].focus()
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

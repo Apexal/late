@@ -5,4 +5,4 @@ export default [
   'somewhat interesting',
   'spicy',
   'Shirley-approved'
-];
+]

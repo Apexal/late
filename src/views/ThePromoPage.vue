@@ -67,7 +67,7 @@
           </span>
           Join Waitlist</a>
         <router-link
-          :to="{ name: 'about' }"
+          :to="{name: 'about'}"
           class="the-other-button button is-secondary is-large"
           title="What exactly is LATE?"
         >
@@ -123,8 +123,8 @@
 </template>
 
 <script>
-import ConfettiGenerator from 'confetti-js';
-import { setTimeout } from 'timers';
+import ConfettiGenerator from 'confetti-js'
+import { setTimeout } from 'timers'
 
 export default {
   name: 'ThePromoPage',
@@ -164,44 +164,44 @@ export default {
           imageName: 'availability.png'
         }
       ]
-    };
+    }
   },
   computed: {
     waitlisted () {
-      return !!this.$route.query.waitlisted;
+      return !!this.$route.query.waitlisted
     }
   },
   async created () {
-    await this.getCounts();
-    setTimeout(this.getCounts, 1000 * 60 * 15); // 15 minutes
+    await this.getCounts()
+    setTimeout(this.getCounts, 1000 * 60 * 15) // 15 minutes
   },
   mounted () {
     if (this.waitlisted) {
-      const confettiSettings = { target: 'confetti-canvas' };
-      const confetti = new ConfettiGenerator(confettiSettings);
-      confetti.render();
-      setTimeout(() => confetti.clear(), 5000);
+      const confettiSettings = { target: 'confetti-canvas' }
+      const confetti = new ConfettiGenerator(confettiSettings)
+      confetti.render()
+      setTimeout(() => confetti.clear(), 5000)
     }
   },
   methods: {
     async getCounts () {
-      const request = await this.$http.get('/students/counts');
-      this.testers = request.data.testers;
-      this.waitlist = request.data.waitlist;
+      const request = await this.$http.get('/students/counts')
+      this.testers = request.data.testers
+      this.waitlist = request.data.waitlist
     },
     promoMouseEnter (e) {
-      const videoEl = e.target.querySelector('video');
-      if (!videoEl) return;
-      videoEl.play();
+      const videoEl = e.target.querySelector('video')
+      if (!videoEl) return
+      videoEl.play()
     },
     promoMouseLeave (e) {
-      const videoEl = e.target.querySelector('video');
-      if (!videoEl) return;
-      videoEl.pause();
-      videoEl.currentTime = 0;
+      const videoEl = e.target.querySelector('video')
+      if (!videoEl) return
+      videoEl.pause()
+      videoEl.currentTime = 0
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -305,7 +305,6 @@ export default {
     text-align: center;
     cursor: pointer;
     //cursor:url('/img/icons/favicon.ico'), auto;
-
 
     .example {
       //border: 2px solid white;

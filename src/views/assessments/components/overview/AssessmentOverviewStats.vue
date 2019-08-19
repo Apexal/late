@@ -12,8 +12,8 @@
           </p>
           <p
             class="subtitle priority"
-            :class="{ 'is-italic': assessment.priority === 1 }"
-            :style="{ 'font-weight': fontWeight }"
+            :class="{'is-italic': assessment.priority === 1}"
+            :style="{'font-weight': fontWeight}"
           >
             <i
               v-if="assessmentType === 'exam' || isOwner"
@@ -161,8 +161,8 @@
 </template>
 
 <script>
-import moment from 'moment';
-import assessmentsMixin from '@/mixins/assessments';
+import moment from 'moment'
+import assessmentsMixin from '@/mixins/assessments'
 
 export default {
   name: 'AssessmentOverviewStats',
@@ -179,17 +179,17 @@ export default {
       editingDate: false,
       tempDateString: '',
       tempTimeString: ''
-    };
+    }
   },
   computed: {
     assessmentActionTerm () {
-      return this.assessmentType === 'assignment' ? 'Work' : 'Study';
+      return this.assessmentType === 'assignment' ? 'Work' : 'Study'
     },
     minDate () {
-      return moment(this.course.startDate).format('YYYY-MM-DD');
+      return moment(this.course.startDate).format('YYYY-MM-DD')
     },
     maxDate () {
-      return moment(this.course.endDate).format('YYYY-MM-DD');
+      return moment(this.course.endDate).format('YYYY-MM-DD')
     },
     fontWeight () {
       return (
@@ -200,7 +200,7 @@ export default {
           4: 500,
           5: 700
         }[this.assessment.priority] || 600
-      );
+      )
     },
     priorityStrings () {
       if (this.assessmentType === 'assignment') {
@@ -210,54 +210,54 @@ export default {
           3: 'Normal',
           4: 'High',
           5: 'Important'
-        };
+        }
       } else {
         return {
           1: 'Low',
           2: 'Normal',
           3: 'High'
-        };
+        }
       }
     },
     priorityString () {
-      return this.priorityStrings[this.assessment.priority] || 'Unknown';
+      return this.priorityStrings[this.assessment.priority] || 'Unknown'
     },
     timeLeft () {
-      const diff = moment.duration(moment(this.assessment.date).diff(this.rightNow));
-      return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`;
+      const diff = moment.duration(moment(this.assessment.date).diff(this.rightNow))
+      return `${diff.days()}d ${diff.hours()}h ${diff.minutes()}m`
     },
     inputFormatDate () {
-      return moment(this.assessment.date).format('YYYY-MM-DD');
+      return moment(this.assessment.date).format('YYYY-MM-DD')
     },
     inputFormatTime () {
-      return moment(this.assessment.date).format('HH:mm');
+      return moment(this.assessment.date).format('HH:mm')
     }
   },
   watch: {
     editingDate () {
-      this.tempDateString = this.inputFormatDate;
-      this.tempTimeString = this.inputFormatTime;
+      this.tempDateString = this.inputFormatDate
+      this.tempTimeString = this.inputFormatTime
     }
   },
   methods: {
     async updateDate () {
-      if (this.loading || !this.isOwner) return;
+      if (this.loading || !this.isOwner) return
 
       const newDate = moment(
         this.tempDateString + ' ' + this.tempTimeString,
         'YYYY-MM-DD HH:mm',
         true
-      );
+      )
       if (moment(this.assessment.date).isSame(newDate)) {
-        this.editingDate = false;
-        return;
+        this.editingDate = false
+        return
       }
 
       const propName =
-        this.assessmentType === 'assignment' ? 'dueDate' : 'date';
+        this.assessmentType === 'assignment' ? 'dueDate' : 'date'
       await this.updateAssessment({
         [propName]: newDate.toDate()
-      });
+      })
 
       this.$toast.open({
         message:
@@ -265,55 +265,55 @@ export default {
           (this.assessmentType === 'assignment' ? 'due date' : 'date') +
           '!',
         type: 'is-success'
-      });
+      })
 
-      this.editingDate = false;
+      this.editingDate = false
     },
     async changePriority (change) {
-      if (this.loading || !this.isOwner) return;
+      if (this.loading || !this.isOwner) return
 
       if (
         this.assessment.priority + change < 1 ||
         this.assessment.priority + change > 5
       ) {
-        return;
+        return
       }
       await this.updateAssessment({
         priority: this.assessment.priority + change
-      });
+      })
       this.$toast.open({
         message: 'Updated priority!',
         type: 'is-success'
-      });
+      })
     },
     async updateAssessment (updates) {
-      if (!this.isOwner) return;
+      if (!this.isOwner) return
 
-      this.loading = true;
+      this.loading = true
 
-      let updatedAssessment;
+      let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.assessment._id,
           assessmentType: this.assessment.assessmentType,
           updates
-        });
+        })
       } catch (e) {
-        this.loading = false;
+        this.loading = false
         this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        return;
+        })
+        return
       }
 
-      this.$emit('updated-assessment', updatedAssessment);
+      this.$emit('updated-assessment', updatedAssessment)
 
-      this.loading = false;
-      return updatedAssessment;
+      this.loading = false
+      return updatedAssessment
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

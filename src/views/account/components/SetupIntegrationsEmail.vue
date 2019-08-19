@@ -24,10 +24,10 @@ export default {
   name: 'SetupIntegrationsEmail',
   computed: {
     email () {
-      return this.$store.state.auth.user.rcs_id + '@rpi.edu';
+      return this.$store.state.auth.user.rcs_id + '@rpi.edu'
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -45,16 +45,16 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import FullCalendar from '@fullcalendar/vue';
+import FullCalendar from '@fullcalendar/vue'
 
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
 
-import '@fullcalendar/core/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
 
 export default {
   name: 'DashboardNextTermPreview',
@@ -68,7 +68,7 @@ export default {
           right: 'import prev,next'
         }
       }
-    };
+    }
   },
   computed: {
     customButtons () {
@@ -77,76 +77,76 @@ export default {
           text: 'Add to Google Calendar',
           click: this.importToGoogleCalendar
         }
-      };
+      }
     },
     nextTerm () {
-      return this.$store.getters.nextTerm;
+      return this.$store.getters.nextTerm
     },
     courseEvents () {
-      return this.nextTermCourses.map(this.$store.getters.mapCourseToEvents).flat();
+      return this.nextTermCourses.map(this.$store.getters.mapCourseToEvents).flat()
     },
     validRange () {
       return {
         start: this.nextTerm.start,
         end: this.nextTerm.end
-      };
+      }
     },
     nextTermPeriods () {
       return this.nextTermCourses.map(course => course.periods)
-        .flat();
+        .flat()
     },
     nextTermCourseHourCount () {
       // Tally up durations of all periods
       const total = this.nextTermPeriods
-        .reduce((acc, period) => acc + moment(period.end, 'Hmm').diff(moment(period.start, 'Hmm'), 'minutes'), 0);
+        .reduce((acc, period) => acc + moment(period.end, 'Hmm').diff(moment(period.start, 'Hmm'), 'minutes'), 0)
 
       return {
         hours: parseInt(total / 60),
         minutes: total % 60
-      };
+      }
     },
     earliestClassTime () {
-      let earliest = 2300;
+      let earliest = 2300
 
       for (const period of this.nextTermPeriods) {
-        if (parseInt(period.start) < earliest) { earliest = parseInt(period.start); }
+        if (parseInt(period.start) < earliest) { earliest = parseInt(period.start) }
       }
 
-      return moment(earliest, 'Hmm', true).format('h:mm a');
+      return moment(earliest, 'Hmm', true).format('h:mm a')
     },
     latestClassTime () {
-      let latest = 800;
+      let latest = 800
 
       for (const period of this.nextTermPeriods) {
-        if (parseInt(period.end) > latest) { latest = parseInt(period.end); }
+        if (parseInt(period.end) > latest) { latest = parseInt(period.end) }
       }
 
-      return moment(latest, 'Hmm', true).format('h:mm a');
+      return moment(latest, 'Hmm', true).format('h:mm a')
     }
   },
   async mounted () {
     // Get courses for next term
-    let request;
+    let request
     try {
-      request = await this.$http.get(`/courses/term/${this.nextTerm.code}`);
+      request = await this.$http.get(`/courses/term/${this.nextTerm.code}`)
     } catch (e) {
-      alert(e);
-      return;
+      alert(e)
+      return
     }
 
-    this.nextTermCourses = request.data.courses;
+    this.nextTermCourses = request.data.courses
   },
   methods: {
     eventRender ({ event, el, view }) {
-      const { eventType, assessment, course, period, block } = event.extendedProps;
+      const { period } = event.extendedProps
 
-      el.title = `${event.title} | ${period.location}`;
+      el.title = `${event.title} | ${period.location}`
 
-      const locationEl = document.createElement('i');
-      locationEl.className = 'event-location';
-      locationEl.innerText = period.location;
+      const locationEl = document.createElement('i')
+      locationEl.className = 'event-location'
+      locationEl.innerText = period.location
 
-      el.querySelector('.fc-content').append(locationEl);
+      el.querySelector('.fc-content').append(locationEl)
     },
     async importToGoogleCalendar () {
       this.$dialog.confirm({
@@ -156,24 +156,24 @@ export default {
           try {
             await this.$http.post('/google/courseschedule', {
               termCode: this.nextTerm.code
-            });
+            })
           } catch (e) {
             this.$toast.open({
               type: 'is-danger',
-              message: e.request.data.message
-            });
-            return;
+              message: e.response.data.message
+            })
+            return
           }
 
           this.$toast.open({
             message: 'Done! Check your Google Calendar!',
             type: 'is-success'
-          });
+          })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

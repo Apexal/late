@@ -38,19 +38,19 @@ export default {
   },
   computed: {
     tours () {
-      return this.$store.state.tours.tours;
+      return this.$store.state.tours.tours
     }
   },
   methods: {
     startTour (index) {
-      const tour = this.tours[index];
+      const tour = this.tours[index]
 
-      if (tour.route) this.$router.push(tour.route);
-      this.$store.commit('TOGGLE_TOURS_MODAL');
-      this.$store.commit('SET_TOUR_INDEX', index);
+      if (tour.route) this.$router.push(tour.route)
+      this.$store.commit('TOGGLE_TOURS_MODAL')
+      this.$store.commit('SET_TOUR_INDEX', index)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

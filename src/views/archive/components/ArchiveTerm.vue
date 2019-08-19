@@ -33,7 +33,7 @@
       >
         <i
           class="course-dot"
-          :style="{ backgroundColor: course.color }"
+          :style="{backgroundColor: course.color}"
         />
         {{ course.title }}
       </li>
@@ -132,7 +132,7 @@
 
     <router-link
       class="button is-link"
-      :to="{ name: 'archive-home' }"
+      :to="{name: 'archive-home'}"
     >
       <span class="icon">
         <i class="fas fa-angle-left" />
@@ -152,19 +152,19 @@ export default {
       termAssignments: [],
       termExams: [],
       termTodos: []
-    };
+    }
   },
   computed: {
     hasTerm () {
-      return !!this.term;
+      return !!this.term
     },
     term () {
       return this.$store.state.schedule.terms.find(
         term => term.code === this.$route.params.termCode
-      );
+      )
     },
     terms () {
-      return this.$store.state.schedule.terms;
+      return this.$store.state.schedule.terms
     },
     removedCourse () {
       return {
@@ -177,74 +177,74 @@ export default {
         color: 'grey',
         periods: [],
         links: []
-      };
+      }
     }
   },
   watch: {
     terms: 'getTermData'
   },
   mounted () {
-    this.getTermData();
+    this.getTermData()
   },
   methods: {
     termCourse (courseCRN) {
       return (
         this.termCourses.find(course => course.crn === courseCRN) ||
         this.removedCourse
-      );
+      )
     },
     async getTermData () {
-      if (this.terms.length === 0) return;
+      if (this.terms.length === 0) return
 
-      this.loading = true;
+      this.loading = true
 
       // Get courses
-      let response;
+      let response
       try {
-        response = await this.$http.get('/courses/term/' + this.term.code);
+        response = await this.$http.get('/courses/term/' + this.term.code)
       } catch (e) {
         this.$toast.open({
           type: 'is-danger',
           message: e.response.data.message
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.termCourses = response.data.courses;
+      this.termCourses = response.data.courses
 
       // Get assignments
       try {
-        response = await this.$http.get('/assignments/term/' + this.term.code);
+        response = await this.$http.get('/assignments/term/' + this.term.code)
       } catch (e) {
         this.$toast.open({
           type: 'is-danger',
           message: e.response.data.message
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.termAssignments = response.data.assignments;
+      this.termAssignments = response.data.assignments
 
       // Get exams
       try {
-        response = await this.$http.get('/exams/term/' + this.term.code);
+        response = await this.$http.get('/exams/term/' + this.term.code)
       } catch (e) {
         this.$toast.open({
           type: 'is-danger',
           message: e.response.data.message
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.termExams = response.data.exams;
+      this.termExams = response.data.exams
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

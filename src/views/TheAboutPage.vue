@@ -151,9 +151,9 @@ export default {
         'Bowen Wang'
       ],
       testers: ['Caitlin Bennett', 'Sarah Tedesco', 'Ben Sherman', 'Hannah Lim']
-    };
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
