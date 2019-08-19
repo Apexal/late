@@ -103,6 +103,8 @@ import SISMan from '@/views/sisman/components/SISMan'
 
 import account from '@/mixins/account'
 
+import Konami from 'konami'
+
 export default {
   name: 'LATE',
   components: {
@@ -210,7 +212,7 @@ export default {
         this.$router.push({ name: 'account', query: { importFromSIS: true } })
       }
     }
-
+    const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
     console.log(this.sistext)
     console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px')
   },
