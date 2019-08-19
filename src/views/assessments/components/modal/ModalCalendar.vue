@@ -43,7 +43,8 @@ export default {
     },
     date: {
       type: Object, // moment
-      required: false
+      required: false,
+      default: moment().add(1, 'week')
     },
     courseCRN: {
       type: String,
