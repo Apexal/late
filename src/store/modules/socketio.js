@@ -45,7 +45,7 @@ const actions = {
       })
     }
   },
-  async socket_updatedAssessment ({ rootState, getters, commit, dispatch }, { assessment }) {
+  async socket_updatedAssessment ({ rootState, getters, commit, dispatch }, { collaboratorRcsId, assessment }) {
     const cR = router.currentRoute
     const currentlyViewing = cR.name === `${assessment.assessmentType}-overview` && cR.params[assessment.assessmentType + 'ID'] === assessment._id
 
@@ -75,14 +75,14 @@ const actions = {
     if (currentlyViewing) {
       Snackbar.open({
         duration: 5000,
-        message: `A collaborator just updated this ${assessment.assessmentType}!`,
+        message: `<b>${collaboratorRcsId}</b> just updated this ${assessment.assessmentType}!`,
         type: 'is-info',
         position: 'is-bottom-left'
       })
     } else {
       Snackbar.open({
         duration: 5000,
-        message: `A collaborator just updated <b>${assessment.title}</b>`,
+        message: `<b>${collaboratorRcsId}</b> just updated <b>${assessment.title}</b>`,
         type: 'is-info',
         position: 'is-bottom-left',
         actionText: 'View',

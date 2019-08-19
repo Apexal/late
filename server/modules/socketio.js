@@ -100,7 +100,7 @@ module.exports = server => {
     socket.on('updated assessment', assessment => {
       if (!socket.auth) return
 
-      socket.to(`/assessments/${assessment._id}`).emit('updated assessment', { assessment })
+      socket.to(`/assessments/${assessment._id}`).emit('updated assessment', { collaboratorRcsId: socket.client.user.rcs_id, assessment })
     })
 
     socket.on('assessment whiteboard draw', (assessmentID, coords) => {
