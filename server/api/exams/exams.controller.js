@@ -271,6 +271,7 @@ async function addComment (ctx) {
 
   // Add comment
   ctx.state.exam.comments.push({
+    _student: ctx.state.user,
     addedAt: new Date(),
     body: text
   })

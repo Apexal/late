@@ -25,7 +25,8 @@ const schema = new Schema(
       {
         _student: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Student'
+          ref: 'Student',
+          required: true
         },
         addedAt: { type: Date, required: true },
         body: { type: String, minlength: 1, maxlength: 2000, required: true }

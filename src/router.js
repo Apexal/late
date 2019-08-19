@@ -56,7 +56,7 @@ const router = new Router({
       component: () => import('@/views/tools/ToolsIndexPage.vue'),
       name: 'tools',
       meta: {
-        title: 'Quick Links'
+        title: 'Tools'
       }
     },
     {
@@ -70,9 +70,6 @@ const router = new Router({
     {
       path: '/academicutils',
       component: () => import('@/views/academicutils/AcademicUtilsPage.vue'),
-      meta: {
-        title: 'Academic Utilities'
-      },
       children: [
         {
           path: '',
@@ -81,11 +78,17 @@ const router = new Router({
         {
           path: 'gpa-calculator',
           name: 'gpa-calculator',
+          meta: {
+            title: 'GPA Calculator'
+          },
           component: () => import('@/views/academicutils/GPACalculator.vue')
         },
         {
           path: 'coursegrade',
           name: 'course-grade-estimator',
+          meta: {
+            title: 'Course Grade Calculator'
+          },
           component: () =>
             import('@/views/academicutils/CourseGradeEstimator.vue')
         }
@@ -299,6 +302,7 @@ const router = new Router({
     {
       path: '/archive',
       meta: {
+        title: 'Archive',
         requiresAuth: true
       },
       component: () => import('@/views/archive/TheArchivePage'),
