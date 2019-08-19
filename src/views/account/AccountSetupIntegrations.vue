@@ -55,7 +55,7 @@
                 <span class="icon">
                   <i
                     class="fa integration-indicator"
-                    :class="integrations.google.calendarID ? 'fa-check' : 'fa-times'"
+                    :class="integrations.google && integrations.google.calendarID ? 'fa-check' : 'fa-times'"
                   />
                 </span>
               </a>
@@ -67,10 +67,10 @@
     </div>
     <hr>
     <router-link
-      :to="{name: 'setup-google-calendar'}"
+      :to="{name: 'setup-complete'}"
       class="button is-primary is-pulled-right"
     >
-      Save and Continue
+      Save and Finish
     </router-link>
   </div>
 </template>
