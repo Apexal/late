@@ -94,7 +94,7 @@
       <div class="hero-body">
         <div class="container">
           <div class="columns is-vcentered">
-            <div class="column">
+            <div class="column text-column">
               <h1 class="title">
                 {{ promo.title }}
               </h1>
@@ -102,15 +102,15 @@
                 {{ promo.description }}
               </h2>
             </div>
-            <div class="column">
+            <div class="column example-column">
               <img
                 v-if="promo.imageName"
-                class="example is-pulled-right"
+                class="example"
                 :src="'/img/promos/' + promo.imageName"
               >
               <div
                 v-else-if="promo.videoName"
-                class="example is-pulled-right"
+                class="example"
               >
                 <video>
                   <source
@@ -248,7 +248,6 @@ export default {
   z-index: -1;
   background: url(/splash-bg.png);
   background-size: cover;
-  background-repeat-y: repeat;
   height: 100%;
   //filter: blur(5px);
 }
@@ -310,7 +309,7 @@ export default {
   padding: 30px;
   padding-top: 20px;
   max-width: 800px;
-  border-radius: 6px;
+  border-radius: 10px;
 
   p.desc {
     font-size: 1.2em;
@@ -325,22 +324,42 @@ export default {
   text-align: center;
   //cursor:url('/img/icons/favicon.ico'), auto;
 
-  .example {
-    //border: 2px solid white;
-    border-radius: 6px;
-    margin-top: 10px;
-    overflow: hidden;
+  .title {
+    font-size: 3em;
   }
 
-  text-align: right;
+  .subtitle {
+    font-size: 1.5em;
+  }
+
+  .example {
+    border-radius: 10px;
+    overflow: hidden;
+    transform: scale(0.97);
+    transition: transform 0.2s;
+    display: inline-flex;
+  }
+
+  &:hover .example {
+    transform: scale(1);
+  }
+
+  .example-column {
+    text-align: center;
+  }
+
+  .text-column {
+    text-align: right;
+
+    @media only screen and (max-width: 768px) {
+      text-align: center !important;
+    }
+  }
+
   &:nth-child(even) .columns {
     flex-direction: row-reverse;
-    text-align: left;
-  }
-
-  @media only screen and (max-width: 768px) {
-    .columns {
-      text-align: center !important;
+    .text-column {
+      text-align: left;
     }
   }
 }
