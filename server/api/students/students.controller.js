@@ -90,9 +90,9 @@ async function getStudent (ctx) {
   const counts = {}
   if (ctx.query.counts) {
     // Also get stats
-    counts.assignments = await Assignment.count({ _student: studentID })
-    counts.exams = await Exam.count({ _student: studentID })
-    counts.blocks = await Block.count({ _student: studentID })
+    counts.assignments = await Assignment.countDocuments({ _student: studentID })
+    counts.exams = await Exam.countDocuments({ _student: studentID })
+    counts.blocks = await Block.countDocuments({ _student: studentID })
   }
   ctx.ok({ student, counts })
 }
@@ -175,8 +175,8 @@ async function deleteStudent (ctx) {
 }
 
 async function getStudentCounts (ctx) {
-  const testers = await Student.count({ accountLocked: false })
-  const waitlist = await Student.count({ accountLocked: true })
+  const testers = await Student.countDocuments({ accountLocked: false })
+  const waitlist = await Student.countDocuments({ accountLocked: true })
 
   return ctx.ok({ waitlist, testers })
 }
