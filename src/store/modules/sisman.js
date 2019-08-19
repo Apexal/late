@@ -9,9 +9,9 @@ const state = {
 
 const getters = {
   SISManCSS: state => {
-    let side = state.side === 'top' || state.side === 'bottom' ? 'left' : 'top';
+    const side = state.side === 'top' || state.side === 'bottom' ? 'left' : 'top';
 
-    let classes = [state.side];
+    const classes = [state.side];
     if (state.showing) classes.push('showing');
     if (state.peeking) classes.push('peeking');
 

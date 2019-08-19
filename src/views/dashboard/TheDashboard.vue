@@ -47,14 +47,11 @@
 </template>
 
 <script>
-import DashboardOverview from './DashboardOverview';
-import DashboardCalendar from './DashboardCalendar';
-
 import DashboardNextTermPreview from './components/DashboardNextTermPreview';
 
 export default {
   name: 'TheDashboard',
-  components: { DashboardOverview, DashboardCalendar, DashboardNextTermPreview },
+  components: { DashboardNextTermPreview },
   computed: {
     tab () {
       return this.$route.hash.substring(1) || 'calendar';

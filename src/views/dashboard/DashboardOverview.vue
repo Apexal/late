@@ -47,12 +47,12 @@ export default {
       return this.$store.getters.todayPeriods;
     },
     imageURL () {
-      let markers = this.periods.map(period => {
+      const markers = this.periods.map(period => {
         const course = this.course(period);
-        let color = '0x' + course.color.replace('#', '');
-        let label = period.type.charAt(0);
-        let locationParts = period.location.split(' ');
-        let location =
+        const color = '0x' + course.color.replace('#', '');
+        const label = period.type.charAt(0);
+        const locationParts = period.location.split(' ');
+        const location =
           locationParts.slice(0, locationParts.length - 1).join(' ') +
           ', Troy, NY 12180';
         return `&markers=color:${color}|label:${label}|${location}`;

@@ -29,7 +29,7 @@ const getters = {
     };
   },
   isUserSetup: (state, getters) => {
-    for (let check in getters.userSetup) {
+    for (const check in getters.userSetup) {
       if (!getters.userSetup[check]) return false;
     }
     return true;

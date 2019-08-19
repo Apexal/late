@@ -48,6 +48,8 @@ typings/
 # Optional eslint cache
 .eslintcache
 
+.eslint-old.json
+
 # Optional REPL history
 .node_repl_history
 

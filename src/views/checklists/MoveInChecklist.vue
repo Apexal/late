@@ -204,8 +204,8 @@ export default {
   methods: {
     download () {
       const lineArray = ['Category,Item,Count,Complete'];
-      for (let category of this.checklist.categories) {
-        for (let item of category.items) {
+      for (const category of this.checklist.categories) {
+        for (const item of category.items) {
           lineArray.push(`${category.title},${item.title},${item.count},${item.complete}`);
         }
       }

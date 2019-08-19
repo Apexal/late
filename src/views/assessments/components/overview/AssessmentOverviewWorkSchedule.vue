@@ -132,7 +132,7 @@ export default {
       loading: true,
       saved: true,
       calendar: {
-        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         header: {
           right: 'today,prev,next'
         },
@@ -244,7 +244,7 @@ export default {
     },
     collaboratorUnavailabilitySchedule () {
       const events = [];
-      for (let rcsID in this.collaboratorUnavailabilities) {
+      for (const rcsID in this.collaboratorUnavailabilities) {
         if (this.hiding.includes(rcsID)) continue;
 
         events.push(
@@ -295,7 +295,7 @@ export default {
       navigator.userAgent.indexOf('IEMobile') !== -1
     ) {
       // Show three day view on mobile
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi();
       calendarApi.changeView('timeGridThreeDay');
     }
   },
@@ -351,7 +351,7 @@ export default {
           message: 'Add work block to the past?',
           onConfirm: () => this.addWorkBlock(start, end),
           onCancel: () => {
-            let calendarApi = this.$refs.calendar.getApi();
+            const calendarApi = this.$refs.calendar.getApi();
             calendarApi.unselect();
           }
         });
@@ -417,18 +417,18 @@ export default {
         type: 'is-primary'
       });
 
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi();
       calendarApi.unselect();
     },
     async editWorkBlock (blockID, start, end) {
-      let updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+      const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
         assessment: this.assessment,
         blockID,
         start,
         end
       });
 
-      let message = 'Rescheduled work block!';
+      const message = 'Rescheduled work block!';
 
       this.$emit('updated-assessment', updatedAssessment);
 
@@ -442,11 +442,11 @@ export default {
       const block = this.assessment._blocks.find(b => b._id === blockID);
       if (!block) return;
 
-      let updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
+      const updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
         assessment: this.assessment,
         blockID
       });
-      let message = 'Removed work block from your schedule!';
+      const message = 'Removed work block from your schedule!';
 
       this.$emit('updated-assessment', updatedAssessment);
 

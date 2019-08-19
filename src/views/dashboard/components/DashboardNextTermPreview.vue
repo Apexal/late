@@ -97,7 +97,7 @@ export default {
     },
     nextTermCourseHourCount () {
       // Tally up durations of all periods
-      let total = this.nextTermPeriods
+      const total = this.nextTermPeriods
         .reduce((acc, period) => acc + moment(period.end, 'Hmm').diff(moment(period.start, 'Hmm'), 'minutes'), 0);
 
       return {
@@ -108,7 +108,7 @@ export default {
     earliestClassTime () {
       let earliest = 2300;
 
-      for (let period of this.nextTermPeriods) {
+      for (const period of this.nextTermPeriods) {
         if (parseInt(period.start) < earliest) { earliest = parseInt(period.start); }
       }
 
@@ -117,7 +117,7 @@ export default {
     latestClassTime () {
       let latest = 800;
 
-      for (let period of this.nextTermPeriods) {
+      for (const period of this.nextTermPeriods) {
         if (parseInt(period.end) > latest) { latest = parseInt(period.end); }
       }
 
@@ -142,7 +142,7 @@ export default {
 
       el.title = `${event.title} | ${period.location}`;
 
-      let locationEl = document.createElement('i');
+      const locationEl = document.createElement('i');
       locationEl.className = 'event-location';
       locationEl.innerText = period.location;
 

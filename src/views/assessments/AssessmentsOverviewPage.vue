@@ -78,7 +78,7 @@
 
 <script>
 import ConfettiGenerator from 'confetti-js';
-import VueMarkdown from 'vue-markdown';
+// import VueMarkdown from 'vue-markdown';
 
 // Page components
 import AssessmentOverviewStats from '@/views/assessments/components/overview/AssessmentOverviewStats';
@@ -98,7 +98,7 @@ export default {
     AssessmentOverviewDescription,
     AssessmentOverviewTitle,
     AssessmentOverviewActionButtons,
-    VueMarkdown,
+    // VueMarkdown,
     ExamsModalEdit,
     ExamOverviewTabs,
     AssignmentsModalEdit,

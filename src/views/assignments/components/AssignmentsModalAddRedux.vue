@@ -308,7 +308,7 @@ export default {
         );
 
         if (request.data.recurringAssignments.length > 0) {
-          for (let a of request.data.recurringAssignments) {
+          for (const a of request.data.recurringAssignments) {
             this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', a);
           }
         }

@@ -111,7 +111,7 @@ import moment from 'moment';
 
 export default {
   name: 'AdminStudentListOverview',
-  props: ['student'],
+  props: { student: {type: Object, required: true } },
   data () {
     return {
       confirming: false,

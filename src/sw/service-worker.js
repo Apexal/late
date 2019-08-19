@@ -13,7 +13,7 @@ self.addEventListener('activate', async event => {
   if (caches) {
     const keys = await caches.keys();
 
-    for (let key of keys) {
+    for (const key of keys) {
       if (key.indexOf('late-precache') < -1) {
         await caches.delete(key);
         console.log(`%c Cleared ${key}`, 'background: #333; color: #ff0000');

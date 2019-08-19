@@ -62,8 +62,8 @@ const getters = {
     }[type] || type),
   mapCourseToEvents: (state, getters, rootState, rootGetters) => course => {
     return course.periods.map(p => {
-      let start = moment(p.start, 'Hmm', true).format('HH:mm');
-      let end = moment(p.end, 'Hmm', true).format('HH:mm');
+      const start = moment(p.start, 'Hmm', true).format('HH:mm');
+      const end = moment(p.end, 'Hmm', true).format('HH:mm');
 
       return {
         id: course._id,

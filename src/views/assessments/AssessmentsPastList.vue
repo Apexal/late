@@ -240,7 +240,7 @@ export default {
           type: 'is-danger'
         });
       }
-      let currentExams = request.data.exams.filter(e => e.passed); // Only get passed exams
+      const currentExams = request.data.exams.filter(e => e.passed); // Only get passed exams
 
       try {
         request = await this.$http.get('/assignments', {
@@ -258,7 +258,7 @@ export default {
         });
       }
 
-      let currentAssignments = request.data.assignments.filter(e => e.passed); // Only get passed exams
+      const currentAssignments = request.data.assignments.filter(e => e.passed); // Only get passed exams
 
       this.currentAssessments = currentAssignments
         .concat(currentExams)

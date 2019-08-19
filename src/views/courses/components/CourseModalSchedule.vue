@@ -30,11 +30,11 @@ export default {
       return process.env.VUE_APP_GOOGLE_API_KEY;
     },
     imageURL () {
-      let markers = this.course.periods.map(period => {
-        let color = '0x' + this.course.color.replace('#', '');
-        let label = period.type.charAt(0);
-        let locationParts = period.location.split(' ');
-        let location =
+      const markers = this.course.periods.map(period => {
+        const color = '0x' + this.course.color.replace('#', '');
+        const label = period.type.charAt(0);
+        const locationParts = period.location.split(' ');
+        const location =
           locationParts.slice(0, locationParts.length - 1).join(' ') +
           ', Troy, NY';
         return `&markers=color:${color}|label:${label}|${location}`;

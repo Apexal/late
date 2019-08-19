@@ -132,7 +132,7 @@ export default {
         assessment.assessmentType === 'assignment' && assessment.priority === 1
           ? '(optional) '
           : '';
-      let description =
+      const description =
         (assessment.description || '').length > 500
           ? (assessment.description || '').substring(0, 500) + '...'
           : assessment.description;

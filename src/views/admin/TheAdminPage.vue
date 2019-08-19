@@ -47,12 +47,8 @@
 </template>
 
 <script>
-import AdminStudentList from '@/views/admin/components/AdminStudentList';
-import AdminLog from '@/views/admin/components/AdminLog';
-
 export default {
-  name: 'TheAdminPage',
-  components: { AdminStudentList, AdminLog }
+  name: 'TheAdminPage'
 };
 </script>
 

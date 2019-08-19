@@ -87,7 +87,7 @@ export default {
     },
     enabledIntegrations () {
       const enabled = {};
-      for (let key in this.notifications) {
+      for (const key in this.notifications) {
         enabled[key] = this.notifications[key].integrations.filter(i => {
           if (i === 'email') return true;
           if (

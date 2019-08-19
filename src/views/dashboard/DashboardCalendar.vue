@@ -97,7 +97,7 @@ export default {
       },
       academicCalendarEvents: [],
       calendar: {
-        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         header: {
           center: 'timeGridThreeDay,timeGridFiveDay,timeGridWeek',
           right: 'today,prev,next'
@@ -171,7 +171,7 @@ export default {
         .concat(this.academicCalendarEvents);
     },
     earliest () {
-      let earliest = this.$store.state.auth.user.earliestWorkTime;
+      const earliest = this.$store.state.auth.user.earliestWorkTime;
       // const courses = this.$store.getters.getCourseScheduleAsEvents;
       // const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
       //   Object.assign({}, e)
@@ -208,7 +208,7 @@ export default {
     const response = await this.$http.get('/integrations/academiccalendar');
     const parsed = response.data.events;
     const events = [];
-    for (let id in parsed) {
+    for (const id in parsed) {
       if (parsed[id].summary) {
         events.push(this.mapICalObjectToEvent(id, parsed[id]));
       }
@@ -221,7 +221,7 @@ export default {
       navigator.userAgent.indexOf('IEMobile') !== -1
     ) {
       // Only show three day view on mobile
-      let calendarApi = this.$refs['dashboard-calendar'].getApi();
+      const calendarApi = this.$refs['dashboard-calendar'].getApi();
       calendarApi.changeView('timeGridThreeDay');
     }
   },
@@ -247,7 +247,7 @@ export default {
       if (document.fullscreenElement) {
         document.exitFullscreen();
       } else {
-        let div = document.getElementById('calendar-holder');
+        const div = document.getElementById('calendar-holder');
         div.requestFullscreen();
       }
     },
@@ -273,7 +273,7 @@ export default {
 
       this.selectModal.open = false;
 
-      let calendarApi = this.$refs['dashboard-calendar'].getApi();
+      const calendarApi = this.$refs['dashboard-calendar'].getApi();
       calendarApi.unselect();
     },
     eventClick ({ event, jsEvent, view }) {

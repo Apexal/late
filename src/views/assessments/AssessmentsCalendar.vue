@@ -60,7 +60,7 @@ export default {
     return {
       loading: true,
       calendar: {
-        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         header: {
           right: 'today,prev,next'
         },
@@ -76,11 +76,11 @@ export default {
   },
   watch: {
     filter () {
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi();
       calendarApi.rerenderEvents();
     },
     showCompleted () {
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi();
       calendarApi.rerenderEvents();
     }
   },

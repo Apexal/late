@@ -55,7 +55,7 @@ export default {
     },
     assignmentsOverWeekDataset () {
       const data = [0, 0, 0, 0, 0, 0, 0]; // [ # of assignments due Sunday, # of assignments due Monday, ... ]
-      for (let assignment of this.assignments) {
+      for (const assignment of this.assignments) {
         const day = moment(assignment.dueDate).day();
         data[day] += 1;
       }
@@ -72,13 +72,13 @@ export default {
     assignmentsOverWeekPerCourseDatasets () {
       const datasets = [];
 
-      for (let course of this.courses) {
+      for (const course of this.courses) {
         const assignments = this.assignments.filter(
           assignment => assignment.courseCRN === course.crn
         );
 
         const data = [0, 0, 0, 0, 0, 0, 0]; // [ # of assignments due Sunday, # of assignments due Monday, ... ]
-        for (let assignment of assignments) {
+        for (const assignment of assignments) {
           const day = moment(assignment.dueDate).day();
           data[day] += 1;
         }

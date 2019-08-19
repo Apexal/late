@@ -209,7 +209,7 @@ export default {
     },
     datePeriod () {
       if (!this.courseCRN) return false;
-      let course = this.courses.find(
+      const course = this.courses.find(
         course => course.crn === this.courseCRN
       );
       return course.periods.find(p => p.day === moment(this.date).day());

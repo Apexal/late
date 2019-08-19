@@ -220,7 +220,7 @@ export default {
       this.updateSteps();
     },
     updateSteps () {
-      let curStep = this.step;
+      const curStep = this.step;
       this.steps.forEach(function (step_) {
         if (step_.step === curStep) {
           step_.active = true;
@@ -263,7 +263,7 @@ export default {
       // TODO: error handle
       let request;
 
-      let complete = this.steps.some(step => !step.completed);
+      const complete = this.steps.some(step => !step.completed);
 
       let time;
       let hour = parseInt(this.assignment.timeHour);

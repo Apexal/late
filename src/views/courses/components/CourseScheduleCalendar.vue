@@ -70,7 +70,7 @@ export default {
       navigator.userAgent.indexOf('IEMobile') !== -1
     ) {
       // Only show three day view on mobile
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi();
       calendarApi.changeView('timeGridThreeDay');
     }
   },

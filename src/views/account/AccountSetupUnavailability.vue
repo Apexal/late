@@ -137,7 +137,7 @@ export default {
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
-        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         columnHeaderFormat: {
           weekday: 'short'
         }
@@ -179,8 +179,8 @@ export default {
     fixedLatest () {
       const rawEnd = moment(this.latest, 'HH:mm', true);
       if (rawEnd.isBefore(moment(this.earliest, 'HH:mm', true))) {
-        let hours = (24 + rawEnd.hours()).toString();
-        let minutes = rawEnd.minutes().toString();
+        const hours = (24 + rawEnd.hours()).toString();
+        const minutes = rawEnd.minutes().toString();
         return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
       }
       return this.latest;
@@ -188,7 +188,7 @@ export default {
   },
   watch: {
     earliest (minTime) {
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi();
       calendarApi.setOption('businessHours', {
         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
         startTime: this.earliest,
@@ -197,7 +197,7 @@ export default {
       this.saved = false;
     },
     latest (maxTime) {
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi();
       calendarApi.setOption('businessHours', {
         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
         startTime: this.earliest,
@@ -274,7 +274,7 @@ export default {
 
       this.$store.commit('SET_USER', request.data.updatedUser);
 
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi();
       calendarApi.unselect();
     },
     async updateUnavailability (unavailability) {

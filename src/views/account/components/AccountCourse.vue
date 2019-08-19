@@ -492,7 +492,7 @@ export default {
           this.updatedCourse
         );
       } catch (e) {
-        let message = e.response ? e.response.data.message : e.message;
+        const message = e.response ? e.response.data.message : e.message;
         this.$toast.open({
           duration: 5000,
           message,

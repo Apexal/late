@@ -1,6 +1,4 @@
 module.exports = {
-  lintOnSave: true,
-
   devServer: {
     proxy: 'http://localhost:3000'
   },
@@ -15,9 +13,11 @@ module.exports = {
   css: {
     sourceMap: true
   },
+
   configureWebpack: {
     devtool: 'source-map'
   },
+
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {

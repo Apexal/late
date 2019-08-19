@@ -184,7 +184,7 @@ export default {
       }
     },
     addAssessmentClick (key, assessmentType) {
-      let updates = {};
+      const updates = {};
       if (this.groupBy === 'courseCRN') {
         updates.courseCRN = key;
         updates.modalStep = 1;
