@@ -1,7 +1,13 @@
 <!-- Promo page-->
 <template>
-  <div class="what-the">
-    <div class="splash" />
+  <div
+    class="what-the"
+    @mousemove="mouseMove"
+  >
+    <div
+      ref="splash"
+      class="splash"
+    />
     <section
       class="promo-container section"
       style="margin-top: 24px"
@@ -137,9 +143,10 @@ export default {
     return {
       testers: 0,
       waitlist: 0,
+      splashMovementStrength: 10,
       promos: [
         {
-          type: 'is-primary',
+          type: 'is-dark',
           title: 'Login with your RPI account',
           description: 'No need to make an account! Plus, you don\'t need to tell us your name or major or course schedule! Let us grab that from SIS for you! Once that is done you can manually change and add any information we have on you.',
           videoName: 'SIS.mp4'
@@ -151,7 +158,7 @@ export default {
           videoName: 'coursework.mp4'
         },
         {
-          type: 'is-link',
+          type: 'is-primary',
           title: 'Get notified to study/work',
           description: 'Connect to SMS, Discord, Google Calendar, and more to receive reminders and manage your courseload. Chat with our bots to manage your work. Customize when you want to be reached out to and when you want to receive summaries of your progress along with recommendations.',
           videoName: 'reminders.mp4'
@@ -200,6 +207,20 @@ export default {
       this.testers = request.data.testers
       this.waitlist = request.data.waitlist
     },
+    mouseMove (e) {
+      const width = this.splashMovementStrength / window.innerWidth
+      const height = this.splashMovementStrength / window.innerHeight
+
+      const pageX = e.pageX - window.innerWidth / 2
+      const pageY = e.pageY - window.innerHeight / 2
+
+      const newValueX = width * pageX * -1
+      const newValueY = height * pageY * -1
+      console.log(newValueX + ' ' + newValueY)
+
+      this.$refs.splash.style.backgroundPositionX = newValueX + 'px'
+      this.$refs.splash.style.backgroundPositionY = newValueY + 'px'
+    },
     scrollToPromos () {
       document.getElementById('promo-0').scrollIntoView({
         behavior: 'smooth'
@@ -242,7 +263,7 @@ export default {
   position: fixed;
   width: 110vw;
   left: 0;
-  top: 50px;
+  top: 20px;
   margin-left: -10vw;
   height: 500px;
   z-index: -1;
@@ -266,11 +287,11 @@ export default {
   }
 }
 
-#sis-man-holder:hover {
-  img {
-    transform: rotate(-5deg);
-  }
-}
+// #sis-man-holder:hover {
+//   img {
+//     transform: rotate(-5deg);
+//   }
+// }
 
 #sis-man-holder,
 .promo-container .title,
