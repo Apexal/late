@@ -145,7 +145,7 @@ export default {
   computed: {
     allGradesIn () {
       return this.enteredCourses.every(
-        course => course.gradeValue && course.credits
+        course => course.gradeValue !== undefined && course.credits !== undefined
       )
     },
     gpa () {
@@ -175,7 +175,7 @@ export default {
       this.enteredCourses.push({
         title: this.newCourseTitle,
         gradeValue: undefined,
-        credits: undefined
+        credits: 4
       })
       this.newCourseTitle = ''
     },
