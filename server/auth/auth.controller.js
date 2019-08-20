@@ -31,6 +31,10 @@ async function loginStudent (ctx) {
     }
 
     logger.info(`Logging in ${student.rcs_id}`)
+
+    if (!student.setup.profile) {
+      ctx.query.redirectTo = '/account'
+    }
   } else {
     // TODO: CMS api to get personal info here
     student = Student({
