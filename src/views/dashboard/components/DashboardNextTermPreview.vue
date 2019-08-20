@@ -134,7 +134,7 @@ export default {
       return
     }
 
-    this.nextTermCourses = request.data.courses
+    this.nextTermCourses = request.data.courses.filter(c => c.originalTitle !== 'Other')
   },
   methods: {
     eventRender ({ event, el, view }) {
