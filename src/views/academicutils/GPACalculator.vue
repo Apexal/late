@@ -96,7 +96,7 @@
           v-else
           class="has-text-centered has-text-grey"
         >
-          Add courses manually above or auto fill this semester's courses above!
+          Add courses manually above{{ onBreak ? '. When in school you can auto fill your current courses' : ' or auto fill this semester\'s courses above' }}!
         </p>
       </div>
       <div class="column is-half has-text-centered">
