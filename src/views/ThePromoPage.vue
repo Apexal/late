@@ -141,7 +141,7 @@ export default {
     return {
       testers: 0,
       waitlist: 0,
-      splashMovementStrength: 10,
+      splashMovementStrength: 25,
       interval: null,
       promos: [
         {
