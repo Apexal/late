@@ -102,11 +102,10 @@
         form="time-preferences"
         type="is-primary"
         :leading="loading"
-        :disabled="saved"
         class="is-pulled-right"
-        @click="saveTimePreferences"
+        @click="saveTimePreferencesAndContinue"
       >
-        Save and Continue
+        {{ saved ? '' : 'Save and ' }}Continue
       </b-button>
     </template>
   </div>
@@ -133,7 +132,7 @@ export default {
   data () {
     return {
       loading: false,
-      saved: false,
+      saved: true,
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
@@ -311,7 +310,11 @@ export default {
         })
       }
     },
-    async saveTimePreferences () {
+    async saveTimePreferencesAndContinue () {
+      if (this.saved) {
+        this.$router.push({ name: 'setup-integrations' })
+        return
+      }
       this.loading = true
       let request
       try {

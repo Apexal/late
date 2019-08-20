@@ -124,10 +124,9 @@
         <b-button
           type="is-primary"
           :loading="loading"
-          :disabled="saved"
-          @click="save"
+          @click="saveAndContinue"
         >
-          Save and Continue
+          {{ saved ? '' : 'Save and ' }}Continue
         </b-button>
       </div>
     </form>
@@ -142,7 +141,7 @@ export default {
   mixins: [accountMixin],
   data () {
     return {
-      saved: false,
+      saved: true,
       loading: false,
       firstName: '',
       lastName: '',
@@ -195,9 +194,16 @@ export default {
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
 
+      this.saved = true
+
       this.loading = false
     },
-    async save () {
+    async saveAndContinue () {
+      if (this.saved) {
+        this.$router.push({ name: 'setup-terms' })
+        return
+      }
+
       this.loading = true
 
       let request
@@ -224,7 +230,7 @@ export default {
 
       this.$router.push({ name: 'setup-terms' })
 
-      // this.saved = true;
+      this.saved = true
       this.loading = false
     }
   }

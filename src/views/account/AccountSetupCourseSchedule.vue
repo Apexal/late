@@ -177,10 +177,10 @@
         <div class="column is-narrow">
           <router-link
             :to="{name: 'setup-unavailability'}"
-            class="button has-background-secondary "
+            class="button is-primary"
             :class="{'is-loading': loading}"
           >
-            Save and Continue
+            Continue
           </router-link>
         </div>
       </div>

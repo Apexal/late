@@ -31,11 +31,10 @@
 
     <b-button
       type="is-primary"
-      :disabled="saved"
       class="is-pulled-right"
-      @click="save"
+      @click="saveAndContinue"
     >
-      Save and Continue
+      {{ saved ? '' : 'Save and ' }}Continue
     </b-button>
   </div>
 </template>
@@ -72,7 +71,12 @@ export default {
         this.selected.push(termCode)
       }
     },
-    async save () {
+    async saveAndContinue () {
+      if (this.saved) {
+        this.$router.push({ name: 'setup-course-schedule' })
+        return
+      }
+
       this.loading = true
 
       let request
