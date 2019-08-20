@@ -69,9 +69,7 @@ app.use(async (ctx, next) => {
     !ctx.session.currentTerm ||
     (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
   ) {
-    ctx.session.currentTerm = ctx.session.terms.find(t =>
-      moment().isBetween(moment(t.start), moment(t.end))
-    )
+    ctx.session.currentTerm = ctx.session.terms.find(t => t.isCurrent)
   }
 
   if (ctx.session.cas_user) {

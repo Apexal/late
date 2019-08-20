@@ -144,7 +144,7 @@ async function setAllFromSIS (ctx) {
 
     logger.info(`Got ${courseSchedule.length} courses`)
 
-    if (termCode === ctx.session.currentTerm.code) currentCourses = courseSchedule
+    if (ctx.session.currentTerm && termCode === ctx.session.currentTerm.code) currentCourses = courseSchedule
 
     // Handle GCal
     if (ctx.state.user.integrations.google.calendarID) {
