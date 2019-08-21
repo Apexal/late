@@ -63,6 +63,8 @@ async function createTerm (ctx) {
     return ctx.internalServerError('There was an error creating the term.')
   }
 
+  ctx.session.terms.push(createdTerm)
+
   logger.info(
     `Created term ${createdTerm.name} for admin ${ctx.state.user.rcs_id}.`
   )

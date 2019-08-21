@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'AccountSetupTerms',
   data () {
@@ -57,7 +59,7 @@ export default {
       )
     },
     terms () {
-      return this.$store.state.schedule.terms
+      return this.$store.state.schedule.terms.filter(term => moment(term.end).isAfter(this.rightNow))
     }
   },
   created () {
