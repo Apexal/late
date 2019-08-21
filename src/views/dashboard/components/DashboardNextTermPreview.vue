@@ -148,28 +148,13 @@ export default {
 
       el.querySelector('.fc-content').append(locationEl)
     },
-    async importToGoogleCalendar () {
-      this.$dialog.confirm({
-        title: 'Import?',
-        message: `Import your courses for <b>${this.nextTerm.code}</b> into your Google Calendar?`,
-        onConfirm: async () => {
-          try {
-            await this.$http.post('/google/courseschedule', {
-              termCode: this.nextTerm.code
-            })
-          } catch (e) {
-            this.$toast.open({
-              type: 'is-danger',
-              message: e.response.data.message
-            })
-            return
-          }
-
-          this.$toast.open({
-            message: 'Done! Check your Google Calendar!',
-            type: 'is-success'
-          })
-        }
+    importToGoogleCalendar () {
+      this.$router.push({ name: 'setup-integrations', hash: '#google-calendar' })
+      this.$toast.open({
+        type: 'is-info',
+        message: 'Connect your Google Account here and your course schedule will be added!',
+        position: 'is-bottom-right',
+        duration: 5000
       })
     }
   }
