@@ -17,6 +17,7 @@
             :weekends="false"
             :custom-buttons="customButtons"
             :all-day-slot="false"
+            :views="calendar.views"
             min-time="08:00:00"
             max-time="20:00:00"
             :event-render="eventRender"
@@ -66,6 +67,13 @@ export default {
         plugins: [dayGridPlugin, timeGridPlugin],
         header: {
           right: 'import prev,next'
+        },
+        views: {
+          timeGridThreeDay: {
+            type: 'timeGrid',
+            duration: { days: 3 },
+            buttonText: '3-Day'
+          }
         }
       }
     }
@@ -125,6 +133,15 @@ export default {
     }
   },
   async mounted () {
+    if (
+      typeof window.orientation !== 'undefined' ||
+      navigator.userAgent.indexOf('IEMobile') !== -1
+    ) {
+      // Only show three day view on mobile
+      const calendarApi = this.$refs.calendar.getApi()
+      calendarApi.changeView('timeGridThreeDay')
+    }
+
     // Get courses for next term
     let request
     try {
