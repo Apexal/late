@@ -150,7 +150,17 @@ export default {
         'Kikiola Sanusi',
         'Bowen Wang'
       ],
-      testers: ['Caitlin Bennett', 'Sarah Tedesco', 'Ben Sherman', 'Hannah Lim']
+      testers: [
+        'Caitlin Bennett',
+        'Sarah Tedesco',
+        'Ben Sherman',
+        'Hannah Lim',
+        'Nishant Srivastava',
+        'Dan Madras',
+        'Stéfan Martin',
+        'Lael Kutame',
+        'Alice Varughese'
+      ]
     }
   }
 }
