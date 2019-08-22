@@ -1,5 +1,7 @@
 import axios from '@/api'
 
+import { Toast } from 'buefy/dist/components/toast'
+
 const state = {
   checklist: {
     categories: []
@@ -8,11 +10,15 @@ const state = {
 const getters = {}
 
 const actions = {
-  async GET_CHECKLIST ({ rootState, commit, getters }) {
+  async GET_CHECKLIST ({ rootState, commit, dispatch }) {
     if (rootState.auth.isAuthenticated) {
       const response = await axios.get('/checklists')
       if (response.data.checklist) {
         commit('SET_CHECKLIST', response.data.checklist)
+      } else {
+        Toast.open({ type: 'is-info', message: 'Imported your checklist from when you were not logged in. This will only happen once.', duration: 4000 })
+        commit('LOAD_LOCAL_CHECKLIST')
+        await dispatch('SAVE_CHECKLIST')
       }
     } else {
       commit('LOAD_LOCAL_CHECKLIST')
@@ -29,7 +35,7 @@ const actions = {
       commit('SAVE_LOCAL_CHECKLIST')
     }
   },
-  async UPDATE_CHECKLIST ({ state, commit }) {
+  async UPDATE_CHECKLIST ({ state }) {
     const response = await axios.put('/checklists', state.checklist)
     return response
   }
