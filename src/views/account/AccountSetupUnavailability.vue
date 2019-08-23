@@ -92,6 +92,7 @@
         time-format="h(:mm)t"
         :now-indicator="true"
         :event-render="eventRender"
+        :default-date="courses[0].startDate"
         @eventResize="eventChanged"
         @eventDrop="eventChanged"
         @eventClick="eventClick"
