@@ -253,6 +253,7 @@ async function deleteExam (ctx) {
   )
 
   ctx.ok({
+    removedAssessment: ctx.state.exam,
     removedExam: ctx.state.exam
   })
 }
