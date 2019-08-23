@@ -2,7 +2,7 @@
 <template>
   <div class="columns is-multiline">
     <div
-      v-for="c in ongoingCourses"
+      v-for="c in selectedCourses"
       :key="c.crn"
       class="column course-column is-half"
     >
@@ -11,6 +11,7 @@
         :value="c.crn"
         :class="{active: isActive(c.crn)}"
         :style="{'--box-shadow-color': c.color}"
+        :title="c.originalTitle + ' - ' + c.summary + ' - ' + c.sectionId"
         @click="setCRN(c.crn)"
       >
         <span
@@ -30,6 +31,11 @@ export default {
   props: {
     assessmentType: { type: String, required: true },
     courseCRN: { type: String, required: true }
+  },
+  computed: {
+    selectedCourses () {
+      return this.ongoingCourses.length > 0 ? this.ongoingCourses : this.courses
+    }
   },
   methods: {
     isActive (crn) {
