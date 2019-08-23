@@ -309,7 +309,7 @@ export default {
 
 .splash {
   position: fixed;
-  width: 110vw;
+  width: 120vw;
   left: 0;
   top: 20px;
   margin-left: -10vw;
@@ -317,6 +317,7 @@ export default {
   z-index: -1;
   background: url(/splash-bg.png);
   background-size: cover;
+  backround-repeat:no-repeat;
   height: 100%;
   //filter: blur(5px);
 }
