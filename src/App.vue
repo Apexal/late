@@ -270,8 +270,21 @@ body {
 #footer {
   flex-shrink: 0;
 }
+
 section.section {
   padding: 1.5rem;
+}
+
+@media only screen and (max-width: 1216px) {
+  section.section {
+    padding: 1rem;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  section.section {
+    padding: 1rem 0.5rem;
+  }
 }
 
 //Toggle sidebar
@@ -348,6 +361,10 @@ section.section {
 
 .modal-content {
   max-width: 800px;
+}
+
+.modal-content, .modal-card {
+  margin: 0;
 }
 
 .exam-event {
