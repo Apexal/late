@@ -81,7 +81,6 @@ app.use(async (ctx, next) => {
     ctx.state.discordClient = discordClient
 
     if (ctx.state.user) {
-      // console.log(ctx.session.currentTerm);
       ctx.state.onBreak =
         !ctx.session.currentTerm ||
         !ctx.state.user.terms.includes(ctx.session.currentTerm.code)

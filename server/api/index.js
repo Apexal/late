@@ -1,9 +1,11 @@
 const Router = require('koa-router')
 
 const router = new Router()
+const logger = require('../modules/logger')
 
 const notOnBreak = (ctx, next) => {
   if (ctx.state.onBreak && !ctx.request.url.includes('/term/')) {
+    logger.error(`${ctx.state.user.rcs_id} tried to access '${ctx.request.url}' on break`)
     return ctx.badRequest('You are on break!')
   }
   return next()

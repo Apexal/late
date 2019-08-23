@@ -65,7 +65,7 @@ async function getAssignmentMiddleware (ctx, next) {
   }
 
   ctx.state.assignment = assignment
-  ctx.state.isAssignmentOwner = assignment._id.equals(ctx.state.user._id) // Mongoose ID's must use .equals()
+  ctx.state.isAssignmentOwner = assignment._student._id.equals(ctx.state.user._id) // Mongoose ID's must use .equals()
 
   await next()
 }
