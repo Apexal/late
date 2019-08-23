@@ -17,7 +17,7 @@
               class="fas fa-calendar-alt"
               aria-hidden="true"
             /></span>
-            <span>Work Schedule</span>
+            <span>Schedule</span>
             <span
               v-if="!assignment.completed && !fullyScheduled"
               class="tag is-danger tooltip is-tooltip-right"
@@ -46,7 +46,7 @@
             }}</span>
           </a>
         </li>
-        <li
+        <!-- <li
           class="whiteboard"
           :class="{'is-active': tab === 'whiteboard'}"
           @click="$emit('set-tab', 'whiteboard')"
@@ -60,7 +60,7 @@
             /></span>
             <span>Whiteboard</span>
           </a>
-        </li>
+        </li> -->
         <li
           v-if="assignment.shared"
           class="shared-info"
@@ -91,7 +91,7 @@
               class="fas fa-clipboard-check"
               aria-hidden="true"
             /></span>
-            <span>Related Assignments</span>
+            <span>Related</span>
           </a>
         </li>
       </ul>

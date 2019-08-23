@@ -17,7 +17,7 @@
                 aria-hidden="true"
               />
             </span>
-            <span>Study Schedule</span>
+            <span>Schedule</span>
 
             <span
               v-if="!exam.passed && !fullyScheduled"

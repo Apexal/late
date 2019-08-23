@@ -1,7 +1,10 @@
 <!--Assessments: assessment overview priority and due date module-->
 <template>
   <div>
-    <nav class="box level assessment-stats has-background-grey-darker has-text-white is-hidden-mobile">
+    <nav
+      class="box level assessment-stats has-text-white is-hidden-mobile"
+      :class="[assessment.assessmentType === 'assignment' && assessment.completed ? 'has-background-success' : 'has-background-grey-darker']"
+    >
       <div class="level-item has-text-centered">
         <div>
           <p
@@ -130,7 +133,10 @@
         </div>
       </div>
     </nav>
-    <div class="box is-flex has-background-grey-darker has-text-white has-text-weight-medium has-text-centered is-hidden-tablet mobile-stats">
+    <div
+      class="box is-flex has-text-white has-text-weight-medium has-text-centered is-hidden-tablet mobile-stats"
+      :class="[assessment.assessmentType === 'assignment' && assessment.completed ? 'has-background-success' : 'has-background-grey-darker']"
+    >
       <span
         class="tooltip is-tooltip-bottom"
         :data-tooltip="priorityString + ' Priority'"

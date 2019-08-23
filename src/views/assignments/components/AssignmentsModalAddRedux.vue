@@ -98,7 +98,7 @@
           class="modal-nav-button save"
           @click="save()"
         >
-          <h1>Create Assignment</h1>
+          <h1>Add</h1>
         </div>
         <div
           v-if="step !== steps.length - 1"

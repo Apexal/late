@@ -63,7 +63,6 @@
             />
 
             <SISMan />
-            <AssessmentsAddFAB v-if="!onBreak" />
             <StudyToolsTimerOverlay
               v-if="$route.path !== '/studytools'"
               :open="studyToolsTimerOpen"
@@ -97,7 +96,6 @@ import AnnouncementsModal from '@/views/announcements/components/AnnouncementsMo
 import ToursModal from '@/views/components/ToursModal'
 
 import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay'
-import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB'
 
 import SISMan from '@/views/sisman/components/SISMan'
 
@@ -117,7 +115,6 @@ export default {
     ExamsModalAddRedux,
     AnnouncementsModal,
     PinnedAnnouncements,
-    AssessmentsAddFAB,
     StudyToolsTimerOverlay,
     SISMan
 
