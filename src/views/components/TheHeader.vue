@@ -199,7 +199,7 @@
                 :to="{name: 'study-tools'}"
                 title="Study timer and scratchpad"
               >
-                Study Tools
+                Study Timer
               </router-link>
               <router-link
                 class="navbar-item"
