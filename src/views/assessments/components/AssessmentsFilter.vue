@@ -14,7 +14,7 @@
       </span>
     </p>
     <div
-      class="columns is-multiline courses-container"
+      class="columns is-multiline is-vcentered courses-container"
       :class="{expanded}"
     >
       <div class="column is-full-touch has-text-centered-touch courses">
@@ -144,10 +144,6 @@ export default {
     flex: 1;
     margin: 0;
   }
-}
-
-.courses-container {
-  height: 60px;
 }
 
 .courses {
