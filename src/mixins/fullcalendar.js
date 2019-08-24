@@ -32,6 +32,7 @@ export default {
         const icon = document.createElement('i')
         icon.className = 'fas ' + iconName
         el.querySelector(selector)[prepend ? 'prepend' : 'append'](icon)
+        return icon
       }
 
       if (eventType === 'course') {
@@ -46,15 +47,18 @@ export default {
           )
         }
 
-        addIcon('fa-graduation-cap', '.fc-title')
-
-        el.querySelector('.fc-content').append(element('i', { className: 'event-location', innerText: period.location }))
+        addIcon('fa-graduation-cap', '.fc-time')
+        if (period.location) {
+          el.querySelector('.fc-content').append(element('i', { className: 'event-location', innerText: period.location }))
+        }
       } else if (eventType === 'assignment') {
         addIcon('fa-clipboard-check')
 
         if (assessment.shared) addIcon('fa-users is-pulled-right')
       } else if (eventType === 'exam') {
         addIcon('fa-exclamation-triangle')
+      } else if (eventType === 'unavailability') {
+        addIcon('fa-door-closed', '.fc-time')
       } else if (eventType === 'academic-calendar-event') {
         addIcon('fa-info-circle')
         el.title = 'Click for full message.'
@@ -67,9 +71,7 @@ export default {
           block.location ? ' | ' + block.location : ''
         }`
 
-        el
-          .querySelector('.fc-time')
-          .append(element('span', { innerText: ' | ' + (assessment.assessmentType === 'assignment' ? 'Work' : 'Study') }))
+        addIcon(assessment.assessmentType ? 'fa-clipboard-check' : 'fa-exclamation-triangle', '.fc-time')
 
         // --- DELETE BUTTON ---
         const deleteButton = element('span', { className: 'delete remove-work-block', title: 'Unschedule' })
@@ -101,7 +103,7 @@ export default {
         if (block.location) {
           locationEl.innerText = block.location
         } else {
-          locationEl.className = 'fas fa-map-marker-alt'
+          locationEl.innerText = 'Click to set location.'
         }
         locationEl.classList.add('event-location')
         locationEl.onclick = ev => {

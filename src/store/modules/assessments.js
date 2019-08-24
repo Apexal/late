@@ -73,7 +73,7 @@ const getters = {
     block: b,
     eventType: 'work-block',
     assessmentType: type,
-    title: assessment.title,
+    title: (assessment.assessmentType === 'assignment' ? 'Work on ' : 'Study for ') + assessment.title,
     className: 'work-block-event',
     color: getters.getCourseFromCRN(assessment.courseCRN).color,
     borderColor: 'black',
