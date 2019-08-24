@@ -87,7 +87,7 @@ export default {
           this.$emit('updated-assessment', updatedAssessment)
           this.$socket.client.emit('updated assessment', updatedAssessment)
 
-          this.$toast.open({
+          this.$buefy.toast.open({
             message: 'Unscheduled work block!',
             type: 'is-primary'
           })
@@ -106,7 +106,7 @@ export default {
         locationEl.classList.add('event-location')
         locationEl.onclick = ev => {
           ev.stopPropagation()
-          this.$dialog.prompt({
+          this.$buefy.dialog.prompt({
             message: 'Where do you want this to be?',
             inputAttrs: {
               placeholder: block.location
@@ -145,7 +145,7 @@ export default {
       this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', { dueDate: date })
       this.$store.commit('SET_ADD_EXAM_MODAL_VALUES', { date })
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message:
           'Add a new assignment or exam with the buttons below the calendar!',
         position: 'is-bottom-left'

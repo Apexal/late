@@ -167,7 +167,7 @@ export default {
     },
     importToGoogleCalendar () {
       this.$router.push({ name: 'setup-integrations', hash: '#google-calendar' })
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-info',
         message: 'Connect your Google Account here and your course schedule will be added!',
         position: 'is-bottom-right',

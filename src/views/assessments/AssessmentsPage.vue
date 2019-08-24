@@ -110,7 +110,7 @@ export default {
   watch: {
     showCompleted (nowShowing) {
       localStorage.setItem('assignmentsShowCompleted', nowShowing)
-      this.$toast.open({
+      this.$buefy.toast.open({
         message:
           (nowShowing ? 'Showing' : 'Hiding') + ' completed assignments.',
         type: 'is-info',
@@ -152,7 +152,7 @@ export default {
           assignment
         )
 
-        this.$snackbar.open({
+        this.$buefy.snackbar.open({
           message: `Marked '${toggledAssignment.title}' as ${
             toggledAssignment.completed ? 'complete' : 'incomplete'
           }!`,
@@ -167,7 +167,7 @@ export default {
           }
         })
       } catch (e) {
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -183,14 +183,14 @@ export default {
       // TODO change word assessments to exam or assignment depending on type
       if (this.filter.includes(c.crn)) {
         this.filter.splice(this.filter.indexOf(c.crn), 1)
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: `Showing '${c.title}' coursework.`,
           type: 'is-info',
           duration: 1000
         })
       } else {
         this.filter.push(c.crn)
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: `Hiding '${c.title}' coursework.`,
           type: 'is-info',
           duration: 1000

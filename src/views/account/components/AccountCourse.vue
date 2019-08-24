@@ -462,7 +462,7 @@ export default {
       this.editing = false
     },
     confirmRemoveCourse () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Are you sure you want to remove this course? You should only do this if you are no longer in the course. Otherwise, just mark the course as hidden.',
         confirmText: 'Remove Course',
         type: 'is-danger',
@@ -478,7 +478,7 @@ export default {
         this.courseData.title.length === 0 ||
         this.courseData.sectionId.length === 0
       ) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: 'You cannot set an empty name or section for a course!'
         })
@@ -493,7 +493,7 @@ export default {
         )
       } catch (e) {
         const message = e.response ? e.response.data.message : e.message
-        this.$toast.open({
+        this.$buefy.toast.open({
           duration: 5000,
           message,
           type: 'is-danger'
@@ -501,7 +501,7 @@ export default {
         return
       }
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         duration: 2000,
         message: `Updated '${updatedCourse.title}'`,
         type: 'is-success'
@@ -511,7 +511,7 @@ export default {
       this.open = true
     },
     removePeriod (periodToRemove) {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         title: 'Confirm Remove Period',
         message: `Remove <b>${this.courseData.title} ${this.type(
           periodToRemove.type
@@ -544,7 +544,7 @@ export default {
         !this.newPeriod.start ||
         !this.newPeriod.end
       ) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: 'Make sure the time and location is set!'
         })

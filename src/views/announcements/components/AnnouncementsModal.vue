@@ -169,7 +169,7 @@ export default {
       try {
         request = await this.$http.post('/announcements', this.newAnnouncement)
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: e.response.data.message
         })
@@ -178,7 +178,7 @@ export default {
       }
 
       this.$store.commit('ADD_ANNOUNCEMENT', request.data.createdAnnouncement)
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-success',
         message: 'Posted new announcement.'
       })
@@ -201,13 +201,13 @@ export default {
           isPinned: !announcement.isPinned
         })
       } catch (e) {
-        this.$toast.open({ type: 'is-danger', message: e.response.data.message })
+        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
         return
       }
 
       this.$store.commit('UPDATE_ANNOUNCEMENT', request.data.updatedAnnouncement)
 
-      this.$toast.open({ type: 'is-success', message: 'Updated announcement!' })
+      this.$buefy.toast.open({ type: 'is-success', message: 'Updated announcement!' })
     },
     async deleteAnnouncement (announcement) {
       if (!this.user.admin) return
@@ -216,13 +216,13 @@ export default {
       try {
         request = await this.$http.delete(`/announcements/${announcement._id}`)
       } catch (e) {
-        this.$toast.open({ type: 'is-danger', message: e.response.data.message })
+        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
         return
       }
 
       this.$store.commit('REMOVE_ANNOUNCEMENT', request.data.deletedAnnouncement)
 
-      this.$toast.open({ type: 'is-success', message: 'Deleted announcement!' })
+      this.$buefy.toast.open({ type: 'is-success', message: 'Deleted announcement!' })
     }
   }
 }

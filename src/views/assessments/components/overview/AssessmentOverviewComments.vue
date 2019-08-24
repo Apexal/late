@@ -122,7 +122,7 @@ export default {
           { assessment: this.assessment, newComment: this.newComment }
         )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -132,7 +132,7 @@ export default {
 
       this.$emit('updated-assessment', updatedAssessment)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Added comment!',
         type: 'is-success'
       })
@@ -150,7 +150,7 @@ export default {
           { assessment: this.assessment, commentIndex }
         )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -160,7 +160,7 @@ export default {
 
       this.$emit('updated-assessment', updatedAssessment)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Removed comment!',
         type: 'is-success'
       })

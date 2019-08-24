@@ -196,7 +196,7 @@ export default {
   },
   async mounted () {
     if (this.$route.query.accountLocked) {
-      return this.$toast.open({
+      return this.$buefy.toast.open({
         message: 'Your account has been locked by administrators.',
         type: 'is-warning',
         duration: 70000

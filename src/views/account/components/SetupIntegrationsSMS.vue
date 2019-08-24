@@ -144,13 +144,13 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
       }
 
-      this.$toast.open({ type: 'is-success', message: request.data.message })
+      this.$buefy.toast.open({ type: 'is-success', message: request.data.message })
 
       this.loading = false
       this.awaitingVerification = true
@@ -167,7 +167,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -175,7 +175,7 @@ export default {
 
       this.$store.dispatch('SET_USER', request.data.updatedUser)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-success',
         message: `Successfully verified your phone number ${
           request.data.updatedUser.integrations.sms.phoneNumber
@@ -185,7 +185,7 @@ export default {
       this.loading = false
     },
     async disable () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Are you sure you want to disable SMS integration?',
         onConfirm: async () => {
           this.loading = true
@@ -195,14 +195,14 @@ export default {
             request = await this.$http.delete('/integrations/sms')
           } catch (e) {
             this.loading = false
-            return this.$toast.open({
+            return this.$buefy.toast.open({
               message: e.response.data.message,
               type: 'is-danger'
             })
           }
 
           await this.$store.dispatch('SET_USER', request.data.updatedUser)
-          this.$toast.open({
+          this.$buefy.toast.open({
             type: 'is-success',
             message: 'Successfully disabled SMS integration!'
           })
@@ -211,7 +211,7 @@ export default {
       })
     },
     async resetPhoneNumber () {
-      this.$toast.open({ type: 'is-danger', message: 'Coming soon!' })
+      this.$buefy.toast.open({ type: 'is-danger', message: 'Coming soon!' })
     }
   }
 }

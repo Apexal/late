@@ -162,31 +162,31 @@ export default {
           updates
         )
       } catch (e) {
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
       }
 
       this.$emit('update-student', request.data.updatedStudent)
-      this.$toast.open({ type: 'is-success', message: 'Updated student.' })
+      this.$buefy.toast.open({ type: 'is-success', message: 'Updated student.' })
     },
     async deleteStudent () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message:
           'Are you sure you want to delete this student account? This is IRREVERSIBLE',
         onConfirm: async () => {
           try {
             await this.$http.delete('/students/' + this.student._id)
           } catch (e) {
-            return this.$toast.open({
+            return this.$buefy.toast.open({
               message: e.response.data.message,
               type: 'is-danger'
             })
           }
 
           this.$emit('delete-student', this.student._id)
-          this.$toast.open({
+          this.$buefy.toast.open({
             type: 'is-success',
             message: `Deleted student ${this.student.rcs_id}.`
           })

@@ -88,7 +88,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -105,7 +105,7 @@ export default {
       }
 
       // Notify user of success
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Saved terms!',
         type: 'is-success'
       })

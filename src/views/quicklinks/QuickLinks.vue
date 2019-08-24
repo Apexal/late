@@ -248,7 +248,7 @@ export default {
       try {
         response = await this.$http.delete('/quicklinks/' + quickLinkID)
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -260,7 +260,7 @@ export default {
         quickLink => quickLink._id !== response.data.deletedQuickLink._id
       )
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Deleted submitted quick link!',
         type: 'is-success'
       })
@@ -276,7 +276,7 @@ export default {
           confirmed: true
         })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -291,7 +291,7 @@ export default {
         response.data.updatedQuickLink
       )
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Confirmed submitted quick link!',
         type: 'is-success'
       })
@@ -305,7 +305,7 @@ export default {
       try {
         request = await this.$http.post('/quicklinks', { ...this.newLink, category: this.newLink.category === 'other' ? this.otherCategory : this.newLink.category })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -317,7 +317,7 @@ export default {
         this.quickLinks.push(request.data.createdQuickLink)
       }
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message:
           'Submitted link! It will be reviewed by an admin before being added.',
         type: 'is-warning',
@@ -340,7 +340,7 @@ export default {
       try {
         request = await this.$http.get('/quicklinks')
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })

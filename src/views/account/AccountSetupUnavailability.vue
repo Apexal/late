@@ -216,7 +216,7 @@ export default {
     eventClick ({ event, jsEvent, view }) {
       if (event.extendedProps.eventType !== 'unavailability') return
 
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Remove ${event.title}?`,
         onConfirm: () => this.removeUnavailability(event)
       })
@@ -233,7 +233,7 @@ export default {
       start = moment(start)
       end = moment(end)
 
-      this.$dialog.prompt({
+      this.$buefy.dialog.prompt({
         message: `What are you doing ${start.format('h:mma')} to ${start.format(
           'h:mma'
         )} on ${start.format('dddd')}?`,
@@ -265,7 +265,7 @@ export default {
           unavailability
         )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -291,7 +291,7 @@ export default {
           }
         )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -305,7 +305,7 @@ export default {
           unavailabilityEvent
         )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -325,14 +325,14 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: e.response.data.message
         })
       }
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
       // Notify user of success
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-success',
         message: 'Your study/work time limits have been saved.'
       })

@@ -149,7 +149,7 @@ export default {
         })
       } else {
         // Confirm first
-        this.$dialog.confirm({
+        this.$buefy.dialog.confirm({
           message: `Remove <b>${this.category.title}</b> and its <b>${this.category.items.length}</b> items?`,
           onConfirm: () => this.$store.commit('REMOVE_CHECKLIST_CATEGORY', {
             categoryIndex: this.categoryIndex

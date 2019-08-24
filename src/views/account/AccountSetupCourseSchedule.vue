@@ -249,7 +249,7 @@ export default {
     },
     startAddCourseByCRN () {
       if (this.rin && this.pin) {
-        this.$dialog.prompt({
+        this.$buefy.dialog.prompt({
           message: 'What is the course CRN?',
           onConfirm: this.addCourseByCRN
         })
@@ -259,7 +259,7 @@ export default {
             this.rin = rin
             this.pin = pin
 
-            this.$dialog.prompt({
+            this.$buefy.dialog.prompt({
               message: 'What is the course CRN?',
               onConfirm: this.addCourseByCRN
             })
@@ -275,12 +275,12 @@ export default {
           pin: this.pin
         })
       } catch (e) {
-        this.$toast.open({ type: 'is-danger', message: e.response.data.message })
+        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
         return
       }
 
       const newCourse = request.data.course
-      this.$toast.open({ message: `Grabbed course ${newCourse.title} from SIS!` })
+      this.$buefy.toast.open({ message: `Grabbed course ${newCourse.title} from SIS!` })
       this.$store.commit('ADD_COURSE', newCourse)
     },
     addCustomCourse (courseData) {
@@ -291,11 +291,11 @@ export default {
       try {
         removedCourse = await this.$store.dispatch('REMOVE_COURSE', courseID)
       } catch (e) {
-        this.$toast.open({ message: e.response.data.message, type: 'is-danger' })
+        this.$buefy.toast.open({ message: e.response.data.message, type: 'is-danger' })
         return
       }
 
-      this.$toast.open({ message: `Removed ${removedCourse.title}!`, type: 'is-success' })
+      this.$buefy.toast.open({ message: `Removed ${removedCourse.title}!`, type: 'is-success' })
     },
     async importSchedule () {
       this.loading = true
@@ -308,7 +308,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -319,7 +319,7 @@ export default {
       this.$store.commit('SET_USER', request.data.updatedUser)
 
       // Notify user of success
-      this.$snackbar.open({
+      this.$buefy.snackbar.open({
         message:
           'Your course schedule has been imported from SIS. Edit the courses below to customize titles, colors, and more.',
         type: 'is-primary',

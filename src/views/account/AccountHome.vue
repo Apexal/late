@@ -77,7 +77,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -86,7 +86,7 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
       await this.$store.commit('SET_COURSES', request.data.courses)
 
-      this.$snackbar.open({
+      this.$buefy.snackbar.open({
         indefinite: true,
         message: 'Successfully grabbed your <b>name, major, graduation year, and courses</b> from SIS! Please review the pages to make sure its accurate.',
         type: 'is-danger',

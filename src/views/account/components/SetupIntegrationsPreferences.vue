@@ -142,7 +142,7 @@ export default {
         )
       } catch (e) {
         this.loading = false
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -150,7 +150,7 @@ export default {
 
       this.$store.dispatch('SET_USER', request.data.updatedUser)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-success',
         message: 'Successfully updated your notification preferences!'
       })

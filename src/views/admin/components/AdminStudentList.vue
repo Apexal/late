@@ -127,7 +127,7 @@ export default {
       try {
         request = await this.$http.get('/students')
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })

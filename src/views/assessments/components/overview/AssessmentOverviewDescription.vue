@@ -79,7 +79,7 @@ export default {
             updates: { description: this.edited }
           })
         } catch (e) {
-          this.$toast.open({
+          this.$buefy.toast.open({
             message: e.response.data.message,
             type: 'is-danger'
           })
@@ -89,7 +89,7 @@ export default {
 
         this.$emit('updated-assessment', updatedAssessment)
 
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'Updated the description!',
           type: 'is-success'
         })

@@ -119,7 +119,7 @@ export default {
       } catch (e) {
         return
       }
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-primary',
         message: 'Suggestion sent to Frank! Thank you for your idea!'
       })

@@ -265,7 +265,7 @@ export default {
         end: this.selectModal.end
       })
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Added work block to your schedule!',
         type: 'is-primary',
         duration: 1000
@@ -328,7 +328,7 @@ export default {
       try {
         await this.$store.dispatch('ADD_WORK_BLOCK', { assessment, start: event.start, end: event.end })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'There was an error scheduling that work block...',
           type: 'is-danger'
         })
@@ -337,7 +337,7 @@ export default {
       }
 
       event.remove()
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Added work block to your schedule!',
         type: 'is-primary',
         duration: 1000
@@ -348,7 +348,7 @@ export default {
       if (eventType === 'work-block') {
         // Update work block on server
         if (moment(event.end).isBefore(moment())) {
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
             message: 'Move this past work block?',
             onConfirm: () =>
               this.editWorkBlock(
@@ -373,7 +373,7 @@ export default {
       const { eventType, assessment, blockID } = event.extendedProps
       if (eventType === 'work-block') {
         if (moment(event.end).isBefore(moment())) {
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
             message: 'Edit this past work block?',
             onConfirm: () =>
               this.editWorkBlock(
@@ -402,7 +402,7 @@ export default {
         end
       })
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Rescheduled work block!',
         type: 'is-primary',
         duration: 1000

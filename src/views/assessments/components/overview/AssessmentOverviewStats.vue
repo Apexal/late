@@ -265,7 +265,7 @@ export default {
         [propName]: newDate.toDate()
       })
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message:
           'Updated ' +
           (this.assessmentType === 'assignment' ? 'due date' : 'date') +
@@ -287,7 +287,7 @@ export default {
       await this.updateAssessment({
         priority: this.assessment.priority + change
       })
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Updated priority!',
         type: 'is-success'
       })
@@ -306,7 +306,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })

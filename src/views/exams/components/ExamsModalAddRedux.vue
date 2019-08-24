@@ -227,7 +227,7 @@ export default {
       this.loading = true
 
       if (!this.isComplete) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: 'Make sure you complete every step!'
         })
@@ -249,7 +249,7 @@ export default {
           timeEstimate: this.timeEstimate
         })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: 'There was an error adding the exam. Please try again later.'
         })
@@ -288,7 +288,7 @@ export default {
         request.data.createdExam.date
       ).fromNow()}.`
 
-      this.$snackbar.open({
+      this.$buefy.snackbar.open({
         message,
         type: 'is-primary',
         position: 'is-bottom',

@@ -293,7 +293,7 @@ export default {
           updates: { studyPlan }
         })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })

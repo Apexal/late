@@ -229,14 +229,14 @@ export default {
       }
     },
     clearChecklist () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Totally clear your checklist? All items will be lost.',
         onConfirm: () => this.$store.commit('CLEAR_CHECKLIST')
       })
     },
     addCategory () {
       if (this.categoryTitles.includes(this.newCategory)) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'You already have that category!',
           type: 'is-warning '
         })
@@ -257,14 +257,14 @@ export default {
         // Remove navigation prompt
         window.onbeforeunload = null
         await this.$store.dispatch('SAVE_CHECKLIST')
-        this.$toast.open(`Saved checklist ${this.loggedIn ? 'to your account!' : 'to this device!'}`)
+        this.$buefy.toast.open(`Saved checklist ${this.loggedIn ? 'to your account!' : 'to this device!'}`)
       }
     },
     togglePrivate () {
       this.$store.commit('SET_CHECKLIST', { ...this.checklist, private: !this.checklist.private })
       this.$store.dispatch('SAVE_CHECKLIST')
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-success',
         message: `Checklist is now ${this.checklist.private ? 'private!' : 'public! Share the link to let others see your list.'}`
       })

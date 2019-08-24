@@ -126,10 +126,10 @@ export default {
   },
   sockets: {
     'collaborator joined assessment room' (rcsID) {
-      this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is now viewing this assignment.` })
+      this.$buefy.toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is now viewing this assignment.` })
     },
     'collaborator left assessment room' (rcsID) {
-      this.$toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is no longer viewing this assignment.` })
+      this.$buefy.toast.open({ type: 'is-info', message: `<b>${rcsID}</b> is no longer viewing this assignment.` })
     },
     'updated assessment' ({ assessment }) {
       this.assessment = assessment
@@ -195,7 +195,7 @@ export default {
     async toggleCompleted () {
       if (this.assessmentType !== 'assignment') return
 
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Mark this assignment as <b>${
           this.assessment.completed ? 'incomplete' : 'complete'
         }</b>?`,
@@ -209,7 +209,7 @@ export default {
               this.assessment
             )
 
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: updatedAssessment.completed
                 ? 'Marked as complete. Nice job!'
                 : 'Marked as incomplete.',
@@ -221,7 +221,7 @@ export default {
               setTimeout(() => this.confetti.clear(), 2000)
             }
           } catch (e) {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: e.response.data.message,
               type: 'is-danger'
             })
@@ -262,7 +262,7 @@ export default {
         this.loading = false
         this.$router.push('/coursework')
 
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -277,13 +277,13 @@ export default {
     },
     async removeAssessment () {
       // Confirm user wants to remove assessment
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Permanently remove this ${this.assessmentType}?`,
         onConfirm: async () => {
           const assessmentTitle = this.assessment.title
 
           if (this.assessment.isRecurring) {
-            this.$dialog.confirm({
+            this.$buefy.dialog.confirm({
               message:
                 'This is a <b>repeating assignment</b>. Remove just this one or this and future ones?',
               confirmText: 'Future Assignments',
@@ -295,13 +295,13 @@ export default {
                     this.assessment
                   )
                 } catch (e) {
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     type: 'is-danger',
                     message: e.response.data.message
                   })
                   return
                 }
-                this.$toast.open({
+                this.$buefy.toast.open({
                   message: `Successfully removed repeating assignment <b>${assessmentTitle}</b> and future ones.`,
                   type: 'is-success',
                   duration: 3000
@@ -316,7 +316,7 @@ export default {
                     this.assessment
                   )
                 } catch (e) {
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     type: 'is-danger',
                     message: e.response.data.message
                   })
@@ -324,7 +324,7 @@ export default {
                 }
 
                 // Notify user of success
-                this.$toast.open({
+                this.$buefy.toast.open({
                   message: `Successfully removed single repeating assignment <b>${assessmentTitle}</b>.`,
                   type: 'is-success',
                   duration: 3000
@@ -337,7 +337,7 @@ export default {
             try {
               await this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment)
             } catch (e) {
-              this.$toast.open({
+              this.$buefy.toast.open({
                 type: 'is-danger',
                 message: e.response.data.message
               })
@@ -345,7 +345,7 @@ export default {
             }
 
             // Notify user of success
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: `Successfully removed ${
                 this.assessment.assessmentType
               } <b>${assessmentTitle}</b>.`,

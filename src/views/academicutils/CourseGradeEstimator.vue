@@ -193,7 +193,7 @@ export default {
   },
   methods: {
     changeWeight (categoryIndex) {
-      this.$dialog.prompt({
+      this.$buefy.dialog.prompt({
         message: `Change weight of ${this.categories[categoryIndex].title}`,
         inputAttrs: {
           type: 'number',
@@ -230,14 +230,14 @@ export default {
           )
         } catch (e) {
           const message = e.response ? e.response.data.message : e.message
-          this.$toast.open({
+          this.$buefy.toast.open({
             duration: 5000,
             message,
             type: 'is-danger'
           })
         }
 
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-success',
           message: 'Saved grading categories for ' + this.selectedCourse.title
         })
@@ -276,7 +276,7 @@ export default {
 
       const parts = this.newCategory.split('%')
       if (parts.length !== 2) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-warning',
           message: 'That\'s not a valid category! Type it like "54% Tests"'
         })

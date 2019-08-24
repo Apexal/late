@@ -136,7 +136,7 @@ export default {
           )
         }
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -146,7 +146,7 @@ export default {
 
       this.$emit('updated-assessment', response.data.updatedAssessment)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: `Shared this assignment with <b>${
           this.newStudent
         }</b>. They have been notified.`,
@@ -176,7 +176,7 @@ export default {
           )
         }
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -192,7 +192,7 @@ export default {
 
       this.newStudent = ''
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: `Stopped sharing this assignment with <b>${rcsId}</b>. They have been notified.`,
         type: 'is-success'
       })
@@ -208,7 +208,7 @@ export default {
           '/assignments/a/' + this.assessment._id + '/collaborators'
         )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: e.response.data.message
         })

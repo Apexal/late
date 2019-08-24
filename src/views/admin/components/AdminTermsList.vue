@@ -106,7 +106,7 @@ export default {
   },
   methods: {
     promptAddTerm () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Add a new school term?',
         onConfirm: this.addTerm
       })
@@ -116,14 +116,14 @@ export default {
       try {
         createdTerm = await this.$store.dispatch('ADD_TERM', this.newTerm)
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
         return
       }
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: `Added new term <b>${createdTerm.name}</b>!`,
         type: 'is-success'
       })

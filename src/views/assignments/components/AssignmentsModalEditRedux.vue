@@ -277,7 +277,7 @@ export default {
       }
 
       if (complete) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: 'Make sure you complete every step!'
         })
@@ -328,7 +328,7 @@ export default {
       this.$emit('toggle-modal')
 
       // Notify user
-      this.$snackbar.open({
+      this.$buefy.snackbar.open({
         message: `Edited assignment '${
           request.data.updatedAssignment.title
         }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,

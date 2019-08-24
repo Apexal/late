@@ -180,7 +180,7 @@ export default {
       this.newCourseTitle = ''
     },
     launch (utilName) {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Coming soon!',
         type: 'is-warning'
       })

@@ -116,7 +116,7 @@ export default {
           .endOf('day')
           .isBefore(moment().startOf('day'))
       ) {
-        this.$dialog.confirm({
+        this.$buefy.dialog.confirm({
           message: `Add this ${this.assessmentType} to the past?`,
           onConfirm: () => this.$emit('update-date', date)
         })

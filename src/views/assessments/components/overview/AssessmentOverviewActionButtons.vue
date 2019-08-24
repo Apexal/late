@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     toggleSharedClick () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         title: this.assessment.shared ? 'Stop Sharing' : 'Share Assignment',
         message: this.assessment.shared
           ? 'Stop sharing this assignment? Students currently able to view it will no longer have access. This can be reversed at any time.'
@@ -120,7 +120,7 @@ export default {
           updates: { shared: !this.assessment.shared }
         })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -130,7 +130,7 @@ export default {
 
       this.$emit('updated-assessment', updatedAssessment)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: updatedAssessment.shared
           ? 'This assignment is now shared, add people by their RPI usernames.'
           : 'Sharing stopped. Only you can see this assignment now.',

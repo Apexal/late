@@ -49,7 +49,7 @@ export default {
       try {
         request = await this.$http.get('/students/log')
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: e.response.data.message
         })

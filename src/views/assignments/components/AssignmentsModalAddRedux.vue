@@ -263,7 +263,7 @@ export default {
       this.loading = true
 
       if (!this.isComplete) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: 'Make sure you complete every step!'
         })
@@ -287,7 +287,7 @@ export default {
           recurringDays: this.isRecurring ? this.recurringDays : undefined
         })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message:
             'There was an error adding the assignment. Please try again later.',
           type: 'is-danger'
@@ -332,7 +332,7 @@ export default {
       this.$emit('toggle-modal')
 
       // Notify user
-      this.$snackbar.open({
+      this.$buefy.snackbar.open({
         message: `Added assignment '${
           request.data.createdAssignment.title
         }' due ${moment(request.data.createdAssignment.dueDate).fromNow()}${

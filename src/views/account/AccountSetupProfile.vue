@@ -186,7 +186,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -217,7 +217,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -226,7 +226,7 @@ export default {
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
 
       // Notify user of success
-      this.$toast.open({ type: 'is-success', message: 'Saved personal info!' })
+      this.$buefy.toast.open({ type: 'is-success', message: 'Saved personal info!' })
 
       this.$router.push({ name: 'setup-terms' })
 

@@ -51,7 +51,7 @@ export default {
           }
         })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: `Failed to load related ${this.assessmentType}s.`,
           type: 'is-danger'
         })

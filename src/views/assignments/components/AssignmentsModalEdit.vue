@@ -258,7 +258,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -273,7 +273,7 @@ export default {
       this.$emit('toggle-modal')
 
       // Notify user
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: `Edited assignment '${updatedAssignment.title}' due ${moment(
           updatedAssignment.dueDate
         ).fromNow()}.`,

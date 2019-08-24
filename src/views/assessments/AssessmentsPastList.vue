@@ -178,7 +178,7 @@ export default {
   methods: {
     async removeAssessment (assessment) {
       // Confirm user wants to remove assignment
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Permanently remove ${assessment.assessmentType} ${
           assessment.title
         }?`,
@@ -190,7 +190,7 @@ export default {
           )
 
           // Notify user of success
-          this.$toast.open({
+          this.$buefy.toast.open({
             message: `Successfully removed past ${assessment.assessmentType} '${
               assessment.title
             }`,
@@ -234,7 +234,7 @@ export default {
       } catch (e) {
         this.loading = false
         this.currentAssessments = []
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -251,7 +251,7 @@ export default {
       } catch (e) {
         this.loading = false
         this.currentAssessments = []
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })

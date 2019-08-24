@@ -4,9 +4,33 @@
     id="assessment-work-schedule"
     class="assessment-work-schedule"
   >
-    <div class="box">
+    <div class="columns">
+      <div class="column">
+        <b-progress
+          :value="scheduledMinutes"
+          :max="totalEstimatedMinutes"
+          size="is-medium"
+          show-value
+        >
+          scheduled
+          <b>{{ scheduledMinutes }}</b> out of
+          <b>{{ totalEstimatedMinutes }}</b> min
+        </b-progress>
+      </div>
+      <div class="column">
+        <b-progress
+          :value="finishedMinutes"
+          :max="scheduledMinutes"
+          size="is-medium"
+          show-value
+        >
+          {{ assessmentType === "assignment" ? "worked" : "studied" }} for
+          <b>{{ finishedMinutes }}</b> out of
+          <b>{{ scheduledMinutes }}</b> min
+        </b-progress>
+      </div>
       <div class="columns percents">
-        <div
+        <!-- <div
           class="column is-one-half tooltip"
           :data-tooltip="scheduledPercent + '% scheduled'"
         >
@@ -25,9 +49,9 @@
               {{ scheduledPercent }}%
             </progress>
           </div>
-        </div>
+        </div> -->
 
-        <div
+        <!-- <div
           class="column is-one-half tooltip"
           :data-tooltip="finishedPercent + '% finished'"
         >
@@ -47,7 +71,7 @@
               {{ finishedPercent }}%
             </progress>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -324,7 +348,7 @@ export default {
           '/assignments/a/' + this.assessment._id + '/collaborators'
         )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: e.response.data.message
         })
@@ -338,7 +362,7 @@ export default {
     async select ({ start, end }) {
       // Only confirm with user if they are trying to add work block to the past
       if (this.assessment.shared) {
-        this.$dialog.confirm({
+        this.$buefy.dialog.confirm({
           message:
             'Schedule work block for everyone in this group assignment or just you?',
           cancelText: 'Just Me',
@@ -347,7 +371,7 @@ export default {
           onCancel: () => this.addWorkBlock(start, end, false)
         })
       } else if (moment(start).isBefore(moment())) {
-        this.$dialog.confirm({
+        this.$buefy.dialog.confirm({
           message: 'Add work block to the past?',
           onConfirm: () => this.addWorkBlock(start, end),
           onCancel: () => {
@@ -366,7 +390,7 @@ export default {
       const startStr = moment(calEvent.start).format('h:mm a')
       const endStr = moment(calEvent.end).format('h:mm a')
 
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Unschedule ${dateStr} from <b>${startStr}</b> to <b>${endStr}</b>${
           this.assessment.shared ? ' for everyone' : ''
         }?`,
@@ -378,7 +402,7 @@ export default {
 
       // Update work block on server
       if (moment(event.end).isBefore(moment())) {
-        this.$dialog.confirm({
+        this.$buefy.dialog.confirm({
           message: 'Move this past work block?',
           onConfirm: () =>
             this.editWorkBlock(blockID, event.start, event.end),
@@ -392,7 +416,7 @@ export default {
       const { blockID } = event.extendedProps
 
       if (moment(event.end).isBefore(moment())) {
-        this.$dialog.confirm({
+        this.$buefy.dialog.confirm({
           message: 'Edit this past work block?',
           onConfirm: () =>
             this.editWorkBlock(blockID, event.start, event.end),
@@ -412,7 +436,7 @@ export default {
 
       this.$emit('updated-assessment', updatedAssessment)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Added work block to your schedule!',
         type: 'is-primary'
       })
@@ -432,7 +456,7 @@ export default {
 
       this.$emit('updated-assessment', updatedAssessment)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message,
         type: 'is-info'
       })
@@ -450,7 +474,7 @@ export default {
 
       this.$emit('updated-assessment', updatedAssessment)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message,
         type: 'is-success'
       })

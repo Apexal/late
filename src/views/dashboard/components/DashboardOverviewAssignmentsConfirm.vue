@@ -68,7 +68,7 @@ export default {
         }
       })
     } catch (e) {
-      this.$toast.open({ type: 'is-danger', message: e.response.data.message })
+      this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
       return
     }
 
@@ -88,7 +88,7 @@ export default {
           })
         }
       } catch (e) {
-        this.$toast.open({ type: 'is-error', message: e.response.data.message })
+        this.$buefy.toast.open({ type: 'is-error', message: e.response.data.message })
         return
       }
 
@@ -96,7 +96,7 @@ export default {
         a => a._id !== assignmentID
       )
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-primary',
         message: 'Confirmed assignment\'s status!'
       })

@@ -53,30 +53,30 @@ export default {
 
       try {
         await this.$store.dispatch('ADD_TODO', this.newTodo)
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-success',
           message: `Added to-do '${this.newTodo}'.`
         })
         this.newTodo = ''
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
       }
     },
     async removeTodo (todo) {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Done with <i>${todo.text}</i>?`,
         onConfirm: async () => {
           try {
             await this.$store.dispatch('REMOVE_TODO', todo)
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: `Completed to-do '${todo.text}'.`,
               type: 'is-success'
             })
           } catch (e) {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: e.response.data.message,
               type: 'is-danger'
             })

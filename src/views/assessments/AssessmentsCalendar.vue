@@ -100,7 +100,7 @@ export default {
       } catch (e) {
         this.loading = false
         failureCallback(e)
-        return this.$toast.open({
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
@@ -117,7 +117,7 @@ export default {
       } catch (e) {
         this.loading = false
         failureCallback(e)
-        return this.$toast.error({
+        return this.$buefy.toast.error({
           message: e.response.data.message,
           type: 'is-danger'
         })

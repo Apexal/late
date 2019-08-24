@@ -87,7 +87,7 @@ export default {
       try {
         response = await this.$http.get('/checklists/' + this.checklistID)
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message:
             e.response.data.message,
           type: 'is-danger'
@@ -102,7 +102,7 @@ export default {
       this.loading = false
     },
     async copyChecklist () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Replace your checklist with a copy of this one? You will be able to edit it.',
         onConfirm: async () => {
           for (let i = 0; i < this.checklist.categories.length; i++) {
