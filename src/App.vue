@@ -405,7 +405,7 @@ footer.footer {
   }
 }
 
-i.fas {
+.fc-event i.fas {
   margin-right: 4px;
 }
 

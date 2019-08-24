@@ -72,40 +72,43 @@
       v-if="!editing"
       class="has-text-centered-touch"
     >
-      <router-link
-        :to="{name: 'coursework-upcoming'}"
-        class="button is-link tooltip is-tooltip-bottom back-button"
-        data-tooltip="Browse all course work."
-      >
-        <span class="icon">
-          <i class="fas fa-angle-left" />
-        </span>
-      </router-link>
-      <span
-        class="tag is-medium tooltip is-tooltip-bottom course-tag"
-        :class="assessmentType"
+      <div
+        class="tag is-medium course-tag"
         :style="{'background-color': course.color}"
-        :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
-        @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
-        <b class="course-title">{{ course.title }}</b>
-        <span class="margin-right">
-          {{ assessment.passed ? "Past " : ""
-          }}{{
-            assessmentType === "assignment" && assessment.isRecurring
-              ? "Recurring "
-              : ""
-          }}
+        <router-link
+          :to="{name: 'coursework-upcoming'}"
+          class="tooltip is-tooltip-bottom has-text-white back-button"
+          data-tooltip="Browse all course work."
+        >
+          <i class="fas fa-angle-left" />
+        </router-link>
+        <span
+          class="tooltip is-tooltip-bottom"
+          :class="assessmentType"
+          :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
+          @click="$store.commit('OPEN_COURSE_MODAL', course)"
+        >
+          <b class="course-title">{{ course.title }}</b>
+          <span class="margin-right">
+            {{ assessment.passed ? "Past " : ""
+            }}{{
+              assessmentType === "assignment" && assessment.isRecurring
+                ? "Recurring "
+                : ""
+            }}
+          </span>
+          <i
+            class="fas"
+            :class="
+              assessmentType === 'assignment'
+                ? 'fa-clipboard-check'
+                : 'fa-exclamation-triangle'
+            "
+          />
         </span>
-        <i
-          class="fas"
-          :class="
-            assessmentType === 'assignment'
-              ? 'fa-clipboard-check'
-              : 'fa-exclamation-triangle'
-          "
-        />
-      </span>
+      </div>
+
       <b-button
         v-if="assessmentType === 'assignment'"
         class="is-hidden-desktop touch-complete-button"
@@ -198,12 +201,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.back-button {
-  height: 2em;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
 .assignment {
   border-radius: 5px;
   border-top-left-radius: 0px;
@@ -272,8 +269,10 @@ export default {
 .course-tag {
   cursor: pointer;
   color: white;
-  border-radius: 0;
-
+  border-radius: 4px;
+  .back-button {
+    margin-right: 5px;
+  }
   &.exam {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
