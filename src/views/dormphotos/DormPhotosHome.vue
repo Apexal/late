@@ -98,10 +98,14 @@
 </template>
 
 <script>
-import dorms from '@/modules/dorms'
-
 export default {
   name: 'DormPhotosHome',
+  props: {
+    allDorms: {
+      type: Array,
+      required: true
+    }
+  },
   data () {
     return {
       sortBy: 'alphabetically'
@@ -110,7 +114,7 @@ export default {
   computed: {
     categorizedDorms () {
       const catergories = {}
-      for (const dorm of dorms) {
+      for (const dorm of this.allDorms) {
         catergories[dorm.grade] = catergories[dorm.grade] || []
         catergories[dorm.grade].push(dorm)
       }

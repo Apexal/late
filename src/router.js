@@ -115,6 +115,16 @@ const router = new Router({
           }
         },
         {
+          path: 'confirm',
+          name: 'dorm-photos-confirm',
+          component: () => import('@/views/dormphotos/DormPhotosConfirm'),
+          meta: {
+            title: 'Confirm Dorm Photos',
+            requiresAuth: true,
+            requiresAdmin: true
+          }
+        },
+        {
           path: ':dormKey',
           name: 'dorm-photos-view',
           component: () => import('@/views/dormphotos/DormPhotosView')
@@ -419,7 +429,6 @@ router.beforeEach(async (to, from, next) => {
       const response = await api.get('/students/loginas?rcs_id=' + rcsID)
       await store.dispatch('SET_USER', response.data.user)
     } else {
-      api({ url: 'logout', baseURL: '/auth/' })
       store.commit('UNSET_USER')
       store.commit('SET_LOADED', true)
     }

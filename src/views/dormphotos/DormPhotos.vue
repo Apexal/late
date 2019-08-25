@@ -4,7 +4,7 @@
       Dorm Photo Directory
     </h1>
 
-    <router-view />
+    <router-view :all-dorms="allDorms" />
 
     <hr>
     <div class="buttons">
@@ -14,10 +14,19 @@
       >
         Back
       </router-link>
+      <router-link
+        v-if="loggedIn && user.admin"
+        :to="{name: 'dorm-photos-confirm'}"
+        class="button is-warning"
+      >
+        <i class="fas fa-check-circle" />
+        Confirm Submissions
+      </router-link>
       <b-button
         type="is-dark"
         @click="submittingPhoto=true"
       >
+        <i class="fas fa-camera" />
         Submit Photo
       </b-button>
     </div>
