@@ -36,10 +36,25 @@ const uploadFile = async (dormKey, style, { name: fileName, path: filePath, type
 async function getDormPhotos (ctx) {
   let dormPhotos
 
+  const query = {
+    confirmed: true
+  }
+
+  if ('dormKey' in ctx.query) {
+    query.dormKey = ctx.query.dormKey
+  }
+
+  if (ctx.state.user && ctx.state.user.admin && 'confirmed' in ctx.query) {
+    console.log('yeet')
+    query.confirmed = ctx.query.confirmed
+  }
+
+  console.log(query)
+
   try {
-    dormPhotos = await DormPhoto.find({ confirmed: true })
+    dormPhotos = await DormPhoto.find(query)
   } catch (e) {
-    logger.error(`Failed to get confirmed dorm photos: ${e}`)
+    logger.error(`Failed to get dorm photos: ${e}`)
     return ctx.internalServerError('There was an issue grabbing the dorm photos.')
   }
 
