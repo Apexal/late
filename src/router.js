@@ -106,9 +106,18 @@ const router = new Router({
       path: '/dormphotos',
       name: 'dorm-photos',
       component: () => import('@/views/dormphotos/DormPhotos'),
-      meta: {
-        title: 'RPI Dorm Photos'
-      }
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/dormphotos/DormPhotosHome'),
+          meta: {
+            title: 'RPI Dorm Photos'
+          }
+        }
+        // {
+        //   path: ':dorm'
+        // }
+      ]
     },
     {
       path: '/checklist',
