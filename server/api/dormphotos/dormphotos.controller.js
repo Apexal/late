@@ -67,6 +67,13 @@ async function uploadDormPhoto (ctx) {
     confirmed: false
   })
 
+  try {
+    await newDormPhoto.save()
+  } catch (e) {
+    logger.error(`Failed to upload dorm photo: ${e}`)
+    return ctx.badRequest('There was an issue saving the photo!')
+  }
+
   ctx.ok({ newDormPhoto })
 }
 
