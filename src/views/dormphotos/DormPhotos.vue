@@ -6,7 +6,6 @@
 
     <router-view :all-dorms="allDorms" />
 
-    <hr>
     <div class="buttons">
       <router-link
         :to="{name: 'dorm-photos'}"

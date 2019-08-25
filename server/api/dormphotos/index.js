@@ -11,7 +11,7 @@ const requireAdmin = function (ctx, next) {
 router.get('/', Ctrl.getDormPhotos)
 // router.get('/:dormPhotoID', Ctrl.getDormPhoto)
 router.post('/', Ctrl.uploadDormPhoto)
-// router.post('/:dormPhotoID/confirm', requireAdmin, Ctrl.confirmDormPhoto)
-// router.delete('/', requireAdmin, Ctrl.removeDormPhoto)
+router.post('/:dormPhotoID/confirm', requireAdmin, Ctrl.confirmDormPhoto)
+// router.delete('/:dormPhotoID', requireAdmin, Ctrl.removeDormPhoto)
 
 module.exports = router.routes()

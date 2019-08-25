@@ -35,6 +35,7 @@
             <a
               href="#"
               class="card-footer-item"
+              @click="confirmPhoto(photo.id)"
             >Confirm</a>
             <a
               href="#"
@@ -87,6 +88,32 @@ export default {
       request = await this.$http.get('/dormphotos', { params: { confirmed: false } })
 
       this.unconfirmedDormPhotos = request.data.dormPhotos
+
+      this.loading = false
+    },
+    async confirmPhoto (photoID) {
+      this.loading = true
+
+      let request
+
+      request = await this.$http.post(`/dormphotos/${photoID}/confirm`)
+
+      this.unconfirmedDormPhotos = this.unconfirmedDormPhotos.filter(photo => photo.id !== photoID)
+
+      this.$buefy.toast.open({ type: 'is-success', message: 'You confirmed the photo!' })
+
+      this.loading = false
+    },
+    async denyPhoto (photoID) {
+      this.loading = true
+
+      let request
+
+      request = await this.$http.delete(`/dormphotos/${photoID}`)
+
+      this.unconfirmedDormPhotos = this.unconfirmedDormPhotos.filter(photo => photo.id !== photoID)
+
+      this.$buefy.toast.open({ type: 'is-success', message: 'You deleted the photo!' })
 
       this.loading = false
     }

@@ -39,7 +39,7 @@
       :id="grade"
       :key="grade"
     >
-      <h2 class="subtitle grade">
+      <h2 class="subtitle has-text-centered has-text-bold grade">
         {{ grade }} Housing
         <small class="has-text-grey">{{ dorms.length }} dorms</small>
       </h2>
@@ -48,7 +48,7 @@
         <div
           v-for="dorm in dorms"
           :key="dorm.key"
-          class="column is-one-quarter dorm"
+          class="column is-full is-one-quarter-desktop is-one-third-tablet dorm"
         >
           <div
             class="card"
@@ -72,7 +72,7 @@
             <div class="card-content">
               <router-link
                 :to="{name: 'dorm-photos-view', params: {dormKey: dorm.key}}"
-                class="title is-size-4 has-text-centered"
+                class="title is-size-4"
                 :title="dorm.description"
               >
                 {{ dorm.name }}
@@ -134,6 +134,10 @@ export default {
     top: 5px;
     right: 5px;
   }
+
+  .dorm-photo {
+    width: 100%;
+  }
 }
 
 .card-content {
@@ -147,6 +151,7 @@ export default {
 }
 
 .grade {
+  font-weight: bold;
   text-transform: capitalize;
   font-size: 1.5rem;
 }

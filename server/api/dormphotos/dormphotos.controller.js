@@ -45,11 +45,8 @@ async function getDormPhotos (ctx) {
   }
 
   if (ctx.state.user && ctx.state.user.admin && 'confirmed' in ctx.query) {
-    console.log('yeet')
     query.confirmed = ctx.query.confirmed
   }
-
-  console.log(query)
 
   try {
     dormPhotos = await DormPhoto.find(query)
@@ -92,7 +89,20 @@ async function uploadDormPhoto (ctx) {
   ctx.ok({ newDormPhoto })
 }
 
+async function confirmDormPhoto (ctx) {
+  const { dormPhotoID } = ctx.params
+
+  const confirmedDormPhoto = await DormPhoto.findOne({ _id: dormPhotoID, confirmed: false })
+
+  confirmedDormPhoto.confirmed = true
+
+  await confirmedDormPhoto.save()
+
+  return ctx.ok({ confirmedDormPhoto })
+}
+
 module.exports = {
   getDormPhotos,
-  uploadDormPhoto
+  uploadDormPhoto,
+  confirmDormPhoto
 }
