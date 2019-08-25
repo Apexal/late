@@ -7,7 +7,7 @@ const uuidv4 = require('uuid/v4')
 
 const DormPhoto = require('./dormphotos.model')
 
-const uploadFile = async (dorm, floor, { name: fileName, path: filePath, type: fileType }) => {
+const uploadFile = async (dormKey, style, { name: fileName, path: filePath, type: fileType }) => {
   return new Promise((resolve, reject) => {
     const stream = fs.createReadStream(filePath)
     stream.on('error', function (err) {
@@ -19,7 +19,7 @@ const uploadFile = async (dorm, floor, { name: fileName, path: filePath, type: f
         ACL: 'public-read',
         Bucket: 'late-dorm-photos',
         Body: stream,
-        Key: `dorm-photo-${dorm}-${floor ? floor + '-' : ''}${uuidv4()}`,
+        Key: `dorm-photo-${dormKey}-${style}-${uuidv4()}`,
         ContentType: fileType
       },
       function (err, data) {
@@ -51,19 +51,19 @@ async function uploadDormPhoto (ctx) {
     return ctx.badRequest('You did not upload a photo!')
   }
 
-  const { dorm, floor } = ctx.request.body
+  const { dormKey, style } = ctx.request.body
 
-  if (!dorm) {
+  if (!dormKey) {
     return ctx.badRequest('You did not specify the dorm!')
   }
 
-  const { key, url } = await uploadFile(dorm, floor, ctx.request.files.photo)
+  const { key, url } = await uploadFile(dormKey, style, ctx.request.files.photo)
 
   const newDormPhoto = new DormPhoto({
     _student: ctx.state.user, // might be none
     imageURL: url,
-    dorm,
-    floor,
+    dormKey,
+    style,
     confirmed: false
   })
 

@@ -8,8 +8,8 @@ const schema = new Schema(
       ref: 'Student'
     },
     imageURL: { type: String, required: true },
-    dorm: { type: String, minlength: 3, maxlength: 100, required: true }, // the name of the building
-    floor: { type: Number, min: 1, max: 10 }, // the floor number
+    dormKey: { type: String, minlength: 3, maxlength: 100, required: true }, // the key of the dorm building
+    style: { type: String, enum: ['single', 'double', 'triple'], required: true }, // the room style
     confirmed: { type: Boolean, default: false } // whether or not the photo has been confirmed by admins and can be displayed
   },
   { timestamps: true }
