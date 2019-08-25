@@ -103,6 +103,14 @@ const router = new Router({
       }
     },
     {
+      path: '/dormphotos',
+      name: 'dorm-photos',
+      component: () => import('@/views/dormphotos/DormPhotos'),
+      meta: {
+        title: 'RPI Dorm Photos'
+      }
+    },
+    {
       path: '/checklist',
       name: 'checklist',
       component: () => import('@/views/checklists/MoveInChecklist.vue'),
