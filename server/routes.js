@@ -10,6 +10,7 @@ const exceptions = [
   '/students/loginas',
   '/students/counts',
   '/quicklinks',
+  '/dormphotos',
   '/sms',
   '/checklists'
 ]
