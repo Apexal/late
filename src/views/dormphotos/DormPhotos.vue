@@ -1,10 +1,13 @@
 <template>
   <section class="section dorm-photos">
     <h1 class="title">
-      Dorm Photo Directory
+      RPI Dorm Photo Directory
     </h1>
 
-    <router-view :all-dorms="allDorms" />
+    <router-view
+      :all-dorms="allDorms"
+      @open-submit-photo-modal="submittingPhoto=true"
+    />
 
     <div class="buttons">
       <router-link

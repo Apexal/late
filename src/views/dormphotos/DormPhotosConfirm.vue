@@ -7,7 +7,7 @@
     />
 
     <h2 class="subtitle">
-      Confirm Dorm Photo Submissions
+      Confirm Dorm Photo Submissions ({{ unconfirmedDormPhotos.length }})
     </h2>
 
     <div class="columns is-multiline unconfirmed-photos">
@@ -28,7 +28,9 @@
             <h3 class="title is-size-4">
               {{ getDormFromKey(photo.dormKey).name }} {{ photo.style }}
             </h3>
-            <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+            <span :title="longDateTimeFormat(photo.createdAt)">
+              Submitted <time datetime="photo.createdAt">{{ fromNow(photo.createdAt) }}</time>
+            </span>
           </div>
 
           <footer class="card-footer">
@@ -45,6 +47,8 @@
         </div>
       </div>
     </div>
+
+    <hr>
 
     <b-modal
       :active="focusedPhotoURL !== ''"
@@ -121,6 +125,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.card-content .title {
+  text-transform: capitalize;
+}
 </style>

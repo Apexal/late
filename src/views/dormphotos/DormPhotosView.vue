@@ -16,25 +16,42 @@
     >
       Nobody has submitted any photos of <b>{{ dorm.name }}</b> yet! Be the first to!
     </p>
-    <div
+    <details
       v-for="(photos, style) in photosOrganizedByStyle"
       :key="style"
     >
-      <h2 class="subtitle">
-        {{ style }}
-        <small class="has-text-grey">{{ photos.length }} photos</small>
-      </h2>
+      <summary>
+        <h2 class="subtitle style">
+          {{ style }}
+          <small class="has-text-grey">{{ photos.length }} photos</small>
+        </h2>
+      </summary>
 
       <div class="columns is-multiline photos">
         <div
           v-for="photo in photos"
           :key="photo.id"
-          class="column is-half"
+          class="column is-one-third-desktop is-half-tablet is-full"
         >
-          <img :src="photo.imageURL">
+          <div class="card">
+            <div class="card-image">
+              <img
+                :src="photo.imageURL"
+                class="dorm-photo"
+              >
+            </div>
+            <div
+              class="card-content has-text-centered has-text-grey"
+              :title="longDateTimeFormat(photo.createdAt)"
+            >
+              Submitted {{ fromNow(photo.createdAt) }}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </details>
+
+    <hr>
   </div>
 </template>
 
@@ -86,5 +103,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.style {
+  display: inline-block;
+  text-transform: capitalize;
+}
+.dorm-photo {
+  width: 100%;
+}
+.card-content {
+  padding: 0.5em;
+}
 </style>

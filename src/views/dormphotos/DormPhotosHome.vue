@@ -1,38 +1,47 @@
 <template>
   <div class="dorm-photos-home">
-    <div class="is-flex">
-      <div class="buttons">
-        <a
-          class="button is-link"
-          href="#freshman"
-        >Freshman</a>
-        <a
-          class="button is-link"
-          href="#sophomore"
-        >Sophomore</a>
-        <a
-          class="button is-link"
-          href="#junior"
-        >Junior</a>
-        <a
-          class="button is-link"
-          href="#senior"
-        >Senior</a>
+    <div class="box is-flex">
+      <div class="columns is-fullwidth">
+        <div class="column">
+          <nav class="breadcrumb grade-anchors">
+            <ul>
+              <li><a href="#freshman">Freshman</a></li>
+              <li><a href="#sophomore">Sophomore</a></li>
+              <li><a href="#junior">Junior</a></li>
+              <li>
+                <a href="#senior">Senior</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="column is-narrow">
+          <b-select
+            v-model="sortBy"
+            disabled
+          >
+            <option value="alphabetically">
+              Sort Alphabetically
+            </option>
+            <option value="type">
+              Sort by Type
+            </option>
+            <option value="styles">
+              Sort by Styles
+            </option>
+          </b-select>
+        </div>
+
+        <div class="column is-narrow">
+          <b-button
+            type="is-dark"
+            @click="$emit('open-submit-photo-modal')"
+          >
+            <i class="fas fa-camera" />
+            Submit Photo
+          </b-button>
+        </div>
       </div>
-      <b-field>
-        <b-select v-model="sortBy">
-          <option value="alphabetically">
-            Sort Alphabetically
-          </option>
-          <option value="type">
-            Sort by Type
-          </option>
-          <option value="styles">
-            Sort by Styles
-          </option>
-        </b-select>
-      </b-field>
-      <hr>
     </div>
     <div
       v-for="(dorms, grade) in categorizedDorms"
@@ -126,6 +135,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.grade-anchors {
+  margin: 0;
+}
+
 .card-image {
   position: relative;
 
