@@ -1,0 +1,99 @@
+<template>
+  <div class="dorm-photos-confirm">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
+
+    <h2 class="subtitle">
+      Confirm Dorm Photo Submissions
+    </h2>
+
+    <div class="columns is-multiline unconfirmed-photos">
+      <div
+        v-for="photo in unconfirmedDormPhotos"
+        :key="photo.id"
+        class="column is-one-third"
+      >
+        <div class="card">
+          <div class="card-image">
+            <img
+              :src="photo.imageURL"
+              @click="focusedPhotoURL = photo.imageURL"
+            >
+          </div>
+
+          <div class="card-content">
+            <h3 class="title is-size-4">
+              {{ getDormFromKey(photo.dormKey).name }} {{ photo.style }}
+            </h3>
+            <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+          </div>
+
+          <footer class="card-footer">
+            <a
+              href="#"
+              class="card-footer-item"
+            >Confirm</a>
+            <a
+              href="#"
+              class="card-footer-item"
+            >Deny</a>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <b-modal
+      :active="focusedPhotoURL !== ''"
+      @close="focusedPhotoURL = ''"
+    >
+      <p class="image">
+        <img :src="focusedPhotoURL">
+      </p>
+    </b-modal>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'DormPhotosConfirm',
+  props: {
+    allDorms: {
+      type: Array,
+      required: true
+    }
+  },
+  data () {
+    return {
+      loading: true,
+      focusedPhotoURL: '',
+      unconfirmedDormPhotos: []
+    }
+  },
+  mounted () {
+    this.getUnconfirmedDormPhotos()
+  },
+  methods: {
+    getDormFromKey (dormKey) {
+      return this.allDorms.find(dorm => dorm.key === dormKey)
+    },
+    async getUnconfirmedDormPhotos () {
+      this.loading = true
+
+      let request
+
+      request = await this.$http.get('/dormphotos', { params: { confirmed: false } })
+
+      this.unconfirmedDormPhotos = request.data.dormPhotos
+
+      this.loading = false
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
