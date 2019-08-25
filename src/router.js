@@ -104,19 +104,21 @@ const router = new Router({
     },
     {
       path: '/dormphotos',
-      name: 'dorm-photos',
       component: () => import('@/views/dormphotos/DormPhotos'),
       children: [
         {
           path: '',
+          name: 'dorm-photos',
           component: () => import('@/views/dormphotos/DormPhotosHome'),
           meta: {
             title: 'RPI Dorm Photos'
           }
+        },
+        {
+          path: ':dormKey',
+          name: 'dorm-photos-view',
+          component: () => import('@/views/dormphotos/DormPhotosView')
         }
-        // {
-        //   path: ':dorm'
-        // }
       ]
     },
     {

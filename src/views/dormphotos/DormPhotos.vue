@@ -7,12 +7,20 @@
     <router-view />
 
     <hr>
-    <b-button
-      type="is-dark"
-      @click="submittingPhoto=true"
-    >
-      Submit Photo
-    </b-button>
+    <div class="buttons">
+      <router-link
+        :to="{name: 'dorm-photos'}"
+        class="button is-link"
+      >
+        Back
+      </router-link>
+      <b-button
+        type="is-dark"
+        @click="submittingPhoto=true"
+      >
+        Submit Photo
+      </b-button>
+    </div>
 
     <SubmitPhotoModal
       :open="submittingPhoto"
