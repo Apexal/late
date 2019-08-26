@@ -11,6 +11,7 @@
 
     <div class="buttons">
       <router-link
+        v-if="$route.name !== 'dorm-photos'"
         :to="{name: 'dorm-photos'}"
         class="button is-link"
       >

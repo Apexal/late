@@ -103,7 +103,7 @@ const router = new Router({
       }
     },
     {
-      path: '/dormphotos',
+      path: '/rpi-dorm-photos',
       component: () => import('@/views/dormphotos/DormPhotos'),
       children: [
         {

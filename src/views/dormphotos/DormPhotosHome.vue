@@ -15,7 +15,7 @@
           </nav>
         </div>
 
-        <div class="column is-narrow">
+        <!-- <div class="column is-narrow">
           <b-select
             v-model="sortBy"
             disabled
@@ -30,7 +30,7 @@
               Sort by Styles
             </option>
           </b-select>
-        </div>
+        </div> -->
 
         <div class="column is-narrow">
           <b-button

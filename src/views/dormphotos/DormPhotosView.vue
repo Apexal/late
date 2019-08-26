@@ -6,7 +6,7 @@
       :can-cancel="false"
     />
 
-    <h2 class="subtitle">
+    <h2 class="subtitle is-size-4">
       {{ dorm.name }}
     </h2>
 
@@ -20,9 +20,9 @@
       v-for="(photos, style) in photosOrganizedByStyle"
       :key="style"
     >
-      <summary>
+      <summary class="has-text-centered">
         <h2 class="subtitle style">
-          {{ style }}
+          {{ style }} Rooms
           <small class="has-text-grey">{{ photos.length }} photos</small>
         </h2>
       </summary>
@@ -38,6 +38,8 @@
               <img
                 :src="photo.imageURL"
                 class="dorm-photo"
+                title="Click to focus!"
+                @click="focusedPhotoURL=photo.imageURL"
               >
             </div>
             <div
@@ -52,6 +54,15 @@
     </details>
 
     <hr>
+
+    <b-modal
+      :active="focusedPhotoURL !== ''"
+      @close="focusedPhotoURL = ''"
+    >
+      <p class="image">
+        <img :src="focusedPhotoURL">
+      </p>
+    </b-modal>
   </div>
 </template>
 
@@ -67,6 +78,7 @@ export default {
   data () {
     return {
       loading: true,
+      focusedPhotoURL: '',
       dormPhotos: []
     }
   },
@@ -83,7 +95,13 @@ export default {
       return styles
     }
   },
+  watch: {
+    focusedPhotoURL (newURL) {
+      window.location.hash = newURL
+    }
+  },
   mounted () {
+    this.focusedPhotoURL = location.hash.slice(1)
     this.getDormPhotos()
   },
   methods: {
@@ -104,11 +122,15 @@ export default {
 
 <style lang="scss" scoped>
 .style {
-  display: inline-block;
+  font-weight: bold;
   text-transform: capitalize;
+  font-size: 1.5rem;
+  display: inline-block;
+  margin-bottom: 0.5em;
 }
 .dorm-photo {
   width: 100%;
+  cursor: pointer;
 }
 .card-content {
   padding: 0.5em;
