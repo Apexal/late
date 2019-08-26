@@ -97,6 +97,8 @@ async function uploadDormPhoto (ctx) {
     return ctx.badRequest('There was an issue saving the photo!')
   }
 
+  logger.info(`New dorm photo submission for ${dormKey} ${style} room`)
+
   ctx.ok({ newDormPhoto })
 }
 
@@ -120,6 +122,8 @@ async function confirmDormPhoto (ctx) {
   confirmedDormPhoto.confirmed = true
 
   await confirmedDormPhoto.save()
+
+  logger.info(`${ctx.state.user.rcs_id} confirmed a dorm photo submission`)
 
   return ctx.created({ confirmedDormPhoto })
 }

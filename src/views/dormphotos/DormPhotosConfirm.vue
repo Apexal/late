@@ -7,9 +7,15 @@
     />
 
     <h2 class="subtitle">
+      <b-button
+        class="is-pulled-right"
+        :loading="loading"
+        @click="getUnconfirmedDormPhotos"
+      >
+        Refresh
+      </b-button>
       Confirm Dorm Photo Submissions ({{ unconfirmedDormPhotos.length }})
     </h2>
-
     <div class="columns is-multiline unconfirmed-photos">
       <div
         v-for="photo in unconfirmedDormPhotos"

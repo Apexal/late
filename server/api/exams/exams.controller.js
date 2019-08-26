@@ -58,8 +58,6 @@ async function getExams (ctx) {
     return ctx.internalServerError('There was an error loading your exams.')
   }
 
-  logger.info(`Sending exams to ${ctx.state.user.rcs_id}`)
-
   ctx.ok({
     exams
   })

@@ -12,8 +12,6 @@ async function getCourses (ctx) {
     termCode: ctx.session.currentTerm.code
   }).sort('originalTitle')
 
-  logger.info(`Sending courses to ${ctx.state.user.rcs_id}`)
-
   return ctx.ok({ courses })
 }
 

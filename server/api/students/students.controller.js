@@ -44,8 +44,6 @@ async function loginAs (ctx) {
  * @param {Koa context} ctx
  */
 async function getUser (ctx) {
-  logger.info(`Getting user info for ${ctx.state.user.rcs_id}`)
-
   ctx.ok({
     user: ctx.state.user
   })
@@ -61,7 +59,6 @@ async function getStudents (ctx) {
     return ctx.forbidden('You are not an administrator!')
   }
 
-  logger.info(`Getting all students for ${ctx.state.user.rcs_id}`)
   const students = await Student.find()
   ctx.ok({ students })
 }

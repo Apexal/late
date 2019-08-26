@@ -7,22 +7,40 @@
       class="box submit-photo"
       @submit.prevent="emitSubmit"
     >
+      <p>
+        Submitting a photo of your current dorm room helps current and future students decide what
+        dorms to choose! As a result, please make sure your photo <b>provides a good view of the whole room,
+          is well lit, and is not blurry.</b> You can upload an existing photo or take one from your phone on the spot!
+        Please consider submitting as many photos as you can,
+      </p>
+      <hr>
+
       <div class="columns">
         <div class="column">
           <b-field label="Choose the photo">
-            <b-input
-              type="file"
-              name="photo"
+            <b-upload
+              v-model="photo"
               accept="image/*"
               required
-            />
+            >
+              <a class="button is-primary">
+                <b-icon icon="upload" />
+                <span
+                  v-if="photo"
+                  :title="photo.name"
+                >{{ photoNameTrimmed }}</span>
+                <span v-else>Click to upload</span>
+              </a>
+            </b-upload>
           </b-field>
         </div>
         <div class="column">
           <b-field label="What dorm?">
             <b-select
               v-model="dormKey"
+              class="dorm-select"
               placeholder="Select dorm"
+              required
             >
               <optgroup
                 v-for="(dorms, grade) in categorizedDorms"
@@ -43,10 +61,14 @@
         <div
           class="column"
         >
-          <b-field label="What style of room?">
+          <b-field
+            label="What style of room?"
+          >
             <b-select
               v-model="style"
               placeholder="Select style"
+              :disabled="!selectedDorm"
+              required
             >
               <option
                 v-for="possibleStyle in possibleStyles"
@@ -58,13 +80,14 @@
             </b-select>
           </b-field>
         </div>
+        <div class="column is-narrow">
+          <input
+            type="submit"
+            class="button is-dark"
+            value="Submit for Approval"
+          >
+        </div>
       </div>
-
-      <input
-        type="submit"
-        class="button is-dark"
-        value="Submit for Approval"
-      >
     </form>
   </b-modal>
 </template>
@@ -81,11 +104,21 @@ export default {
   },
   data () {
     return {
+      photo: null,
       dormKey: '',
       style: ''
     }
   },
   computed: {
+    photoNameTrimmed () {
+      if (!this.photo) {
+        return ''
+      } else if (this.photo.name.length > 25) {
+        return this.photo.name.slice(0, 25) + '...'
+      }
+
+      return this.photo.name
+    },
     categorizedDorms () {
       const catergories = {}
       for (const dorm of this.allDorms) {
@@ -105,11 +138,15 @@ export default {
   watch: {
     '$route' (newRoute) {
       this.dormKey = newRoute.params.dormKey
+      if (this.selectedDorm && this.selectedDorm.styles.length === 1) {
+        this.style = this.selectedDorm.styles[0]
+      }
     }
   },
   methods: {
     emitSubmit (event) {
-      this.$emit('submit-photo', { photo: event.target.photo.files[0], dormKey: this.dormKey, style: this.style })
+      this.$emit('submit-photo', { photo: this.photo, dormKey: this.dormKey, style: this.style })
+      this.photo = null
       this.dormKey = ''
       this.style = ''
     }
@@ -118,7 +155,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-option {
+
+</style>
+
+<style>
+.dorm-select {
   text-transform: capitalize;
 }
 </style>
