@@ -43,15 +43,17 @@
         </div>
       </div>
     </div>
-    <div
+    <details
       v-for="(dorms, grade) in categorizedDorms"
       :id="grade"
       :key="grade"
     >
-      <h2 class="subtitle has-text-centered has-text-bold grade">
-        {{ grade }} Housing
-        <small class="has-text-grey">{{ dorms.length }} dorms</small>
-      </h2>
+      <summary>
+        <h2 class="subtitle has-text-centered has-text-bold grade">
+          {{ grade }} Housing
+          <small class="has-text-grey">{{ dorms.length }} dorms</small>
+        </h2>
+      </summary>
 
       <div class="columns is-multiline dorms">
         <div
@@ -102,7 +104,7 @@
       </div>
 
       <hr>
-    </div>
+    </details>
   </div>
 </template>
 
@@ -167,5 +169,6 @@ export default {
   font-weight: bold;
   text-transform: capitalize;
   font-size: 1.5rem;
+  display: inline-block;
 }
 </style>
