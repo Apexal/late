@@ -29,20 +29,20 @@
 export default {
   name: 'SISMan',
   data () {
-    return {};
+    return {}
   },
   computed: {
     message () {
-      return this.$store.state.SISMan.message;
+      return this.$store.state.SISMan.message
     },
     SISManCSS () {
-      return this.$store.getters.SISManCSS;
+      return this.$store.getters.SISManCSS
     }
   },
   mounted () {},
   methods: {
     click () {
-      this.$store.dispatch('DISMISS_SISMAN');
+      this.$store.dispatch('DISMISS_SISMAN')
       // const tour = this.$store.getters.getTourFromRoute(this.$route);
       // if (!tour) return;
 
@@ -53,7 +53,7 @@ export default {
       // }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,43 +1,43 @@
-const logger = require('../../modules/logger');
+const logger = require('../../modules/logger')
 
-const Student = require('../students/students.model');
+const Student = require('../students/students.model')
 
-const moment = require('moment');
+const moment = require('moment')
 
 async function findStudentFromSMSMiddleware (ctx, next) {
   // Find user with that phone number
   const student = await Student.findOne({
     'integrations.sms.phoneNumber': ctx.request.body.UserIdentifier.substring(2)
-  });
+  })
   if (!student) {
     return ctx.ok({
       actions: [{
         redirect: 'task://unknown_user'
       }]
-    });
+    })
   } else {
-    ctx.state.student = student;
-    return next();
+    ctx.state.student = student
+    return next()
   }
 }
 
 async function upcoming (ctx) {
-  logger.info(`[autopilot] ${ctx.state.student.rcs_id} requested upcoming coursework`);
+  logger.info(`[autopilot] ${ctx.state.student.rcs_id} requested upcoming coursework`)
 
-  const courses = (await ctx.state.student.getCoursesForTerm(ctx.session.currentTerm.code));
+  const courses = (await ctx.state.student.getCoursesForTerm(ctx.session.currentTerm.code))
 
   const upcomingAssignments = await ctx.state.student.getUserAssignments({
     start: moment().format('YYYY-MM-DD'),
     end: moment().add(3, 'weeks').format('YYYY-MM-DD')
-  });
+  })
 
   const upcomingExams = await ctx.state.student.getExams(
     moment().format('YYYY-MM-DD'),
-    moment().add(3, 'weeks').format('YYYY-MM-DD'));
+    moment().add(3, 'weeks').format('YYYY-MM-DD'))
 
-  let assessments = upcomingAssignments.concat(upcomingExams).sort((a, b) => a.date - b.date);
+  const assessments = upcomingAssignments.concat(upcomingExams).sort((a, b) => a.date - b.date)
 
-  const lines = assessments.map(as => `[${moment(as.date).format('D/M/YY')}] ${courses.find(c => c.crn === as.courseCRN).title}: ${as.title}`);
+  const lines = assessments.map(as => `[${moment(as.date).format('D/M/YY')}] ${courses.find(c => c.crn === as.courseCRN).title}: ${as.title}`)
 
   return ctx.ok({
     actions: [
@@ -48,50 +48,50 @@ async function upcoming (ctx) {
         listen: true
       }
     ]
-  });
+  })
 }
 
 async function agenda (ctx) {
-  logger.info(`[autopilot] ${ctx.state.student.rcs_id} requested today's agenda`);
+  logger.info(`[autopilot] ${ctx.state.student.rcs_id} requested today's agenda`)
 
-  const today = moment().day();
+  const today = moment().day()
   const courses = (await ctx.state.student.getCoursesForTerm(ctx.session.currentTerm.code))
-    .filter(course => moment().isBetween(course.startDate, course.endDate));
+    .filter(course => moment().isBetween(course.startDate, course.endDate))
 
-  let events = [];
-  for (let course of courses) {
-    let periods = course.periods.filter(period => period.day === today);
-    if (periods.length === 0) continue;
+  let events = []
+  for (const course of courses) {
+    const periods = course.periods.filter(period => period.day === today)
+    if (periods.length === 0) continue
 
-    for (let period of periods) {
-      events.push({ startTime: moment(period.start, 'Hmm'), text: `${course.title} ${period.type}` });
+    for (const period of periods) {
+      events.push({ startTime: moment(period.start, 'Hmm'), text: `${course.title} ${period.type}` })
     }
   }
 
   const upcomingAssignments = await ctx.state.student.getUserAssignments({
     start: moment().format('YYYY-MM-DD'),
     end: moment().add(3, 'weeks').format('YYYY-MM-DD')
-  });
+  })
 
-  for (let assignment of upcomingAssignments) {
-    for (let block of assignment._blocks.filter(block => moment().isSame(block.startTime, 'day'))) {
-      events.push({ startTime: moment(block.startTime, 'Hmm'), text: `Work on ${assignment.title}` });
+  for (const assignment of upcomingAssignments) {
+    for (const block of assignment._blocks.filter(block => moment().isSame(block.startTime, 'day'))) {
+      events.push({ startTime: moment(block.startTime, 'Hmm'), text: `Work on ${assignment.title}` })
     }
   }
 
   const upcomingExams = await ctx.state.student.getExams(
     moment().format('YYYY-MM-DD'),
-    moment().add(3, 'weeks').format('YYYY-MM-DD'));
+    moment().add(3, 'weeks').format('YYYY-MM-DD'))
 
-  for (let exam of upcomingExams) {
-    for (let block of exam._blocks.filter(block => moment().isSame(block.startTime, 'day'))) {
-      events.push({ startTime: moment(block.startTime, 'Hmm'), text: `Study for ${exam.title}` });
+  for (const exam of upcomingExams) {
+    for (const block of exam._blocks.filter(block => moment().isSame(block.startTime, 'day'))) {
+      events.push({ startTime: moment(block.startTime, 'Hmm'), text: `Study for ${exam.title}` })
     }
   }
 
-  events = events.sort((a, b) => a.startTime - b.startTime);
+  events = events.sort((a, b) => a.startTime - b.startTime)
 
-  const lines = events.map(ev => `[${ev.startTime.format('h:mm a')}] ${ev.text}`);
+  const lines = events.map(ev => `[${ev.startTime.format('h:mm a')}] ${ev.text}`)
 
   return ctx.ok({
     actions: [
@@ -102,11 +102,11 @@ async function agenda (ctx) {
         listen: true
       }
     ]
-  });
+  })
 }
 
 module.exports = {
   findStudentFromSMSMiddleware,
   upcoming,
   agenda
-};
+}

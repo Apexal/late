@@ -29,10 +29,10 @@ export default {
   name: 'SetupIntegrationsGoogleCalendar',
   computed: {
     verified () {
-      return !!this.$store.state.auth.user.integrations.google.calendarID;
+      return 'google' in this.$store.state.auth.user.integrations && 'calendarID' in this.$store.state.auth.user.integrations.google
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

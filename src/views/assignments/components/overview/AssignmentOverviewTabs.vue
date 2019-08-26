@@ -7,7 +7,7 @@
       <ul>
         <li
           class="schedule"
-          :class="{ 'is-active': tab === 'schedule' }"
+          :class="{'is-active': tab === 'schedule'}"
           @click="$emit('set-tab', 'schedule')"
         >
           <a>
@@ -17,7 +17,7 @@
               class="fas fa-calendar-alt"
               aria-hidden="true"
             /></span>
-            <span>Work Schedule</span>
+            <span>Schedule</span>
             <span
               v-if="!assignment.completed && !fullyScheduled"
               class="tag is-danger tooltip is-tooltip-right"
@@ -27,7 +27,7 @@
         </li>
         <li
           class="comments"
-          :class="{ 'is-active': tab === 'comments' }"
+          :class="{'is-active': tab === 'comments'}"
           @click="$emit('set-tab', 'comments')"
         >
           <a>
@@ -46,9 +46,9 @@
             }}</span>
           </a>
         </li>
-        <li
+        <!-- <li
           class="whiteboard"
-          :class="{ 'is-active': tab === 'whiteboard' }"
+          :class="{'is-active': tab === 'whiteboard'}"
           @click="$emit('set-tab', 'whiteboard')"
         >
           <a>
@@ -60,11 +60,11 @@
             /></span>
             <span>Whiteboard</span>
           </a>
-        </li>
+        </li> -->
         <li
           v-if="assignment.shared"
           class="shared-info"
-          :class="{ 'is-active': tab === 'shared-info' }"
+          :class="{'is-active': tab === 'shared-info'}"
           @click="$emit('set-tab', 'shared-info')"
         >
           <a>
@@ -81,7 +81,7 @@
         <li
           v-else
           class="related"
-          :class="{ 'is-active': tab === 'related' }"
+          :class="{'is-active': tab === 'related'}"
           @click="$emit('set-tab', 'related')"
         >
           <a>
@@ -91,7 +91,7 @@
               class="fas fa-clipboard-check"
               aria-hidden="true"
             /></span>
-            <span>Related Assignments</span>
+            <span>Related</span>
           </a>
         </li>
       </ul>
@@ -109,11 +109,11 @@
 
 <script>
 // Tabs
-import AssessmentOverviewComments from '@/views/assessments/components/overview/AssessmentOverviewComments';
-import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overview/AssessmentOverviewWorkSchedule';
-import AssessmentOverviewRelated from '@/views/assessments/components/overview/AssessmentOverviewRelated';
-import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo';
-import AssessmentOverviewWhiteboard from '@/views/assessments/components/overview/AssessmentOverviewWhiteboard';
+import AssessmentOverviewComments from '@/views/assessments/components/overview/AssessmentOverviewComments'
+import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overview/AssessmentOverviewWorkSchedule'
+import AssessmentOverviewRelated from '@/views/assessments/components/overview/AssessmentOverviewRelated'
+import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo'
+import AssessmentOverviewWhiteboard from '@/views/assessments/components/overview/AssessmentOverviewWhiteboard'
 
 export default {
   name: 'AssignmentOverviewTabs',
@@ -144,24 +144,24 @@ export default {
         this.assignment._student &&
         (this.assignment._student === this.user._id ||
         this.assignment._student._id === this.user._id)
-      );
+      )
     },
     hasComments () {
-      return this.assignment.comments && this.assignment.comments.length > 0;
+      return this.assignment.comments && this.assignment.comments.length > 0
     },
     scheduledMinutes () {
-      if (!this.assignment._blocks) return 0;
+      if (!this.assignment._blocks) return 0
 
       return this.assignment._blocks.reduce(
         (acc, block) => acc + block.duration,
         0
-      );
+      )
     },
     totalEstimatedMinutes () {
-      return this.assignment.timeEstimate * 60;
+      return this.assignment.timeEstimate * 60
     },
     fullyScheduled () {
-      return this.scheduledMinutes >= this.totalEstimatedMinutes;
+      return this.scheduledMinutes >= this.totalEstimatedMinutes
     },
     componentName () {
       return {
@@ -170,20 +170,25 @@ export default {
         related: 'AssessmentOverviewRelated',
         'shared-info': 'AssignmentOverviewTabsSharedInfo',
         whiteboard: 'AssessmentOverviewWhiteboard'
-      }[this.tab];
+      }[this.tab]
     }
   },
   methods: {
     scrollTo () {
       this.$refs.tabs.scrollIntoView({
         behavior: 'smooth'
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
+
+.tabs {
+  margin-top: 20px;
+}
+
 .comment-count {
   margin-left: 3px;
 }

@@ -51,7 +51,7 @@
         </template>
 
         <a
-          :class="{ 'is-active': navbarExpanded }"
+          :class="{'is-active': navbarExpanded}"
           role="button"
           class="navbar-burger burger"
           aria-label="menu"
@@ -67,14 +67,14 @@
 
       <div
         id="top-navbar"
-        :class="{ 'is-active': navbarExpanded }"
+        :class="{'is-active': navbarExpanded}"
         class="navbar-menu is-unselectable"
       >
         <div class="navbar-start">
           <template v-if="loggedIn">
             <router-link
               class="navbar-item home-link"
-              :to="{ name: 'dashboard-calendar' }"
+              :to="{name: 'dashboard-calendar'}"
               title="View your dashboard"
               exact
             >
@@ -87,7 +87,7 @@
             <router-link
               v-if="onBreak"
               class="navbar-item about-link"
-              :to="{ name: 'about' }"
+              :to="{name: 'about'}"
               title="Learn more about LATE and its creators"
             >
               <span class="icon">
@@ -117,21 +117,21 @@
               <div class="navbar-dropdown">
                 <router-link
                   class="navbar-item"
-                  :to="{ name: 'coursework-upcoming' }"
+                  :to="{name: 'coursework-upcoming'}"
                   title="View upcoming assessments"
                 >
                   <b>Upcoming</b>
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  :to="{ name: 'coursework-past' }"
+                  :to="{name: 'coursework-past'}"
                   title="Browse all past assessments"
                 >
                   Previous
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  :to="{ name: 'coursework-calendar' }"
+                  :to="{name: 'coursework-calendar'}"
                   title="View a calendar of all your assessment due dates"
                 >
                   Calendar
@@ -163,7 +163,7 @@
           <template v-else>
             <router-link
               class="navbar-item"
-              :to="{ name: 'about' }"
+              :to="{name: 'about'}"
               title="Learn more about LATE and its creators"
             >
               <span class="icon">
@@ -176,7 +176,7 @@
             class="navbar-item has-dropdown is-hoverable"
           >
             <router-link
-              :to="{ name: 'tools' }"
+              :to="{name: 'tools'}"
               class="navbar-link coursework-link"
               title="Student tools to calculate grades, help you work/study, and more!"
             >
@@ -189,28 +189,28 @@
             <div class="navbar-dropdown">
               <router-link
                 class="navbar-item"
-                :to="{ name: 'quick-links' }"
+                :to="{name: 'quick-links'}"
                 title="Student-curated RPI links"
               >
                 RPI Quicklinks
               </router-link>
               <router-link
                 class="navbar-item"
-                :to="{ name: 'study-tools' }"
+                :to="{name: 'study-tools'}"
                 title="Study timer and scratchpad"
               >
-                Study Tools
+                Study Timer
               </router-link>
               <router-link
                 class="navbar-item"
-                :to="{ name: 'gpa-calculator' }"
+                :to="{name: 'gpa-calculator'}"
                 title="Calculate overall GPA and course grades"
               >
                 Grade Calculators
               </router-link>
               <router-link
                 class="navbar-item"
-                :to="{ name: 'checklist' }"
+                :to="{name: 'checklist'}"
                 title="Create a checklist for dorm items for movein"
               >
                 Dorm Checklist
@@ -261,7 +261,7 @@
                 <router-link
                   v-if="user.admin"
                   class="navbar-item"
-                  :to="{ name: 'admin-student-list' }"
+                  :to="{name: 'admin-student-list'}"
                   title="View the administrator page"
                 >
                   <span class="icon">
@@ -301,7 +301,7 @@
                 <router-link
                   v-if="!onBreak"
                   class="navbar-item"
-                  :to="{ name: 'coursework-stats' }"
+                  :to="{name: 'coursework-stats'}"
                   title="View stats on your coursework"
                 >
                   <span class="icon">
@@ -311,7 +311,7 @@
                 </router-link>
                 <router-link
                   class="navbar-item"
-                  :to="{ name: 'archive-home' }"
+                  :to="{name: 'archive-home'}"
                   title="View your data from past semesters"
                 >
                   <span class="icon">
@@ -366,27 +366,27 @@ export default {
   name: 'TheHeader',
   computed: {
     onlineUsers () {
-      return this.$store.state.socketio.onlineUsers;
+      return this.$store.state.socketio.onlineUsers
     },
     seenAnnouncementIDs () {
-      return this.$store.state.announcements.seenIDs;
+      return this.$store.state.announcements.seenIDs
     },
     announcementsCount () {
       return this.$store.getters.allAnnouncements.filter(
         a => !this.seenAnnouncementIDs.includes(a._id)
-      ).length;
+      ).length
     },
     isUserSetup () {
-      return this.$store.getters.isUserSetup;
+      return this.$store.getters.isUserSetup
     },
     navbarExpanded () {
-      return this.$store.state.navbarExpanded;
+      return this.$store.state.navbarExpanded
     },
     assessmentCount () {
-      return this.$store.getters.limitedUpcomingAssessments.length;
+      return this.$store.getters.limitedUpcomingAssessments.length
     },
     inDevMode () {
-      return process.env.NODE_ENV !== 'production';
+      return process.env.NODE_ENV !== 'production'
     }
   },
   methods: {
@@ -395,17 +395,17 @@ export default {
       localStorage.setItem(
         'seenAnnouncementIDs',
         JSON.stringify(this.$store.getters.allAnnouncements.map(ann => ann._id))
-      );
+      )
 
       this.$store.commit(
         'SET_SEEN_ANNOUNCEMENT_IDS',
         this.$store.getters.allAnnouncements.map(ann => ann._id)
-      );
+      )
 
-      this.$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true);
+      this.$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

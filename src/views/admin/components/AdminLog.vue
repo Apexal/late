@@ -37,32 +37,32 @@ export default {
     return {
       log: [],
       loading: true
-    };
+    }
   },
   async created () {
-    await this.getLog();
+    await this.getLog()
   },
   methods: {
     async getLog () {
-      this.loading = true;
-      let request;
+      this.loading = true
+      let request
       try {
-        request = await this.$http.get('/students/log');
+        request = await this.$http.get('/students/log')
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: e.response.data.message
-        });
-        this.log = [];
-        this.loading = false;
-        return;
+        })
+        this.log = []
+        this.loading = false
+        return
       }
 
-      this.log = request.data.log.reverse().filter(line => line.trim()); // flip and remove empty lines
-      this.loading = false;
+      this.log = request.data.log.reverse().filter(line => line.trim()) // flip and remove empty lines
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

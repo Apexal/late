@@ -40,11 +40,11 @@ export default {
           height: -35
         }
       }
-    };
+    }
   },
   computed: {
     commons () {
-      return { lat: 42.728342, lng: -73.674254 };
+      return { lat: 42.728342, lng: -73.674254 }
     },
     markers () {
       return [
@@ -52,24 +52,24 @@ export default {
           position: { lat: 42.729551, lng: -73.679074 },
           infoText: 'Lecture in DCC 208 at 3pm'
         }
-      ];
+      ]
     }
   },
   methods: {
     toggleInfoWindow (marker, idx) {
-      this.infoWindowPos = marker.position;
-      this.infoContent = marker.infoText;
+      this.infoWindowPos = marker.position
+      this.infoContent = marker.infoText
       // check if its the same marker that was selected if yes toggle
       if (this.currentMidx === idx) {
-        this.infoWinOpen = !this.infoWinOpen;
+        this.infoWinOpen = !this.infoWinOpen
       } else {
         // if different marker set infowindow to open and reset current marker index
-        this.infoWinOpen = true;
-        this.currentMidx = idx;
+        this.infoWinOpen = true
+        this.currentMidx = idx
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

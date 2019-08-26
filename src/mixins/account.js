@@ -1,7 +1,7 @@
 export default {
   methods: {
     promptRIN (onConfirm) {
-      this.$dialog.prompt({
+      this.$buefy.dialog.prompt({
         message: 'What is your RPI RIN?',
         inputAttrs: {
           type: 'password',
@@ -9,10 +9,10 @@ export default {
           maxlength: 20
         },
         onConfirm
-      });
+      })
     },
     promptPIN (onConfirm) {
-      this.$dialog.prompt({
+      this.$buefy.dialog.prompt({
         message: 'What is your RPI SIS password?',
         inputAttrs: {
           type: 'password',
@@ -21,7 +21,7 @@ export default {
           maxlength: 300
         },
         onConfirm
-      });
+      })
     }
   }
-};
+}

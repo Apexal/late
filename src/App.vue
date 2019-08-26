@@ -63,9 +63,8 @@
             />
 
             <SISMan />
-            <AssessmentsAddFAB v-if="!onBreak" />
             <StudyToolsTimerOverlay
-              v-if="$route.path != '/studytools'"
+              v-if="$route.path !== '/studytools'"
               :open="studyToolsTimerOpen"
             />
           </template>
@@ -84,24 +83,25 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import TheHeader from '@/views/components/TheHeader';
-import TheFooter from '@/views/components/TheFooter';
-import TheSidebar from '@/views/sidebar/components/TheSidebar';
-import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAddRedux';
-import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux';
-import CourseModal from '@/views/courses/components/CourseModal';
-import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements';
-import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal';
-import ToursModal from '@/views/components/ToursModal';
+import TheHeader from '@/views/components/TheHeader'
+import TheFooter from '@/views/components/TheFooter'
+import TheSidebar from '@/views/sidebar/components/TheSidebar'
+import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAddRedux'
+import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux'
+import CourseModal from '@/views/courses/components/CourseModal'
+import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements'
+import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal'
+import ToursModal from '@/views/components/ToursModal'
 
-import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay';
-import AssessmentsAddFAB from '@/views/assessments/components/AssessmentsAddFAB';
+import StudyToolsTimerOverlay from '@/views/studytools/StudyToolsTimerOverlay'
 
-import SISMan from '@/views/sisman/components/SISMan';
+import SISMan from '@/views/sisman/components/SISMan'
 
-import account from '@/mixins/account';
+import account from '@/mixins/account'
+
+import Konami from 'konami'
 
 export default {
   name: 'LATE',
@@ -115,7 +115,6 @@ export default {
     ExamsModalAddRedux,
     AnnouncementsModal,
     PinnedAnnouncements,
-    AssessmentsAddFAB,
     StudyToolsTimerOverlay,
     SISMan
 
@@ -127,100 +126,100 @@ export default {
       tourCallbacks: {
         onStop: this.onTourStop
       }
-    };
+    }
   },
   computed: {
     loaded () {
-      return this.$store.state.loaded;
+      return this.$store.state.loaded
     },
     tour () {
-      return this.$store.getters.currentTour;
+      return this.$store.getters.currentTour
     },
     toursModalOpen () {
-      return this.$store.state.tours.modalOpen;
+      return this.$store.state.tours.modalOpen
     },
     sidebarExpanded () {
-      return this.$store.state.sidebarExpanded;
+      return this.$store.state.sidebarExpanded
     },
     homepage () {
-      return this.$route.meta.isHome && !this.loggedIn;
+      return this.$route.meta.isHome && !this.loggedIn
     },
     appClass () {
       return {
         'columns is-marginless': this.loggedIn && this.sidebarExpanded,
         container: !this.loggedIn || !this.sidebarExpanded,
         homepage: this.homepage
-      };
+      }
     },
     studyToolsTimerOpen () {
       return (
         this.$store.state.studytoolstimer.open &&
         this.$route.name !== 'study-tools-timer'
-      );
+      )
     },
     courseModalData () {
-      return this.$store.state.courseModal.current;
+      return this.$store.state.courseModal.current
     },
     courseModalOpen () {
-      return this.$store.state.courseModal.open;
+      return this.$store.state.courseModal.open
     },
     announcementsModalOpen () {
-      return this.$store.state.announcements.modalOpen;
+      return this.$store.state.announcements.modalOpen
     },
     announcements () {
-      return this.$store.getters.allAnnouncements;
+      return this.$store.getters.allAnnouncements
     },
     addAssignmentModalExpanded () {
-      return this.$store.state.addAssignmentModal.expanded;
+      return this.$store.state.addAssignmentModal.expanded
     },
     addExamModalExpanded () {
-      return this.$store.state.addExamModal.expanded;
+      return this.$store.state.addExamModal.expanded
     },
     isUserSetup () {
-      return this.$store.getters.isUserSetup;
+      return this.$store.getters.isUserSetup
     },
     sistext () {
-      return '                                              ,\n                                         ,⌐"▄└⌠ *▄\n                                       ╓▀  ▓▌▄▀ j█▀▄\n                                   ╓≈══▀═≡w█╓█▌ ▄███▄,,,\n                                 Ö███████████▀▀╜▀╙\'`. ╖`▀▀%\n                                 ▀███▀▀▀└   ,,▄▄▄▄▄▄▄`¥▀ ║  ▀▄\n                             ▄#*╙   ,▄▄#▀▀▀╙└,,,,"%███    ▌  `▀\n                         ,═"  ▄▄A▀╙`       ²█▀▀▀▀█  "█▌   █⌐╙▄▄▀\n                          ╓═"▄#MªΦµ          ,www,  `╗█   ║▌ █▀A█\n                      ,  █   ,+═══╓ ╓    ` A\'     █ ▌ █▌  ▐█ A▄▄█▄\n                      M ║⌐         ██▀  j█└  ╓▓Ω▌▄▀▄⌐▄█▌   █ ║█▄▐█\\,\n                     ▐  █  α, █▌▓▄█▀^    ⁿ▀w*▀▀▀▀▄▀,╣███   █H▐██ █▌█\n                     ▀ ▓M  ╙w▄▀█▌█                .ª└███   █▌▐██ ███Γ\n                    ▐ .█        JH   , , ,▓▄   ▓       █   █▌║██Γ███⌐\n                    ▌ ║█    ╓⌐   ▀▄▄▀█▄▄██▀l▄A▀▄▀╙½,   █   █▌▓██Γ███\n                    M ╡▌   Φ█▄═╓,  "▀▀█▄▄Φ▀└,Φ█▀¿ ▀   ▐▌   █M███▌██▀\n                 ,▄▀⌐ ╫▌    ▀▌▀▄▄▄└``  ,▄▄A▀▄▀▄╨      ╢M   █▄█▀██▓\n               ▄▀└¿▐⌐ █▌      "≈,▀▀▀▀▀▀▄▄#▀▄▄█▀Ä╓^ ▄▄▄█    ██▌¥╖ ▀═╓\n            ⁿ` ,A▀▄▀⌐ ╙▌        ⁿ═▄▄▄▌▄▄▄██████╨▄▄████½█═  ███▌▄▄ ,  "` \'▄\n         ^   ▄▌╝▀└  ⌐   "*═w▄▄╓╓,,J██████████▄▄██▀▀▀└¬╙   \'╙███▄ ║▌^    ▄▀\n         `µ ∩█       ⁿwç                        ,,▄▄▄▄▄▄██████▀█▀   ,═\n          ▓ ╞║∩        ╓▄█▀▀▀▀█▓▀███████████████▀▀▄████████▀█▓▀   ▄▀\n          ╙▌ Φ▌     ,*2÷▄▄▄▄▄▄█▄▄▄▄███▄▄▄▄▄▄▄▄▄▄████████▀▄#▀⌠▄*▄▄▀\n           ▀▄ ▀▄⌐ :╓▓#▀▀"└"═▄ ▄ ,,,▄▄▄▄▄▄██████████#K╨═   ▀▀▄▄████\n            `¥▀           `*▐▌ "*╙▀▀▀▀▀▀▀▀▀▀█▀▀▀▀L      ▄█▐█████▄▀\n             ▐⌐w█      └ "¥, ;▄▄▀ %      .▄▀ ▄▀╓▄⌐  ▄/½▄█▄▌█▄███▀\n               ╙▀▀▀K▀▀▀▓▀w;,▄█   " "  " "*▄ª╙ #^ «Φ╨ª▀██▌█▌█▀▓█\n              ,^    `    `    ` ─ ¬┘ ⁿ  ╨ ▌═Φ░╓A└,Γ ,▓█▀██`▄█└\n              *  -.╓▄J⌠⌠⌠,⌠,`   ```""""*****ⁿⁿⁿΦ▄▄▄⌐ █▀Γ``\n                              ▌`█⌐▌  -└╙╙▀█▀▀█▀▀▀▀▀▀▀\n                             AW▄▄█        ▌,,▐,\n                            ` \'╙██▀      ▐██═ ▐▌,▀▄█▄,         ,▄▄▄▄▄w,\n                      ▄▀▄▄¥ ▀  ▀█▄      .M██▀,▀█ █▀▄█▐▄∩^▄^▄ ^└      ╔▄▄╓\n   ,▄▄ΦK¥═≡≡≤, ╓≈╓▄╖▄Ñ▄█╙▓ ▄╙▀██▀▄█      ▄ ▄█▌▄█⌐▌██▌██▄█▌▄██═⌐ ╓▄#▀▀▀▀██▓\n ▄▀⌠           ▐M║█⌐█▌▐█▄█ ▀██ ██ ▀     ▐▌  █ ▀█.██ ▄▀╓▌ ███<*╙▄▄▓█████▀▀\n └ " Ö╓▄╓║▀▀▀▀███▄ █Ü╙▄ ███▓▄▄▄███╓▌     ▌  ║█▄███▄╓█w╝▀,▄▄▄███████▀▀\n  Φ████▄▓▄█▌██▀▀▀█▌w█ ║▄,████████▀▀       ▀ ╙▄▄▄▄█▓▄████████▀▀▀└`\n    ╙▀▀██████████████▄▄▄████████▓Φ███▄▄▄▄▄▄███████████▄▄══¬\n               ,▄≤≡▀▀██▀▀▀███▀▀▀███▀▀▀▀████▀▀▀████▀▀▀▀▀███▄▄▄==¬¬  .\n           ^`   ^^\'          `     `└';
+      return '                                              ,\n                                         ,⌐"▄└⌠ *▄\n                                       ╓▀  ▓▌▄▀ j█▀▄\n                                   ╓≈══▀═≡w█╓█▌ ▄███▄,,,\n                                 Ö███████████▀▀╜▀╙\'`. ╖`▀▀%\n                                 ▀███▀▀▀└   ,,▄▄▄▄▄▄▄`¥▀ ║  ▀▄\n                             ▄#*╙   ,▄▄#▀▀▀╙└,,,,"%███    ▌  `▀\n                         ,═"  ▄▄A▀╙`       ²█▀▀▀▀█  "█▌   █⌐╙▄▄▀\n                          ╓═"▄#MªΦµ          ,www,  `╗█   ║▌ █▀A█\n                      ,  █   ,+═══╓ ╓    ` A\'     █ ▌ █▌  ▐█ A▄▄█▄\n                      M ║⌐         ██▀  j█└  ╓▓Ω▌▄▀▄⌐▄█▌   █ ║█▄▐█\\,\n                     ▐  █  α, █▌▓▄█▀^    ⁿ▀w*▀▀▀▀▄▀,╣███   █H▐██ █▌█\n                     ▀ ▓M  ╙w▄▀█▌█                .ª└███   █▌▐██ ███Γ\n                    ▐ .█        JH   , , ,▓▄   ▓       █   █▌║██Γ███⌐\n                    ▌ ║█    ╓⌐   ▀▄▄▀█▄▄██▀l▄A▀▄▀╙½,   █   █▌▓██Γ███\n                    M ╡▌   Φ█▄═╓,  "▀▀█▄▄Φ▀└,Φ█▀¿ ▀   ▐▌   █M███▌██▀\n                 ,▄▀⌐ ╫▌    ▀▌▀▄▄▄└``  ,▄▄A▀▄▀▄╨      ╢M   █▄█▀██▓\n               ▄▀└¿▐⌐ █▌      "≈,▀▀▀▀▀▀▄▄#▀▄▄█▀Ä╓^ ▄▄▄█    ██▌¥╖ ▀═╓\n            ⁿ` ,A▀▄▀⌐ ╙▌        ⁿ═▄▄▄▌▄▄▄██████╨▄▄████½█═  ███▌▄▄ ,  "` \'▄\n         ^   ▄▌╝▀└  ⌐   "*═w▄▄╓╓,,J██████████▄▄██▀▀▀└¬╙   \'╙███▄ ║▌^    ▄▀\n         `µ ∩█       ⁿwç                        ,,▄▄▄▄▄▄██████▀█▀   ,═\n          ▓ ╞║∩        ╓▄█▀▀▀▀█▓▀███████████████▀▀▄████████▀█▓▀   ▄▀\n          ╙▌ Φ▌     ,*2÷▄▄▄▄▄▄█▄▄▄▄███▄▄▄▄▄▄▄▄▄▄████████▀▄#▀⌠▄*▄▄▀\n           ▀▄ ▀▄⌐ :╓▓#▀▀"└"═▄ ▄ ,,,▄▄▄▄▄▄██████████#K╨═   ▀▀▄▄████\n            `¥▀           `*▐▌ "*╙▀▀▀▀▀▀▀▀▀▀█▀▀▀▀L      ▄█▐█████▄▀\n             ▐⌐w█      └ "¥, ;▄▄▀ %      .▄▀ ▄▀╓▄⌐  ▄/½▄█▄▌█▄███▀\n               ╙▀▀▀K▀▀▀▓▀w;,▄█   " "  " "*▄ª╙ #^ «Φ╨ª▀██▌█▌█▀▓█\n              ,^    `    `    ` ─ ¬┘ ⁿ  ╨ ▌═Φ░╓A└,Γ ,▓█▀██`▄█└\n              *  -.╓▄J⌠⌠⌠,⌠,`   ```""""*****ⁿⁿⁿΦ▄▄▄⌐ █▀Γ``\n                              ▌`█⌐▌  -└╙╙▀█▀▀█▀▀▀▀▀▀▀\n                             AW▄▄█        ▌,,▐,\n                            ` \'╙██▀      ▐██═ ▐▌,▀▄█▄,         ,▄▄▄▄▄w,\n                      ▄▀▄▄¥ ▀  ▀█▄      .M██▀,▀█ █▀▄█▐▄∩^▄^▄ ^└      ╔▄▄╓\n   ,▄▄ΦK¥═≡≡≤, ╓≈╓▄╖▄Ñ▄█╙▓ ▄╙▀██▀▄█      ▄ ▄█▌▄█⌐▌██▌██▄█▌▄██═⌐ ╓▄#▀▀▀▀██▓\n ▄▀⌠           ▐M║█⌐█▌▐█▄█ ▀██ ██ ▀     ▐▌  █ ▀█.██ ▄▀╓▌ ███<*╙▄▄▓█████▀▀\n └ " Ö╓▄╓║▀▀▀▀███▄ █Ü╙▄ ███▓▄▄▄███╓▌     ▌  ║█▄███▄╓█w╝▀,▄▄▄███████▀▀\n  Φ████▄▓▄█▌██▀▀▀█▌w█ ║▄,████████▀▀       ▀ ╙▄▄▄▄█▓▄████████▀▀▀└`\n    ╙▀▀██████████████▄▄▄████████▓Φ███▄▄▄▄▄▄███████████▄▄══¬\n               ,▄≤≡▀▀██▀▀▀███▀▀▀███▀▀▀▀████▀▀▀████▀▀▀▀▀███▄▄▄==¬¬  .\n           ^`   ^^\'          `     `└'
     }
   },
   watch: {
     tour () {
       this.$nextTick(() => {
         setTimeout(() => {
-          if (this.tour) this.$tours.custom.start();
-        }, 1000);
-      });
+          if (this.tour) this.$tours.custom.start()
+        }, 1000)
+      })
     },
     user () {
-      this.$socket.emit('authentication', this.user._id);
+      this.$socket.client.emit('authentication', this.user._id)
     }
   },
   async mounted () {
     if (this.$route.query.accountLocked) {
-      return this.$toast.open({
+      return this.$buefy.toast.open({
         message: 'Your account has been locked by administrators.',
         type: 'is-warning',
         duration: 70000
-      });
+      })
     }
 
     if (this.loggedIn) {
       // Check if time to reupdate from SIS
       if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
-        this.$router.push({ name: 'account', query: { importFromSIS: true } });
+        this.$router.push({ name: 'account', query: { importFromSIS: true } })
       }
     }
-
-    console.log(this.sistext);
-    console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px');
+    const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
+    console.log(this.sistext)
+    console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px')
   },
   methods: {
     onTourStop () {
-      this.$store.dispatch('MARK_TOUR_SEEN', this.tour);
-      this.$store.commit('SET_TOUR_INDEX', -1);
+      this.$store.dispatch('MARK_TOUR_SEEN', this.tour)
+      this.$store.commit('SET_TOUR_INDEX', -1)
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -268,8 +267,21 @@ body {
 #footer {
   flex-shrink: 0;
 }
+
 section.section {
   padding: 1.5rem;
+}
+
+@media only screen and (max-width: 1216px) {
+  section.section {
+    padding: 1rem;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  section.section {
+    padding: 1rem 0.5rem;
+  }
 }
 
 //Toggle sidebar
@@ -348,6 +360,10 @@ section.section {
   max-width: 800px;
 }
 
+.modal-content, .modal-card {
+  margin: 0;
+}
+
 .exam-event {
   font-weight: bold;
 }
@@ -359,7 +375,6 @@ section.section {
 footer.footer {
   margin-top: 30px;
 }
-
 
 // ------ FULLCALENDAR -------
 
@@ -388,6 +403,10 @@ footer.footer {
       opacity: 1;
     }
   }
+}
+
+.fc-event i.fas {
+  margin-right: 4px;
 }
 
 .fc-content {

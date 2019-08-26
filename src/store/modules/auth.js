@@ -1,9 +1,9 @@
-import axios from '@/api';
+import axios from '@/api'
 
 const state = {
   user: {},
   isAuthenticated: null
-};
+}
 const getters = {
   userSetup: (state, getters, rootState, rootGetters) => {
     if (!state.isAuthenticated) {
@@ -14,7 +14,7 @@ const getters = {
         unavailability: false,
         integrations: false,
         google: false
-      };
+      }
     }
     return {
       profile: state.user.setup.profile,
@@ -26,47 +26,47 @@ const getters = {
         rootGetters.currentTerm.code
       ),
       integrations: state.user.setup.integrations
-    };
+    }
   },
   isUserSetup: (state, getters) => {
-    for (let check in getters.userSetup) {
-      if (!getters.userSetup[check]) return false;
+    for (const check in getters.userSetup) {
+      if (!getters.userSetup[check]) return false
     }
-    return true;
+    return true
   }
-};
+}
 
 const actions = {
   async GET_USER ({ commit, dispatch }) {
     try {
-      const response = await axios.get('/students/user');
-      const user = response.data.user;
-      await dispatch('SET_USER', user);
+      const response = await axios.get('/students/user')
+      const user = response.data.user
+      await dispatch('SET_USER', user)
     } catch (e) {
       // console.log('Not logged in!');
-      commit('UNSET_USER');
-      commit('SET_LOADED', true);
+      commit('UNSET_USER')
+      commit('SET_LOADED', true)
     }
   },
   async SET_USER ({ commit }, user) {
-    commit('SET_USER', user);
+    commit('SET_USER', user)
   }
-};
+}
 
 const mutations = {
   SET_USER: (state, user) => {
-    state.user = user;
-    state.isAuthenticated = true;
+    state.user = user
+    state.isAuthenticated = true
   },
   UNSET_USER: state => {
-    state.user = {};
-    state.isAuthenticated = false;
+    state.user = {}
+    state.isAuthenticated = false
   }
-};
+}
 
 export default {
   state,
   getters,
   actions,
   mutations
-};
+}

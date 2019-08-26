@@ -1,5 +1,5 @@
-const Unavailability = require('./unavailabilities.model');
-const logger = require('../../modules/logger');
+const Unavailability = require('./unavailabilities.model')
+const logger = require('../../modules/logger')
 
 /**
  * Fetches all of the Unavailability blocks for the current term.
@@ -10,8 +10,8 @@ async function getUnavailabilities (ctx) {
   const unavailabilities = await Unavailability.find({
     _student: ctx.state.user._id,
     termCode: ctx.session.currentTerm.code
-  });
-  return ctx.ok({ unavailabilities });
+  })
+  return ctx.ok({ unavailabilities })
 }
 
 /**
@@ -25,7 +25,7 @@ async function getUnavailabilities (ctx) {
  * @param {Koa context} ctx
  */
 async function createUnavailability (ctx) {
-  const { title, startTime, endTime, daysOfWeek, isOneTime } = ctx.request.body;
+  const { title, startTime, endTime, daysOfWeek, isOneTime } = ctx.request.body
   const unavailability = Unavailability({
     _student: ctx.state.user._id,
     termCode: ctx.session.currentTerm.code,
@@ -34,30 +34,30 @@ async function createUnavailability (ctx) {
     startTime,
     endTime,
     isOneTime
-  });
+  })
 
   if (
     !ctx.state.user.setup.unavailability.includes(ctx.session.currentTerm.code)
   ) {
-    ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code);
+    ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code)
   }
 
   try {
-    await unavailability.save();
+    await unavailability.save()
   } catch (e) {
     logger.error(
       `Failed to save new unavailability block for ${
         ctx.state.user.rcs_id
       }: ${e}`
-    );
-    return ctx.badRequest('There was an error adding the unavailability.');
+    )
+    return ctx.badRequest('There was an error adding the unavailability.')
   }
 
-  logger.info(`Added unavailability block for ${ctx.state.user.rcs_id}`);
+  logger.info(`Added unavailability block for ${ctx.state.user.rcs_id}`)
   return ctx.created({
     updatedUser: ctx.state.user,
     createdUnavailability: unavailability
-  });
+  })
 }
 
 /**
@@ -67,30 +67,30 @@ async function createUnavailability (ctx) {
  * @param {Koa context} ctx
  */
 async function updateUnavailability (ctx) {
-  delete ctx.request.body._id;
-  delete ctx.request.body._student;
+  delete ctx.request.body._id
+  delete ctx.request.body._student
 
-  const { unavailabilityID } = ctx.params;
+  const { unavailabilityID } = ctx.params
 
-  let updatedUnavailability;
+  let updatedUnavailability
   try {
     updatedUnavailability = await Unavailability.findOne({
       _id: unavailabilityID,
       _student: ctx.state.user._id
-    });
+    })
 
-    updatedUnavailability.set(ctx.request.body);
+    updatedUnavailability.set(ctx.request.body)
 
-    await updatedUnavailability.save();
+    await updatedUnavailability.save()
   } catch (e) {
     logger.error(
       `Failed to update unavailability block for ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.badRequest('There was an error updating your unavailability.');
+    )
+    return ctx.badRequest('There was an error updating your unavailability.')
   }
 
-  logger.info(`Updated unavailability block for ${ctx.state.user.rcs_id}`);
-  return ctx.ok({ updatedUnavailability });
+  logger.info(`Updated unavailability block for ${ctx.state.user.rcs_id}`)
+  return ctx.ok({ updatedUnavailability })
 }
 
 /**
@@ -100,16 +100,16 @@ async function updateUnavailability (ctx) {
  * @param {Koa context} ctx
  */
 async function removeUnavailability (ctx) {
-  const { unavailabilityID } = ctx.params;
+  const { unavailabilityID } = ctx.params
   const deletedUnavailability = await Unavailability.findOne({
     _id: unavailabilityID,
     _student: ctx.state.user._id
-  });
+  })
 
-  deletedUnavailability.remove();
+  deletedUnavailability.remove()
 
-  logger.info(`Deleted unavailability block for ${ctx.state.user.rcs_id}`);
-  ctx.ok({ deletedUnavailability });
+  logger.info(`Deleted unavailability block for ${ctx.state.user.rcs_id}`)
+  ctx.ok({ deletedUnavailability })
 }
 
 module.exports = {
@@ -117,4 +117,4 @@ module.exports = {
   createUnavailability,
   updateUnavailability,
   removeUnavailability
-};
+}

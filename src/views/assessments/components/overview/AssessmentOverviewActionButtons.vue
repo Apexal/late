@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import assessmentsMixin from '@/mixins/assessments';
+import assessmentsMixin from '@/mixins/assessments'
 
 export default {
   name: 'AssessmentOverviewActionButtons',
@@ -94,12 +94,12 @@ export default {
     editButtonTitle () {
       return this.assessment.updatedAt
         ? `Last edited ${this.shortDateTimeFormat(this.assessment.updatedAt)}`
-        : 'Never edited';
+        : 'Never edited'
     }
   },
   methods: {
     toggleSharedClick () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         title: this.assessment.shared ? 'Stop Sharing' : 'Share Assignment',
         message: this.assessment.shared
           ? 'Stop sharing this assignment? Students currently able to view it will no longer have access. This can be reversed at any time.'
@@ -109,41 +109,41 @@ export default {
         hasIcon: true,
         icon: 'users',
         onConfirm: this.toggleShared
-      });
+      })
     },
     async toggleShared () {
-      let updatedAssessment;
+      let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.assessment._id,
           assessmentType: this.assessmentType,
           updates: { shared: !this.assessment.shared }
-        });
+        })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.editing = false;
-        return;
+        })
+        this.editing = false
+        return
       }
 
-      this.$emit('updated-assessment', updatedAssessment);
+      this.$emit('updated-assessment', updatedAssessment)
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: updatedAssessment.shared
           ? 'This assignment is now shared, add people by their RPI usernames.'
           : 'Sharing stopped. Only you can see this assignment now.',
         type: 'is-success'
-      });
+      })
 
       this.$emit(
         'set-tab',
         updatedAssessment.shared ? 'shared-info' : 'schedule'
-      );
+      )
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

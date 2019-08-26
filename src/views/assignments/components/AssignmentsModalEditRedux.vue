@@ -1,7 +1,7 @@
 <!--Modals: Edit Assignment (2.0)-->
 <template>
   <div
-    :class="{ 'is-active': open }"
+    :class="{'is-active': open}"
     class="add-assignment-modal modal"
   >
     <div
@@ -22,7 +22,7 @@
             :key="s.step"
             tag="div"
             class="step-item"
-            :class="{ 'is-completed': s.completed, 'is-active': s.active }"
+            :class="{'is-completed': s.completed, 'is-active': s.active}"
             @click="
               step = s.step;
               updateSteps();
@@ -133,14 +133,14 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import 'bulma-steps';
+import 'bulma-steps'
 
-import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse';
-import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription';
-import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar';
-import ModalTime from '@/views/assessments/components/modal/ModalTime';
+import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse'
+import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription'
+import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar'
+import ModalTime from '@/views/assessments/components/modal/ModalTime'
 
 export default {
   name: 'AssignmentsModalAddRedux',
@@ -203,99 +203,99 @@ export default {
           active: false
         }
       ]
-    };
+    }
   },
   watch: {
     initialAssignment (newA) {
-      this.assignment = this.convertAssignment(newA);
+      this.assignment = this.convertAssignment(newA)
     }
   },
   methods: {
     nextStep () {
-      this.step = this.step + 1;
-      this.updateSteps();
+      this.step = this.step + 1
+      this.updateSteps()
     },
     lastStep () {
-      this.step = this.step - 1;
-      this.updateSteps();
+      this.step = this.step - 1
+      this.updateSteps()
     },
     updateSteps () {
-      let curStep = this.step;
+      const curStep = this.step
       this.steps.forEach(function (step_) {
         if (step_.step === curStep) {
-          step_.active = true;
+          step_.active = true
         } else {
-          step_.active = false;
+          step_.active = false
         }
-      });
+      })
       if (this.assignment.title === '') {
-        this.steps[1].completed = false;
+        this.steps[1].completed = false
       } else if (this.assignment.title !== '') {
-        this.steps[1].completed = true;
+        this.steps[1].completed = true
       }
     },
     convertAssignment (assignment) {
-      const data = Object.assign({}, assignment);
-      data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD');
-      let time, hour, minute, isAm;
+      const data = Object.assign({}, assignment)
+      data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD')
+      let time, hour, minute, isAm
 
-      time = moment(assignment.dueDate).format('HH:mm');
-      time = time.split(':');
+      time = moment(assignment.dueDate).format('HH:mm')
+      time = time.split(':')
 
-      hour = parseInt(time[0]);
-      minute = parseInt(time[1]);
+      hour = parseInt(time[0])
+      minute = parseInt(time[1])
 
       if (hour > 12) {
-        hour -= 12;
-        isAm = false;
+        hour -= 12
+        isAm = false
       }
 
-      data.timeHour = hour;
-      data.timeMinute = minute;
-      data.timeisAm = isAm;
+      data.timeHour = hour
+      data.timeMinute = minute
+      data.timeisAm = isAm
 
-      return data;
+      return data
     },
     async save () {
-      this.updateSteps();
+      this.updateSteps()
 
-      this.loading = true;
+      this.loading = true
       // TODO: error handle
-      let request;
+      let request
 
-      let complete = this.steps.some(step => !step.completed);
+      const complete = this.steps.some(step => !step.completed)
 
-      let time;
-      let hour = parseInt(this.assignment.timeHour);
-      let minute = parseInt(this.assignment.timeMinute);
+      let time
+      let hour = parseInt(this.assignment.timeHour)
+      let minute = parseInt(this.assignment.timeMinute)
 
       if (this.assignment.timeHour === '') {
-        hour = 11;
+        hour = 11
       }
       if (this.assignment.timeMinute === '') {
-        minute = 59;
+        minute = 59
       }
 
       if (complete) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: 'Make sure you complete every step!'
-        });
-        return;
+        })
+        return
       }
 
       if (!this.assignment.timeisAm && hour !== 12) {
-        hour += 12;
+        hour += 12
       }
       if (hour > 0 && hour < 10 && this.assignment.timeHour.length === 1) {
-        hour = '0' + hour;
+        hour = '0' + hour
       }
       if (minute > 0 && minute < 10) {
-        minute = '0' + minute;
+        minute = '0' + minute
       }
-      time = hour + ':' + minute;
+      time = hour + ':' + minute
 
-      this.loading = true;
+      this.loading = true
 
       request = await this.$http.patch(
         `/assignments/a/${this.assignment._id}`,
@@ -311,34 +311,33 @@ export default {
           timeEstimate: this.assignment.timeEstimate,
           priority: this.assignment.priority
         }
-      );
+      )
 
       // Calls API and updates state
       if (this.$store.getters.getUpcomingAssessmentById(this.assignment._id)) {
         this.$store.dispatch(
           'UPDATE_UPCOMING_ASSESSMENT',
           request.data.updatedAssignment
-        );
+        )
       }
-      this.$emit('edit-assignment', this.assignment);
+      this.$emit('edit-assignment', this.assignment)
 
-      this.loading = false;
+      this.loading = false
 
       // Close modal
-      this.$emit('toggle-modal');
+      this.$emit('toggle-modal')
 
       // Notify user
-      this.$snackbar.open({
+      this.$buefy.snackbar.open({
         message: `Edited assignment '${
           request.data.updatedAssignment.title
         }' due ${moment(request.data.updatedAssignment.dueDate).fromNow()}.`,
         position: 'is-bottom'
-      });
+      })
     }
   }
-};
+}
 </script>
-
 
 <style lang="scss" scoped>
 .step-marker {

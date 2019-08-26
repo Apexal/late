@@ -1,7 +1,7 @@
 <!--Modals: Edit Assignment (Deprecated?)-->
 <template>
   <div
-    :class="{ 'is-active': open }"
+    :class="{'is-active': open}"
     class="edit-assignment-modal modal"
   >
     <div
@@ -175,7 +175,7 @@
           <button
             form="edit-assignment-form"
             class="button is-success"
-            :class="{ 'is-loading': loading }"
+            :class="{'is-loading': loading}"
           >Save</button>
         </span>
       </footer>
@@ -184,7 +184,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'AssignmentsModalEdit',
@@ -207,39 +207,39 @@ export default {
       dueTime: '',
       timeEstimate: 0,
       priority: 0
-    };
+    }
   },
   computed: {
     maxDate () {
-      return moment(this.currentTerm.end).format('YYYY-MM-DD');
+      return moment(this.currentTerm.end).format('YYYY-MM-DD')
     },
     minDate () {
-      return moment(this.currentTerm.start).format('YYYY-MM-DD');
+      return moment(this.currentTerm.start).format('YYYY-MM-DD')
     }
   },
   watch: {
     initialAssignment (newA) {
-      this.convertAssignment(newA);
+      this.convertAssignment(newA)
     }
   },
   mounted () {
-    this.convertAssignment(this.initialAssignment);
+    this.convertAssignment(this.initialAssignment)
   },
   methods: {
     convertAssignment (newA) {
-      this.courseCRN = newA.courseCRN;
-      this.title = newA.title;
-      this.timeEstimate = newA.timeEstimate;
-      this.priority = newA.priority;
+      this.courseCRN = newA.courseCRN
+      this.title = newA.title
+      this.timeEstimate = newA.timeEstimate
+      this.priority = newA.priority
 
       // special case
-      this.dueDate = moment(newA.dueDate).format('YYYY-MM-DD');
-      this.dueTime = moment(newA.dueDate).format('HH:mm');
+      this.dueDate = moment(newA.dueDate).format('YYYY-MM-DD')
+      this.dueTime = moment(newA.dueDate).format('HH:mm')
     },
     async save () {
-      this.loading = true;
+      this.loading = true
 
-      let updatedAssignment;
+      let updatedAssignment
       try {
         updatedAssignment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.initialAssignment._id,
@@ -255,33 +255,33 @@ export default {
             timeEstimate: this.timeEstimate,
             priority: this.priority
           }
-        });
+        })
       } catch (e) {
-        this.loading = false;
-        this.$toast.open({
+        this.loading = false
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        return;
+        })
+        return
       }
 
-      this.$emit('updated-assessment', updatedAssignment);
+      this.$emit('updated-assessment', updatedAssignment)
 
-      this.loading = false;
+      this.loading = false
 
       // Close modal
-      this.$emit('toggle-modal');
+      this.$emit('toggle-modal')
 
       // Notify user
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: `Edited assignment '${updatedAssignment.title}' due ${moment(
           updatedAssignment.dueDate
         ).fromNow()}.`,
         type: 'is-success'
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

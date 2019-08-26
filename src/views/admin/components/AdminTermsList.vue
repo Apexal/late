@@ -20,7 +20,7 @@
           v-for="term in terms"
           :key="term.code"
           class="term"
-          :class="{ 'is-selected': currentTerm.code === term.code }"
+          :class="{'is-selected': currentTerm.code === term.code}"
         >
           <td>
             <code>{{ term.code }}</code>
@@ -97,36 +97,36 @@ export default {
         classesEnd: null,
         end: null
       }
-    };
+    }
   },
   computed: {
     terms () {
-      return this.$store.state.schedule.terms;
+      return this.$store.state.schedule.terms
     }
   },
   methods: {
     promptAddTerm () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Add a new school term?',
         onConfirm: this.addTerm
-      });
+      })
     },
     async addTerm () {
-      let createdTerm;
+      let createdTerm
       try {
-        createdTerm = await this.$store.dispatch('ADD_TERM', this.newTerm);
+        createdTerm = await this.$store.dispatch('ADD_TERM', this.newTerm)
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        return;
+        })
+        return
       }
 
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: `Added new term <b>${createdTerm.name}</b>!`,
         type: 'is-success'
-      });
+      })
 
       this.newTerm = {
         code: '',
@@ -134,10 +134,10 @@ export default {
         start: null,
         classesEnd: null,
         end: null
-      };
+      }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 <!--Modals: Add exam (deprecated?)-->
 <template>
   <div
-    :class="{ 'is-active': open }"
+    :class="{'is-active': open}"
     class="modal edit-exam-modal"
   >
     <div
@@ -190,7 +190,7 @@
           <button
             form="edit-exam-form"
             class="button is-success"
-            :class="{ 'is-loading': loading }"
+            :class="{'is-loading': loading}"
           >Save</button>
         </span>
       </footer>
@@ -199,7 +199,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'ExamsModalEdit',
@@ -228,38 +228,38 @@ export default {
     return {
       loading: false,
       exam: this.convertExam(this.initialExam)
-    };
+    }
   },
   computed: {
     maxDate () {
-      return moment(this.currentTerm.end).format('YYYY-MM-DD');
+      return moment(this.currentTerm.end).format('YYYY-MM-DD')
     },
     minDate () {
-      return moment(this.currentTerm.start).format('YYYY-MM-DD');
+      return moment(this.currentTerm.start).format('YYYY-MM-DD')
     },
     saved () {
       return (
         JSON.stringify(this.convertExam(this.initialExam)) ===
         JSON.stringify(this.exam)
-      );
+      )
     }
   },
   watch: {
     initialExam (newEx) {
-      this.exam = this.convertExam(newEx);
+      this.exam = this.convertExam(newEx)
     }
   },
   methods: {
     convertExam (exam) {
-      const data = Object.assign({}, exam);
-      data.date = moment(exam.date).format('YYYY-MM-DD');
-      data.time = moment(exam.date).format('HH:mm');
-      return data;
+      const data = Object.assign({}, exam)
+      data.date = moment(exam.date).format('YYYY-MM-DD')
+      data.time = moment(exam.date).format('HH:mm')
+      return data
     },
     async save () {
-      this.loading = true;
+      this.loading = true
 
-      let updatedExam;
+      let updatedExam
       try {
         updatedExam = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.initialExam._id,
@@ -276,33 +276,33 @@ export default {
             timeEstimate: this.exam.timeEstimate,
             priority: this.exam.priority
           }
-        });
+        })
       } catch (e) {
-        this.loading = false;
-        this.$toast.open({
+        this.loading = false
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        return;
+        })
+        return
       }
 
-      this.$emit('updated-assessment', updatedExam);
+      this.$emit('updated-assessment', updatedExam)
 
-      this.loading = false;
+      this.loading = false
 
       // Close modal
-      this.$emit('toggle-modal');
+      this.$emit('toggle-modal')
 
       // Notify user
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: `Edited exam '${updatedExam.title}' on ${moment(
           updatedExam.date
         ).fromNow()}.`,
         type: 'is-success'
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

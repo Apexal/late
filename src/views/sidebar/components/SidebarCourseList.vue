@@ -38,7 +38,7 @@
     >
       <router-link
         class="button edit-button is-fullwidth editCoursesButton"
-        :to="{ name: 'setup-course-schedule' }"
+        :to="{name: 'setup-course-schedule'}"
         title="Edit your courses"
       >
         Edit Courses
@@ -53,14 +53,14 @@ export default {
   data () {
     return {
       showingAll: false
-    };
+    }
   },
   computed: {
     selectedCourses () {
-      return this.showingAll ? this.courses : this.ongoingCourses;
+      return this.showingAll ? this.courses : this.ongoingCourses
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

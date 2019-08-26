@@ -1,14 +1,14 @@
-import Vue from 'vue';
-import Router from 'vue-router';
+import Vue from 'vue'
+import Router from 'vue-router'
 
-import api from './api';
+import api from './api'
 
-import store from '@/store';
+import store from '@/store'
 
-import { Toast } from 'buefy/dist/components/toast';
-import { Snackbar } from 'buefy/dist/components/snackbar';
+import { Toast } from 'buefy/dist/components/toast'
+import { Snackbar } from 'buefy/dist/components/snackbar'
 
-Vue.use(Router);
+Vue.use(Router)
 
 const router = new Router({
   mode: 'history',
@@ -21,7 +21,7 @@ const router = new Router({
     ) {
       return {
         selector: '#content'
-      };
+      }
     }
   },
   routes: [
@@ -56,7 +56,7 @@ const router = new Router({
       component: () => import('@/views/tools/ToolsIndexPage.vue'),
       name: 'tools',
       meta: {
-        title: 'Quick Links'
+        title: 'Tools'
       }
     },
     {
@@ -70,9 +70,6 @@ const router = new Router({
     {
       path: '/academicutils',
       component: () => import('@/views/academicutils/AcademicUtilsPage.vue'),
-      meta: {
-        title: 'Academic Utilities'
-      },
       children: [
         {
           path: '',
@@ -81,11 +78,17 @@ const router = new Router({
         {
           path: 'gpa-calculator',
           name: 'gpa-calculator',
+          meta: {
+            title: 'GPA Calculator'
+          },
           component: () => import('@/views/academicutils/GPACalculator.vue')
         },
         {
           path: 'coursegrade',
           name: 'course-grade-estimator',
+          meta: {
+            title: 'Course Grade Calculator'
+          },
           component: () =>
             import('@/views/academicutils/CourseGradeEstimator.vue')
         }
@@ -196,13 +199,13 @@ const router = new Router({
         // Find latest upcoming assignment
         const latestAssignment = store.state.assessments.upcomingAssessments.find(
           assessment => assessment.assessmentType === 'assignment'
-        );
+        )
         if (latestAssignment) {
           next({
             name: 'assignment-overview',
             params: { assignmentID: latestAssignment._id }
-          });
-        } else next('/coursework');
+          })
+        } else next('/coursework')
       }
     },
     {
@@ -299,6 +302,7 @@ const router = new Router({
     {
       path: '/archive',
       meta: {
+        title: 'Archive',
         requiresAuth: true
       },
       component: () => import('@/views/archive/TheArchivePage'),
@@ -380,58 +384,58 @@ const router = new Router({
       component: () => import('@/views/TheNotFoundPage.vue')
     }
   ]
-});
+})
 
 router.beforeEach(async (to, from, next) => {
-  if (store.state.courseModal.open) store.commit('CLOSE_COURSE_MODAL');
-  if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR'); // Close the navbar if clicked on
+  if (store.state.courseModal.open) store.commit('CLOSE_COURSE_MODAL')
+  if (store.state.navbarExpanded) store.commit('TOGGLE_NAVBAR') // Close the navbar if clicked on
 
   if (
     process.env.NODE_ENV === 'development' &&
     store.state.auth.isAuthenticated === null
   ) {
-    const rcsID = prompt('Log in as what user? (rcs_id) Leave blank to not login.');
+    const rcsID = prompt('Log in as what user? (rcs_id) Leave blank to not login.')
 
     if (rcsID) {
-      const response = await api.get('/students/loginas?rcs_id=' + rcsID);
-      await store.dispatch('SET_USER', response.data.user);
+      const response = await api.get('/students/loginas?rcs_id=' + rcsID)
+      await store.dispatch('SET_USER', response.data.user)
     } else {
-      api({ url: 'logout', baseURL: '/auth/' });
-      store.commit('UNSET_USER');
-      store.commit('SET_LOADED', true);
+      api({ url: 'logout', baseURL: '/auth/' })
+      store.commit('UNSET_USER')
+      store.commit('SET_LOADED', true)
     }
   } else if (store.state.auth.isAuthenticated === null) {
-    await store.dispatch('GET_USER');
+    await store.dispatch('GET_USER')
   }
 
   if (store.state.auth.isAuthenticated && !store.state.loaded) {
-    await store.dispatch('GET_TERMS');
-    const calls = [];
+    await store.dispatch('GET_TERMS')
+    const calls = []
     if (!store.getters.onBreak) {
-      await store.dispatch('GET_COURSES');
+      await store.dispatch('GET_COURSES')
       calls.concat([
         store.dispatch('GET_UNAVAILABILITIES'),
         store.dispatch('AUTO_GET_UPCOMING_WORK')
-      ]);
+      ])
     }
     calls.concat([
       store.dispatch('GET_TODOS'),
       store.dispatch('GET_ANNOUNCEMENTS'),
       store.dispatch('AUTO_UPDATE_NOW')
-    ]);
-    await Promise.all(calls);
-    store.commit('SET_LOADED', true);
+    ])
+    await Promise.all(calls)
+    store.commit('SET_LOADED', true)
   }
 
-  if (to.meta.title) document.title = to.meta.title + ' | LATE';
+  if (to.meta.title) document.title = to.meta.title + ' | LATE'
   if (
     to.matched.some(record => record.meta.requiresAuth) &&
     !store.state.auth.isAuthenticated
   ) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    window.location = '/auth/login?redirectTo=' + to.fullPath;
-    return;
+    window.location = '/auth/login?redirectTo=' + to.fullPath
+    return
   }
 
   if (
@@ -442,8 +446,8 @@ router.beforeEach(async (to, from, next) => {
       message: 'Only admins can view this page!',
       type: 'is-warning',
       duration: 3000
-    });
-    return next('/');
+    })
+    return next('/')
   }
 
   if (
@@ -458,13 +462,13 @@ router.beforeEach(async (to, from, next) => {
       position: 'is-bottom',
       actionText: 'Not on Break?',
       onAction: () => {
-        router.push({ name: 'setup-terms' });
+        router.push({ name: 'setup-terms' })
       }
-    });
-    return next('/');
+    })
+    return next('/')
   }
 
-  next();
-});
+  next()
+})
 
-export default router;
+export default router

@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import moment from 'moment';
-import Chart from 'chart.js';
+import moment from 'moment'
+import Chart from 'chart.js'
 
 export default {
   name: 'StatsPie',
@@ -18,7 +18,7 @@ export default {
     return {
       newCategory: '',
       categories: []
-    };
+    }
   },
   computed: {
     assignmentCountDataset () {
@@ -27,7 +27,7 @@ export default {
           this.assignments.filter(
             assignment => assignment.courseCRN === course.crn
           ).length
-      );
+      )
 
       return {
         label: '# of assignments and exams',
@@ -35,7 +35,7 @@ export default {
         backgroundColor: this.courses.map(course => course.color),
         borderColor: 'white', // this.courses.map(course => course.color),
         borderWidth: 1
-      };
+      }
     },
     scheduledTimeDataSet () {
       const data = this.courses.map(course =>
@@ -43,7 +43,7 @@ export default {
           .filter(assignment => assignment.courseCRN === course.crn)
           .map(assignment => assignment.scheduledTime)
           .reduce((acc, duration) => acc + duration, 0)
-      );
+      )
 
       return {
         label: 'minutes',
@@ -51,13 +51,13 @@ export default {
         backgroundColor: this.courses.map(course => course.color),
         borderColor: 'white', // this.courses.map(course => course.color),
         borderWidth: 1
-      };
+      }
     },
     assignmentsOverWeekDataset () {
-      const data = [0, 0, 0, 0, 0, 0, 0]; // [ # of assignments due Sunday, # of assignments due Monday, ... ]
-      for (let assignment of this.assignments) {
-        const day = moment(assignment.dueDate).day();
-        data[day] += 1;
+      const data = [0, 0, 0, 0, 0, 0, 0] // [ # of assignments due Sunday, # of assignments due Monday, ... ]
+      for (const assignment of this.assignments) {
+        const day = moment(assignment.dueDate).day()
+        data[day] += 1
       }
 
       return {
@@ -67,20 +67,20 @@ export default {
         borderColor: 'white', // this.courses.map(course => course.color),
         borderWidth: 1,
         group: 'total'
-      };
+      }
     },
     assignmentsOverWeekPerCourseDatasets () {
-      const datasets = [];
+      const datasets = []
 
-      for (let course of this.courses) {
+      for (const course of this.courses) {
         const assignments = this.assignments.filter(
           assignment => assignment.courseCRN === course.crn
-        );
+        )
 
-        const data = [0, 0, 0, 0, 0, 0, 0]; // [ # of assignments due Sunday, # of assignments due Monday, ... ]
-        for (let assignment of assignments) {
-          const day = moment(assignment.dueDate).day();
-          data[day] += 1;
+        const data = [0, 0, 0, 0, 0, 0, 0] // [ # of assignments due Sunday, # of assignments due Monday, ... ]
+        for (const assignment of assignments) {
+          const day = moment(assignment.dueDate).day()
+          data[day] += 1
         }
 
         datasets.push({
@@ -90,50 +90,51 @@ export default {
           borderColor: 'white', // this.courses.map(course => course.color),
           borderWidth: 1,
           group: 'total'
-        });
+        })
       }
 
-      return datasets;
+      return datasets
     },
     weekLabels () {
-      const weekLabels = [];
+      const weekLabels = []
 
-      const end = moment(this.currentTerm.end).endOf('week');
-      const current = moment(this.currentTerm.start).startOf('week');
+      const end = moment(this.currentTerm.end).endOf('week')
+      const current = moment(this.currentTerm.start).startOf('week')
 
       while (current.isBefore(end)) {
-        weekLabels.push(current.format('[Week of] MMMM Do'));
-        current.add(1, 'week');
+        weekLabels.push(current.format('[Week of] MMMM Do'))
+        current.add(1, 'week')
       }
 
-      return weekLabels;
+      return weekLabels
     },
     assignmentsDueOverTermDataset () {
-      const data = [];
+      const data = []
 
-      const end = moment(this.currentTerm.end).endOf('week');
-      const current = moment(this.currentTerm.start).startOf('week');
+      const end = moment(this.currentTerm.end).endOf('week')
+      const current = moment(this.currentTerm.start).startOf('week')
 
       while (current.isBefore(end)) {
-        const nextWeek = moment(current).add(1, 'week');
+        const nextWeek = moment(current).add(1, 'week')
         data.push(
           this.assignments.filter(assignment =>
             moment(assignment.dueDate).isBetween(current, nextWeek)
           ).length
-        );
-        current.add(1, 'week');
+        )
+        current.add(1, 'week')
       }
 
       return {
         label: '# of assignments due',
         data
-      };
+      }
     }
   },
   async mounted () {
-    await this.getAssessments();
+    await this.getAssessments()
 
-    const doughnutChart = new Chart('doughnut-chart', {
+    // eslint-disable-next-line no-new
+    new Chart('doughnut-chart', {
       type: 'doughnut',
       data: {
         labels: this.courses.map(course => course.title), // ['Calculus II', 'RCOS', etc]
@@ -145,32 +146,32 @@ export default {
           text: 'Assignments vs Course'
         }
       }
-    });
+    })
   },
   methods: {
     addCategory () {
-      const parts = this.newCategory.split('%');
-      const weight = parseInt(parts[0]);
+      const parts = this.newCategory.split('%')
+      const weight = parseInt(parts[0])
       this.categories.push({
         title: parts[1],
         weight: weight,
         value: undefined
-      });
-      this.newCategory = '';
+      })
+      this.newCategory = ''
     },
     async getAssessments () {
-      this.loading = true;
+      this.loading = true
 
-      let request = await this.$http.get('/assignments');
-      this.assignments = request.data.assignments;
+      let request = await this.$http.get('/assignments')
+      this.assignments = request.data.assignments
 
-      request = await this.$http.get('/exams');
-      this.exams = request.data.exams;
+      request = await this.$http.get('/exams')
+      this.exams = request.data.exams
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -17,19 +17,19 @@
         </h1>
         <router-link
           tag="li"
-          :to="{ name: 'stats-pie' }"
+          :to="{name: 'stats-pie'}"
         >
           <a>Course Stats</a>
         </router-link>
         <router-link
           tag="li"
-          :to="{ name: 'stats-bar' }"
+          :to="{name: 'stats-bar'}"
         >
           <a>Week Stats</a>
         </router-link>
         <router-link
           tag="li"
-          :to="{ name: 'stats-line' }"
+          :to="{name: 'stats-line'}"
         >
           <a>Assignment Stats</a>
         </router-link>
@@ -47,7 +47,7 @@
 <script>
 export default {
   name: 'AssessmentsStats'
-};
+}
 </script>
 
 <style lang="scss" scoped>

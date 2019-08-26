@@ -21,15 +21,15 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import FullCalendar from '@fullcalendar/vue';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/vue'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
-import '@fullcalendar/core/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
 
 export default {
   name: 'ModalCalendar',
@@ -43,7 +43,8 @@ export default {
     },
     date: {
       type: Object, // moment
-      required: false
+      required: false,
+      default: moment().add(1, 'week')
     },
     courseCRN: {
       type: String,
@@ -66,7 +67,7 @@ export default {
         timeFormat: 'h(:mm)t',
         timezone: 'local'
       }
-    };
+    }
   },
   computed: {
     selectedCourseScheduleEvents () {
@@ -79,7 +80,7 @@ export default {
         )
         .map(ev =>
           Object.assign({}, ev, { title: this.periodType(ev.period) })
-        );
+        )
 
       // If course does not have TEST blocks, just show all periods
       if (courseSchedule.length === 0) {
@@ -87,27 +88,27 @@ export default {
           .filter(ev => ev.course.crn === this.courseCRN)
           .map(ev =>
             Object.assign({}, ev, { title: this.periodType(ev.period) })
-          );
+          )
       }
 
-      return courseSchedule;
+      return courseSchedule
     }
   },
   methods: {
     course (crn) {
-      return this.$store.getters.getCourseFromCRN(crn);
+      return this.$store.getters.getCourseFromCRN(crn)
     },
     eventClick ({ event }) {
-      this.$emit('update-time', moment(event.start).format('HH:mm'));
-      this.updateDate(moment(event.start).startOf('day'));
+      this.$emit('update-time', moment(event.start).format('HH:mm'))
+      this.updateDate(moment(event.start).startOf('day'))
     },
     dayRender ({ date, el }) {
       if (moment(date).isSame(this.date, 'day')) {
-        el.style.backgroundColor = this.course(this.courseCRN).color;
+        el.style.backgroundColor = this.course(this.courseCRN).color
       }
     },
     dateClick ({ date }) {
-      this.updateDate(moment(date));
+      this.updateDate(moment(date))
     },
     updateDate (date) {
       if (
@@ -115,19 +116,19 @@ export default {
           .endOf('day')
           .isBefore(moment().startOf('day'))
       ) {
-        this.$dialog.confirm({
+        this.$buefy.dialog.confirm({
           message: `Add this ${this.assessmentType} to the past?`,
           onConfirm: () => this.$emit('update-date', date)
-        });
+        })
       } else {
-        this.$emit('update-date', date);
+        this.$emit('update-date', date)
       }
     },
     periodType (p) {
-      return this.$store.getters.periodType(p.type);
+      return this.$store.getters.periodType(p.type)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

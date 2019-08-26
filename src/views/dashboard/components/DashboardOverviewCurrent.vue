@@ -53,7 +53,7 @@
         <div class="has-text-centered is-size-3">
           <i
             class="fas fa-graduation-cap course-cap"
-            :style="{ color: currentEvent.course.color }"
+            :style="{color: currentEvent.course.color}"
             @click="$store.commit('OPEN_COURSE_MODAL', currentEvent.course)"
           />
           {{ currentEvent.course.title }}
@@ -80,55 +80,55 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'DashboardOverviewCurrent',
   computed: {
     currentStatus () {
-      if (this.currentEvent) return this.currentEvent.eventType;
-      if (this.currentUnavailability) return 'busy';
-      return 'nothing';
+      if (this.currentEvent) return this.currentEvent.eventType
+      if (this.currentUnavailability) return 'busy'
+      return 'nothing'
     },
     currentUnavailability () {
-      return this.$store.getters.currentUnavailability;
+      return this.$store.getters.currentUnavailability
     },
     todaysAgenda () {
-      return this.$store.getters.todaysAgenda;
+      return this.$store.getters.todaysAgenda
     },
     currentEvent () {
-      return this.todaysAgenda.find(this.isCurrentEvent);
+      return this.todaysAgenda.find(this.isCurrentEvent)
     },
     minutesLeft () {
-      return moment(this.currentEvent.end).diff(moment(), 'minutes');
+      return moment(this.currentEvent.end).diff(moment(), 'minutes')
     },
     percentThrough () {
-      if (!this.currentEvent) return 0;
-      const total = moment(this.currentEvent.end).diff(this.currentEvent.start, 'minutes');
+      if (!this.currentEvent) return 0
+      const total = moment(this.currentEvent.end).diff(this.currentEvent.start, 'minutes')
 
-      return Math.round((1 - this.minutesLeft / total) * 100);
+      return Math.round((1 - this.minutesLeft / total) * 100)
     },
     currentUnavailabilityDates () {
       return {
         start: moment(this.currentUnavailability.startTime, 'HH:mm'),
         end: moment(this.currentUnavailability.endTime, 'HH:mm')
-      };
+      }
     }
   },
   watch: {
     currentStatus (newCurrentStatus) {
-      this.$emit('current-status', newCurrentStatus);
+      this.$emit('current-status', newCurrentStatus)
     }
   },
   mounted () {
-    this.$emit('current-status', this.currentStatus);
+    this.$emit('current-status', this.currentStatus)
   },
   methods: {
     duration (start, end) {
-      return moment(end).diff(start, 'minutes');
+      return moment(end).diff(start, 'minutes')
     },
     isCurrentEvent (event) {
-      return moment(this.rightNow).isBetween(event.start, event.end);
+      return moment(this.rightNow).isBetween(event.start, event.end)
     },
     assessmentRoute (assessment) {
       return {
@@ -136,16 +136,16 @@ export default {
         params: {
           [`${assessment.assessmentType}ID`]: assessment._id
         }
-      };
+      }
     },
     course (a) {
-      return this.$store.getters.getCourseFromCRN(a.courseCRN);
+      return this.$store.getters.getCourseFromCRN(a.courseCRN)
     },
     periodType (p) {
-      return this.$store.getters.periodType(p.type);
+      return this.$store.getters.periodType(p.type)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

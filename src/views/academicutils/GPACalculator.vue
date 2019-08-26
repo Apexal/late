@@ -96,7 +96,7 @@
           v-else
           class="has-text-centered has-text-grey"
         >
-          Add courses manually above or auto fill this semester's courses above!
+          Add courses manually above{{ onBreak ? '. When in school you can auto fill your current courses' : ' or auto fill this semester\'s courses above' }}!
         </p>
       </div>
       <div class="column is-half has-text-centered">
@@ -131,7 +131,7 @@ const grades = {
   D: 1.0,
   'D-': 0.7,
   F: 0.0
-};
+}
 
 export default {
   name: 'GPACalculator',
@@ -140,25 +140,25 @@ export default {
       grades,
       newCourseTitle: '',
       enteredCourses: []
-    };
+    }
   },
   computed: {
     allGradesIn () {
       return this.enteredCourses.every(
-        course => course.gradeValue && course.credits
-      );
+        course => course.gradeValue !== undefined && course.credits !== undefined
+      )
     },
     gpa () {
       const total = this.enteredCourses.reduce(
         (acc, course) => acc + course.gradeValue * course.credits,
         0
-      );
+      )
       const takenCredits = this.enteredCourses.reduce(
         (acc, course) => acc + course.credits,
         0
-      );
+      )
 
-      return (total / takenCredits).toFixed(2);
+      return (total / takenCredits).toFixed(2)
     }
   },
   methods: {
@@ -169,24 +169,24 @@ export default {
           title: course.title,
           gradeValue: undefined,
           credits: course.credits
-        }));
+        }))
     },
     addCourse () {
       this.enteredCourses.push({
         title: this.newCourseTitle,
         gradeValue: undefined,
-        credits: undefined
-      });
-      this.newCourseTitle = '';
+        credits: 4
+      })
+      this.newCourseTitle = ''
     },
     launch (utilName) {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Coming soon!',
         type: 'is-warning'
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

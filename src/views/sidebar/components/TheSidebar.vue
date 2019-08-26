@@ -17,7 +17,7 @@
         <span
           v-if="currentEvent"
           class="tag is-info is-pulled-right tab-count countdown"
-          :style="{ 'background-color': currentEvent.course.color }"
+          :style="{'background-color': currentEvent.course.color}"
           :title="
             'Until end of ' +
               (currentEvent.eventType === 'period' ? 'class' : 'work block')
@@ -56,7 +56,7 @@
           v-for="(t, name) in tabs"
           :key="name"
           class="tooltip"
-          :class="[name, { 'is-active': tab === name }]"
+          :class="[name, {'is-active': tab === name}]"
           :data-tooltip="t.name"
           @click="tab = name"
         >
@@ -82,13 +82,12 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule';
-import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments';
-import SidebarTodoList from '@/views/sidebar/components/SidebarTodoList';
-import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList';
-
+import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule'
+import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments'
+import SidebarTodoList from '@/views/sidebar/components/SidebarTodoList'
+import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList'
 
 export default {
   name: 'TheSidebar',
@@ -128,7 +127,7 @@ export default {
           tagColor: 'success'
         }
       }
-    };
+    }
   },
   computed: {
     counts () {
@@ -137,10 +136,10 @@ export default {
         assessments: this.pressingAssessments.length,
         courseList: this.courses.length,
         todos: this.todos.length
-      };
+      }
     },
     currentTab () {
-      return this.tabs[this.tab];
+      return this.tabs[this.tab]
     },
     pressingAssessments () {
       return this.$store.getters.limitedUpcomingAssessments
@@ -151,49 +150,49 @@ export default {
             assessment.priority > 0 &&
             !assessment.completed)
         )
-        .slice(0, 5);
+        .slice(0, 5)
     },
     todaysAgenda () {
-      return this.$store.getters.todaysAgenda;
+      return this.$store.getters.todaysAgenda
     },
     currentEvent () {
-      return this.todaysAgenda.find(this.isCurrentEvent);
+      return this.todaysAgenda.find(this.isCurrentEvent)
     },
     countdown () {
       if (!this.currentEvent);
 
       const diff = moment.duration(
         moment(this.currentEvent.end).diff(this.rightNow)
-      );
-      return `${diff.hours()}h ${diff.minutes()}m left`;
+      )
+      return `${diff.hours()}h ${diff.minutes()}m left`
     },
     todos () {
-      return this.$store.state.todos.todos;
+      return this.$store.state.todos.todos
     }
   },
   mounted () {},
   methods: {
     updatedCount ({ tab, count }) {
-      this.externalCounts[tab] = count;
+      this.externalCounts[tab] = count
     },
     toggleModal (assessmentType) {
       switch (assessmentType) {
-      case 'assignment':
-        this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
-        break;
-      case 'exam':
-        this.$store.commit('TOGGLE_ADD_EXAM_MODAL');
-        break;
+        case 'assignment':
+          this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')
+          break
+        case 'exam':
+          this.$store.commit('TOGGLE_ADD_EXAM_MODAL')
+          break
       }
     },
     isCurrentEvent (event) {
-      return moment(this.rightNow).isBetween(event.start, event.end);
+      return moment(this.rightNow).isBetween(event.start, event.end)
     },
     periodType (p) {
-      return this.$store.getters.periodType(p.type);
+      return this.$store.getters.periodType(p.type)
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>

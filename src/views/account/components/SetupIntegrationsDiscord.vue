@@ -56,48 +56,48 @@ export default {
         discriminator: '',
         id: ''
       }
-    };
+    }
   },
   computed: {
     verified () {
-      return this.$store.state.auth.user.integrations.discord.verified;
+      return this.$store.state.auth.user.integrations.discord.verified
     },
     discordAvatarURL () {
       return `https://cdn.discordapp.com/avatars/${this.discordUser.id}/${
         this.discordUser.avatar
-      }.png`;
+      }.png`
     },
     token () {
       return this.$store.state.auth.user.integrations.discord.tokens
-        .accessToken;
+        .accessToken
     }
   },
   mounted () {
-    this.getDiscordUser();
+    this.getDiscordUser()
   },
   methods: {
     async getDiscordUser () {
-      this.loading = true;
-      let request;
+      this.loading = true
+      let request
 
       try {
         request = await this.$http.get('https://discordapp.com/api/users/@me', {
           headers: {
             Authorization: `Bearer ${this.token}`
           }
-        });
+        })
       } catch (e) {
-        this.unauthorized = true;
-        this.loading = false;
-        return;
+        this.unauthorized = true
+        this.loading = false
+        return
       }
 
-      this.unauthorized = false;
-      this.discordUser = request.data;
-      this.loading = false;
+      this.unauthorized = false
+      this.discordUser = request.data
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

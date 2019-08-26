@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const moment = require('moment');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const moment = require('moment')
 
-const Block = require('../blocks/blocks.model');
+const Block = require('../blocks/blocks.model')
 
 const schema = new Schema(
   {
@@ -20,6 +20,11 @@ const schema = new Schema(
     priority: { type: Number, min: 1, max: 3, default: 2 },
     comments: [
       {
+        _student: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+          required: true
+        },
         addedAt: { type: Date, required: true },
         body: { type: String, minlength: 1, maxlength: 2000, required: true }
       }
@@ -44,32 +49,32 @@ const schema = new Schema(
     ]
   },
   { timestamps: true }
-);
+)
 
-schema.set('toObject', { getters: true, virtuals: true });
-schema.set('toJSON', { getters: true, virtuals: true });
+schema.set('toObject', { getters: true, virtuals: true })
+schema.set('toJSON', { getters: true, virtuals: true })
 
 schema.virtual('scheduledTime').get(function () {
-  return this._blocks.reduce((acc, block) => acc + block.duration, 0);
-});
+  return this._blocks.reduce((acc, block) => acc + block.duration, 0)
+})
 
 schema.virtual('scheduledTimeRemaing').get(function () {
   return this._blocks
     .filter(b => !b.passed)
-    .reduce((acc, block) => acc + block.duration, 0);
-});
+    .reduce((acc, block) => acc + block.duration, 0)
+})
 
 schema.virtual('passed').get(function () {
-  return moment(this.date).isBefore(new Date());
-});
+  return moment(this.date).isBefore(new Date())
+})
 
 schema.virtual('assessmentType').get(function () {
-  return 'exam';
-});
+  return 'exam'
+})
 
 schema.virtual('fullyScheduled').get(function () {
-  return this.scheduledTime >= this.timeEstimate * 60;
-});
+  return this.scheduledTime >= this.timeEstimate * 60
+})
 
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the exam date now
@@ -78,18 +83,18 @@ schema.pre('save', async function () {
       _student: this._student,
       _id: { $in: this._blocks },
       endTime: { $gte: this.date }
-    });
+    })
 
-    this._blocks = this._blocks.filter(b => b.endTime < this.date);
+    this._blocks = this._blocks.filter(b => b.endTime < this.date)
   }
-});
+})
 
 schema.pre('remove', async function () {
   // Delete any work blocks for this exam
   await Block.deleteMany({
     _student: this._student,
     _id: { $in: this._blocks }
-  });
-});
+  })
+})
 
-module.exports = mongoose.model('Exam', schema);
+module.exports = mongoose.model('Exam', schema)

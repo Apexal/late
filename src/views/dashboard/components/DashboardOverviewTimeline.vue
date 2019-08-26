@@ -99,7 +99,6 @@
         </div>
       </div> -->
 
-
       <div class="timeline-header is-unselectable">
         <span class="tag is-medium is-primary">Night</span>
       </div>
@@ -114,27 +113,27 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'DashboardOverviewTimeline',
   computed: {
     todaysAgenda () {
-      return this.$store.getters.todaysAgenda;
+      return this.$store.getters.todaysAgenda
     }
   },
   methods: {
     roomIntoLocation (location) {
-      return this.$store.getters.roomIntoLocation(location);
+      return this.$store.getters.roomIntoLocation(location)
     },
     course (p) {
-      return this.$store.getters.getCourseFromPeriod(p);
+      return this.$store.getters.getCourseFromPeriod(p)
     },
     periodType (type) {
-      return this.$store.getters.periodType(type);
+      return this.$store.getters.periodType(type)
     },
     eventDuration (event) {
-      return moment(event.end).diff(event.start, 'minutes');
+      return moment(event.end).diff(event.start, 'minutes')
     },
     timelineRoute (event) {
       return {
@@ -142,33 +141,33 @@ export default {
         params: {
           [`${event.assessment.assessmentType}ID`]: event.assessment._id
         }
-      };
+      }
     },
     timelineItemClass (event) {
       if (moment(event.end).isSameOrBefore(this.rightNow)) {
-        return 'is-primary';
+        return 'is-primary'
       } else if (moment(this.rightNow).isBetween(event.start, event.end)) {
-        return 'is-warning';
+        return 'is-warning'
       }
     },
     timelineItemTitle (event) {
       if (event.eventType === 'period') {
-        return `${event.course.title} ${this.periodType(event.period.type)}`;
+        return `${event.course.title} ${this.periodType(event.period.type)}`
       } else if (event.eventType === 'work-block') {
-        return `${event.course.title} ${event.assessment.assessmentType}`;
+        return `${event.course.title} ${event.assessment.assessmentType}`
       }
     },
     markerIcon (event) {
       if (event.eventType === 'period') {
-        return 'fa-graduation-cap';
+        return 'fa-graduation-cap'
       } else if (event.eventType === 'work-block') {
-        return 'fa-clipboard-check';
+        return 'fa-clipboard-check'
       }
 
-      return 'fa-question-circle';
+      return 'fa-question-circle'
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

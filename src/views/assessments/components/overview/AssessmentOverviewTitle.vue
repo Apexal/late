@@ -8,7 +8,7 @@
       <button
         :title="toggleButtonTitle"
         class="button is-success toggle-complete"
-        :class="{ 'is-outlined': !assessment.completed }"
+        :class="{'is-outlined': !assessment.completed}"
         :disabled="!isOwner"
         @click="$emit('toggle-completed')"
       >
@@ -19,7 +19,6 @@
         {{ assessment.completed ? "Mark Incomplete" : "Mark Complete" }}
       </button>
     </div>
-
 
     <h1
       v-if="!editing"
@@ -41,7 +40,7 @@
     </h1>
     <form
       v-else
-      :style="{ flex: 1 }"
+      :style="{flex: 1}"
       @submit.prevent="save"
     >
       <div class="select">
@@ -73,40 +72,43 @@
       v-if="!editing"
       class="has-text-centered-touch"
     >
-      <router-link
-        :to="{ name: 'coursework-upcoming' }"
-        class="button is-link tooltip is-tooltip-bottom back-button"
-        data-tooltip="Browse all course work."
+      <div
+        class="tag is-medium course-tag"
+        :style="{'background-color': course.color}"
       >
-        <span class="icon">
+        <router-link
+          :to="{name: 'coursework-upcoming'}"
+          class="tooltip is-tooltip-bottom has-text-white back-button"
+          data-tooltip="Browse all course work."
+        >
           <i class="fas fa-angle-left" />
+        </router-link>
+        <span
+          class="tooltip is-tooltip-bottom"
+          :class="assessmentType"
+          :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
+          @click="$store.commit('OPEN_COURSE_MODAL', course)"
+        >
+          <b class="course-title">{{ course.title }}</b>
+          <span class="margin-right">
+            {{ assessment.passed ? "Past " : ""
+            }}{{
+              assessmentType === "assignment" && assessment.isRecurring
+                ? "Recurring "
+                : ""
+            }}
+          </span>
+          <i
+            class="fas"
+            :class="
+              assessmentType === 'assignment'
+                ? 'fa-clipboard-check'
+                : 'fa-exclamation-triangle'
+            "
+          />
         </span>
-      </router-link>
-      <span
-        class="tag is-medium tooltip is-tooltip-bottom course-tag"
-        :class="assessmentType"
-        :style="{ 'background-color': course.color }"
-        :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
-        @click="$store.commit('OPEN_COURSE_MODAL', course)"
-      >
-        <b class="course-title">{{ course.title }}</b>
-        <span class="margin-right">
-          {{ assessment.passed ? "Past " : ""
-          }}{{
-            assessmentType === "assignment" && assessment.isRecurring
-              ? "Recurring "
-              : ""
-          }}
-        </span>
-        <i
-          class="fas"
-          :class="
-            assessmentType === 'assignment'
-              ? 'fa-clipboard-check'
-              : 'fa-exclamation-triangle'
-          "
-        />
-      </span>
+      </div>
+
       <b-button
         v-if="assessmentType === 'assignment'"
         class="is-hidden-desktop touch-complete-button"
@@ -125,7 +127,7 @@
 </template>
 
 <script>
-import assessmentsMixin from '@/mixins/assessments';
+import assessmentsMixin from '@/mixins/assessments'
 
 export default {
   name: 'AssessmentOverviewTitle',
@@ -141,19 +143,19 @@ export default {
       editing: false,
       tempCourseCRN: this.assessment.courseCRN,
       tempTitle: this.assessment.title
-    };
+    }
   },
   computed: {
     toggleButtonTitle () {
       return this.assessment.completed
         ? `Completed ${this.shortDateTimeFormat(this.assessment.completedAt)}`
-        : 'Click to mark as completed.';
+        : 'Click to mark as completed.'
     }
   },
   watch: {
     editing (newEditing) {
-      this.tempCourseCRN = this.assessment.courseCRN;
-      this.tempTitle = this.assessment.title;
+      this.tempCourseCRN = this.assessment.courseCRN
+      this.tempTitle = this.assessment.title
     }
   },
   methods: {
@@ -163,11 +165,11 @@ export default {
         this.tempTitle === this.assessment.title) ||
         !this.isOwner
       ) {
-        this.editing = false;
-        return;
+        this.editing = false
+        return
       }
 
-      let updatedAssessment;
+      let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.assessment._id,
@@ -176,33 +178,33 @@ export default {
             title: this.tempTitle,
             courseCRN: this.tempCourseCRN
           }
-        });
+        })
       } catch (e) {
-        this.editing = false;
-        this.$toast.open({
+        this.editing = false
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        return;
+        })
+        return
       }
 
-      this.$emit('updated-assessment', updatedAssessment);
-      this.$toast.open({
+      this.$emit('updated-assessment', updatedAssessment)
+      this.$buefy.toast.open({
         message: 'Updated the title and course!',
         type: 'is-success'
-      });
+      })
 
-      this.editing = false;
+      this.editing = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
-.back-button {
-  height: 2em;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+.assignment {
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 
 .touch-complete-button {
@@ -267,8 +269,10 @@ export default {
 .course-tag {
   cursor: pointer;
   color: white;
-  border-radius: 0;
-
+  border-radius: 4px;
+  .back-button {
+    margin-right: 5px;
+  }
   &.exam {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;

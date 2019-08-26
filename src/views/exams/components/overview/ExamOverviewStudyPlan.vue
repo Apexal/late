@@ -43,7 +43,7 @@
         v-for="(item, index) in studyPlan"
         :key="index"
         class="column is-half category"
-        :class="{ draggable: editing }"
+        :class="{draggable: editing}"
       >
         <label class="category-label">
           <i
@@ -79,7 +79,7 @@
               v-for="(child, childIndex) in item.children"
               :key="childIndex"
               class="child-item"
-              :class="{ draggable: editing }"
+              :class="{draggable: editing}"
             >
               <label>
                 <i
@@ -138,7 +138,7 @@
     <hr>
     <span
       class="is-flex"
-      :style="{ 'align-items': 'center' }"
+      :style="{'align-items': 'center'}"
     >
       <b-button
         type="is-warning"
@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import Draggable from 'vuedraggable';
+import Draggable from 'vuedraggable'
 
 export default {
   name: 'ExamOverviewStudyPlan',
@@ -175,7 +175,7 @@ export default {
       editing: false,
       newCategory: '',
       studyPlan: []
-    };
+    }
   },
   computed: {
     completedCount () {
@@ -186,38 +186,38 @@ export default {
             ? item.children.filter(c => c.completed).length
             : item.completed),
         0
-      );
+      )
     },
     totalItemCount () {
       return this.studyPlan.reduce(
         (acc, item) => acc + (item.children.length ? item.children.length : 1), // count header only if no children
         0
-      );
+      )
     },
     completedPercent () {
-      if (this.totalItemCount === 0) return 0;
-      return Math.round((this.completedCount / this.totalItemCount) * 100);
+      if (this.totalItemCount === 0) return 0
+      return Math.round((this.completedCount / this.totalItemCount) * 100)
     }
   },
   watch: {
     assessment (newAssessemnt) {
-      this.studyPlan = JSON.parse(JSON.stringify(newAssessemnt.studyPlan));
+      this.studyPlan = JSON.parse(JSON.stringify(newAssessemnt.studyPlan))
     }
   },
   mounted () {
-    this.studyPlan = JSON.parse(JSON.stringify(this.assessment.studyPlan));
+    this.studyPlan = JSON.parse(JSON.stringify(this.assessment.studyPlan))
   },
   methods: {
     async orderChanged () {
-      await this.updateStudyPlan(this.studyPlan);
+      await this.updateStudyPlan(this.studyPlan)
     },
     async addCategory (event) {
-      if (!this.newCategory) return;
+      if (!this.newCategory) return
 
       const items = this.newCategory
         .split(';')
         .map(s => s.trim())
-        .filter(s => s.length);
+        .filter(s => s.length)
 
       items.forEach(text =>
         this.studyPlan.push({
@@ -225,87 +225,87 @@ export default {
           children: [],
           completed: false
         })
-      );
+      )
 
-      this.newCategory = '';
+      this.newCategory = ''
 
-      await this.updateStudyPlan(this.studyPlan);
+      await this.updateStudyPlan(this.studyPlan)
     },
     async addChildItem (itemIndex, event) {
-      const text = event.target['child-item-name'].value.trim();
+      const text = event.target['child-item-name'].value.trim()
       // account for multiple items separated by semicolon
 
       const items = text
         .split(';')
         .map(s => s.trim())
-        .filter(s => s.length);
+        .filter(s => s.length)
 
-      this.studyPlan[itemIndex].completed = false;
+      this.studyPlan[itemIndex].completed = false
       items.forEach(item => {
         this.studyPlan[itemIndex].children.push({
           text: item,
           completed: false
-        });
-      });
+        })
+      })
 
-      event.target['child-item-name'].value = '';
+      event.target['child-item-name'].value = ''
 
-      await this.updateStudyPlan(this.studyPlan);
+      await this.updateStudyPlan(this.studyPlan)
     },
     async setCategoryCompleted (itemIndex, status) {
-      this.studyPlan[itemIndex].completed = status;
+      this.studyPlan[itemIndex].completed = status
 
       for (const child of this.studyPlan[itemIndex].children) {
-        child.completed = status;
+        child.completed = status
       }
 
-      await this.updateStudyPlan(this.studyPlan);
+      await this.updateStudyPlan(this.studyPlan)
     },
     async setChildCompleted (itemIndex, childIndex, status) {
-      this.studyPlan[itemIndex].children[childIndex].completed = status;
+      this.studyPlan[itemIndex].children[childIndex].completed = status
 
       // See if all children of parent are completed
       // eslint-disable-next-line
       this.studyPlan[itemIndex].completed = this.studyPlan[
         itemIndex
-      ].children.every(i => i.completed);
+      ].children.every(i => i.completed)
 
-      await this.updateStudyPlan(this.studyPlan);
+      await this.updateStudyPlan(this.studyPlan)
     },
     async deleteCategory (itemIndex) {
-      this.studyPlan.splice(itemIndex, 1);
+      this.studyPlan.splice(itemIndex, 1)
 
-      await this.updateStudyPlan(this.studyPlan);
+      await this.updateStudyPlan(this.studyPlan)
     },
     async deleteChildItem (itemIndex, childIndex) {
-      this.studyPlan[itemIndex].children.splice(childIndex, 1);
+      this.studyPlan[itemIndex].children.splice(childIndex, 1)
 
-      await this.updateStudyPlan(this.studyPlan);
+      await this.updateStudyPlan(this.studyPlan)
     },
     async updateStudyPlan (studyPlan) {
-      this.loading = true;
+      this.loading = true
 
-      let updatedAssessment;
+      let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.assessment._id,
           assessmentType: this.assessment.assessmentType,
           updates: { studyPlan }
-        });
+        })
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.editing = false;
-        return;
+        })
+        this.editing = false
+        return
       }
 
-      this.$emit('updated-assessment', updatedAssessment);
-      this.loading = false;
+      this.$emit('updated-assessment', updatedAssessment)
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

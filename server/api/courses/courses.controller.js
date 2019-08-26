@@ -1,5 +1,5 @@
-const Course = require('./courses.model');
-const logger = require('../../modules/logger');
+const Course = require('./courses.model')
+const logger = require('../../modules/logger')
 
 /**
  * Fetches the current student's course list for the current term.
@@ -10,23 +10,23 @@ async function getCourses (ctx) {
   const courses = await Course.find({
     _student: ctx.state.user._id,
     termCode: ctx.session.currentTerm.code
-  }).sort('originalTitle');
+  }).sort('originalTitle')
 
-  logger.info(`Sending courses to ${ctx.state.user.rcs_id}`);
+  logger.info(`Sending courses to ${ctx.state.user.rcs_id}`)
 
-  return ctx.ok({ courses });
+  return ctx.ok({ courses })
 }
 
 async function getTermCourses (ctx) {
-  const termCode = ctx.params.termCode;
+  const termCode = ctx.params.termCode
   const courses = await Course.find({
     _student: ctx.state.user._id,
     termCode
-  }).sort('originalTitle');
+  }).sort('originalTitle')
 
-  logger.info(`Sending term ${termCode} courses to ${ctx.state.user.rcs_id}`);
+  logger.info(`Sending term ${termCode} courses to ${ctx.state.user.rcs_id}`)
 
-  return ctx.ok({ courses });
+  return ctx.ok({ courses })
 }
 
 /**
@@ -36,31 +36,31 @@ async function getTermCourses (ctx) {
  * @param {Koa context} ctx
  */
 async function updateCourse (ctx) {
-  const { courseID } = ctx.params;
+  const { courseID } = ctx.params
 
-  let course;
+  let course
   try {
     course = await Course.findOne({
       _id: courseID,
       _student: ctx.state.user._id
-    });
+    })
 
-    const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle'];
+    const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle']
     if (forbiddenProperties.some(prop => prop in forbiddenProperties)) {
       throw new Error(
         'You cannot change the id, owner, crn, or original title of a course!'
-      );
+      )
     }
-    course.set(ctx.request.body);
+    course.set(ctx.request.body)
 
-    await course.save();
+    await course.save()
   } catch (e) {
-    logger.error(`Failed to update course for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.badRequest('There was an error updating the course.');
+    logger.error(`Failed to update course for ${ctx.state.user.rcs_id}: ${e}`)
+    return ctx.badRequest('There was an error updating the course.')
   }
 
-  logger.info(`Updated course for ${ctx.state.user.rcs_id}`);
-  return ctx.created({ updatedCourse: course });
+  logger.info(`Updated course for ${ctx.state.user.rcs_id}`)
+  return ctx.created({ updatedCourse: course })
 }
 
 /**
@@ -71,24 +71,24 @@ async function updateCourse (ctx) {
  * @returns {Object} The removed course
  */
 async function removeCourse (ctx) {
-  const { courseID } = ctx.params;
+  const { courseID } = ctx.params
 
-  let course;
+  let course
   try {
     course = await Course.findOne({
       _id: courseID,
       _student: ctx.state.user._id
-    });
+    })
   } catch (e) {
-    logger.error(`Failed to remove course ${courseID} for ${ctx.state.user.rcs_id}: ${e}`);
-    return ctx.badRequest('There was an error getting the course.');
+    logger.error(`Failed to remove course ${courseID} for ${ctx.state.user.rcs_id}: ${e}`)
+    return ctx.badRequest('There was an error getting the course.')
   }
 
-  if (!course) return ctx.notFound('Couldn\'t find the course to delete!');
+  if (!course) return ctx.notFound('Couldn\'t find the course to delete!')
 
-  await course.remove();
-  logger.info(`Removed course ${course.originalTitle} for student ${ctx.state.user.rcs_id}`);
-  return ctx.ok({ removedCourse: course });
+  await course.remove()
+  logger.info(`Removed course ${course.originalTitle} for student ${ctx.state.user.rcs_id}`)
+  return ctx.ok({ removedCourse: course })
 }
 
 module.exports = {
@@ -96,4 +96,4 @@ module.exports = {
   getTermCourses,
   updateCourse,
   removeCourse
-};
+}

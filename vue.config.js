@@ -1,6 +1,4 @@
 module.exports = {
-  lintOnSave: true,
-
   devServer: {
     proxy: 'http://localhost:3000'
   },
@@ -15,9 +13,11 @@ module.exports = {
   css: {
     sourceMap: true
   },
+
   configureWebpack: {
     devtool: 'source-map'
   },
+  lintOnSave: 'error',
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
@@ -27,4 +27,4 @@ module.exports = {
     themeColor: '#70cad1',
     msTileColor: '#2e3b59'
   }
-};
+}

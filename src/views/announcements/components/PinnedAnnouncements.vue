@@ -32,17 +32,17 @@
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown';
+import VueMarkdown from 'vue-markdown'
 
 export default {
   name: 'PinnedAnnouncements',
   components: { VueMarkdown },
   computed: {
     pinnedAnnouncements () {
-      return this.$store.getters.pinnedAnnouncements;
+      return this.$store.getters.pinnedAnnouncements
     },
     dismissedAnnouncementIDs () {
-      return this.$store.state.announcements.dismissedIDs;
+      return this.$store.state.announcements.dismissedIDs
     }
   },
   methods: {
@@ -50,15 +50,15 @@ export default {
       localStorage.setItem(
         'dismissedAnnouncementIDs',
         JSON.stringify(this.dismissedAnnouncementIDs.concat(id))
-      );
+      )
 
       this.$store.commit(
         'SET_DISMISSED_ANNOUNCEMENT_IDS',
         this.dismissedAnnouncementIDs.concat(id)
-      );
+      )
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

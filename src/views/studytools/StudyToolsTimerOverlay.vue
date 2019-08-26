@@ -75,25 +75,25 @@ export default {
   },
   computed: {
     paused () {
-      return this.$store.state.studytoolstimer.paused;
+      return this.$store.state.studytoolstimer.paused
     },
     stages () {
-      return this.$store.state.studytoolstimer.stages;
+      return this.$store.state.studytoolstimer.stages
     },
     stageIndex () {
-      return this.$store.state.studytoolstimer.stageIndex;
+      return this.$store.state.studytoolstimer.stageIndex
     },
     currentStage () {
-      return this.$store.getters.studyToolsTimerCurrentStage;
+      return this.$store.getters.studyToolsTimerCurrentStage
     },
     minutes () {
-      return this.$store.getters.studyToolsTimerMinutes;
+      return this.$store.getters.studyToolsTimerMinutes
     },
     seconds () {
-      return this.$store.getters.studyToolsTimerSeconds;
+      return this.$store.getters.studyToolsTimerSeconds
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

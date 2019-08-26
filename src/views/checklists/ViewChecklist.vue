@@ -33,14 +33,14 @@
     <div class="buttons">
       <router-link
         class="button is-link"
-        :to="{ name: 'tools' }"
+        :to="{name: 'tools'}"
       >
         <i class="fas fa-angle-left" />
         All Tools
       </router-link>
       <router-link
         class="button is-primary"
-        :to="{ name: 'checklist' }"
+        :to="{name: 'checklist'}"
       >
         <i class="fas fa-angle-left" />
         Your List
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import MoveInChecklistCategory from '@/views/checklists/components/MoveInChecklistCategory';
+import MoveInChecklistCategory from '@/views/checklists/components/MoveInChecklistCategory'
 
 export default {
   name: 'ViewChecklist',
@@ -65,60 +65,59 @@ export default {
     return {
       loading: true,
       checklist: {}
-    };
+    }
   },
   computed: {
     checklistID () {
-      return this.$route.params.checklistID;
+      return this.$route.params.checklistID
     },
     owner () {
-      if (!this.checklist._student) return null;
-      return this.checklist._student.displayName;
+      if (!this.checklist._student) return null
+      return this.checklist._student.displayName
     }
   },
   created () {
-    this.getChecklist();
+    this.getChecklist()
   },
   methods: {
     async getChecklist () {
       // Get checklist
-      this.loading = true;
-      let response;
+      this.loading = true
+      let response
       try {
-        response = await this.$http.get('/checklists/' + this.checklistID);
+        response = await this.$http.get('/checklists/' + this.checklistID)
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message:
             e.response.data.message,
           type: 'is-danger'
-        });
-        this.$router.push({ name: 'tools' });
-        return;
+        })
+        this.$router.push({ name: 'tools' })
+        return
       }
 
-      if (response.data.checklist._student.rcs_id === this.user.rcs_id) return this.$router.push({ name: 'checklist' });
+      if (response.data.checklist._student.rcs_id === this.user.rcs_id) return this.$router.push({ name: 'checklist' })
 
-
-      this.checklist = response.data.checklist;
-      this.loading = false;
+      this.checklist = response.data.checklist
+      this.loading = false
     },
     async copyChecklist () {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Replace your checklist with a copy of this one? You will be able to edit it.',
         onConfirm: async () => {
           for (let i = 0; i < this.checklist.categories.length; i++) {
             for (let j = 0; j < this.checklist.categories[i].items.length; j++) {
-              this.checklist.categories[i].items[j].complete = false;
+              this.checklist.categories[i].items[j].complete = false
             }
           }
-          this.$store.commit('SET_CHECKLIST', this.checklist);
-          await this.$store.dispatch('SAVE_CHECKLIST');
-          this.$router.push({ name: 'checklist' });
+          this.$store.commit('SET_CHECKLIST', this.checklist)
+          await this.$store.dispatch('SAVE_CHECKLIST')
+          this.$router.push({ name: 'checklist' })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

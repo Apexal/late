@@ -116,7 +116,7 @@
     <div class="buttons">
       <router-link
         class="button is-link"
-        :to="{ name: 'tools' }"
+        :to="{name: 'tools'}"
       >
         <i class="fas fa-angle-left" />
         All Tools
@@ -131,37 +131,37 @@ export default {
   data () {
     return {
       scratchHTML: ''
-    };
+    }
   },
   computed: {
     paused () {
-      return this.$store.state.studytoolstimer.paused;
+      return this.$store.state.studytoolstimer.paused
     },
     stages () {
-      return this.$store.state.studytoolstimer.stages;
+      return this.$store.state.studytoolstimer.stages
     },
     stageIndex () {
-      return this.$store.state.studytoolstimer.stageIndex;
+      return this.$store.state.studytoolstimer.stageIndex
     },
     currentStage () {
-      return this.$store.getters.studyToolsTimerCurrentStage;
+      return this.$store.getters.studyToolsTimerCurrentStage
     },
     minutes () {
-      return this.$store.getters.studyToolsTimerMinutes;
+      return this.$store.getters.studyToolsTimerMinutes
     },
     seconds () {
-      return this.$store.getters.studyToolsTimerSeconds;
+      return this.$store.getters.studyToolsTimerSeconds
     }
   },
   watch: {
     scratchHTML (newHTML) {
-      localStorage.setItem('scratchHTML', newHTML);
+      localStorage.setItem('scratchHTML', newHTML)
     }
   },
   mounted () {
-    this.scratchHTML = localStorage.getItem('scratchHTML') || '';
+    this.scratchHTML = localStorage.getItem('scratchHTML') || ''
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -190,7 +190,6 @@ hgroup {
     }
   }
 }
-
 
 .study-tools-timer {
   display: block;

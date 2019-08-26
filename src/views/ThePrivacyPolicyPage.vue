@@ -102,7 +102,7 @@
 <script>
 export default {
   name: 'ThePrivacyPolicyPage'
-};
+}
 </script>
 
 <style lang="scss" scoped>

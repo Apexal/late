@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import AdminStudentListOverview from '@/views/admin/components/AdminStudentListOverview.vue';
+import AdminStudentListOverview from '@/views/admin/components/AdminStudentListOverview.vue'
 export default {
   name: 'AdminStudentList',
   components: { AdminStudentListOverview },
@@ -82,72 +82,72 @@ export default {
       sortBy: 'createdAt',
       sortAscending: true,
       students: []
-    };
+    }
   },
   watch: {
     sortBy (newSortBy) {
-      this.sortStudents();
+      this.sortStudents()
     },
     sortAscending (newSortAscending) {
-      this.sortStudents();
+      this.sortStudents()
     }
   },
   async created () {
-    await this.getStudents();
+    await this.getStudents()
   },
   methods: {
     toggle (row) {
-      this.$refs.table.toggleDetails(row);
+      this.$refs.table.toggleDetails(row)
     },
     rowClass (row, index) {
-      if (row.admin) return 'has-background-primary';
-      if (row.accountLocked) return 'has-background-warning';
+      if (row.admin) return 'has-background-primary'
+      if (row.accountLocked) return 'has-background-warning'
     },
     sortStudents () {
       this.students.sort((s1, s2) => {
         if (this.sortAscending) {
-          if (!s1[this.sortBy]) return -1;
-          if (!s2[this.sortBy]) return 1;
+          if (!s1[this.sortBy]) return -1
+          if (!s2[this.sortBy]) return 1
 
-          if (s1[this.sortBy] < s2[this.sortBy]) return -1;
-          if (s1[this.sortBy] > s2[this.sortBy]) return 1;
+          if (s1[this.sortBy] < s2[this.sortBy]) return -1
+          if (s1[this.sortBy] > s2[this.sortBy]) return 1
         } else {
-          if (!s1[this.sortBy]) return 1;
-          if (!s2[this.sortBy]) return -1;
+          if (!s1[this.sortBy]) return 1
+          if (!s2[this.sortBy]) return -1
 
-          if (s1[this.sortBy] > s2[this.sortBy]) return -1;
-          if (s1[this.sortBy] < s2[this.sortBy]) return 1;
+          if (s1[this.sortBy] > s2[this.sortBy]) return -1
+          if (s1[this.sortBy] < s2[this.sortBy]) return 1
         }
-        return 0;
-      });
+        return 0
+      })
     },
     async getStudents () {
-      this.loading = true;
-      let request;
+      this.loading = true
+      let request
       try {
-        request = await this.$http.get('/students');
+        request = await this.$http.get('/students')
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        this.students = [];
-        this.loading = false;
-        return;
+        })
+        this.students = []
+        this.loading = false
+        return
       }
 
-      this.students = request.data.students;
-      this.sortStudents();
-      this.loading = false;
+      this.students = request.data.students
+      this.sortStudents()
+      this.loading = false
     },
     updatedStudent (student) {
-      Object.assign(this.students.find(s => s._id === student._id), student);
+      Object.assign(this.students.find(s => s._id === student._id), student)
     },
     deletedStudent (studentID) {
-      this.students = this.students.filter(s => s._id !== studentID);
+      this.students = this.students.filter(s => s._id !== studentID)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

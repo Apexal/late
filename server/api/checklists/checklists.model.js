@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const category = new Schema({
   title: {
@@ -23,7 +23,7 @@ const category = new Schema({
       complete: { type: Boolean, default: false }
     }
   ]
-});
+})
 
 const schema = new Schema(
   {
@@ -37,6 +37,6 @@ const schema = new Schema(
     private: { type: Boolean, default: true }
   },
   { timestamps: true }
-);
+)
 
-module.exports = mongoose.model('Checklist', schema);
+module.exports = mongoose.model('Checklist', schema)

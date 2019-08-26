@@ -70,7 +70,7 @@ export default {
       default: () => new Set()
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

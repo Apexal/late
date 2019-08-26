@@ -81,7 +81,7 @@
               :source="announcement.body"
               :html="false"
               :emoji="true"
-              :anchor-attributes="{ target: '_blank' }"
+              :anchor-attributes="{target: '_blank'}"
             />
             <small
               :data-tooltip="shortDateTimeFormat(announcement.createdAt)"
@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown';
+import VueMarkdown from 'vue-markdown'
 
 export default {
   name: 'AnnouncementsModal',
@@ -151,81 +151,81 @@ export default {
         body: '',
         isPinned: false
       }
-    };
+    }
   },
   methods: {
     buttonClick () {
-      if (this.addingAnnouncement) return this.addAnnouncement();
-      else this.addingAnnouncement = true;
+      if (this.addingAnnouncement) return this.addAnnouncement()
+      else this.addingAnnouncement = true
     },
     cancelButtonClick () {
-      if (this.addingAnnouncement) this.addingAnnouncement = false;
-      else this.$emit('close-modal');
+      if (this.addingAnnouncement) this.addingAnnouncement = false
+      else this.$emit('close-modal')
     },
     async addAnnouncement () {
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
       try {
-        request = await this.$http.post('/announcements', this.newAnnouncement);
+        request = await this.$http.post('/announcements', this.newAnnouncement)
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: e.response.data.message
-        });
-        this.loading = false;
-        return;
+        })
+        this.loading = false
+        return
       }
 
-      this.$store.commit('ADD_ANNOUNCEMENT', request.data.createdAnnouncement);
-      this.$toast.open({
+      this.$store.commit('ADD_ANNOUNCEMENT', request.data.createdAnnouncement)
+      this.$buefy.toast.open({
         type: 'is-success',
         message: 'Posted new announcement.'
-      });
+      })
 
-      this.$socket.emit('new announcement', request.data.createdAnnouncement);
+      this.$socket.client.emit('new announcement', request.data.createdAnnouncement)
 
       this.addingAnnouncement = {
         title: '',
         body: '',
         isPinned: false
-      };
-      this.loading = false;
+      }
+      this.loading = false
     },
     async togglePinned (announcement) {
-      if (!this.user.admin) return;
+      if (!this.user.admin) return
 
-      let request;
+      let request
       try {
         request = await this.$http.patch(`/announcements/${announcement._id}`, {
           isPinned: !announcement.isPinned
-        });
+        })
       } catch (e) {
-        this.$toast.open({ type: 'is-danger', message: e.response.data.message });
-        return;
+        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
+        return
       }
 
-      this.$store.commit('UPDATE_ANNOUNCEMENT', request.data.updatedAnnouncement);
+      this.$store.commit('UPDATE_ANNOUNCEMENT', request.data.updatedAnnouncement)
 
-      this.$toast.open({ type: 'is-success', message: 'Updated announcement!' });
+      this.$buefy.toast.open({ type: 'is-success', message: 'Updated announcement!' })
     },
     async deleteAnnouncement (announcement) {
-      if (!this.user.admin) return;
+      if (!this.user.admin) return
 
-      let request;
+      let request
       try {
-        request = await this.$http.delete(`/announcements/${announcement._id}`);
+        request = await this.$http.delete(`/announcements/${announcement._id}`)
       } catch (e) {
-        this.$toast.open({ type: 'is-danger', message: e.response.data.message });
-        return;
+        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
+        return
       }
 
-      this.$store.commit('REMOVE_ANNOUNCEMENT', request.data.deletedAnnouncement);
+      this.$store.commit('REMOVE_ANNOUNCEMENT', request.data.deletedAnnouncement)
 
-      this.$toast.open({ type: 'is-success', message: 'Deleted announcement!' });
+      this.$buefy.toast.open({ type: 'is-success', message: 'Deleted announcement!' })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

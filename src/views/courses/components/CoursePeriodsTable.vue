@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'CoursePeriodsTable',
@@ -47,16 +47,16 @@ export default {
   },
   methods: {
     roomIntoLocation (location) {
-      return this.$store.getters.roomIntoLocation(location);
+      return this.$store.getters.roomIntoLocation(location)
     },
     time: t => {
-      const dt = moment(t, 'Hmm', true);
+      const dt = moment(t, 'Hmm', true)
       if (dt.hours() === 12 && dt.minutes() === 0) {
-        return 'Noon';
+        return 'Noon'
       } else if (dt.minutes() === 0) {
-        return dt.format('ha');
+        return dt.format('ha')
       }
-      return dt.format('h:mma');
+      return dt.format('h:mma')
     },
     day: num =>
       [
@@ -69,10 +69,10 @@ export default {
         'Saturday'
       ][num],
     type (pType) {
-      return this.$store.getters.periodType(pType);
+      return this.$store.getters.periodType(pType)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -49,9 +49,20 @@ Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with vers
 
 To run the project in development mode, you must run the API server in one terminal and the front end hot-reloading server in another terminal:
 
+- `$ sudo npm run fix-watch` (Linux users only, may be required if Vue-cli complains about file watchers)
 - `$ npm run frontend` to run the hot-reloading Vue server (in one terminal)
 - `$ npm run backend` to run the API server (in another terminal)
 - Go to url `http://localhost:8080` (whatever `$ npm run frontend` tells you go to) in your browser
+
+### Running the Docker Container
+
+Make sure you have [Docker](https://docs.docker.com/install/) installed. WSL users should follow this guide to [install Docker on WSL](https://blog.jayway.com/2017/04/19/running-docker-on-bash-on-windows/). Note that the Docker container is not recommended for development use.
+
+- Clone the repository
+- Checkout the `dev` branch with `$ git checkout dev`
+- Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables **TEAM MEMBERS:** Ask Frank for the official `.env` file
+- Run LATE with `$ ./docker-run --build`. Subsequent runs only need the `--build` flag when there are changes.
+- Go to url `http://localhost:3000` in your browser
 
 ## License
 MIT

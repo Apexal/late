@@ -92,6 +92,7 @@
         time-format="h(:mm)t"
         :now-indicator="true"
         :event-render="eventRender"
+        :default-date="courses[0].startDate"
         @eventResize="eventChanged"
         @eventDrop="eventChanged"
         @eventClick="eventClick"
@@ -102,29 +103,28 @@
         form="time-preferences"
         type="is-primary"
         :leading="loading"
-        :disabled="saved"
         class="is-pulled-right"
-        @click="saveTimePreferences"
+        @click="saveTimePreferencesAndContinue"
       >
-        Save and Continue
+        {{ saved ? '' : 'Save and ' }}Continue
       </b-button>
     </template>
   </div>
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import FullCalendar from '@fullcalendar/vue';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/vue'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
-import fullcalendar from '@/mixins/fullcalendar';
+import fullcalendar from '@/mixins/fullcalendar'
 
-import '@fullcalendar/core/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
 
 export default {
   name: 'AccountSetupUnavailability',
@@ -133,16 +133,16 @@ export default {
   data () {
     return {
       loading: false,
-      saved: false,
+      saved: true,
       earliest: this.$store.state.auth.user.earliestWorkTime,
       latest: this.$store.state.auth.user.latestWorkTime,
       calendar: {
-        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         columnHeaderFormat: {
           weekday: 'short'
         }
       }
-    };
+    }
   },
   computed: {
     businessHours () {
@@ -150,7 +150,7 @@ export default {
         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
         startTime: this.earliest,
         endTime: this.fixedLatest
-      };
+      }
     },
     unavailabilityEvents () {
       return this.$store.getters.current_unavailability.map(unavailability => Object.assign({}, unavailability, {
@@ -158,82 +158,82 @@ export default {
         editable: true,
         eventType: 'unavailability',
         color: 'black'
-      }));
+      }))
     },
     allEvents () {
       return this.$store.getters.getCourseScheduleAsEvents.concat(
         this.unavailabilityEvents
-      );
+      )
     },
     originalLatest () {
-      const parts = this.latest.split(':');
-      const hours = parseInt(parts[0]);
+      const parts = this.latest.split(':')
+      const hours = parseInt(parts[0])
       if (hours >= 24) {
-        const fixedHours = String(hours - 24).padStart(2, '0');
-        const minutes = parts[1];
-        return `${fixedHours}:${minutes}`;
+        const fixedHours = String(hours - 24).padStart(2, '0')
+        const minutes = parts[1]
+        return `${fixedHours}:${minutes}`
       }
 
-      return this.latest;
+      return this.latest
     },
     fixedLatest () {
-      const rawEnd = moment(this.latest, 'HH:mm', true);
+      const rawEnd = moment(this.latest, 'HH:mm', true)
       if (rawEnd.isBefore(moment(this.earliest, 'HH:mm', true))) {
-        let hours = (24 + rawEnd.hours()).toString();
-        let minutes = rawEnd.minutes().toString();
-        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+        const hours = (24 + rawEnd.hours()).toString()
+        const minutes = rawEnd.minutes().toString()
+        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`
       }
-      return this.latest;
+      return this.latest
     }
   },
   watch: {
     earliest (minTime) {
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi()
       calendarApi.setOption('businessHours', {
         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
         startTime: this.earliest,
         endTime: this.fixedLatest
-      });
-      this.saved = false;
+      })
+      this.saved = false
     },
     latest (maxTime) {
-      let calendarApi = this.$refs.calendar.getApi();
+      const calendarApi = this.$refs.calendar.getApi()
       calendarApi.setOption('businessHours', {
         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
         startTime: this.earliest,
         endTime: this.fixedLatest
-      });
-      this.saved = false;
+      })
+      this.saved = false
     }
   },
   methods: {
     setLatest (event) {
-      this.latest = event.target.value;
+      this.latest = event.target.value
     },
     eventRender ({ event, el }) {
-      el.title = 'Click to remove';
+      el.title = 'Click to remove'
     },
     eventClick ({ event, jsEvent, view }) {
-      if (event.extendedProps.eventType !== 'unavailability') return;
+      if (event.extendedProps.eventType !== 'unavailability') return
 
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Remove ${event.title}?`,
         onConfirm: () => this.removeUnavailability(event)
-      });
+      })
     },
     async eventChanged ({ event, revert }) {
       try {
-        await this.updateUnavailability(event);
+        await this.updateUnavailability(event)
       } catch (e) {
-        console.error(e);
-        revert();
+        console.error(e)
+        revert()
       }
     },
     select ({ start, end }) {
-      start = moment(start);
-      end = moment(end);
+      start = moment(start)
+      end = moment(end)
 
-      this.$dialog.prompt({
+      this.$buefy.dialog.prompt({
         message: `What are you doing ${start.format('h:mma')} to ${start.format(
           'h:mma'
         )} on ${start.format('dddd')}?`,
@@ -250,37 +250,36 @@ export default {
               end.format('HH:mm') === '00:00' ? '24:00' : end.format('HH:mm'),
             daysOfWeek: [start.day()],
             isOneTime: false
-          };
+          }
 
-          this.addUnavailability(unavailability);
-          this.saved = false;
+          this.addUnavailability(unavailability)
+          this.saved = false
         }
-      });
+      })
     },
     async addUnavailability (unavailability) {
-      let request;
+      let request
       try {
         request = await this.$store.dispatch(
           'ADD_UNAVAILABILITY',
           unavailability
-        );
+        )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        return;
+        })
+        return
       }
 
-      this.$store.commit('SET_USER', request.data.updatedUser);
+      this.$store.commit('SET_USER', request.data.updatedUser)
 
-      let calendarApi = this.$refs.calendar.getApi();
-      calendarApi.unselect();
+      const calendarApi = this.$refs.calendar.getApi()
+      calendarApi.unselect()
     },
     async updateUnavailability (unavailability) {
-      let request;
       try {
-        request = await this.$store.dispatch(
+        await this.$store.dispatch(
           'UPDATE_UNAVAILABILITY',
           { unavailabilityID: unavailability.id,
             updates: {
@@ -290,56 +289,59 @@ export default {
               daysOfWeek: [unavailability.start.getDay()]
             }
           }
-        );
+        )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        throw e;
+        })
+        throw e
       }
     },
     async removeUnavailability (unavailabilityEvent) {
-      let request;
       try {
-        request = await this.$store.dispatch(
+        await this.$store.dispatch(
           'REMOVE_UNAVAILABILITY',
           unavailabilityEvent
-        );
+        )
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
     },
-    async saveTimePreferences () {
-      this.loading = true;
-      let request;
+    async saveTimePreferencesAndContinue () {
+      if (this.saved) {
+        this.$router.push({ name: 'setup-integrations' })
+        return
+      }
+      this.loading = true
+      let request
       try {
         request = await this.$http.post('/account/timepreference', {
           earliest: this.earliest,
           latest: this.fixedLatest
-        });
+        })
       } catch (e) {
-        this.loading = false;
-        this.$toast.open({
+        this.loading = false
+        this.$buefy.toast.open({
           type: 'is-danger',
           message: e.response.data.message
-        });
+        })
       }
-      await this.$store.dispatch('SET_USER', request.data.updatedUser);
+      await this.$store.dispatch('SET_USER', request.data.updatedUser)
       // Notify user of success
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-success',
         message: 'Your study/work time limits have been saved.'
-      });
-      this.$router.push({ name: 'setup-integrations' });
-      this.loading = false;
-      this.saved = true;
+      })
+      this.$router.push({ name: 'setup-integrations' })
+      this.loading = false
+      this.saved = true
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

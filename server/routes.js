@@ -12,7 +12,7 @@ const exceptions = [
   '/quicklinks',
   '/sms',
   '/checklists'
-];
+]
 
 module.exports = router => {
   // router.use(path, router);
@@ -23,12 +23,12 @@ module.exports = router => {
         exceptions.every(url => !ctx.request.url.startsWith('/api' + url)) &&
         !ctx.session.cas_user
       ) {
-        return ctx.unauthorized('You must be logged in to use the API.');
+        return ctx.unauthorized('You must be logged in to use the API.')
       }
-      await next();
+      await next()
     },
     require('./api')
-  );
+  )
 
-  router.use('/auth', require('./auth'));
-};
+  router.use('/auth', require('./auth'))
+}

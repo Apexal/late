@@ -94,13 +94,13 @@
         <div class="tabs">
           <ul>
             <li
-              :class="{ 'is-active': tab === 'list' }"
+              :class="{'is-active': tab === 'list'}"
               @click="tab = 'list'"
             >
               <a>List</a>
             </li>
             <li
-              :class="{ 'is-active': tab === 'calendar' }"
+              :class="{'is-active': tab === 'calendar'}"
               @click="
                 tab = 'calendar';
                 openedCourseID = '';
@@ -176,11 +176,11 @@
         </div>
         <div class="column is-narrow">
           <router-link
-            :to="{ name: 'setup-unavailability' }"
-            class="button has-background-secondary "
-            :class="{ 'is-loading': loading }"
+            :to="{name: 'setup-unavailability'}"
+            class="button is-primary"
+            :class="{'is-loading': loading}"
           >
-            Save and Continue
+            Continue
           </router-link>
         </div>
       </div>
@@ -189,12 +189,12 @@
 </template>
 
 <script>
-import CourseScheduleCalendar from '@/views/courses/components/CourseScheduleCalendar';
-import AccountCourse from '@/views/account/components/AccountCourse';
+import CourseScheduleCalendar from '@/views/courses/components/CourseScheduleCalendar'
+import AccountCourse from '@/views/account/components/AccountCourse'
 
-import CustomCourseModal from './components/CustomCourseModal';
+import CustomCourseModal from './components/CustomCourseModal'
 
-import accountMixin from '@/mixins/account';
+import accountMixin from '@/mixins/account'
 
 export default {
   name: 'AccountSetupCourseSchedule',
@@ -210,116 +210,116 @@ export default {
       pin: '',
       openedCourseID: '',
       addingCustomCourse: false
-    };
+    }
   },
   computed: {
     hasPersonalInfoSetup () {
-      return this.$store.getters.userSetup.profile;
+      return this.$store.getters.userSetup.profile
     },
     hasSelectedTerms () {
-      return this.$store.getters.userSetup.terms;
+      return this.$store.getters.userSetup.terms
     },
     canReset () {
-      return !(this.pin.length === 0);
+      return !(this.pin.length === 0)
     },
     coursesWithoutOther () {
-      return this.courses.filter(c => c.summary !== 'OTHER');
+      return this.courses.filter(c => c.summary !== 'OTHER')
     },
     hiddenCourses () {
-      return this.$store.state.schedule.courses.filter(c => c.hidden);
+      return this.$store.state.schedule.courses.filter(c => c.hidden)
     }
   },
   methods: {
     gotoCourse (courseID) {
-      this.tab = 'list';
-      this.openedCourseID = courseID;
+      this.tab = 'list'
+      this.openedCourseID = courseID
     },
     startAddCustomCourse () {
       if (this.rin && this.pin) {
-        this.addingCustomCourse = true;
+        this.addingCustomCourse = true
       } else {
         this.promptRIN(rin => {
           this.promptPIN(pin => {
-            this.rin = rin;
-            this.pin = pin;
-            this.addingCustomCourse = true;
-          });
-        });
+            this.rin = rin
+            this.pin = pin
+            this.addingCustomCourse = true
+          })
+        })
       }
     },
     startAddCourseByCRN () {
       if (this.rin && this.pin) {
-        this.$dialog.prompt({
+        this.$buefy.dialog.prompt({
           message: 'What is the course CRN?',
           onConfirm: this.addCourseByCRN
-        });
+        })
       } else {
         this.promptRIN(rin => {
           this.promptPIN(pin => {
-            this.rin = rin;
-            this.pin = pin;
+            this.rin = rin
+            this.pin = pin
 
-            this.$dialog.prompt({
+            this.$buefy.dialog.prompt({
               message: 'What is the course CRN?',
               onConfirm: this.addCourseByCRN
-            });
-          });
-        });
+            })
+          })
+        })
       }
     },
     async addCourseByCRN (crn) {
-      let request;
+      let request
       try {
         request = await this.$http.put(`/account/courseschedule/${crn}`, {
           rin: this.rin,
           pin: this.pin
-        });
+        })
       } catch (e) {
-        this.$toast.open({ type: 'is-danger', message: e.response.data.message });
-        return;
+        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
+        return
       }
 
-      const newCourse = request.data.course;
-      this.$toast.open({ message: `Grabbed course ${newCourse.title} from SIS!` });
-      this.$store.commit('ADD_COURSE', newCourse);
+      const newCourse = request.data.course
+      this.$buefy.toast.open({ message: `Grabbed course ${newCourse.title} from SIS!` })
+      this.$store.commit('ADD_COURSE', newCourse)
     },
     addCustomCourse (courseData) {
-      alert(courseData);
+      alert(courseData)
     },
     async removeCourse (courseID) {
-      let removedCourse;
+      let removedCourse
       try {
-        removedCourse = await this.$store.dispatch('REMOVE_COURSE', courseID);
+        removedCourse = await this.$store.dispatch('REMOVE_COURSE', courseID)
       } catch (e) {
-        this.$toast.open({ message: e.response.data.message, type: 'is-danger' });
-        return;
+        this.$buefy.toast.open({ message: e.response.data.message, type: 'is-danger' })
+        return
       }
 
-      this.$toast.open({ message: `Removed ${removedCourse.title}!`, type: 'is-success' });
+      this.$buefy.toast.open({ message: `Removed ${removedCourse.title}!`, type: 'is-success' })
     },
     async importSchedule () {
-      this.loading = true;
+      this.loading = true
 
-      let request;
+      let request
       try {
         request = await this.$http.post('/account/courseschedule', {
           rin: this.rin,
           pin: this.pin
-        });
+        })
       } catch (e) {
-        this.loading = false;
-        this.$toast.open({
+        this.loading = false
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
-        return;
+        })
+        return
       }
 
-      this.$store.commit('SET_COURSES', request.data.courses);
-      this.$store.commit('SET_USER', request.data.updatedUser);
+      this.$store.commit('SET_COURSES', request.data.courses)
+      this.$store.commit('SET_USER', request.data.updatedUser)
 
       // Notify user of success
-      this.$snackbar.open({
+      this.$buefy.snackbar.open({
         message:
           'Your course schedule has been imported from SIS. Edit the courses below to customize titles, colors, and more.',
         type: 'is-primary',
@@ -327,14 +327,14 @@ export default {
         actionText: 'Next Step',
         duration: 5000,
         onAction: () => {
-          this.$router.push({ name: 'setup-unavailability' });
+          this.$router.push({ name: 'setup-unavailability' })
         }
-      });
+      })
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

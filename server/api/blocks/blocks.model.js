@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const moment = require('moment');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const moment = require('moment')
+const Schema = mongoose.Schema
 
-const Student = require('../students/students.model');
+const Student = require('../students/students.model')
 
 const schema = new Schema(
   {
@@ -23,18 +23,18 @@ const schema = new Schema(
     location: { type: String, trim: true, minlength: 1, maxlength: 200 }
   },
   { timestamps: true }
-);
+)
 
-schema.set('toObject', { getters: true, virtuals: true });
-schema.set('toJSON', { getters: true, virtuals: true });
+schema.set('toObject', { getters: true, virtuals: true })
+schema.set('toJSON', { getters: true, virtuals: true })
 
 schema.virtual('passed').get(function () {
-  return moment(this.endTime).isBefore(new Date());
-});
+  return moment(this.endTime).isBefore(new Date())
+})
 
 schema.virtual('duration').get(function () {
-  return moment(this.endTime).diff(this.startTime, 'minutes');
-});
+  return moment(this.endTime).diff(this.startTime, 'minutes')
+})
 
 schema.virtual('asGoogleCalendarEvent').get(function () {
   return {
@@ -47,7 +47,7 @@ schema.virtual('asGoogleCalendarEvent').get(function () {
       dateTime: this.endTime,
       timezone: 'America/New_York'
     }
-  };
-});
+  }
+})
 
-module.exports = mongoose.model('Block', schema);
+module.exports = mongoose.model('Block', schema)

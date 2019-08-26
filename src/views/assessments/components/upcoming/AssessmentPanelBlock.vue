@@ -11,7 +11,7 @@
             assessment.completed ? 'fas fa-check-circle' : 'far fa-circle'
           ]"
           :title="toggleAssignmentTitle"
-          :style="{ color: course.color }"
+          :style="{color: course.color}"
         />
       </span>
       <router-link
@@ -29,7 +29,7 @@
       >
         <span
           v-if="assessmentType === 'exam'"
-          :style="{ color: course.color }"
+          :style="{color: course.color}"
           class="icon exam-icon"
           :title="`${course.title} Exam`"
         >
@@ -53,7 +53,7 @@
         :data-tooltip="scheduleWarningTitle"
       >
         <i
-          :style="{ opacity: assessmentTimeWarningOpacity }"
+          :style="{opacity: assessmentTimeWarningOpacity}"
           class="far fa-clock"
         />
       </span>
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 export default {
   name: 'AssessmentsUpcomingPanelBlock',
   props: {
@@ -88,10 +88,10 @@ export default {
   },
   computed: {
     assessmentType () {
-      return this.assessment.assessmentType;
+      return this.assessment.assessmentType
     },
     course () {
-      return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN);
+      return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN)
     },
     toggleAssignmentTitle () {
       return (
@@ -102,54 +102,54 @@ export default {
             this.assessment.completedAt
           )}`
           : '')
-      );
+      )
     },
     scheduleWarningTitle () {
       return `${this.assessment.scheduledTime}/${this.assessment.timeEstimate *
-        60} min scheduled`;
+        60} min scheduled`
     },
     assessmentDate () {
       return this.assessmentType === 'assignment'
         ? this.assessment.dueDate
-        : this.assessment.date;
+        : this.assessment.date
     },
     toDateShortString () {
       if (moment(this.assessmentDate).isSame(moment(), 'day')) {
-        return 'Today';
+        return 'Today'
       }
       if (moment(this.assessmentDate).isSame(moment().add(1, 'day'), 'day')) {
-        return 'Tomorrow';
+        return 'Tomorrow'
       }
-      return moment(this.assessmentDate).format('dddd [the] Do');
+      return moment(this.assessmentDate).format('dddd [the] Do')
     },
     daysAway () {
       return moment(this.assessmentDate).diff(
         moment(this.rightNow).startOf('day'),
         'days'
-      );
+      )
     },
     assessmentTimeWarningOpacity () {
       if (this.assessmentType === 'assignment' && this.assessment.completed) {
-        return 0;
+        return 0
       }
-      if (this.assessment.scheduledTime === 0) return 1;
-      if (this.assessment.timeEstimate === 0) return 0;
+      if (this.assessment.scheduledTime === 0) return 1
+      if (this.assessment.timeEstimate === 0) return 0
       if (this.assessment.timeEstimate === this.assessment.scheduledTime) {
-        return 0;
+        return 0
       }
 
       return (
         1 - this.assessment.scheduledTime / (this.assessment.timeEstimate * 60)
-      );
+      )
     },
     linkToParams () {
       return {
         name: this.assessmentType + '-overview',
         params: { [this.assessmentType + 'ID']: this.assessment._id }
-      };
+      }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

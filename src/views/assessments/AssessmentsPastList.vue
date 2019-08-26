@@ -46,7 +46,6 @@
         </b-button>
       </b-field>
 
-
       <b-field>
         <div class="control">
           <input
@@ -98,8 +97,8 @@
 </template>
 
 <script>
-import moment from 'moment';
-import AssessmentsTable from '@/views/assessments/components/AssessmentsTable';
+import moment from 'moment'
+import AssessmentsTable from '@/views/assessments/components/AssessmentsTable'
 
 export default {
   name: 'AssessmentsPastList',
@@ -125,42 +124,42 @@ export default {
           .format('YYYY-MM-DD'),
       endDate: this.$route.query.end || moment().format('YYYY-MM-DD'),
       currentAssessments: []
-    };
+    }
   },
   computed: {
     filteredAssessments () {
       return this.currentAssessments.filter(assessment => {
         if (assessment.assessmentType === 'assignment') {
-          if (!this.showCompleted && assessment.completed) return false;
+          if (!this.showCompleted && assessment.completed) return false
         }
-        return !this.filter.includes(assessment.courseCRN);
-      });
+        return !this.filter.includes(assessment.courseCRN)
+      })
     },
     canGoForward () {
-      return this.endMoment.isBefore(moment().startOf('day'));
+      return this.endMoment.isBefore(moment().startOf('day'))
     },
     canGoPrev () {
       return moment(this.startMoment)
         .subtract(1, 'week')
-        .isSameOrAfter(this.currentTerm.start, 'week');
+        .isSameOrAfter(this.currentTerm.start, 'week')
     },
     startMoment () {
-      return moment(this.startDate, 'YYYY-MM-DD', true);
+      return moment(this.startDate, 'YYYY-MM-DD', true)
     },
     endMoment () {
-      return moment(this.endDate, 'YYYY-MM-DD', true);
+      return moment(this.endDate, 'YYYY-MM-DD', true)
     },
     isLastWeek () {
-      return this.endMoment.isSame(moment(), 'day');
+      return this.endMoment.isSame(moment(), 'day')
     },
     weekOf () {
-      return this.longDateFormat(this.startMoment);
+      return this.longDateFormat(this.startMoment)
     },
     range () {
       return this.endMoment.diff(
         moment(this.startDate, 'YYYY-MM-DD', true),
         'days'
-      );
+      )
     },
     today: () => moment().format('YYYY-MM-DD'),
     yesterday: () =>
@@ -170,77 +169,77 @@ export default {
   },
   watch: {
     startDate () {
-      this.getAssessments();
+      this.getAssessments()
     }
   },
   created () {
-    this.getAssessments();
+    this.getAssessments()
   },
   methods: {
     async removeAssessment (assessment) {
       // Confirm user wants to remove assignment
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Permanently remove ${assessment.assessmentType} ${
           assessment.title
         }?`,
         onConfirm: async () => {
-          await this.$store.dispatch('REMOVE_ASSESSMENT', assessment);
+          await this.$store.dispatch('REMOVE_ASSESSMENT', assessment)
 
           this.currentAssessments = this.currentAssessments.filter(
             as => as._id !== assessment._id
-          );
+          )
 
           // Notify user of success
-          this.$toast.open({
+          this.$buefy.toast.open({
             message: `Successfully removed past ${assessment.assessmentType} '${
               assessment.title
             }`,
             type: 'is-success',
             duration: 15000
-          });
+          })
         }
-      });
+      })
     },
     gotoLastWeek () {
-      this.endDate = this.today;
+      this.endDate = this.today
       this.startDate = moment()
         .subtract('1', 'week')
-        .format('YYYY-MM-DD');
+        .format('YYYY-MM-DD')
 
-      this.getAssessments();
+      this.getAssessments()
     },
     course (ex) {
-      return this.$store.getters.getCourseFromCRN(ex.courseCRN);
+      return this.$store.getters.getCourseFromCRN(ex.courseCRN)
     },
     shiftDates (amount) {
       this.startDate = moment(this.startDate, 'YYYY-MM-DD', true)
         .add(amount, 'days')
-        .format('YYYY-MM-DD');
+        .format('YYYY-MM-DD')
       this.endDate = moment(this.endDate, 'YYYY-MM-DD', true)
         .add(amount, 'days')
-        .format('YYYY-MM-DD');
+        .format('YYYY-MM-DD')
 
-      this.getAssessments();
+      this.getAssessments()
     },
     async getAssessments () {
-      this.loading = true;
-      let request;
+      this.loading = true
+      let request
       try {
         request = await this.$http.get('/exams', {
           params: {
             start: this.startMoment.format('YYYY-MM-DD'),
             end: this.endMoment.format('YYYY-MM-DD')
           }
-        });
+        })
       } catch (e) {
-        this.loading = false;
-        this.currentAssessments = [];
-        return this.$toast.open({
+        this.loading = false
+        this.currentAssessments = []
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
-      let currentExams = request.data.exams.filter(e => e.passed); // Only get passed exams
+      const currentExams = request.data.exams.filter(e => e.passed) // Only get passed exams
 
       try {
         request = await this.$http.get('/assignments', {
@@ -248,33 +247,33 @@ export default {
             start: this.startMoment.format('YYYY-MM-DD'),
             end: this.endMoment.format('YYYY-MM-DD')
           }
-        });
+        })
       } catch (e) {
-        this.loading = false;
-        this.currentAssessments = [];
-        return this.$toast.open({
+        this.loading = false
+        this.currentAssessments = []
+        return this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
 
-      let currentAssignments = request.data.assignments.filter(e => e.passed); // Only get passed exams
+      const currentAssignments = request.data.assignments.filter(e => e.passed) // Only get passed exams
 
       this.currentAssessments = currentAssignments
         .concat(currentExams)
         .sort((a, b) => {
-          const aDate = a.dueDate || a.date;
-          const bDate = b.dueDate || b.date;
+          const aDate = a.dueDate || a.date
+          const bDate = b.dueDate || b.date
 
-          if (aDate > bDate) return 1;
-          if (aDate < bDate) return -1;
-          return 0;
-        });
+          if (aDate > bDate) return 1
+          if (aDate < bDate) return -1
+          return 0
+        })
 
-      this.loading = false;
+      this.loading = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

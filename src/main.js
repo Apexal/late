@@ -1,38 +1,38 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import store from './store';
-import Api from './api';
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+import store from './store'
+import Api from './api'
 
-import Buefy from 'buefy';
+import Buefy from 'buefy'
 
-import 'bulma-tooltip';
+import 'bulma-tooltip'
 
-import VueProgressBar from 'vue-progressbar';
-import VueTour from 'vue-tour';
+import VueProgressBar from 'vue-progressbar'
+import VueTour from 'vue-tour'
 
-import CourseAssessmentDot from '@/views/courses/components/CourseAssessmentDot';
+import CourseAssessmentDot from '@/views/courses/components/CourseAssessmentDot'
 
-import datemethods from './mixins/datemethods';
-import sharedproperties from './mixins/sharedproperties';
+import datemethods from './mixins/datemethods'
+import sharedproperties from './mixins/sharedproperties'
 
-import * as VueGoogleMaps from 'vue2-google-maps';
+import * as VueGoogleMaps from 'vue2-google-maps'
 
-import VueSocketio from 'vue-socket.io-extended';
-import io from 'socket.io-client';
+import VueSocketio from 'vue-socket.io-extended'
+import io from 'socket.io-client'
 
-import 'vue-tour/dist/vue-tour.css';
-import './sw/registerServiceWorker';
+import 'vue-tour/dist/vue-tour.css'
+import './sw/registerServiceWorker'
 
-Vue.use(VueSocketio, io(process.env.BASE_URL), { store });
+Vue.use(VueSocketio, io(process.env.BASE_URL), { store })
 
-Vue.use(VueTour);
+Vue.use(VueTour)
 
-Vue.component('CourseAssessmentDot', CourseAssessmentDot);
+Vue.component('CourseAssessmentDot', CourseAssessmentDot)
 
 Vue.use(Buefy, {
   defaultIconPack: 'fas'
-});
+})
 
 const options = {
   color: '#70cad1',
@@ -46,12 +46,12 @@ const options = {
   autoRevert: true,
   location: 'top',
   inverse: false
-};
-Vue.use(VueProgressBar, options);
+}
+Vue.use(VueProgressBar, options)
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false
 
-Vue.prototype.$http = Api;
+Vue.prototype.$http = Api
 Vue.use(VueGoogleMaps, {
   load: {
     key: process.env.VUE_APP_GOOGLE_API_KEY
@@ -68,15 +68,15 @@ Vue.use(VueGoogleMaps, {
   /// / Vue.component('GmapMarker', GmapMarker)
   /// / then disable the following:
   // installComponents: true,
-});
+})
 
-Vue.mixin(datemethods);
-Vue.mixin(sharedproperties);
+Vue.mixin(datemethods)
+Vue.mixin(sharedproperties)
 
 const app = new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app');
+}).$mount('#app')
 
-export default app;
+export default app

@@ -2,7 +2,7 @@
 <template>
   <div
     class="panel-block is-flex item"
-    :class="[{ editing, viewing }, itemClass]"
+    :class="[{editing, viewing}, itemClass]"
     :title="editing ? 'Drag me to reorder items!' : ''"
   >
     <span class="item-title">{{ item.title }}</span>
@@ -62,40 +62,40 @@ export default {
   computed: {
     complete: {
       get () {
-        return this.item.complete;
+        return this.item.complete
       },
       set (newComplete) {
         this.$store.dispatch('UPDATE_CHECKLIST_ITEM', {
           categoryIndex: this.categoryIndex,
           itemIndex: this.itemIndex,
           updates: { complete: newComplete }
-        });
+        })
       }
     },
     itemClass () {
-      return this.item.complete ? 'completed' : '';
+      return this.item.complete ? 'completed' : ''
     }
   },
   methods: {
     updateItemCount (count) {
-      if (count < 0 || count > 100) return;
+      if (count < 0 || count > 100) return
 
-      const updates = { count };
+      const updates = { count }
 
       this.$store.commit('UPDATE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex,
         updates
-      });
+      })
     },
     removeItem () {
       this.$store.commit('REMOVE_CHECKLIST_ITEM', {
         categoryIndex: this.categoryIndex,
         itemIndex: this.itemIndex
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

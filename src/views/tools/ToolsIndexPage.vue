@@ -16,7 +16,7 @@
         <div class="tile is-parent is-vertical">
           <router-link
             tag="article"
-            :to="{ name: 'checklist' }"
+            :to="{name: 'checklist'}"
             class="tile is-child tools-button notification"
           >
             <i class="fas fa-tasks" />
@@ -30,7 +30,7 @@
           </router-link>
           <router-link
             tag="article"
-            :to="{ name: 'study-tools' }"
+            :to="{name: 'study-tools'}"
             class="tile is-child tools-button notification"
           >
             <i class="fas fa-hourglass-half" />
@@ -46,7 +46,7 @@
         <div class="tile is-parent is-vertical">
           <router-link
             tag="article"
-            :to="{ name: 'quick-links' }"
+            :to="{name: 'quick-links'}"
             class="tile is-child tools-button notification"
           >
             <i class="fas fa-link" />
@@ -60,7 +60,7 @@
           </router-link>
           <router-link
             tag="article"
-            :to="{ name: 'gpa-calculator' }"
+            :to="{name: 'gpa-calculator'}"
             class="tile is-child tools-button notification"
           >
             <i class="fas fa-calculator" />
@@ -108,26 +108,25 @@ export default {
   data () {
     return {
       suggestion: ''
-    };
+    }
   },
   methods: {
     async suggestTool () {
-      let response;
       try {
-        response = await this.$http.post('/tools/suggest', {
+        await this.$http.post('/tools/suggest', {
           suggestion: this.suggestion
-        });
+        })
       } catch (e) {
-        return;
+        return
       }
-      this.$toast.open({
+      this.$buefy.toast.open({
         type: 'is-primary',
         message: 'Suggestion sent to Frank! Thank you for your idea!'
-      });
-      this.suggestion = '';
+      })
+      this.suggestion = ''
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

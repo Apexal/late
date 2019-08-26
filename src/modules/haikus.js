@@ -7,4 +7,4 @@ export default [
   ['the honorable', 'doctor shirley ann jackson', 'approves this message'],
   ['writing a haiku', 'is a great way to pass time', 'I should go to sleep'],
   ['writing a haiku', 'is a great way to pass time', 'I should go to sleep']
-];
+]

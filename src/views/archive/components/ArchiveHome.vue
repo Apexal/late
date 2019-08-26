@@ -9,7 +9,7 @@
         <router-link
           class="box term"
           :class="hasTerm(term) ? '' : 'has-text-grey'"
-          :to="{ name: 'archive-term', params: { termCode: term.code } }"
+          :to="{name: 'archive-term', params: {termCode: term.code}}"
         >
           <h2>{{ term.name }}</h2>
         </router-link>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'ArchiveHome',
@@ -29,15 +29,15 @@ export default {
         term =>
           term.code !== this.currentTerm.code &&
           moment(term.start).isBefore(this.rightNow)
-      );
+      )
     }
   },
   methods: {
     hasTerm (term) {
-      return this.$store.state.auth.user.terms.includes(term.code);
+      return this.$store.state.auth.user.terms.includes(term.code)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

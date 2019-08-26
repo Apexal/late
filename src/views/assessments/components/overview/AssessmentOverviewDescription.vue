@@ -16,7 +16,7 @@
           :source="assessment.description"
           :html="false"
           :emoji="true"
-          :anchor-attributes="{ target: '_blank' }"
+          :anchor-attributes="{target: '_blank'}"
         />
         <i v-else>No description given.</i>
       </template>
@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown';
+import VueMarkdown from 'vue-markdown'
 
-import assessmentsMixin from '@/mixins/assessments';
+import assessmentsMixin from '@/mixins/assessments'
 
 export default {
   name: 'AssessmentOverviewDescription',
@@ -53,7 +53,7 @@ export default {
     return {
       editing: false,
       edited: this.assessment.description
-    };
+    }
   },
   computed: {
 
@@ -61,47 +61,47 @@ export default {
   methods: {
     async toggleEditing () {
       if (!this.isOwner) {
-        this.editing = false;
-        return;
+        this.editing = false
+        return
       }
 
       if (this.editing) {
         if (this.edited === this.assessment.description) {
-          this.editing = false;
-          return;
+          this.editing = false
+          return
         }
 
-        let updatedAssessment;
+        let updatedAssessment
         try {
           updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
             assessmentID: this.assessment._id,
             assessmentType: this.assessment.assessmentType,
             updates: { description: this.edited }
-          });
+          })
         } catch (e) {
-          this.$toast.open({
+          this.$buefy.toast.open({
             message: e.response.data.message,
             type: 'is-danger'
-          });
-          this.editing = false;
-          return;
+          })
+          this.editing = false
+          return
         }
 
-        this.$emit('updated-assessment', updatedAssessment);
+        this.$emit('updated-assessment', updatedAssessment)
 
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'Updated the description!',
           type: 'is-success'
-        });
+        })
 
-        this.editing = false;
+        this.editing = false
       } else {
-        this.edited = this.assessment.description;
-        this.editing = true;
+        this.edited = this.assessment.description
+        this.editing = true
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

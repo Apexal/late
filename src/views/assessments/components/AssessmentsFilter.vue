@@ -14,16 +14,16 @@
       </span>
     </p>
     <div
-      class="columns is-multiline courses-container"
-      :class="{ expanded }"
+      class="columns is-multiline is-vcentered courses-container"
+      :class="{expanded}"
     >
       <div class="column is-full-touch has-text-centered-touch courses">
         <span
           v-for="c in courses"
           :key="c.crn"
           class="tag is-white course-tag level-item is-unselectable"
-          :class="{ 'filtered-out': filter.includes(c.crn) }"
-          :style="{ 'background-color': c.color }"
+          :class="{'filtered-out': filter.includes(c.crn)}"
+          :style="{'background-color': c.color}"
           :title="c.title"
           @click="$emit('toggle-filter', c)"
         >
@@ -96,29 +96,29 @@ export default {
   data () {
     return {
       expanded: false
-    };
+    }
   },
   mounted () {
     if (localStorage.getItem('assessmentsShowFilters')) {
       try {
         this.expanded = JSON.parse(
           localStorage.getItem('assessmentsShowFilters')
-        );
+        )
       } catch (e) {
-        localStorage.removeItem('assessmentsShowFilters');
+        localStorage.removeItem('assessmentsShowFilters')
       }
     }
   },
   methods: {
     toggleExpanded () {
-      this.expanded = !this.expanded;
+      this.expanded = !this.expanded
       localStorage.setItem(
         'assessmentsShowFilters',
         JSON.stringify(this.expanded)
-      );
+      )
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -144,10 +144,6 @@ export default {
     flex: 1;
     margin: 0;
   }
-}
-
-.courses-container {
-  height: 60px;
 }
 
 .courses {

@@ -93,7 +93,7 @@
       class="panel-block has-background-light has-text-centered no-hover"
     >
       <b-button
-        :class="{ 'is-active': showPassed }"
+        :class="{'is-active': showPassed}"
         class="is-fullwidth showPassedButton"
         @click="showPassed = !showPassed"
       >
@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'SidebarSchedule',
@@ -130,81 +130,81 @@ export default {
   data () {
     return {
       showPassed: true
-    };
+    }
   },
   computed: {
     setup () {
-      return this.$store.getters.userSetup.course_schedule;
+      return this.$store.getters.userSetup.course_schedule
     },
     filteredTodaysAgenda () {
       return this.showPassed
         ? this.todaysAgenda
-        : this.todaysAgenda.filter(e => !this.hasPassed(e.end));
+        : this.todaysAgenda.filter(e => !this.hasPassed(e.end))
     },
     nextTerm () {
-      return this.$store.getters.nextTerm;
+      return this.$store.getters.nextTerm
     },
     daysUntilNextTerm () {
-      return moment(this.nextTerm.start).diff(this.rightNow, 'days');
+      return moment(this.nextTerm.start).diff(this.rightNow, 'days')
     },
     schedule () {
-      return this.$store.state.schedule;
+      return this.$store.state.schedule
     },
     classesOver () {
-      return this.$store.getters.classesOver;
+      return this.$store.getters.classesOver
     },
     isWeekend () {
-      return moment().day() === 6 || moment().day() === 0;
+      return moment().day() === 6 || moment().day() === 0
     },
     dateStr () {
-      return moment(this.schedule.date).format('YYYY-MM-DD');
+      return moment(this.schedule.date).format('YYYY-MM-DD')
     },
     currentEvent () {
-      return this.todaysAgenda.find(this.isCurrentEvent);
+      return this.todaysAgenda.find(this.isCurrentEvent)
     }
   },
   watch: {
     showPassed (sP) {
-      localStorage.setItem('agendaShowPassed', sP);
+      localStorage.setItem('agendaShowPassed', sP)
     }
   },
   mounted () {
     if (localStorage.getItem('agendaShowPassed')) {
       try {
-        this.showPassed = JSON.parse(localStorage.getItem('agendaShowPassed'));
+        this.showPassed = JSON.parse(localStorage.getItem('agendaShowPassed'))
       } catch (e) {
-        localStorage.removeItem('agendaShowPassed');
+        localStorage.removeItem('agendaShowPassed')
       }
     }
   },
   created () {
-    this.$emit('update-current-event', this.currentEvent);
+    this.$emit('update-current-event', this.currentEvent)
   },
   methods: {
     openCourseModal (course) {
-      this.$store.commit('OPEN_COURSE_MODAL', course);
+      this.$store.commit('OPEN_COURSE_MODAL', course)
     },
     periodType (type) {
-      return this.$store.getters.periodType(type);
+      return this.$store.getters.periodType(type)
     },
     eventClicked (event) {
-      if (event.link) this.$router.push(event.link);
+      if (event.link) this.$router.push(event.link)
     },
     fromNow (datetime) {
-      const time = moment(datetime, 'Hmm', true);
+      const time = moment(datetime, 'Hmm', true)
       return `${time.isBefore(this.rightNow) ? 'Started' : 'Starting'} ${time.from(
         this.rightNow
-      )}`;
+      )}`
     },
     hasPassed (datetime) {
-      return datetime.isBefore(this.rightNow);
+      return datetime.isBefore(this.rightNow)
     },
     isCurrentEvent (event) {
-      return moment(this.rightNow).isBetween(event.start, event.end);
+      return moment(this.rightNow).isBetween(event.start, event.end)
     },
     duration: p => p.end.diff(p.start, 'minutes')
   }
-};
+}
 </script>
 
 <style lang='scss' scoped>

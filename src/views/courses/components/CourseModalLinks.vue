@@ -36,10 +36,10 @@ export default {
   },
   computed: {
     links () {
-      return this.course.links || [];
+      return this.course.links || []
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
-const logger = require('../../modules/logger');
-const moment = require('moment');
+const logger = require('../../modules/logger')
+const moment = require('moment')
 
-const Term = require('./terms.model');
+const Term = require('./terms.model')
 
 /**
  * Get all terms.
@@ -11,18 +11,18 @@ const Term = require('./terms.model');
  * GET /
  **/
 async function getTerms (ctx) {
-  let terms;
+  let terms
 
   try {
-    terms = await Term.find().sort({ startTime: -1 });
+    terms = await Term.find().sort({ startTime: -1 })
   } catch (e) {
-    logger.error(`Failed to get all terms for ${ctx.state.user.rcs_id}: ${e}`);
+    logger.error(`Failed to get all terms for ${ctx.state.user.rcs_id}: ${e}`)
     return ctx.internalServerError(
       'There was an error getting the list of terms.'
-    );
+    )
   }
 
-  ctx.ok({ terms });
+  ctx.ok({ terms })
 }
 
 /**
@@ -33,9 +33,9 @@ async function getTerms (ctx) {
  * GET /
  **/
 async function createTerm (ctx) {
-  if (!ctx.state.user.admin) return ctx.forbidden('Only admins can add terms.');
+  if (!ctx.state.user.admin) return ctx.forbidden('Only admins can add terms.')
 
-  const { name, code, start, classesEnd, end } = ctx.request.body;
+  const { name, code, start, classesEnd, end } = ctx.request.body
 
   const createdTerm = new Term({
     name,
@@ -43,34 +43,36 @@ async function createTerm (ctx) {
     start,
     classesEnd,
     end
-  });
+  })
 
   if (
     moment(end).isSameOrBefore(start) ||
     moment(classesEnd).isSameOrBefore(start) ||
     moment(classesEnd).isAfter(end)
   ) {
-    logger.error('Failed to add new term: Date are out of order.');
-    return ctx.badRequest('The date are out of order!');
+    logger.error('Failed to add new term: Date are out of order.')
+    return ctx.badRequest('The date are out of order!')
   }
 
   try {
-    await createdTerm.save();
+    await createdTerm.save()
   } catch (e) {
     logger.error(
       `Failed to get create term for admin ${ctx.state.user.rcs_id}: ${e}`
-    );
-    return ctx.internalServerError('There was an error creating the term.');
+    )
+    return ctx.internalServerError('There was an error creating the term.')
   }
+
+  ctx.session.terms.push(createdTerm)
 
   logger.info(
     `Created term ${createdTerm.name} for admin ${ctx.state.user.rcs_id}.`
-  );
+  )
 
-  ctx.ok({ createdTerm });
+  ctx.ok({ createdTerm })
 }
 
 module.exports = {
   getTerms,
   createTerm
-};
+}

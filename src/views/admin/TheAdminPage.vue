@@ -16,25 +16,25 @@
           Administration
         </h1>
         <router-link
-          :to="{ name: 'admin-student-list' }"
+          :to="{name: 'admin-student-list'}"
           tag="li"
         >
           <a>Students</a>
         </router-link>
         <router-link
-          :to="{ name: 'admin-log' }"
+          :to="{name: 'admin-log'}"
           tag="li"
         >
           <a>Server Log</a>
         </router-link>
         <router-link
-          :to="{ name: 'admin-terms' }"
+          :to="{name: 'admin-terms'}"
           tag="li"
         >
           <a>School Terms</a>
         </router-link>
         <router-link
-          :to="{ name: 'admin-fun' }"
+          :to="{name: 'admin-fun'}"
           tag="li"
         >
           <a>Fun</a>
@@ -47,13 +47,9 @@
 </template>
 
 <script>
-import AdminStudentList from '@/views/admin/components/AdminStudentList';
-import AdminLog from '@/views/admin/components/AdminLog';
-
 export default {
-  name: 'TheAdminPage',
-  components: { AdminStudentList, AdminLog }
-};
+  name: 'TheAdminPage'
+}
 </script>
 
 <style lang="scss" scoped>

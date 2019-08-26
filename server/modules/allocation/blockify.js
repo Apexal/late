@@ -6,7 +6,7 @@ function availableTime (user) {
   // TODO: make this term-independent
   const blockedTimes = user.current_schedule
     .flatMap(course => course.periods)
-    .concat(user.current_unavailability);
+    .concat(user.current_unavailability)
   // Date bgn, Date end
   return function isTimeValid (bgn, end) {
     // a bgn-end interval passes iff the interval contains
@@ -20,27 +20,27 @@ function availableTime (user) {
         (bgn <= time.start && time.start <= end) ||
         (bgn <= time.end && time.end <= end)
       ) {
-        return false;
+        return false
       }
     }
-    return true;
-  };
+    return true
+  }
 }
 
 async function makeBlocks (ctx) {
   const user = await ctx.db.Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
-    .exec();
-  const assigns = await user.findAllAssignments();
-  const blocks = splitAssignments(ctx, assigns);
-  orderBlocks(blocks);
+    .exec()
+  const assigns = await user.findAllAssignments()
+  const blocks = splitAssignments(ctx, assigns)
+  orderBlocks(blocks)
   const ret = blocks.map(block => {
-    block.priority = block._assignment.priority;
-    block.title = block._assignment.title;
-    delete block._assignment;
-    return block;
-  });
-  return ctx.ok(ret);
+    block.priority = block._assignment.priority
+    block.title = block._assignment.title
+    delete block._assignment
+    return block
+  })
+  return ctx.ok(ret)
 }
 
 /**
@@ -48,22 +48,22 @@ async function makeBlocks (ctx) {
  * The blocks are not added to the DB yet.
  */
 function splitAssignments (ctx, assignments) {
-  const blocks = [];
+  const blocks = []
   for (const a of assignments) {
     // estimated minutes remaining in assignment
-    let timeRemaining = a.timeRemaining * 60;
+    let timeRemaining = a.timeRemaining * 60
     // for now, split everything into 30 minute blocks
     while (timeRemaining > 0) {
       const block = /* new ctx.db.Block */ {
         _assignment: a,
         startTime: null,
         duration: Math.min(30, timeRemaining)
-      };
-      blocks.push(block);
-      timeRemaining -= 30;
+      }
+      blocks.push(block)
+      timeRemaining -= 30
     }
   }
-  return blocks;
+  return blocks
 }
 
 /**
@@ -77,14 +77,14 @@ function orderBlocks (blocks) {
   // This backwards loop results in a better distribution than the forwards
   // loop.
   for (let i = blocks.length - 1; i > 0; i--) {
-    const block = blocks[i];
-    const j = calcPosition(block, i, blocks);
+    const block = blocks[i]
+    const j = calcPosition(block, i, blocks)
     if (i !== j) {
-      blocks[i] = blocks[j];
-      blocks[j] = block;
+      blocks[i] = blocks[j]
+      blocks[j] = block
     }
   }
-  blocks.reverse();
+  blocks.reverse()
 }
 
 /**
@@ -104,9 +104,9 @@ function placeBlocks (user, block) {
  * @param blocks the array of blocks
  */
 function calcPosition (block, idx, blocks) {
-  return Math.floor((Math.random() * (idx + 1)) / block._assignment.priority);
+  return Math.floor((Math.random() * (idx + 1)) / block._assignment.priority)
 }
 
 module.exports = {
   makeBlocks
-};
+}

@@ -20,7 +20,7 @@
       @click="removeTodo(t)"
     >
       <span class="is-fullwidth">
-        <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.addedAt) }}</small>
+        <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.createdAt) }}</small>
         {{ t.text }}
       </span>
     </div>
@@ -45,47 +45,47 @@ export default {
   data () {
     return {
       newTodo: ''
-    };
+    }
   },
   methods: {
     async addTodo () {
-      if (!this.newTodo) return;
+      if (!this.newTodo) return
 
       try {
-        await this.$store.dispatch('ADD_TODO', this.newTodo);
-        this.$toast.open({
+        await this.$store.dispatch('ADD_TODO', this.newTodo)
+        this.$buefy.toast.open({
           type: 'is-success',
           message: `Added to-do '${this.newTodo}'.`
-        });
-        this.newTodo = '';
+        })
+        this.newTodo = ''
       } catch (e) {
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
-        });
+        })
       }
     },
     async removeTodo (todo) {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Done with <i>${todo.text}</i>?`,
         onConfirm: async () => {
           try {
-            await this.$store.dispatch('REMOVE_TODO', todo);
-            this.$toast.open({
+            await this.$store.dispatch('REMOVE_TODO', todo)
+            this.$buefy.toast.open({
               message: `Completed to-do '${todo.text}'.`,
               type: 'is-success'
-            });
+            })
           } catch (e) {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: e.response.data.message,
               type: 'is-danger'
-            });
+            })
           }
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
