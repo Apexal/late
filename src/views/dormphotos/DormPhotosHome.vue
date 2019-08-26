@@ -43,17 +43,15 @@
         </div>
       </div>
     </div>
-    <details
+    <div
       v-for="(dorms, grade) in categorizedDorms"
       :id="grade"
       :key="grade"
     >
-      <summary>
-        <h2 class="subtitle has-text-centered has-text-bold grade">
-          {{ grade }} Housing
-          <small class="has-text-grey">{{ dorms.length }} dorms</small>
-        </h2>
-      </summary>
+      <h2 class="subtitle has-text-centered has-text-bold grade">
+        {{ grade }} Housing
+        <small class="has-text-grey">{{ dorms.length }} dorms</small>
+      </h2>
 
       <div class="columns is-multiline dorms">
         <div
@@ -74,9 +72,11 @@
                   alt="Picture of "
                 >
                 <b-tag
+                  v-if="!loading"
                   class="photo-count"
+                  :type="(counts[dorm.key] || 0) > 0 ? '' : 'is-danger'"
                 >
-                  20 photos
+                  {{ counts[dorm.key] || 0 }} photos
                 </b-tag>
               </router-link>
             </div>
@@ -104,7 +104,7 @@
       </div>
 
       <hr>
-    </details>
+    </div>
   </div>
 </template>
 
@@ -119,7 +119,9 @@ export default {
   },
   data () {
     return {
-      sortBy: 'alphabetically'
+      loading: true,
+      sortBy: 'alphabetically',
+      counts: {}
     }
   },
   computed: {
@@ -131,6 +133,27 @@ export default {
       }
 
       return catergories
+    }
+  },
+  mounted () {
+    this.getDormCounts()
+  },
+  methods: {
+    async getDormCounts () {
+      this.loading = true
+
+      let request
+      try {
+        request = await this.$http.get('/dormphotos', { params: { count: true } })
+      } catch (e) {
+        this.$buefy.toast.open({ type: 'is-danger', message: e.request.data.message })
+        this.loading = false
+        return
+      }
+
+      this.counts = request.data.counts
+
+      this.loading = false
     }
   }
 }
@@ -170,5 +193,6 @@ export default {
   text-transform: capitalize;
   font-size: 1.5rem;
   display: inline-block;
+  margin-bottom: 0.5em;
 }
 </style>

@@ -52,7 +52,6 @@ export default {
   components: { SubmitPhotoModal },
   data () {
     return {
-      dormPhotos: [],
       submittingPhoto: false
     }
   },
@@ -71,7 +70,7 @@ export default {
     }
   },
   mounted () {
-    this.getPhotos()
+    // this.getPhotos()
   },
   methods: {
     async getPhotos () {

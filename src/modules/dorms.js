@@ -81,10 +81,45 @@ export default [
     imageURL: 'http://brian.carr.name/geocities/rpi/barhf.jpg'
   },
   {
+    grade: 'freshman',
+    key: 'nugent-hall',
+    name: 'Nugent Hall',
+    type: 'Suite',
+    styles: ['single', 'double'],
+    imageURL: 'http://brian.carr.name/geocities/rpi/barhf.jpg'
+  },
+  {
+    grade: 'freshman',
+    key: 'sharp-hall',
+    name: 'Sharp Hall',
+    type: 'Suite',
+    styles: ['single'],
+    imageURL: 'http://brian.carr.name/geocities/rpi/barhf.jpg'
+  },
+  {
+    grade: 'freshman',
+    key: 'warren-hall',
+    name: 'Warren Hall',
+    type: 'Suite',
+    styles: ['double'],
+    imageURL: 'http://brian.carr.name/geocities/rpi/barhf.jpg'
+  },
+  {
     grade: 'sophomore',
     key: 'beman-and-brinsmade',
     name: 'RAHP B',
-    styles: ['single', 'double', 'triple'],
+    description: 'Beman and Brinsmade',
+    type: 'Apartment',
+    styles: ['single'],
+    imageURL: 'https://tours.pocketsights.com/media/1/bb088eb5cf8746f2ab2ed533969bd80f_medium.jpg'
+  },
+  {
+    grade: 'sophomore',
+    key: 'blitman-residence-commons',
+    name: 'Blitman',
+    description: 'Blitman Residence Commons',
+    type: 'Apartment',
+    styles: ['single', 'double'],
     imageURL: 'https://tours.pocketsights.com/media/1/bb088eb5cf8746f2ab2ed533969bd80f_medium.jpg'
   }
 ]

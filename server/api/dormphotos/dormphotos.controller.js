@@ -55,7 +55,16 @@ async function getDormPhotos (ctx) {
     return ctx.internalServerError('There was an issue grabbing the dorm photos.')
   }
 
-  ctx.ok({ dormPhotos })
+  if (ctx.query.count) {
+    const dormKeys = {}
+    for (const dormPhoto of dormPhotos) {
+      if (!dormKeys[dormPhoto.dormKey]) dormKeys[dormPhoto.dormKey] = 0
+      dormKeys[dormPhoto.dormKey] += 1
+    }
+    ctx.ok({ counts: dormKeys })
+  } else {
+    ctx.ok({ dormPhotos })
+  }
 }
 
 async function uploadDormPhoto (ctx) {
