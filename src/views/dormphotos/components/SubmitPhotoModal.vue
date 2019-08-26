@@ -102,6 +102,11 @@ export default {
       return this.selectedDorm ? this.selectedDorm.styles : []
     }
   },
+  watch: {
+    '$route' (newRoute) {
+      this.dormKey = newRoute.params.dormKey
+    }
+  },
   methods: {
     emitSubmit (event) {
       this.$emit('submit-photo', { photo: event.target.photo.files[0], dormKey: this.dormKey, style: this.style })

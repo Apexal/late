@@ -14,7 +14,6 @@ module.exports = server => {
       Student.findById(studentID, function (err, user) {
         // inform the callback of auth success/failure
         if (err || !user) return callback(new Error('User not found'))
-        logger.info(`Authenticated socket for ${user.rcs_id}`)
         return callback(null, true)
       })
     },

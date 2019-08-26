@@ -103,7 +103,19 @@ async function uploadDormPhoto (ctx) {
 async function confirmDormPhoto (ctx) {
   const { dormPhotoID } = ctx.params
 
-  const confirmedDormPhoto = await DormPhoto.findOne({ _id: dormPhotoID, confirmed: false })
+  let confirmedDormPhoto
+
+  try {
+    confirmedDormPhoto = await DormPhoto.findOne({ _id: dormPhotoID })
+  } catch (e) {
+    logger.error(`Failed to get dorm photo submission: ${e}`)
+    return ctx.badRequest('There was an issue getting the dorm photo')
+  }
+
+  if (!confirmedDormPhoto) {
+    logger.error(`Failed to find dorm photo submission ${dormPhotoID}`)
+    return ctx.notFound(`Could not find dorm photo submission!`)
+  }
 
   confirmedDormPhoto.confirmed = true
 
@@ -115,7 +127,19 @@ async function confirmDormPhoto (ctx) {
 async function removeDormPhoto (ctx) {
   const { dormPhotoID } = ctx.params
 
-  const removedDormPhoto = await DormPhoto.findOne({ _id: dormPhotoID })
+  let removedDormPhoto
+  try {
+    removedDormPhoto = await DormPhoto.findOne({ _id: dormPhotoID })
+  } catch (e) {
+    logger.error(`Failed to get dorm photo submission: ${e}`)
+    return ctx.badRequest('There was an issue getting the dorm photo')
+  }
+
+  if (!removeDormPhoto) {
+    logger.error(`Failed to find dorm photo submission ${dormPhotoID}`)
+    return ctx.notFound(`Could not find dorm photo submission!`)
+  }
+
   const parts = removedDormPhoto.imageURL.split('/')
   const Key = parts[parts.length - 1]
 
@@ -125,6 +149,8 @@ async function removeDormPhoto (ctx) {
   }).promise()
 
   removedDormPhoto.remove()
+
+  logger.info(`${ctx.state.user.rcs_id} denied a dorm photo submission`)
 
   ctx.ok({
     removedDormPhoto
