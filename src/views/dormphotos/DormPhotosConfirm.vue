@@ -17,6 +17,11 @@
         class="column is-one-third"
       >
         <div class="card">
+          <header class="card-header">
+            <p class="card-header-title">
+              {{ getDormFromKey(photo.dormKey).name }} {{ photo.style }}
+            </p>
+          </header>
           <div class="card-image">
             <img
               :src="photo.imageURL"
@@ -25,9 +30,6 @@
           </div>
 
           <div class="card-content">
-            <h3 class="title is-size-4">
-              {{ getDormFromKey(photo.dormKey).name }} {{ photo.style }}
-            </h3>
             <span :title="longDateTimeFormat(photo.createdAt)">
               Submitted <time datetime="photo.createdAt">{{ fromNow(photo.createdAt) }}</time>
             </span>
@@ -42,6 +44,7 @@
             <a
               href="#"
               class="card-footer-item"
+              @click="denyPhoto(photo.id)"
             >Deny</a>
           </footer>
         </div>
@@ -126,7 +129,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card-content .title {
+.card-header-title {
   text-transform: capitalize;
+}
+
+.card-image img {
+  width: 100%;
 }
 </style>

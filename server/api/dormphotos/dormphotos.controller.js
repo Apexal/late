@@ -3,6 +3,8 @@ const aws = require('aws-sdk')
 const s3 = new aws.S3()
 const logger = require('../../modules/logger')
 
+const sharp = require('sharp')
+
 const uuidv4 = require('uuid/v4')
 
 const DormPhoto = require('./dormphotos.model')
@@ -13,12 +15,12 @@ const uploadFile = async (dormKey, style, { name: fileName, path: filePath, type
     stream.on('error', function (err) {
       reject(err)
     })
-
+    const resizeTransform = sharp().resize(1000)
     s3.upload(
       {
         ACL: 'public-read',
         Bucket: 'late-dorm-photos',
-        Body: stream,
+        Body: stream.pipe(resizeTransform),
         Key: `dorm-photo-${dormKey}-${style}-${uuidv4()}`,
         ContentType: fileType
       },
@@ -107,11 +109,31 @@ async function confirmDormPhoto (ctx) {
 
   await confirmedDormPhoto.save()
 
-  return ctx.ok({ confirmedDormPhoto })
+  return ctx.created({ confirmedDormPhoto })
+}
+
+async function removeDormPhoto (ctx) {
+  const { dormPhotoID } = ctx.params
+
+  const removedDormPhoto = await DormPhoto.findOne({ _id: dormPhotoID })
+  const parts = removedDormPhoto.imageURL.split('/')
+  const Key = parts[parts.length - 1]
+
+  await s3.deleteObject({
+    Bucket: 'late-dorm-photos',
+    Key
+  }).promise()
+
+  removedDormPhoto.remove()
+
+  ctx.ok({
+    removedDormPhoto
+  })
 }
 
 module.exports = {
   getDormPhotos,
   uploadDormPhoto,
-  confirmDormPhoto
+  confirmDormPhoto,
+  removeDormPhoto
 }
