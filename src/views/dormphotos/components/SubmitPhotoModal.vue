@@ -84,6 +84,7 @@
           <input
             type="submit"
             class="button is-dark"
+            :class="{'is-loading': loading}"
             value="Submit for Approval"
           >
         </div>
@@ -100,6 +101,10 @@ export default {
     allDorms: {
       type: Array,
       required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

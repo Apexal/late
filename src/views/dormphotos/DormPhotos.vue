@@ -37,6 +37,7 @@
     <SubmitPhotoModal
       :open="submittingPhoto"
       :all-dorms="allDorms"
+      :loading="loadingSubmitting"
       @submit-photo="submitPhoto"
       @close-modal="submittingPhoto = false"
     />
@@ -53,6 +54,7 @@ export default {
   components: { SubmitPhotoModal },
   data () {
     return {
+      loadingSubmitting: false,
       submittingPhoto: false
     }
   },
@@ -79,6 +81,8 @@ export default {
       this.dormPhotos = request.data.dormPhotos
     },
     async submitPhoto ({ photo, dormKey, style }) {
+      this.loadingSubmitting = true
+
       const formData = new FormData()
       formData.append('photo', photo)
       formData.append('dormKey', dormKey)
@@ -94,6 +98,8 @@ export default {
       }
 
       this.$buefy.toast.open({ type: 'is-success', message: 'Your photo has been submitted to the administrators! Thank you!' })
+
+      this.loadingSubmitting = false
     }
   }
 }
