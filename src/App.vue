@@ -201,6 +201,12 @@ export default {
         type: 'is-warning',
         duration: 70000
       })
+    } else if (this.$route.query.invited) {
+      this.$buefy.toast.open({
+        message: 'Your invitation has been accepted!',
+        type: 'is-warning',
+        duration: 5000
+      })
     }
 
     if (this.loggedIn) {

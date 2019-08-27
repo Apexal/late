@@ -17,13 +17,15 @@ const { sendNewUserEmail } = require('../integrations/email')
  * @param {Koa context} ctx
  */
 async function loginStudent (ctx) {
-  if (!ctx.session.cas_user) await cas.bounce()
+  // if (!ctx.session.cas_user) await cas.bounce()
 
   let student = await Student.findOne().byUsername(
     ctx.session.cas_user.toLowerCase()
   )
 
-  if (student) {
+  const hasInviteCode = ctx.query.inviteCode === (process.env.INVITE_CODE || 'better-late-than-never')
+
+  if (student && !hasInviteCode) {
     if (student.accountLocked) {
       logger.info(`${student.rcs_id} tried to login to locked account`)
       ctx.session = null
@@ -31,10 +33,14 @@ async function loginStudent (ctx) {
     }
 
     logger.info(`Logging in ${student.rcs_id}`)
-
-    if (!student.setup.profile) {
-      ctx.query.redirectTo = '/account'
-    }
+  } else if (student && hasInviteCode) {
+    student.accountLocked = false
+    logger.info(`${student.rcs_id} was invited and taken off waitlist`)
+  } else if (!student && hasInviteCode) {
+    student = Student({
+      rcs_id: ctx.session.cas_user
+    })
+    logger.info(`${student.rcs_id} was invited and registered`)
   } else {
     // TODO: CMS api to get personal info here
     student = Student({
@@ -68,6 +74,14 @@ async function loginStudent (ctx) {
       .channels.find(channel => channel.name === 'log')
       .send(`**${student.displayName}** *(${student.rcs_id})* has logged in.`)
   } catch (e) {}
+
+  if (!student.setup.profile) {
+    ctx.query.redirectTo = '/account'
+  }
+
+  if (hasInviteCode) {
+    ctx.query.redirectTo += '?invited=1'
+  }
 
   ctx.redirect(ctx.query.redirectTo || '/')
 }
