@@ -92,8 +92,6 @@ async function getAssignments (ctx) {
     )
   }
 
-  logger.info(`Sending assignments to ${ctx.state.user.rcs_id}`)
-
   ctx.ok({
     assignments
   })
@@ -147,10 +145,6 @@ async function getTermAssignments (ctx) {
     return ctx.badRequest('There was an error getting the assignments.')
   }
 
-  logger.info(
-    `Sending all assignments for term ${termCode} to ${ctx.state.user.rcs_id}`
-  )
-
   ctx.ok({
     assignments
   })
@@ -165,7 +159,6 @@ async function getTermAssignments (ctx) {
  */
 async function getAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID
-  logger.info(`Sending assignment ${assignmentID} to ${ctx.state.user.rcs_id}`)
 
   ctx.ok({
     assessment: ctx.state.assignment,

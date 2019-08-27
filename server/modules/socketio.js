@@ -14,7 +14,6 @@ module.exports = server => {
       Student.findById(studentID, function (err, user) {
         // inform the callback of auth success/failure
         if (err || !user) return callback(new Error('User not found'))
-        logger.info(`Authenticated socket for ${user.rcs_id}`)
         return callback(null, true)
       })
     },
@@ -33,6 +32,8 @@ module.exports = server => {
 
         io.emit('online', online)
 
+        logger.info(`${user.rcs_id} is now online`)
+
         if (user.rcs_id === 'matraf') socket.join('notifications')
       })
     },
@@ -43,6 +44,8 @@ module.exports = server => {
           delete sessionCounts[socket.client.user.rcs_id]
           online = online.filter(rcsId => rcsId !== socket.client.user.rcs_id)
           io.emit('online', online)
+
+          logger.info(`${socket.client.user.rcs_id} is now offline`)
 
           socket.to('notifications').emit('user offline', socket.client.user.rcs_id)
         }
@@ -75,7 +78,6 @@ module.exports = server => {
     socket.on('join assessment room', assessmentID => {
       if (!socket.auth) return
 
-      logger.info(`${socket.client.user.rcs_id} is joining assessment room: ${assessmentID}`)
       socket.join(`/assessments/${assessmentID}`)
       socket.to(`/assessments/${assessmentID}`).emit('collaborator joined assessment room', socket.client.user.rcs_id)
     })
@@ -83,7 +85,6 @@ module.exports = server => {
     socket.on('join assessment rooms', assessmentIDS => {
       if (!socket.auth) return
 
-      logger.info(`${socket.client.user.rcs_id} is joining ${assessmentIDS.length} assessment rooms`)
       for (const id of assessmentIDS) {
         socket.join(`/assessments/${id}`)
       }
@@ -92,7 +93,6 @@ module.exports = server => {
     socket.on('leave assessment room', assessmentID => {
       if (!socket.auth) return
 
-      logger.info(`${socket.client.user.rcs_id} is leaving assessment room: ${assessmentID}`)
       socket.leave(`/assessments/${assessmentID}`)
       socket.to(`/assessments/${assessmentID}`).emit('collaborator left assessment room', socket.client.user.rcs_id)
     })
