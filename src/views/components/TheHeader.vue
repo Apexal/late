@@ -215,6 +215,13 @@
               >
                 Dorm Checklist
               </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{name: 'dorm-photos'}"
+                title="Create a checklist for dorm items for movein"
+              >
+                RPI Dorm Photos
+              </router-link>
             </div>
           </div>
         </div>
