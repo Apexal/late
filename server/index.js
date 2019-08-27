@@ -39,7 +39,8 @@ app.keys = [process.env.SESSION_KEY]
 /* Setup session */
 const CONFIG = {
   key: 'koa:sess',
-  maxAge: 86400000
+  maxAge: 86400000,
+  renew: true
 }
 app.use(Session(CONFIG, app))
 
@@ -92,7 +93,7 @@ app.use(async (ctx, next) => {
         ctx.state.googleAuth = auth
       }
     } else {
-      logger.error('User is NULL')
+      logger.error('User is NULL: ' + ctx.session.cas_user)
     }
   }
   try {

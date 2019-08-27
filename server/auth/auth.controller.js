@@ -17,8 +17,6 @@ const { sendNewUserEmail } = require('../integrations/email')
  * @param {Koa context} ctx
  */
 async function loginStudent (ctx) {
-  // if (!ctx.session.cas_user) await cas.bounce()
-
   let student = await Student.findOne().byUsername(
     ctx.session.cas_user.toLowerCase()
   )
@@ -56,11 +54,13 @@ async function loginStudent (ctx) {
     logger.info(
       `Creating and adding new user to waitlist with rcs_id: ${student.rcs_id}`
     )
-    sendNewUserEmail(student.rcs_id)
-    sendDiscordWebhookMessage(`**${student.rcs_id}** has joined the waitlist!`) // may fail
-    ctx.session = null
 
-    ctx.query.redirectTo = '/account'
+    if (process.env.NODE_ENV !== 'development') {
+      sendNewUserEmail(student.rcs_id)
+      sendDiscordWebhookMessage(`**${student.rcs_id}** has joined the waitlist!`) // may fail
+    }
+
+    ctx.session = null
 
     return ctx.redirect('/?waitlisted=1')
   }
@@ -68,12 +68,14 @@ async function loginStudent (ctx) {
   student.lastLogin = new Date()
   await student.save()
 
-  try {
-    ctx.state.discordClient.guilds
-      .find(guild => guild.id === process.env.DISCORD_SERVER_ID)
-      .channels.find(channel => channel.name === 'log')
-      .send(`**${student.displayName}** *(${student.rcs_id})* has logged in.`)
-  } catch (e) {}
+  if (process.env.NODE_ENV !== 'development') {
+    try {
+      ctx.state.discordClient.guilds
+        .find(guild => guild.id === process.env.DISCORD_SERVER_ID)
+        .channels.find(channel => channel.name === 'log')
+        .send(`**${student.displayName}** *(${student.rcs_id})* has logged in.`)
+    } catch (e) {}
+  }
 
   if (!student.setup.profile) {
     ctx.query.redirectTo = '/account'
