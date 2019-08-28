@@ -5,8 +5,7 @@ import api from './api'
 
 import store from '@/store'
 
-import { Toast } from 'buefy/dist/components/toast'
-import { Snackbar } from 'buefy/dist/components/snackbar'
+import { ToastProgrammatic as Toast, SnackbarProgrammatic as Snackbar } from 'buefy'
 
 Vue.use(Router)
 
