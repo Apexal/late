@@ -1,6 +1,10 @@
 <!--Account: Notifications preferences module-->
 <template>
   <div class="integrations-preferences">
+    <div class="notification is-warning">
+      <b>Work in Progress</b>
+      These will soon be available.
+    </div>
     <form @submit.prevent="save">
       <div
         v-for="(notification, key) in notifications"
@@ -25,7 +29,7 @@
             :id="key"
             v-model="preferences[key]"
             class="input"
-            :disabled="saved && preferences[key] === 'google calendar'"
+            disabled
           >
             <option
               v-for="integration in enabledIntegrations[key]"
