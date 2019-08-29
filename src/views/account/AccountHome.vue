@@ -2,6 +2,12 @@
 
 <template>
   <div class="account-home">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
+
     <SISManModal
       :open="showingModal"
       :reimporting="$route.query.importFromSIS"
@@ -60,11 +66,7 @@ export default {
   },
   methods: {
     startImportFromSIS () {
-      this.promptRIN(rin => {
-        this.promptPIN(pin => {
-          this.importFromSIS(rin, pin)
-        })
-      })
+      this.promptCredentials(this.importFromSIS)
     },
     async importFromSIS (rin, pin) {
       this.loading = true

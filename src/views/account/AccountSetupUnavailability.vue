@@ -126,10 +126,12 @@ import '@fullcalendar/core/main.css'
 import '@fullcalendar/daygrid/main.css'
 import '@fullcalendar/timegrid/main.css'
 
+import accountMixin from '@/mixins/account'
+
 export default {
   name: 'AccountSetupUnavailability',
   components: { FullCalendar },
-  mixins: [fullcalendar],
+  mixins: [accountMixin, fullcalendar],
   data () {
     return {
       loading: false,

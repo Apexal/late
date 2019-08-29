@@ -145,7 +145,6 @@ export default {
       loading: false,
       firstName: '',
       lastName: '',
-      rin: '',
       graduationYear: '',
       major: ''
     }
@@ -169,11 +168,7 @@ export default {
       this.major = this.$store.state.auth.user.major || ''
     },
     startImportFromSIS () {
-      this.promptRIN(rin => {
-        this.promptPIN(pin => {
-          this.importFromSIS(rin, pin)
-        })
-      })
+      this.promptCredentials(this.importFromSIS)
     },
     async importFromSIS (rin, pin) {
       this.loading = true
@@ -193,6 +188,10 @@ export default {
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
+
+      this.$store.commit('SET_CREDENTIALS', { rin, pin })
+
+      this.$buefy.toast.open({ type: 'is-success', message: 'Grabbed your info from SIS. Please correct any mistakes.' })
 
       this.saved = true
 

@@ -22,67 +22,6 @@
         What is your
         <b>{{ currentTerm.name }}</b> course schedule?
       </h2>
-      <form
-        class="box"
-        @submit.prevent="importSchedule"
-      >
-        <details :open="courses.length === 0">
-          <summary>
-            <h2
-              style="display: inline-block; cursor: pointer;"
-              class="subtitle is-unselectable"
-            >
-              <b>Import Schedule from SIS</b>
-            </h2>
-          </summary>
-
-          <form class="columns sis-method">
-            <div class="column">
-              <b-field>
-                <b-input
-                  id="rin"
-                  v-model.trim="rin"
-                  type="password"
-                  size="is-small"
-                  placeholder="Your RIN"
-                  @change="saved = false"
-                />
-              </b-field>
-            </div>
-
-            <div class="column">
-              <b-field>
-                <b-input
-                  id="pin"
-                  v-model.trim="pin"
-                  type="password"
-                  size="is-small"
-                  placeholder="Enter your SIS password."
-                  @change="saved = false"
-                />
-              </b-field>
-            </div>
-            <div class="column is-narrow has-text-centered">
-              <b-button
-                size="is-small"
-                type="is-primary"
-                :loading="loading"
-                :disabled="!canReset"
-                @click="importSchedule"
-              >
-                {{ user.setup.profile ? "Import Schedule" : "Save" }}
-              </b-button>
-            </div>
-          </form>
-          <p class="help">
-            Your RIN and password will be used to log into SIS, navigate to your
-            current schedule page, and grab the CRNs of your courses. Your
-            password and RIN is never saved or logged anywhere.
-          </p>
-        </details>
-      </form>
-
-      <hr>
 
       <p
         v-if="courses.length === 0"
@@ -175,13 +114,21 @@
           </b-button>
         </div>
         <div class="column is-narrow">
-          <router-link
-            :to="{name: 'setup-unavailability'}"
-            class="button is-primary"
-            :class="{'is-loading': loading}"
-          >
-            Continue
-          </router-link>
+          <div class="buttons">
+            <b-button
+              type="is-dark"
+              @click="startImportSchedule"
+            >
+              Import from SIS
+            </b-button>
+            <router-link
+              :to="{name: 'setup-unavailability'}"
+              class="button is-primary"
+              :class="{'is-loading': loading}"
+            >
+              Continue
+            </router-link>
+          </div>
         </div>
       </div>
     </template>
@@ -205,9 +152,6 @@ export default {
       tab: 'list',
       saved: false,
       loading: false,
-      method: 'sis',
-      rin: '',
-      pin: '',
       openedCourseID: '',
       addingCustomCourse: false
     }
@@ -235,39 +179,27 @@ export default {
       this.openedCourseID = courseID
     },
     startAddCustomCourse () {
-      if (this.rin && this.pin) {
-        this.addingCustomCourse = true
-      } else {
-        this.promptRIN(rin => {
-          this.promptPIN(pin => {
-            this.rin = rin
-            this.pin = pin
-            this.addingCustomCourse = true
-          })
-        })
-      }
+      // if (this.rin && this.pin) {
+      //   this.addingCustomCourse = true
+      // } else {
+      //   this.promptRIN(rin => {
+      //     this.promptPIN(pin => {
+      //       this.rin = rin
+      //       this.pin = pin
+      //       this.addingCustomCourse = true
+      //     })
+      //   })
+      // }
     },
     startAddCourseByCRN () {
-      if (this.rin && this.pin) {
+      this.promptCredentials((rin, pin) => {
         this.$buefy.dialog.prompt({
           message: 'What is the course CRN?',
-          onConfirm: this.addCourseByCRN
+          onConfirm: crn => this.addCourseByCRN(rin, pin, crn)
         })
-      } else {
-        this.promptRIN(rin => {
-          this.promptPIN(pin => {
-            this.rin = rin
-            this.pin = pin
-
-            this.$buefy.dialog.prompt({
-              message: 'What is the course CRN?',
-              onConfirm: this.addCourseByCRN
-            })
-          })
-        })
-      }
+      })
     },
-    async addCourseByCRN (crn) {
+    async addCourseByCRN (rin, pin, crn) {
       let request
       try {
         request = await this.$http.put(`/account/courseschedule/${crn}`, {
@@ -284,7 +216,7 @@ export default {
       this.$store.commit('ADD_COURSE', newCourse)
     },
     addCustomCourse (courseData) {
-      alert(courseData)
+      // alert(courseData)
     },
     async removeCourse (courseID) {
       let removedCourse
@@ -297,14 +229,17 @@ export default {
 
       this.$buefy.toast.open({ message: `Removed ${removedCourse.title}!`, type: 'is-success' })
     },
-    async importSchedule () {
+    startImportSchedule () {
+      this.promptCredentials(this.importSchedule)
+    },
+    async importSchedule (rin, pin) {
       this.loading = true
 
       let request
       try {
         request = await this.$http.post('/account/courseschedule', {
-          rin: this.rin,
-          pin: this.pin
+          rin,
+          pin
         })
       } catch (e) {
         this.loading = false
@@ -325,7 +260,7 @@ export default {
         type: 'is-primary',
         position: 'is-bottom',
         actionText: 'Next Step',
-        duration: 5000,
+        duration: 7000,
         onAction: () => {
           this.$router.push({ name: 'setup-unavailability' })
         }

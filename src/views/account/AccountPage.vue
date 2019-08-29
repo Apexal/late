@@ -41,7 +41,9 @@
           name="slide-left"
           mode="out-in"
         >
-          <router-view class="child-view" />
+          <router-view
+            class="child-view"
+          />
         </transition>
       </keep-alive>
     </section>
@@ -85,6 +87,12 @@ export default {
     }
   },
   computed: {
+    rin () {
+      return this.$store.state.auth.rin
+    },
+    pin () {
+      return this.$store.state.auth.pin
+    },
     userSetup () {
       return this.$store.getters.userSetup
     }

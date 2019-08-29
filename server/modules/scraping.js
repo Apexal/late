@@ -125,9 +125,13 @@ async function scrapeSISForProfileInfo (RIN, PIN) {
   // 'Frank J. Matranga' -> ['Frank', 'J.', 'Matranga']
   const nameParts = $('table.datadisplaytable tbody tr th:contains("Name :")').next().text().split(' ')
 
-  const name = {
-    first: nameParts[0],
-    last: nameParts[nameParts.length - 1]
+  const name = {}
+
+  if (nameParts[0]) {
+    name.first = nameParts[0]
+  }
+  if (nameParts[nameParts.length - 1]) {
+    name.last = nameParts[nameParts.length - 1]
   }
 
   const major = $('table.datadisplaytable tbody tr th:contains("Major:")').first().next().text()
