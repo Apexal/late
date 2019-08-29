@@ -113,12 +113,13 @@
             Add Custom Course
           </b-button>
         </div>
-        <div class="column is-narrow">
+        <div class="column is-narrow-desktop">
           <div class="buttons">
             <b-button
               type="is-dark"
               @click="startImportSchedule"
             >
+              <i class="fas fa-cloud-download-alt" />
               Import from SIS
             </b-button>
             <router-link

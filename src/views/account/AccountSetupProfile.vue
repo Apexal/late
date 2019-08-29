@@ -119,6 +119,7 @@
           type="is-dark"
           @click="startImportFromSIS"
         >
+          <i class="fas fa-cloud-download-alt" />
           Import from SIS
         </b-button>
         <b-button
