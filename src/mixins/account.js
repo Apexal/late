@@ -25,7 +25,7 @@ export default {
                 minlength: 1,
                 maxlength: 20
               },
-              onConfirm: pin => onConfirm(rin, pin)
+              onConfirm: pin => onConfirm(rin.trim(), pin.trim())
             })
           }
         })
