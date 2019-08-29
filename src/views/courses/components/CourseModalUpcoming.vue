@@ -5,7 +5,7 @@
       v-if="upcomingAssessments.length === 0"
       class="has-text-grey has-text-centered"
     >
-      No upcoming assignments or exams for one week
+      No upcoming assignments or exams for the next week!
     </p>
     <div
       v-else

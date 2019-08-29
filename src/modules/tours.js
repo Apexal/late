@@ -120,7 +120,7 @@ const tours = [
     steps: [
       {
         target: '#calendar-holder',
-        content: '[ FILL ME OUT ]',
+        content: 'This calendar shows you everything in your schedule, courses, unavailability, and study/work blocks.',
         params: {
           placement: 'top',
           enableScrolling: false
