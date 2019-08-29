@@ -194,6 +194,7 @@ export default {
     },
     startAddCourseByCRN () {
       this.promptCredentials((rin, pin) => {
+        alert(rin)
         this.$buefy.dialog.prompt({
           message: 'What is the course CRN?',
           onConfirm: crn => this.addCourseByCRN(rin, pin, crn)
@@ -204,13 +205,15 @@ export default {
       let request
       try {
         request = await this.$http.put(`/account/courseschedule/${crn}`, {
-          rin: this.rin,
-          pin: this.pin
+          rin,
+          pin
         })
       } catch (e) {
         this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
         return
       }
+
+      this.$store.commit('SET_CREDENTIALS', { rin, pin })
 
       const newCourse = request.data.course
       this.$buefy.toast.open({ message: `Grabbed course ${newCourse.title} from SIS!` })
@@ -253,6 +256,8 @@ export default {
 
       this.$store.commit('SET_COURSES', request.data.courses)
       this.$store.commit('SET_USER', request.data.updatedUser)
+
+      this.$store.commit('SET_CREDENTIALS', { rin, pin })
 
       // Notify user of success
       this.$buefy.snackbar.open({
