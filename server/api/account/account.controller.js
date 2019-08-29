@@ -112,8 +112,6 @@ async function setAllFromSIS (ctx) {
     }
   }
 
-  let currentCourses = []
-
   for (const termCode of registeredTermCodes) {
     logger.info(`${termCode}: Getting courses`)
 
@@ -144,8 +142,6 @@ async function setAllFromSIS (ctx) {
 
     logger.info(`Got ${courseSchedule.length} courses`)
 
-    if (ctx.session.currentTerm && termCode === ctx.session.currentTerm.code) currentCourses = courseSchedule
-
     // Handle GCal
     if (ctx.state.user.integrations.google.calendarID) {
       try {
@@ -160,9 +156,11 @@ async function setAllFromSIS (ctx) {
   ctx.state.user.lastSISUpdate = new Date()
   await ctx.state.user.save()
 
+  const courses = !ctx.session.currentTerm ? [] : await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code)
+
   ctx.ok({
     updatedUser: ctx.state.user,
-    courses: currentCourses
+    courses
   })
 }
 

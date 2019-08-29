@@ -87,12 +87,6 @@ export default {
     }
   },
   computed: {
-    rin () {
-      return this.$store.state.auth.rin
-    },
-    pin () {
-      return this.$store.state.auth.pin
-    },
     userSetup () {
       return this.$store.getters.userSetup
     }
