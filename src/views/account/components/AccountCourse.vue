@@ -112,7 +112,7 @@
         </div>
         <div class="columns">
           <div class="column">
-            <label :for="'course-title-' + elementID">Your Title</label>
+            <label :for="'course-title-' + elementID">Course Title</label>
             <input
               :id="'course-title-' + elementID"
               v-model.trim="courseData.title"
@@ -123,7 +123,7 @@
             >
           </div>
           <div class="column">
-            <label :for="'course-color-' + elementID">Color</label>
+            <label :for="'course-color-' + elementID">Select Color</label>
             <input
               :id="'course-color-' + elementID"
               v-model="courseData.color"
@@ -134,8 +134,11 @@
           </div>
         </div>
 
-        <div class="course-links">
-          <label :for="'course-links-' + elementID">Links</label>
+        <div
+          class="course-links"
+          style="padding-bottom: 10px;"
+        >
+          <label :for="'course-links-' + elementID">Add/Remove Links</label>
           <b-taglist>
             <b-tag
               v-for="(link, index) in editedLinks"
@@ -149,15 +152,29 @@
               {{ link }}
             </b-tag>
           </b-taglist>
-          <input
-            :id="'course-links-' + elementID"
-            v-model="newLink"
-            type="text"
-          >
-          <i
-            class="fa fa-plus"
-            @click="addLink"
-          />
+          <div class="field has-addons">
+            <div class="control has-icons-left has-icons-right is-expanded">
+              <input
+                :id="'course-links-' + elementID"
+                v-model="newLink"
+                class="input is-primary"
+                placeholder="Add link"
+              >
+              <span class="icon is-small is-left">
+                <i
+                  class="fa fa-plus"
+                />
+              </span>
+            </div>
+            <div class="control">
+              <a
+                class="button is-primary"
+                @click="addLink"
+              >
+                Add
+              </a>
+            </div>
+          </div>
         </div>
 
         <div class="periods">
@@ -311,21 +328,22 @@
 
         <div>
           <b-button
-            type="is-warning"
-            @click="cancel"
-          >
-            Cancel
-          </b-button>
-          <b-button
             :disabled="saved"
             type="is-primary"
+            class="is-pulled-right"
             @click="updateCourse"
           >
             Save
           </b-button>
           <b-button
-            type="is-danger"
+            type="is-warning"
             class="is-pulled-right"
+            @click="cancel"
+          >
+            Cancel
+          </b-button>
+          <b-button
+            type="is-danger"
             @click="confirmRemoveCourse"
           >
             Remove
@@ -577,8 +595,9 @@ export default {
 
 .course.box {
   .tags {
-    margin-bottom: 0;
+    margin: 5px 0px 10px 0px;
     .tag {
+      padding: 10px;
       margin-bottom: 0;
     }
   }
