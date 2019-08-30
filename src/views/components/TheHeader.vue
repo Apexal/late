@@ -19,10 +19,11 @@
         >
           LATE
           <span
+            v-if="inDevMode"
             class="tag beta-tag"
             :class="[inDevMode ? 'is-warning' : 'is-primary']"
             title="LATE is still in active development!"
-          >{{ inDevMode ? 'DEV' : 'BETA' }}</span>
+          >DEV</span>
         </router-link>
         <template v-if="loggedIn">
           <a
