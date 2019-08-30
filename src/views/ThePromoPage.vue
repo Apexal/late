@@ -58,9 +58,7 @@
           class="is-size-8 has-text-centered desc"
           style="max-width:800px;margin:0 auto;"
         >
-          <b>LATE</b> is currently in closed BETA and is not available to the
-          general student body yet. Interested students can be added to the wait
-          list below and will be notified when we publicly launch in
+          <b>LATE</b> is an open-source academic hub, planner, and coordinator, designed for RPI students. Launching in
           <b>Fall 2019.</b>
         </p>
 
@@ -73,7 +71,7 @@
             <span class="icon">
               <i class="fas fa-sign-in-alt" />
             </span>
-            Join Waitlist</a>
+            Log in with CAS</a>
           <button
             class="the-other-button button is-secondary is-large"
             title="What exactly is LATE?"
