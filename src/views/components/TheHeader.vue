@@ -174,7 +174,7 @@
             </router-link>
           </template>
           <div
-            class="navbar-item has-dropdown is-hoverable"
+            class="navbar-item has-dropdown is-hoverable toolsDropdown"
           >
             <router-link
               :to="{name: 'tools'}"
@@ -230,7 +230,7 @@
         <div class="navbar-end">
           <template v-if="loggedIn">
             <a
-              class="navbar-item"
+              class="navbar-item onlineCount"
               :title="`There are ${onlineUsers.length} users online.`"
             >
               <b-tag type="is-primary">{{ onlineUsers.length }} online</b-tag>
@@ -512,6 +512,41 @@ export default {
     padding-left: 5px;
     padding-right: 5px;
     margin-left: 7px;
+  }
+}
+
+//Mobile dropdown mediaquery
+@media only screen and (max-width: 1024px) {
+  //Force navbar to take up whole screen
+  .navbar-menu {
+    min-height: 95vh;
+    background-color: white;
+  }
+  //Remove onlineCount and dropdown arrows
+  .onlineCount,.navbar-link:not(.is-arrowless)::after { display: none; }
+  //Increase size of buttons without dropdowns
+  .home-link,.toolsDropdown {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  //Remove tools dropdown (mobile users can use index page)
+  .toolsDropdown .navbar-dropdown {
+    display: none;
+  }
+  //Shift all child items to right and add border
+  .navbar-item {
+    &.has-dropdown {
+      .navbar-dropdown {
+        border-left: 1px solid black;
+        padding: 0px;
+        margin-left: 25px;
+      }
+      &.is-active {
+        .navbar-dropdown {
+          display: block;
+        }
+       }
+     }
   }
 }
 </style>
