@@ -357,6 +357,8 @@ async function addCourseByCRN (ctx) {
     ...courseData
   })
 
+  await scrapePeriodTypesFromCRNs(ctx.session.currentTerm.code, [course])
+
   try {
     await course.save()
   } catch (e) {

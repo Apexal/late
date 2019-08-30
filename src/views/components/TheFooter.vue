@@ -15,7 +15,7 @@
       </router-link>
     </h1>
     <h2 class="has-text-grey has-text-centered">
-      (v1.0.0 - The Honorable)
+      v1.0.0 - The Honorable
     </h2>
     <div class="content has-text-centered columns">
       <p class="column">
