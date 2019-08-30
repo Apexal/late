@@ -304,10 +304,12 @@ async function importCourseSchedule (ctx) {
   courseSchedule.push(generateOtherCourse(ctx.state.user, ctx.session.currentTerm))
 
   // If reimporting, only update sectionId, start/end dates, credits, and periods
-  const courses = await updateCourses(ctx.state.user._id, ctx.session.currentTerm.code, courseSchedule)
+  await updateCourses(ctx.state.user._id, ctx.session.currentTerm.code, courseSchedule)
 
   ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code)
   ctx.state.user.lastSISUpdate = new Date()
+
+  const courses = await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code)
 
   // Handle GCal
   if (ctx.state.user.integrations.google.calendarID) {
