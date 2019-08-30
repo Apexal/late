@@ -197,7 +197,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
 
     const courseTitle = titleGroups.title
     const summary = titleGroups.summary
-    const sectionId = titleGroups.sectionId
+    const sectionId = parseInt(titleGroups.sectionId)
 
     const crn = $(this)
       .find('acronym[title="Course Reference Number"]')
@@ -321,7 +321,7 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
 
   const title = titleGroups.title
   const summary = titleGroups.summary
-  const sectionId = titleGroups.sectionId
+  const sectionId = parseInt(titleGroups.sectionId)
 
   const text = $('a:contains(View Catalog Entry)').parent().contents().filter(function () { return this.type === 'text' }).text().split(' ')
   const credits = parseFloat(text[text.length - 2])
@@ -418,12 +418,13 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
   for (const course of courses) {
     // Scrape for period type
     const paddedSection =
-      course.sectionId > 9 ? course.sectionId : '0' + course.sectionId
+      `${course.sectionId}`.length === 2 ? course.sectionId : '0' + course.sectionId
 
     // Generate title as found on the table site
     const title =
       course.crn + ' ' + course.summary.replace(' ', '-') + '-' + paddedSection
-    logger.info(`Finding period types for '${title}'`)
+    // e.g. '85389 CSCI-4965-01'
+
     const topRow = $(`table tr td:first-child:contains('${title}')`).parent(
       'tr'
     )
@@ -431,6 +432,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
       logger.info('Cannot find period info for ' + title + '. Skipping.')
       continue
     }
+    logger.info(`Found period types for '${title}'`)
     // There is one row for each unique period, see https://snag.gy/uHR9OK.jpg for example
     // One row could be for multiple days if they have the same start and end time
     let currentRow = topRow
