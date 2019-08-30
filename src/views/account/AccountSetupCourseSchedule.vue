@@ -194,10 +194,12 @@ export default {
     },
     startAddCourseByCRN () {
       this.promptCredentials((rin, pin) => {
-        alert(rin)
         this.$buefy.dialog.prompt({
-          message: 'What is the course CRN?',
-          onConfirm: crn => this.addCourseByCRN(rin, pin, crn)
+          message: 'What is the course <b>CRN</b>?',
+          inputAttrs: {
+            placeholder: 'From YACS or SIS'
+          },
+          onConfirm: crn => this.addCourseByCRN(rin, pin, crn.trim())
         })
       })
     },

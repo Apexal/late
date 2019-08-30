@@ -11,7 +11,8 @@ const SIS_COURSE_FROM_CRN_URL = 'https://sis.rpi.edu/rss/bwckschd.p_disp_listcrs
 const SIS_VIEW_TERM_REGISTRATION_URL = 'https://sis.rpi.edu/rss/bwskrsta.P_RegsStatusDisp'
 const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs' // + term + '.htm'
 
-const COURSE_TITLE_REGEXP = /(^(?<title>.+) - (?<crn>\d{4,6}) - (?<summary>.+) - (?<sectionId>\d{2})$)/
+const COURSE_LIST_TITLE_REGEXP = /^(?<title>.*) - (?<summary>.+) - (?<sectionId>\d{2})$/
+const COURSE_SINGLE_TITLE_REGEXP = /^(?<title>.*) - (?<crn>\d{5}) - (?<summary>.+) - (?<sectionId>\d{2})$/
 
 const PERIOD_TABLE_TYPE_COLUMN = 3
 const PERIOD_TABLE_DAYS_COLUMN = 6
@@ -192,7 +193,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
       .first()
       .text()
 
-    const titleGroups = courseTitleLine.match(COURSE_TITLE_REGEXP).groups
+    const titleGroups = courseTitleLine.match(COURSE_LIST_TITLE_REGEXP).groups
 
     const courseTitle = titleGroups.title
     const summary = titleGroups.summary
@@ -315,8 +316,8 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
   if (courseTable.length === 0) throw new Error('No course found!')
 
   const titleA = $('a', courseTable).first()
-
-  const titleGroups = titleA.text().match(COURSE_TITLE_REGEXP).groups
+  console.log(titleA.text())
+  const titleGroups = titleA.text().match(COURSE_SINGLE_TITLE_REGEXP).groups
 
   const title = titleGroups.title
   const summary = titleGroups.summary

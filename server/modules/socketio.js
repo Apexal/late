@@ -26,13 +26,12 @@ module.exports = server => {
           online.push(user.rcs_id)
           sessionCounts[user.rcs_id] = 1
           socket.to('notifications').emit('user online', user.rcs_id)
+          logger.info(`${user.rcs_id} is now online`)
         } else {
           sessionCounts[user.rcs_id]++
         }
 
         io.emit('online', online)
-
-        logger.info(`${user.rcs_id} is now online`)
 
         if (user.rcs_id === 'matraf') socket.join('notifications')
       })

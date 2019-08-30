@@ -88,6 +88,7 @@ export default {
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
       await this.$store.commit('SET_COURSES', request.data.courses)
+      this.$store.commit('SET_CREDENTIALS', { rin, pin })
 
       this.$buefy.snackbar.open({
         indefinite: true,
