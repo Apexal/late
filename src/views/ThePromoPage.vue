@@ -162,9 +162,9 @@ export default {
         },
         {
           type: 'is-success',
-          title: 'Collaborate with your peers',
-          description: 'Find students in your courses looking to form study groups, or create groups assignments to schedule group meetings to work. LATE will handle finding the times that work for everyone! No more trying to coordinate meeting up to study, let LATE do all the work for you.',
-          videoName: 'collaborate.mp4'
+          title: 'Completely Mobile-Friendly',
+          description: 'LATE is designed for easy use on mobile devices- even while offline! Select "Install LATE" or "Add to Home Screen" for even more mobile functionality!',
+          imageName: 'mobiledevices.png'
         },
         {
           type: 'is-warning',
