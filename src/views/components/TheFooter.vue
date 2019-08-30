@@ -14,6 +14,9 @@
         RCOS project!
       </router-link>
     </h1>
+    <h2 class="has-text-grey has-text-centered">
+      (v1.0.0 - The Honorable)
+    </h2>
     <div class="content has-text-centered columns">
       <p class="column">
         <span class="icon">
@@ -91,7 +94,7 @@ export default {
   @media screen and (min-width: 769px) {
     padding: 2rem 6rem 2rem !important;
     //Bottom padding to set the h1 ("An RCOS Project!") apart from the columns below
-    h1 {
+    h2 {
       padding-bottom: 1rem;
     }
   }
