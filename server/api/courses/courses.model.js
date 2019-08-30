@@ -24,7 +24,7 @@ const schema = new Schema(
         day: { type: Number, required: true, min: 0, max: 6 },
         start: { type: String, required: true }, // Hmm
         end: { type: String, required: true }, // Hmm
-        type: { type: String, default: 'LEC' }, // LEC, TES, STU, REC
+        type: { type: String, default: 'LEC' }, // LEC, TES, STU, REC, MET
         location: { type: String, default: '???' }
       }
     ],

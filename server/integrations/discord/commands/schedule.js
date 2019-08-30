@@ -11,7 +11,8 @@ const periodTypes = {
   LAB: 'Lab',
   TES: 'Test',
   REC: 'Recitation',
-  STU: 'Studio'
+  STU: 'Studio',
+  MET: 'Meeting'
 }
 
 module.exports = {

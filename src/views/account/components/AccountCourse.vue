@@ -378,7 +378,7 @@ export default {
       editedLinks: this.course.links.slice(0),
       editedPeriods: JSON.parse(JSON.stringify(this.course.periods)),
       editing: false,
-      periodTypes: ['LEC', 'REC', 'LAB', 'TES', 'STU'],
+      periodTypes: ['LEC', 'REC', 'LAB', 'TES', 'STU', 'MET'],
       newPeriod: {
         day: undefined,
         start: '08:00',
