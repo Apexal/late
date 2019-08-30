@@ -20,7 +20,7 @@ export default [
   'calm',
   'energetic',
   'enthusiastic',
-  'determind',
+  'determined',
   'good-natured',
   'eager',
   'late'
