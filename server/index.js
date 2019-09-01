@@ -18,6 +18,9 @@ const discordClient = require('./integrations/discord').client
 
 const logger = require('./modules/logger')
 
+const Sentry = require('@sentry/node')
+Sentry.init({ dsn: 'https://8ee2afb35b1b4faab2e45b860ec36c38@sentry.io/1548265' })
+
 const app = new Koa()
 
 /* Server side routing (mainly used for API) */
@@ -101,6 +104,11 @@ app.use(async (ctx, next) => {
   } catch (e) {
     ctx.status = e.status || 500
     logger.error(e)
+
+    Sentry.withScope(scope => {
+      scope.addEventProcessor(event => Sentry.Handlers.parseRequest(event, ctx.request))
+      Sentry.captureException(e)
+    })
 
     // Only send details of error if in development mode (to protect confidential info)
     ctx.send(

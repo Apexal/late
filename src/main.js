@@ -24,6 +24,14 @@ import io from 'socket.io-client'
 import 'vue-tour/dist/vue-tour.css'
 import './sw/registerServiceWorker'
 
+import * as Sentry from '@sentry/browser'
+import * as Integrations from '@sentry/integrations'
+
+Sentry.init({
+  dsn: 'https://8dc02c8aff11495696641a303123f176@sentry.io/1548286',
+  integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+})
+
 Vue.use(VueSocketio, io(process.env.BASE_URL), { store })
 
 Vue.use(VueTour)
