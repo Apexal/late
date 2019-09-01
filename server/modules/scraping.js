@@ -11,6 +11,9 @@ const SIS_COURSE_FROM_CRN_URL = 'https://sis.rpi.edu/rss/bwckschd.p_disp_listcrs
 const SIS_VIEW_TERM_REGISTRATION_URL = 'https://sis.rpi.edu/rss/bwskrsta.P_RegsStatusDisp'
 const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs' // + term + '.htm'
 
+const COURSE_LIST_TITLE_REGEXP = /^(?<title>.*) - (?<summary>.+) - (?<sectionId>\d{2})$/
+const COURSE_SINGLE_TITLE_REGEXP = /^(?<title>.*) - (?<crn>\d{5}) - (?<summary>.+) - (?<sectionId>\d{2})$/
+
 const PERIOD_TABLE_TYPE_COLUMN = 3
 const PERIOD_TABLE_DAYS_COLUMN = 6
 const PERIOD_TABLE_START_TIME_COLUMN = 7
@@ -125,9 +128,13 @@ async function scrapeSISForProfileInfo (RIN, PIN) {
   // 'Frank J. Matranga' -> ['Frank', 'J.', 'Matranga']
   const nameParts = $('table.datadisplaytable tbody tr th:contains("Name :")').next().text().split(' ')
 
-  const name = {
-    first: nameParts[0],
-    last: nameParts[nameParts.length - 1]
+  const name = {}
+
+  if (nameParts[0]) {
+    name.first = nameParts[0]
+  }
+  if (nameParts[nameParts.length - 1]) {
+    name.last = nameParts[nameParts.length - 1]
   }
 
   const major = $('table.datadisplaytable tbody tr th:contains("Major:")').first().next().text()
@@ -185,10 +192,12 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
       .find('caption[class="captiontext"]')
       .first()
       .text()
-    const courseParts = courseTitleLine.split(' - ')
-    const courseTitle = courseParts[0]
-    const summary = courseParts[1]
-    const sectionId = parseInt(courseParts[2])
+
+    const titleGroups = courseTitleLine.match(COURSE_LIST_TITLE_REGEXP).groups
+
+    const courseTitle = titleGroups.title
+    const summary = titleGroups.summary
+    const sectionId = parseInt(titleGroups.sectionId)
 
     const crn = $(this)
       .find('acronym[title="Course Reference Number"]')
@@ -307,11 +316,12 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
   if (courseTable.length === 0) throw new Error('No course found!')
 
   const titleA = $('a', courseTable).first()
-  const parts = titleA.text().split(' - ')
+  console.log(titleA.text())
+  const titleGroups = titleA.text().match(COURSE_SINGLE_TITLE_REGEXP).groups
 
-  const title = parts[0]
-  const sectionId = parts[3]
-  const summary = parts[2]
+  const title = titleGroups.title
+  const summary = titleGroups.summary
+  const sectionId = parseInt(titleGroups.sectionId)
 
   const text = $('a:contains(View Catalog Entry)').parent().contents().filter(function () { return this.type === 'text' }).text().split(' ')
   const credits = parseFloat(text[text.length - 2])
@@ -408,12 +418,13 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
   for (const course of courses) {
     // Scrape for period type
     const paddedSection =
-      course.sectionId > 9 ? course.sectionId : '0' + course.sectionId
+      `${course.sectionId}`.length === 2 ? course.sectionId : '0' + course.sectionId
 
     // Generate title as found on the table site
     const title =
       course.crn + ' ' + course.summary.replace(' ', '-') + '-' + paddedSection
-    logger.info(`Finding period types for '${title}'`)
+    // e.g. '85389 CSCI-4965-01'
+
     const topRow = $(`table tr td:first-child:contains('${title}')`).parent(
       'tr'
     )
@@ -421,6 +432,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
       logger.info('Cannot find period info for ' + title + '. Skipping.')
       continue
     }
+    logger.info(`Found period types for '${title}'`)
     // There is one row for each unique period, see https://snag.gy/uHR9OK.jpg for example
     // One row could be for multiple days if they have the same start and end time
     let currentRow = topRow

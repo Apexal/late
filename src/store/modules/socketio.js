@@ -1,5 +1,5 @@
-import { Snackbar } from 'buefy/dist/components/snackbar'
-import { Toast } from 'buefy/dist/components/toast'
+import { SnackbarProgrammatic as Snackbar, ToastProgrammatic as Toast } from 'buefy'
+
 import router from '@/router'
 
 const state = {

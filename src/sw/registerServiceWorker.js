@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Snackbar } from 'buefy/dist/components/snackbar'
+import { SnackbarProgrammatic as Snackbar } from 'buefy'
 
 import { register } from 'register-service-worker'
 

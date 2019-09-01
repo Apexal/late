@@ -2,6 +2,12 @@
 
 <template>
   <div class="account-home">
+    <b-loading
+      :is-full-page="false"
+      :active="loading"
+      :can-cancel="false"
+    />
+
     <SISManModal
       :open="showingModal"
       :reimporting="$route.query.importFromSIS"
@@ -29,6 +35,7 @@
         type="is-primary"
         @click="startImportFromSIS"
       >
+        <i class="fas fa-cloud-download-alt" />
         Import from SIS
       </b-button>
     </div>
@@ -60,11 +67,7 @@ export default {
   },
   methods: {
     startImportFromSIS () {
-      this.promptRIN(rin => {
-        this.promptPIN(pin => {
-          this.importFromSIS(rin, pin)
-        })
-      })
+      this.promptCredentials(this.importFromSIS)
     },
     async importFromSIS (rin, pin) {
       this.loading = true
@@ -85,6 +88,7 @@ export default {
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
       await this.$store.commit('SET_COURSES', request.data.courses)
+      this.$store.commit('SET_CREDENTIALS', { rin, pin })
 
       this.$buefy.snackbar.open({
         indefinite: true,

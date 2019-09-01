@@ -345,7 +345,7 @@ export default {
         type: 'is-primary',
         position: 'is-bottom',
         actionText: 'View',
-        duration: 5000,
+        duration: 7000,
         onAction: () => {
           this.$router.push({
             name: 'assignment-overview',

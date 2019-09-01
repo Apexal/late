@@ -42,6 +42,19 @@
               motivated
             </p>
           </router-link>
+          <router-link
+            tag="article"
+            :to="{name: 'dorm-photos'}"
+            class="tile is-child tools-button notification"
+          >
+            <i class="fas fa-home" />
+            <p class="title">
+              Dorm Photos
+            </p>
+            <p class="subtitle">
+              View or contribute to photos of RPI student housing
+            </p>
+          </router-link>
         </div>
         <div class="tile is-parent is-vertical">
           <router-link
@@ -178,7 +191,7 @@ export default {
 .tools-button::after {
   background-color: #2e3b59;
   height: 100%;
-  left: -35%;
+  left: -50%;
   top: 0;
   transform: skew(50deg);
   transition-duration: 0.3s;
@@ -188,7 +201,7 @@ export default {
 
 .tools-button:hover:after {
   height: 100%;
-  width: 135%;
+  width: 150%;
 }
 
 .tools-button:hover i {

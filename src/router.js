@@ -5,8 +5,7 @@ import api from './api'
 
 import store from '@/store'
 
-import { Toast } from 'buefy/dist/components/toast'
-import { Snackbar } from 'buefy/dist/components/snackbar'
+import { ToastProgrammatic as Toast, SnackbarProgrammatic as Snackbar } from 'buefy'
 
 Vue.use(Router)
 
@@ -101,6 +100,35 @@ const router = new Router({
       meta: {
         title: 'Study Tools'
       }
+    },
+    {
+      path: '/rpi-dorm-photos',
+      component: () => import('@/views/dormphotos/DormPhotos'),
+      children: [
+        {
+          path: '',
+          name: 'dorm-photos',
+          component: () => import('@/views/dormphotos/DormPhotosHome'),
+          meta: {
+            title: 'RPI Dorm Photos'
+          }
+        },
+        {
+          path: 'confirm',
+          name: 'dorm-photos-confirm',
+          component: () => import('@/views/dormphotos/DormPhotosConfirm'),
+          meta: {
+            title: 'Confirm Dorm Photos',
+            requiresAuth: true,
+            requiresAdmin: true
+          }
+        },
+        {
+          path: ':dormKey',
+          name: 'dorm-photos-view',
+          component: () => import('@/views/dormphotos/DormPhotosView')
+        }
+      ]
     },
     {
       path: '/checklist',
@@ -400,7 +428,6 @@ router.beforeEach(async (to, from, next) => {
       const response = await api.get('/students/loginas?rcs_id=' + rcsID)
       await store.dispatch('SET_USER', response.data.user)
     } else {
-      api({ url: 'logout', baseURL: '/auth/' })
       store.commit('UNSET_USER')
       store.commit('SET_LOADED', true)
     }

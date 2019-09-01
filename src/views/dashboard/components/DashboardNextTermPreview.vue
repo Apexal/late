@@ -147,7 +147,6 @@ export default {
     try {
       request = await this.$http.get(`/courses/term/${this.nextTerm.code}`)
     } catch (e) {
-      alert(e)
       return
     }
 

@@ -45,7 +45,7 @@ export default {
     startTour (index) {
       const tour = this.tours[index]
 
-      if (tour.route) this.$router.push(tour.route)
+      if (tour.route && tour.route.name !== this.$route.name) this.$router.push(tour.route)
       this.$store.commit('TOGGLE_TOURS_MODAL')
       this.$store.commit('SET_TOUR_INDEX', index)
     }

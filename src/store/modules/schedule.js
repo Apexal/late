@@ -58,7 +58,8 @@ const getters = {
       LAB: 'Lab',
       TES: 'Test',
       REC: 'Recitation',
-      STU: 'Studio'
+      STU: 'Studio',
+      MET: 'Meeting'
     }[type] || type),
   mapCourseToEvents: (state, getters, rootState, rootGetters) => course => {
     return course.periods.map(p => {

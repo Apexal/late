@@ -58,9 +58,7 @@
           class="is-size-8 has-text-centered desc"
           style="max-width:800px;margin:0 auto;"
         >
-          <b>LATE</b> is currently in closed BETA and is not available to the
-          general student body yet. Interested students can be added to the wait
-          list below and will be notified when we publicly launch in
+          <b>LATE</b> is an open-source academic hub, planner, and coordinator, designed for RPI students. Launching in
           <b>Fall 2019.</b>
         </p>
 
@@ -73,7 +71,7 @@
             <span class="icon">
               <i class="fas fa-sign-in-alt" />
             </span>
-            Join Waitlist</a>
+            Log in with CAS</a>
           <button
             class="the-other-button button is-secondary is-large"
             title="What exactly is LATE?"
@@ -164,9 +162,9 @@ export default {
         },
         {
           type: 'is-success',
-          title: 'Collaborate with your peers',
-          description: 'Find students in your courses looking to form study groups, or create groups assignments to schedule group meetings to work. LATE will handle finding the times that work for everyone! No more trying to coordinate meeting up to study, let LATE do all the work for you.',
-          videoName: 'collaborate.mp4'
+          title: 'Completely Mobile-Friendly',
+          description: 'LATE is designed for easy use on mobile devices- even while offline! Select "Install LATE" or "Add to Home Screen" for even more mobile functionality!',
+          imageName: 'mobiledevices.png'
         },
         {
           type: 'is-warning',

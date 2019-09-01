@@ -41,9 +41,11 @@
 
 <script>
 import moment from 'moment'
+import accountMixin from '@/mixins/account'
 
 export default {
   name: 'AccountSetupTerms',
+  mixins: [accountMixin],
   data () {
     return {
       selected: []

@@ -101,7 +101,7 @@
           class="show-passed-icon far"
           :class="[showPassed ? 'fa-eye' : 'fa-eye-slash']"
         />
-        {{ showPassed ? "Hide" : "Show" }} Passed
+        {{ showPassed ? "Hide" : "Show" }} Past
       </b-button>
     </div>
     <div

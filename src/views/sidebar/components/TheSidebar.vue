@@ -300,4 +300,9 @@ export default {
     background-color: #dbdbdb;
   }
 }
+
+//Remove class countdown on tablet sized screens to free up room
+@media (min-width:768px) and (max-width:1000px) {
+  #sidebar .countdown { display: none; }
+}
 </style>

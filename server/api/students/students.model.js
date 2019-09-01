@@ -275,7 +275,7 @@ schema.methods.getCoursesForTerm = function (termCode) {
 // https://mongoosejs.com/docs/guide.html#virtuals
 
 schema.virtual('fullName').get(function () {
-  return (this.name.preferred || this.name.first) + ' ' + this.name.last
+  return (this.name.preferred || this.name.first) + (this.name.last ? (' ' + this.name.last) : '')
 })
 
 // Used for chat

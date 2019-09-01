@@ -46,15 +46,20 @@
       </div>
     </template>
     <template v-else-if="currentStatus === 'period'">
-      <p class="subtitle">
-        For the next <b>{{ minutesLeft }} minutes</b> until <b>{{ timeFormat(currentEvent.end) }}</b>, you should be in
+      <p
+        class="subtitle has-text-centered"
+        style="margin-bottom: 3px;padding-top: 5px;"
+      >
+        For the next <b>{{ minutesLeft }} minutes</b> (until <b>{{ timeFormat(currentEvent.end) }}</b>), you are in
       </p>
       <div>
-        <div class="has-text-centered is-size-3">
+        <div
+          class="has-text-centered is-size-3 currentClass"
+          @click="$store.commit('OPEN_COURSE_MODAL', currentEvent.course)"
+        >
           <i
             class="fas fa-graduation-cap course-cap"
             :style="{color: currentEvent.course.color}"
-            @click="$store.commit('OPEN_COURSE_MODAL', currentEvent.course)"
           />
           {{ currentEvent.course.title }}
           <span class="has-text-grey">{{ periodType(currentEvent.period) }}</span>
@@ -166,5 +171,9 @@ export default {
   text-align: center;
   font-weight: bold;
   text-decoration: none !important;
+}
+
+.currentClass {
+  cursor: pointer;
 }
 </style>

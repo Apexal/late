@@ -75,4 +75,12 @@ export default {
 
 <style lang="scss" scoped>
 
+@media only screen and (min-width:810px) {
+  .dashboard-overview .is-ancestor {
+    justify-content: center;
+    .tile {
+    max-width: 40vw;
+    }
+  }
+}
 </style>

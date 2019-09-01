@@ -8,11 +8,6 @@ const cas = require('../modules/cas')
 // ------- CAS -------
 router.get(
   '/login',
-  async (ctx, next) => {
-    // In case just /login without redirectTo in the query
-    ctx.query.redirectTo = ctx.query.redirectTo || '/'
-    await next()
-  },
   cas.bounce,
   Ctrl.loginStudent
 )

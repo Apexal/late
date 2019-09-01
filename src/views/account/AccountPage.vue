@@ -41,7 +41,9 @@
           name="slide-left"
           mode="out-in"
         >
-          <router-view class="child-view" />
+          <router-view
+            class="child-view"
+          />
         </transition>
       </keep-alive>
     </section>

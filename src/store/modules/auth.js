@@ -2,6 +2,8 @@ import axios from '@/api'
 
 const state = {
   user: {},
+  rin: '',
+  pin: '',
   isAuthenticated: null
 }
 const getters = {
@@ -54,6 +56,10 @@ const actions = {
 }
 
 const mutations = {
+  SET_CREDENTIALS: (state, { rin, pin }) => {
+    state.rin = rin
+    state.pin = pin
+  },
   SET_USER: (state, user) => {
     state.user = user
     state.isAuthenticated = true
