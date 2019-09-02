@@ -101,7 +101,8 @@
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
-              <a
+              <router-link
+                :to="{name: 'coursework-upcoming'}"
                 class="navbar-link coursework-link"
                 title="Manage your assignments and exams!"
               >
@@ -109,11 +110,7 @@
                   <i class="fas fa-graduation-cap" />
                 </span>
                 Coursework
-                <span
-                  v-if="assessmentCount > 0"
-                  class="tag is-warning assignment-count"
-                >{{ assessmentCount }}</span>
-              </a>
+              </router-link>
 
               <div class="navbar-dropdown">
                 <router-link
