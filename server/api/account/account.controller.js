@@ -2,6 +2,8 @@ const logger = require('../../modules/logger')
 
 const google = require('../../modules/google')
 
+const Sentry = require('@sentry/node')
+
 const {
   scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
@@ -135,6 +137,7 @@ async function setAllFromSIS (ctx) {
       courseSchedule = await scrapePeriodTypesFromCRNs(termCode, courseSchedule)
     } catch (e) {
       logger.error(`Failed to get period types for ${termCode}`)
+      Sentry.captureException(e)
     }
     courseSchedule.push(generateOtherCourse(ctx.state.user, term))
     await updateCourses(ctx.state.user._id, termCode, courseSchedule)
@@ -149,6 +152,7 @@ async function setAllFromSIS (ctx) {
         logger.info(`Updated GCal for ${ctx.state.user.rcs_id}`)
       } catch (e) {
         logger.error(`Couldn't update GCal for ${ctx.state.user.rcs_id}`)
+        Sentry.captureException(e)
       }
     }
   }
@@ -215,6 +219,7 @@ async function setProfile (ctx) {
     logger.error(
       `Failed to save personal info for ${ctx.state.user.rcs_id}: ${err}`
     )
+    Sentry.captureException(err)
     return ctx.badRequest('There was an error saving your personal info.')
   }
 }
@@ -250,6 +255,7 @@ async function setTerms (ctx) {
     await ctx.state.user.save()
   } catch (e) {
     logger.error(`Failed to save user ${ctx.state.user.rcs_id}: ${e}`)
+    Sentry.captureException(e)
     return ctx.internalServerError('There was an error saving the terms.')
   }
 
@@ -318,6 +324,7 @@ async function importCourseSchedule (ctx) {
       logger.info(`Updated GCal for ${ctx.state.user.rcs_id}`)
     } catch (e) {
       logger.error(`Couldn't update GCal for ${ctx.state.user.rcs_id}`)
+      Sentry.captureException(e)
     }
   }
 
@@ -348,6 +355,7 @@ async function addCourseByCRN (ctx) {
     courseData = await scrapeSISForSingleCourse(rin, pin, ctx.session.currentTerm, crn)
   } catch (e) {
     logger.error(`Failed to scrape SIS for single course ${crn}: ${e}`)
+    Sentry.captureException(e)
     return ctx.internalServerError('There was an error getting the course from SIS.')
   }
 
@@ -363,6 +371,7 @@ async function addCourseByCRN (ctx) {
     await course.save()
   } catch (e) {
     logger.error(`Failed to save new course ${crn} for ${ctx.state.user.rcs_id}: ${e}`)
+    Sentry.captureException(e)
     return ctx.badRequest('There was an issue saving the new course.')
   }
 
@@ -398,6 +407,7 @@ async function setTimePreference (ctx) {
   try {
     await ctx.state.user.save()
   } catch (e) {
+    Sentry.captureException(e)
     logger.error(
       `Failed to set work/study time preference schedule for ${
         ctx.state.user.rcs_id

@@ -191,7 +191,7 @@ const actions = {
               termCode,
               courseID: course._id, // links this event to the course
               periodType: period.type,
-              periodID: period.id
+              periodID: period._id
             }
           }
         }
