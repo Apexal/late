@@ -70,7 +70,7 @@ async function loginToSIS (RIN, PIN) {
   })
 
   // TODO: validate login
-  if (!checkLogin($)) throw new Error(`Failed to login to SIS as ${RIN}.`)
+  if (!checkLogin($)) throw new Error(`Failed to login to SIS. Please check your credentials!`)
 
   return jar
 }
