@@ -27,9 +27,23 @@ import './sw/registerServiceWorker'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 
+const ignoreErrors = [
+  'x_magnitude',
+  'request is not allowed by the user agent',
+  'play() failed',
+  'read property'
+]
+
 Sentry.init({
   dsn: 'https://8dc02c8aff11495696641a303123f176@sentry.io/1548286',
   integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+  // beforeSend (event, hint) {
+  //   const error = hint.originalException
+  //   if (error && error.message && ignoreErrors.some(e => error.message.match(new RegExp(e, 'i')))) {
+  //     return null
+  //   }
+  //   return event
+  // }
 })
 
 Vue.use(VueSocketio, io(process.env.BASE_URL), { store })
