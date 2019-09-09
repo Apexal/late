@@ -240,7 +240,9 @@ export default {
           promoEl.classList.add('active')
           const videoEl = promoEl.querySelector('video')
           if (!videoEl || videoEl.playing) continue
-          videoEl.play()
+          try {
+            videoEl.play()
+          } catch (e) {}
           found = promoEl
         }
       }
@@ -253,7 +255,9 @@ export default {
             promoEl.classList.add('active')
             const videoEl = promoEl.querySelector('video')
             if (!videoEl || videoEl.playing) continue
-            videoEl.play()
+            try {
+              videoEl.play()
+            } catch (e) {}
             found = promoEl
           }
         }
@@ -267,7 +271,9 @@ export default {
             promoEl.classList.add('active')
             const videoEl = promoEl.querySelector('video')
             if (!videoEl || videoEl.playing) continue
-            videoEl.play()
+            try {
+              videoEl.play()
+            } catch (e) {}
             found = promoEl
           }
         }
