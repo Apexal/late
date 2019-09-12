@@ -265,6 +265,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  //Add background-color here for specifying dark mode
 }
 
 #content {
