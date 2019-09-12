@@ -13,7 +13,7 @@
         <router-link
           id="logo"
           class="navbar-item"
-          to="/"
+          to="/overview"
           active-class
           exact-active-class
         >
@@ -414,6 +414,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.has-dropdown:hover .navbar-dropdown {
+    animation: navAnimOpen 0.15s ease-in-out;
+}
+
 .rcs_id {
   margin-left: 5px;
 }
@@ -449,6 +454,12 @@ export default {
   100% {
     transform: rotate(0);
   }
+}
+
+@keyframes navAnimOpen {
+  0% {display: none;opacity: 0;margin-top: -5px}
+  1% {display: block;opacity: 0;}
+  100% {opacity: 1;max-height: 396px;margin-top: 0px;}
 }
 
 .announcement-bell-icon.new-announcements {

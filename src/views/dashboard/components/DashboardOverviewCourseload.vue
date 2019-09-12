@@ -3,10 +3,10 @@
     class="tile is-child notification dashboard-overview-courseload"
     :class="courseLoad.className"
   >
-    <p class="subtitle is-marginless">
+    <p class="title is-marginless">
       Next 7-Day Courseload
     </p>
-    <p class="is-size-2">
+    <p class="is-size-2 course-load">
       {{ courseLoad.title }}
     </p>
     <span class="counts">{{ assignments.length }} assignments | {{ exams.length }} exams | <router-link
@@ -42,5 +42,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.course-load {
+  font-weight: 300;
+}
+
+.counts {
+  cursor: pointer;
+}
 
 </style>
