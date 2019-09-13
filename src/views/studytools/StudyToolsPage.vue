@@ -1,10 +1,10 @@
 <!--Tools: Timer page-->
 <template>
   <section class="section">
-    <h1 class="title has-text-centered-mobile">
+    <h1 class="title header-title has-text-centered-mobile">
       Study Timer
     </h1>
-    <h2 class="subtitle has-text-centered-mobile">
+    <h2 class="subtitle header-description has-text-centered-mobile">
       Breaks down your work into 25 minute focus times and 5 minute breaks
       using the
       <a
@@ -165,31 +165,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  padding-bottom: 0px;
-  padding-left: 0px;
-  border-bottom-color: #dbdbdb;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-
-hgroup {
-  margin-bottom: 10px;
-}
-
-.description {
-  .instructions {
-    font-size: 1.2em;
-    .subtitle {
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    li i {
-      width: 25px;
-      margin-right: 10px;
-    }
-  }
-}
 
 .study-tools-timer {
   display: block;
