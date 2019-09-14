@@ -4,18 +4,16 @@
     id="header"
     ref="header"
   >
-    <nav
-      class="navbar is-dark is-fixed-top"
-      role="navigation"
-      aria-label="main navigation"
+    <b-navbar
+      type="is-dark"
+      :fixed-top="true"
+      :close-on-click="true"
     >
-      <div class="navbar-brand">
-        <router-link
-          id="logo"
-          class="navbar-item"
-          to="/overview"
-          active-class
-          exact-active-class
+      <template slot="brand">
+        <b-navbar-item
+          tag="router-link"
+          class="late-logo"
+          :to="{path: '/'}"
         >
           LATE
           <span
@@ -24,7 +22,8 @@
             :class="[inDevMode ? 'is-warning' : 'is-primary']"
             title="LATE is still in active development!"
           >DEV</span>
-        </router-link>
+        </b-navbar-item>
+
         <template v-if="loggedIn">
           <a
             class="navbar-item announcement-icon is-hidden-desktop"
@@ -40,329 +39,310 @@
               />
             </span>
           </a>
+        </template>
+      </template>
+
+      <template slot="start">
+        <template v-if="loggedIn">
+          <b-navbar-item
+            tag="router-link"
+            class="home-link"
+            :to="{name: 'dashboard-calendar'}"
+            title="View your dashboard"
+            exact
+          >
+            <span class="icon">
+              <i class="fas fa-home" />
+            </span>
+            Dashboard
+          </b-navbar-item>
+
+          <b-navbar-item
+            v-if="onBreak"
+            tag="router-link"
+            class="about-link"
+            :to="{name: 'about'}"
+            title="Learn more about LATE and its creators"
+          >
+            <span class="icon">
+              <i class="far fa-question-circle" />
+            </span>
+            About
+          </b-navbar-item>
+
+          <b-navbar-item
+            tag="router-link"
+            :to="{name: 'coursework-upcoming'}"
+            class="is-hidden-desktop"
+          >
+            <span class="icon">
+              <i class="fas fa-graduation-cap" />
+            </span>
+            Coursework
+          </b-navbar-item>
+
+          <b-navbar-dropdown
+            v-if="!onBreak"
+            class="is-hidden-touch"
+            title="Manage your assignments and exams!"
+          >
+            <template slot="label">
+              <span class="icon">
+                <i class="fas fa-graduation-cap" />
+              </span>
+              Coursework
+
+              <span
+                v-if="assessmentCount > 0"
+                class="tag is-warning assignment-count"
+              >{{ assessmentCount }}</span>
+            </template>
+            <b-navbar-item
+              tag="router-link"
+              :to="{name: 'coursework-upcoming'}"
+              title="View upcoming assessments"
+            >
+              <b>Upcoming</b>
+            </b-navbar-item>
+            <b-navbar-item
+              tag="router-link"
+              :to="{name: 'coursework-past'}"
+              title="Browse all past assessments"
+            >
+              Previous
+            </b-navbar-item>
+            <b-navbar-item
+              tag="router-link"
+              :to="{name: 'coursework-calendar'}"
+              title="View a calendar of all your assessment due dates"
+            >
+              Calendar
+            </b-navbar-item>
+            <hr class="navbar-divider">
+            <b-navbar-item
+              title="Add a new assignment"
+              @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
+            >
+              <span class="icon">
+                <i class="fas fa-clipboard-check" />
+              </span>
+              Add Assignment
+            </b-navbar-item>
+            <b-navbar-item
+              title="Add a new exam"
+              @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
+            >
+              <span class="icon">
+                <i class="fas fa-exclamation-triangle" />
+              </span>
+              Add Exam
+            </b-navbar-item>
+          </b-navbar-dropdown>
+        </template>
+        <template v-else>
+          <b-navbar-item
+            tag="router-link"
+            :to="{name: 'about'}"
+            title="Learn more about LATE and its creators"
+          >
+            <span class="icon">
+              <i class="far fa-question-circle" />
+            </span>
+            About
+          </b-navbar-item>
+        </template>
+
+        <b-navbar-item
+          class="is-hidden-desktop"
+          tag="router-link"
+          :to="{name: 'tools'}"
+        >
+          <span class="icon"><i class="fas fa-toolbox" /></span>
+          Tools
+        </b-navbar-item>
+
+        <b-navbar-dropdown
+          class="is-hidden-touch"
+          title="Student tools to calculate grades, help you work/study, and more!"
+        >
+          <template slot="label">
+            <span class="icon">
+              <i class="fas fa-toolbox" />
+            </span>
+            Tools
+          </template>
+          <b-navbar-item
+            tag="router-link"
+            :to="{name: 'quick-links'}"
+            title="Student-curated RPI links"
+          >
+            RPI Quicklinks
+          </b-navbar-item>
+          <b-navbar-item
+            tag="router-link"
+            :to="{name: 'study-tools'}"
+            title="Study timer and scratchpad"
+          >
+            Study Timer
+          </b-navbar-item>
+          <b-navbar-item
+            tag="router-link"
+            :to="{name: 'gpa-calculator'}"
+            title="Calculate overall GPA and course grades"
+          >
+            Grade Calculators
+          </b-navbar-item>
+          <b-navbar-item
+            tag="router-link"
+            :to="{name: 'checklist'}"
+            title="Create a checklist for dorm items for movein"
+          >
+            Dorm Checklist
+          </b-navbar-item>
+          <b-navbar-item
+            tag="router-link"
+            :to="{name: 'dorm-photos'}"
+            title="Create a checklist for dorm items for movein"
+          >
+            RPI Dorm Photos
+          </b-navbar-item>
+        </b-navbar-dropdown>
+      </template>
+
+      <template slot="end">
+        <a
+          v-if="loggedIn"
+          class="navbar-item"
+          :title="`There are ${onlineUsers.length} users online.`"
+        >
+          <b-tag type="is-primary">{{ onlineUsers.length }} online</b-tag>
+        </a>
+        <a
+          class="navbar-item announcement-icon is-hidden-touch"
+          :title="announcementsCount + ' new announcements'"
+          @click="openAnnouncementsModal"
+        >
+          <span class="icon">
+            <i
+              class="fa-bell announcement-bell-icon"
+              :class="[
+                announcementsCount === 0 ? 'far' : 'fas new-announcements'
+              ]"
+            />
+          </span>
+        </a>
+
+        <b-navbar-dropdown v-if="loggedIn">
+          <template slot="label">
+            <span class="icon">
+              <i
+                class="fas"
+                :title="user.admin ? 'You are an administrator!' : ''"
+                :class="[user.admin ? 'fa-star' : 'fa-user-circle']"
+                :style="user.admin ? 'color:#e5c100' : 'color:#ffffff'"
+              />
+            </span>
+            {{ user.displayName }}
+          </template>
+          <b-navbar-item
+            v-if="user.admin"
+            tag="router-link"
+            :to="{name: 'admin-student-list'}"
+            title="View the administrator page"
+          >
+            <span class="icon">
+              <i class="fas fa-user-lock" />
+            </span>
+            Administration
+          </b-navbar-item>
+
+          <b-navbar-item
+            tag="router-link"
+            to="/account"
+            title="Edit your account"
+          >
+            <span class="icon">
+              <i class="fas fa-pencil-alt" />
+            </span>
+            Edit Account
+          </b-navbar-item>
+
+          <b-navbar-item
+            tag="a"
+            href="https://github.com/Apexal/late/issues/new/choose"
+            target="none"
+            title="Report a bug or request a feature on GitHub"
+          >
+            <span class="icon bug-report">
+              <i
+                class="fas fa-bug"
+                style="margin-right: 5px"
+              />
+            </span>
+            Report a bug
+          </b-navbar-item>
+
+          <hr class="navbar-divider">
+
+          <b-navbar-item
+            v-if="!onBreak"
+            tag="router-link"
+            :to="{name: 'coursework-stats'}"
+            title="View stats on your coursework"
+          >
+            <span class="icon">
+              <i class="fas fa-chart-pie" />
+            </span>
+            Your Statistics
+          </b-navbar-item>
+          <b-navbar-item
+            tag="router-link"
+            :to="{name: 'archive-home'}"
+            title="View your data from past semesters"
+          >
+            <span class="icon">
+              <i class="fas fa-archive" />
+            </span>
+            Archive
+          </b-navbar-item>
+
           <a
-            class="navbar-item help-icon is-hidden-desktop"
+            class="navbar-item help-icon tours-icon"
             title="Show tours"
             @click="$store.commit('TOGGLE_TOURS_MODAL')"
           >
             <span class="icon">
               <i class="far fa-question-circle" />
             </span>
+            Site Tour
           </a>
-        </template>
-
-        <a
-          :class="{'is-active': navbarExpanded}"
-          role="button"
-          class="navbar-burger burger"
-          aria-label="menu"
-          aria-expanded="false"
-          data-target="top-navbar"
-          @click="$store.commit('TOGGLE_NAVBAR')"
-        >
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-        </a>
-      </div>
-
-      <div
-        id="top-navbar"
-        :class="{'is-active': navbarExpanded}"
-        class="navbar-menu is-unselectable"
-      >
-        <div class="navbar-start">
-          <template v-if="loggedIn">
-            <router-link
-              class="navbar-item home-link"
-              :to="{name: 'dashboard-calendar'}"
-              title="View your dashboard"
-              exact
-            >
-              <span class="icon">
-                <i class="fas fa-home" />
-              </span>
-              Dashboard
-            </router-link>
-
-            <router-link
-              v-if="onBreak"
-              class="navbar-item about-link"
-              :to="{name: 'about'}"
-              title="Learn more about LATE and its creators"
-            >
-              <span class="icon">
-                <i class="far fa-question-circle" />
-              </span>
-              About
-            </router-link>
-
-            <div
-              v-if="!onBreak"
-              class="navbar-item has-dropdown is-hoverable"
-            >
-              <router-link
-                :to="{name: 'coursework-upcoming'}"
-                class="navbar-link coursework-link"
-                title="Manage your assignments and exams!"
-              >
-                <span class="icon">
-                  <i class="fas fa-graduation-cap" />
-                </span>
-                Coursework
-              </router-link>
-
-              <div class="navbar-dropdown">
-                <router-link
-                  class="navbar-item"
-                  :to="{name: 'coursework-upcoming'}"
-                  title="View upcoming assessments"
-                >
-                  <b>Upcoming</b>
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  :to="{name: 'coursework-past'}"
-                  title="Browse all past assessments"
-                >
-                  Previous
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  :to="{name: 'coursework-calendar'}"
-                  title="View a calendar of all your assessment due dates"
-                >
-                  Calendar
-                </router-link>
-                <hr class="navbar-divider">
-                <a
-                  class="navbar-item"
-                  title="Add a new assignment"
-                  @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
-                >
-                  <span class="icon">
-                    <i class="fas fa-clipboard-check" />
-                  </span>
-                  Add Assignment
-                </a>
-                <a
-                  class="navbar-item"
-                  title="Add a new exam"
-                  @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
-                >
-                  <span class="icon">
-                    <i class="fas fa-exclamation-triangle" />
-                  </span>
-                  Add Exam
-                </a>
-              </div>
-            </div>
-          </template>
-          <template v-else>
-            <router-link
-              class="navbar-item"
-              :to="{name: 'about'}"
-              title="Learn more about LATE and its creators"
-            >
-              <span class="icon">
-                <i class="far fa-question-circle" />
-              </span>
-              About
-            </router-link>
-          </template>
-          <div
-            class="navbar-item has-dropdown is-hoverable toolsDropdown"
-          >
-            <router-link
-              :to="{name: 'tools'}"
-              class="navbar-link coursework-link"
-              title="Student tools to calculate grades, help you work/study, and more!"
-            >
-              <span class="icon">
-                <i class="fas fa-toolbox" />
-              </span>
-              Tools
-            </router-link>
-
-            <div class="navbar-dropdown">
-              <router-link
-                class="navbar-item"
-                :to="{name: 'quick-links'}"
-                title="Student-curated RPI links"
-              >
-                RPI Quicklinks
-              </router-link>
-              <router-link
-                class="navbar-item"
-                :to="{name: 'study-tools'}"
-                title="Study timer and scratchpad"
-              >
-                Study Timer
-              </router-link>
-              <router-link
-                class="navbar-item"
-                :to="{name: 'gpa-calculator'}"
-                title="Calculate overall GPA and course grades"
-              >
-                Grade Calculators
-              </router-link>
-              <router-link
-                class="navbar-item"
-                :to="{name: 'checklist'}"
-                title="Create a checklist for dorm items for movein"
-              >
-                Dorm Checklist
-              </router-link>
-              <router-link
-                class="navbar-item"
-                :to="{name: 'dorm-photos'}"
-                title="Create a checklist for dorm items for movein"
-              >
-                RPI Dorm Photos
-              </router-link>
-            </div>
-          </div>
-        </div>
-
-        <div class="navbar-end">
-          <template v-if="loggedIn">
-            <a
-              class="navbar-item onlineCount"
-              :title="`There are ${onlineUsers.length} users online.`"
-            >
-              <b-tag type="is-primary">{{ onlineUsers.length }} online</b-tag>
-            </a>
-            <a
-              class="navbar-item announcement-icon is-hidden-touch"
-              :title="announcementsCount + ' new announcements'"
-              @click="openAnnouncementsModal"
-            >
-              <span class="icon">
-                <i
-                  class="fa-bell announcement-bell-icon"
-                  :class="[
-                    announcementsCount === 0 ? 'far' : 'fas new-announcements'
-                  ]"
-                />
-              </span>
-            </a>
-            <div class="navbar-item has-dropdown is-hoverable user-dropdown">
-              <a
-                class="navbar-link"
-                style="padding-right: 3.2em;"
-              >
-                <span class="icon">
-                  <i
-                    class="fas"
-                    :title="user.admin ? 'You are an administrator!' : ''"
-                    :class="[user.admin ? 'fa-star' : 'fa-user-circle']"
-                    :style="user.admin ? 'color:#e5c100' : 'color:#ffffff'"
-                  />
-                </span>
-                {{ user.displayName }}
-              </a>
-
-              <div class="navbar-dropdown is-right">
-                <router-link
-                  v-if="user.admin"
-                  class="navbar-item"
-                  :to="{name: 'admin-student-list'}"
-                  title="View the administrator page"
-                >
-                  <span class="icon">
-                    <i class="fas fa-user-lock" />
-                  </span>
-                  Administration
-                </router-link>
-
-                <router-link
-                  class="navbar-item"
-                  to="/account"
-                  title="Edit your account"
-                >
-                  <span class="icon">
-                    <i class="fas fa-pencil-alt" />
-                  </span>
-                  Edit Account
-                </router-link>
-
-                <a
-                  class="navbar-item"
-                  href="https://github.com/Apexal/late/issues/new/choose"
-                  target="none"
-                  title="Report a bug or request a feature on GitHub"
-                >
-                  <span class="icon bug-report">
-                    <i
-                      class="fas fa-bug"
-                      style="margin-right: 5px"
-                    />
-                  </span>
-                  Report a bug
-                </a>
-
-                <hr class="navbar-divider">
-
-                <router-link
-                  v-if="!onBreak"
-                  class="navbar-item"
-                  :to="{name: 'coursework-stats'}"
-                  title="View stats on your coursework"
-                >
-                  <span class="icon">
-                    <i class="fas fa-chart-pie" />
-                  </span>
-                  Your Statistics
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  :to="{name: 'archive-home'}"
-                  title="View your data from past semesters"
-                >
-                  <span class="icon">
-                    <i class="fas fa-archive" />
-                  </span>
-                  Archive
-                </router-link>
-
-                <a
-                  class="navbar-item help-icontours-icon"
-                  title="Show tours"
-                  @click="$store.commit('TOGGLE_TOURS_MODAL')"
-                >
-                  <span class="icon">
-                    <i class="far fa-question-circle" />
-                  </span>
-                  Site Tour
-                </a>
-                <hr
-                  class="navbar-divider"
-                >
-
-                <a
-                  class="navbar-item"
-                  href="/auth/logout"
-                  title="Sign out of LATE"
-                >
-                  <span class="icon">
-                    <i class="fas fa-sign-out-alt" />
-                  </span>
-                  Log out
-                </a>
-              </div>
-            </div>
-          </template>
+          <hr class="navbar-divider">
           <a
-            v-else
             class="navbar-item"
-            href="/auth/login"
-            title="Login to LATE with RPI CAS"
+            href="/auth/logout"
+            title="Sign out of LATE"
           >
-            <b>Log in</b>
+            <span class="icon">
+              <i class="fas fa-sign-out-alt" />
+            </span>
+            Log out
           </a>
-        </div>
-      </div>
-    </nav>
+        </b-navbar-dropdown>
+        <b-navbar-item
+          v-else
+          tag="div"
+          class="buttons"
+        >
+          <a
+            class="button is-primary"
+            href="/auth/login"
+            title="Login with RPI CAS!"
+          >
+            Log In
+          </a>
+        </b-navbar-item>
+      </template>
+    </b-navbar>
   </header>
 </template>
 
@@ -380,12 +360,6 @@ export default {
       return this.$store.getters.allAnnouncements.filter(
         a => !this.seenAnnouncementIDs.includes(a._id)
       ).length
-    },
-    isUserSetup () {
-      return this.$store.getters.isUserSetup
-    },
-    navbarExpanded () {
-      return this.$store.state.navbarExpanded
     },
     assessmentCount () {
       return this.$store.getters.limitedUpcomingAssessments.length
@@ -413,15 +387,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
-.has-dropdown:hover .navbar-dropdown {
-    animation: navAnimOpen 0.15s ease-in-out;
-}
-
-.rcs_id {
-  margin-left: 5px;
-}
+// .has-dropdown:hover .navbar-dropdown {
+//     animation: navAnimOpen 0.15s ease-in-out;
+// }
 
 @keyframes bellshake {
   0% {
@@ -462,56 +432,34 @@ export default {
   100% {opacity: 1;max-height: 396px;margin-top: 0px;}
 }
 
-.announcement-bell-icon.new-announcements {
-  animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-  animation-iteration-count: infinite;
-}
-
-// Dropdown arrow transition
-.has-dropdown .navbar-link::after {
-  transition: transform 0.1s;
-  transition-timing-function: ease-out;
-}
-
-.has-dropdown:hover .navbar-link::after {
-  transform: translateY(3px) rotate(135deg);
-}
-// ---------------------
-
-.navbar-brand {
-  .beta-tag {
-    margin-left: 5px;
-    margin-bottom: -2px;
-    transition: background-color 0.2s;
+#header {
+  .announcement-bell-icon.new-announcements {
+    animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation-iteration-count: infinite;
   }
-  &:hover {
-    .beta-tag.is-primary {
-      background-color: #73dee6 !important;
-    }
+
+  // Dropdown arrow transition
+  .has-dropdown .navbar-link::after {
+    transition: transform 0.1s;
+    transition-timing-function: ease-out;
   }
-}
-.no-margin-left {
-  margin-left: 0;
-}
 
-#logo {
-  font-size: 1.6rem;
-  font-weight: 600;
-}
+  .has-dropdown.is-active .navbar-link::after {
+    transform: translateY(3px) rotate(135deg);
+  }
+  // ---------------------
 
-#top-navbar {
-  //Pushes the left and right navbar menus slightly off the edges of the screen.
-  padding: 0;
+  .late-logo {
+    font-weight: 800;
+    font-size: 1.5em;
 
-  .navbar-item {
-    span.icon {
-      margin-right: 1px;
-      margin-left: 1px;
+    .beta-tag {
+      margin-left: 5px;
     }
   }
 
-  .announcement-icon {
-    padding: 0.5rem 0.2rem;
+  .navbar-item span.icon {
+    margin-right: 0px !important;
   }
 
   span.tag.assignment-count,
@@ -523,38 +471,76 @@ export default {
   }
 }
 
-//Mobile dropdown mediaquery
-@media only screen and (max-width: 1024px) {
-  //Force navbar to take up whole screen
-  .navbar-menu {
-    min-height: 95vh;
-    background-color: white;
-  }
-  //Remove onlineCount and dropdown arrows
-  .onlineCount,.navbar-link:not(.is-arrowless)::after { display: none; }
-  //Increase size of buttons without dropdowns
-  .home-link,.toolsDropdown {
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-  //Remove tools dropdown (mobile users can use index page)
-  .toolsDropdown .navbar-dropdown {
-    display: none;
-  }
-  //Shift all child items to right and add border
-  .navbar-item {
-    &.has-dropdown {
-      .navbar-dropdown {
-        border-left: 1px solid black;
-        padding: 0px;
-        margin-left: 25px;
-      }
-      &.is-active {
-        .navbar-dropdown {
-          display: block;
-        }
-       }
-     }
-  }
-}
+// .navbar-brand {
+//   .beta-tag {
+//     margin-left: 5px;
+//     margin-bottom: -2px;
+//     transition: background-color 0.2s;
+//   }
+//   &:hover {
+//     .beta-tag.is-primary {
+//       background-color: #73dee6 !important;
+//     }
+//   }
+// }
+// .no-margin-left {
+//   margin-left: 0;
+// }
+
+// #logo {
+//   font-size: 1.6rem;
+//   font-weight: 600;
+// }
+
+// #top-navbar {
+//   //Pushes the left and right navbar menus slightly off the edges of the screen.
+//   padding: 0;
+
+//   .navbar-item {
+//     span.icon {
+//       margin-right: 1px;
+//       margin-left: 1px;
+//     }
+//   }
+
+//   .announcement-icon {
+//     padding: 0.5rem 0.2rem;
+//   }
+
+// }
+
+// //Mobile dropdown mediaquery
+// @media only screen and (max-width: 1024px) {
+//   //Force navbar to take up whole screen
+//   .navbar-menu {
+//     min-height: 95vh;
+//     background-color: white;
+//   }
+//   //Remove onlineCount and dropdown arrows
+//   .onlineCount,.navbar-link:not(.is-arrowless)::after { display: none; }
+//   //Increase size of buttons without dropdowns
+//   .home-link,.toolsDropdown {
+//     padding-top: 15px;
+//     padding-bottom: 15px;
+//   }
+//   //Remove tools dropdown (mobile users can use index page)
+//   .toolsDropdown .navbar-dropdown {
+//     display: none;
+//   }
+//   //Shift all child items to right and add border
+//   .navbar-item {
+//     &.has-dropdown {
+//       .navbar-dropdown {
+//         border-left: 1px solid black;
+//         padding: 0px;
+//         margin-left: 25px;
+//       }
+//       &.is-active {
+//         .navbar-dropdown {
+//           display: block;
+//         }
+//        }
+//      }
+//   }
+// }
 </style>

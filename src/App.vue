@@ -438,10 +438,6 @@ footer.footer {
   }
 }
 
-.fc-event i.fas {
-  margin-right: 4px;
-}
-
 .fc-content {
   .remove-work-block {
     display: none;
