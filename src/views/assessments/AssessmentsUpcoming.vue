@@ -1,18 +1,16 @@
+<!--Assessments: Upcoming assessments list-->
 <template>
   <div class="assessments-upcoming">
     <p
       v-if="none"
       class="has-text-centered has-text-grey"
     >
-      No upcoming assessments
+      No upcoming assignments or exams
       <i
         v-if="filter.length > 0 || !showCompleted"
         style="font-style:inherit"
-      >matching your filters.</i>
-      <i
-        v-else-if="filter.length <= 0"
-        style="font-style:inherit"
-      >for the next 2 weeks!</i>
+      >matching your filters</i>
+      for the next 2 weeks!
     </p>
     <div
       v-else
@@ -26,11 +24,14 @@
         <div class="panel">
           <p
             class="panel-heading is-unselectable key-heading"
-            :class="{ 'has-background-dark has-text-white' : groupBy === 'date' }"
+            :class="{
+              'has-background-dark has-text-white': groupBy === 'date'
+            }"
             :style="headerStyle(key)"
           >
             <span
               class="key"
+              :class="groupBy"
               :title="headerTitle(key)"
               @click="headerClick(key)"
             >{{ headerText(key) }}</span>
@@ -42,7 +43,7 @@
                 @click="addAssessmentClick(key, 'assignment')"
               />
               <i
-                class="has-text-white fas fa-file-alt"
+                class="has-text-white fas fa-exclamation-triangle"
                 :title="addAssessmentTitle(key, 'exam')"
                 @click="addAssessmentClick(key, 'exam')"
               />
@@ -64,7 +65,8 @@
     >
       <hr>
       <p class="has-text-centered has-text-grey">
-        {{ filteredFarFutureAssessments.length }} far future items {{ showingFutureAssessments ? 'shown' : 'hidden' }}
+        {{ filteredFarFutureAssessments.length }} far future items
+        {{ showingFutureAssessments ? "shown" : "hidden" }}
         <a
           @click="showingFutureAssessments = !showingFutureAssessments"
         >Toggle</a>
@@ -73,16 +75,17 @@
       <AssessmentsTable
         v-if="showingFutureAssessments"
         :assessments="filteredFarFutureAssessments"
+        empty-message="No assignments or exams due in over 2 weeks."
       />
     </div>
   </div>
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 
-import AssessmentPanelBlock from '@/views/components/assessments/upcoming/AssessmentPanelBlock';
-import AssessmentsTable from '@/views/components/assessments/AssessmentsTable.vue';
+import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock'
+import AssessmentsTable from '@/views/assessments/components/AssessmentsTable.vue'
 
 export default {
   name: 'AssessmentsUpcoming',
@@ -104,72 +107,74 @@ export default {
   data () {
     return {
       showingFutureAssessments: false
-    };
+    }
   },
   computed: {
-    now () {
-      return this.$store.state.now;
-    },
     none () {
-      return Object.keys(this.filteredLimitedAssessments).length === 0;
+      return Object.keys(this.filteredLimitedAssessments).length === 0
     },
     filteredLimitedAssessments () {
       return this.$store.getters.limitedUpcomingAssessments.filter(
         assessment => {
           if (assessment.assessmentType === 'assignment') {
-            if (!this.showCompleted && assessment.completed) return false;
+            if (!this.showCompleted && assessment.completed) return false
           }
-          return !this.filter.includes(assessment.courseCRN);
+          return !this.filter.includes(assessment.courseCRN)
         }
-      );
+      )
     },
     groupedFilteredLimitedAssessments () {
       return this.$store.getters.groupAssessments(
         this.groupBy,
         this.filteredLimitedAssessments
-      );
+      )
     },
     farFutureUpcomingAssessments () {
-      return this.$store.getters.farFutureUpcomingAssessments;
+      return this.$store.getters.farFutureUpcomingAssessments
     },
     filteredFarFutureAssessments () {
       return this.farFutureUpcomingAssessments.filter(assessment => {
         if (assessment.assessmentType === 'assignment') {
-          if (!this.showCompleted && assessment.completed) return false;
+          if (!this.showCompleted && assessment.completed) return false
         }
-        return !this.filter.includes(assessment.courseCRN);
-      });
+        return !this.filter.includes(assessment.courseCRN)
+      })
     }
   },
   methods: {
     course (crn) {
-      return this.$store.getters.getCourseFromCRN(crn);
+      return this.$store.getters.getCourseFromCRN(crn)
     },
     headerTitle (key) {
-      return this.groupBy === 'courseCRN'
-        ? 'Open course modal'
-        : moment(key).format('M/DD/YY');
+      if (this.groupBy === 'courseCRN') {
+        return 'Open course modal'
+      } else {
+        const today = moment().startOf('day')
+        const day = moment(key, 'YYYY-MM-DD', true)
+        if (day.diff(today, 'days') > 1) return day.from(today)
+      }
+      return ''
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
-        ? this.course(key).longname
-        : this.toDateShortString(key);
+        ? this.course(key).title
+        : this.relativeDateFormat(moment(key, 'YYYY-MM-DD', true))
     },
     headerStyle (key) {
-      if (this.groupBy === 'date') return {};
-      let color = this.course(key).color;
+      if (this.groupBy === 'date') return {}
+      let color = this.course(key).color
       if (color.length < 5) {
-        color += color.slice(1);
+        color += color.slice(1)
       }
       return {
         'background-color':
           this.groupBy === 'courseCRN' ? this.course(key).color : 'inherit',
         color: color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
-      };
+      }
     },
     headerClick (key) {
       if (this.groupBy === 'courseCRN') {
-        this.$store.commit('OPEN_COURSE_MODAL', this.course(key));
+        this.$store.commit('OPEN_COURSE_MODAL', this.course(key))
       } else {
         // TODO: this will open DayModal
         // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
@@ -179,62 +184,57 @@ export default {
       }
     },
     addAssessmentClick (key, assessmentType) {
-      let updates = {};
+      const updates = {}
       if (this.groupBy === 'courseCRN') {
-        updates.courseCRN = key;
-        updates.modalStep = 1;
+        updates.courseCRN = key
+        updates.modalStep = 1
       } else {
         updates[assessmentType === 'assignment' ? 'dueDate' : 'date'] = moment(
           key
-        );
-        updates.modalStep = 0;
+        )
+        updates.modalStep = 0
       }
       this.$store.commit(
         'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_VALUES',
         updates
-      );
+      )
       this.$store.commit(
         'TOGGLE_ADD_' + assessmentType.toUpperCase() + '_MODAL'
-      );
+      )
     },
     addAssessmentTitle (key, assessmentType) {
       if (this.groupBy === 'courseCRN') {
-        return `Add new ${this.course(key).longname} ${assessmentType}`;
+        return `Add new ${this.course(key).title} ${assessmentType}`
       } else {
-        return `Add new ${assessmentType} on ${moment(key).format('M/DD/YY')}`;
+        return `Add new ${assessmentType} on ${moment(
+          key,
+          'YYYY-MM-DD',
+          true
+        ).format('M/DD/YY')}`
       }
     },
-    toggleAssignmentTitle (a) {
-      return (
-        this.course(a.courseCRN).longname +
-        (a.completedAt
-          ? ` | Completed ${moment(a.completedAt).format('M/DD/YY h:mma')}`
-          : '')
-      );
-    },
-    toDateShortString (dueDate) {
-      if (moment(dueDate).isSame(moment(), 'day')) return 'Today';
+    relativeDateFormat (dueDate) {
+      if (moment(dueDate).isSame(moment(), 'day')) return 'Today'
       if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) {
-        return 'Tomorrow';
+        return 'Tomorrow'
       }
-      return moment(dueDate).format('dddd [the] Do');
-    },
-    toTimeString (dueDate) {
-      return moment(dueDate).format('h:mma');
-    },
-    fromNow (date) {
-      return moment(date).fromNow();
+      return moment(dueDate).format('dddd [the] Do')
     },
     daysAway (date) {
-      return moment(date).diff(moment(this.now).startOf('day'), 'days');
+      return moment(date).diff(moment(this.rightNow).startOf('day'), 'days')
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
+.panel-heading {
+  border-left: 1px solid #2e3b59;
+  border-right:1px solid #2e3b59;
+  border-top:1px solid #2e3b59;
+}
 .key-heading {
-  span.key {
+  span.key.courseCRN {
     cursor: pointer;
   }
 
@@ -254,9 +254,5 @@ export default {
       opacity: 1;
     }
   }
-}
-
-.dot {
-  margin-right: 5px;
 }
 </style>

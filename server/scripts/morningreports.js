@@ -1,11 +1,11 @@
-require('dotenv').config();
+require('dotenv').config()
 
-const logger = require('../modules/logger');
+const logger = require('../modules/logger')
 
-require('../db');
+require('../db')
 
-const email = require('../integrations/email');
-const Student = require('../api/students/students.model');
+const email = require('../integrations/email')
+const Student = require('../api/students/students.model')
 
 async function sendEmailMorningReports () {
   // Find all Students who want morning emails
@@ -13,11 +13,11 @@ async function sendEmailMorningReports () {
     rcs_id: 'matraf', // for testing
     'integrations.email.preferences.enabled': true,
     'integrations.email.preferences.dailyReports': true
-  });
-  logger.info(`Sending daily emails to ${students.length} users.`);
-  const reports = students.map(s => email.sendMorningReportEmail(s));
+  })
+  logger.info(`Sending daily emails to ${students.length} users.`)
+  const reports = students.map(s => email.sendMorningReportEmail(s))
 
-  await Promise.all(reports);
+  await Promise.all(reports)
 }
 
-module.exports = sendEmailMorningReports;
+module.exports = sendEmailMorningReports

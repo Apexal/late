@@ -48,6 +48,8 @@ typings/
 # Optional eslint cache
 .eslintcache
 
+.eslint-old.json
+
 # Optional REPL history
 .node_repl_history
 
@@ -64,7 +66,6 @@ typings/
 .next
 
 package-lock.json
-.vscode
 
 config/
 client/
@@ -72,3 +73,5 @@ client/
 test.js
 
 *.ics
+
+.idea/

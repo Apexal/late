@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const schema = new Schema(
   {
@@ -9,11 +9,11 @@ const schema = new Schema(
       ref: 'Student',
       required: true
     },
-    title: { type: String, required: true },
-    body: { type: String, required: true },
-    isPinned: { type: Boolean, default: false }
+    title: { type: String, maxlength: 200, required: true }, // Required short title
+    body: { type: String, maxlength: 4000, required: true }, // Markdown supported
+    isPinned: { type: Boolean, default: false } // Whether or not the announcement shows up at the top of the page or just in the modal
   },
   { timestamps: true }
-);
+)
 
-module.exports = mongoose.model('Announcement', schema);
+module.exports = mongoose.model('Announcement', schema)

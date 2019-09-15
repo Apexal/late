@@ -1,17 +1,23 @@
-const request = require('request-promise');
-const cheerio = require('cheerio');
-const moment = require('moment');
+const request = require('request-promise')
+const cheerio = require('cheerio')
+const moment = require('moment')
 
-const logger = require('./logger');
+const logger = require('./logger')
 
-const SIS_LOGIN_URL = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin';
-const SIS_SCHEDULE_URL = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl';
-const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs'; // + term + '.htm'
+const SIS_LOGIN_URL = 'https://sis.rpi.edu/rss/twbkwbis.P_ValLogin'
+const SIS_SCHEDULE_URL = 'https://sis.rpi.edu/rss/bwskfshd.P_CrseSchdDetl'
+const SIS_TRANSCRIPT_URL = 'https://sis.rpi.edu/rss/bwskotrn.P_ViewTran'
+const SIS_COURSE_FROM_CRN_URL = 'https://sis.rpi.edu/rss/bwckschd.p_disp_listcrse?subj_in=&crse_in='
+const SIS_VIEW_TERM_REGISTRATION_URL = 'https://sis.rpi.edu/rss/bwskrsta.P_RegsStatusDisp'
+const PERIOD_LIST_URL_BASE = 'https://sis.rpi.edu/reg/zs' // + term + '.htm'
 
-const PERIOD_TABLE_TYPE_COLUMN = 3;
-const PERIOD_TABLE_DAYS_COLUMN = 6;
-const PERIOD_TABLE_START_TIME_COLUMN = 7;
-const PERIOD_TABLE_END_TIME_COLUMN = 8;
+const COURSE_LIST_TITLE_REGEXP = /^(?<title>.*) - (?<summary>.+) - (?<sectionId>\d{2})$/
+const COURSE_SINGLE_TITLE_REGEXP = /^(?<title>.*) - (?<crn>\d{5}) - (?<summary>.+) - (?<sectionId>\d{2})$/
+
+const PERIOD_TABLE_TYPE_COLUMN = 3
+const PERIOD_TABLE_DAYS_COLUMN = 6
+const PERIOD_TABLE_START_TIME_COLUMN = 7
+const PERIOD_TABLE_END_TIME_COLUMN = 8
 
 const DAY_INITIALS = {
   M: 1,
@@ -19,29 +25,31 @@ const DAY_INITIALS = {
   W: 3,
   R: 4,
   F: 5
-};
+}
+
+const possibleTerms = () => {
+  const possibleTerms = []
+  const nextYear = moment().year() + 1
+  for (let year = nextYear; year > nextYear - 5; year--) {
+    possibleTerms.push(year + '09')
+    possibleTerms.push(year + '05')
+    possibleTerms.push(year + '01')
+  }
+  return possibleTerms
+}
 
 /**
  * Checks if the login was successful by checking the HTML of the page for login error messages.
  */
 function checkLogin ($) {
-  return $('title').text() !== 'User Login';
+  return $('title').text() !== 'User Login'
 }
 
-/**
- * Given a student's id (their RIN) and their PIN,
- * login to SIS for them and navigate to their shedule page
- * and simply grab the CRNs of each of their courses and forget their credentials.
- **/
-async function scrapeSISForCourseSchedule (RIN, PIN, term) {
-  // The cookie jar to persist the login session
-  // Must be used with each request
-  const jar = request.jar();
-
-  logger.info(`Getting CRNs student ${RIN} from SIS.`);
+async function loginToSIS (RIN, PIN) {
+  const jar = request.jar()
 
   // Attempt to login to SIS
-  let $ = await request({
+  const $ = await request({
     jar,
     uri: SIS_LOGIN_URL,
     method: 'POST',
@@ -59,22 +67,107 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
       Cookie: 'TESTID=set'
     },
     transform: body => cheerio.load(body)
-  });
+  })
 
   // TODO: validate login
-  if (!checkLogin($)) throw new Error(`Failed to login to SIS as ${RIN}.`);
+  if (!checkLogin($)) throw new Error(`Failed to login to SIS. Please check your credentials!`)
+
+  return jar
+}
+
+async function scrapeSISForRegisteredTerms (RIN, PIN) {
+  const jar = await loginToSIS(RIN, PIN)
+
+  logger.info('Getting registered terms for student from SIS.')
+
+  const termCodes = possibleTerms()
+
+  const registeredCodes = []
+  for (const termCode of termCodes) {
+    const $ = await request({
+      uri: SIS_VIEW_TERM_REGISTRATION_URL,
+      method: 'POST',
+      form: {
+        term_in: termCode
+      },
+      transform: body => cheerio.load(body),
+      jar
+    })
+
+    if ($('div.pagetitlediv h2').text().trim() === 'Check Your Registration Status:') {
+      registeredCodes.push(termCode)
+    }
+  }
+  return registeredCodes
+}
+
+/**
+ * Given a student's id (their RIN) and their PIN,
+ * login to SIS for them and navigate to their unofficial transcript
+ * ...
+ **/
+async function scrapeSISForProfileInfo (RIN, PIN) {
+  // The cookie jar to persist the login session
+  // Must be used with each request
+  const jar = await loginToSIS(RIN, PIN)
+
+  logger.info('Getting profile info for student from SIS.')
+
+  const $ = await request({
+    uri: SIS_TRANSCRIPT_URL,
+    rejectUnauthorized: false,
+    method: 'POST',
+    form: {
+      levl: '',
+      tprt: 'UWEB'
+    },
+    transform: body => cheerio.load(body),
+    jar
+  })
+
+  // 'Frank J. Matranga' -> ['Frank', 'J.', 'Matranga']
+  const nameParts = $('table.datadisplaytable tbody tr th:contains("Name :")').next().text().split(' ')
+
+  const name = {}
+
+  if (nameParts[0]) {
+    name.first = nameParts[0]
+  }
+  if (nameParts[nameParts.length - 1]) {
+    name.last = nameParts[nameParts.length - 1]
+  }
+
+  const major = $('table.datadisplaytable tbody tr th:contains("Major:")').first().next().text()
+
+  return {
+    name,
+    major
+  }
+}
+
+/**
+ * Given a student's id (their RIN) and their PIN,
+ * login to SIS for them and navigate to their shedule page
+ * and simply grab the CRNs of each of their courses and forget their credentials.
+ **/
+async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
+  // The cookie jar to persist the login session
+  // Must be used with each request
+  const jar = await loginToSIS(RIN, PIN)
+
+  logger.info(`Getting courses for student ${RIN} from SIS.`)
 
   // Submit schedule form choosing the right term
-  $ = await request({
+  const $ = await request({
     uri: SIS_SCHEDULE_URL,
     rejectUnauthorized: false,
     method: 'POST',
     form: {
-      term_in: term
+      term_in: term.code
     },
     transform: body => cheerio.load(body),
     jar
-  });
+  })
 
   // the layout of the table is as follows (in Pug here)
   /*
@@ -84,38 +177,54 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
         acronym(title='Course Reference Number')
       td.dddefault CRN_HERE
   */
-  const courseSchedule = [];
+  if (
+    $('table[summary="This layout table holds message information"]').length
+  ) {
+    throw new Error('You are not enrolled in this term!')
+  }
+  const courseSchedule = []
   const courseOverviews = $(
     'table[summary="This layout table is used to present the schedule course detail"]'
-  );
+  )
 
   courseOverviews.each(function (i, el) {
     const courseTitleLine = $(this)
       .find('caption[class="captiontext"]')
       .first()
-      .text();
+      .text()
 
-    const courseParts = courseTitleLine.split(' - ');
-    const courseLongName = courseParts[0];
-    const summary = courseParts[1];
-    const sectionId = courseParts[2];
+    const titleGroups = courseTitleLine.match(COURSE_LIST_TITLE_REGEXP).groups
+
+    const courseTitle = titleGroups.title
+    const summary = titleGroups.summary
+    const sectionId = parseInt(titleGroups.sectionId)
 
     const crn = $(this)
       .find('acronym[title="Course Reference Number"]')
       .parent()
       .next()
-      .text();
+      .text()
+
+    const credits = parseFloat(
+      $(this)
+        .find('tbody tr:nth-child(6) td')
+        .text()
+    )
 
     const course = {
-      section_id: sectionId,
-      listing_id: '00',
-      original_longname: courseLongName,
-      summary: summary,
-      longname: courseLongName,
+      _student: studentID,
+      sectionId,
+      originalTitle: courseTitle,
+      title: courseTitle,
+      termCode: term.code,
+      summary,
       crn,
+      startDate: term.start,
+      endDate: term.classesEnd,
+      credits,
       links: [],
       periods: []
-    };
+    }
 
     $(this)
       .next(
@@ -126,44 +235,167 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
         const time = $(this)
           .find('td:nth-child(2)')
           .text()
-          .split(' - ');
-        const start = moment(time[0], 'h:mm a', true).format('Hmm');
-        const end = moment(time[1], 'h:mm a', true).format('Hmm');
-        const location = $(this)
-          .find('td:nth-child(4)')
-          .text();
+          .split(' - ')
+        const start = moment(time[0], 'h:mm a', true).format('Hmm')
+        const end = moment(time[1], 'h:mm a', true).format('Hmm')
+
+        if (start === 'Invalid date') return
 
         const days = $(this)
           .find('td:nth-child(3)')
           .text()
           .split('')
-          .map(d => DAY_INITIALS[d]);
+          .map(d => DAY_INITIALS[d])
 
-        for (let day of days) {
+        const location = $(this)
+          .find('td:nth-child(4)')
+          .text()
+
+        const dateRangeParts = $(this)
+          .find('td:nth-child(5)')
+          .text()
+          .split(' - ')
+
+        course.startDate = moment(dateRangeParts[0], 'MMM DD[,] YYYY')
+        course.endDate = moment(dateRangeParts[1], 'MMM DD[,] YYYY')
+
+        for (const day of days) {
           const period = {
             day,
             start,
             end,
             type: 'LEC',
             location
-          };
-          course.periods.push(period);
+          }
+          course.periods.push(period)
         }
-      });
+      })
 
+    // Sort periods
     course.periods = course.periods.sort((a, b) => {
-      if (a.day > b.day) return 1;
-      else if (a.day < b.day) return -1;
-      else if (parseInt(a.start) > parseInt(b.start)) return 1;
-      else if (parseInt(a.start) < parseInt(b.start)) return -1;
+      if (a.day > b.day) return 1
+      else if (a.day < b.day) return -1
+      else if (parseInt(a.start) > parseInt(b.start)) return 1
+      else if (parseInt(a.start) < parseInt(b.start)) return -1
 
-      return 0;
-    });
+      return 0
+    })
 
-    courseSchedule.push(course);
-  });
+    courseSchedule.push(course)
+  })
 
-  return courseSchedule;
+  return courseSchedule
+}
+
+/**
+ * Grab all the info for a particular course given the term and crn. It does not grab the proper period types though.
+ *
+ * @param {String} RIN A valid RIN
+ * @param {String} PIN The matching SIS PIN
+ * @param {Object} term The term object for the course
+ * @param {String} crn The CRN of the course
+ * @returns {Object} The compiled course object with every required property set except _student and color.
+ */
+async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
+  // The cookie jar to persist the login session
+  // Must be used with each request
+  const jar = await loginToSIS(RIN, PIN)
+
+  logger.info(`Getting course ${crn} for student ${RIN} from SIS.`)
+
+  // Submit schedule form choosing the right term
+  const $ = await request({
+    uri: SIS_COURSE_FROM_CRN_URL + `&term_in=${term.code}&crn_in=${crn}`,
+    rejectUnauthorized: false,
+    method: 'GET',
+    transform: body => cheerio.load(body),
+    jar
+  })
+
+  const courseTable = $('table[summary="This layout table is used to present the sections found"]')
+  if (courseTable.length === 0) throw new Error('No course found!')
+
+  const titleA = $('a', courseTable).first()
+  console.log(titleA.text())
+  const titleGroups = titleA.text().match(COURSE_SINGLE_TITLE_REGEXP).groups
+
+  const title = titleGroups.title
+  const summary = titleGroups.summary
+  const sectionId = parseInt(titleGroups.sectionId)
+
+  const text = $('a:contains(View Catalog Entry)').parent().contents().filter(function () { return this.type === 'text' }).text().split(' ')
+  const credits = parseFloat(text[text.length - 2])
+
+  let periods = []
+
+  let startDate = moment(term.start)
+  let endDate = moment(term.end)
+
+  $('table[summary="This table lists the scheduled meeting times and assigned instructors for this class.."]')
+    .find('tr:not(:first-child)')
+    .each(function (i, el) {
+      const time = $(this)
+        .find('td:nth-child(2)')
+        .text()
+        .split(' - ')
+      const start = moment(time[0], 'h:mm a', true).format('Hmm')
+      const end = moment(time[1], 'h:mm a', true).format('Hmm')
+
+      if (start === 'Invalid date') return
+
+      const days = $(this)
+        .find('td:nth-child(3)')
+        .text()
+        .split('')
+        .map(d => DAY_INITIALS[d])
+
+      const location = $(this)
+        .find('td:nth-child(4)')
+        .text()
+
+      const dateRangeParts = $(this)
+        .find('td:nth-child(5)')
+        .text()
+        .split(' - ')
+
+      startDate = moment(dateRangeParts[0], 'MMM DD[,] YYYY')
+      endDate = moment(dateRangeParts[1], 'MMM DD[,] YYYY')
+
+      for (const day of days) {
+        const period = {
+          day,
+          start,
+          end,
+          type: 'LEC',
+          location
+        }
+        periods.push(period)
+      }
+    })
+
+  // Sort periods
+  periods = periods.sort((a, b) => {
+    if (a.day > b.day) return 1
+    else if (a.day < b.day) return -1
+    else if (parseInt(a.start) > parseInt(b.start)) return 1
+    else if (parseInt(a.start) < parseInt(b.start)) return -1
+
+    return 0
+  })
+
+  return {
+    crn,
+    startDate: startDate.toDate(),
+    endDate: endDate.toDate(),
+    originalTitle: title,
+    title,
+    termCode: term.code,
+    credits,
+    sectionId,
+    summary,
+    links: [],
+    periods
+  }
 }
 
 /**
@@ -171,44 +403,44 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term) {
  * request the period list site and find the period type
  * for each CRN in the table.
  *
- * @param {String} term
- * @param {Array} crns
+ * @param {String} termCode The code of the current term.
+ * @param {Array} courses The array of courses to modify
  * @returns {Object} mapping of crn to 3-character period type (LEC, LAB, TES, etc)
  */
 async function scrapePeriodTypesFromCRNs (termCode, courses) {
-  const uri = PERIOD_LIST_URL_BASE + termCode + '.htm';
+  const uri = PERIOD_LIST_URL_BASE + termCode + '.htm'
   const $ = await request({
     rejectUnauthorized: false,
     uri,
     transform: body => cheerio.load(body)
-  });
+  })
 
-  for (let course of courses) {
+  for (const course of courses) {
     // Scrape for period type
+    const paddedSection =
+      `${course.sectionId}`.length === 2 ? course.sectionId : '0' + course.sectionId
 
     // Generate title as found on the table site
     const title =
-      course.crn +
-      ' ' +
-      course.summary.replace(' ', '-') +
-      '-' +
-      course.section_id;
-    logger.info(`Finding period types for '${title}'`);
+      course.crn + ' ' + course.summary.replace(' ', '-') + '-' + paddedSection
+    // e.g. '85389 CSCI-4965-01'
+
     const topRow = $(`table tr td:first-child:contains('${title}')`).parent(
       'tr'
-    );
+    )
     if (topRow.length === 0) {
-      logger.info('Cannot find period info for ' + title + '. Skipping.');
-      continue;
+      logger.info('Cannot find period info for ' + title + '. Skipping.')
+      continue
     }
+    logger.info(`Found period types for '${title}'`)
     // There is one row for each unique period, see https://snag.gy/uHR9OK.jpg for example
     // One row could be for multiple days if they have the same start and end time
-    let currentRow = topRow;
+    let currentRow = topRow
     do {
-      let startTimeText = $(
+      const startTimeText = $(
         `td:nth-child(${PERIOD_TABLE_START_TIME_COLUMN}) span`,
         currentRow
-      ).text();
+      ).text()
 
       const endTime = moment(
         $(
@@ -216,16 +448,16 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
           currentRow
         ).text(),
         'h:mmA'
-      );
-      let meridiem = 'AM';
+      )
+      let meridiem = 'AM'
       if (endTime.hours() >= 12) {
         // endTime is PM, determine start time
-        meridiem = 'PM';
+        meridiem = 'PM'
         if (
           parseInt(startTimeText.split(':')[0]) > endTime.hours() &&
           parseInt(startTimeText.split(':')[0]) >= 6
         ) {
-          meridiem = 'AM';
+          meridiem = 'AM'
         }
       }
       const startTime = moment(
@@ -234,7 +466,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
           currentRow
         ).text() + meridiem,
         'h:mmA'
-      );
+      )
 
       const days = $(
         `td:nth-child(${PERIOD_TABLE_DAYS_COLUMN}) span`,
@@ -242,30 +474,36 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
       )
         .text()
         .split('')
-        .map(str => DAY_INITIALS[str]);
+        .map(str => DAY_INITIALS[str])
 
       const matchedPeriod = course.periods.find(
         p =>
           days.includes(p.day) &&
           p.start === startTime.format('Hmm') &&
           p.end === endTime.format('Hmm')
-      );
+      )
 
       if (matchedPeriod) {
         matchedPeriod.type = $(
           `td:nth-child(${PERIOD_TABLE_TYPE_COLUMN}) span`,
           currentRow
-        ).text();
+        ).text()
       }
 
-      currentRow = currentRow.next('tr');
+      currentRow = currentRow.next('tr')
     } while (
       $('td:nth-child(1)', currentRow)
         .text()
         .trim().length === 0
-    );
+    )
   }
-  return courses;
+  return courses
 }
 
-module.exports = { scrapeSISForCourseSchedule, scrapePeriodTypesFromCRNs };
+module.exports = {
+  scrapeSISForRegisteredTerms,
+  scrapeSISForProfileInfo,
+  scrapeSISForCourseSchedule,
+  scrapeSISForSingleCourse,
+  scrapePeriodTypesFromCRNs
+}

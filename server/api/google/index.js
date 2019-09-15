@@ -1,10 +1,10 @@
-const Router = require('koa-router');
-const router = new Router();
+const Router = require('koa-router')
+const router = new Router()
 
-const Ctrl = require('./google.controller');
+const Ctrl = require('./google.controller')
 
-router.use(Ctrl.googleAuthMiddleware);
-router.get('/calendars', Ctrl.listCalendars);
-router.post('/calendars', Ctrl.createCalendar);
+router.use(Ctrl.googleAuthMiddleware)
+router.get('/calendars', Ctrl.listCalendars)
+router.post('/courseschedule', Ctrl.createCourseSchedule)
 
-module.exports = router.routes();
+module.exports = router.routes()

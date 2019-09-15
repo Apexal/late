@@ -1,8 +1,9 @@
-const Router = require('koa-router');
-const router = new Router();
+const Router = require('koa-router')
+const router = new Router()
 
-const Ctrl = require('./terms.controller');
+const Ctrl = require('./terms.controller')
 
-router.get('/', Ctrl.getTerms);
+router.get('/', Ctrl.getTerms)
+router.post('/', Ctrl.createTerm)
 
-module.exports = router.routes();
+module.exports = router.routes()
