@@ -28,5 +28,10 @@ export default [
     '行春や',
     '鳥啼き魚の',
     '目は泪'
+  ],
+  [
+    'you should not be here',
+    'this error page is sacred',
+    'leave now or suffer'
   ]
 ]
