@@ -461,7 +461,7 @@ router.beforeEach(async (to, from, next) => {
   ) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    window.location = '/auth/login?redirectTo=' + to.fullPath
+    window.location = '/auth/login' + (to.fullPath ? '?redirectTo=' + to.fullPath : '')
     return
   }
 

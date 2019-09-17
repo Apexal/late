@@ -128,6 +128,11 @@ async function editWorkBlock (ctx) {
     _id: blockID
   })
 
+  if (!editedBlock) {
+    logger.error(`Could not find work block ${blockID} for ${ctx.state.user.rcs_id} to edit`)
+    return ctx.notFound(`Could'nt find work block to edit!`)
+  }
+
   editedBlock.set(ctx.request.body)
 
   try {
@@ -217,6 +222,12 @@ async function deleteWorkBlock (ctx) {
   const removedBlock = await Block.findOne({
     _id: blockID
   })
+
+  if (!removedBlock) {
+    logger.error(`Could not find work block ${blockID} to remove for ${ctx.state.user.rcs_id}`)
+    return ctx.notFound(`Could not find the work block to delete!`)
+  }
+
   removedBlock.remove()
 
   let assessment
