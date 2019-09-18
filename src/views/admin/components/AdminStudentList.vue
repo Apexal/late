@@ -17,18 +17,44 @@
       </small>
     </h2>
 
-    <div class="is-pulled-right has-text-grey">
-      <b-button
-        @click="prevPage"
-      >
-        &lt;&lt;
-      </b-button>
-      Page {{ page + 1 }} of {{ pageCount }}
-      <b-button
-        @click="nextPage"
-      >
-        &gt;&gt;
-      </b-button>
+    <div class="has-text-grey block">
+      <div class="is-pulled-right">
+        <b-button
+          @click="prevPage"
+        >
+          &lt;&lt;
+        </b-button>
+        Page {{ page + 1 }} of {{ pageCount }}
+        <b-button
+          @click="nextPage"
+        >
+          &gt;&gt;
+        </b-button>
+      </div>
+      <div>
+        <span>Items per page: </span>
+        <b-select
+          v-model="itemsPerPage"
+          class="pagination-item-dropdown"
+          @input="getPageContents"
+        >
+          <option value="10">
+            10
+          </option>
+          <option value="25">
+            25
+          </option>
+          <option value="50">
+            50
+          </option>
+          <option value="200">
+            200
+          </option>
+          <option value="1000">
+            1000
+          </option>
+        </b-select>
+      </div>
     </div>
 
     <b-table
@@ -37,6 +63,7 @@
       detailed
       detail-key="rcs_id"
       :row-class="rowClass"
+      class="clear-float-right block"
     >
       <template slot-scope="props">
         <b-table-column
@@ -83,18 +110,44 @@
       </template>
     </b-table>
 
-    <div class="is-pulled-right has-text-grey">
-      <b-button
-        @click="prevPage"
-      >
-        &lt;&lt;
-      </b-button>
-      Page {{ page + 1 }} of {{ pageCount }}
-      <b-button
-        @click="nextPage"
-      >
-        &gt;&gt;
-      </b-button>
+    <div class="has-text-grey block">
+      <div class="is-pulled-right">
+        <b-button
+          @click="prevPage"
+        >
+          &lt;&lt;
+        </b-button>
+        Page {{ page + 1 }} of {{ pageCount }}
+        <b-button
+          @click="nextPage"
+        >
+          &gt;&gt;
+        </b-button>
+      </div>
+      <div>
+        <span>Items per page: </span>
+        <b-select
+          v-model="itemsPerPage"
+          class="pagination-item-dropdown"
+          @input="getPageContents"
+        >
+          <option value="10">
+            10
+          </option>
+          <option value="25">
+            25
+          </option>
+          <option value="50">
+            50
+          </option>
+          <option value="200">
+            200
+          </option>
+          <option value="1000">
+            1000
+          </option>
+        </b-select>
+      </div>
     </div>
   </div>
 </template>
@@ -110,7 +163,7 @@ export default {
       studentsOnPage: [],
       studentCount: 0,
       page: 0,
-      itemsPerPage: 20,
+      itemsPerPage: 25,
       pageCount: 0
     }
   },
@@ -145,6 +198,14 @@ export default {
       this.studentsOnPage = request.data.students
       this.studentCount = request.data.studentCount
       this.pageCount = Math.ceil(this.studentCount / this.itemsPerPage)
+
+      // This can occur when the user changes the number of items
+      // per page while they are not on the first page. Re-fetch required.
+      if (this.page + 1 > this.pageCount) {
+        this.page = this.pageCount - 1
+        this.getPageContents()
+      }
+
       this.loading = false
     },
     async nextPage () {
@@ -174,4 +235,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .pagination-item-dropdown {
+    display: inline;
+  }
 </style>

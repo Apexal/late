@@ -56,7 +56,7 @@ async function getUser (ctx) {
  */
 async function getStudents (ctx) {
   const page = parseInt(ctx.query.page) || 0
-  const itemsPerPage = parseInt(ctx.query.itemsPerPage) || 20
+  const itemsPerPage = parseInt(ctx.query.itemsPerPage) || 25
 
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!')
