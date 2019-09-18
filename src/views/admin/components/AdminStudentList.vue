@@ -12,7 +12,7 @@
         {{ studentCount }} total
         <b-button
           :loading="loading"
-          @click="getStudents"
+          @click="getPageContents"
         >Refresh</b-button>
       </small>
     </h2>
@@ -33,7 +33,7 @@
 
     <b-table
       ref="table"
-      :data="students"
+      :data="studentsOnPage"
       detailed
       detail-key="rcs_id"
       :row-class="rowClass"
@@ -107,9 +107,7 @@ export default {
   data () {
     return {
       loading: true,
-      sortBy: 'rcs_id',
-      sortAscending: true,
-      students: [],
+      studentsOnPage: [],
       studentCount: 0,
       page: 0,
       itemsPerPage: 20,
@@ -117,7 +115,7 @@ export default {
     }
   },
   async created () {
-    await this.getStudents()
+    await this.getPageContents()
   },
   methods: {
     toggle (row) {
@@ -127,7 +125,7 @@ export default {
       if (row.admin) return 'has-background-primary'
       if (row.accountLocked) return 'has-background-warning'
     },
-    async getStudents () {
+    async getPageContents () {
       this.loading = true
       let request
       try {
@@ -139,12 +137,12 @@ export default {
           message: e.response.data.message,
           type: 'is-danger'
         })
-        this.students = []
+        this.studentsOnPage = []
         this.loading = false
         return
       }
 
-      this.students = request.data.students
+      this.studentsOnPage = request.data.students
       this.studentCount = request.data.studentCount
       this.pageCount = Math.ceil(this.studentCount / this.itemsPerPage)
       this.loading = false
@@ -155,7 +153,7 @@ export default {
       }
 
       this.page++
-      return this.getStudents()
+      return this.getPageContents()
     },
     async prevPage () {
       if (this.page <= 0) {
@@ -163,13 +161,13 @@ export default {
       }
 
       this.page--
-      return this.getStudents()
+      return this.getPageContents()
     },
     updatedStudent (student) {
-      Object.assign(this.students.find(s => s._id === student._id), student)
+      Object.assign(this.studentsOnPage.find(s => s._id === student._id), student)
     },
     deletedStudent (studentID) {
-      this.students = this.students.filter(s => s._id !== studentID)
+      this.studentsOnPage = this.studentsOnPage.filter(s => s._id !== studentID)
     }
   }
 }
