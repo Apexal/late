@@ -55,12 +55,16 @@ async function getUser (ctx) {
  * @param {Koa context} ctx
  */
 async function getStudents (ctx) {
+  const page = parseInt(ctx.query.page) || 0
+  const itemsPerPage = parseInt(ctx.query.itemsPerPage) || 20
+
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!')
   }
 
-  const students = await Student.find()
-  ctx.ok({ students })
+  const students = await Student.find().sort('rcs_id').skip(page * itemsPerPage).limit(itemsPerPage)
+  const studentCount = await Student.count()
+  ctx.ok({ students, studentCount })
 }
 
 /**

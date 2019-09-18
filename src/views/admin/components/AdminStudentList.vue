@@ -9,13 +9,27 @@
     <h2 class="subtitle">
       User List
       <small class="is-pulled-right has-text-grey">
-        {{ students.length }} total
+        {{ studentCount }} total
         <b-button
           :loading="loading"
           @click="getStudents"
         >Refresh</b-button>
       </small>
     </h2>
+
+    <div class="is-pulled-right has-text-grey">
+      <b-button
+        @click="prevPage"
+      >
+        &lt;&lt;
+      </b-button>
+      Page {{ page + 1 }} of {{ Math.ceil(studentCount / itemsPerPage) }}
+      <b-button
+        @click="nextPage"
+      >
+        &gt;&gt;
+      </b-button>
+    </div>
 
     <b-table
       ref="table"
@@ -68,6 +82,20 @@
         />
       </template>
     </b-table>
+
+    <div class="is-pulled-right has-text-grey">
+      <b-button
+        @click="prevPage"
+      >
+        &lt;&lt;
+      </b-button>
+      Page {{ page + 1 }} of {{ Math.ceil(studentCount / itemsPerPage) }}
+      <b-button
+        @click="nextPage"
+      >
+        &gt;&gt;
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -79,17 +107,12 @@ export default {
   data () {
     return {
       loading: true,
-      sortBy: 'createdAt',
+      sortBy: 'rcs_id',
       sortAscending: true,
-      students: []
-    }
-  },
-  watch: {
-    sortBy (newSortBy) {
-      this.sortStudents()
-    },
-    sortAscending (newSortAscending) {
-      this.sortStudents()
+      students: [],
+      studentCount: 0,
+      page: 0,
+      itemsPerPage: 20
     }
   },
   async created () {
@@ -103,29 +126,13 @@ export default {
       if (row.admin) return 'has-background-primary'
       if (row.accountLocked) return 'has-background-warning'
     },
-    sortStudents () {
-      this.students.sort((s1, s2) => {
-        if (this.sortAscending) {
-          if (!s1[this.sortBy]) return -1
-          if (!s2[this.sortBy]) return 1
-
-          if (s1[this.sortBy] < s2[this.sortBy]) return -1
-          if (s1[this.sortBy] > s2[this.sortBy]) return 1
-        } else {
-          if (!s1[this.sortBy]) return 1
-          if (!s2[this.sortBy]) return -1
-
-          if (s1[this.sortBy] > s2[this.sortBy]) return -1
-          if (s1[this.sortBy] < s2[this.sortBy]) return 1
-        }
-        return 0
-      })
-    },
     async getStudents () {
       this.loading = true
       let request
       try {
-        request = await this.$http.get('/students')
+        request = await this.$http.get('/students', {
+          params: { page: this.page, itemsPerPage: this.itemsPerPage }
+        })
       } catch (e) {
         this.$buefy.toast.open({
           message: e.response.data.message,
@@ -137,8 +144,16 @@ export default {
       }
 
       this.students = request.data.students
-      this.sortStudents()
+      this.studentCount = request.data.studentCount
       this.loading = false
+    },
+    async nextPage () {
+      this.page++
+      return this.getStudents()
+    },
+    async prevPage () {
+      this.page--
+      return this.getStudents()
     },
     updatedStudent (student) {
       Object.assign(this.students.find(s => s._id === student._id), student)
