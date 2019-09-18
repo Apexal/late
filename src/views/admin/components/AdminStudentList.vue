@@ -23,7 +23,7 @@
       >
         &lt;&lt;
       </b-button>
-      Page {{ page + 1 }} of {{ Math.ceil(studentCount / itemsPerPage) }}
+      Page {{ page + 1 }} of {{ pageCount }}
       <b-button
         @click="nextPage"
       >
@@ -89,7 +89,7 @@
       >
         &lt;&lt;
       </b-button>
-      Page {{ page + 1 }} of {{ Math.ceil(studentCount / itemsPerPage) }}
+      Page {{ page + 1 }} of {{ pageCount }}
       <b-button
         @click="nextPage"
       >
@@ -112,7 +112,8 @@ export default {
       students: [],
       studentCount: 0,
       page: 0,
-      itemsPerPage: 20
+      itemsPerPage: 20,
+      pageCount: 0
     }
   },
   async created () {
@@ -145,13 +146,22 @@ export default {
 
       this.students = request.data.students
       this.studentCount = request.data.studentCount
+      this.pageCount = Math.ceil(this.studentCount / this.itemsPerPage)
       this.loading = false
     },
     async nextPage () {
+      if (this.page + 1 >= this.pageCount) {
+        return
+      }
+
       this.page++
       return this.getStudents()
     },
     async prevPage () {
+      if (this.page <= 0) {
+        return
+      }
+
       this.page--
       return this.getStudents()
     },
