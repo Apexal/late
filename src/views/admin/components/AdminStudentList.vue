@@ -2,7 +2,7 @@
 <template>
   <div class="admin-user-list">
     <b-loading
-      :is-full-page="false"
+      :is-full-page="true"
       :active="loading"
       :can-cancel="false"
     />
