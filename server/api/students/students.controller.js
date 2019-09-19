@@ -84,37 +84,15 @@ function formSearchObject (str) {
   }
   str = str.substr(0, 1000)
 
-  // Create filter objects for admin/locked/grad year
-  const adminFilter = /(?:\s|^)(!?)is:admin(?:\s|$)/i
-  const lockedFilter = /(?:\s|^)(!?)is:locked(?:\s|$)/i
-  const yearFilter = /(?:\s|^)(!?)year:(\d{4})(?:\s|$)/i
-  const filters = {}
-  let matchResult
-
-  // Boolean filters (is:admin and is:locked)
-  if ((matchResult = str.match(adminFilter)) !== null) {
-    filters.admin = !(matchResult[1]) // Negate if there exists an ! in the search term
-    str = str.replace(adminFilter, '')
-  }
-  if ((matchResult = str.match(lockedFilter)) !== null) {
-    filters.accountLocked = !(matchResult[1]) // Negate if there exists an ! in the search term
-    str = str.replace(lockedFilter, '')
-  }
-
-  // Value filters (year:####)
-  filters.graduationYear = { $nin: [], $in: [] }
-  // Multiple value filters are allowed, so loop until no more exist
-  while ((matchResult = str.match(yearFilter)) != null) {
-    if (matchResult[1] === '!') {
-      filters.graduationYear.$nin.push(matchResult[2])
-    } else {
-      filters.graduationYear.$in.push(matchResult[2])
-    }
-    str = str.replace(yearFilter, '')
-  }
-  if (filters.graduationYear.$in.length === 0) {
-    delete filters.graduationYear.$in
-  }
+  // filter out the admin, locked, and year filters
+  const filter = {}
+  let filterResults = checkForAdminFilter(str)
+  Object.assign(filter, filterResults.filter)
+  filterResults = checkForLockedFilter(filterResults.str)
+  Object.assign(filter, filterResults.filter)
+  filterResults = checkForYearFilters(filterResults.str)
+  str = filterResults.str
+  Object.assign(filter, filterResults.filter)
 
   // Form regex for the name/rcs id searching
   let regexStr = '.*'
@@ -129,7 +107,74 @@ function formSearchObject (str) {
     { 'name.preferred': regex },
     { 'name.last': regex },
     { rcs_id: regex }
-  ] }, filters)
+  ] }, filterResults.filters)
+}
+
+/**
+ * Filter out the is:admin filter from a search string in favor of
+ * the Mongo-friendly object to be passed to find().
+ * @see formSearchObject
+ * @param str The search string to filter. Expected to be non-null.
+ * @returns {{filter: Object, str: string}} Contains the new filter object for
+ *          mongo along with the string that no longer contains the filter.
+ */
+function checkForAdminFilter (str) {
+  const adminFilter = /(?:\s|^)(!?)is:admin(?:\s|$)/i
+  const filter = {}
+  let matchResult
+  while ((matchResult = str.match(adminFilter)) !== null) {
+    filter.admin = !(matchResult[1]) // Negate if there exists an ! in the search term
+    str = str.replace(adminFilter, '')
+  }
+  return { filter, str }
+}
+
+/**
+ * Filter out the is:locked filter from a search string in favor of
+ * the Mongo-friendly object to be passed to find().
+ * @see formSearchObject
+ * @param str The search string to filter. Expected to be non-null.
+ * @returns {{filter: Object, str: string}} Contains the new filter object for
+ *          mongo along with the string that no longer contains the filter.
+ */
+function checkForLockedFilter (str) {
+  const lockedFilter = /(?:\s|^)(!?)is:locked(?:\s|$)/i
+  const filter = {}
+  let matchResult
+  while ((matchResult = str.match(lockedFilter)) !== null) {
+    filter.admin = !(matchResult[1]) // Negate if there exists an ! in the search term
+    str = str.replace(lockedFilter, '')
+  }
+  return { filter, str }
+}
+
+/**
+ * Filter out any year:#### filters from the passed search string in
+ * favor of the Mongo-friendly object to be passed to find().
+ * Multiple year:#### filters are valid.
+ * @see formSearchObject
+ * @param str The search string to filter. Expected to be non-null.
+ * @returns {{filter: Object, str: string}} Contains the new filter object for
+ *          mongo along with the string that no longer contains the filter.
+ */
+function checkForYearFilters (str) {
+  const yearFilter = /(?:\s|^)(!?)year:(\d{4})(?:\s|$)/i
+  const filter = { graduationYear: { $nin: [], $in: [] } }
+  let matchResult
+  // Multiple value filters are allowed, so loop until no more exist
+  while ((matchResult = str.match(yearFilter)) != null) {
+    if (matchResult[1] === '!') {
+      filter.graduationYear.$nin.push(matchResult[2])
+    } else {
+      filter.graduationYear.$in.push(matchResult[2])
+    }
+    str = str.replace(yearFilter, '')
+  }
+  if (filter.graduationYear.$in.length === 0) {
+    delete filter.graduationYear.$in
+  }
+
+  return { filter, str }
 }
 
 /**
