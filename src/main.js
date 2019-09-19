@@ -23,9 +23,17 @@ import io from 'socket.io-client'
 
 import 'vue-tour/dist/vue-tour.css'
 import './sw/registerServiceWorker'
-
+import VueAnalytics from 'vue-analytics'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
+
+Vue.use(VueAnalytics, {
+  id: 'UA-147908456-1',
+  router,
+  debug: {
+    sendHitTask: process.env.NODE_ENV === 'production'
+  }
+})
 
 const ignoreErrors = [
   'x_magnitude',
