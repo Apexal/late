@@ -107,7 +107,7 @@ function formSearchObject (str) {
     { 'name.preferred': regex },
     { 'name.last': regex },
     { rcs_id: regex }
-  ] }, filterResults.filters)
+  ] }, filter)
 }
 
 /**
