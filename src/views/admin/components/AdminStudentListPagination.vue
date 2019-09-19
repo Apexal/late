@@ -26,8 +26,8 @@
     <b-pagination
       :total="totalItems"
       :current.sync="currentPage"
-      :range-before="2"
-      :range-after="2"
+      :range-before="1"
+      :range-after="1"
       :per-page="perPage"
       aria-next-label="Next page"
       aria-previous-label="Previous page"
