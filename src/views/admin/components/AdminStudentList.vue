@@ -173,7 +173,7 @@ export default {
 
       this.studentsOnPage = request.data.students
       this.studentCount = request.data.studentCount
-      this.pageCount = Math.ceil(this.studentCount / this.itemsPerPage)
+      this.pageCount = Math.max(Math.ceil(this.studentCount / this.itemsPerPage), 1)
 
       this.loading = false
     },
@@ -211,7 +211,7 @@ export default {
      * @returns {Promise<void>}
      */
     async goToPage (page) {
-      this.page = page
+      this.page = Math.max(page, 1)
       await this.$router.push({ name: 'admin-student-list', params: { page: this.page }, query: this.$route.query })
       this.getPageContents()
     },
