@@ -25,6 +25,13 @@
       @change-item-count="changeItemPerPageCount"
       @go-to-page="goToPage"
     />
+    <b-input
+      v-model="searchTerm"
+      type="text"
+      placeholder="Search"
+      class="block"
+      @input="searchChanged"
+    />
 
     <b-table
       ref="table"
@@ -95,6 +102,7 @@ import AdminStudentListOverview from '@/views/admin/components/AdminStudentListO
 import AdminStudentListPagination from '@/views/admin/components/AdminStudentListPagination.vue'
 
 const defaultItemsPerPage = 25
+const requiredTimeBeforeSearch = 500 // Number of ms required without change in the search before executing the search
 
 export default {
   name: 'AdminStudentList',
@@ -107,7 +115,9 @@ export default {
       page: Math.max(1, parseInt(this.$route.params.page)), // Pull page from the path params
       itemsPerPage: (typeof this.$route.query.count === 'string' // Pull the items per page count from query string
         ? Math.max(1, parseInt(this.$route.query.count)) : defaultItemsPerPage),
-      pageCount: 1
+      pageCount: 1,
+      searchTimeoutId: null, // Timeout ID for the search timer. Search is on a timer to wait for user to stop typing
+      searchTerm: this.$route.query.search || ''
     }
   },
   async created () {
@@ -132,7 +142,7 @@ export default {
       let request
       try {
         request = await this.$http.get('/students', {
-          params: { page: this.page, itemsPerPage: this.itemsPerPage }
+          params: { page: this.page, itemsPerPage: this.itemsPerPage, search: this.searchTerm }
         })
       } catch (e) {
         this.$buefy.toast.open({
@@ -163,11 +173,14 @@ export default {
      */
     async changeItemPerPageCount (count) {
       this.itemsPerPage = count
-      const query = {}
+      const query = { ...this.$route.query }
 
       if (parseInt(count) !== defaultItemsPerPage) {
         query.count = count
+      } else {
+        delete query.count
       }
+
       await this.$router.push({ name: 'admin-student-list', params: this.$route.params, query: query })
       this.getPageContents()
     },
@@ -184,6 +197,32 @@ export default {
       this.page = page
       await this.$router.push({ name: 'admin-student-list', params: { page: this.page }, query: this.$route.query })
       this.getPageContents()
+    },
+    /**
+     * Changes the current search term. Pass an empty string to remove any search.
+     * This method also modifies the query string and re-renders/fetches the table.
+     * @param searchTerm {string} Entirety of the search string. Will be parsed by backend.
+     */
+    async searchChanged (searchTerm) {
+      if (this.searchTimeoutId != null) {
+        clearTimeout(this.searchTimeoutId)
+      }
+
+      this.searchTimeoutId = setTimeout(async () => {
+        this.searchTimeoutId = null
+        this.searchTerm = searchTerm
+
+        const query = { ...this.$route.query }
+        if (searchTerm) {
+          query.search = searchTerm
+        } else {
+          delete query.search
+        }
+
+        await this.$router.push({ name: 'admin-student-list', params: this.$route.params, query: query })
+
+        this.getPageContents()
+      }, requiredTimeBeforeSearch)
     },
     /**
      * Searches the list of students for a student object with the same ID. Once found,
