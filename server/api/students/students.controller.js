@@ -82,6 +82,7 @@ function formSearchObject (str) {
   if (typeof str !== 'string' || str.length === 0) {
     return {}
   }
+  str = str.substr(0, 1000)
 
   // Create filter objects for admin/locked/grad year
   const adminFilter = /(?:\s|^)(!?)is:admin(?:\s|$)/i
@@ -89,19 +90,31 @@ function formSearchObject (str) {
   const yearFilter = /(?:\s|^)(!?)year:(\d{4})(?:\s|$)/i
   const filters = {}
   let matchResult
+
+  // Boolean filters (is:admin and is:locked)
   if ((matchResult = str.match(adminFilter)) !== null) {
     filters.admin = !(matchResult[1]) // Negate if there exists an ! in the search term
+    str = str.replace(adminFilter, '')
   }
   if ((matchResult = str.match(lockedFilter)) !== null) {
     filters.accountLocked = !(matchResult[1]) // Negate if there exists an ! in the search term
+    str = str.replace(lockedFilter, '')
   }
-  if ((matchResult = str.match(yearFilter)) !== null) {
-    filters.graduationYear = (matchResult[1]) ? { $ne: matchResult[2] } : matchResult[2]
+
+  // Value filters (year:####)
+  filters.graduationYear = { $nin: [], $in: [] }
+  // Multiple value filters are allowed, so loop until no more exist
+  while ((matchResult = str.match(yearFilter)) != null) {
+    if (matchResult[1] === '!') {
+      filters.graduationYear.$nin.push(matchResult[2])
+    } else {
+      filters.graduationYear.$in.push(matchResult[2])
+    }
+    str = str.replace(yearFilter, '')
   }
-  str = str // Remove any filters from the actual search string
-    .replace(adminFilter, '')
-    .replace(lockedFilter, '')
-    .replace(yearFilter, '')
+  if (filters.graduationYear.$in.length === 0) {
+    delete filters.graduationYear.$in
+  }
 
   // Form regex for the name/rcs id searching
   let regexStr = '.*'

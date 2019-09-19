@@ -33,6 +33,7 @@
         class="block"
         expanded
         icon="search"
+        maxlength="1000"
         @input="searchChanged"
       />
       <b-tooltip
