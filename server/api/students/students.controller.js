@@ -57,14 +57,46 @@ async function getUser (ctx) {
 async function getStudents (ctx) {
   const page = parseInt(ctx.query.page) || 1
   const itemsPerPage = parseInt(ctx.query.itemsPerPage) || 25
+  const search = ctx.query.search || ''
 
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!')
   }
 
-  const students = await Student.find().sort('rcs_id').skip((page - 1) * itemsPerPage).limit(itemsPerPage)
-  const studentCount = await Student.count()
+  const searchObject = formSearchObject(search)
+  if (search) {
+    logger.info(ctx.state.user.rcs_id + ' searched user list with term: ' + search)
+  }
+
+  const students = await Student.find(searchObject).sort('rcs_id').skip((page - 1) * itemsPerPage).limit(itemsPerPage)
+  const studentCount = await Student.count(searchObject)
   ctx.ok({ students, studentCount })
+}
+
+/**
+ * Parse the passed search string for a mongoose-friendly object that can be
+ * passed to the find function and get the searched terms.
+ * @param str {string} Entirety of the search string, typically what the user enters into the search input
+ */
+function formSearchObject (str) {
+  if (typeof str !== 'string' || str.length === 0) {
+    return {}
+  }
+
+  let regexStr = '.*'
+
+  regexStr += str
+    .replace(/ +/g, ' ') // Remove duplicate spaces
+    .replace(' ', '|') // Convert each space into OR
+
+  regexStr += '.*'
+  const regex = new RegExp(regexStr, 'i')
+  return { $or: [
+    { 'name.first': regex },
+    { 'name.preferred': regex },
+    { 'name.last': regex },
+    { rcs_id: regex }
+  ] }
 }
 
 /**
