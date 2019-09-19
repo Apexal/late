@@ -17,45 +17,14 @@
       </small>
     </h2>
 
-    <div class="has-text-grey block">
-      <div class="is-pulled-right">
-        <b-button
-          @click="prevPage"
-        >
-          &lt;&lt;
-        </b-button>
-        Page {{ page + 1 }} of {{ pageCount }}
-        <b-button
-          @click="nextPage"
-        >
-          &gt;&gt;
-        </b-button>
-      </div>
-      <div>
-        <span>Items per page: </span>
-        <b-select
-          v-model="itemsPerPage"
-          class="pagination-item-dropdown"
-          @input="getPageContents"
-        >
-          <option value="10">
-            10
-          </option>
-          <option value="25">
-            25
-          </option>
-          <option value="50">
-            50
-          </option>
-          <option value="200">
-            200
-          </option>
-          <option value="1000">
-            1000
-          </option>
-        </b-select>
-      </div>
-    </div>
+    <AdminStudentListPagination
+      :total-items="studentCount"
+      :per-page="parseInt(itemsPerPage)"
+      :current-page="page"
+      class="block"
+      @change-item-count="changeItemPerPageCount"
+      @go-to-page="goToPage"
+    />
 
     <b-table
       ref="table"
@@ -110,61 +79,31 @@
       </template>
     </b-table>
 
-    <div class="has-text-grey block">
-      <div class="is-pulled-right">
-        <b-button
-          @click="prevPage"
-        >
-          &lt;&lt;
-        </b-button>
-        Page {{ page + 1 }} of {{ pageCount }}
-        <b-button
-          @click="nextPage"
-        >
-          &gt;&gt;
-        </b-button>
-      </div>
-      <div>
-        <span>Items per page: </span>
-        <b-select
-          v-model="itemsPerPage"
-          class="pagination-item-dropdown"
-          @input="getPageContents"
-        >
-          <option value="10">
-            10
-          </option>
-          <option value="25">
-            25
-          </option>
-          <option value="50">
-            50
-          </option>
-          <option value="200">
-            200
-          </option>
-          <option value="1000">
-            1000
-          </option>
-        </b-select>
-      </div>
-    </div>
+    <AdminStudentListPagination
+      :total-items="studentCount"
+      :per-page="parseInt(itemsPerPage)"
+      :current-page="page"
+      class="block"
+      @change-item-count="changeItemPerPageCount"
+      @go-to-page="goToPage"
+    />
   </div>
 </template>
 
 <script>
 import AdminStudentListOverview from '@/views/admin/components/AdminStudentListOverview.vue'
+import AdminStudentListPagination from '@/views/admin/components/AdminStudentListPagination.vue'
 export default {
   name: 'AdminStudentList',
-  components: { AdminStudentListOverview },
+  components: { AdminStudentListOverview, AdminStudentListPagination },
   data () {
     return {
       loading: true,
       studentsOnPage: [],
       studentCount: 0,
-      page: 0,
+      page: 1,
       itemsPerPage: 25,
-      pageCount: 0
+      pageCount: 1
     }
   },
   async created () {
@@ -199,30 +138,15 @@ export default {
       this.studentCount = request.data.studentCount
       this.pageCount = Math.ceil(this.studentCount / this.itemsPerPage)
 
-      // This can occur when the user changes the number of items
-      // per page while they are not on the first page. Re-fetch required.
-      if (this.page + 1 > this.pageCount) {
-        this.page = this.pageCount - 1
-        this.getPageContents()
-      }
-
       this.loading = false
     },
-    async nextPage () {
-      if (this.page + 1 >= this.pageCount) {
-        return
-      }
-
-      this.page++
-      return this.getPageContents()
+    async changeItemPerPageCount (count) {
+      this.itemsPerPage = count // fixme - See comment in AdminStudentListPagination
+      this.getPageContents()
     },
-    async prevPage () {
-      if (this.page <= 0) {
-        return
-      }
-
-      this.page--
-      return this.getPageContents()
+    async goToPage (page) {
+      this.page = page // fixme - See comment in AdminStudentListPagination
+      this.getPageContents()
     },
     updatedStudent (student) {
       Object.assign(this.studentsOnPage.find(s => s._id === student._id), student)
@@ -235,7 +159,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .pagination-item-dropdown {
-    display: inline;
-  }
 </style>
