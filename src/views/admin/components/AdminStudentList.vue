@@ -93,6 +93,9 @@
 <script>
 import AdminStudentListOverview from '@/views/admin/components/AdminStudentListOverview.vue'
 import AdminStudentListPagination from '@/views/admin/components/AdminStudentListPagination.vue'
+
+const defaultItemsPerPage = 25
+
 export default {
   name: 'AdminStudentList',
   components: { AdminStudentListOverview, AdminStudentListPagination },
@@ -101,8 +104,9 @@ export default {
       loading: true,
       studentsOnPage: [],
       studentCount: 0,
-      page: 1,
-      itemsPerPage: 25,
+      page: Math.max(1, parseInt(this.$route.params.page)), // Pull page from the path params
+      itemsPerPage: (typeof this.$route.query.count === 'string' // Pull the items per page count from query string
+        ? Math.max(1, parseInt(this.$route.query.count)) : defaultItemsPerPage),
       pageCount: 1
     }
   },
@@ -117,6 +121,12 @@ export default {
       if (row.admin) return 'has-background-primary'
       if (row.accountLocked) return 'has-background-warning'
     },
+    /**
+     * Fetches the latest subset of users to display in the list, along with
+     * the total number of users registered. Only the users that need to be
+     * displayed (given page, item count, search terms, etc.) will be fetched.
+     * This method will also refresh pageCount and then re-render the table.
+     */
     async getPageContents () {
       this.loading = true
       let request
@@ -140,17 +150,57 @@ export default {
 
       this.loading = false
     },
+    /**
+     * Changes the number of items to be displayed on each page
+     * Should also switch the current page to the new page containing the user that
+     * was previously at the top of the list. This method will also alter the route
+     * to contain the new count in the query string. Once changed, the table will be
+     * re-rendered.
+     * fixme - See comment in AdminStudentListPagination
+     * @param count {number} Number of items that should exist per page. Should be
+     * an integer greater than or equal to 1.
+     * @returns {Promise<void>}
+     */
     async changeItemPerPageCount (count) {
-      this.itemsPerPage = count // fixme - See comment in AdminStudentListPagination
+      this.itemsPerPage = count
+      const query = {}
+
+      if (parseInt(count) !== defaultItemsPerPage) {
+        query.count = count
+      }
+      await this.$router.push({ name: 'admin-student-list', params: this.$route.params, query: query })
       this.getPageContents()
     },
+    /**
+     * Switch the currently displayed page in the user list to the page provided. This
+     * method will also alter the current route to the new page number. Once changed,
+     * the table will be re-rendered.
+     * fixme - See comment in AdminStudentListPagination
+     * @param page {number} The page to switch to. Should be an integer greater than or
+     * equal to 1.
+     * @returns {Promise<void>}
+     */
     async goToPage (page) {
-      this.page = page // fixme - See comment in AdminStudentListPagination
+      this.page = page
+      await this.$router.push({ name: 'admin-student-list', params: { page: this.page }, query: this.$route.query })
       this.getPageContents()
     },
+    /**
+     * Searches the list of students for a student object with the same ID. Once found,
+     * that object is updated/replaced with the new student object, which should be
+     * considered to have more up-to-date information.
+     * Triggered when a user is updated to be made Admin or removed from the
+     * wait-list, for example.
+     * @param student The new student object. The _id property should exist.
+     */
     updatedStudent (student) {
       Object.assign(this.studentsOnPage.find(s => s._id === student._id), student)
     },
+    /**
+     * Should be used to notify the list that the student with the ID passed has been
+     * deleted and should be removed from the list.
+     * @param studentID ID of the student to delete from the list.
+     */
     deletedStudent (studentID) {
       this.studentsOnPage = this.studentsOnPage.filter(s => s._id !== studentID)
     }
