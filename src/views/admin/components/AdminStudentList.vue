@@ -25,13 +25,29 @@
       @change-item-count="changeItemPerPageCount"
       @go-to-page="goToPage"
     />
-    <b-input
-      v-model="searchTerm"
-      type="text"
-      placeholder="Search"
-      class="block"
-      @input="searchChanged"
-    />
+    <b-field grouped>
+      <b-input
+        v-model="searchTerm"
+        type="text"
+        placeholder="Search..."
+        class="block"
+        expanded
+        icon="search"
+        @input="searchChanged"
+      />
+      <b-tooltip
+        :label="getSearchTooltip()"
+        class="search-tooltip"
+        multilined
+        animated
+        type="is-dark"
+        position="is-left"
+      >
+        <b-button
+          icon-right="question"
+        />
+      </b-tooltip>
+    </b-field>
 
     <b-table
       ref="table"
@@ -102,7 +118,7 @@ import AdminStudentListOverview from '@/views/admin/components/AdminStudentListO
 import AdminStudentListPagination from '@/views/admin/components/AdminStudentListPagination.vue'
 
 const defaultItemsPerPage = 25
-const requiredTimeBeforeSearch = 500 // Number of ms required without change in the search before executing the search
+const requiredTimeBeforeSearch = 300 // Number of ms required without change in the search before executing the search
 
 export default {
   name: 'AdminStudentList',
@@ -225,6 +241,17 @@ export default {
       }, requiredTimeBeforeSearch)
     },
     /**
+     * Get the contents to be displayed in the tooltip next to the search bar
+     */
+    getSearchTooltip () {
+      return 'Available filters:\n' +
+        'is:admin\n' +
+        'is:locked\n' +
+        'year:####\n' +
+        '\n' +
+        'Prepend ! to negate any filter.'
+    },
+    /**
      * Searches the list of students for a student object with the same ID. Once found,
      * that object is updated/replaced with the new student object, which should be
      * considered to have more up-to-date information.
@@ -248,4 +275,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .search-tooltip.b-tooltip:after { /* Allows line breaks in tooltip */
+    white-space: pre;
+  }
 </style>

@@ -83,20 +83,40 @@ function formSearchObject (str) {
     return {}
   }
 
-  let regexStr = '.*'
+  // Create filter objects for admin/locked/grad year
+  const adminFilter = /(?:\s|^)(!?)is:admin(?:\s|$)/i
+  const lockedFilter = /(?:\s|^)(!?)is:locked(?:\s|$)/i
+  const yearFilter = /(?:\s|^)(!?)year:(\d{4})(?:\s|$)/i
+  const filters = {}
+  let matchResult
+  if ((matchResult = str.match(adminFilter)) !== null) {
+    filters.admin = !(matchResult[1]) // Negate if there exists an ! in the search term
+  }
+  if ((matchResult = str.match(lockedFilter)) !== null) {
+    filters.accountLocked = !(matchResult[1]) // Negate if there exists an ! in the search term
+  }
+  if ((matchResult = str.match(yearFilter)) !== null) {
+    filters.graduationYear = (matchResult[1]) ? { $ne: matchResult[2] } : matchResult[2]
+  }
+  str = str // Remove any filters from the actual search string
+    .replace(adminFilter, '')
+    .replace(lockedFilter, '')
+    .replace(yearFilter, '')
 
+  // Form regex for the name/rcs id searching
+  let regexStr = '.*'
   regexStr += str
     .replace(/ +/g, ' ') // Remove duplicate spaces
     .replace(' ', '|') // Convert each space into OR
-
   regexStr += '.*'
   const regex = new RegExp(regexStr, 'i')
-  return { $or: [
+
+  return Object.assign({ $or: [
     { 'name.first': regex },
     { 'name.preferred': regex },
     { 'name.last': regex },
     { rcs_id: regex }
-  ] }
+  ] }, filters)
 }
 
 /**
