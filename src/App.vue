@@ -210,6 +210,7 @@ export default {
     }
 
     if (this.loggedIn) {
+      this.$ga.set({ userRcsId: this.$store.start.auth.user.rcs_id })
       // Check if time to reupdate from SIS
       if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
         this.$router.push({ name: 'account', query: { importFromSIS: true } })

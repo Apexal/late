@@ -68,6 +68,7 @@
     "twilio": "^3.33.4",
     "uuid": "^3.3.3",
     "vue": "^2.6.10",
+    "vue-analytics": "^5.17.2",
     "vue-knob-control": "^1.6.0",
     "vue-markdown": "^2.2.4",
     "vue-progressbar": "^0.7.5",
