@@ -142,7 +142,7 @@ function checkForLockedFilter (str) {
   const filter = {}
   let matchResult
   while ((matchResult = str.match(lockedFilter)) !== null) {
-    filter.admin = !(matchResult[1]) // Negate if there exists an ! in the search term
+    filter.accountLocked = !(matchResult[1]) // Negate if there exists an ! in the search term
     str = str.replace(lockedFilter, '')
   }
   return { filter, str }
