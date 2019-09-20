@@ -240,6 +240,9 @@ export default {
     }
   },
   watch: {
+    assessment () {
+      this.editingDate = false
+    },
     editingDate () {
       this.tempDateString = this.inputFormatDate
       this.tempTimeString = this.inputFormatTime
