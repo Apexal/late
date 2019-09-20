@@ -97,6 +97,7 @@ function formSearchObject (str) {
   // Form regex for the name/rcs id searching
   let regexStr = '.*'
   regexStr += str
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // https://stackoverflow.com/a/6969486
     .replace(/ +/g, ' ') // Remove duplicate spaces
     .replace(' ', '|') // Convert each space into OR
   regexStr += '.*'
