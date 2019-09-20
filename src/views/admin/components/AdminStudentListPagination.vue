@@ -46,13 +46,7 @@ export default {
     perPage: { type: Number, required: true },
     currentPage: { type: Number, required: true } },
   data () {
-    return {
-      /* FIXME My understanding is it's bad practice to use props directly as it causes them to mutate, however
-          I can't seem to get this component to rerender if I update via $emit/events in parent - Erik
-       */
-      // perPageLocal: Math.ceil(Math.max(1, this.perPage)),
-      // currentPageLocal: Math.ceil(Math.max(1, Math.min(this.totalItems / this.perPage, this.currentPage)))
-    }
+    return {}
   },
   methods: {
     async goToPage (page) {

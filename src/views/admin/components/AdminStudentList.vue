@@ -183,7 +183,6 @@ export default {
      * was previously at the top of the list. This method will also alter the route
      * to contain the new count in the query string. Once changed, the table will be
      * re-rendered.
-     * fixme - See comment in AdminStudentListPagination
      * @param count {number} Number of items that should exist per page. Should be
      * an integer greater than or equal to 1.
      * @returns {Promise<void>}
@@ -205,7 +204,6 @@ export default {
      * Switch the currently displayed page in the user list to the page provided. This
      * method will also alter the current route to the new page number. Once changed,
      * the table will be re-rendered.
-     * fixme - See comment in AdminStudentListPagination
      * @param page {number} The page to switch to. Should be an integer greater than or
      * equal to 1.
      * @returns {Promise<void>}
