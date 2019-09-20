@@ -43,5 +43,8 @@ export default [
     'The Frank Matranga',
     'One day you might threaten him',
     "But he'll delete you"
+    'you should not be here',
+    'this error page is sacred',
+    'leave now or suffer'
   ]
 ]
