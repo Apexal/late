@@ -30,6 +30,19 @@ export default [
     '目は泪'
   ],
   [
+    'Haikus have three lines',
+    'Haikus go five seven five',
+    "I'm not creative enough"
+  ],
+  [
+    'The Frank Matranga',
+    'Father of glorious LATE',
+    'Will always find you'
+  ],
+  [
+    'The Frank Matranga',
+    'One day you might threaten him',
+    "But he'll delete you"
     'you should not be here',
     'this error page is sacred',
     'leave now or suffer'
