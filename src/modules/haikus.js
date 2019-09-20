@@ -33,5 +33,10 @@ export default [
     'I\'m going to take',
     'My Horse down the old town road.',
     'Ride until I can\'t.'
+  ],
+  [
+    'you should not be here',
+    'this error page is sacred',
+    'leave now or suffer'
   ]
 ]
