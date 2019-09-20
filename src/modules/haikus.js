@@ -28,5 +28,10 @@ export default [
     '行春や',
     '鳥啼き魚の',
     '目は泪'
+  ],
+  [
+    'I\'m going to take',
+    'My Horse down the old town road.',
+    'Ride until I can\'t.'
   ]
 ]
