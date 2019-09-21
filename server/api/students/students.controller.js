@@ -55,12 +55,127 @@ async function getUser (ctx) {
  * @param {Koa context} ctx
  */
 async function getStudents (ctx) {
+  const page = parseInt(ctx.query.page) || 1
+  const itemsPerPage = parseInt(ctx.query.itemsPerPage) || 25
+  const search = ctx.query.search || ''
+
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!')
   }
 
-  const students = await Student.find()
-  ctx.ok({ students })
+  const searchObject = formSearchObject(search)
+  if (search) {
+    logger.info(ctx.state.user.rcs_id + ' searched user list with term: ' + search)
+  }
+
+  const students = await Student.find(searchObject).sort('rcs_id').skip((page - 1) * itemsPerPage).limit(itemsPerPage)
+  const studentCount = await Student.count(searchObject)
+  ctx.ok({ students, studentCount })
+}
+
+/**
+ * Parse the passed search string for a mongoose-friendly object that can be
+ * passed to the find function and get the searched terms.
+ * @param str {string} Entirety of the search string, typically what the user enters into the search input
+ */
+function formSearchObject (str) {
+  if (typeof str !== 'string' || str.length === 0) {
+    return {}
+  }
+  str = str.substr(0, 1000)
+
+  // filter out the admin, locked, and year filters
+  const filter = {}
+  let filterResults = checkForAdminFilter(str)
+  Object.assign(filter, filterResults.filter)
+  filterResults = checkForLockedFilter(filterResults.str)
+  Object.assign(filter, filterResults.filter)
+  filterResults = checkForYearFilters(filterResults.str)
+  str = filterResults.str
+  Object.assign(filter, filterResults.filter)
+
+  // Form regex for the name/rcs id searching
+  let regexStr = '.*'
+  regexStr += str
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // https://stackoverflow.com/a/6969486
+    .replace(/ +/g, ' ') // Remove duplicate spaces
+    .replace(' ', '|') // Convert each space into OR
+  regexStr += '.*'
+  const regex = new RegExp(regexStr, 'i')
+
+  return Object.assign({ $or: [
+    { 'name.first': regex },
+    { 'name.preferred': regex },
+    { 'name.last': regex },
+    { rcs_id: regex }
+  ] }, filter)
+}
+
+/**
+ * Filter out the is:admin filter from a search string in favor of
+ * the Mongo-friendly object to be passed to find().
+ * @see formSearchObject
+ * @param str The search string to filter. Expected to be non-null.
+ * @returns {{filter: Object, str: string}} Contains the new filter object for
+ *          mongo along with the string that no longer contains the filter.
+ */
+function checkForAdminFilter (str) {
+  const adminFilter = /(?:\s|^)(!?)is:admin(?:\s|$)/i
+  const filter = {}
+  let matchResult
+  while ((matchResult = str.match(adminFilter)) !== null) {
+    filter.admin = !(matchResult[1]) // Negate if there exists an ! in the search term
+    str = str.replace(adminFilter, '')
+  }
+  return { filter, str }
+}
+
+/**
+ * Filter out the is:locked filter from a search string in favor of
+ * the Mongo-friendly object to be passed to find().
+ * @see formSearchObject
+ * @param str The search string to filter. Expected to be non-null.
+ * @returns {{filter: Object, str: string}} Contains the new filter object for
+ *          mongo along with the string that no longer contains the filter.
+ */
+function checkForLockedFilter (str) {
+  const lockedFilter = /(?:\s|^)(!?)is:locked(?:\s|$)/i
+  const filter = {}
+  let matchResult
+  while ((matchResult = str.match(lockedFilter)) !== null) {
+    filter.accountLocked = !(matchResult[1]) // Negate if there exists an ! in the search term
+    str = str.replace(lockedFilter, '')
+  }
+  return { filter, str }
+}
+
+/**
+ * Filter out any year:#### filters from the passed search string in
+ * favor of the Mongo-friendly object to be passed to find().
+ * Multiple year:#### filters are valid.
+ * @see formSearchObject
+ * @param str The search string to filter. Expected to be non-null.
+ * @returns {{filter: Object, str: string}} Contains the new filter object for
+ *          mongo along with the string that no longer contains the filter.
+ */
+function checkForYearFilters (str) {
+  const yearFilter = /(?:\s|^)(!?)year:(\d{4})(?:\s|$)/i
+  const filter = { graduationYear: { $nin: [], $in: [] } }
+  let matchResult
+  // Multiple value filters are allowed, so loop until no more exist
+  while ((matchResult = str.match(yearFilter)) != null) {
+    if (matchResult[1] === '!') {
+      filter.graduationYear.$nin.push(matchResult[2])
+    } else {
+      filter.graduationYear.$in.push(matchResult[2])
+    }
+    str = str.replace(yearFilter, '')
+  }
+  if (filter.graduationYear.$in.length === 0) {
+    delete filter.graduationYear.$in
+  }
+
+  return { filter, str }
 }
 
 /**

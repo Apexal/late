@@ -16,7 +16,7 @@
           Administration
         </h1>
         <router-link
-          :to="{name: 'admin-student-list'}"
+          :to="{name: 'admin-student-list', params: {page: 1}}"
           tag="li"
         >
           <a>Students</a>
