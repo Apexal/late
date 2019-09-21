@@ -86,7 +86,7 @@ import moment from 'moment'
 
 import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule'
 import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments'
-import SidebarTodoList from '@/views/sidebar/components/SidebarTodoList'
+import SidebarTodoList from '@/views/sidebar/components/todo/SidebarTodoList'
 import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList'
 
 export default {

@@ -19,7 +19,7 @@
             animated
             style="cursor: pointer;"
             :delay="500"
-            @click.native="isShowingAllTodos = true"
+            @click.native="openCompletedModal"
           >
             <b-icon
               class="is-inline-block is-centered"
@@ -35,12 +35,23 @@
       v-for="(t, index) in getIncompletedTodos()"
       :key="index"
       class="panel-block todo incomplete"
-      title="Click to mark completed."
-      @click="setTodoCompletionStatus(t, !t.completed)"
     >
       <span class="is-fullwidth">
-        <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.createdAt) }}</small>
-        {{ t.text }}
+        <small class="todo-time is-pulled-right has-text-grey">
+          {{ fromNow(t.createdAt) }}
+          <b-icon
+            icon="edit"
+            size="is-small"
+            @click.native="openEditModal(t)"
+          />
+        </small>
+        <span
+          class="is-fullwidth is-fullheight is-block todo-text"
+          title="Click to mark completed."
+          @click="setTodoCompletionStatus(t, !t.completed)"
+        >
+          {{ t.text }}
+        </span>
       </span>
     </div>
     <div
@@ -52,73 +63,13 @@
         No to-dos saved yet.
       </div>
     </div>
-
-    <!-- Completed tasks modal -->
-    <b-modal
-      has-modal-card
-      class="modal tours-modal"
-      :active.sync="isShowingAllTodos"
-    >
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">
-            Completed Tasks
-          </p>
-        </header>
-        <section class="modal-card-body">
-          <p class="has-text-grey block">
-            Completed tasks are archived after 30 days.
-          </p>
-
-          <div v-if="getCompletedTodos().length > 0">
-            <div
-              v-for="(t, index) in getCompletedTodos()"
-              :key="index"
-              class="todo"
-            >
-              <b-field>
-                <h3
-                  class="is-fullwidth is-size-5 is-bold"
-                  title="Click to mark as incomplete."
-                  @click="setTodoCompletionStatus(t, !t.completed)"
-                >
-                  {{ t.text }}
-                </h3>
-                <b-button
-                  title="Delete this item"
-                  type="is-danger"
-                  icon-left="trash"
-                  @click="removeTodo(t)"
-                />
-              </b-field>
-            </div>
-          </div>
-          <div v-else>
-            <h4 class="is-size-4 no-cleared-todos">
-              <b-icon
-                icon="bed"
-                size="is-medium"
-                type="is-primary"
-                class="no-cleared-todos-bed"
-              />
-              You haven't completed anything. Get to work!
-            </h4>
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <b-button
-            type="is-primary"
-            @click="isShowingAllTodos = false"
-          >
-            Close
-          </b-button>
-        </footer>
-      </div>
-    </b-modal>
   </div>
 </template>
 
 <script>
+import TodoListCompletedModal from './TodoListCompletedModal'
+import TodoListEditModal from './TodoListEditModal'
+
 export default {
   name: 'SidebarTodoList',
   props: {
@@ -131,6 +82,31 @@ export default {
     }
   },
   methods: {
+    /**
+     * Open the edit modal to edit the passed todo item
+     * @param t Todo object. Expected to be non-null
+     */
+    openEditModal (t) {
+      this.$buefy.modal.open({
+        parent: this,
+        component: TodoListEditModal,
+        hasModalCard: true,
+        props: { item: t },
+        events: { 'delete-todo': this.removeTodo, 'save-todo': (t, value) => this.setTodoValue(t, value) }
+      })
+    },
+    /**
+     * Open the modal listing all completed todo list items
+     */
+    openCompletedModal () {
+      this.$buefy.modal.open({
+        parent: this,
+        component: TodoListCompletedModal,
+        hasModalCard: true,
+        props: { items: this.getCompletedTodos() },
+        events: { 'delete-todo': this.removeTodo, 'uncheck-todo': (t) => this.setTodoCompletionStatus(t, false) }
+      })
+    },
     /**
      * Get all of the todo list items that are NOT completed
      * @returns {[]} Array of all items in {@link this.todos} which are NOT completed
@@ -158,6 +134,26 @@ export default {
       return completedTodos
     },
     /**
+     * Set the todo text value to the provided text
+     * @param todo Todo to change text for. Expected to be non-null
+     * @param text Text to set on todo. Expected to be non-null
+     */
+    async setTodoValue (todo, text) {
+      todo.text = text
+      try {
+        await this.$store.dispatch('UPDATE_TODO', todo)
+        this.$buefy.toast.open({
+          type: 'is-success',
+          message: `Changed to-do to '${text}'.`
+        })
+      } catch (e) {
+        this.$buefy.toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        })
+      }
+    },
+    /**
      * Set whether a specific todo list item is completed or not
      * @param todo Item to set status for. Assumed to not be null
      * @param status {boolean} status to set this todo item to
@@ -165,7 +161,20 @@ export default {
      */
     async setTodoCompletionStatus (todo, status) {
       todo.completed = status
-      await this.$store.dispatch('UPDATE_TODO', todo)
+      try {
+        await this.$store.dispatch('UPDATE_TODO', todo)
+        if (status) {
+          this.$buefy.toast.open({
+            type: 'is-success',
+            message: `Completed to-do '${todo.text}'.`
+          })
+        }
+      } catch (e) {
+        this.$buefy.toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        })
+      }
     },
     /**
      * Adds whatever value is in {@link this.newTodo} to the todo list.
@@ -191,23 +200,23 @@ export default {
     /**
      * Remove the provided todo item from the todo list
      * @param todo Todo item to remove. Assumed to be non-null
+     * @param callback Callback function that is called only if the user confirms the removal.
      * @returns {Promise<void>} void
      */
-    async removeTodo (todo) {
+    async removeTodo (todo, callback) {
       this.$buefy.dialog.confirm({
         message: `Permanently remove <i>${todo.text}</i>?`,
         onConfirm: async () => {
           try {
             await this.$store.dispatch('REMOVE_TODO', todo)
-            this.$buefy.toast.open({
-              message: `Completed to-do '${todo.text}'.`,
-              type: 'is-success'
-            })
           } catch (e) {
             this.$buefy.toast.open({
               message: e.response.data.message,
               type: 'is-danger'
             })
+          }
+          if (callback) {
+            callback()
           }
         }
       })
@@ -219,12 +228,15 @@ export default {
 <style lang="scss" scoped>
 .todo {
   cursor: pointer;
-  padding: 10px;
+  padding: 0 15px 0 0;
+
+  .todo-text {
+    padding: 10px;
+  }
 
   .todo-time {
     position: relative;
-    right: -8px;
-    top: -8px;
+    right: -13px;
   }
 
   &:hover {
@@ -232,13 +244,6 @@ export default {
     .incomplete {
       text-decoration: line-through;
     }
-  }
-}
-
-.no-cleared-todos {
-  text-align: center;
-  .no-cleared-todos-bed {
-    width: 100% !important;
   }
 }
 
