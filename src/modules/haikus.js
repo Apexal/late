@@ -53,5 +53,10 @@ export default [
     'you should not be here',
     'this error page is sacred',
     'leave now or suffer'
+  ],
+  [
+    'SIS-Man speaks to you',
+    'you do not belong here child',
+    'look for help elsewhere'
   ]
 ]
