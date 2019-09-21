@@ -74,7 +74,7 @@
         class="is-unselectable is-size-7"
         :todays-agenda="todaysAgenda"
         :pressing="pressingAssessments"
-        :todos="todos"
+        :todos="allTodos"
         @update-count="updatedCount"
       />
     </div>
@@ -135,7 +135,7 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
         courseList: this.courses.length,
-        todos: this.todos.length
+        todos: this.incompleteTodos.length
       }
     },
     currentTab () {
@@ -166,7 +166,16 @@ export default {
       )
       return `${diff.hours()}h ${diff.minutes()}m left`
     },
-    todos () {
+    incompleteTodos () {
+      const incompleteTodos = []
+      for (let i = 0; i < this.$store.state.todos.todos.length; i++) {
+        if (!this.$store.state.todos.todos[i].completed) {
+          incompleteTodos.push(this.$store.state.todos.todos[i])
+        }
+      }
+      return incompleteTodos
+    },
+    allTodos () {
       return this.$store.state.todos.todos
     }
   },

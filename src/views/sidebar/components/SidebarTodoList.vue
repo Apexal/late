@@ -3,21 +3,40 @@
   <div class="todos">
     <form @submit.prevent="addTodo">
       <div class="control panel-block">
-        <input
-          v-model.trim="newTodo"
-          class="input is-small"
-          type="text"
-          placeholder="Add to-do"
-          required
-        >
+        <b-field class="is-fullwidth">
+          <label class="is-fullwidth">
+            <input
+              v-model.trim="newTodo"
+              class="input is-small"
+              type="text"
+              placeholder="Add to-do"
+              required
+            >
+          </label>
+          <b-tooltip
+            label="Show completed"
+            type="is-light"
+            animated
+            style="cursor: pointer;"
+            :delay="500"
+            @click.native="isShowingAllTodos = true"
+          >
+            <b-icon
+              class="is-inline-block is-centered"
+              style="margin-left: 1em;"
+              icon="ellipsis-v"
+              size="is-small"
+            />
+          </b-tooltip>
+        </b-field>
       </div>
     </form>
     <div
-      v-for="(t, index) in todos"
+      v-for="(t, index) in getIncompletedTodos()"
       :key="index"
-      class="panel-block todo"
+      class="panel-block todo incomplete"
       title="Click to mark completed."
-      @click="removeTodo(t)"
+      @click="setTodoCompletionStatus(t, !t.completed)"
     >
       <span class="is-fullwidth">
         <small class="todo-time is-pulled-right has-text-grey">{{ fromNow(t.createdAt) }}</small>
@@ -25,7 +44,7 @@
       </span>
     </div>
     <div
-      v-if="todos.length === 0"
+      v-if="getIncompletedTodos().length === 0"
       class="no-todo"
     >
       <i class="far fa-sticky-note no-todo-icon" />
@@ -33,6 +52,55 @@
         No to-dos saved yet.
       </div>
     </div>
+
+    <!-- Completed tasks modal -->
+    <b-modal
+      has-modal-card
+      class="modal tours-modal"
+      :active.sync="isShowingAllTodos"
+    >
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">
+            Completed Tasks
+          </p>
+        </header>
+        <section class="modal-card-body">
+          <p class="has-text-grey">
+            Completed tasks are archived after 30 days.
+          </p>
+          <div
+            v-for="(t, index) in getCompletedTodos()"
+            :key="index"
+            class="todo"
+          >
+            <b-field>
+              <h3
+                class="is-fullwidth is-size-5 is-bold"
+                title="Click to mark as incomplete."
+                @click="setTodoCompletionStatus(t, !t.completed)"
+              >
+                {{ t.text }}
+              </h3>
+              <b-button
+                title="Delete this item"
+                type="is-danger"
+                icon-left="trash"
+                @click="removeTodo(t)"
+              />
+            </b-field>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <b-button
+            type="is-primary"
+            @click="isShowingAllTodos = false"
+          >
+            Close
+          </b-button>
+        </footer>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -44,10 +112,51 @@ export default {
   },
   data () {
     return {
-      newTodo: ''
+      newTodo: '',
+      isShowingAllTodos: false
     }
   },
   methods: {
+    /**
+     * Get all of the todo list items that are NOT completed
+     * @returns {[]} Array of all items in {@link this.todos} which are NOT completed
+     */
+    getIncompletedTodos () {
+      const incompletedTodos = []
+      for (let i = 0; i < this.todos.length; i++) {
+        if (!this.todos[i].completed) {
+          incompletedTodos.push(this.todos[i])
+        }
+      }
+      return incompletedTodos
+    },
+    /**
+     * Get all of the todo list items that are completed
+     * @returns {[]} Array of all items in {@link this.todos} which are completed
+     */
+    getCompletedTodos () {
+      const completedTodos = []
+      for (let i = 0; i < this.todos.length; i++) {
+        if (this.todos[i].completed) {
+          completedTodos.push(this.todos[i])
+        }
+      }
+      return completedTodos
+    },
+    /**
+     * Set whether a specific todo list item is completed or not
+     * @param todo Item to set status for. Assumed to not be null
+     * @param status {boolean} status to set this todo item to
+     * @returns {Promise<void>} void
+     */
+    async setTodoCompletionStatus (todo, status) {
+      todo.completed = status
+      await this.$store.dispatch('UPDATE_TODO', todo)
+    },
+    /**
+     * Adds whatever value is in {@link this.newTodo} to the todo list.
+     * @returns {Promise<void>} void
+     */
     async addTodo () {
       if (!this.newTodo) return
 
@@ -65,9 +174,14 @@ export default {
         })
       }
     },
+    /**
+     * Remove the provided todo item from the todo list
+     * @param todo Todo item to remove. Assumed to be non-null
+     * @returns {Promise<void>} void
+     */
     async removeTodo (todo) {
       this.$buefy.dialog.confirm({
-        message: `Done with <i>${todo.text}</i>?`,
+        message: `Permanently remove <i>${todo.text}</i>?`,
         onConfirm: async () => {
           try {
             await this.$store.dispatch('REMOVE_TODO', todo)
@@ -101,7 +215,9 @@ export default {
 
   &:hover {
     background-color: hsl(0, 0%, 96%);
-    text-decoration: line-through;
+    .incomplete {
+      text-decoration: line-through;
+    }
   }
 }
 
