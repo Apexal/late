@@ -30,6 +30,11 @@ export default [
     '目は泪'
   ],
   [
+    'I\'m going to take',
+    'My Horse down the old town road.',
+    'Ride until I can\'t.'
+  ],
+  [
     'Haikus have three lines',
     'Haikus go five seven five',
     "I'm not creative enough"
@@ -42,7 +47,9 @@ export default [
   [
     'The Frank Matranga',
     'One day you might threaten him',
-    "But he'll delete you"
+    'But he\'ll delete you'
+  ],
+  [
     'you should not be here',
     'this error page is sacred',
     'leave now or suffer'
