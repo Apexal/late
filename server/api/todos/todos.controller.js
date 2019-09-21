@@ -37,6 +37,35 @@ async function createTodo (ctx) {
 }
 
 /**
+ * Updates a todo given its ID.
+ * Request body:
+ *   - text: the todo text
+ *   - completed: boolean whether or not the todo is completed
+ * @param ctx {Koa context} ctx
+ * @returns {Promise<void>} void
+ */
+async function updateTodo (ctx) {
+  const { todoID } = ctx.params
+  const { text, completed } = ctx.request.body
+  const todo = await Todo.findOne({
+    _id: todoID,
+    _student: ctx.state.user._id
+  })
+
+  if (todo) {
+    if (typeof text === 'string') {
+      todo.text = text
+    }
+    if (typeof completed === 'boolean') {
+      todo.completed = completed
+    }
+
+    todo.save()
+  }
+  ctx.ok({ todo })
+}
+
+/**
  * Deletes a todo given its ID.
  * Request parameters:
  *  - todoID: the todo ID
@@ -58,5 +87,6 @@ async function deleteTodo (ctx) {
 module.exports = {
   getTodos,
   createTodo,
+  updateTodo,
   deleteTodo
 }
