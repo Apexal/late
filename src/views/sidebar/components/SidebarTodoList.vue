@@ -66,29 +66,43 @@
           </p>
         </header>
         <section class="modal-card-body">
-          <p class="has-text-grey">
+          <p class="has-text-grey block">
             Completed tasks are archived after 30 days.
           </p>
-          <div
-            v-for="(t, index) in getCompletedTodos()"
-            :key="index"
-            class="todo"
-          >
-            <b-field>
-              <h3
-                class="is-fullwidth is-size-5 is-bold"
-                title="Click to mark as incomplete."
-                @click="setTodoCompletionStatus(t, !t.completed)"
-              >
-                {{ t.text }}
-              </h3>
-              <b-button
-                title="Delete this item"
-                type="is-danger"
-                icon-left="trash"
-                @click="removeTodo(t)"
+
+          <div v-if="getCompletedTodos().length > 0">
+            <div
+              v-for="(t, index) in getCompletedTodos()"
+              :key="index"
+              class="todo"
+            >
+              <b-field>
+                <h3
+                  class="is-fullwidth is-size-5 is-bold"
+                  title="Click to mark as incomplete."
+                  @click="setTodoCompletionStatus(t, !t.completed)"
+                >
+                  {{ t.text }}
+                </h3>
+                <b-button
+                  title="Delete this item"
+                  type="is-danger"
+                  icon-left="trash"
+                  @click="removeTodo(t)"
+                />
+              </b-field>
+            </div>
+          </div>
+          <div v-else>
+            <h4 class="is-size-4 no-cleared-todos">
+              <b-icon
+                icon="bed"
+                size="is-medium"
+                type="is-primary"
+                class="no-cleared-todos-bed"
               />
-            </b-field>
+              You haven't completed anything. Get to work!
+            </h4>
           </div>
         </section>
         <footer class="modal-card-foot">
@@ -218,6 +232,13 @@ export default {
     .incomplete {
       text-decoration: line-through;
     }
+  }
+}
+
+.no-cleared-todos {
+  text-align: center;
+  .no-cleared-todos-bed {
+    width: 100% !important;
   }
 }
 
