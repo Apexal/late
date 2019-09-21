@@ -13,7 +13,7 @@
         </p>
       </header>
       <section class="modal-card-body">
-        <b-field label="Name">
+        <b-field label="Content">
           <b-input
             v-model.trim="text"
             type="text"
