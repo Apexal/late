@@ -111,6 +111,14 @@ const actions = {
 
     return request.data
   },
+  /**
+   * Fill a calendar with class events with period type, location, and proper range.
+   *
+   * @param {Google API auth object} googleAuth
+   * @param {string} calendarId The string ID of the calendar to add events to
+   * @param {string} termCode The term code of the semester the courses are from (e.g. '201901')
+   * @param {array} courses The array of course objects to generate period events from
+   */
   async createRecurringEventsFromCourseSchedule (googleAuth, calendarId, termCode, courses) {
     const calendar = google.calendar({
       version: 'v3',
@@ -119,6 +127,7 @@ const actions = {
 
     for (let i = 0; i < courses.length; i++) {
       const course = courses[i]
+      const periodIDs = course.periods.map(p => p.id)
 
       if (course.periods.length === 0) continue
 
@@ -134,7 +143,13 @@ const actions = {
       })
 
       const existingCourseCalendarEvents = request.data.items
-      // console.log(existingCourseCalendarEvents.map(ev => ev.extendedProperties.private));
+
+      const orphanedEventIDs = existingCourseCalendarEvents.map(ev => ev.id).filter(eventID => !course.periods.id(eventID))
+
+      orphanedEventIDs.forEach(id => calendar.events.delete({
+        calendarId,
+        eventId: id
+      }))
 
       const courseStart = moment(course.startDate)
       const courseEnd = moment(course.endDate)
@@ -165,6 +180,7 @@ const actions = {
           `${locationParts.slice(0, locationParts.length - 1).join(' ')} #${locationParts[locationParts.length - 1]}, Troy, NY 12180`
 
         const data = {
+          id: period._id,
           summary: `${course.title} ${periodTypes[period.type] ||
             period.type}`,
           description: `${course.summary} - ${course.sectionId} - ${
@@ -196,7 +212,7 @@ const actions = {
           }
         }
 
-        const calendarEvent = existingCourseCalendarEvents.find(ev => ev.extendedProperties.private.courseID === course.id && ev.extendedProperties.private.periodID === period.id)
+        const calendarEvent = existingCourseCalendarEvents.find(ev => ev.extendedProperties.private.periodID === period.id)
         if (calendarEvent) {
           await calendar.events.patch({
             calendarId,
