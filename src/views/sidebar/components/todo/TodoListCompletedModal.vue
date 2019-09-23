@@ -1,5 +1,10 @@
 <template>
   <div class="modal-card">
+    <b-loading
+      :active="isFetchingAll"
+      :is-full-page="false"
+      :can-cancel="false"
+    />
     <header class="modal-card-head">
       <p class="modal-card-title">
         Completed Tasks
@@ -8,6 +13,12 @@
     <section class="modal-card-body">
       <p class="has-text-grey block">
         Completed tasks are archived after 30 days.
+        <a
+          v-if="!isShowingAll"
+          @click="showAll"
+        >
+          Show all
+        </a>
       </p>
 
       <div v-if="items.length > 0">
@@ -62,6 +73,12 @@ export default {
   props: {
     items: { type: Array, required: true }
   },
+  data () {
+    return {
+      isFetchingAll: false,
+      isShowingAll: false
+    }
+  },
   methods: {
     deleteItem (t) {
       this.$emit('delete-todo', t, () => {
@@ -71,6 +88,26 @@ export default {
     uncheckItem (t) {
       this.items = this.items.filter((t1) => t1._id !== t._id)
       this.$emit('uncheck-todo', t)
+    },
+    async showAll () {
+      this.isFetchingAll = true
+      let response
+      try {
+        response = await this.$http.get('/todos/all')
+      } catch (e) {
+        this.$buefy.toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        })
+        this.isFetchingAll = false
+        return
+      }
+
+      if (response.data && response.data.todos) {
+        this.items = response.data.todos.filter((t) => t.completed !== null)
+      }
+      this.isShowingAll = true
+      this.isFetchingAll = false
     }
   }
 }

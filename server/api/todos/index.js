@@ -4,6 +4,7 @@ const router = new Router()
 const Ctrl = require('./todos.controller')
 
 router.get('/', Ctrl.getRecentTodos)
+router.get('/all', Ctrl.getTodos)
 router.post('/', Ctrl.createTodo)
 router.post('/:todoID', Ctrl.updateTodo)
 router.delete('/:todoID', Ctrl.deleteTodo)
