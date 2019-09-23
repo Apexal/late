@@ -19,7 +19,7 @@
           <b-field>
             <h3
               class="is-fullwidth is-size-5 is-bold"
-              title="Click to mark as incomplete."
+              :title="'Completed ' + fromNow(t.completed) + '. Click to mark as incomplete.'"
               @click="uncheckItem(t)"
             >
               {{ t.text }}

@@ -2,13 +2,26 @@ const Todo = require('./todos.model')
 const logger = require('../../modules/logger')
 
 /**
- * Fetches a list of todos for the current user.
+ * Fetches a list of ALL todos for the current user, including todos completed over 30 days ago.
  * @param {Koa context} ctx
  * @retuns A JSON list of todos
  */
 async function getTodos (ctx) {
   const todos = await Todo.find({
     _student: ctx.state.user._id
+  })
+  return ctx.ok({ todos })
+}
+/**
+ * Fetches a list of todos for the current user which haven't
+ * been completed or were only completed within the last 30 days
+ * @param {Koa context} ctx
+ * @retuns A JSON list of todos
+ */
+async function getRecentTodos (ctx) {
+  const todos = await Todo.find({
+    _student: ctx.state.user._id,
+    completed: { $not: { $lt: new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000)) } }
   })
   return ctx.ok({ todos })
 }
@@ -56,7 +69,7 @@ async function updateTodo (ctx) {
     if (typeof text === 'string') {
       todo.text = text
     }
-    if (typeof completed === 'boolean') {
+    if (typeof completed === 'number' || completed === null) {
       todo.completed = completed
     }
 
@@ -86,6 +99,7 @@ async function deleteTodo (ctx) {
 
 module.exports = {
   getTodos,
+  getRecentTodos,
   createTodo,
   updateTodo,
   deleteTodo

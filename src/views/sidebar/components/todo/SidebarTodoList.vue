@@ -48,7 +48,7 @@
         <span
           class="is-fullwidth is-fullheight is-block todo-text"
           title="Click to mark completed."
-          @click="setTodoCompletionStatus(t, !t.completed)"
+          @click="setTodoCompletionStatus(t, Date.now())"
         >
           {{ t.text }}
         </span>
@@ -104,7 +104,7 @@ export default {
         component: TodoListCompletedModal,
         hasModalCard: true,
         props: { items: this.getCompletedTodos() },
-        events: { 'delete-todo': this.removeTodo, 'uncheck-todo': (t) => this.setTodoCompletionStatus(t, false) }
+        events: { 'delete-todo': this.removeTodo, 'uncheck-todo': (t) => this.setTodoCompletionStatus(t, null) }
       })
     },
     /**
@@ -156,14 +156,14 @@ export default {
     /**
      * Set whether a specific todo list item is completed or not
      * @param todo Item to set status for. Assumed to not be null
-     * @param status {boolean} status to set this todo item to
+     * @param completedAt {Date|null} Datetime of when this todo was completed. Null if incomplete
      * @returns {Promise<void>} void
      */
-    async setTodoCompletionStatus (todo, status) {
-      todo.completed = status
+    async setTodoCompletionStatus (todo, completedAt) {
+      todo.completed = completedAt
       try {
         await this.$store.dispatch('UPDATE_TODO', todo)
-        if (status) {
+        if (completedAt) {
           this.$buefy.toast.open({
             type: 'is-success',
             message: `Completed to-do '${todo.text}'.`

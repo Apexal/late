@@ -9,7 +9,7 @@ const schema = new Schema(
       required: true
     },
     text: { type: String, minlength: 1, maxlength: 3000, required: true },
-    completed: { type: Boolean, default: false }
+    completed: { type: Date, default: null }
   },
   { timestamps: true }
 )
