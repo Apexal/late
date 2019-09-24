@@ -58,6 +58,12 @@ export default {
   computed: {
 
   },
+  watch: {
+    assessment () {
+      this.editing = false
+      // this.edited causes it to remain in editing
+    }
+  },
   methods: {
     async toggleEditing () {
       if (!this.isOwner) {
