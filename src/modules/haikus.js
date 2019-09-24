@@ -58,5 +58,10 @@ export default [
     'SIS-Man speaks to you',
     'you do not belong here child',
     'look for help elsewhere'
+  ],
+  [
+    'Pizza is a circle',
+    'The box is a square',
+    'The slices are triangles'
   ]
 ]
