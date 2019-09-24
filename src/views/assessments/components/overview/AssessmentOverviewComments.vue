@@ -110,6 +110,11 @@ export default {
       return this.assessment.comments && this.assessment.comments.length > 0
     }
   },
+  watch: {
+    assessment () {
+      this.newComment = ''
+    }
+  },
   methods: {
     async addComment () {
       if (!this.newComment) return
