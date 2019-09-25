@@ -39,6 +39,13 @@
           >
             Show Completed Assignments
           </b-checkbox>
+          <b-checkbox
+            :value="showScheduled"
+            type="is-link"
+            @input="$emit('toggle-show-scheduled')"
+          >
+            Show Scheduled Time
+          </b-checkbox>
         </b-field>
       </div>
       <div class="column has-text-centered is-narrow-desktop">
@@ -90,6 +97,11 @@ export default {
     groupBy: {
       type: String,
       default: 'dueDate',
+      required: false
+    },
+    showScheduled: {
+      type: Boolean,
+      default: true,
       required: false
     }
   },
