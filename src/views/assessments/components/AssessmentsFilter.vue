@@ -31,22 +31,45 @@
         </span>
       </div>
       <div class="column is-narrow-desktop has-text-centered bottom-filters">
-        <b-field>
-          <b-checkbox
-            :value="showCompleted"
-            type="is-link"
-            @input="$emit('toggle-show-completed')"
+        <button
+          class="button is-warning"
+          @click="isEditFiltersActive = true"
+        >
+          Edit Filters
+        </button>
+        <b-modal
+          :active.sync="isEditFiltersActive"
+          has-modal-card
+        >
+          <div
+            class="modal-card"
+            style="width: auto"
           >
-            Show Completed Assignments
-          </b-checkbox>
-          <b-checkbox
-            :value="showScheduled"
-            type="is-link"
-            @input="$emit('toggle-show-scheduled')"
-          >
-            Show Scheduled Time
-          </b-checkbox>
-        </b-field>
+            <header class="modal-card-head">
+              <p class="modal-card-title">
+                Filters
+              </p>
+            </header>
+            <section class="modal-card-body">
+              <b-field>
+                <b-checkbox
+                  :value="showCompleted"
+                  type="is-link"
+                  @input="$emit('toggle-show-completed')"
+                >
+                  Show Completed Assignments
+                </b-checkbox>
+                <b-checkbox
+                  :value="showScheduled"
+                  type="is-link"
+                  @input="$emit('toggle-show-scheduled')"
+                >
+                  Show Scheduled Time
+                </b-checkbox>
+              </b-field>
+            </section>
+          </div>
+        </b-modal>
       </div>
       <div class="column has-text-centered is-narrow-desktop">
         <b-field v-if="showGroupBy">
@@ -107,7 +130,8 @@ export default {
   },
   data () {
     return {
-      expanded: false
+      expanded: false,
+      isEditFiltersActive: false
     }
   },
   mounted () {
