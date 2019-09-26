@@ -6,8 +6,6 @@ const Student = require('../api/students/students.model')
 const cas = require('../modules/cas')
 const google = require('../modules/google')
 
-const Sentry = require('@sentry/node')
-
 const { sendDiscordWebhookMessage } = require('../modules/webhooks')
 
 const { sendNewUserEmail } = require('../integrations/email')
@@ -86,10 +84,6 @@ async function loginStudent (ctx) {
   if (hasInviteCode) {
     ctx.query.redirectTo += '?invited=1'
   }
-
-  Sentry.configureScope((scope) => {
-    scope.setUser({ username: student.rcs_id })
-  })
 
   ctx.redirect(ctx.query.redirectTo || '/')
 }

@@ -85,6 +85,10 @@ app.use(async (ctx, next) => {
       .byUsername(ctx.session.cas_user.toLowerCase())
       .exec()
 
+    Sentry.configureScope((scope) => {
+      scope.setUser({ username: ctx.state.user ? ctx.state.user.rcs_id : ctx.session.cas_user })
+    })
+
     ctx.state.discordClient = discordClient
 
     if (ctx.state.user) {

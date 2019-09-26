@@ -10,7 +10,7 @@ async function getCourses (ctx) {
   const courses = await Course.find({
     _student: ctx.state.user._id,
     termCode: ctx.session.currentTerm.code
-  }).sort('originalTitle')
+  }).sort('-credits title')
 
   return ctx.ok({ courses })
 }
@@ -20,7 +20,7 @@ async function getTermCourses (ctx) {
   const courses = await Course.find({
     _student: ctx.state.user._id,
     termCode
-  }).sort('originalTitle')
+  }).sort('-credits title')
 
   logger.info(`Sending term ${termCode} courses to ${ctx.state.user.rcs_id}`)
 

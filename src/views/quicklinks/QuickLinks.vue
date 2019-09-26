@@ -180,7 +180,7 @@
         />
         <b-input
           v-model="newLink.url"
-          type="url"
+          type="text"
           placeholder="URL"
           required
         />

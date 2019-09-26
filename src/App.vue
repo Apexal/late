@@ -210,6 +210,7 @@ export default {
     }
 
     if (this.loggedIn) {
+      this.$ga.set({ userRcsId: this.$store.start.auth.user.rcs_id })
       // Check if time to reupdate from SIS
       if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
         this.$router.push({ name: 'account', query: { importFromSIS: true } })
@@ -243,6 +244,32 @@ export default {
   width: 100%;
 }
 
+.header-title {
+  padding-bottom: 0px;
+  padding-left: 0px;
+  border-bottom-color: #dbdbdb;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+hgroup {
+  margin-bottom: 10px;
+}
+
+.header-description {
+  .instructions {
+    font-size: 1.2em;
+    .subtitle {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    li i {
+      width: 25px;
+      margin-right: 10px;
+    }
+  }
+}
+
 //Removes annoying outline around elements when clicked.
 // *:focus {
 //   outline: none;
@@ -265,6 +292,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  //Add background-color here for specifying dark mode
 }
 
 #content {
@@ -409,10 +437,6 @@ footer.footer {
       opacity: 1;
     }
   }
-}
-
-.fc-event i.fas {
-  margin-right: 4px;
 }
 
 .fc-content {

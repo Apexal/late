@@ -73,8 +73,11 @@
               v-for="l in course.links"
               :key="l"
               type="is-link"
+              class="course-link"
             >
-              <i class="fa fa-link" />
+              <span class="icon">
+                <i class="fa fa-link" />
+              </span>
               <a
                 :href="l"
                 target="_blank"
@@ -594,13 +597,15 @@ export default {
 }
 
 .course.box {
+
   .tags {
-    margin: 5px 0px 10px 0px;
+    margin: 0;
     .tag {
-      padding: 10px;
+      //padding: 10px;
       margin-bottom: 0;
     }
   }
+
   .edit-course {
     display: none;
     cursor: pointer;

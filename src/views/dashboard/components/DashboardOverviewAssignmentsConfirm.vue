@@ -27,19 +27,19 @@
         </router-link>
       </p>
 
-      <div class="confirm-buttons">
-        <b-button
-          size="is-small"
+      <div class="confirm-buttons buttons has-addons">
+        <a
+          class="button is-pulled-right"
           @click="confirmAssignment(a._id, true)"
         >
           Yes
-        </b-button>
-        <b-button
-          size="is-small"
+        </a>
+        <a
+          class="button is-pulled-right"
           @click="confirmAssignment(a._id, false)"
         >
           No
-        </b-button>
+        </a>
       </div>
       <hr>
     </div>
@@ -115,6 +115,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.assignments-confirm {
+  padding-right: 24px;
+  border-right: 1px solid white;
+}
+
 .assessment-link {
   text-decoration: none !important;
 }

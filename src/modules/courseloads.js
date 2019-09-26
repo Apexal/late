@@ -8,7 +8,7 @@ export default {
     } else if (weight < 15) {
       return this.weights[2]
     }
-    return this.weight[3]
+    return this.weights[3]
   },
   weights: [
     {
