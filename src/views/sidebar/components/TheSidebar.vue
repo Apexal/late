@@ -167,7 +167,7 @@ export default {
       return `${diff.hours()}h ${diff.minutes()}m left`
     },
     incompleteTodos () {
-      return this.$store.state.todos.filter(t => !t.completed)
+      return this.$store.state.todos.todos.filter(t => !t.completed)
     },
     allTodos () {
       return this.$store.state.todos.todos
