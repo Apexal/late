@@ -247,7 +247,7 @@
           <b-navbar-item
             v-if="user.admin"
             tag="router-link"
-            :to="{name: 'admin-student-list'}"
+            :to="{name: 'admin-student-list', params: {page: 1}}"
             title="View the administrator page"
           >
             <span class="icon">
