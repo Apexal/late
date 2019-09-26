@@ -74,7 +74,7 @@
         class="is-unselectable is-size-7"
         :todays-agenda="todaysAgenda"
         :pressing="pressingAssessments"
-        :todos="todos"
+        :todos="allTodos"
         @update-count="updatedCount"
       />
     </div>
@@ -86,7 +86,7 @@ import moment from 'moment'
 
 import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule'
 import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments'
-import SidebarTodoList from '@/views/sidebar/components/SidebarTodoList'
+import SidebarTodoList from '@/views/sidebar/components/todo/SidebarTodoList'
 import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList'
 
 export default {
@@ -135,7 +135,7 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
         courseList: this.courses.length,
-        todos: this.todos.length
+        todos: this.incompleteTodos.length
       }
     },
     currentTab () {
@@ -166,7 +166,10 @@ export default {
       )
       return `${diff.hours()}h ${diff.minutes()}m left`
     },
-    todos () {
+    incompleteTodos () {
+      return this.$store.state.todos.filter(t => !t.completed)
+    },
+    allTodos () {
       return this.$store.state.todos.todos
     }
   },
