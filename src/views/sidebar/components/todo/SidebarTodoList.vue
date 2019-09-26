@@ -112,26 +112,14 @@ export default {
      * @returns {[]} Array of all items in {@link this.todos} which are NOT completed
      */
     getIncompletedTodos () {
-      const incompletedTodos = []
-      for (let i = 0; i < this.todos.length; i++) {
-        if (!this.todos[i].completed) {
-          incompletedTodos.push(this.todos[i])
-        }
-      }
-      return incompletedTodos
+      return this.todos.filter(t => !t.completed)
     },
     /**
      * Get all of the todo list items that are completed
      * @returns {[]} Array of all items in {@link this.todos} which are completed
      */
     getCompletedTodos () {
-      const completedTodos = []
-      for (let i = 0; i < this.todos.length; i++) {
-        if (this.todos[i].completed) {
-          completedTodos.push(this.todos[i])
-        }
-      }
-      return completedTodos
+      return this.todos.filter(t => t.completed)
     },
     /**
      * Set the todo text value to the provided text

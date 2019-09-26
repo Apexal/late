@@ -167,13 +167,7 @@ export default {
       return `${diff.hours()}h ${diff.minutes()}m left`
     },
     incompleteTodos () {
-      const incompleteTodos = []
-      for (let i = 0; i < this.$store.state.todos.todos.length; i++) {
-        if (!this.$store.state.todos.todos[i].completed) {
-          incompleteTodos.push(this.$store.state.todos.todos[i])
-        }
-      }
-      return incompleteTodos
+      return this.$store.state.todos.filter(t => !t.completed)
     },
     allTodos () {
       return this.$store.state.todos.todos
