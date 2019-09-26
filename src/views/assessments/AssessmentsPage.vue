@@ -43,11 +43,13 @@
       :filter="filter"
       :show-show-completed="true"
       :show-completed="showCompleted"
+      :show-scheduled="showScheduled"
       :show-group-by="view === 'coursework-upcoming'"
       :group-by="groupBy"
       @toggle-filter="toggleFilter"
       @toggle-show-completed="showCompleted = !showCompleted"
       @change-group-by="groupBy = $event"
+      @toggle-show-scheduled="showScheduled = !showScheduled"
     />
 
     <transition
@@ -58,6 +60,7 @@
         class="child-view"
         :group-by="groupBy"
         :show-completed="showCompleted"
+        :show-scheduled="showScheduled"
         :filter="filter"
         @toggle-assignment="toggleAssignment"
       />
@@ -96,6 +99,7 @@ export default {
     return {
       groupBy: 'date',
       showCompleted: true,
+      showScheduled: true,
       filter: []
     }
   },
@@ -119,6 +123,15 @@ export default {
     },
     groupBy (newGroupBy) {
       localStorage.setItem('assessmentsGroupBy', newGroupBy)
+    },
+    showScheduled (nowShowing) {
+      localStorage.setItem('assignmentsShowScheduled', nowShowing)
+      this.$buefy.toast.open({
+        message:
+          (nowShowing ? 'Showing' : 'Hiding') + ' schedule warnings.',
+        type: 'is-info',
+        duration: 1000
+      })
     }
   },
   mounted () {
@@ -129,6 +142,15 @@ export default {
         )
       } catch (e) {
         localStorage.removeItem('assignmentsShowCompleted')
+      }
+    }
+    if (localStorage.getItem('assignmentsShowScheduled')) {
+      try {
+        this.showScheduled = JSON.parse(
+          localStorage.getItem('assignmentsShowScheduled')
+        )
+      } catch (e) {
+        localStorage.removeItem('assignmentsShowScheduled')
       }
     }
     if (localStorage.getItem('assessmentsGroupBy')) {
