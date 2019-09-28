@@ -155,7 +155,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
   // Must be used with each request
   const jar = await loginToSIS(RIN, PIN)
 
-  logger.info(`Getting courses for student ${RIN} from SIS.`)
+  logger.info(`Getting courses for student ${studentID} from SIS.`)
 
   // Submit schedule form choosing the right term
   const $ = await request({
@@ -301,7 +301,7 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
   // Must be used with each request
   const jar = await loginToSIS(RIN, PIN)
 
-  logger.info(`Getting course ${crn} for student ${RIN} from SIS.`)
+  logger.info(`Getting course ${crn} for a student from SIS.`)
 
   // Submit schedule form choosing the right term
   const $ = await request({
