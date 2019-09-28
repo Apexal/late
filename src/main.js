@@ -44,7 +44,7 @@ const ignoreErrors = [
 ]
 
 Sentry.init({
-  dsn: 'https://8dc02c8aff11495696641a303123f176@sentry.io/1548286',
+  dsn: process.env.NODE_ENV === 'production' ? 'https://8dc02c8aff11495696641a303123f176@sentry.io/1548286' : null,
   integrations: [new Integrations.Vue({ Vue, attachProps: true })]
   // beforeSend (event, hint) {
   //   const error = hint.originalException
