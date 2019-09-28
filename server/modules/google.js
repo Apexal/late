@@ -127,7 +127,6 @@ const actions = {
 
     for (let i = 0; i < courses.length; i++) {
       const course = courses[i]
-      const periodIDs = course.periods.map(p => p.id)
 
       if (course.periods.length === 0) continue
 
