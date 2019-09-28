@@ -119,7 +119,9 @@
               Calendar
             </b-navbar-item>
             <hr class="navbar-divider">
-            <b-navbar-item
+            <a
+              href="#"
+              class="navbar-item"
               title="Add a new assignment"
               @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
             >
@@ -127,8 +129,9 @@
                 <i class="fas fa-clipboard-check" />
               </span>
               Add Assignment
-            </b-navbar-item>
-            <b-navbar-item
+            </a>
+            <a
+              class="navbar-item"
               title="Add a new exam"
               @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
             >
@@ -136,7 +139,7 @@
                 <i class="fas fa-exclamation-triangle" />
               </span>
               Add Exam
-            </b-navbar-item>
+            </a>
           </b-navbar-dropdown>
         </template>
         <template v-else>
