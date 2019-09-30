@@ -176,7 +176,7 @@ export default {
 }
 
 ul {
-  list-style-type: circle;
+  list-style-type: none;
   margin-left: 20px;
 }
 
