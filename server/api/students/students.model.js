@@ -274,6 +274,10 @@ schema.methods.getCoursesForTerm = function (termCode) {
 /* VIRTUALS */
 // https://mongoosejs.com/docs/guide.html#virtuals
 
+schema.virtual('identifier').get(function () {
+  return `${this.admin ? 'Admin ' : ''}Student ${this.rcs_id} (${this._id})`
+})
+
 schema.virtual('fullName').get(function () {
   return (this.name.preferred || this.name.first) + (this.name.last ? (' ' + this.name.last) : '')
 })
