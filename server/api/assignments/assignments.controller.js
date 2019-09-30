@@ -85,7 +85,7 @@ async function getAssignments (ctx) {
     assignments = await ctx.state.user.getUserAssignments(ctx.query)
   } catch (e) {
     logger.error(
-      `Failed to send assignments to ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to send assignments to ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError(
       'There was an error getting your assignments.'
@@ -212,7 +212,7 @@ async function setAssignmentCollaborators (ctx) {
     logger.error(
       `Failed to save collaborators for assignment ${
         ctx.state.assignment._id
-      } for student ${ctx.state.user.rcs_id}: ${e}`
+      } for student ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError('There was an error saving the assignment.')
   }
@@ -387,7 +387,7 @@ async function createAssignment (ctx) {
     }
 
     logger.error(
-      `Failed to create new assignment for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to create new assignment for ${ctx.state.user.identifier}: ${e}`
     )
 
     return ctx.badRequest({

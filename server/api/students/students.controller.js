@@ -194,11 +194,11 @@ async function getStudent (ctx) {
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }
-  logger.info(`Getting student ${student.rcs_id} for ${ctx.state.user.rcs_id}`)
+  logger.info(`Getting student ${student.rcs_id} for ${ctx.state.user.identifier}`)
   const counts = {}
   if (ctx.query.counts) {
     // Also get stats
@@ -227,7 +227,7 @@ async function editStudent (ctx) {
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for admin ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for admin ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }
@@ -265,7 +265,7 @@ async function deleteStudent (ctx) {
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for admin ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for admin ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }

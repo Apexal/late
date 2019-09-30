@@ -78,14 +78,14 @@ async function submitSMS (ctx) {
     )
   } catch (e) {
     logger.error(
-      `Failed to send SMS verification code to ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to send SMS verification code to ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError(
       `Failed to send verification code to ${phoneNumber}.`
     )
   }
 
-  logger.info(`Sent SMS verification code to ${ctx.state.user.rcs_id}.`)
+  logger.info(`Sent SMS verification code to ${ctx.state.user.identifier}.`)
   ctx.ok(`Successfully sent SMS verification code to ${phoneNumber}.`)
 }
 
@@ -124,7 +124,7 @@ async function verifySMS (ctx) {
     await ctx.state.user.save()
   } catch (e) {
     logger.error(
-      `Failed to verify phone number of ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to verify phone number of ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error verifying your phone number.')
   }
@@ -146,11 +146,11 @@ async function disableSMS (ctx) {
   try {
     await ctx.state.user.save()
   } catch (e) {
-    logger.error(`Failed to disable SMS for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to disable SMS for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('Failed to disable SMS integration.')
   }
 
-  logger.info(`Disabled SMS integration for ${ctx.state.user.rcs_id}.`)
+  logger.info(`Disabled SMS integration for ${ctx.state.user.identifier}.`)
   ctx.ok({ updatedUser: ctx.state.user })
 }
 
@@ -179,7 +179,7 @@ async function saveNotificationPreferences (ctx) {
     )
   }
 
-  logger.info(`Updated notification preferences for ${ctx.state.user.rcs_id}.`)
+  logger.info(`Updated notification preferences for ${ctx.state.user.identifier}.`)
 
   ctx.ok({ updatedUser: ctx.state.user })
 }

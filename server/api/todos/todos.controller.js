@@ -41,11 +41,11 @@ async function createTodo (ctx) {
   try {
     await todo.save()
   } catch (e) {
-    logger.error(`Failed to save new todo for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to save new todo for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('There was an error adding the todo.')
   }
 
-  logger.info(`Added todo for ${ctx.state.user.rcs_id}`)
+  logger.info(`Added todo for ${ctx.state.user.identifier}`)
   return ctx.created({ createdTodo: todo })
 }
 
@@ -93,7 +93,7 @@ async function deleteTodo (ctx) {
 
   deletedTodo.remove()
 
-  logger.info(`Deleted todo for ${ctx.state.user.rcs_id}`)
+  logger.info(`Deleted todo for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedTodo })
 }
 

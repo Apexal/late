@@ -37,12 +37,12 @@ async function createAnnouncement (ctx) {
     await createdAnnouncement.save()
   } catch (e) {
     logger.error(
-      `Failed to save new announcement for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to save new announcement for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error adding the announcement.')
   }
 
-  logger.info(`Added announcement for ${ctx.state.user.rcs_id}`)
+  logger.info(`Added announcement for ${ctx.state.user.identifier}`)
   return ctx.created({ createdAnnouncement })
 }
 
@@ -66,12 +66,12 @@ async function editAnnouncement (ctx) {
     await updatedAnnouncement.save()
   } catch (e) {
     logger.error(
-      `Failed to save new announcement for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to save new announcement for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error editing the announcement.')
   }
 
-  logger.info(`Edited announcement for ${ctx.state.user.rcs_id}`)
+  logger.info(`Edited announcement for ${ctx.state.user.identifier}`)
   return ctx.ok({ updatedAnnouncement })
 }
 
@@ -94,7 +94,7 @@ async function deleteAnnouncement (ctx) {
 
   deletedAnnouncement.remove()
 
-  logger.info(`Deleted announcement for ${ctx.state.user.rcs_id}`)
+  logger.info(`Deleted announcement for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedAnnouncement })
 }
 
