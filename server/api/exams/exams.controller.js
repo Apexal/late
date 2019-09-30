@@ -54,7 +54,7 @@ async function getExams (ctx) {
   try {
     exams = await ctx.state.user.getExams(start, end, title, courseCRN)
   } catch (e) {
-    logger.error(`Failed to send exams to ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to send exams to ${ctx.state.user.identifier}: ${e}`)
     return ctx.internalServerError('There was an error loading your exams.')
   }
 
@@ -95,7 +95,7 @@ async function getTermExams (ctx) {
   }
 
   logger.info(
-    `Sending all exams for term ${termCode} to ${ctx.state.user.rcs_id}`
+    `Sending all exams for term ${termCode} to ${ctx.state.user.identifier}`
   )
 
   ctx.ok({
@@ -111,7 +111,7 @@ async function getTermExams (ctx) {
 async function getExam (ctx) {
   const examID = ctx.params.examID
 
-  logger.info(`Sending exam ${examID} to ${ctx.state.user.rcs_id}`)
+  logger.info(`Sending ${ctx.state.exam.identifier} to ${ctx.state.user.identifier}`)
 
   ctx.ok({
     exam: ctx.state.exam
@@ -159,7 +159,7 @@ async function createExam (ctx) {
     return ctx.badRequest(`Failed to add exam ${body.title}`)
   }
 
-  logger.info(`Added exam ${newExam._id} for ${ctx.state.user._id}`)
+  logger.info(`${ctx.state.user.identifier} added ${newExam.identifier}`)
   ctx.created({
     createdAssessent: newExam,
     createdExam: newExam
@@ -219,7 +219,7 @@ async function editExam (ctx) {
   }
 
   logger.info(
-    `Updated exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}.`
+    `${ctx.state.user.identifier} edited ${ctx.state.exam.identifier}`
   )
 
   ctx.ok({
@@ -247,7 +247,7 @@ async function deleteExam (ctx) {
   }
 
   logger.info(
-    `Deleted exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}`
+    `${ctx.state.user.identifier} deleted ${ctx.state.exam.identifier}`
   )
 
   ctx.ok({
@@ -284,6 +284,8 @@ async function addComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.')
   }
 
+  logger.info(`${ctx.state.user.identifier} addded a comment on ${ctx.state.exam.identifier}`)
+
   ctx.ok({
     updatedAssessment: ctx.state.exam,
     updatedExam: ctx.state.exam
@@ -313,6 +315,8 @@ async function deleteComment (ctx) {
     )
     return ctx.badRequest('There was an error adding the comment.')
   }
+
+  logger.info(`${ctx.state.user.identifier} deleted a comment on ${ctx.state.exam.identifier}`)
 
   ctx.ok({
     updatedAssessment: ctx.state.exam,

@@ -217,6 +217,8 @@ async function setAssignmentCollaborators (ctx) {
     return ctx.internalServerError('There was an error saving the assignment.')
   }
 
+  logger.info(`${ctx.state.user.identifier} updated collaborators for ${ctx.state.assignment.identifier}`)
+
   ctx.ok({
     updatedAssessment: ctx.state.assignment,
     updatedAssignment: ctx.state.assignment
@@ -237,7 +239,7 @@ async function getAssignmentCollaboratorInfo (ctx) {
 
   const assignmentID = ctx.params.assignmentID
   logger.info(
-    `Sending assignment ${assignmentID} collaborator info to ${
+    `Sending ${ctx.state.assignment.identifier} collaborator info to ${
       ctx.state.user.rcs_id
     }`
   )
@@ -394,9 +396,7 @@ async function createAssignment (ctx) {
   }
 
   logger.info(
-    `Created new assignment '${newAssignment.title}' for ${
-      ctx.state.user.rcs_id
-    }`
+    `${ctx.state.user.identifier} created new ${newAssignment.identifier}`
   )
 
   ctx.created({
@@ -472,9 +472,7 @@ async function editAssignment (ctx) {
   }
 
   logger.info(
-    `Updated assignment ${ctx.state.assignment._id} for ${
-      ctx.state.user.rcs_id
-    }.`
+    `${ctx.state.user.identifier} edited ${ctx.state.assignment.identifier}`
   )
 
   ctx.ok({
@@ -516,9 +514,9 @@ async function toggleAssignment (ctx) {
   }
 
   logger.info(
-    `Set assignment ${ctx.state.assignment._id} completion status to ${
+    `${ctx.state.user.identifier} set ${ctx.state.assignment.identifier} completion status to ${
       ctx.state.assignment.completed
-    } for ${ctx.state.user.rcs_id}.`
+    }`
   )
 
   ctx.ok({
@@ -560,9 +558,7 @@ async function deleteAssignment (ctx) {
   }
 
   logger.info(
-    `Deleted assignment ${ctx.state.assignment._id} for ${
-      ctx.state.user.rcs_id
-    }`
+    `${ctx.state.user.identifier} deleted ${ctx.state.assignment.identifier}`
   )
 
   let removedRecurringAssignments = []
@@ -622,6 +618,8 @@ async function addComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.')
   }
 
+  logger.info(`${ctx.state.user.identifier} added a comment on ${ctx.state.assignment.identifier}`)
+
   ctx.ok({
     updatedAssessment: ctx.state.assignment,
     updatedAssignment: ctx.state.assignment
@@ -676,6 +674,8 @@ async function deleteComment (ctx) {
     )
     return ctx.badRequest('There was an error adding the comment.')
   }
+
+  logger.info(`${ctx.state.user.identifier} deleted a comment on ${ctx.state.assignment.identifier}`)
 
   ctx.ok({
     updatedAssessment: ctx.state.assignment,

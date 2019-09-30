@@ -191,7 +191,6 @@ async function getStudent (ctx) {
   }
   const studentID = ctx.params.studentID
 
-  logger.info(`Getting student ${studentID} for ${ctx.state.user.rcs_id}`)
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
@@ -199,6 +198,7 @@ async function getStudent (ctx) {
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }
+  logger.info(`Getting student ${student.rcs_id} for ${ctx.state.user.rcs_id}`)
   const counts = {}
   if (ctx.query.counts) {
     // Also get stats
