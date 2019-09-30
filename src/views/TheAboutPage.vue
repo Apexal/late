@@ -67,7 +67,7 @@
           <h4 class="subtitle has-text-grey">
             Project Contributors
           </h4>
-          <ul>
+          <ul class="contrib-list">
             <li>
               <b-tag type="is-success">
                 Project Lead
@@ -176,7 +176,7 @@ export default {
 }
 
 ul {
-  list-style-type: circle;
+  list-style-type: none;
   margin-left: 20px;
 }
 
@@ -193,5 +193,9 @@ ul {
   overflow: hidden;
   max-width: 250px;
   flex: 1 1 auto;
+}
+
+.contrib-list {
+  margin-left: 0;
 }
 </style>
