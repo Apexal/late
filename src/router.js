@@ -131,6 +131,20 @@ const router = new Router({
       ]
     },
     {
+      path: '/study-groups',
+      component: () => import('@/views/studygroups/StudyGroups'),
+      children: [
+        {
+          path: '',
+          name: 'study-groups-home',
+          component: () => import('@/views/studygroups/StudyGroupsHome'),
+          meta: {
+            title: 'Study Groups'
+          }
+        }
+      ]
+    },
+    {
       path: '/checklist',
       name: 'checklist',
       component: () => import('@/views/checklists/MoveInChecklist.vue'),
