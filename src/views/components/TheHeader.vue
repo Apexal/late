@@ -235,8 +235,9 @@
             />
           </span>
         </a>
-
-        <b-navbar-dropdown v-if="loggedIn">
+        <b-navbar-dropdown
+          v-if="loggedIn"
+        >
           <template slot="label">
             <span class="icon">
               <i
@@ -345,6 +346,19 @@
             Log In
           </a>
         </b-navbar-item>
+        <label class="toggle">
+          <a class="navbar-item toggle-wrapper">
+
+            <input
+              type="checkbox"
+              :checked="(mode === 'dark' ? 'checked' : false)"
+              @change="toggleTheme"
+            >
+            <i class="fas fa-sun unchecked" />
+            <i class="fas fa-moon checked" />
+
+          </a>
+        </label>
       </template>
     </b-navbar>
   </header>
@@ -353,6 +367,12 @@
 <script>
 export default {
   name: 'TheHeader',
+  props: {
+    mode: {
+      type: String,
+      default: 'light'
+    }
+  },
   computed: {
     onlineUsers () {
       return this.$store.state.socketio.onlineUsers
@@ -386,12 +406,48 @@ export default {
       )
 
       this.$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', true)
+    },
+    toggleTheme () {
+      this.$parent.toggle()
     }
   }
 }
 </script>
 
 <style lang="scss">
+
+.toggle-wrapper {
+  padding: 0px;
+  margin-right: 10px;
+  height: 100%;
+  transition: 0.2s;
+  i { color: white!important; }
+}
+.toggle-wrapper:hover {
+  background-color: rgba(0,0,0,0)!important;
+  .checked {color: aqua!important;}
+  .unchecked {color: yellow!important;}
+  transition: 0.2s;
+}
+.toggle input[type="checkbox"],
+.toggle .checked {
+    display: none;
+}
+.toggle input[type="checkbox"]:checked ~ .checked
+{
+    display: inline-block;
+}
+
+.toggle input[type="checkbox"]:checked ~ .unchecked
+{
+    display: none;
+}
+
+.toggle i {
+  cursor: pointer;
+  font-size: 1.2em;
+  vertical-align: middle;
+}
 
 // .has-dropdown:hover .navbar-dropdown {
 //     animation: navAnimOpen 0.15s ease-in-out;
