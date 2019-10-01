@@ -20,7 +20,7 @@ const logger = require('./modules/logger')
 
 const Sentry = require('@sentry/node')
 Sentry.init({
-  dsn: 'https://8ee2afb35b1b4faab2e45b860ec36c38@sentry.io/1548265',
+  dsn: process.env.NODE_ENV === 'production' ? 'https://8ee2afb35b1b4faab2e45b860ec36c38@sentry.io/1548265' : null,
   environment: process.env.NODE_ENV
 })
 
