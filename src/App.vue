@@ -499,11 +499,13 @@ footer.footer {
   .has-background-light {
     background-color: #293038!important;
   }
+  //Links
+  a,b,p { color: white; }
   //Modals
   .modal-card {
     .modal-card-title { color: white; }
     .modal-card-head,.modal-card-foot { background-color: #293038!important; }
-    .modal-card-body {
+    .modal-card-body,.modal-content {
       background-color: #232931!important;
       strong {
         color: white;
@@ -612,14 +614,14 @@ footer.footer {
     }
   }
 
-  //Tiles
-  .tile .is-child {
+  //Tiles and cards
+  .tile .is-child,.box,.card {
     transition: 0.1s;
     background-color: #3b4552;
     color: white;
   }
-  //Tags
-  .tag { background-color: #5f6a77; }
+  //Tags & Block quotes
+  .tag,.blockquote { background-color: #5f6a77; }
 
   //Color overrides
   .is-success {
