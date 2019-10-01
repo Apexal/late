@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import * as Sentry from '@sentry/browser'
 import moment from 'moment'
 
 import TheHeader from '@/views/components/TheHeader'
@@ -210,12 +211,17 @@ export default {
     }
 
     if (this.loggedIn) {
-      this.$ga.set({ userRcsId: this.$store.start.auth.user.rcs_id })
+      this.$ga.set({ userId: this.$store.start.auth.user._id })
       // Check if time to reupdate from SIS
       if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
         this.$router.push({ name: 'account', query: { importFromSIS: true } })
       }
+
+      Sentry.configureScope(function (scope) {
+        scope.setUser({ 'username': this.user.rcs_id })
+      })
     }
+
     const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
     console.log(this.sistext)
     console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px')

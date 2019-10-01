@@ -119,7 +119,9 @@
               Calendar
             </b-navbar-item>
             <hr class="navbar-divider">
-            <b-navbar-item
+            <a
+              href="#"
+              class="navbar-item"
               title="Add a new assignment"
               @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
             >
@@ -127,8 +129,9 @@
                 <i class="fas fa-clipboard-check" />
               </span>
               Add Assignment
-            </b-navbar-item>
-            <b-navbar-item
+            </a>
+            <a
+              class="navbar-item"
               title="Add a new exam"
               @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
             >
@@ -136,7 +139,7 @@
                 <i class="fas fa-exclamation-triangle" />
               </span>
               Add Exam
-            </b-navbar-item>
+            </a>
           </b-navbar-dropdown>
         </template>
         <template v-else>
@@ -218,6 +221,7 @@
           <b-tag type="is-primary">{{ onlineUsers.length }} online</b-tag>
         </a>
         <a
+          v-if="loggedIn"
           class="navbar-item announcement-icon is-hidden-touch"
           :title="announcementsCount + ' new announcements'"
           @click="openAnnouncementsModal"
@@ -433,6 +437,10 @@ export default {
 }
 
 #header {
+  .announcement-icon:hover {
+    background-color: initial;
+  }
+
   .announcement-bell-icon.new-announcements {
     animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     animation-iteration-count: infinite;
@@ -501,10 +509,6 @@ export default {
 //       margin-right: 1px;
 //       margin-left: 1px;
 //     }
-//   }
-
-//   .announcement-icon {
-//     padding: 0.5rem 0.2rem;
 //   }
 
 // }
