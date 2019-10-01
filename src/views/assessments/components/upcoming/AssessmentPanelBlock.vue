@@ -44,6 +44,7 @@
         />
       </router-link>
       <span
+        v-if="showScheduled"
         class="is-tooltip-left icon has-text-danger is-pulled-right"
         :class="{
           tooltip:
@@ -84,6 +85,10 @@ export default {
     assessment: {
       type: Object,
       required: true
+    },
+    showScheduled: {
+      type: Boolean,
+      required: false
     }
   },
   computed: {

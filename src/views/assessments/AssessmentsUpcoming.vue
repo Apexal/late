@@ -53,6 +53,7 @@
             v-for="a in assessments"
             :key="a._id"
             :group-by="groupBy"
+            :show-scheduled="showScheduled"
             :assessment="a"
             @toggle-assignment="$emit('toggle-assignment', arguments[0])"
           />
@@ -102,6 +103,10 @@ export default {
     filter: {
       type: Array,
       default: () => []
+    },
+    showScheduled: {
+      type: Boolean,
+      required: false
     }
   },
   data () {

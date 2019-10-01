@@ -135,6 +135,10 @@ async function googleAuth (ctx) {
       })
 
       ctx.state.user.integrations.google.calendarID = request.data.id
+
+      const termCode = ctx.session.currentTerm.code
+      const courses = await ctx.state.user.getCoursesForTerm(termCode)
+      await google.actions.createRecurringEventsFromCourseSchedule(googleAuth, request.data.id, termCode, courses)
     } catch (e) {
       logger.error(
         `Failed to create new calendar for ${ctx.state.user.rcs_id}: ${e}`
