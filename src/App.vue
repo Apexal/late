@@ -232,6 +232,10 @@ export default {
         scope.setUser({ 'username': this.user.rcs_id })
       })
     }
+    // If we have a mode stored, load it
+    if (localStorage.mode) {
+      this.mode = localStorage.mode
+    }
 
     const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
     console.log(this.sistext)
@@ -242,11 +246,13 @@ export default {
       this.$store.dispatch('MARK_TOUR_SEEN', this.tour)
       this.$store.commit('SET_TOUR_INDEX', -1)
     },
+    // Toggle between dark and light mode
     toggle () {
       if (this.mode === 'dark') {
-        this.mode = 'light'
+        // Set and store mode.
+        this.mode = localStorage.mode = 'light'
       } else {
-        this.mode = 'dark'
+        this.mode = localStorage.mode = 'dark'
       }
     }
   }
