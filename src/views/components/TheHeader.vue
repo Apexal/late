@@ -346,7 +346,10 @@
             Log In
           </a>
         </b-navbar-item>
-        <label class="toggle">
+        <label
+          v-if="loggedIn"
+          class="toggle"
+        >
           <a class="navbar-item toggle-wrapper">
 
             <input

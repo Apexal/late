@@ -152,15 +152,20 @@
   //Tags & Block quotes
   .tag,.blockquote { background-color: #5f6a77; }
 
+  //Promo page
+  .desc-container p,.desc-container b{
+    color: black;
+  }
+
   //Color overrides
   .is-success {
-    background-color:hsl(141, 42%, 44%);
+    background-color:#61ad7b;
   }
   .is-info {
-    background-color: hsl(204, 55%, 38%);
+    background-color: #55a1a7;
   }
   .is-warning {
-    background-color: hsl(71, 34%, 49%);
+    background-color: #bf8e64;
   }
   .is-danger {
     background-color: hsl(348, 52%, 35%);

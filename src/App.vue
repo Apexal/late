@@ -233,7 +233,7 @@ export default {
       })
     }
     // If we have a mode stored, load it
-    if (localStorage.mode) {
+    if (localStorage.mode && this.loggedIn) {
       this.mode = localStorage.mode
     }
 
@@ -251,8 +251,18 @@ export default {
       if (this.mode === 'dark') {
         // Set and store mode.
         this.mode = localStorage.mode = 'light'
+        return this.$buefy.toast.open({
+          message: 'Now using light theme',
+          type: 'is-info',
+          duration: 3000
+        })
       } else {
         this.mode = localStorage.mode = 'dark'
+        return this.$buefy.toast.open({
+          message: 'Now using dark theme',
+          type: 'is-info',
+          duration: 3000
+        })
       }
     }
   }
