@@ -136,11 +136,25 @@ const router = new Router({
       children: [
         {
           path: '',
+          redirect: 'home'
+        },
+        {
+          path: 'home',
           name: 'study-groups-home',
           component: () => import('@/views/studygroups/StudyGroupsHome'),
           meta: {
             title: 'Study Groups'
           }
+        },
+        {
+          path: 'create',
+          name: 'study-groups-create',
+          component: () => import('@/views/studygroups/StudyGroupsCreate')
+        },
+        {
+          path: 'join',
+          name: 'study-groups-join',
+          component: () => import('@/views/studygroups/StudyGroupsJoin')
         }
       ]
     },

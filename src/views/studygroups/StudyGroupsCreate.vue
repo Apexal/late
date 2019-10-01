@@ -1,11 +1,11 @@
 <template>
-  <div class="study-groups-home">
-    <p>Home</p>
+  <div class="study-groups-create">
+    <p>Create</p>
   </div>
 </template>
 <script>
 export default {
-  name: 'StudyGroupsHome'
+  name: 'StudyGroupsCreate'
 }
 </script>
 <style>
