@@ -230,10 +230,6 @@ export default {
     border: 1px solid #2e3b59 !important;
   }
 
-  .panel * {
-    transition: 0.15s;
-  }
-
   .sidebar-body {
     overflow-x: hidden;
     overflow-y: auto;
