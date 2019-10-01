@@ -70,8 +70,9 @@
       border-color: #3b4552;
     }
   }
-  .fc-today:not(.fc-widget-content):not(.fc-widget-header) {
+  .fc-today:not(.fc-widget-header),.fc-today:not(.fc-widget-header) span,.fc-week-number {
     background-color: #3b4552!important;
+    color: white!important;
   }
 
   //HEADER
@@ -86,9 +87,15 @@
     }
     //Mobile
     @media screen and (max-width: 1023px) {
-      .navbar-menu {
-        background-color: #293038;
+      .navbar-menu, .navbar-dropdown .is-active {
+        background-color: #293038!important;
+        color: white;
       }
+      .navbar-item:hover,.is-active:hover,.navbar-link:hover {
+        background-color: #3b4552;
+        color: white;
+      }
+      
     }
   }
 
@@ -121,6 +128,7 @@
       }
       a.is-active {
         color: #4066a3;
+        border-bottom: 1px solid rgb(255, 255, 255);
       }
       a:hover {
         border-bottom: 1px solid rgb(255, 255, 255);
