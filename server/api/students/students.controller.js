@@ -25,10 +25,12 @@ async function loginAs (ctx) {
   let student = await Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec()
+
   if (!student) {
     student = Student({
       rcs_id: ctx.session.cas_user,
-      lastLogin: new Date()
+      lastLogin: new Date(),
+      admin: true // Users on the dev server will only be admins
     })
     await student.save()
     logger.info('Created new user for testing.')
