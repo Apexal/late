@@ -11,6 +11,9 @@
   .has-background-light {
     background-color: #293038!important;
   }
+  h3 {
+    color:rgb(161, 161, 161);
+  }
 
   //Links
   a,b,p { color: white; }
@@ -52,17 +55,20 @@
     }
   }
   //Inputs
-  .input,select {
-    color: white;
-    background-color: #3b4552;
+  .input,select,input {
+    color: white!important;
+    background-color: #3b4552!important;
+    border: 1px solid #3b4552;
   }
   *::placeholder {
     border-color: #3b4552;
     color: white;
   }
   //Tables & Calendar
-  table {
-    thead *,tbody {
+  table,.table {
+    background-color: #232931;
+    color: #a1a1a1;
+    thead *{
       color: white;
       background-color: #232931;
     }
@@ -144,17 +150,22 @@
   }
 
   //Tiles and cards
-  .tile .is-child,.box,.card {
+  .tile .is-child,.box,.card,.panel-block {
     transition: 0.1s;
     background-color: #3b4552;
     color: white;
   }
   //Tags & Block quotes
-  .tag,.blockquote { background-color: #5f6a77; }
+  .tag,.blockquote,blockquote { background-color: #5f6a77; }
 
   //Promo page
   .desc-container p,.desc-container b{
     color: black;
+  }
+
+  //Assignments
+  .pad {
+    background-color: rgba(0,0,0,0)!important;
   }
 
   //Color overrides
@@ -169,6 +180,9 @@
   }
   .is-danger {
     background-color: hsl(348, 52%, 35%);
+  }
+  .has-text-grey {
+    color: white!important;
   }
 
 }
