@@ -68,7 +68,7 @@ async function updateQuickLink (ctx) {
   Object.assign(updatedQuickLink, ctx.request.body)
   await updatedQuickLink.save()
 
-  logger.info(`Updated quick link for ${ctx.state.user.rcs_id}`)
+  logger.info(`Updated quick link for ${ctx.state.user.identifier}`)
 
   return ctx.ok({ updatedQuickLink })
 }
@@ -89,7 +89,7 @@ async function deleteQuickLink (ctx) {
 
   deletedQuickLink.remove()
 
-  logger.info(`Deleted quick link for ${ctx.state.user.rcs_id}`)
+  logger.info(`Deleted quick link for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedQuickLink })
 }
 

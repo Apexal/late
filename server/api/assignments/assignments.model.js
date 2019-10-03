@@ -72,6 +72,10 @@ const schema = new Schema(
 schema.set('toObject', { getters: true, virtuals: true })
 schema.set('toJSON', { getters: true, virtuals: true })
 
+schema.virtual('identifier').get(function () {
+  return `${this.shared ? 'Shared ' : ''}Assignment '${this.title}' (${this._id})`
+})
+
 schema.virtual('assessmentType').get(function () {
   return 'assignment'
 })

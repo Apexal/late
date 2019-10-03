@@ -13,11 +13,11 @@ async function getStudentChecklist (ctx) {
       _student: ctx.state.user._id
     })
   } catch (e) {
-    logger.error(`Failed to get checklist for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to get checklist for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('Could not find the checklist!')
   }
 
-  logger.info(`Sending checklist to ${ctx.state.user.rcs_id}`)
+  logger.info(`Sending checklist to ${ctx.state.user.identifier}`)
 
   ctx.ok({
     checklist
@@ -59,7 +59,7 @@ async function createOrUpdateChecklist (ctx) {
       _student: ctx.state.user._id
     })
   } catch (e) {
-    logger.error(`Failed to get checklist for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to get checklist for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('There was an error getting the checklist!')
   }
 
@@ -83,12 +83,12 @@ async function createOrUpdateChecklist (ctx) {
     await checklist.save()
   } catch (e) {
     logger.error(
-      `Failed to update checklist for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to update checklist for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError('Failed to update the checklist!')
   }
 
-  logger.info(`Saved checklist ${checklist._id} for ${ctx.state.user.rcs_id}`)
+  logger.info(`Saved checklist ${checklist._id} for ${ctx.state.user.identifier}`)
 
   return ctx.ok({
     updatedChecklist: checklist

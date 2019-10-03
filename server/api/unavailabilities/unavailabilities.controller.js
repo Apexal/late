@@ -53,7 +53,7 @@ async function createUnavailability (ctx) {
     return ctx.badRequest('There was an error adding the unavailability.')
   }
 
-  logger.info(`Added unavailability block for ${ctx.state.user.rcs_id}`)
+  logger.info(`Added unavailability block for ${ctx.state.user.identifier}`)
   return ctx.created({
     updatedUser: ctx.state.user,
     createdUnavailability: unavailability
@@ -84,12 +84,12 @@ async function updateUnavailability (ctx) {
     await updatedUnavailability.save()
   } catch (e) {
     logger.error(
-      `Failed to update unavailability block for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to update unavailability block for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error updating your unavailability.')
   }
 
-  logger.info(`Updated unavailability block for ${ctx.state.user.rcs_id}`)
+  logger.info(`Updated unavailability block for ${ctx.state.user.identifier}`)
   return ctx.ok({ updatedUnavailability })
 }
 
@@ -108,7 +108,7 @@ async function removeUnavailability (ctx) {
 
   deletedUnavailability.remove()
 
-  logger.info(`Deleted unavailability block for ${ctx.state.user.rcs_id}`)
+  logger.info(`Deleted unavailability block for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedUnavailability })
 }
 
