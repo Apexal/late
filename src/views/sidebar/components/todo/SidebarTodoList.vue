@@ -225,6 +225,7 @@ export default {
   .todo-time {
     position: relative;
     right: -13px;
+    padding: 10px;
   }
 
   &:hover {
