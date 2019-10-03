@@ -12,6 +12,7 @@
         <tr
           v-for="reminder in reminders"
           :key="reminder._id"
+          :class="{'has-text-grey': hasPassed(reminder)}"
           class="reminder"
         >
           <td class="reminder-integration">
@@ -20,7 +21,13 @@
           <td class="reminder-count">
             {{ reminder.count }} {{ reminder.unit }} before
           </td>
-          <td><i class="fas fa-times has-text-danger" /></td>
+          <td>
+            <i
+              v-if="!hasPassed(reminder)"
+              class="fas fa-times has-text-danger"
+              @click="removeReminder(reminder)"
+            />
+          </td>
         </tr>
       </tbody>
     </table>
@@ -72,6 +79,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'AssessmentOverviewReminders',
   props: {
@@ -84,11 +93,13 @@ export default {
     return {
       reminders: [
         {
+          _id: '98acbe989',
           integration: 'email',
           count: 7,
           unit: 'days'
         },
         {
+          _id: '423jsajdj34s',
           integration: 'sms',
           count: 2,
           unit: 'hours'
@@ -110,19 +121,34 @@ export default {
     }
   },
   methods: {
+    hasPassed (reminder) {
+      const when = moment(this.assessment.date).subtract(reminder.count, reminder.unit)
+      return when.isBefore(Date.now())
+    },
+    removeReminder (reminder) {
+      if (this.hasPassed(reminder)) {
+        return
+      }
+
+      // API
+      this.reminders = this.reminders.filter(r => r._id !== reminder._id)
+    },
     addReminder () {
       // Check if count fits with unit
       if (this.count > this.countMax) {
         return
       }
 
-      // Push update to server
-      this.reminders.push(this.newReminder)
-      this.newReminder = {
-        integration: 'email',
-        count: 7,
-        unit: 'days'
+      if (this.hasPassed(this.newReminder)) {
+        return
       }
+
+      if (this.reminders.find(r => r.count === this.newReminder.count && r.unit === this.newReminder.unit)) {
+        return
+      }
+
+      // Push update to server
+      this.reminders.push({ ...this.newReminder, _id: Math.random() }) // yes I know. this is for testing.
     }
   }
 }
