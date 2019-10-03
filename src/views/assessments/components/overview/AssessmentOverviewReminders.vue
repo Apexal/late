@@ -30,9 +30,17 @@
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <i class="has-text-grey">
+          You can add <b>{{ 4 - reminders.length }}</b> more reminders.
+        </i>
+      </tfoot>
     </table>
 
-    <form @submit.prevent="addReminder">
+    <form
+      v-if="reminders.length < 4"
+      @submit.prevent="addReminder"
+    >
       <b-field>
         <b-select
           v-model="newReminder.integration"
@@ -135,6 +143,10 @@ export default {
     },
     addReminder () {
       // Check if count fits with unit
+      if (this.reminders.length >= 4) {
+        return
+      }
+
       if (this.count > this.countMax) {
         return
       }
