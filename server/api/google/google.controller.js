@@ -42,7 +42,7 @@ async function listCalendars (ctx) {
     request = await calendar.calendarList.list(ctx.request.query)
   } catch (e) {
     logger.error(
-      `Failed to get GCal calendar list for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to get GCal calendar list for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError(
       'There was an error getting your calendars from Google!'
