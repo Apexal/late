@@ -64,7 +64,12 @@ const schema = new Schema(
     confirmed: {
       type: Boolean,
       default: false
-    }
+    },
+    reminders: [{
+      integration: { type: String, enum: ['discord', 'sms', 'email'], required: true },
+      count: { type: Number, min: 1, max: 100, required: true },
+      unit: { type: String, enum: ['days', 'hours'], required: true }
+    }]
   },
   { timestamps: true }
 )
