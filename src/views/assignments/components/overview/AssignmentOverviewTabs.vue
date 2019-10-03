@@ -94,6 +94,19 @@
             <span>Related</span>
           </a>
         </li>
+
+        <li
+          class="reminders"
+          :class="{'is-active': tab === 'reminders'}"
+          @click="$emit('set-tab', 'reminders')"
+        >
+          <a>
+            <span class="icon is-small">
+              <i class="fas fa-bell" />
+            </span>
+            <span>Reminders</span>
+          </a>
+        </li>
       </ul>
     </div>
 
@@ -114,6 +127,7 @@ import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overv
 import AssessmentOverviewRelated from '@/views/assessments/components/overview/AssessmentOverviewRelated'
 import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo'
 import AssessmentOverviewWhiteboard from '@/views/assessments/components/overview/AssessmentOverviewWhiteboard'
+import AssessmentOverviewReminders from '@/views/assessments/components/overview/AssessmentOverviewReminders'
 
 export default {
   name: 'AssignmentOverviewTabs',
@@ -122,7 +136,8 @@ export default {
     AssessmentOverviewWorkSchedule,
     AssessmentOverviewRelated,
     AssignmentOverviewTabsSharedInfo,
-    AssessmentOverviewWhiteboard
+    AssessmentOverviewWhiteboard,
+    AssessmentOverviewReminders
   },
   props: {
     tab: {
@@ -169,7 +184,8 @@ export default {
         schedule: 'AssessmentOverviewWorkSchedule',
         related: 'AssessmentOverviewRelated',
         'shared-info': 'AssignmentOverviewTabsSharedInfo',
-        whiteboard: 'AssessmentOverviewWhiteboard'
+        whiteboard: 'AssessmentOverviewWhiteboard',
+        reminders: 'AssessmentOverviewReminders'
       }[this.tab]
     }
   },
