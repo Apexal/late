@@ -65,16 +65,19 @@ async function updateTodo (ctx) {
     _student: ctx.state.user._id
   })
 
-  if (todo) {
-    if (typeof text === 'string') {
-      todo.text = text
-    }
-    if (typeof completed === 'number' || completed === null) {
-      todo.completed = completed
-    }
-
-    todo.save()
+  if (!todo) {
+    return ctx.notFound('No todo item could be found that matches this criteria.')
   }
+
+  if (typeof text === 'string') {
+    todo.text = text
+  }
+  if (typeof completed === 'number' || completed === null) {
+    todo.completed = completed
+  }
+
+  todo.save()
+
   ctx.ok({ todo })
 }
 
@@ -90,6 +93,10 @@ async function deleteTodo (ctx) {
     _id: todoID,
     _student: ctx.state.user._id
   })
+
+  if (!deletedTodo) {
+    return ctx.notFound('No todo item could be found that matches this criteria.')
+  }
 
   deletedTodo.remove()
 

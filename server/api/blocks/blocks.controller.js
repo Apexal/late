@@ -130,7 +130,7 @@ async function editWorkBlock (ctx) {
 
   if (!editedBlock) {
     logger.error(`Could not find work block ${blockID} for ${ctx.state.user.identifier} to edit`)
-    return ctx.notFound(`Could'nt find work block to edit!`)
+    return ctx.notFound(`Couldn't find work block to edit!`)
   }
 
   editedBlock.set(ctx.request.body)

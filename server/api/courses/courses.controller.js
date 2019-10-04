@@ -43,6 +43,10 @@ async function updateCourse (ctx) {
       _student: ctx.state.user._id
     })
 
+    if (!course) {
+      return ctx.notFound('A course that matches this criteria could not be found.')
+    }
+
     const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle']
     if (forbiddenProperties.some(prop => prop in forbiddenProperties)) {
       throw new Error(
