@@ -153,7 +153,7 @@ export default {
     }
   },
   watch: {
-    assessment () {
+    assessment (newAssessment) {
       this.editing = false
     },
     editing (newEditing) {

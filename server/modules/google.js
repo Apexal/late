@@ -80,7 +80,7 @@ const actions = {
       }
     })
 
-    logger.info(`Added GCal event for ${user.rcs_id}.`)
+    logger.info(`Added GCal event for ${user.identifier}.`)
     return request.data
   },
   async patchEventFromWorkBlock (googleAuth, user, blockID, updates) {
@@ -107,7 +107,7 @@ const actions = {
       eventId: blockID
     })
 
-    logger.info(`Deleted work block GCal event for ${ctx.state.user.rcs_id}.`)
+    logger.info(`Deleted work block GCal event for ${ctx.state.user.identifier}.`)
 
     return request.data
   },
