@@ -2,7 +2,7 @@
 <template>
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">
-      A
+      A<span v-if="needsAdditionalN">n</span>
       <span
         class="has-text-grey"
         @click="changeAdjective"
@@ -76,12 +76,20 @@ export default {
   name: 'TheFooter',
   data () {
     return {
-      randomAdjective: adjectives[Math.floor(Math.random() * adjectives.length)]
+      randomAdjective: adjectives[Math.floor(Math.random() * adjectives.length)],
+      needsAdditionalN: false,
+      vowels: ["a", "e", "i", "o", "u"]
     }
   },
   methods: {
     changeAdjective () {
       this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+      this.needsAdditionalN = false;
+      for (index = 0; index < this.vowels.length; index++) {
+        if (this.randomAdjective[0] === this.vowels[index] || this.randomAdjective === "honest") {
+          this.needsAdditionalN = true
+        }
+      }
     }
   }
 }
