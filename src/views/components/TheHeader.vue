@@ -39,6 +39,22 @@
               />
             </span>
           </a>
+          <label
+            v-if="loggedIn"
+            class="toggle is-hidden-desktop"
+          >
+            <a class="navbar-item toggle-wrapper">
+
+              <input
+                type="checkbox"
+                :checked="(mode === 'dark' ? 'checked' : false)"
+                @change="toggleTheme"
+              >
+              <i class="fas fa-sun unchecked" />
+              <i class="fas fa-moon checked" />
+
+            </a>
+          </label>
         </template>
       </template>
 
@@ -348,7 +364,7 @@
         </b-navbar-item>
         <label
           v-if="loggedIn"
-          class="toggle"
+          class="toggle is-hidden-touch"
         >
           <a class="navbar-item toggle-wrapper">
 
