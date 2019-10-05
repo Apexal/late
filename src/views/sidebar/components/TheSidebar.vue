@@ -77,6 +77,7 @@
         :todos="allTodos"
         @update-count="updatedCount"
       />
+      <Poll />
     </div>
   </aside>
 </template>
@@ -88,6 +89,7 @@ import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule'
 import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments'
 import SidebarTodoList from '@/views/sidebar/components/todo/SidebarTodoList'
 import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList'
+import Poll from '@/views/polls/Poll'
 
 export default {
   name: 'TheSidebar',
@@ -95,8 +97,8 @@ export default {
     SidebarPressingAssessments,
     SidebarSchedule,
     SidebarTodoList,
-    SidebarCourseList
-
+    SidebarCourseList,
+    Poll
   },
   data () {
     return {

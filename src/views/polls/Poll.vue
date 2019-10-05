@@ -18,12 +18,12 @@ export default {
   data () {
     return {
       options: {
-        question: 'What\'s your favourite <strong>JS</strong> framework?',
+        question: 'How are you?',
         answers: [
-          { value: 1, text: 'Vue', votes: 53 },
-          { value: 2, text: 'React', votes: 35 },
-          { value: 3, text: 'Angular', votes: 30 },
-          { value: 4, text: 'Other', votes: 10 }
+          { value: 1, text: 'Good', votes: 0 },
+          { value: 2, text: 'Bad', votes: 0 },
+          { value: 3, text: 'Not good', votes: 0 },
+          { value: 4, text: 'Super bad', votes: 0 }
         ]
       }
     }
@@ -35,3 +35,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .vue-poll {
+    font-family: Avenir,Helvetica,Arial,sans-serif;
+    color: #2c3e50;
+  }
+
+  .qst {
+    padding-top: 1em;
+  }
+</style>
