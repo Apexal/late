@@ -84,8 +84,8 @@ export default {
   methods: {
     changeAdjective () {
       this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
-      this.needsAdditionalN = false;
-      for (index = 0; index < this.vowels.length; index++) {
+      this.needsAdditionalN = false
+      for (let index = 0; index < this.vowels.length; index++) {
         if (this.randomAdjective[0] === this.vowels[index] || this.randomAdjective === "honest") {
           this.needsAdditionalN = true
         }
