@@ -39,6 +39,13 @@
         >
           <a>Fun</a>
         </router-link>
+
+        <router-link
+          :to="{name: 'admin-poll'}"
+          tag="li"
+        >
+          <a>Polls</a>
+        </router-link>
       </ul>
     </div>
 

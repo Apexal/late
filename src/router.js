@@ -395,6 +395,14 @@ const router = new Router({
             title: 'Admin Fun'
           },
           component: () => import('@/views/admin/components/AdminFun.vue')
+        },
+        {
+          path: 'poll',
+          name: 'admin-poll',
+          meta: {
+            title: 'Admin Poll'
+          },
+          component: () => import('@/views/admin/components/AdminPoll.vue')
         }
       ]
     },
