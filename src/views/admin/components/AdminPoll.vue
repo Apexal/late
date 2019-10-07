@@ -24,7 +24,7 @@
                   placeholder="Answer"
                   type="text"
                   expanded
-                  @keyup.enter="addAnswer()"
+                  @keyup.enter.native="addAnswer"
                 />
                 <button
                   class="button"
@@ -33,18 +33,27 @@
                   Add Answer
                 </button>
               </b-field>
-              <b-field>
+              <b-field class="answer_list">
                 <ul>
-                  <template v-for="answer in Answers">
+                  <template
+                    v-for="answer in Answers"
+                  >
                     <li
                       :key="answer"
                       class="answer"
+                      @click="removeAnswer(answer)"
                     >
-                      {{ answer }}
+                      • {{ answer }}
                     </li>
                   </template>
                 </ul>
               </b-field>
+              <button
+                class="button"
+                @click="createPoll"
+              >
+                Submit Poll
+              </button>
             </p>
           </div>
         </div>
@@ -66,14 +75,26 @@ export default {
   methods: {
     addAnswer () {
       this.Answers.push(this.CurrentAnswer)
+      this.CurrentAnswer = '' // clear answer input box
+    },
+    removeAnswer (answer) {
+      this.Answers = this.Answers.filter(e => e !== answer)
+    },
+    createPoll () {
+
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .answer {
+    padding-left: 1em;
+    font-size: 20px;
+  }
   .answer:hover {
     text-decoration: line-through;
+    font-weight: bold;
     color: red;
   }
 </style>
