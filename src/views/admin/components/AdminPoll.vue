@@ -11,24 +11,40 @@
           </p>
           <div class="panel-block">
             <p class="control">
-              <input
+              <b-input
                 v-model="Question"
+                style="margin-bottom: 10px"
                 placeholder="Question"
-                class="input"
                 type="text"
-              >
-              <input
-                v-model="Answers[AnswerCount]"
-                placeholder="Answer"
-                class="input"
-                type="text"
-              >
-              <button
-                class="button"
-                @click="addAnswer"
-              >
-                Add Answer
-              </button>
+                class=""
+              />
+              <b-field grouped>
+                <b-input
+                  v-model="CurrentAnswer"
+                  placeholder="Answer"
+                  type="text"
+                  expanded
+                  @keyup.enter="addAnswer()"
+                />
+                <button
+                  class="button"
+                  @click="addAnswer"
+                >
+                  Add Answer
+                </button>
+              </b-field>
+              <b-field>
+                <ul>
+                  <template v-for="answer in Answers">
+                    <li
+                      :key="answer"
+                      class="answer"
+                    >
+                      {{ answer }}
+                    </li>
+                  </template>
+                </ul>
+              </b-field>
             </p>
           </div>
         </div>
@@ -43,21 +59,21 @@ export default {
   data () {
     return {
       Question: '',
-      AnswerCount: 0,
+      CurrentAnswer: '',
       Answers: []
     }
   },
   methods: {
     addAnswer () {
-      let a = this.Answers[this.AnswerCount]
-      if (a.length > 0) {
-        console.log(a, this.AnswerCount)
-        this.AnswerCount++
-      }
+      this.Answers.push(this.CurrentAnswer)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .answer:hover {
+    text-decoration: line-through;
+    color: red;
+  }
 </style>
