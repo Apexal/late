@@ -2,9 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const schema = new Schema({
-  id: Number,
-  question: String,
-  answers: [{ text: String, votes: Number }]
+  options: {
+    question: String,
+    answers: [{ value: Number, text: String, votes: Number }],
+    endTime: Date
+  }
 })
 
 module.exports = mongoose.model('Poll', schema)

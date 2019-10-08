@@ -20,9 +20,7 @@ export default {
       options: {
         question: '',
         answers: []
-      },
-      currentID: 0,
-      UID: 0
+      }
     }
   },
   methods: {
@@ -33,8 +31,7 @@ export default {
       this.options.question = title
     },
     addAnswer (answer) {
-      this.options.answers.push({ value: this.currentID, text: answer, votes: 0 })
-      this.currentID++
+      this.options.answers.push(answer)
     },
     removeAnswer (answer) {
       this.options.answers =
@@ -51,6 +48,7 @@ export default {
   }
 
   .qst {
+    font-size: 1.3em;
     padding-top: 1em;
   }
 </style>

@@ -12,7 +12,7 @@
           <div class="panel-block">
             <p class="control">
               <b-input
-                v-model="Question"
+                v-model="options.question"
                 style="margin-bottom: 10px"
                 placeholder="Question"
                 type="text"
@@ -20,7 +20,7 @@
               />
               <b-field grouped>
                 <b-input
-                  v-model="CurrentAnswer"
+                  v-model="options.currentAnswer"
                   placeholder="Answer"
                   type="text"
                   expanded
@@ -36,7 +36,7 @@
               <b-field class="answer_list">
                 <ul>
                   <template
-                    v-for="answer in Answers"
+                    v-for="answer in options.answers"
                   >
                     <li
                       :key="answer"
@@ -49,15 +49,15 @@
                 </ul>
               </b-field>
               <b-field
-                v-if="Question && Answers.length > 0"
+                v-if="options.question && options.answers.length > 0"
               >
                 <b-datepicker
-                  v-model="date"
+                  v-model="options.endDate"
                   placeholder="Type or select a date..."
                   editable
                 />
                 <b-timepicker
-                  v-model="date"
+                  v-model="options.endDate"
                   placeholder="Type or select a time..."
                   hour-format="12"
                 />
@@ -88,31 +88,37 @@ export default {
   },
   data () {
     return {
-      Question: '',
-      CurrentAnswer: '',
-      Answers: [],
-      date: new Date()
+      options: {
+        question: '',
+        currentAnswer: '',
+        answers: [],
+        endDate: new Date()
+      },
+      currentID: 0
     }
   },
   watch: {
-    'Question': function (val, oldVal) {
+    'options.question': function (val, oldVal) {
       this.$refs.poll.changeTitle(val)
     }
   },
   methods: {
     addAnswer () {
-      if (!this.CurrentAnswer) return // do nothing if input is empty
-      this.Answers.push(this.CurrentAnswer)
-      this.$refs.poll.addAnswer(this.CurrentAnswer)
-      this.CurrentAnswer = '' // clear answer input box
+      if (!this.options.currentAnswer) return // do nothing if input is empty
+      let answer = { value: this.currentID++, text: this.options.currentAnswer, votes: 0 }
+
+      this.options.answers.push(answer)
+      this.$refs.poll.addAnswer(answer) // send answer data to Poll child component
+
+      this.options.currentAnswer = '' // clear answer input box
     },
     removeAnswer (answer) {
-      this.Answers = this.Answers.filter(e => e !== answer)
+      this.options.answers = this.options.answers.filter(e => e !== answer)
       this.$refs.poll.removeAnswer(answer)
     },
     createPoll () {
       // submit poll to KOA server
-      this.$http.post('/api/polls')
+      this.$http.post('/api/polls', this.options)
     }
   }
 }
