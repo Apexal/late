@@ -48,18 +48,26 @@
                   </template>
                 </ul>
               </b-field>
-              <button
+              <b-field
                 v-if="Question && Answers.length > 0"
-                class="button"
-                @click="createPoll"
               >
-                Submit Poll
-              </button>
-              <b-datepicker
-                placeholder="Type or select a date..."
-                icon="calendar-today"
-                editable
-              />
+                <b-datepicker
+                  v-model="date"
+                  placeholder="Type or select a date..."
+                  editable
+                />
+                <b-timepicker
+                  v-model="date"
+                  placeholder="Type or select a time..."
+                  hour-format="12"
+                />
+                <button
+                  class="button"
+                  @click="createPoll"
+                >
+                  Submit Poll
+                </button>
+              </b-field>
             </p>
           </div>
         </div>
@@ -82,7 +90,8 @@ export default {
     return {
       Question: '',
       CurrentAnswer: '',
-      Answers: []
+      Answers: [],
+      date: new Date()
     }
   },
   watch: {
@@ -103,6 +112,7 @@ export default {
     },
     createPoll () {
       // submit poll to KOA server
+      this.$http.post('/api/polls')
     }
   }
 }
@@ -117,5 +127,11 @@ export default {
     text-decoration: line-through;
     font-weight: bold;
     color: red;
+  }
+  .datepicker.control {
+    padding-right: 10px;
+  }
+  .timepicker.control {
+    padding-right: 10px;
   }
 </style>
