@@ -11,7 +11,7 @@
       >
         <b-checkbox
           v-model="chosenCourse"
-          :true-value="course.title"
+          :true-value="course"
         />
         <span class="has-text-grey">
           {{ course.summary }}
