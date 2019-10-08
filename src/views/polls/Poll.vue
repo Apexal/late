@@ -21,7 +21,8 @@ export default {
         question: '',
         answers: []
       },
-      currentID: 0
+      currentID: 0,
+      UID: 0
     }
   },
   methods: {
