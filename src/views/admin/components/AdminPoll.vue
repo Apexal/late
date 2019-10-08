@@ -97,7 +97,7 @@ export default {
       this.$refs.poll.removeAnswer(answer)
     },
     createPoll () {
-
+      // submit poll to KOA server
     }
   }
 }

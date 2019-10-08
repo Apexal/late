@@ -15,10 +15,6 @@ async function deletePoll (ctx) {
 
 }
 
-async function editPoll (ctx) {
-
-}
-
 async function getPolls (ctx) {
 
 }
