@@ -55,6 +55,11 @@
               >
                 Submit Poll
               </button>
+              <b-datepicker
+                placeholder="Type or select a date..."
+                icon="calendar-today"
+                editable
+              />
             </p>
           </div>
         </div>
