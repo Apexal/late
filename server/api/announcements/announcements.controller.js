@@ -90,7 +90,9 @@ async function deleteAnnouncement (ctx) {
     _id: announcementID
   })
 
-  if (!deletedAnnouncement) return ctx.notFound('Couldn\'t find the announcement!')
+  if (!deletedAnnouncement) {
+    return ctx.notFound('Couldn\'t find the announcement!')
+  }
 
   deletedAnnouncement.remove()
 

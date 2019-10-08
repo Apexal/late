@@ -236,7 +236,7 @@ export default {
       end = moment(end)
 
       this.$buefy.dialog.prompt({
-        message: `What are you doing ${start.format('h:mma')} to ${start.format(
+        message: `What are you doing ${start.format('h:mma')} to ${end.format(
           'h:mma'
         )} on ${start.format('dddd')}?`,
         confirmText: 'Add Block',
