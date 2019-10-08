@@ -15,11 +15,21 @@ async function getPage (URL) {
 
 // Function to get Name and Major from Directory
 async function scrapeForName (RCSID) {
-  console.log('Scraping username')
   const page = await getPage(RPI_DIRECTORY_BASE_URL + RCSID)
   return RPI_INFO_BASE_URL + page('.views-field-title a').attr().href
 }
 
+async function getNameAndMajor (RCSID) {
+  const directorySearchUrl = await scrapeForName(RCSID)
+
+  const directoryListingPage = await getPage(directorySearchUrl)
+  const name = directoryListingPage('#page-title').html()
+  const major = directoryListingPage('.views-field-field-major div').html()
+
+  return [name, major]
+}
+
 module.exports = {
-  scrapeForName
+  scrapeForName,
+  getNameAndMajor
 }
