@@ -49,6 +49,7 @@
                 </ul>
               </b-field>
               <button
+                v-if="Question && Answers.length > 0"
                 class="button"
                 @click="createPoll"
               >
@@ -58,13 +59,20 @@
           </div>
         </div>
       </div>
+      <div class="column is-half">
+        <Poll ref="poll" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import Poll from '@/views/polls/Poll'
 export default {
   name: 'AdminFun',
+  components: {
+    Poll
+  },
   data () {
     return {
       Question: '',
@@ -72,13 +80,21 @@ export default {
       Answers: []
     }
   },
+  watch: {
+    'Question': function (val, oldVal) {
+      this.$refs.poll.changeTitle(val)
+    }
+  },
   methods: {
     addAnswer () {
+      if (!this.CurrentAnswer) return // do nothing if input is empty
       this.Answers.push(this.CurrentAnswer)
+      this.$refs.poll.addAnswer(this.CurrentAnswer)
       this.CurrentAnswer = '' // clear answer input box
     },
     removeAnswer (answer) {
       this.Answers = this.Answers.filter(e => e !== answer)
+      this.$refs.poll.removeAnswer(answer)
     },
     createPoll () {
 

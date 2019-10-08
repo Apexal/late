@@ -18,19 +18,26 @@ export default {
   data () {
     return {
       options: {
-        question: 'How are you?',
-        answers: [
-          { value: 1, text: 'Good', votes: 0 },
-          { value: 2, text: 'Bad', votes: 0 },
-          { value: 3, text: 'Not good', votes: 0 },
-          { value: 4, text: 'Super bad', votes: 0 }
-        ]
-      }
+        question: '',
+        answers: []
+      },
+      currentID: 0
     }
   },
   methods: {
     addVote (obj) {
       console.log('You voted ' + obj.value + '!')
+    },
+    changeTitle (title) {
+      this.options.question = title
+    },
+    addAnswer (answer) {
+      this.options.answers.push({ value: this.currentID, text: answer, votes: 0 })
+      this.currentID++
+    },
+    removeAnswer (answer) {
+      this.options.answers =
+         this.options.answers.filter(e => e.text !== answer)
     }
   }
 }
