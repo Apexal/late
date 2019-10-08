@@ -1,12 +1,45 @@
 <template>
   <div class="study-groups-create">
-    <p>Create</p>
+    <div class="class-selection">
+      <h1 class="subtitle study-group-heading">
+        Select a class
+      </h1>
+      <div
+        v-for="course in courses"
+        :key="course.crn"
+        class="course box"
+      >
+        <b-checkbox
+          v-model="chosenCourse"
+          :true-value="course.title"
+        />
+        <span class="has-text-grey">
+          {{ course.summary }}
+        </span>
+        <span>
+          {{ course.title }}
+        </span>
+        <div class="tags is-pulled-right">
+          <span class="tag is-rounded">
+            Section {{ course.sectionId }}
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 export default {
-  name: 'StudyGroupsCreate'
+  name: 'StudyGroupsCreate',
+  data () {
+    return {
+      chosenCourse: ''
+    }
+  }
 }
 </script>
-<style>
+<style lang="scss" scoped>
+.study-group-heading {
+  margin-top: 1.5rem
+}
 </style>

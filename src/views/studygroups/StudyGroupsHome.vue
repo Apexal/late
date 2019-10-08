@@ -6,11 +6,6 @@
     >
       No current study groups. Create or join a group to get studying!
     </p>
-    <b-button
-      @click="currentGroups.push('group')"
-    >
-      Test
-    </b-button>
   </div>
 </template>
 <script>
@@ -26,6 +21,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .no-groups {
-  padding-top: 50px;
+  margin-top: 1.5em;
 }
 </style>
