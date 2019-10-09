@@ -134,7 +134,7 @@ export default {
         'https://www.youtube.com/embed/aB93j7LUK0w'
       ],
       contributors: [
-        'Caitlin Bennet',
+        'Caitlin Bennett',
         'Kristen Bertrand',
         'Mark Borelli II',
         'Shardul Joshi',
