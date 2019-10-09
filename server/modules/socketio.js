@@ -62,6 +62,7 @@ module.exports = server => {
       for (const sID in allSockets) {
         if (allSockets[sID].auth && allSockets[sID].client.user.rcs_id === targetRcsID) { allSockets[sID].emit('sis man message', message) }
       }
+      logger.info(`${socket.client.user.identifier} sent SIS man message to ${targetRcsID}: "${message}"`)
     })
     /* end FUN */
 
