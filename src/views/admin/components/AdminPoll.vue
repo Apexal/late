@@ -120,10 +120,9 @@ export default {
       // submit poll to KOA server
       let request
       try {
-        request = await this.$http.post('/polls', this.options.answers)
+        request = await this.$http.post('/polls', this.options)
       } catch (e) {
         console.error(e)
-        this.$buefy.toast.open({ type: 'is-error', message: e.request.data.message })
       }
     }
   }

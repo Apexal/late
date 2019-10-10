@@ -77,7 +77,7 @@
         :todos="allTodos"
         @update-count="updatedCount"
       />
-      <Poll />
+      <Poll ref="poll" />
     </div>
   </aside>
 </template>
@@ -175,7 +175,15 @@ export default {
       return this.$store.state.todos.todos
     }
   },
-  mounted () {},
+  async mounted () {
+    let request
+    try {
+      await this.$http.get('/polls')
+    } catch (e) {
+      console.error(e)
+    }
+    console.log(request)
+  },
   methods: {
     updatedCount ({ tab, count }) {
       this.externalCounts[tab] = count
