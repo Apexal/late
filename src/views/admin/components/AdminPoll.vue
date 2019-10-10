@@ -39,11 +39,11 @@
                     v-for="answer in options.answers"
                   >
                     <li
-                      :key="answer"
+                      :key="answer.text"
                       class="answer"
                       @click="removeAnswer(answer)"
                     >
-                      • {{ answer }}
+                      • {{ answer.text }}
                     </li>
                   </template>
                 </ul>
@@ -113,12 +113,18 @@ export default {
       this.options.currentAnswer = '' // clear answer input box
     },
     removeAnswer (answer) {
-      this.options.answers = this.options.answers.filter(e => e !== answer)
-      this.$refs.poll.removeAnswer(answer)
+      this.options.answers = this.options.answers.filter(e => e.text !== answer.text)
+      this.$refs.poll.removeAnswer(answer.text)
     },
-    createPoll () {
+    async createPoll () {
       // submit poll to KOA server
-      this.$http.post('/api/polls', this.options)
+      let request
+      try {
+        request = await this.$http.post('/polls', this.options.answers)
+      } catch (e) {
+        console.error(e)
+        this.$buefy.toast.open({ type: 'is-error', message: e.request.data.message })
+      }
     }
   }
 }
