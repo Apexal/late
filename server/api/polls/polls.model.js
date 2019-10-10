@@ -5,7 +5,7 @@ const schema = new Schema({
   options: {
     question: String,
     answers: [{ value: Number, text: String, votes: Number }],
-    endTime: Date
+    endDate: Date
   }
 })
 

@@ -5,14 +5,10 @@ async function createPoll (ctx) {
 
   poll.options.question = ctx.request.body.question
   poll.options.answers = ctx.request.body.answers
-  poll.options.endTime = ctx.request.body.endTime
+  poll.options.endDate = ctx.request.body.endDate
 
   poll.save()
   ctx.ok()
-}
-
-async function deletePoll (ctx) {
-
 }
 
 async function getPolls (ctx) {
@@ -21,8 +17,20 @@ async function getPolls (ctx) {
   return ctx.ok({ polls })
 }
 
+async function deletePoll (ctx) {
+
+}
+
+// returns number of deleted polls
+async function deleteAllPolls (ctx) {
+  const request = await Poll.deleteMany({})
+  console.log(request)
+  return ctx.ok(request.deletedCount)
+}
+
 module.exports = {
   createPoll,
   deletePoll,
-  getPolls
+  getPolls,
+  deleteAllPolls
 }

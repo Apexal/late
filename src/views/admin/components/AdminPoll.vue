@@ -20,7 +20,7 @@
               />
               <b-field grouped>
                 <b-input
-                  v-model="options.currentAnswer"
+                  v-model="currentAnswer"
                   placeholder="Answer"
                   type="text"
                   expanded
@@ -76,6 +76,15 @@
         <Poll ref="poll" />
       </div>
     </div>
+    <div class="buttons">
+      <b-button
+        type="is-danger"
+        icon="delete"
+        @click="deleteAllPolls"
+      >
+        Delete all polls
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -90,10 +99,10 @@ export default {
     return {
       options: {
         question: '',
-        currentAnswer: '',
         answers: [],
         endDate: new Date()
       },
+      currentAnswer: '',
       currentID: 0
     }
   },
@@ -104,13 +113,13 @@ export default {
   },
   methods: {
     addAnswer () {
-      if (!this.options.currentAnswer) return // do nothing if input is empty
-      let answer = { value: this.currentID++, text: this.options.currentAnswer, votes: 0 }
+      if (!this.currentAnswer) return // do nothing if input is empty
+      let answer = { value: this.currentID++, text: this.currentAnswer, votes: 0 }
 
       this.options.answers.push(answer)
       this.$refs.poll.addAnswer(answer) // send answer data to Poll child component
 
-      this.options.currentAnswer = '' // clear answer input box
+      this.currentAnswer = '' // clear answer input box
     },
     removeAnswer (answer) {
       this.options.answers = this.options.answers.filter(e => e.text !== answer.text)
@@ -121,6 +130,14 @@ export default {
       let request
       try {
         request = await this.$http.post('/polls', this.options)
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    async deleteAllPolls () {
+      let request
+      try {
+        request = await this.$http.delete('/polls')
       } catch (e) {
         console.error(e)
       }
