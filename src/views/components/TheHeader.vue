@@ -216,7 +216,7 @@
         <a
           v-if="loggedIn"
           class="navbar-item"
-          :title="`There are ${onlineUsers.length} users online.`"
+          :title="`There ${onlineUsers.length > 1 ? 'are' : 'is'} ${onlineUsers.length} ${onlineUsers.length > 1 ? 'users' : 'user'} online.`"
           @click="rickRollModalOpen = true"
         >
           <b-tag type="is-primary">{{ onlineUsers.length }} online</b-tag>
