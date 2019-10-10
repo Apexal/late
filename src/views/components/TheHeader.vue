@@ -217,6 +217,7 @@
           v-if="loggedIn"
           class="navbar-item"
           :title="`There are ${onlineUsers.length} users online.`"
+          @click="rickRollModalOpen = true"
         >
           <b-tag type="is-primary">{{ onlineUsers.length }} online</b-tag>
         </a>
@@ -347,12 +348,33 @@
         </b-navbar-item>
       </template>
     </b-navbar>
+
+    <b-modal
+      class="rick-roll-modal"
+      style="height: 100%;"
+      :active.sync="rickRollModalOpen"
+    >
+      <iframe
+        width="960"
+        height="540"
+        style="height: 100%;"
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      />
+    </b-modal>
   </header>
 </template>
 
 <script>
 export default {
   name: 'TheHeader',
+  data () {
+    return {
+      rickRollModalOpen: false
+    }
+  },
   computed: {
     onlineUsers () {
       return this.$store.state.socketio.onlineUsers
@@ -392,6 +414,12 @@ export default {
 </script>
 
 <style lang="scss">
+
+.rick-roll-modal {
+  .modal-content {
+    height: 100%;
+  }
+}
 
 // .has-dropdown:hover .navbar-dropdown {
 //     animation: navAnimOpen 0.15s ease-in-out;

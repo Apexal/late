@@ -79,6 +79,10 @@ async function updateUnavailability (ctx) {
       _student: ctx.state.user._id
     })
 
+    if (!updatedUnavailability) {
+      return ctx.notFound('No unavailability could be found that matches that criteria.')
+    }
+
     updatedUnavailability.set(ctx.request.body)
 
     await updatedUnavailability.save()
@@ -105,6 +109,10 @@ async function removeUnavailability (ctx) {
     _id: unavailabilityID,
     _student: ctx.state.user._id
   })
+
+  if (!deletedUnavailability) {
+    return ctx.notFound('No unavailability could be found that matches that criteria.')
+  }
 
   deletedUnavailability.remove()
 
