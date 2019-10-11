@@ -77,17 +77,20 @@
         :todos="allTodos"
         @update-count="updatedCount"
       />
-      <Poll ref="poll" />
-      <template
-        v-for="poll in polls"
-      >
-        <li
-          v-if="polls.length > 0"
-          :key="poll._id"
-        >
-          <Poll :ref="poll._id" />
-        </li>
-      </template>
+      <div class="Polls">
+        <ul>
+          <li
+            v-for="poll in polls"
+            :key="poll._id"
+          >
+            <Poll
+              :ref="poll._id"
+              :pq="poll.options.question"
+              :pa="poll.options.answers"
+            />
+          </li>
+        </ul>
+      </div>
     </div>
   </aside>
 </template>
@@ -137,7 +140,8 @@ export default {
           name: 'To-Do List',
           icon: 'fas fa-check',
           tagColor: 'success'
-        }
+        },
+        polls: []
       }
     }
   },
@@ -147,8 +151,7 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
         courseList: this.courses.length,
-        todos: this.incompleteTodos.length,
-        polls: []
+        todos: this.incompleteTodos.length
       }
     },
     currentTab () {
@@ -195,9 +198,6 @@ export default {
       console.error(e)
     }
     this.polls = request.data.polls
-    for (var i = 0; i < this.polls.length; i++) {
-      this.polls[0].options.question = 'TESTING'
-    }
   },
   methods: {
     updatedCount ({ tab, count }) {

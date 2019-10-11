@@ -15,11 +15,21 @@ export default {
   components: {
     VuePoll
   },
+  props: {
+    pq: {
+      type: String,
+      default: ''
+    },
+    // eslint-disable-next-line vue/require-default-prop
+    pa: {
+      type: Array
+    }
+  },
   data () {
     return {
       options: {
-        question: '',
-        answers: []
+        question: this.pq,
+        answers: this.pa
       }
     }
   },
