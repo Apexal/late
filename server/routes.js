@@ -24,8 +24,7 @@ module.exports = router => {
   // THIS IS TEMPORARY
   router.get('/dev_thing', async (ctx) => {
     const result = await dir.getNameAndMajor('smitha24')
-    console.log(result)
-    ctx.body = 'Hello Frank'
+    ctx.body = result
   })
 
   router.use(
