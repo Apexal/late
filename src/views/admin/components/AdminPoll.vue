@@ -26,12 +26,12 @@
                   expanded
                   @keyup.enter.native="addAnswer"
                 />
-                <button
+                <b-button
                   class="button"
                   @click="addAnswer"
                 >
                   Add Answer
-                </button>
+                </b-button>
               </b-field>
               <b-field class="answer_list">
                 <ul>
@@ -61,12 +61,13 @@
                   placeholder="Type or select a time..."
                   hour-format="12"
                 />
-                <button
+                <b-button
                   class="button"
+                  type="is-primary"
                   @click="createPoll"
                 >
                   Submit Poll
-                </button>
+                </b-button>
               </b-field>
             </p>
           </div>
@@ -79,7 +80,7 @@
     <div class="buttons">
       <b-button
         type="is-danger"
-        icon="delete"
+        icon-right="delete"
         @click="deleteAllPolls"
       >
         Delete all polls

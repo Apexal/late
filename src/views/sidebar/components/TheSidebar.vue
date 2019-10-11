@@ -78,6 +78,16 @@
         @update-count="updatedCount"
       />
       <Poll ref="poll" />
+      <template
+        v-for="poll in polls"
+      >
+        <li
+          v-if="polls.length > 0"
+          :key="poll._id"
+        >
+          <Poll :ref="poll._id" />
+        </li>
+      </template>
     </div>
   </aside>
 </template>
@@ -137,7 +147,8 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
         courseList: this.courses.length,
-        todos: this.incompleteTodos.length
+        todos: this.incompleteTodos.length,
+        polls: []
       }
     },
     currentTab () {
@@ -176,13 +187,17 @@ export default {
     }
   },
   async mounted () {
+    // TODO: figure out where to put this crap
     let request
     try {
-      await this.$http.get('/polls')
+      request = await this.$http.get('/polls')
     } catch (e) {
       console.error(e)
     }
-    console.log(request)
+    this.polls = request.data.polls
+    for (var i = 0; i < this.polls.length; i++) {
+      this.polls[0].options.question = 'TESTING'
+    }
   },
   methods: {
     updatedCount ({ tab, count }) {
