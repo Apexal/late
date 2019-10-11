@@ -271,11 +271,11 @@
             Edit Account
           </b-navbar-item>
 
-          <b-navbar-item
-            tag="a"
-            href="https://github.com/Apexal/late/issues/new/choose"
+          <a
+            class="navbar-item"
             target="none"
             title="Report a bug or request a feature on GitHub"
+            @click="isBugReportModalOpen = true"
           >
             <span class="icon bug-report">
               <i
@@ -284,7 +284,7 @@
               />
             </span>
             Report a bug
-          </b-navbar-item>
+          </a>
 
           <hr class="navbar-divider">
 
@@ -347,12 +347,26 @@
         </b-navbar-item>
       </template>
     </b-navbar>
+    <BugReportModal
+      :open="isBugReportModalOpen"
+      false
+      @close-modal="isBugReportModalOpen = false"
+    />
   </header>
 </template>
 
 <script>
+import BugReportModal from './BugReportModal.vue'
 export default {
   name: 'TheHeader',
+  components: {
+    BugReportModal
+  },
+  data () {
+    return {
+      isBugReportModalOpen: false
+    }
+  },
   computed: {
     onlineUsers () {
       return this.$store.state.socketio.onlineUsers
