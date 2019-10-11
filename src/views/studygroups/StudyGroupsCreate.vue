@@ -12,6 +12,7 @@
         <b-checkbox
           v-model="chosenCourse"
           :true-value="course"
+          false-value=""
         />
         <span class="has-text-grey">
           {{ course.summary }}
@@ -25,15 +26,88 @@
           </span>
         </div>
       </div>
+      <div
+        class="date-selection"
+      >
+        <hr>
+        <h1 class="subtitle study-group-heading">
+          Select a date
+        </h1>
+        <FullCalendar
+          ref="calendar"
+          :plugins="calendar.plugins"
+          :editable="false"
+          :selectable="false"
+          :header="calendar.header"
+          :height="500"
+          default-view="dayGridMonth"
+          time-format="h(:mm)t"
+          time-zone="local"
+          :valid-range="calendar.validRange"
+          :events="chosenDateEvent"
+          @dateClick="dateClick"
+        />
+      </div>
+      <!-- <div
+        class="time-selection"
+      >
+        <hr>
+        <h1 class="subtitle study-group-heading">
+          Select a time
+        </h1>
+      </div> -->
     </div>
   </div>
 </template>
 <script>
+import moment from 'moment'
+
+import FullCalendar from '@fullcalendar/vue'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
+
 export default {
   name: 'StudyGroupsCreate',
+  components: {
+    FullCalendar
+  },
   data () {
     return {
-      chosenCourse: ''
+      chosenCourse: '',
+      chosenDate: '',
+      chosenDateEvent: [],
+      calendar: {
+        plugins: [dayGridPlugin, interactionPlugin],
+        header: {
+          left: 'title',
+          center: '',
+          right: 'today prev,next'
+        },
+        validRange: {
+          start: moment().format(),
+          end: this.$store.getters.currentTerm.end
+        }
+      }
+    }
+  },
+  methods: {
+    dateClick ({ date }) {
+      if (moment(this.chosenDate).isSame(date)) {
+        this.chosenDate = ''
+        this.chosenDateEvent = []
+      } else {
+        this.chosenDate = date
+        this.chosenDateEvent = [{
+          id: 'chosenDate',
+          title: 'Study Group',
+          start: date,
+          allDay: true
+        }]
+      }
     }
   }
 }
