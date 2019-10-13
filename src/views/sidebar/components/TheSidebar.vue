@@ -85,8 +85,7 @@
           >
             <Poll
               :ref="poll._id"
-              :pq="poll.options.question"
-              :pa="poll.options.answers"
+              :options="poll.options"
             />
           </li>
         </ul>

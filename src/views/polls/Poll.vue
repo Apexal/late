@@ -16,36 +16,20 @@ export default {
     VuePoll
   },
   props: {
-    pq: {
-      type: String,
-      default: ''
-    },
-    // eslint-disable-next-line vue/require-default-prop
-    pa: {
-      type: Array
-    }
-  },
-  data () {
-    return {
-      options: {
-        question: this.pq,
-        answers: this.pa
+    options: {
+      type: Object,
+      default: function () {
+        return {
+          question: '',
+          answers: [],
+          endDate: new Date()
+        }
       }
     }
   },
   methods: {
     addVote (obj) {
       console.log('You voted ' + obj.value + '!')
-    },
-    changeTitle (title) {
-      this.options.question = title
-    },
-    addAnswer (answer) {
-      this.options.answers.push(answer)
-    },
-    removeAnswer (answer) {
-      this.options.answers =
-         this.options.answers.filter(e => e.text !== answer)
     }
   }
 }

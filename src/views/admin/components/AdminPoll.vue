@@ -74,13 +74,16 @@
         </div>
       </div>
       <div class="column is-half">
-        <Poll ref="poll" />
+        <Poll
+          ref="poll"
+          :options.sync="options"
+        />
       </div>
     </div>
     <div class="buttons">
       <b-button
         type="is-danger"
-        icon-right="delete"
+        icon-right="trash"
         @click="deleteAllPolls"
       >
         Delete all polls
@@ -118,13 +121,11 @@ export default {
       let answer = { value: this.currentID++, text: this.currentAnswer, votes: 0 }
 
       this.options.answers.push(answer)
-      this.$refs.poll.addAnswer(answer) // send answer data to Poll child component
 
       this.currentAnswer = '' // clear answer input box
     },
     removeAnswer (answer) {
       this.options.answers = this.options.answers.filter(e => e.text !== answer.text)
-      this.$refs.poll.removeAnswer(answer.text)
     },
     async createPoll () {
       // submit poll to KOA server
