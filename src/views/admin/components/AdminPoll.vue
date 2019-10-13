@@ -110,11 +110,6 @@ export default {
       currentID: 0
     }
   },
-  watch: {
-    'options.question': function (val, oldVal) {
-      this.$refs.poll.changeTitle(val)
-    }
-  },
   methods: {
     addAnswer () {
       if (!this.currentAnswer) return // do nothing if input is empty

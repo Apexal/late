@@ -84,7 +84,6 @@
             :key="poll._id"
           >
             <Poll
-              :ref="poll._id"
               :options="poll.options"
             />
           </li>
