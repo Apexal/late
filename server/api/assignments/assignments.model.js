@@ -40,6 +40,11 @@ const schema = new Schema(
         ref: 'Block'
       }
     ],
+    tasks: [{
+      text: { type: String, minlength: 3, maxlength: 200, required: true },
+      completed: { type: Boolean, default: false },
+      completedAt: Date
+    }],
     isRecurring: {
       type: Boolean,
       default: false
