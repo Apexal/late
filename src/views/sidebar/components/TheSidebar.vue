@@ -77,18 +77,7 @@
         :todos="allTodos"
         @update-count="updatedCount"
       />
-      <div class="Polls">
-        <ul>
-          <li
-            v-for="poll in polls"
-            :key="poll._id"
-          >
-            <Poll
-              :options="poll.options"
-            />
-          </li>
-        </ul>
-      </div>
+      <PollPages />
     </div>
   </aside>
 </template>
@@ -100,7 +89,7 @@ import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule'
 import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments'
 import SidebarTodoList from '@/views/sidebar/components/todo/SidebarTodoList'
 import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList'
-import Poll from '@/views/polls/Poll'
+import PollPages from '@/views/polls/PollPages'
 
 export default {
   name: 'TheSidebar',
@@ -109,7 +98,7 @@ export default {
     SidebarSchedule,
     SidebarTodoList,
     SidebarCourseList,
-    Poll
+    PollPages
   },
   data () {
     return {
@@ -138,8 +127,7 @@ export default {
           name: 'To-Do List',
           icon: 'fas fa-check',
           tagColor: 'success'
-        },
-        polls: []
+        }
       }
     }
   },
@@ -186,16 +174,6 @@ export default {
     allTodos () {
       return this.$store.state.todos.todos
     }
-  },
-  async mounted () {
-    // TODO: figure out where to put this crap
-    let request
-    try {
-      request = await this.$http.get('/polls')
-    } catch (e) {
-      console.error(e)
-    }
-    this.polls = request.data.polls
   },
   methods: {
     updatedCount ({ tab, count }) {

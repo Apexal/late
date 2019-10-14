@@ -22,7 +22,8 @@ export default {
         return {
           question: '',
           answers: [],
-          endDate: new Date()
+          endDate: new Date(),
+          showResults: false
         }
       }
     }

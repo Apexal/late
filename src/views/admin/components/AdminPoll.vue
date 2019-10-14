@@ -104,7 +104,8 @@ export default {
       options: {
         question: '',
         answers: [],
-        endDate: new Date()
+        endDate: new Date(),
+        showResults: false
       },
       currentAnswer: '',
       currentID: 0

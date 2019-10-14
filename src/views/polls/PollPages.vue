@@ -5,7 +5,9 @@ into a pagination UI
 
 <template>
   <div>
-    <Poll :options="pollList[current-1]" />
+    <Poll
+      :options="list[current-1].options"
+    />
     <b-pagination
       :total="total"
       :current.sync="current"
@@ -31,13 +33,24 @@ export default {
   components: {
     Poll
   },
-  props: {
-    // eslint-disable-next-line vue/require-default-prop
-    pollList: Array
-  },
   data () {
     return {
-      current: 1
+      current: 1,
+      list: Array,
+      total: { type: Number, default: 0 }
+    }
+  },
+  async mounted () {
+    let request
+    try {
+      request = await this.$http.get('/polls')
+    } catch (e) {
+      console.error(e)
+    }
+    this.list = request.data.polls
+    this.total = this.list.length
+    if (this.list[this.current - 1].options.voted['lanea3'] !== undefined) {
+      this.list[this.current - 1].options.showResults = true
     }
   }
 }

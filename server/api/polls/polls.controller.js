@@ -6,6 +6,7 @@ async function createPoll (ctx) {
   poll.options.question = ctx.request.body.question
   poll.options.answers = ctx.request.body.answers
   poll.options.endDate = ctx.request.body.endDate
+  poll.options.showResults = ctx.request.body.showResults
 
   poll.save()
   ctx.ok()
