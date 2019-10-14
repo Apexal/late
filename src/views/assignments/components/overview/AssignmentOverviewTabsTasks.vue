@@ -6,7 +6,12 @@
         :key="task.id"
         class="task"
       >
-        <b-checkbox>{{ task.text }}</b-checkbox>
+        <b-checkbox
+          :value="task.completed"
+          @input="toggleTask(task._id)"
+        >
+          {{ task.text }}
+        </b-checkbox>
         <span
           class="delete"
           @click="deleteTask(task._id)"
@@ -79,6 +84,28 @@ export default {
         message: 'Added task.',
         type: 'is-success'
       })
+    },
+    async toggleTask (taskID) {
+      const task = this.assessment.tasks.find(task => task._id === taskID)
+      task.completed = !task.completed
+
+      task.completedAt = (task.completed ? new Date() : undefined)
+
+      console.log(task)
+      console.log(this.assessment.tasks)
+      let updatedAssessment
+      try {
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessment.assessmentType,
+          updates: { tasks: this.assessment.tasks }
+        })
+      } catch (e) {
+        this.$buefy.toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        })
+      }
     },
     async deleteTask (taskID) {
       const tasks = this.assessment.tasks.filter(task => task._id !== taskID)

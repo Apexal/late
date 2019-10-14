@@ -38,6 +38,17 @@
               aria-hidden="true"
             /></span>
             <span>Tasks</span>
+            <span
+              v-if="assignment.tasks.length > 0"
+              class="tag tooltip is-tooltip-right"
+              :class="tasksTagClass"
+              :data-tooltip="`Completed ${completedTasksLength} out of ${assignment.tasks.length} tasks`"
+            >{{ completedTasksLength }}/{{ assignment.tasks.length }}</span>
+            <span
+              v-else
+              class="tag is-danger tooltip is-tooltip-right"
+              data-tooltip="No tasks added yet"
+            >0</span>
           </a>
         </li>
         <li
@@ -180,6 +191,14 @@ export default {
     fullyScheduled () {
       return this.scheduledMinutes >= this.totalEstimatedMinutes
     },
+    completedTasksLength () {
+      return this.assignment.tasks.filter(t => t.completed).length
+    },
+    tasksTagClass () {
+      if (this.assignment.tasks.length === 0) return 'is-danger'
+      else if (this.assignment.tasks.length === this.completedTasksLength) return 'is-success'
+      return 'is-warning'
+    },
     componentName () {
       return {
         comments: 'AssessmentOverviewComments',
@@ -213,5 +232,6 @@ export default {
 
 .tag {
   margin-left: 3px;
+  padding: 5px;
 }
 </style>
