@@ -42,6 +42,7 @@ const schema = new Schema(
     ],
     tasks: [{
       text: { type: String, minlength: 3, maxlength: 200, required: true },
+      addedAt: { type: Date, required: true },
       completed: { type: Boolean, default: false },
       completedAt: Date
     }],
