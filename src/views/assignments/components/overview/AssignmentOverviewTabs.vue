@@ -39,16 +39,11 @@
             /></span>
             <span>Tasks</span>
             <span
-              v-if="assignment.tasks.length > 0"
+              v-if="assignment.tasks && assignment.tasks.length > 0"
               class="tag tooltip is-tooltip-right"
               :class="tasksTagClass"
               :data-tooltip="`Completed ${completedTasksLength} out of ${assignment.tasks.length} tasks`"
             >{{ completedTasksLength }}/{{ assignment.tasks.length }}</span>
-            <span
-              v-else
-              class="tag is-danger tooltip is-tooltip-right"
-              data-tooltip="No tasks added yet"
-            >0</span>
           </a>
         </li>
         <li
