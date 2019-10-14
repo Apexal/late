@@ -48,14 +48,42 @@
           @dateClick="dateClick"
         />
       </div>
-      <!-- <div
+      <div
         class="time-selection"
       >
         <hr>
         <h1 class="subtitle study-group-heading">
           Select a time
         </h1>
-      </div> -->
+        <div
+          style="width:25%"
+        >
+          <b-timepicker
+            v-model="chosenTime"
+            rounded
+            placeholder="Select a time"
+            icon="clock"
+            :hour-format="true"
+          />
+        </div>
+      </div>
+      <div
+        class="location-selection"
+      >
+        <hr>
+        <h1 class="subtitle study-group-heading">
+          Select a location
+        </h1>
+        <div
+          style="width:50%"
+        >
+          <b-input
+            v-model="chosenLocation"
+            type="text"
+            size="is-medium"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -80,6 +108,8 @@ export default {
       chosenCourse: '',
       chosenDate: '',
       chosenDateEvent: [],
+      chosenTime: '',
+      chosenLocation: '',
       calendar: {
         plugins: [dayGridPlugin, interactionPlugin],
         header: {
