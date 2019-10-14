@@ -26,6 +26,21 @@
           </a>
         </li>
         <li
+          class="tasks"
+          :class="{'is-active': tab === 'tasks'}"
+          @click="$emit('set-tab', 'tasks')"
+        >
+          <a>
+            <span
+              class="icon is-small"
+            ><i
+              class="fas fa-tasks"
+              aria-hidden="true"
+            /></span>
+            <span>Tasks</span>
+          </a>
+        </li>
+        <li
           class="comments"
           :class="{'is-active': tab === 'comments'}"
           @click="$emit('set-tab', 'comments')"
@@ -114,6 +129,7 @@ import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overv
 import AssessmentOverviewRelated from '@/views/assessments/components/overview/AssessmentOverviewRelated'
 import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo'
 import AssessmentOverviewWhiteboard from '@/views/assessments/components/overview/AssessmentOverviewWhiteboard'
+import AssignmentOverviewTabsTasks from '@/views/assignments/components/overview/AssignmentOverviewTabsTasks'
 
 export default {
   name: 'AssignmentOverviewTabs',
@@ -122,7 +138,8 @@ export default {
     AssessmentOverviewWorkSchedule,
     AssessmentOverviewRelated,
     AssignmentOverviewTabsSharedInfo,
-    AssessmentOverviewWhiteboard
+    AssessmentOverviewWhiteboard,
+    AssignmentOverviewTabsTasks
   },
   props: {
     tab: {
@@ -169,7 +186,8 @@ export default {
         schedule: 'AssessmentOverviewWorkSchedule',
         related: 'AssessmentOverviewRelated',
         'shared-info': 'AssignmentOverviewTabsSharedInfo',
-        whiteboard: 'AssessmentOverviewWhiteboard'
+        whiteboard: 'AssessmentOverviewWhiteboard',
+        tasks: 'AssignmentOverviewTabsTasks'
       }[this.tab]
     }
   },
