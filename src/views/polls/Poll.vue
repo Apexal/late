@@ -1,7 +1,7 @@
 <template>
   <div>
     <VuePoll
-      v-bind="options"
+      v-bind.sync="options"
       @addvote="addVote"
     />
   </div>
@@ -29,11 +29,17 @@ export default {
     },
     id: { type: Number, default: 0 }
   },
+  watch: {
+    options: function (n, o) {
+      console.log(this.options.showResults)
+    }
+  },
   methods: {
     async addVote (obj) {
       // send voted data to database
       let request
       request = await this.$http.patch('/polls', { id: this.id })
+      this.options.showResults = true
     }
   }
 }

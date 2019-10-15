@@ -4,17 +4,25 @@ into a pagination UI
 */
 
 <template>
-  <div>
-    <Poll
-      v-if="length > 0"
-      :id="current-1"
-      :options.sync="list[current-1]"
-    />
+  <div v-if="list.length > 0">
+    <ul>
+      <li
+        v-for="(poll, index) in list"
+        :key="poll.question"
+      >
+        <Poll
+          v-if="index === current - 1"
+          :id="current-1"
+          :options="list[current-1]"
+        />
+      </li>
+    </ul>
     <b-pagination
       :total.sync="length"
       :current.sync="current"
-      range-before="2"
-      range-after="2"
+      :simple="isSimple"
+      range-before="1"
+      range-after="1"
       order=""
       per-page="1"
       icon-prev="chevron-left"
@@ -39,7 +47,8 @@ export default {
     return {
       length: 0,
       current: 1,
-      list: Array
+      list: Array,
+      isSimple: true
     }
   },
   async mounted () {

@@ -6,7 +6,7 @@ async function createPoll (ctx) {
   poll.options.question = ctx.request.body.question
   poll.options.answers = ctx.request.body.answers
   poll.options.endDate = ctx.request.body.endDate
-  poll.options.showResults = false
+  poll.options.showResults = ctx.request.body.showResults
 
   poll.save()
   ctx.ok()
@@ -14,7 +14,8 @@ async function createPoll (ctx) {
 
 async function getPolls (ctx) {
   const polls = (await Poll.find()).map(function (p) {
-    // p.options.showResults = p.voted.get(ctx.state.user.rcs_id)
+    const hasVoted = p.voted.get(ctx.state.user.rcs_id)
+    p.options.showResults = hasVoted !== undefined ? hasVoted : false
     return p.options
   })
   return ctx.ok({ polls })
