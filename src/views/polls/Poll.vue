@@ -26,11 +26,14 @@ export default {
           showResults: Boolean
         }
       }
-    }
+    },
+    id: { type: Number, default: 0 }
   },
   methods: {
-    addVote (obj) {
-      console.log('You voted ' + obj.value + '!')
+    async addVote (obj) {
+      // send voted data to database
+      let request
+      request = await this.$http.patch('/polls', { id: this.id })
     }
   }
 }

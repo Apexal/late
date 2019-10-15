@@ -6,16 +6,16 @@ into a pagination UI
 <template>
   <div>
     <Poll
-      :options="list[current-1]"
+      v-if="length > 0"
+      :id="current-1"
+      :options.sync="list[current-1]"
     />
     <b-pagination
-      :total="total"
+      :total.sync="length"
       :current.sync="current"
       range-before="2"
       range-after="2"
       order=""
-      simple="true"
-      rounded="false"
       per-page="1"
       icon-prev="chevron-left"
       icon-next="chevron-right"
@@ -28,16 +28,18 @@ into a pagination UI
 </template>
 
 <script>
+
 import Poll from '@/views/polls/Poll'
+
 export default {
   components: {
     Poll
   },
   data () {
     return {
+      length: 0,
       current: 1,
-      list: Array,
-      total: { type: Number, default: 0 }
+      list: Array
     }
   },
   async mounted () {
@@ -48,8 +50,7 @@ export default {
       console.error(e)
     }
     this.list = request.data.polls
-    this.total = this.list.length
-    console.log(this.list)
+    this.length = this.list.length
   }
 }
 </script>

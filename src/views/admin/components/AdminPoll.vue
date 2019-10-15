@@ -75,7 +75,6 @@
       </div>
       <div class="column is-half">
         <Poll
-          ref="poll"
           :options.sync="options"
         />
       </div>
