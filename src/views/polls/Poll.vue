@@ -23,7 +23,7 @@ export default {
           question: '',
           answers: [],
           endDate: new Date(),
-          showResults: false
+          showResults: Boolean
         }
       }
     }

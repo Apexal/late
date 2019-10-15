@@ -48,7 +48,8 @@ export default {
       console.error(e)
     }
     this.list = request.data.polls
-    this.total = 2
+    this.total = this.list.length
+    console.log(this.list)
   }
 }
 </script>

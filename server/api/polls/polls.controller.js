@@ -7,14 +7,17 @@ async function createPoll (ctx) {
   poll.options.answers = ctx.request.body.answers
   poll.options.endDate = ctx.request.body.endDate
   poll.options.showResults = ctx.request.body.showResults
-  poll.voted = {} // create empty map
+  poll.voted.set('lanea3', false)
 
   poll.save()
   ctx.ok()
 }
 
 async function getPolls (ctx) {
-  const polls = (await Poll.find()).map(function (p) { return p.options })
+  const polls = (await Poll.find()).map(function (p) {
+    p.options.showResults = p.voted.get(ctx.state.user.rcs_id)
+    return p.options
+  })
   return ctx.ok({ polls })
 }
 

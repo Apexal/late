@@ -6,9 +6,9 @@ const schema = new Schema({
     question: String,
     answers: [{ value: Number, text: String, votes: Number }],
     endDate: Date,
-    showResults: Boolean
+    showResults: { type: Boolean, default: false }
   },
-  voted: Map
+  voted: { type: Map, of: Boolean, default: {} }
 })
 
 module.exports = mongoose.model('Poll', schema)
