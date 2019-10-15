@@ -84,6 +84,77 @@
           />
         </div>
       </div>
+      <div
+        class="group-description"
+      >
+        <hr>
+        <h1 class="subtitle study-group-heading">
+          Add a description
+        </h1>
+        <b-input
+          v-model="groupDescription"
+          type="textarea"
+        />
+      </div>
+      <div
+        class="create-buttons"
+      >
+        <hr>
+        <h1 class="subtitle study-group-heading">
+          Study Group Sharing
+        </h1>
+        <b-radio
+          v-model="publicPrivate"
+          native-value="public"
+        >
+          Public
+        </b-radio>
+        <b-radio
+          v-model="publicPrivate"
+          native-value="private"
+          style="margin-left:25px"
+        >
+          Private
+        </b-radio>
+        <div
+          v-if="publicPrivate === 'private'"
+          class="add-members"
+        >
+          <div
+            class="enter-members"
+          >
+            <b-input
+              v-model="memberRCS"
+              type="text"
+              size="is-medium"
+              style="width:25%; margin-top:15px; float:left"
+              placeholder="Member RCS ID"
+            />
+            <b-button
+              type="is-success"
+              style="float:left; margin-top:15px; margin-left:15px"
+              @click="addMember"
+            >
+              Add to Study Group
+            </b-button>
+          </div>
+          <div
+            class="member-tags"
+            style="position:absolute; margin-top:75px"
+          >
+            <b-tag
+              v-for="member in memberList"
+              :key="member"
+              size="is-large"
+              closable
+              style="margin-right:15px"
+              @close="removeMember(member)"
+            >
+              {{ member }}
+            </b-tag>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -110,6 +181,10 @@ export default {
       chosenDateEvent: [],
       chosenTime: '',
       chosenLocation: '',
+      groupDescription: '',
+      publicPrivate: '',
+      memberRCS: '',
+      memberList: [],
       calendar: {
         plugins: [dayGridPlugin, interactionPlugin],
         header: {
@@ -138,6 +213,17 @@ export default {
           allDay: true
         }]
       }
+    },
+    addMember () {
+      if (this.memberList.includes(this.memberRCS)) {
+        alert('This person is already in the list!')
+        return 0
+      }
+      this.memberList.push(this.memberRCS)
+      this.memberRCS = ''
+    },
+    removeMember (member) {
+      this.memberList.splice(this.memberList.indexOf(member), 1)
     }
   }
 }
