@@ -43,7 +43,10 @@
             v-if="loggedIn"
             class="toggle is-hidden-desktop"
           >
-            <a class="navbar-item toggle-wrapper">
+            <a
+              class="navbar-item toggle-wrapper"
+              title="Toggle night/day theme"
+            >
 
               <input
                 type="checkbox"
@@ -366,7 +369,10 @@
           v-if="loggedIn"
           class="toggle is-hidden-touch"
         >
-          <a class="navbar-item toggle-wrapper">
+          <a
+            class="navbar-item toggle-wrapper"
+            title="Toggle night/day theme"
+          >
 
             <input
               type="checkbox"
