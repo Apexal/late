@@ -7,7 +7,8 @@ const schema = new Schema({
     answers: [{ value: Number, text: String, votes: Number }],
     endDate: Date,
     showResults: Boolean
-  }
+  },
+  voted: Map
 })
 
 module.exports = mongoose.model('Poll', schema)

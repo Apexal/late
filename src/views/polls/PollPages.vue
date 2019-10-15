@@ -6,7 +6,7 @@ into a pagination UI
 <template>
   <div>
     <Poll
-      :options="list[current-1].options"
+      :options="list[current-1]"
     />
     <b-pagination
       :total="total"
@@ -48,10 +48,7 @@ export default {
       console.error(e)
     }
     this.list = request.data.polls
-    this.total = this.list.length
-    if (this.list[this.current - 1].options.voted['lanea3'] !== undefined) {
-      this.list[this.current - 1].options.showResults = true
-    }
+    this.total = 2
   }
 }
 </script>

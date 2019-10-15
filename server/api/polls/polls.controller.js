@@ -7,14 +7,14 @@ async function createPoll (ctx) {
   poll.options.answers = ctx.request.body.answers
   poll.options.endDate = ctx.request.body.endDate
   poll.options.showResults = ctx.request.body.showResults
+  poll.voted = {} // create empty map
 
   poll.save()
   ctx.ok()
 }
 
 async function getPolls (ctx) {
-  const polls = await Poll.find()
-  console.log(polls)
+  const polls = (await Poll.find()).map(function (p) { return p.options })
   return ctx.ok({ polls })
 }
 
