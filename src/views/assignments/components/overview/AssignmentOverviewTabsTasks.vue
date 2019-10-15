@@ -13,6 +13,7 @@
           {{ task.text }}
         </b-checkbox>
         <span
+          title="Remove task"
           class="delete"
           @click="deleteTask(task._id)"
         />
@@ -45,6 +46,7 @@
         <div class="control">
           <button
             class="button"
+            type="submit"
             :class="{'is-loading': loading}"
           >
             Add Task
