@@ -18,4 +18,5 @@ module.exports = {
   }
 }
 
+// LOOK IN QUICKLINKS.VUE IN SRC/VIEWS/QUICKLINKS for example of how to make server request
 // announcementsModal has an example;

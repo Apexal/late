@@ -3,8 +3,17 @@ const SMS = require('../../integrations/sms')
 const ical = require('node-ical')
 const request = require('request-promise')
 const moment = require('moment')
+const { createIssue } = require('../../modules/github')
 
 const CALENDAR_URL = 'http://events.rpi.edu/cal/misc/export.gdo?b=de'
+
+async function submitGitHubIssue (ctx) {
+  const { title, description } = ctx.request.body
+
+  // call function from github.js file
+  createIssue(ctx.state.user.rcs_id, title, description)
+  ctx.ok({ message: 'Submittd issue to GitHub!' })
+}
 
 async function getAcademicCalendarEvents (ctx) {
   const response = await request.post(CALENDAR_URL, {

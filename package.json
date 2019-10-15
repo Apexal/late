@@ -20,6 +20,7 @@
     "@fullcalendar/interaction": "^4.3.0",
     "@fullcalendar/timegrid": "^4.3.0",
     "@fullcalendar/vue": "^4.3.1",
+    "@octokit/rest": "^16.33.1",
     "@sendgrid/mail": "^6.4.0",
     "@sentry/browser": "^5.6.3",
     "@sentry/integrations": "^5.6.1",
