@@ -12,7 +12,7 @@ async function submitGitHubIssue (ctx) {
 
   // call function from github.js file
   createIssue(ctx.state.user.rcs_id, title, description)
-  ctx.ok({ message: 'Submittd issue to GitHub!' })
+  ctx.ok({ message: 'Submitted issue to GitHub!' })
 }
 
 async function getAcademicCalendarEvents (ctx) {
@@ -198,5 +198,6 @@ module.exports = {
   submitSMS,
   verifySMS,
   disableSMS,
-  saveNotificationPreferences
+  saveNotificationPreferences,
+  submitGitHubIssue
 }

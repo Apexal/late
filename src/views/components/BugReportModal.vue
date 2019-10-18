@@ -16,21 +16,15 @@
         <form>
           Enter a title for this bug report. <br>
           <input
-
+            v-model="title"
             type="text"
             name="title"
             class="input"
           > <br><br>
-          <i>Optional: Enter your RCS ID here so we can contact you for more information and give you credit for reporting this bug.
-          </i><br><input
-            id="rcsid"
-            style="width: 150px;"
-            type="text"
-            class="input"
-          ><br><br>
           Describe the bug in as much detail as possible.<br>
           <textarea
             id="description"
+            v-model="description"
             name="description"
             style="width:600px; height:200px;"
             class="textarea"
@@ -38,7 +32,10 @@
         </form>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success">
+        <button
+          class="button is-success"
+          @click="submit()"
+        >
           Submit bug report
         </button>
         <button
@@ -58,8 +55,31 @@ export default {
   name: 'BugReportModal',
   props: {
     open: Boolean
+  },
+  data () {
+    return {
+      'title': 'Bug report',
+      'description': 'Bug report description'
+    }
+  },
+  methods: {
+    async submit () {
+      try {
+        let request
+        request = await this.$route.post('/githubissue', {
+          params: { title: this.title, description: this.description }
+        })
+      } catch (e) {
+        this.$buefy.toast.open({
+          message: e.response,
+          type: 'is-danger'
+        })
+      }
+    }
   }
+
 }
+
 </script>
 
 <style>
