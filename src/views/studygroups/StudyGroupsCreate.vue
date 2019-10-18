@@ -63,7 +63,7 @@
             rounded
             placeholder="Select a time"
             icon="clock"
-            :hour-format="true"
+            :hour-format="'12'"
           />
         </div>
       </div>
@@ -81,6 +81,7 @@
             v-model="chosenLocation"
             type="text"
             size="is-medium"
+            placeholder="Add a location that the study group will meet"
           />
         </div>
       </div>
@@ -94,10 +95,12 @@
         <b-input
           v-model="groupDescription"
           type="textarea"
+          size="is-medium"
+          placeholder="Add a title and description of this study group"
         />
       </div>
       <div
-        class="create-buttons"
+        class="group-sharing"
       >
         <hr>
         <h1 class="subtitle study-group-heading">
@@ -131,7 +134,7 @@
               placeholder="Member RCS ID"
             />
             <b-button
-              type="is-success"
+              type="is-warning"
               style="float:left; margin-top:15px; margin-left:15px"
               @click="addMember"
             >
@@ -140,7 +143,7 @@
           </div>
           <div
             class="member-tags"
-            style="position:absolute; margin-top:75px"
+            style="clear:left; float:left; margin-top:15px"
           >
             <b-tag
               v-for="member in memberList"
@@ -154,6 +157,16 @@
             </b-tag>
           </div>
         </div>
+      </div>
+      <div
+        class="buttons-div"
+        style="clear:left; float:left; margin-top:30px"
+      >
+        <b-button
+          type="is-success"
+        >
+          Create Study Group
+        </b-button>
       </div>
     </div>
   </div>
@@ -179,7 +192,7 @@ export default {
       chosenCourse: '',
       chosenDate: '',
       chosenDateEvent: [],
-      chosenTime: '',
+      chosenTime: null,
       chosenLocation: '',
       groupDescription: '',
       publicPrivate: '',
