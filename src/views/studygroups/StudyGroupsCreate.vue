@@ -13,6 +13,7 @@
           v-model="chosenCourse"
           :true-value="course"
           false-value=""
+          style="top:4px"
         />
         <span class="has-text-grey">
           {{ course.summary }}
