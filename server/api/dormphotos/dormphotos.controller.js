@@ -123,7 +123,7 @@ async function confirmDormPhoto (ctx) {
 
   await confirmedDormPhoto.save()
 
-  logger.info(`${ctx.state.user.rcs_id} confirmed a dorm photo submission`)
+  logger.info(`${ctx.state.user.identifier} confirmed a dorm photo submission`)
 
   return ctx.created({ confirmedDormPhoto })
 }
@@ -154,7 +154,7 @@ async function removeDormPhoto (ctx) {
 
   removedDormPhoto.remove()
 
-  logger.info(`${ctx.state.user.rcs_id} denied a dorm photo submission`)
+  logger.info(`${ctx.state.user.identifier} denied a dorm photo submission`)
 
   ctx.ok({
     removedDormPhoto

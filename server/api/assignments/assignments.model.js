@@ -40,6 +40,12 @@ const schema = new Schema(
         ref: 'Block'
       }
     ],
+    tasks: [{
+      text: { type: String, minlength: 3, maxlength: 200, required: true },
+      addedAt: { type: Date, required: true },
+      completed: { type: Boolean, default: false },
+      completedAt: Date
+    }],
     isRecurring: {
       type: Boolean,
       default: false
@@ -71,6 +77,10 @@ const schema = new Schema(
 
 schema.set('toObject', { getters: true, virtuals: true })
 schema.set('toJSON', { getters: true, virtuals: true })
+
+schema.virtual('identifier').get(function () {
+  return `${this.shared ? 'Shared ' : ''}Assignment '${this.title}' (${this._id})`
+})
 
 schema.virtual('assessmentType').get(function () {
   return 'assignment'

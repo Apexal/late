@@ -41,11 +41,11 @@ async function createTodo (ctx) {
   try {
     await todo.save()
   } catch (e) {
-    logger.error(`Failed to save new todo for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to save new todo for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('There was an error adding the todo.')
   }
 
-  logger.info(`Added todo for ${ctx.state.user.rcs_id}`)
+  logger.info(`Added todo for ${ctx.state.user.identifier}`)
   return ctx.created({ createdTodo: todo })
 }
 
@@ -65,16 +65,19 @@ async function updateTodo (ctx) {
     _student: ctx.state.user._id
   })
 
-  if (todo) {
-    if (typeof text === 'string') {
-      todo.text = text
-    }
-    if (typeof completed === 'number' || completed === null) {
-      todo.completed = completed
-    }
-
-    todo.save()
+  if (!todo) {
+    return ctx.notFound('No todo item could be found that matches this criteria.')
   }
+
+  if (typeof text === 'string') {
+    todo.text = text
+  }
+  if (typeof completed === 'number' || completed === null) {
+    todo.completed = completed
+  }
+
+  todo.save()
+
   ctx.ok({ todo })
 }
 
@@ -91,9 +94,13 @@ async function deleteTodo (ctx) {
     _student: ctx.state.user._id
   })
 
+  if (!deletedTodo) {
+    return ctx.notFound('No todo item could be found that matches this criteria.')
+  }
+
   deletedTodo.remove()
 
-  logger.info(`Deleted todo for ${ctx.state.user.rcs_id}`)
+  logger.info(`Deleted todo for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedTodo })
 }
 

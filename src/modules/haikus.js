@@ -58,5 +58,10 @@ export default [
     'SIS-Man speaks to you',
     'you do not belong here child',
     'look for help elsewhere'
+  ],
+  [
+    'F I V E  Five',
+    'S E V E N  Seven',
+    'F I V E  Five'
   ]
 ]

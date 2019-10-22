@@ -48,11 +48,13 @@
       @select="select"
     />
     <b-button
+      id="fullscreen-toggle"
+      class="enter-fullscreen"
       title="Toggle Fullscreen"
-      class="fullscreen-toggle"
       @click="toggleFullscreen"
     >
       <i class="fas fa-expand-arrows-alt" />
+      <i class="fas fa-compress-arrows-alt" />
     </b-button>
   </div>
 </template>
@@ -168,7 +170,7 @@ export default {
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
         .concat(workBlocks)
-        .concat(this.academicCalendarEvents)
+        // .concat(this.academicCalendarEvents)
     },
     earliest () {
       const earliest = this.$store.state.auth.user.earliestWorkTime
@@ -246,9 +248,13 @@ export default {
     toggleFullscreen () {
       if (document.fullscreenElement) {
         document.exitFullscreen()
+        document.getElementById('fullscreen-toggle').classList.remove('exit-fullscreen')
+        document.getElementById('fullscreen-toggle').classList.add('enter-fullscreen')
       } else {
         const div = document.getElementById('calendar-holder')
         div.requestFullscreen()
+        document.getElementById('fullscreen-toggle').classList.remove('enter-fullscreen')
+        document.getElementById('fullscreen-toggle').classList.add('exit-fullscreen')
       }
     },
     select ({ start, end }) {
@@ -448,9 +454,18 @@ export default {
     }
   }
 }
-.fullscreen-toggle {
+#fullscreen-toggle {
   float: right;
-  margin-top: -35px;
   z-index: 10;
+}
+.enter-fullscreen {
+  transition: 0.2s;
+  margin-top: -35px;
+  .fa-compress-arrows-alt { display: none; }
+}
+.exit-fullscreen {
+  transition: 0.2s;
+  margin-top: -50px;
+  .fa-expand-arrows-alt { display: none; }
 }
 </style>

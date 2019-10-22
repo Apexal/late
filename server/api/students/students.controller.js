@@ -15,7 +15,7 @@ const Block = require('../blocks/blocks.model')
  **/
 async function loginAs (ctx) {
   if (ctx.state.env !== 'development') {
-    return ctx.forbidden('Not in development mode.')
+    return ctx.forbidden('Nice try, hackerman.')
   }
 
   const rcsID = ctx.request.query.rcs_id
@@ -25,10 +25,12 @@ async function loginAs (ctx) {
   let student = await Student.findOne()
     .byUsername(ctx.session.cas_user.toLowerCase())
     .exec()
+
   if (!student) {
     student = Student({
       rcs_id: ctx.session.cas_user,
-      lastLogin: new Date()
+      lastLogin: new Date(),
+      admin: true // Users on the dev server will only be admins
     })
     await student.save()
     logger.info('Created new user for testing.')
@@ -191,14 +193,14 @@ async function getStudent (ctx) {
   }
   const studentID = ctx.params.studentID
 
-  logger.info(`Getting student ${studentID} for ${ctx.state.user.rcs_id}`)
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }
+  logger.info(`Getting student ${student.rcs_id} for ${ctx.state.user.identifier}`)
   const counts = {}
   if (ctx.query.counts) {
     // Also get stats
@@ -227,7 +229,7 @@ async function editStudent (ctx) {
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for admin ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for admin ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }
@@ -265,7 +267,7 @@ async function deleteStudent (ctx) {
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for admin ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for admin ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }

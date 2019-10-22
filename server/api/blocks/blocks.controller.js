@@ -34,7 +34,7 @@ async function addWorkBlock (ctx) {
   try {
     await newBlock.save()
   } catch (e) {
-    logger.error(`Failed to save new block for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to save new block for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('There was an error scheduling the work block.')
   }
 
@@ -88,7 +88,7 @@ async function addWorkBlock (ctx) {
     return ctx.badRequest('There was an error scheduling the work block.')
   }
 
-  logger.info(`Adding work block for ${ctx.state.user.rcs_id}`)
+  logger.info(`Adding work block for ${ctx.state.user.identifier}`)
 
   if (ctx.state.user.integrations.google.calendarID) {
     try {
@@ -129,8 +129,8 @@ async function editWorkBlock (ctx) {
   })
 
   if (!editedBlock) {
-    logger.error(`Could not find work block ${blockID} for ${ctx.state.user.rcs_id} to edit`)
-    return ctx.notFound(`Could'nt find work block to edit!`)
+    logger.error(`Could not find work block ${blockID} for ${ctx.state.user.identifier} to edit`)
+    return ctx.notFound(`Couldn't find work block to edit!`)
   }
 
   editedBlock.set(ctx.request.body)
@@ -139,7 +139,7 @@ async function editWorkBlock (ctx) {
     await editedBlock.save()
   } catch (e) {
     logger.error(
-      `Failed to edit work block for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to edit work block for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error updatng the work block.')
   }
@@ -182,7 +182,7 @@ async function editWorkBlock (ctx) {
     )
   }
 
-  logger.info(`Edited work block for ${ctx.state.user.rcs_id}`)
+  logger.info(`Edited work block for ${ctx.state.user.identifier}`)
 
   if (ctx.state.user.integrations.google.calendarID) {
     try {
@@ -224,7 +224,7 @@ async function deleteWorkBlock (ctx) {
   })
 
   if (!removedBlock) {
-    logger.error(`Could not find work block ${blockID} to remove for ${ctx.state.user.rcs_id}`)
+    logger.error(`Could not find work block ${blockID} to remove for ${ctx.state.user.identifier}`)
     return ctx.notFound(`Could not find the work block to delete!`)
   }
 
@@ -272,7 +272,7 @@ async function deleteWorkBlock (ctx) {
     )
   }
 
-  logger.info(`Deleted work block for ${ctx.state.user.rcs_id}`)
+  logger.info(`Deleted work block for ${ctx.state.user.identifier}`)
 
   if (ctx.state.user.integrations.google.calendarID) {
     try {
