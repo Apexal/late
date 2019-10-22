@@ -29,11 +29,6 @@ export default {
     },
     id: { type: Number, default: 0 }
   },
-  watch: {
-    options: function (n, o) {
-      console.log(this.options.showResults)
-    }
-  },
   methods: {
     async addVote (obj) {
       // send voted data to database
