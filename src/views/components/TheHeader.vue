@@ -289,9 +289,9 @@
 
                 <a
                   class="navbar-item"
-                  href="https://github.com/Apexal/late/issues/new/choose"
                   target="none"
                   title="Report a bug or request a feature on GitHub"
+                  @click="isBugReportModalOpen = true"
                 >
                   <span class="icon bug-report">
                     <i
@@ -364,6 +364,11 @@
         </div>
       </div>
     </nav>
+    <BugReportModal
+      :open="isBugReportModalOpen"
+      false
+      @close-modal="isBugReportModalOpen = false"
+    />
     <b-modal
       class="rick-roll-modal"
       style="height: 100%;"
@@ -383,10 +388,15 @@
 </template>
 
 <script>
+import BugReportModal from './BugReportModal.vue'
 export default {
   name: 'TheHeader',
+  components: {
+    BugReportModal
+  },
   data () {
     return {
+      isBugReportModalOpen: false,
       rickRollModalOpen: false
     }
   },
