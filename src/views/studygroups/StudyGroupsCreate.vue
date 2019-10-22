@@ -27,148 +27,176 @@
           </span>
         </div>
       </div>
+    </div>
+    <div
+      class="group-title"
+    >
+      <hr>
+      <h1 class="subtitle study-group-heading">
+        Add a title
+      </h1>
       <div
-        class="date-selection"
+        style="width:50%"
       >
-        <hr>
-        <h1 class="subtitle study-group-heading">
-          Select a date
-        </h1>
-        <FullCalendar
-          ref="calendar"
-          :plugins="calendar.plugins"
-          :editable="false"
-          :selectable="false"
-          :header="calendar.header"
-          :height="500"
-          default-view="dayGridMonth"
-          time-format="h(:mm)t"
-          time-zone="local"
-          :valid-range="calendar.validRange"
-          :events="chosenDateEvent"
-          @dateClick="dateClick"
+        <b-input
+          v-model="groupTitle"
+          type="text"
+          size="is-medium"
+          placeholder="Add a title for this study group"
         />
       </div>
+    </div>
+    <div
+      class="group-description"
+    >
+      <hr>
+      <h1 class="subtitle study-group-heading">
+        Add a description
+      </h1>
       <div
-        class="time-selection"
+        style="width:50%"
       >
-        <hr>
-        <h1 class="subtitle study-group-heading">
-          Select a time
-        </h1>
-        <div
-          style="width:25%"
-        >
-          <b-timepicker
-            v-model="chosenTime"
-            rounded
-            placeholder="Select a time"
-            icon="clock"
-            :hour-format="'12'"
-          />
-        </div>
-      </div>
-      <div
-        class="location-selection"
-      >
-        <hr>
-        <h1 class="subtitle study-group-heading">
-          Select a location
-        </h1>
-        <div
-          style="width:50%"
-        >
-          <b-input
-            v-model="chosenLocation"
-            type="text"
-            size="is-medium"
-            placeholder="Add a location that the study group will meet"
-          />
-        </div>
-      </div>
-      <div
-        class="group-description"
-      >
-        <hr>
-        <h1 class="subtitle study-group-heading">
-          Add a description
-        </h1>
         <b-input
           v-model="groupDescription"
           type="textarea"
           size="is-medium"
-          placeholder="Add a title and description of this study group"
+          placeholder="Add a description of this study group"
         />
       </div>
+    </div>
+    <div
+      class="date-selection"
+    >
+      <hr>
+      <h1 class="subtitle study-group-heading">
+        Select a date
+      </h1>
+      <FullCalendar
+        ref="calendar"
+        :plugins="calendar.plugins"
+        :editable="false"
+        :selectable="false"
+        :header="calendar.header"
+        :height="500"
+        default-view="dayGridMonth"
+        time-format="h(:mm)t"
+        time-zone="local"
+        :valid-range="calendar.validRange"
+        :events="chosenDateEvent"
+        @dateClick="dateClick"
+      />
+    </div>
+    <div
+      class="time-selection"
+    >
+      <hr>
+      <h1 class="subtitle study-group-heading">
+        Select a time
+      </h1>
       <div
-        class="group-sharing"
+        style="width:25%"
       >
-        <hr>
-        <h1 class="subtitle study-group-heading">
-          Study Group Sharing
-        </h1>
-        <b-radio
-          v-model="publicPrivate"
-          native-value="public"
-        >
-          Public
-        </b-radio>
-        <b-radio
-          v-model="publicPrivate"
-          native-value="private"
-          style="margin-left:25px"
-        >
-          Private
-        </b-radio>
+        <b-timepicker
+          v-model="chosenTime"
+          rounded
+          placeholder="Select a time"
+          icon="clock"
+          :hour-format="'12'"
+        />
+      </div>
+    </div>
+    <div
+      class="group-location"
+    >
+      <hr>
+      <h1 class="subtitle study-group-heading">
+        Add a location
+      </h1>
+      <div
+        style="width:50%"
+      >
+        <b-input
+          v-model="groupLocation"
+          type="text"
+          size="is-medium"
+          placeholder="Add a location for this study group"
+        />
+      </div>
+    </div>
+    <div
+      class="group-sharing"
+    >
+      <hr>
+      <h1 class="subtitle study-group-heading">
+        Study Group Sharing
+      </h1>
+      <b-radio
+        v-model="publicPrivate"
+        native-value="public"
+      >
+        Public
+      </b-radio>
+      <b-radio
+        v-model="publicPrivate"
+        native-value="private"
+        style="margin-left:25px"
+      >
+        Private
+      </b-radio>
+      <div
+        v-if="publicPrivate === 'private'"
+        class="add-members"
+      >
         <div
-          v-if="publicPrivate === 'private'"
-          class="add-members"
+          class="enter-members"
         >
-          <div
-            class="enter-members"
+          <b-field
+            style="margin-top:15px"
           >
             <b-input
               v-model="memberRCS"
               type="text"
-              size="is-medium"
-              style="width:25%; margin-top:15px; float:left"
               placeholder="Member RCS ID"
+              size="is-medium"
+              @keyup.native.enter="addMember"
             />
-            <b-button
-              type="is-warning"
-              style="float:left; margin-top:15px; margin-left:15px"
-              @click="addMember"
-            >
-              Add to Study Group
-            </b-button>
-          </div>
-          <div
-            class="member-tags"
-            style="clear:left; float:left; margin-top:15px"
+            <p class="control">
+              <b-button
+                type="is-warning"
+                size="is-medium"
+                @click="addMember"
+              >
+                Add to Study Group
+              </b-button>
+            </p>
+          </b-field>
+        </div>
+        <div
+          class="member-tags"
+          style="clear:left; float:left; margin-top:15px"
+        >
+          <b-tag
+            v-for="member in memberList"
+            :key="member"
+            size="is-large"
+            closable
+            style="margin-right:15px"
+            @close="removeMember(member)"
           >
-            <b-tag
-              v-for="member in memberList"
-              :key="member"
-              size="is-large"
-              closable
-              style="margin-right:15px"
-              @close="removeMember(member)"
-            >
-              {{ member }}
-            </b-tag>
-          </div>
+            {{ member }}
+          </b-tag>
         </div>
       </div>
-      <div
-        class="buttons-div"
-        style="clear:left; float:left; margin-top:30px"
+    </div>
+    <div
+      class="buttons-div"
+      style="clear:left; float:left; margin-top:30px"
+    >
+      <b-button
+        type="is-success"
       >
-        <b-button
-          type="is-success"
-        >
-          Create Study Group
-        </b-button>
-      </div>
+        Create Study Group
+      </b-button>
     </div>
   </div>
 </template>
@@ -194,7 +222,8 @@ export default {
       chosenDate: '',
       chosenDateEvent: [],
       chosenTime: null,
-      chosenLocation: '',
+      groupLocation: '',
+      groupTitle: '',
       groupDescription: '',
       publicPrivate: '',
       memberRCS: '',
@@ -231,6 +260,9 @@ export default {
     addMember () {
       if (this.memberList.includes(this.memberRCS)) {
         alert('This person is already in the list!')
+        return 0
+      }
+      if (this.memberRCS === '') {
         return 0
       }
       this.memberList.push(this.memberRCS)
