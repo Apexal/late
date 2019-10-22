@@ -13,7 +13,7 @@ module.exports = {
       repo,
       labels: ['Automated', 'User Submitted'],
       title: '[AUTOMATED] ' + title || 'User Submitted Issue',
-      body: body ? `**Issue submitted from the web app by ${submitterRCSID}**\n>${body}` : 'The use did not give any further info.'
+      body: body ? `**Issue submitted from the web app by ${submitterRCSID}**\n---\n${body}` : 'The use did not give any further info.'
     })
   }
 }
