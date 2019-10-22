@@ -12,11 +12,8 @@ module.exports = {
       owner,
       repo,
       labels: ['Automated', 'User Submitted'],
-      title: title || 'User Submitted Issue',
+      title: '[AUTOMATED] ' + title || 'User Submitted Issue',
       body: body ? `**Issue submitted from the web app by ${submitterRCSID}**\n>${body}` : 'The use did not give any further info.'
     })
   }
 }
-
-// LOOK IN QUICKLINKS.VUE IN SRC/VIEWS/QUICKLINKS for example of how to make server request
-// announcementsModal has an example;

@@ -34,6 +34,7 @@
       <footer class="modal-card-foot">
         <button
           class="button is-success"
+          data-dismiss="modal"
           @click="submit()"
         >
           Submit bug report
@@ -58,23 +59,24 @@ export default {
   },
   data () {
     return {
-      'title': 'Bug report',
-      'description': 'Bug report description'
+      'title': '',
+      'description': ''
     }
   },
   methods: {
     async submit () {
       try {
         let request
-        request = await this.$route.post('/githubissue', {
-          params: { title: this.title, description: this.description }
-        })
+        request = await this.$http.post('/integrations/githubissue', { title: this.title, description: this.description })
+        this.$emit('close-modal')
       } catch (e) {
         this.$buefy.toast.open({
-          message: e.response,
+          message: e.message,
           type: 'is-danger'
         })
       }
+      this.title = ''
+      this.description = ''
     }
   }
 
