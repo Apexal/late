@@ -9,26 +9,31 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
-          Report a bug
+          Report a Bug
         </p>
       </header>
       <section class="modal-card-body">
         <form>
-          Enter a title for this bug report. <br>
-          <input
-            v-model="title"
-            type="text"
-            name="title"
-            class="input"
-          > <br><br>
-          Describe the bug in as much detail as possible.<br>
-          <textarea
-            id="description"
-            v-model="description"
-            name="description"
-            style="width:600px; height:200px;"
-            class="textarea"
-          />
+          <b-field label="Title">
+            <b-input
+              v-model="title"
+              type="text"
+              name="title"
+              required
+            />
+          </b-field>
+
+          <b-field label="Description">
+            <textarea
+              id="description"
+              v-model="description"
+              name="description"
+              style="width:600px; height:200px;"
+              class="textarea"
+              placeholder="Give a description of the bug you encountered."
+              required
+            />
+          </b-field>
         </form>
       </section>
       <footer class="modal-card-foot">
@@ -37,7 +42,7 @@
           data-dismiss="modal"
           @click="submit()"
         >
-          Submit bug report
+          Submit
         </button>
         <button
           class="button"
@@ -55,18 +60,20 @@
 export default {
   name: 'BugReportModal',
   props: {
-    open: Boolean
+    open: { type: Boolean, default: false }
   },
   data () {
     return {
-      'title': '',
-      'description': ''
+      title: '',
+      description: ''
     }
   },
   methods: {
     async submit () {
+      if (!this.title.length || !this.description.length) return
+
+      let request
       try {
-        let request
         request = await this.$http.post('/integrations/githubissue', { title: this.title, description: this.description })
         this.$emit('close-modal')
       } catch (e) {
@@ -75,6 +82,12 @@ export default {
           type: 'is-danger'
         })
       }
+
+      this.$buefy.toast.open({
+        message: 'Thanks for submitting! It has been sent straight to the GitHub repo.',
+        type: 'is-success'
+      })
+
       this.title = ''
       this.description = ''
     }
