@@ -301,6 +301,11 @@ export default {
     async submitLink () {
       this.loading = true
 
+      // concatonates an https://www. if one is not present
+      if (!this.newLink.url.includes('http')) {
+        this.newLink.url = 'https://www.'.concat(this.newLink.url)
+      }
+
       let request
       try {
         request = await this.$http.post('/quicklinks', { ...this.newLink, category: this.newLink.category === 'other' ? this.otherCategory : this.newLink.category })

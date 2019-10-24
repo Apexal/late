@@ -29,13 +29,14 @@
             </b-button>
           </div>
           <b-field>
-            <b-input
+            <input
               v-model="newCategory"
+              class="input"
               type="text"
               placeholder="New category"
               required
               list="recommended-categories"
-            />
+            >
             <datalist id="recommended-categories">
               <option
                 v-for="(c, index) in remainingRecommendedCategories"

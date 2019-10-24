@@ -22,7 +22,7 @@ async function getTermCourses (ctx) {
     termCode
   }).sort('-credits title')
 
-  logger.info(`Sending term ${termCode} courses to ${ctx.state.user.rcs_id}`)
+  logger.info(`Sending term ${termCode} courses to ${ctx.state.user.identifier}`)
 
   return ctx.ok({ courses })
 }
@@ -43,6 +43,10 @@ async function updateCourse (ctx) {
       _student: ctx.state.user._id
     })
 
+    if (!course) {
+      return ctx.notFound('A course that matches this criteria could not be found.')
+    }
+
     const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle']
     if (forbiddenProperties.some(prop => prop in forbiddenProperties)) {
       throw new Error(
@@ -53,11 +57,11 @@ async function updateCourse (ctx) {
 
     await course.save()
   } catch (e) {
-    logger.error(`Failed to update course for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to update course for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('There was an error updating the course.')
   }
 
-  logger.info(`Updated course for ${ctx.state.user.rcs_id}`)
+  logger.info(`Updated course for ${ctx.state.user.identifier}`)
   return ctx.created({ updatedCourse: course })
 }
 
@@ -78,14 +82,14 @@ async function removeCourse (ctx) {
       _student: ctx.state.user._id
     })
   } catch (e) {
-    logger.error(`Failed to remove course ${courseID} for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to remove course ${courseID} for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('There was an error getting the course.')
   }
 
   if (!course) return ctx.notFound('Couldn\'t find the course to delete!')
 
   await course.remove()
-  logger.info(`Removed course ${course.originalTitle} for student ${ctx.state.user.rcs_id}`)
+  logger.info(`Removed course ${course.originalTitle} for student ${ctx.state.user.identifier}`)
   return ctx.ok({ removedCourse: course })
 }
 

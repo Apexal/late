@@ -26,7 +26,7 @@ module.exports = server => {
           online.push(user.rcs_id)
           sessionCounts[user.rcs_id] = 1
           socket.to('notifications').emit('user online', user.rcs_id)
-          logger.info(`${user.rcs_id} is now online`)
+          logger.info(`${user.identifier} is now online`)
         } else {
           sessionCounts[user.rcs_id]++
         }
@@ -44,7 +44,7 @@ module.exports = server => {
           online = online.filter(rcsId => rcsId !== socket.client.user.rcs_id)
           io.emit('online', online)
 
-          logger.info(`${socket.client.user.rcs_id} is now offline`)
+          logger.info(`${socket.client.user.identifier} is now offline`)
 
           socket.to('notifications').emit('user offline', socket.client.user.rcs_id)
         }
@@ -62,6 +62,7 @@ module.exports = server => {
       for (const sID in allSockets) {
         if (allSockets[sID].auth && allSockets[sID].client.user.rcs_id === targetRcsID) { allSockets[sID].emit('sis man message', message) }
       }
+      logger.info(`${socket.client.user.identifier} sent SIS man message to ${targetRcsID}: "${message}"`)
     })
     /* end FUN */
 

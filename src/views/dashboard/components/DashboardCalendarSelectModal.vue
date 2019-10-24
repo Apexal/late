@@ -25,10 +25,10 @@
       >
         <span style="flex: 1">
           <span
-            class="tag assessment-type-tag"
+            class="tag"
             :style="{'background-color': course(assessment.courseCRN).color}"
-          >{{ assessment.assessmentType }}</span>
-          {{ assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for' }}
+          >{{ course(assessment.courseCRN).title }}</span>
+          {{ assessment.assessmentType === 'assessment' ? 'Work on' : 'Study for' }}
           <b>{{ assessment.title }}</b>
           <i
             v-if="

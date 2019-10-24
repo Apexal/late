@@ -110,7 +110,7 @@ async function googleAuth (ctx) {
 
   // Create calendar
   if (!ctx.state.user.integrations.google.calendarID) {
-    logger.info(`Creating Google Calendar for ${ctx.state.user.rcs_id}`)
+    logger.info(`Creating Google Calendar for ${ctx.state.user.identifier}`)
     let request
     try {
       request = await calendar.calendars.insert({
@@ -135,9 +135,13 @@ async function googleAuth (ctx) {
       })
 
       ctx.state.user.integrations.google.calendarID = request.data.id
+
+      const termCode = ctx.session.currentTerm.code
+      const courses = await ctx.state.user.getCoursesForTerm(termCode)
+      await google.actions.createRecurringEventsFromCourseSchedule(googleAuth, request.data.id, termCode, courses)
     } catch (e) {
       logger.error(
-        `Failed to create new calendar for ${ctx.state.user.rcs_id}: ${e}`
+        `Failed to create new calendar for ${ctx.state.user.identifier}: ${e}`
       )
       return ctx.badRequest('Failed to create new Google Calendar.')
     }
@@ -157,7 +161,7 @@ async function discordAuth (ctx) {
   const creds = btoa(
     `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`
   )
-  logger.info(`Authenticating ${ctx.state.user.rcs_id} through Discord...`)
+  logger.info(`Authenticating ${ctx.state.user.identifier} through Discord...`)
   const tokens = await request({
     uri: `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${
       process.env.DISCORD_CALLBACK_URL
@@ -209,7 +213,7 @@ async function discordAuth (ctx) {
     json: true
   })
   logger.info(
-    `Added ${ctx.state.user.rcs_id} to the LATE Discord server as @${
+    `Added ${ctx.state.user.identifier} to the LATE Discord server as @${
       ctx.state.user.displayName
     }`
   )

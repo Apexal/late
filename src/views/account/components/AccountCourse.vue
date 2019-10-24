@@ -79,10 +79,10 @@
                 <i class="fa fa-link" />
               </span>
               <a
-                :href="l"
+                :href="l.url"
                 target="_blank"
                 style="color: white"
-              >{{ l }}</a>
+              >{{ l.name }}</a>
             </b-tag>
           </b-taglist>
         </div>
@@ -152,16 +152,23 @@
               @close="editedLinks.splice(index, 1)"
             >
               <i class="fa fa-link" />
-              {{ link }}
+              {{ link.name }} -
+              {{ link.url }}
             </b-tag>
           </b-taglist>
           <div class="field has-addons">
             <div class="control has-icons-left has-icons-right is-expanded">
               <input
                 :id="'course-links-' + elementID"
-                v-model="newLink"
+                v-model="newLink.url"
                 class="input is-primary"
-                placeholder="Add link"
+                placeholder="Link url"
+              >
+              <input
+                :id="'course-links-' + elementID"
+                v-model="newLink.name"
+                class="input is-primary"
+                placeholder="Link name"
               >
               <span class="icon is-small is-left">
                 <i
@@ -376,7 +383,10 @@ export default {
   data () {
     return {
       open: false,
-      newLink: '',
+      newLink: {
+        name: '',
+        url: ''
+      },
       courseData: Object.assign({}, this.course),
       editedLinks: this.course.links.slice(0),
       editedPeriods: JSON.parse(JSON.stringify(this.course.periods)),

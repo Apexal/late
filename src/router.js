@@ -357,10 +357,14 @@ const router = new Router({
       children: [
         {
           path: '',
-          redirect: 'students'
+          redirect: 'students/1'
         },
         {
           path: 'students',
+          redirect: 'students/1'
+        },
+        {
+          path: 'students/:page',
           name: 'admin-student-list',
           meta: {
             title: 'Students'
