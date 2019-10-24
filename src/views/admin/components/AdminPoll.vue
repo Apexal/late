@@ -51,13 +51,16 @@
               <b-field
                 v-if="options.question && options.answers.length > 0"
               >
+                <div class="endDate">
+                  End Date:
+                </div>
                 <b-datepicker
-                  v-model="options.endDate"
+                  v-model="endDate"
                   placeholder="Type or select a date..."
                   editable
                 />
                 <b-timepicker
-                  v-model="options.endDate"
+                  v-model="endDate"
                   placeholder="Type or select a time..."
                   hour-format="12"
                 />
@@ -103,11 +106,11 @@ export default {
       options: {
         question: '',
         answers: [],
-        endDate: new Date(),
         showResults: false
       },
       currentAnswer: '',
-      currentID: 0
+      currentID: 0,
+      endDate: new Date()
     }
   },
   methods: {
@@ -126,7 +129,7 @@ export default {
       // submit poll to KOA server
       let request
       try {
-        request = await this.$http.post('/polls', this.options)
+        request = await this.$http.post('/polls', { options: this.options, endDate: this.endDate })
       } catch (e) {
         console.error(e)
       }
@@ -158,5 +161,12 @@ export default {
   }
   .timepicker.control {
     padding-right: 10px;
+  }
+  .endDate {
+    vertical-align: middle;
+    padding-left: 1em;
+    padding-right: 1.5em;
+    font-size: 1.1em;
+    font-weight: bold;
   }
 </style>

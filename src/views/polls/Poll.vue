@@ -22,7 +22,6 @@ export default {
         return {
           question: '',
           answers: [],
-          endDate: new Date(),
           showResults: Boolean,
           UID: Number
         }

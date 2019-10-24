@@ -5,11 +5,11 @@ const schema = new Schema({
   options: {
     question: String,
     answers: [{ value: Number, text: String, votes: Number }],
-    endDate: Date,
     showResults: { type: Boolean, default: false },
     UID: { type: String, default: '0' }
   },
-  voted: { type: Map, of: Boolean, default: {} }
+  voted: { type: Map, of: Boolean, default: {} },
+  endDate: { type: Date, default: new Date() }
 })
 
 module.exports = mongoose.model('Poll', schema)

@@ -3,17 +3,19 @@ const Poll = require('./polls.model')
 async function createPoll (ctx) {
   var poll = new Poll()
 
-  poll.options.question = ctx.request.body.question
-  poll.options.answers = ctx.request.body.answers
-  poll.options.endDate = ctx.request.body.endDate
-  poll.options.showResults = ctx.request.body.showResults
+  poll.options.question = ctx.request.body.options.question
+  poll.options.answers = ctx.request.body.options.answers
+  poll.options.showResults = ctx.request.body.options.showResults
+
+  poll.endDate = ctx.request.body.endDate
 
   poll.save()
   ctx.ok()
 }
 
 async function getPolls (ctx) {
-  const polls = (await Poll.find()).map(function (p) {
+  // get polls if endDate has not passed
+  const polls = (await Poll.find({ endDate: { $gt: new Date() } })).map(function (p) {
     const hasVoted = p.voted.get(ctx.state.user.rcs_id)
     p.options.showResults = hasVoted !== undefined ? hasVoted : false
     p.options.UID = p._id

@@ -1,6 +1,7 @@
 /*
-Takes a list of polls (from koa request) and parses
-into a pagination UI
+This VueJS component can be inserted into any
+page, and will automatically retrieve any existing
+polls from MongoDB and display them on separate pages
 */
 
 <template>
@@ -8,11 +9,10 @@ into a pagination UI
     <ul>
       <li
         v-for="(poll, index) in list"
-        :key="poll.question"
+        :key="poll.UID"
       >
         <Poll
           v-if="index === current - 1"
-          :id="current-1"
           :options="list[current-1]"
         />
       </li>
@@ -60,7 +60,6 @@ export default {
     }
     this.list = request.data.polls
     this.length = this.list.length
-    console.log(this.list)
   }
 }
 </script>
