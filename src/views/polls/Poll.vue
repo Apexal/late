@@ -45,14 +45,22 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
   .vue-poll {
     font-family: Avenir,Helvetica,Arial,sans-serif;
     color: #2c3e50;
   }
-
   .qst {
     font-size: 1.3em;
-    padding-top: 1em;
+    padding-top: 5%;
+    text-align: center;
+  }
+  .vue-poll .ans-cnt {
+    margin-top: 2%;
+    margin-bottom: 4%;
+  }
+  .vue-poll .ans-cnt .ans-no-vote {
+    border: 2px solid #2E3B59;
+    border-radius: 4px;
   }
 </style>

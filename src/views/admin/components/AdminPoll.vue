@@ -57,11 +57,13 @@
                 <b-datepicker
                   v-model="endDate"
                   placeholder="Type or select a date..."
+                  icon="calendar"
                   editable
                 />
                 <b-timepicker
                   v-model="endDate"
                   placeholder="Type or select a time..."
+                  icon="clock"
                   hour-format="12"
                 />
                 <b-button
@@ -85,7 +87,7 @@
     <div class="buttons">
       <b-button
         type="is-danger"
-        icon-right="trash"
+        icon-left="trash"
         @click="deleteAllPolls"
       >
         Delete all polls
@@ -160,13 +162,13 @@ export default {
     padding-right: 10px;
   }
   .timepicker.control {
-    padding-right: 10px;
+    padding-right: 2.65%;
   }
   .endDate {
     vertical-align: middle;
-    padding-left: 1em;
-    padding-right: 1.5em;
     font-size: 1.1em;
+    padding-right: 0.7em;
     font-weight: bold;
+    white-space: nowrap;
   }
 </style>
