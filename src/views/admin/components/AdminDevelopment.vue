@@ -30,6 +30,17 @@
               required
             />
 
+            <b-datepicker
+              v-model="startDate"
+              placeholder="Starting from..."
+              icon="calendar"
+            />
+            <b-datepicker
+              v-model="endDate"
+              placeholder="Up until..."
+              icon="calendar"
+            />
+
             <button
               class="button is-info"
               type="submit"
@@ -51,6 +62,8 @@ export default {
   data () {
     return {
       assessmentType: 'assignments',
+      startDate: null,
+      endDate: null,
       count: 10
     }
   },
@@ -65,7 +78,7 @@ export default {
 
       let response
       try {
-        response = await this.$http.post(`/${this.assessmentType}/generate`, { count: this.count })
+        response = await this.$http.post(`/${this.assessmentType}/generate`, { startDate: this.startDate, endDate: this.endDate, count: this.count })
       } catch (e) {
         return this.$buefy.toast.open({
           message: e.response.data.message,
@@ -74,17 +87,17 @@ export default {
       }
 
       this.$buefy.toast.open({
-        message: `Generated ${this.count} assignments`,
+        message: `Generated ${this.count} ${this.assessmentType}!`,
         type: 'is-success'
       })
 
-      const generatedAssignments = response.data.generatedAssignments
+      const generatedAssessments = response.data.generatedAssessments
       // Add upcoming ones to Vuex
-      for (let assignment of generatedAssignments) {
+      for (let assessment of generatedAssessments) {
         if (
-          moment(assignment.date).isSameOrAfter(moment().startOf('day'))
+          moment(assessment.date).isSameOrAfter(moment().startOf('day'))
         ) {
-          await this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', assignment)
+          await this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', assessment)
         }
       }
 

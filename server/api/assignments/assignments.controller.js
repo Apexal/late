@@ -690,8 +690,7 @@ async function generateAssignments (ctx) {
   if (process.env.NODE_ENV !== 'development') return ctx.forbidden('Must be in development mode to generate assignments.')
   if (!ctx.state.user.admin) return ctx.forbidden('Must be an admin to generate assignments.')
 
-  const { count } = ctx.request.body
-
+  const { startDate, endDate, count } = ctx.request.body
   if (count < 0 || count > 30) {
     return ctx.badRequest('Count must be between 0 and 30 (inclusive)')
   }
@@ -699,18 +698,18 @@ async function generateAssignments (ctx) {
   const term = ctx.session.currentTerm
   const courses = await ctx.state.user.getCoursesForTerm(term.code)
 
-  const generatedAssignments = []
+  const generateAssessments = []
   for (let i = 0; i < count; i++) {
     const newAssignment = new Assignment({
       _student: ctx.state.user._id,
-      ...generateDummyAssignment(courses, term.code, new Date(), term.end)
+      ...generateDummyAssignment(courses, term.code, startDate, endDate)
     })
     await newAssignment.save()
 
-    generatedAssignments.push(newAssignment)
+    generateAssessments.push(newAssignment)
   }
 
-  ctx.created({ generatedAssignments })
+  ctx.created({ generateAssessments })
 }
 
 module.exports = {

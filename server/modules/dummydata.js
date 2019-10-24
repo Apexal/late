@@ -8,11 +8,11 @@ const assignmentTitleParts = [
 ]
 
 function generateDummyAssignment (courses, termCode, minDate, maxDate) {
-  const dueTimeHours = 18
-  const dueTimeMinutes = 30
+  const dueTimeHours = (Math.round(Math.random() * 10) + 23)
+  const dueTimeMinutes = (Math.round(Math.random() * 10) + 1)
 
   const daysBetween = moment(maxDate).diff(minDate, 'days')
-  const randomDays = Math.floor(Math.random() * ((daysBetween - 10) - 10)) + 10
+  const randomDays = Math.floor(Math.random() * daysBetween)
   const dueDate = moment(minDate).add(randomDays, 'days')
   dueDate.hours(dueTimeHours)
   dueDate.minutes(dueTimeMinutes)
