@@ -18,6 +18,8 @@
               v-model="assessmentType"
               name="name"
               native-value="exams"
+              disabled="true"
+              title="Someone develop this!"
             >
               Exams
             </b-radio>
@@ -45,7 +47,7 @@
               class="button is-info"
               type="submit"
             >
-              Generate
+              Generate dummy assessments
             </button>
           </form>
         </div>
