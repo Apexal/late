@@ -6,7 +6,8 @@ const schema = new Schema({
     question: String,
     answers: [{ value: Number, text: String, votes: Number }],
     endDate: Date,
-    showResults: { type: Boolean, default: false }
+    showResults: { type: Boolean, default: false },
+    UID: { type: String, default: '0' }
   },
   voted: { type: Map, of: Boolean, default: {} }
 })

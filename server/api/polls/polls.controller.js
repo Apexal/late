@@ -16,15 +16,24 @@ async function getPolls (ctx) {
   const polls = (await Poll.find()).map(function (p) {
     const hasVoted = p.voted.get(ctx.state.user.rcs_id)
     p.options.showResults = hasVoted !== undefined ? hasVoted : false
+    p.options.UID = p._id
     return p.options
   })
   return ctx.ok({ polls })
 }
 
 async function addVote (ctx) {
-  const index = ctx.request.body.id
-  const updatedPoll = (await Poll.find())[index]
+  const UID = ctx.request.body.id
+  const voteValue = ctx.request.body.value
+
+  // get poll by _id field
+  const updatedPoll = (await Poll.find({ _id: UID }))[0]
+
+  // mark user as voted
   updatedPoll.voted.set(ctx.state.user.rcs_id, true)
+
+  // increment vote count
+  updatedPoll.options.answers[voteValue].votes++
 
   try {
     await updatedPoll.save()

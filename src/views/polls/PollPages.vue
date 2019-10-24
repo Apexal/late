@@ -60,6 +60,7 @@ export default {
     }
     this.list = request.data.polls
     this.length = this.list.length
+    console.log(this.list)
   }
 }
 </script>

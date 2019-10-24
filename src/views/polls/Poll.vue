@@ -23,17 +23,23 @@ export default {
           question: '',
           answers: [],
           endDate: new Date(),
-          showResults: Boolean
+          showResults: Boolean,
+          UID: Number
         }
       }
-    },
-    id: { type: Number, default: 0 }
+    }
   },
   methods: {
     async addVote (obj) {
       // send voted data to database
       let request
-      request = await this.$http.patch('/polls', { id: this.id })
+      // options.UID: the UID of the poll in the database
+      // obj.value: the id of the user's answer
+      try {
+        request = await this.$http.patch('/polls', { id: this.options.UID, value: obj.value })
+      } catch (e) {
+        console.error(e)
+      }
       this.options.showResults = true
     }
   }
