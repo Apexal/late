@@ -395,6 +395,14 @@ const router = new Router({
             title: 'Admin Fun'
           },
           component: () => import('@/views/admin/components/AdminFun.vue')
+        },
+        {
+          path: 'development',
+          name: 'admin-development',
+          meta: {
+            title: 'Admin Dev Mode'
+          },
+          component: () => import('@/views/admin/components/AdminDevelopment.vue')
         }
       ]
     },
