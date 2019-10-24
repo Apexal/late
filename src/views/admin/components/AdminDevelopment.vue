@@ -8,7 +8,7 @@
         <div class="box dummy-assessments">
           <form @submit.prevent="generateDummyAssessments">
             <b-radio
-              v-model="radio"
+              v-model="assessmentType"
               name="name"
               native-value="assignments"
             >
@@ -25,6 +25,8 @@
             <b-input
               v-model="count"
               type="number"
+              min="1"
+              max="30"
               required
             />
 
@@ -42,6 +44,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'AdminDevelopment',
   data () {
@@ -52,6 +56,10 @@ export default {
   },
   methods: {
     async generateDummyAssessments () {
+      if (this.count < 0 || this.count > 30) {
+        this.count = 10
+        return
+      }
       // Given the data properties from the form, send them to the server who will actually
       // generate, save, and return the assessments we want to be created
 
@@ -59,10 +67,28 @@ export default {
       try {
         response = await this.$http.post(`/${this.assessmentType}/generate`, { count: this.count })
       } catch (e) {
-        alert('oops')
+        return this.$buefy.toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        })
       }
 
-      console.log(response.data)
+      this.$buefy.toast.open({
+        message: `Generated ${this.count} assignments`,
+        type: 'is-success'
+      })
+
+      const generatedAssignments = response.data.generatedAssignments
+      // Add upcoming ones to Vuex
+      for (let assignment of generatedAssignments) {
+        if (
+          moment(assignment.date).isSameOrAfter(moment().startOf('day'))
+        ) {
+          await this.$store.dispatch('ADD_UPCOMING_ASSESSMENT', assignment)
+        }
+      }
+
+      this.count = 10
     }
   }
 }

@@ -692,6 +692,10 @@ async function generateAssignments (ctx) {
 
   const { count } = ctx.request.body
 
+  if (count < 0 || count > 30) {
+    return ctx.badRequest('Count must be between 0 and 30 (inclusive)')
+  }
+
   const term = ctx.session.currentTerm
   const courses = await ctx.state.user.getCoursesForTerm(term.code)
 
