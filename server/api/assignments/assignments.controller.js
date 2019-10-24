@@ -6,6 +6,8 @@ const Assignment = require('./assignments.model')
 const Student = require('../students/students.model')
 const Unavailability = require('../unavailabilities/unavailabilities.model')
 
+const { generateDummyAssignment } = require('../../modules/dummydata')
+
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
@@ -683,6 +685,30 @@ async function deleteComment (ctx) {
   })
 }
 
+async function generateAssignments (ctx) {
+  // Make sure proper environment
+  if (process.env.NODE_ENV !== 'development') return ctx.forbidden('Must be in development mode to generate assignments.')
+  if (!ctx.state.user.admin) return ctx.forbidden('Must be an admin to generate assignments.')
+
+  const { count } = ctx.request.body
+
+  const term = ctx.session.currentTerm
+  const courses = await ctx.state.user.getCoursesForTerm(term.code)
+
+  const generatedAssignments = []
+  for (let i = 0; i < count; i++) {
+    const newAssignment = new Assignment({
+      _student: ctx.state.user._id,
+      ...generateDummyAssignment(courses, term.code, new Date(), term.end)
+    })
+    await newAssignment.save()
+
+    generatedAssignments.push(newAssignment)
+  }
+
+  ctx.created({ generatedAssignments })
+}
+
 module.exports = {
   getAssignmentMiddleware,
   getTermAssignments,
@@ -695,5 +721,6 @@ module.exports = {
   editAssignment,
   deleteAssignment,
   addComment,
-  deleteComment
+  deleteComment,
+  generateAssignments
 }

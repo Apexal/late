@@ -52,7 +52,17 @@ export default {
   },
   methods: {
     async generateDummyAssessments () {
+      // Given the data properties from the form, send them to the server who will actually
+      // generate, save, and return the assessments we want to be created
 
+      let response
+      try {
+        response = await this.$http.post(`/${this.assessmentType}/generate`, { count: this.count })
+      } catch (e) {
+        alert('oops')
+      }
+
+      console.log(response.data)
     }
   }
 }

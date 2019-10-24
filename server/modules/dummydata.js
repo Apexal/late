@@ -3,15 +3,15 @@ const moment = require('moment')
 const Assignment = require('../api/assignments/assignments.model')
 
 const assignmentTitleParts = [
-  ['Read', 'Watch', 'Review', 'Complete', 'Do', 'Start', 'Finish'],
-  ['Chapter %rand%', 'Textbook Chapter %rand%', 'Worksheet', 'Problem Set', 'Lab', 'Notes']
+  ['Read', 'Watch', 'Review', 'Complete', 'Do', 'Start', 'Finish', 'Read over'],
+  ['Chapter %rand%', 'Textbook Chapter %rand%', 'Worksheet', 'Problem Set', 'Lab', 'Notes', 'Paper', 'Story', 'Review']
 ]
 
 function generateDummyAssignment (courses, termCode, minDate, maxDate) {
   const dueTimeHours = 18
   const dueTimeMinutes = 30
 
-  const daysBetween = maxDate.diff(minDate, 'days')
+  const daysBetween = moment(maxDate).diff(minDate, 'days')
   const randomDays = Math.floor(Math.random() * ((daysBetween - 10) - 10)) + 10
   const dueDate = moment(minDate).add(randomDays, 'days')
   dueDate.hours(dueTimeHours)
@@ -40,12 +40,15 @@ function generateDummyAssignment (courses, termCode, minDate, maxDate) {
 
   const courseCRN = courses[Math.floor(Math.random() * courses.length)].crn
 
+  const time = Math.round(Math.random() * 10) + 1
   return {
     title: titlePart1 + ' ' + titlePart2,
     description: 'Dummy Assignment',
     dueDate: dueDate.toDate(),
     courseCRN,
     priority,
+    timeEstimate: time,
+    timeRemaining: time,
     termCode,
     comments: []
   }
@@ -54,15 +57,3 @@ function generateDummyAssignment (courses, termCode, minDate, maxDate) {
 module.exports = {
   generateDummyAssignment
 }
-
-const startDate = moment().subtract(20, 'days')
-const endDate = moment().add(20, 'days')
-
-const courses = [
-  { crn: 1 },
-  { crn: 2 },
-  { crn: 3 },
-  { crn: 4 }
-]
-
-console.log(generateDummyAssignment(courses, 201909, startDate, endDate))
