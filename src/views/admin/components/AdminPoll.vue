@@ -93,15 +93,22 @@
         Delete all polls
       </b-button>
     </div>
+    <div style="float: left; width: 50%;">
+      <AdminPollViewer />
+    </div>
   </div>
 </template>
 
 <script>
+
 import Poll from '@/views/polls/Poll'
+import AdminPollViewer from '@/views/polls/AdminPollViewer'
+
 export default {
   name: 'AdminFun',
   components: {
-    Poll
+    Poll,
+    AdminPollViewer
   },
   data () {
     return {

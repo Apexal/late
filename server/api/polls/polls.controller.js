@@ -15,12 +15,26 @@ async function createPoll (ctx) {
 
 async function getPolls (ctx) {
   // get polls if endDate has not passed
-  const polls = (await Poll.find({ endDate: { $gt: new Date() } })).map(function (p) {
+  // or get all polls if getAll flag is passed
+
+  const searchObj = {}
+  searchObj.endDate = ctx.query.getAll
+    ? { $gt: new Date() }
+    : { $lte: new Date() }
+  console.log(searchObj)
+
+  const sortObj = {}
+  if (ctx.query.getAll) {
+    sortObj.endDate = -1
+  }
+
+  const polls = (await Poll.find(searchObj)).map(function (p) {
     const hasVoted = p.voted.get(ctx.state.user.rcs_id)
     p.options.showResults = hasVoted !== undefined ? hasVoted : false
     p.options.UID = p._id
     return p.options
-  })
+  }).sort()
+
   return ctx.ok({ polls })
 }
 

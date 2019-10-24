@@ -5,7 +5,7 @@ polls from MongoDB and display them on separate pages
 */
 
 <template>
-  <div v-if="list.length > 0">
+  <div v-if="length > 0">
     <ul>
       <li
         v-for="(poll, index) in list"
@@ -54,7 +54,7 @@ export default {
   async mounted () {
     let request
     try {
-      request = await this.$http.get('/polls')
+      request = await this.$http.get('/polls?getAll=false')
     } catch (e) {
       console.error(e)
     }
