@@ -60,6 +60,11 @@ export default [
     'look for help elsewhere'
   ],
   [
+    'Pizza\'s a circle',
+    'The slices are triangles',
+    'The box is a square'
+  ],
+  [
     'F I V E  Five',
     'S E V E N  Seven',
     'F I V E  Five'
