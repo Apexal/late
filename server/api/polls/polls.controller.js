@@ -17,11 +17,11 @@ async function getPolls (ctx) {
   // get polls if endDate has not passed
   // or get all polls if getAll flag is passed
 
-  const flag = ctx.request.query.getAll
   const searchObj = {}
-  if (flag) {
+  if (ctx.query.getAll) {
     searchObj.endDate = { $gt: new Date() }
   }
+  console.log(searchObj)
 
   const polls = (await Poll.find(searchObj)).map(function (p) {
     const hasVoted = p.voted.get(ctx.state.user.rcs_id)
@@ -63,7 +63,8 @@ async function deletePoll (ctx) {
   if (UID) {
     request = await Poll.deleteOne({ _id: UID })
   } else {
-    request = await Poll.deleteMany({})
+    // deletes polls that have expired
+    request = await Poll.deleteMany({ endDate: { $lt: new Date() } })
   }
 
   return ctx.ok(request.deletedCount)

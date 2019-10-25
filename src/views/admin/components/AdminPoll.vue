@@ -88,10 +88,30 @@
       <b-button
         type="is-danger"
         icon-left="trash"
-        @click="deleteAllPolls"
+        @click="deleteConfirm=true"
       >
-        Delete all polls
+        Delete expired polls
       </b-button>
+      <div v-if="deleteConfirm">
+        <b-field grouped>
+          <div style="font-size: 1.5em; padding-right: 0.5em;">
+            Are you sure?
+          </div>
+          <b-button
+            type="is-danger"
+            title="There's no going back"
+            @click="deleteAllPolls"
+          >
+            Yes
+          </b-button>
+          <b-button
+            type="is-success"
+            @click="deleteConfirm=false"
+          >
+            No
+          </b-button>
+        </b-field>
+      </div>
     </div>
     <div style="float: left; width: 50%;">
       <AdminPollViewer />
@@ -119,7 +139,8 @@ export default {
       },
       currentAnswer: '',
       currentID: 0,
-      endDate: new Date()
+      endDate: new Date(),
+      deleteConfirm: false
     }
   },
   methods: {
@@ -144,6 +165,7 @@ export default {
       }
     },
     async deleteAllPolls () {
+      this.deleteConfirm = false
       let request
       try {
         request = await this.$http.delete('/polls')
