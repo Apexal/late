@@ -150,6 +150,7 @@ export default {
       } catch (e) {
         console.error(e)
       }
+      alert('You deleted ' + request.data + ' poll(s)')
     }
   }
 }

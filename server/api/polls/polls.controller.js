@@ -17,15 +17,10 @@ async function getPolls (ctx) {
   // get polls if endDate has not passed
   // or get all polls if getAll flag is passed
 
+  const flag = ctx.request.query.getAll
   const searchObj = {}
-  searchObj.endDate = ctx.query.getAll
-    ? { $gt: new Date() }
-    : { $lte: new Date() }
-  console.log(searchObj)
-
-  const sortObj = {}
-  if (ctx.query.getAll) {
-    sortObj.endDate = -1
+  if (flag) {
+    searchObj.endDate = { $gt: new Date() }
   }
 
   const polls = (await Poll.find(searchObj)).map(function (p) {
@@ -33,7 +28,7 @@ async function getPolls (ctx) {
     p.options.showResults = hasVoted !== undefined ? hasVoted : false
     p.options.UID = p._id
     return p.options
-  }).sort()
+  })
 
   return ctx.ok({ polls })
 }
@@ -61,14 +56,22 @@ async function addVote (ctx) {
 }
 
 // returns number of deleted polls
-async function deleteAllPolls (ctx) {
-  const request = await Poll.deleteMany({})
+async function deletePoll (ctx) {
+  const UID = ctx.request.query.UID
+  console.log(ctx.request.query)
+  let request
+  if (UID) {
+    request = await Poll.deleteOne({ _id: UID })
+  } else {
+    request = await Poll.deleteMany({})
+  }
+
   return ctx.ok(request.deletedCount)
 }
 
 module.exports = {
   createPoll,
   getPolls,
-  deleteAllPolls,
+  deletePoll,
   addVote
 }
