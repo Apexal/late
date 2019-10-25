@@ -1,5 +1,34 @@
 <template>
   <div v-if="length > 0">
+    <div class="buttons">
+      <b-button
+        type="is-danger"
+        icon-left="trash"
+        @click="deleteConfirm=true"
+      >
+        Delete expired polls
+      </b-button>
+      <div v-if="deleteConfirm">
+        <b-field grouped>
+          <div style="font-size: 1.5em; padding-right: 0.5em;">
+            Are you sure?
+          </div>
+          <b-button
+            type="is-danger"
+            title="There's no going back"
+            @click="deleteAllPolls"
+          >
+            Yes
+          </b-button>
+          <b-button
+            type="is-success"
+            @click="deleteConfirm=false"
+          >
+            No
+          </b-button>
+        </b-field>
+      </div>
+    </div>
     <b-pagination
       :total.sync="length"
       :current.sync="current"
@@ -40,21 +69,41 @@ export default {
     return {
       polls: Array,
       length: 0,
-      current: 1
+      current: 1,
+      deleteConfirm: false
     }
   },
   async mounted () {
-    let request
-    try {
-      request = await this.$http.get('/polls?getAll=true')
-    } catch (e) {
-      console.error(e)
+    this.getPolls()
+  },
+  methods: {
+    // send request to get polls (flag = getAll = true)
+    async getPolls () {
+      let request
+      try {
+        request = await this.$http.get('/polls?getAll=true')
+      } catch (e) {
+        console.error(e)
+      }
+      this.polls = request.data.polls
+      this.length = this.polls.length
+      this.polls.forEach(function (poll) {
+        poll.showResults = true
+      })
+    },
+    async deleteAllPolls () {
+      this.deleteConfirm = false
+      let request
+      try {
+        request = await this.$http.delete('/polls')
+      } catch (e) {
+        console.error(e)
+      }
+      // update polls list to refresh render
+      this.getPolls()
+
+      alert('You deleted ' + request.data + ' poll(s)')
     }
-    this.polls = request.data.polls
-    this.length = this.polls.length
-    this.polls.forEach(function (poll) {
-      poll.showResults = true
-    })
   }
 }
 </script>

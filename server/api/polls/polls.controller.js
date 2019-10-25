@@ -18,10 +18,11 @@ async function getPolls (ctx) {
   // or get all polls if getAll flag is passed
 
   const searchObj = {}
-  if (ctx.query.getAll) {
+  if (ctx.query.getAll === 'false') {
     searchObj.endDate = { $gt: new Date() }
+  } else {
+    searchObj.endDate = { $lte: new Date() }
   }
-  console.log(searchObj)
 
   const polls = (await Poll.find(searchObj)).map(function (p) {
     const hasVoted = p.voted.get(ctx.state.user.rcs_id)
@@ -49,7 +50,7 @@ async function addVote (ctx) {
   try {
     await updatedPoll.save()
   } catch (e) {
-    return ctx.badRquest('Error, updating poll voted')
+    return ctx.badRquest('Error, updating poll vote')
   }
 
   ctx.ok()
@@ -58,13 +59,12 @@ async function addVote (ctx) {
 // returns number of deleted polls
 async function deletePoll (ctx) {
   const UID = ctx.request.query.UID
-  console.log(ctx.request.query)
   let request
   if (UID) {
     request = await Poll.deleteOne({ _id: UID })
   } else {
     // deletes polls that have expired
-    request = await Poll.deleteMany({ endDate: { $lt: new Date() } })
+    request = await Poll.deleteMany({ endDate: { $lte: new Date() } })
   }
 
   return ctx.ok(request.deletedCount)

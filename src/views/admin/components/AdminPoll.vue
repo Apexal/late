@@ -84,37 +84,8 @@
         />
       </div>
     </div>
-    <div class="buttons">
-      <b-button
-        type="is-danger"
-        icon-left="trash"
-        @click="deleteConfirm=true"
-      >
-        Delete expired polls
-      </b-button>
-      <div v-if="deleteConfirm">
-        <b-field grouped>
-          <div style="font-size: 1.5em; padding-right: 0.5em;">
-            Are you sure?
-          </div>
-          <b-button
-            type="is-danger"
-            title="There's no going back"
-            @click="deleteAllPolls"
-          >
-            Yes
-          </b-button>
-          <b-button
-            type="is-success"
-            @click="deleteConfirm=false"
-          >
-            No
-          </b-button>
-        </b-field>
-      </div>
-    </div>
     <div style="float: left; width: 50%;">
-      <AdminPollViewer />
+      <AdminPollViewer ref="adminViewer" />
     </div>
   </div>
 </template>
@@ -139,8 +110,7 @@ export default {
       },
       currentAnswer: '',
       currentID: 0,
-      endDate: new Date(),
-      deleteConfirm: false
+      endDate: new Date()
     }
   },
   methods: {
@@ -156,6 +126,11 @@ export default {
       this.options.answers = this.options.answers.filter(e => e.text !== answer.text)
     },
     async createPoll () {
+      if (this.endDate <= new Date()) {
+        alert("You can't create an expiration date that's earlier than right now!")
+        return
+      }
+
       // submit poll to KOA server
       let request
       try {
@@ -163,16 +138,9 @@ export default {
       } catch (e) {
         console.error(e)
       }
-    },
-    async deleteAllPolls () {
-      this.deleteConfirm = false
-      let request
-      try {
-        request = await this.$http.delete('/polls')
-      } catch (e) {
-        console.error(e)
-      }
-      alert('You deleted ' + request.data + ' poll(s)')
+
+      // updates the AdminPollViewer component by ref
+      this.$refs['adminViewer'].getPolls()
     }
   }
 }
