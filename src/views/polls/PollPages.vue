@@ -65,22 +65,26 @@ export default {
     }
   },
   async mounted () {
-    let request
-    try {
-      request = await this.$http.get('/polls?getAll=false')
-    } catch (e) {
-      console.error(e)
-    }
-    this.list = request.data.polls
-    this.length = this.list.length
+    this.updatePolls()
   },
   methods: {
+    async updatePolls () {
+      let request
+      try {
+        request = await this.$http.get('/polls?getAll=false')
+      } catch (e) {
+        console.error(e)
+      }
+      this.list = request.data.polls
+      this.length = this.list.length
+    },
     adminDelete () {
       try {
         this.$http.delete('/polls?UID=' + this.list[this.current - 1].UID)
       } catch (e) {
         console.error(e)
       }
+      this.updatePolls()
     }
   }
 }

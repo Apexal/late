@@ -45,7 +45,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
   .vue-poll {
     font-family: Avenir,Helvetica,Arial,sans-serif;
     color: #2c3e50;
@@ -62,5 +62,8 @@ export default {
   .vue-poll .ans-cnt .ans-no-vote {
     border: 2px solid #2E3B59;
     border-radius: 4px;
+    .txt {
+      color: #2E3B59;
+    }
   }
 </style>
