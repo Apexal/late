@@ -61,6 +61,7 @@ polls from MongoDB and display them on separate pages
 import Poll from '@/views/polls/Poll'
 
 export default {
+  name: 'Polls',
   components: {
     Poll
   },
@@ -85,6 +86,13 @@ export default {
       }
       this.list = request.data.polls
       this.length = this.list.length
+
+      // determine # of active polls not voted for
+      for (var i = 0; i < this.length; i++) {
+        if (!this.list[i].showResults) {
+          this.$store.commit('ADD_POLL')
+        }
+      }
     },
     adminDelete () {
       try {

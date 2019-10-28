@@ -142,7 +142,8 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
         courseList: this.courses.length,
-        todos: this.incompleteTodos.length
+        todos: this.incompleteTodos.length,
+        polls: this.$store.state.polls.unvoted
       }
     },
     currentTab () {
@@ -179,6 +180,9 @@ export default {
     allTodos () {
       return this.$store.state.todos.todos
     }
+  },
+  mounted () {
+    console.log(this.polls)
   },
   methods: {
     updatedCount ({ tab, count }) {
