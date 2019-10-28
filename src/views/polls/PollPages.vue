@@ -90,7 +90,11 @@ export default {
       // determine # of active polls not voted for
       for (var i = 0; i < this.length; i++) {
         if (!this.list[i].showResults) {
-          this.$store.commit('ADD_POLL')
+          try {
+            this.$store.commit('ADD_POLL')
+          } catch (e) {
+            console.error(e)
+          }
         }
       }
     },

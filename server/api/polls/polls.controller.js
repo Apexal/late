@@ -28,7 +28,6 @@ async function getPolls (ctx) {
     const hasVoted = p.voted.get(ctx.state.user.rcs_id)
     p.options.showResults = hasVoted !== undefined ? hasVoted : false
     p.options.UID = p._id
-    console.log(p)
     return p.options
   })
 
