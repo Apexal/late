@@ -3,8 +3,14 @@ const state = {
 }
 
 const mutations = {
-  ADD_POLL: (state, poll) => {
+  ADD_POLL: (state) => {
     state.unvoted++
+  },
+  REMOVE_POLL: (state) => {
+    state.unvoted--
+  },
+  RESET_POLLS: (state) => {
+    state.unvoted = 0
   }
 }
 

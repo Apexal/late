@@ -78,6 +78,13 @@ export default {
   },
   methods: {
     async updatePolls () {
+      // reset unvoted to avoid incorrect incrementing
+      try {
+        this.$store.commit('RESET_POLL')
+      } catch (e) {
+        console.error(e)
+      }
+
       let request
       try {
         request = await this.$http.get('/polls?getAll=false')

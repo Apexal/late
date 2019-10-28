@@ -40,6 +40,13 @@ export default {
         console.error(e)
       }
       this.options.showResults = true
+
+      // decrement unvoted count for poll tab
+      try {
+        this.$store.commit('REMOVE_POLL')
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 }
