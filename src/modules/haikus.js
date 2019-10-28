@@ -68,5 +68,9 @@ export default [
     'F I V E  Five',
     'S E V E N  Seven',
     'F I V E  Five'
+  ],
+  [ 'Do you hear that noise?',
+    'The whooshing sound of all your',
+    'deadlines passing by'
   ]
 ]
