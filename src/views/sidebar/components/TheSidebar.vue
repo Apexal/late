@@ -181,9 +181,6 @@ export default {
       return this.$store.state.todos.todos
     }
   },
-  mounted () {
-    console.log(this.polls)
-  },
   methods: {
     updatedCount ({ tab, count }) {
       this.externalCounts[tab] = count
