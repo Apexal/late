@@ -10,7 +10,7 @@
       </thead>
       <tbody>
         <tr
-          v-for="reminder in reminders"
+          v-for="reminder in assessment.reminders"
           :key="reminder._id"
           :class="{'has-text-grey': hasPassed(reminder)}"
           class="reminder"
@@ -18,7 +18,10 @@
           <td class="reminder-integration">
             {{ reminder.integration }}
           </td>
-          <td class="reminder-count">
+          <td
+            class="reminder-count"
+            :title="fromNow(reminder.datetime)"
+          >
             {{ reminder.count }} {{ reminder.unit }} before
           </td>
           <td>
@@ -32,13 +35,13 @@
       </tbody>
       <tfoot>
         <i class="has-text-grey">
-          You can add <b>{{ 4 - reminders.length }}</b> more reminders.
+          You can add <b>{{ 4 - assessment.reminders.length }}</b> more reminders.
         </i>
       </tfoot>
     </table>
 
     <form
-      v-if="reminders.length < 4"
+      v-if="assessment.reminders.length < 4"
       @submit.prevent="addReminder"
     >
       <b-field>
@@ -99,20 +102,6 @@ export default {
   },
   data () {
     return {
-      reminders: [
-        {
-          _id: '98acbe989',
-          integration: 'email',
-          count: 7,
-          unit: 'days'
-        },
-        {
-          _id: '423jsajdj34s',
-          integration: 'sms',
-          count: 2,
-          unit: 'hours'
-        }
-      ],
       newReminder: {
         integration: 'email',
         count: 7,
@@ -126,6 +115,25 @@ export default {
         days: 100,
         hours: 23
       }[this.newReminder.unit]
+    },
+    isValid () {
+      if (this.assessment.reminders.length >= 4) {
+        return false
+      }
+
+      if (this.newReminder.count > this.countMax) {
+        return false
+      }
+
+      if (this.hasPassed(this.newReminder)) {
+        return false
+      }
+
+      if (this.assessment.reminders.find(r => r.count === this.newReminder.count && r.unit === this.newReminder.unit)) {
+        return false
+      }
+
+      return true
     }
   },
   methods: {
@@ -134,33 +142,44 @@ export default {
       return when.isBefore(Date.now())
     },
     removeReminder (reminder) {
-      if (this.hasPassed(reminder)) {
-        return
-      }
+      // if (this.hasPassed(reminder)) {
+      //   return
+      // }
 
-      // API
-      this.reminders = this.reminders.filter(r => r._id !== reminder._id)
+      // // API
+      // this.reminders = this.reminders.filter(r => r._id !== reminder._id)
     },
-    addReminder () {
+    async addReminder () {
       // Check if count fits with unit
-      if (this.reminders.length >= 4) {
+      if (!this.isValid) {
         return
       }
 
-      if (this.count > this.countMax) {
-        return
+      const finalReminder = {
+        ...this.newReminder,
+        datetime: moment(this.assessment.date).subtract(this.newReminder.count, this.newReminder.unit)
       }
 
-      if (this.hasPassed(this.newReminder)) {
-        return
+      let updatedAssessment
+      try {
+        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
+          assessmentID: this.assessment._id,
+          assessmentType: this.assessment.assessmentType,
+          updates: { reminders: [...this.assessment.reminders, finalReminder] }
+        })
+      } catch (e) {
+        this.$buefy.toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        })
       }
 
-      if (this.reminders.find(r => r.count === this.newReminder.count && r.unit === this.newReminder.unit)) {
-        return
-      }
+      this.$emit('updated-assessment', updatedAssessment)
 
-      // Push update to server
-      this.reminders.push({ ...this.newReminder, _id: Math.random() }) // yes I know. this is for testing.
+      this.$buefy.toast.open({
+        message: 'Added reminder!',
+        type: 'is-success'
+      })
     }
   }
 }

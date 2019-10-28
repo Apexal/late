@@ -105,6 +105,12 @@
               <i class="fas fa-bell" />
             </span>
             <span>Reminders</span>
+            <span
+              v-if="assignment.reminders.length > 0"
+              class="tag is-dark comment-count"
+            >{{
+              assignment.reminders.length
+            }}</span>
           </a>
         </li>
       </ul>
