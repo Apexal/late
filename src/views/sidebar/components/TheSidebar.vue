@@ -77,7 +77,6 @@
         :todos="allTodos"
         @update-count="updatedCount"
       />
-      <PollPages />
     </div>
   </aside>
 </template>
@@ -127,6 +126,12 @@ export default {
           name: 'To-Do List',
           icon: 'fas fa-check',
           tagColor: 'success'
+        },
+        polls: {
+          component: PollPages,
+          name: 'Polls',
+          icon: 'fas fa-poll',
+          tagColor: 'link'
         }
       }
     }
