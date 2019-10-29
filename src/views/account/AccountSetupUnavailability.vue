@@ -108,6 +108,13 @@
       >
         {{ saved ? '' : 'Save and ' }}Continue
       </b-button>
+      <b-button
+        type="is-danger"
+        :leading="loading"
+        class="is-pulled-right margin-right"
+      >
+        Clear All
+      </b-button>
     </template>
   </div>
 </template>
@@ -341,10 +348,28 @@ export default {
       this.$router.push({ name: 'setup-integrations' })
       this.loading = false
       this.saved = true
+    },
+    async clearAllUnavailabilities () {
+      let request
+      try {
+        request = await this.$http.post('/unavailabilities/clear', {
+          earliest: this.earliest,
+          latest: this.fixedLatest
+        })
+      } catch (e) {
+        this.loading = false
+        this.$buefy.toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        })
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.margin-right {
+  margin-right: 1.5em;
+}
 </style>
