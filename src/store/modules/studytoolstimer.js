@@ -1,5 +1,5 @@
 const STUDY_WORK_DURATION = 25 * 60
-const SHORT_BREAK_DURATION = 5 * 60
+const SHORT_BREAK_DURATION = 5
 const LONG_BREAK_DURATION = 15 * 60
 
 const padTime = time => (time < 10 ? '0' : '') + time
@@ -61,12 +61,9 @@ const actions = {
     if (state.totalTime === 0) {
       document.querySelectorAll('audio').forEach(el => el.play())
 
-      clearInterval(state.timer)
-      commit('SET_STUDY_TOOLS_TIMER', null)
-      const nextStageIndex =
-        state.stageIndex + 1 === state.stages.length ? 0 : state.stageIndex + 1
       setTimeout(() => {
         alert(`Next: ${state.stages[nextStageIndex].title} for ${state.stages[nextStageIndex].duration / 60} minutes.`)
+
         commit('SET_STUDY_TOOLS_TIMER_OPEN', true)
         commit(
           'SET_STUDY_TOOLS_TIMER',
@@ -74,6 +71,10 @@ const actions = {
         )
         commit('STUDY_TOOLS_TIMER_NEXT_STAGE')
       }, 1000)
+      clearInterval(state.timer)
+      commit('SET_STUDY_TOOLS_TIMER', null)
+      const nextStageIndex =
+        state.stageIndex + 1 === state.stages.length ? 0 : state.stageIndex + 1
     }
   },
   TOGGLE_STUDY_TOOLS_TIMER ({ commit, state, dispatch }) {
