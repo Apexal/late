@@ -233,11 +233,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.panel-heading {
-  border-left: 1px solid #2e3b59;
-  border-right:1px solid #2e3b59;
-  border-top:1px solid #2e3b59;
-}
 .key-heading {
   span.key.courseCRN {
     cursor: pointer;

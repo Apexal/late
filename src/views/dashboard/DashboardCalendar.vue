@@ -170,7 +170,7 @@ export default {
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
         .concat(workBlocks)
-        .concat(this.academicCalendarEvents)
+        // .concat(this.academicCalendarEvents)
     },
     earliest () {
       const earliest = this.$store.state.auth.user.earliestWorkTime
