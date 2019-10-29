@@ -44,6 +44,7 @@
           tag="li"
         >
           <a>Polls</a>
+        </router-link>
         <router-link
           :to="{name: 'admin-development'}"
           tag="li"

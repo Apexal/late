@@ -404,6 +404,7 @@ const router = new Router({
           },
           component: () => import('@/views/admin/components/AdminPoll.vue')
         },
+        {
           path: 'development',
           name: 'admin-development',
           meta: {
