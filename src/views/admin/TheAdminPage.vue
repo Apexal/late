@@ -39,6 +39,12 @@
         >
           <a>Fun</a>
         </router-link>
+        <router-link
+          :to="{name: 'admin-development'}"
+          tag="li"
+        >
+          <a>Dev Mode</a>
+        </router-link>
       </ul>
     </div>
 

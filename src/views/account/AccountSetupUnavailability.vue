@@ -314,10 +314,6 @@ export default {
       }
     },
     async saveTimePreferencesAndContinue () {
-      if (this.saved) {
-        this.$router.push({ name: 'setup-integrations' })
-        return
-      }
       this.loading = true
       let request
       try {
