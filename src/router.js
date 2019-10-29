@@ -403,6 +403,12 @@ const router = new Router({
             title: 'Admin Poll'
           },
           component: () => import('@/views/admin/components/AdminPoll.vue')
+          path: 'development',
+          name: 'admin-development',
+          meta: {
+            title: 'Admin Dev Mode'
+          },
+          component: () => import('@/views/admin/components/AdminDevelopment.vue')
         }
       ]
     },

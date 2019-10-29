@@ -63,6 +63,7 @@
         <a
           class="button is-small"
           :href="'mailto:' + student.rcs_id + '@rpi.edu'"
+          :target="'_blank'"
         >
           Email
         </a>

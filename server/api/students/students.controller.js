@@ -15,7 +15,7 @@ const Block = require('../blocks/blocks.model')
  **/
 async function loginAs (ctx) {
   if (ctx.state.env !== 'development') {
-    return ctx.forbidden('Not in development mode.')
+    return ctx.forbidden('Nice try, hackerman.')
   }
 
   const rcsID = ctx.request.query.rcs_id

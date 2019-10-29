@@ -26,6 +26,27 @@
           </a>
         </li>
         <li
+          class="tasks"
+          :class="{'is-active': tab === 'tasks'}"
+          @click="$emit('set-tab', 'tasks')"
+        >
+          <a>
+            <span
+              class="icon is-small"
+            ><i
+              class="fas fa-tasks"
+              aria-hidden="true"
+            /></span>
+            <span>Tasks</span>
+            <span
+              v-if="assignment.tasks && assignment.tasks.length > 0"
+              class="tag tooltip is-tooltip-right"
+              :class="tasksTagClass"
+              :data-tooltip="`Completed ${completedTasksLength} out of ${assignment.tasks.length} tasks`"
+            >{{ completedTasksLength }}/{{ assignment.tasks.length }}</span>
+          </a>
+        </li>
+        <li
           class="comments"
           :class="{'is-active': tab === 'comments'}"
           @click="$emit('set-tab', 'comments')"
@@ -114,6 +135,7 @@ import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overv
 import AssessmentOverviewRelated from '@/views/assessments/components/overview/AssessmentOverviewRelated'
 import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo'
 import AssessmentOverviewWhiteboard from '@/views/assessments/components/overview/AssessmentOverviewWhiteboard'
+import AssignmentOverviewTabsTasks from '@/views/assignments/components/overview/AssignmentOverviewTabsTasks'
 
 export default {
   name: 'AssignmentOverviewTabs',
@@ -122,7 +144,8 @@ export default {
     AssessmentOverviewWorkSchedule,
     AssessmentOverviewRelated,
     AssignmentOverviewTabsSharedInfo,
-    AssessmentOverviewWhiteboard
+    AssessmentOverviewWhiteboard,
+    AssignmentOverviewTabsTasks
   },
   props: {
     tab: {
@@ -163,13 +186,22 @@ export default {
     fullyScheduled () {
       return this.scheduledMinutes >= this.totalEstimatedMinutes
     },
+    completedTasksLength () {
+      return this.assignment.tasks.filter(t => t.completed).length
+    },
+    tasksTagClass () {
+      if (this.assignment.tasks.length === 0) return 'is-danger'
+      else if (this.assignment.tasks.length === this.completedTasksLength) return 'is-success'
+      return 'is-warning'
+    },
     componentName () {
       return {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule',
         related: 'AssessmentOverviewRelated',
         'shared-info': 'AssignmentOverviewTabsSharedInfo',
-        whiteboard: 'AssessmentOverviewWhiteboard'
+        whiteboard: 'AssessmentOverviewWhiteboard',
+        tasks: 'AssignmentOverviewTabsTasks'
       }[this.tab]
     }
   },
@@ -195,5 +227,6 @@ export default {
 
 .tag {
   margin-left: 3px;
+  padding: 5px;
 }
 </style>

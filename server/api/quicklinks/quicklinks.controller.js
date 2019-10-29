@@ -87,8 +87,11 @@ async function deleteQuickLink (ctx) {
     _id: quickLinkID
   })
 
-  deletedQuickLink.remove()
+  if (!deletedQuickLink) {
+    return ctx.notFound('No quick link could be found matching this criteria.')
+  }
 
+  deletedQuickLink.remove()
   logger.info(`Deleted quick link for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedQuickLink })
 }
