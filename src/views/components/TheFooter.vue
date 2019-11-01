@@ -5,11 +5,11 @@
       A
       <span
         class="has-text-grey"
-        @click="changeAdjective"
+        @mouseover="changeAdjective"
       >{{ randomAdjective }}</span>
       <router-link
         :to="{name: 'about'}"
-        title="View project proposal and contributors"
+        title="Check out the goal of LATE and its team of developers!"
       >
         RCOS project!
       </router-link>
@@ -52,7 +52,7 @@
           href="https://github.com/Apexal/late/"
           target="_blank"
           title="View repository"
-        >Github.</a>
+        >GitHub.</a>
       </p>
       <p class="column">
         <span class="icon">
