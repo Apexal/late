@@ -194,6 +194,7 @@
     >
       <b-button
         type="is-success"
+        @click="createStudyGroup()"
       >
         Create Study Group
       </b-button>
@@ -270,6 +271,65 @@ export default {
     },
     removeMember (member) {
       this.memberList.splice(this.memberList.indexOf(member), 1)
+    },
+    async createStudyGroup () {
+      if (!this.allFieldsCompleted()) {
+        this.$buefy.toast.open({
+          type: 'is-danger',
+          message: 'Make sure you fill out all the fields!'
+        })
+        return
+      }
+
+      let request
+      try {
+        request = await this.$http.post('/studygroups', {
+          course: this.chosenCourse,
+          date: this.getFormattedDate(),
+          time: this.getFormattedTime(),
+          location: this.groupLocation,
+          title: this.groupTitle,
+          description: this.groupDescription,
+          publicPrivate: this.publicPrivate
+        })
+        this.$buefy.toast.open({
+          message: 'Successfully created this group',
+          type: 'is-success'
+        })
+      } catch (e) {
+        this.$buefy.toast.open({
+          message: 'There was an error creating this group.',
+          type: 'is-danger'
+        })
+        console.log(e)
+      }
+    },
+    allFieldsCompleted () {
+      if (this.chosenCourse === '') return false
+      else if (this.chosenDate === '') return false
+      else if (this.chosenTime === null) return false
+      else if (this.groupLocation === '') return false
+      else if (this.groupTitle === '') return false
+      else if (this.groupDescription === '') return false
+      else if (this.publicPrivate === '') return false
+      return true
+    },
+    getFormattedTime () {
+      let formattedTime = ''
+      formattedTime += moment(this.chosenTime).hour()
+      formattedTime += ':'
+      if (String(moment(this.chosenTime).minute().length < 2)) formattedTime += '0'
+      formattedTime += moment(this.chosenTime).minute()
+      return formattedTime
+    },
+    getFormattedDate () {
+      let formattedDate = ''
+      formattedDate += (moment(this.chosenDate).month() + 1)
+      formattedDate += '/'
+      formattedDate += moment(this.chosenDate).date()
+      formattedDate += '/'
+      formattedDate += moment(this.chosenDate).year()
+      return formattedDate
     }
   }
 }
