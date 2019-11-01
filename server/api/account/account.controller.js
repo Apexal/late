@@ -13,6 +13,7 @@ const {
 } = require('../../modules/scraping')
 
 const colorThemes = require('../../modules/color_themes')
+const directory = require('../../modules/directory')
 
 const randomColor = require('randomcolor')
 
@@ -90,12 +91,12 @@ async function setAllFromSIS (ctx) {
   ctx.state.user.terms = registeredTermCodes
   ctx.state.user.setup.terms = true
 
-  const profileInfo = await scrapeSISForProfileInfo(rin, pin)
+  const profileInfo = await directory.getNameAndMajor('matraf')
   if (!ctx.state.user.name.first) {
     ctx.state.user.name.first = profileInfo.name.first
   }
   if (!ctx.state.user.name.last) {
-    ctx.state.user.name.first = profileInfo.name.last
+    ctx.state.user.name.last = profileInfo.name.last
   }
   if (!ctx.state.user.major) {
     ctx.state.user.major = profileInfo.major

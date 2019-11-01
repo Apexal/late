@@ -22,14 +22,16 @@ async function scrapeForName (RCSID) {
 async function getNameAndMajor (RCSID) {
   const directorySearchUrl = await scrapeForName(RCSID)
 
-  let dataList = []
+  const name = {}
 
   const directoryListingPage = await getPage(directorySearchUrl)
-  dataList = directoryListingPage('#page-title').html().split(' ')
-  const major = directoryListingPage('.views-field-field-major div').html()
-  dataList.push(major)
+  const directoryFullName = directoryListingPage('#page-title').html().split(' ')
+  name.first = directoryFullName[0]
+  console.log(directoryFullName)
+  name.last = directoryFullName[1]
 
-  return dataList
+  const major = directoryListingPage('.views-field-field-major div').html()
+  return { name, major }
 }
 
 module.exports = {
