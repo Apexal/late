@@ -1,5 +1,6 @@
+import { DialogProgrammatic as Dialog } from 'buefy'
 const STUDY_WORK_DURATION = 25 * 60
-const SHORT_BREAK_DURATION = 5
+const SHORT_BREAK_DURATION = 5 //* 60
 const LONG_BREAK_DURATION = 15 * 60
 
 const padTime = time => (time < 10 ? '0' : '') + time
@@ -62,14 +63,18 @@ const actions = {
       document.querySelectorAll('audio').forEach(el => el.play())
 
       setTimeout(() => {
-        alert(`Next: ${state.stages[nextStageIndex].title} for ${state.stages[nextStageIndex].duration / 60} minutes.`)
-
-        commit('SET_STUDY_TOOLS_TIMER_OPEN', true)
+        Dialog.alert({
+          title: 'Time is up!',
+          message: `Next: ${state.stages[nextStageIndex].title} for ${state.stages[nextStageIndex].duration / 60} minutes.`,
+          confirmText: 'Begin next timer'
+        }
+        )
+        /* commit('SET_STUDY_TOOLS_TIMER_OPEN', true)
         commit(
           'SET_STUDY_TOOLS_TIMER',
           setInterval(() => dispatch('STUDY_TOOLS_TIMER_COUNTDOWN'), 1000)
         )
-        commit('STUDY_TOOLS_TIMER_NEXT_STAGE')
+        commit('STUDY_TOOLS_TIMER_NEXT_STAGE') */
       }, 1000)
       clearInterval(state.timer)
       commit('SET_STUDY_TOOLS_TIMER', null)
