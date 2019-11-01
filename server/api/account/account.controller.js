@@ -201,7 +201,7 @@ async function setProfile (ctx) {
     const { rin, pin } = body
 
     // Grab as much info as possible from SIS
-    const scrapedInfo = await scrapeSISForProfileInfo(rin, pin)
+    const scrapedInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
     ctx.state.user.set(scrapedInfo)
   } else {
     return ctx.badRequest('Invalid method.')
