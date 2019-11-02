@@ -74,7 +74,6 @@ const actions = {
           message: `Next: ${state.stages[nextStageIndex].title} for ${state.stages[nextStageIndex].duration / 60} minutes.`,
           confirmText: 'Begin next timer',
           onConfirm: function () {
-            audio.loop = false
             audio.pause()
             commit('SET_STUDY_TOOLS_TIMER_OPEN', true)
             commit(
