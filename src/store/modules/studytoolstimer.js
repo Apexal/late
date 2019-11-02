@@ -60,21 +60,27 @@ const actions = {
   STUDY_TOOLS_TIMER_COUNTDOWN ({ commit, dispatch, state }) {
     commit('DECREMENT_STUDY_TOOLS_TIMER')
     if (state.totalTime === 0) {
-      document.querySelectorAll('audio').forEach(el => el.play())
-
       setTimeout(() => {
+        var audio = new Audio('audio/alarm.mp3')
+        audio.loop = true
         Dialog.alert({
           title: 'Time is up!',
           message: `Next: ${state.stages[nextStageIndex].title} for ${state.stages[nextStageIndex].duration / 60} minutes.`,
-          confirmText: 'Begin next timer'
+          confirmText: 'Begin next timer',
+          onConfirm: function () {
+            audio.loop = false
+            audio.pause()
+            commit('SET_STUDY_TOOLS_TIMER_OPEN', true)
+            commit(
+              'SET_STUDY_TOOLS_TIMER',
+              setInterval(() => dispatch('STUDY_TOOLS_TIMER_COUNTDOWN'), 1000)
+            )
+            commit('STUDY_TOOLS_TIMER_NEXT_STAGE')
+          }
         }
         )
-        /* commit('SET_STUDY_TOOLS_TIMER_OPEN', true)
-        commit(
-          'SET_STUDY_TOOLS_TIMER',
-          setInterval(() => dispatch('STUDY_TOOLS_TIMER_COUNTDOWN'), 1000)
-        )
-        commit('STUDY_TOOLS_TIMER_NEXT_STAGE') */
+
+        audio.play()
       }, 1000)
       clearInterval(state.timer)
       commit('SET_STUDY_TOOLS_TIMER', null)
