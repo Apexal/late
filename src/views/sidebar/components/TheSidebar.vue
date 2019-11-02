@@ -143,7 +143,7 @@ export default {
         assessments: this.pressingAssessments.length,
         courseList: this.courses.length,
         todos: this.incompleteTodos.length,
-        polls: this.$store.state.polls.unvoted
+        polls: 0
       }
     },
     currentTab () {

@@ -102,7 +102,13 @@ export default {
       // update polls list to refresh render
       this.getPolls()
 
-      alert('You deleted ' + request.data + ' poll(s)')
+      var deletedAmount = 'Deleted ' + String(request.data) + ' polls(s)'
+      this.$buefy.toast.open({
+        duration: 3000,
+        message: deletedAmount,
+        position: 'is-top',
+        type: 'is-success'
+      })
     }
   }
 }

@@ -127,7 +127,12 @@ export default {
     },
     async createPoll () {
       if (this.endDate <= new Date()) {
-        alert("You can't create an expiration date that's earlier than right now!")
+        this.$buefy.toast.open({
+          duration: 3000,
+          message: 'Invalid expiration date!',
+          position: 'is-top',
+          type: 'is-danger'
+        })
         return
       }
 
