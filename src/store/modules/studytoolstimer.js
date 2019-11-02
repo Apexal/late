@@ -1,9 +1,15 @@
 import { DialogProgrammatic as Dialog } from 'buefy'
 const STUDY_WORK_DURATION = 25 * 60
-const SHORT_BREAK_DURATION = 5 //* 60
+const SHORT_BREAK_DURATION = 5 * 60
 const LONG_BREAK_DURATION = 15 * 60
 
 const padTime = time => (time < 10 ? '0' : '') + time
+
+window.addEventListener('load', (event) => {
+  if (Notification.permission !== 'denied') {
+    Notification.requestPermission()
+  }
+})
 
 const state = {
   open: false,
@@ -79,8 +85,10 @@ const actions = {
           }
         }
         )
-
         audio.play()
+        if (Notification.permission === 'granted') {
+          var notification = new Notification('LATE: Study Timer is up!')
+        }
       }, 1000)
       clearInterval(state.timer)
       commit('SET_STUDY_TOOLS_TIMER', null)
