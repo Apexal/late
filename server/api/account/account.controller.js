@@ -91,7 +91,7 @@ async function setAllFromSIS (ctx) {
   ctx.state.user.terms = registeredTermCodes
   ctx.state.user.setup.terms = true
 
-  const profileInfo = await directory.getNameAndMajor('matraf')
+  const profileInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
   if (!ctx.state.user.name.first) {
     ctx.state.user.name.first = profileInfo.name.first
   }

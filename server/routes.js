@@ -12,20 +12,11 @@ const exceptions = [
   '/quicklinks',
   '/dormphotos',
   '/sms',
-  '/checklists',
-  '/dev_thing'
+  '/checklists'
 ]
-
-const dir = require('./modules/directory')
 
 module.exports = router => {
   // router.use(path, router);
-
-  // THIS IS TEMPORARY
-  router.get('/dev_thing', async (ctx) => {
-    const result = await dir.getNameAndMajor('smitha24')
-    ctx.body = result
-  })
 
   router.use(
     '/api',
