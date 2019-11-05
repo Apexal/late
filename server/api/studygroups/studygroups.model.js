@@ -14,7 +14,8 @@ const schema = new Schema(
     location: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    publicPrivate: { type: String, required: true }
+    publicPrivate: { type: String, required: true },
+    members: { type: Array }
   }
 )
 

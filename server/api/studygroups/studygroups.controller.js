@@ -11,7 +11,8 @@ async function createStudyGroup (ctx) {
     location: body.location,
     title: body.title,
     description: body.description,
-    publicPrivate: body.publicPrivate
+    publicPrivate: body.publicPrivate,
+    members: body.members
   }
 
   const newStudyGroup = new Group(groupData)

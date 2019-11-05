@@ -290,7 +290,8 @@ export default {
           location: this.groupLocation,
           title: this.groupTitle,
           description: this.groupDescription,
-          publicPrivate: this.publicPrivate
+          publicPrivate: this.publicPrivate,
+          members: this.memberList
         })
         this.$buefy.toast.open({
           message: 'Successfully created this group',
