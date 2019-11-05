@@ -43,7 +43,23 @@ async function getStudyGroups (ctx) {
   })
 }
 
+async function getStudyGroup (ctx) {
+  let studygroup
+  try {
+    studygroup = await Group.findOne({
+      _id: ctx.params.groupID
+    })
+  } catch (e) {
+    console.log('Could not find group')
+  }
+
+  ctx.ok({
+    studygroup
+  })
+}
+
 module.exports = {
   createStudyGroup,
-  getStudyGroups
+  getStudyGroups,
+  getStudyGroup
 }
