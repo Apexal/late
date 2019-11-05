@@ -26,9 +26,9 @@
         <span style="flex: 1">
           <span
             class="tag"
-            :style="{'background-color': course(assessment.courseCRN).color}"
+            :style="tagStyle(assessment)"
           >{{ course(assessment.courseCRN).title }}</span>
-          {{ assessment.assessmentType === 'assessment' ? 'Work on' : 'Study for' }}
+          {{ assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for' }}
           <b>{{ assessment.title }}</b>
           <i
             v-if="
@@ -130,6 +130,16 @@ export default {
   methods: {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn)
+    },
+    // Returns style of course tag
+    // Used when adding work block from dashboard calendar
+    // Background is course color
+    // If course color is dark, use light text. If course color is light, use dark color
+    tagStyle (assessment) {
+      return {
+        'background-color': this.course(assessment.courseCRN).color,
+        color: this.course(assessment.courseCRN).color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
+      }
     }
   }
 }
