@@ -16,12 +16,19 @@
         :key="group._id"
         class="course box"
       >
-        <span class="has-text-grey">
-          {{ group.course.title }} |
-        </span>
-        <span class="has-text-grey">
-          {{ group.title }}
-        </span>
+        <router-link
+          :to="{
+            name: 'study-groups-overview',
+            params: {['groupID']: group._id}
+          }"
+        >
+          <span class="has-text-grey">
+            {{ group.course.title }} |
+          </span>
+          <span class="has-text-grey">
+            {{ group.title }}
+          </span>
+        </router-link>
         <span class="is-pulled-right">
           {{ group.date }} @ {{ group.time }}
         </span>
