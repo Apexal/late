@@ -134,7 +134,7 @@ export default {
     // Returns style of course tag
     // Used when adding work block from dashboard calendar
     // Background is course color
-    // If course color is dark, use light text. If course color is light, use dark color
+    // If course color is dark, use light text. If course color is light, use dark text
     tagStyle (assessment) {
       return {
         'background-color': this.course(assessment.courseCRN).color,
