@@ -14,6 +14,8 @@ export default {
     eventRender ({ event, el, view }) {
       if (event.rendering === 'background') return
 
+      const duration = moment(event.end).diff(event.start, 'minutes')
+
       const { eventType, assessment, course, period, block } = event.extendedProps
 
       if (view.type === 'dayGridMonth') {
@@ -27,7 +29,13 @@ export default {
       }
 
       el.title = event.title
+      const addCornerIcon = (iconName) => {
+        const icon = document.createElement('i')
+        icon.className = 'fas ' + iconName
 
+        if (duration >= 90) { el.append(icon) } else { el.querySelector('.fc-time').prepend(icon) }
+        return icon
+      }
       const addIcon = (iconName, selector = '.fc-content', prepend = true) => {
         const icon = document.createElement('i')
         icon.className = 'fas ' + iconName
@@ -47,18 +55,17 @@ export default {
           )
         }
 
-        addIcon('fa-graduation-cap', '.fc-time')
+        addCornerIcon('fa-graduation-cap')
         if (period.location) {
           el.querySelector('.fc-content').append(element('i', { className: 'event-location', innerText: period.location }))
         }
       } else if (eventType === 'assignment') {
-        addIcon('fa-clipboard-check')
-
+        addCornerIcon('fa-clipboard-check')
         if (assessment.shared) addIcon('fa-users is-pulled-right')
       } else if (eventType === 'exam') {
-        addIcon('fa-exclamation-triangle')
+        addCornerIcon('fa-exclamation-triangle')
       } else if (eventType === 'unavailability') {
-        addIcon('fa-door-closed', '.fc-time')
+        addCornerIcon('fa-door-closed')
       } else if (eventType === 'academic-calendar-event') {
         addIcon('fa-info-circle')
         el.title = 'Click for full message.'
@@ -71,7 +78,7 @@ export default {
           block.location ? ' | ' + block.location : ''
         }`
 
-        addIcon(assessment.assessmentType ? 'fa-clipboard-check' : 'fa-exclamation-triangle', '.fc-time')
+        addCornerIcon(assessment.assessmentType ? 'fa-clipboard-check' : 'fa-exclamation-triangle')
 
         // --- DELETE BUTTON ---
         const deleteButton = element('span', { className: 'delete remove-work-block', title: 'Unschedule' })

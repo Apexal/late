@@ -443,6 +443,14 @@ footer.footer {
       opacity: 1;
     }
   }
+
+  .fa-graduation-cap, .fa-clipboard-check, .fa-exclamation-triangle, .fa-door-closed {
+    opacity: 0.3;
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    font-size: 2.5em;
+  }
 }
 
 .fc-content {
