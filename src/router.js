@@ -467,6 +467,7 @@ router.beforeEach(async (to, from, next) => {
     }
     calls.concat([
       store.dispatch('GET_TODOS'),
+      store.dispatch('GET_POLLS', 'false'),
       store.dispatch('GET_ANNOUNCEMENTS'),
       store.dispatch('AUTO_UPDATE_NOW')
     ])

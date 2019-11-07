@@ -43,7 +43,7 @@ export default {
 
       // decrement unvoted count for poll tab
       try {
-        this.$store.commit('REMOVE_POLL')
+        this.$store.commit('POLL_VOTE')
       } catch (e) {
         console.error(e)
       }

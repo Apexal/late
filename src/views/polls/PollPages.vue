@@ -78,32 +78,13 @@ export default {
   },
   methods: {
     async updatePolls () {
-      // reset unvoted to avoid incorrect incrementing
       try {
-        this.$store.commit('RESET_POLL')
+        await this.$store.dispatch('GET_POLLS', 'false')
       } catch (e) {
         console.error(e)
       }
-
-      let request
-      try {
-        request = await this.$http.get('/polls?getAll=false')
-      } catch (e) {
-        console.error(e)
-      }
-      this.list = request.data.polls
+      this.list = this.$store.state.polls.polls
       this.length = this.list.length
-
-      // determine # of active polls not voted for
-      for (var i = 0; i < this.length; i++) {
-        if (!this.list[i].showResults) {
-          try {
-            this.$store.commit('ADD_POLL')
-          } catch (e) {
-            console.error(e)
-          }
-        }
-      }
     },
     adminDelete () {
       try {
