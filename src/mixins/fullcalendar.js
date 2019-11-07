@@ -33,7 +33,12 @@ export default {
         const icon = document.createElement('i')
         icon.className = 'fas ' + iconName
 
-        if (duration >= 90) { el.append(icon) } else { el.querySelector('.fc-time').prepend(icon) }
+        if (duration >= 80) {
+          icon.classList.add('corner'); el.append(icon)
+        } else {
+          el.querySelector('.fc-time').prepend(icon)
+        }
+
         return icon
       }
       const addIcon = (iconName, selector = '.fc-content', prepend = true) => {
@@ -60,12 +65,12 @@ export default {
           el.querySelector('.fc-content').append(element('i', { className: 'event-location', innerText: period.location }))
         }
       } else if (eventType === 'assignment') {
-        addCornerIcon('fa-clipboard-check')
+        addIcon('fa-clipboard-check')
         if (assessment.shared) addIcon('fa-users is-pulled-right')
       } else if (eventType === 'exam') {
-        addCornerIcon('fa-exclamation-triangle')
+        addIcon('fa-exclamation-triangle')
       } else if (eventType === 'unavailability') {
-        addCornerIcon('fa-door-closed')
+        addCornerIcon('fa-ban')
       } else if (eventType === 'academic-calendar-event') {
         addIcon('fa-info-circle')
         el.title = 'Click for full message.'
