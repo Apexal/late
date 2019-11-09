@@ -18,7 +18,7 @@
         No assignments or exams are open to work on at that time.
       </div>
       <div
-        v-for="assessment in limitedAssessments"
+        v-for="assessment in showingAssessments"
         :key="assessment._id"
         class="panel-block is-flex"
         @click="$emit('add-work-block', assessment)"
@@ -42,40 +42,17 @@
           class="has-text-grey is-pulled-right"
         >due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}</span>
       </div>
-      <template v-if="hasExtra">
-        <div v-if="showingExtra">
-          <div
-            v-for="assessment in extraAssessments"
-            :key="assessment._id"
-            class="panel-block is-flex"
-            @click="$emit('add-work-block', assessment)"
-          >
-            <span style="flex: 1">
-              <span
-                class="tag assessment-type-tag"
-                :style="{
-                  'background-color': course(assessment.courseCRN).color
-                }"
-              >{{ assessment.assessmentType }}</span>
-              {{ assessment.title }}
-            </span>
-            <span class="has-text-grey is-pulled-right">
-              due
-              {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}
-            </span>
-          </div>
-        </div>
-        <div
-          class="panel-block has-text-grey has-text-centered"
-          @click="showingExtra = !showingExtra"
-        >
-          <span class="is-fullwidth">
-            {{ showingExtra ? "Hide" : "Show" }} Extra ({{
-              extraAssessments.length
-            }})
-          </span>
-        </div>
-      </template>
+      <div
+        v-if="hasExtra"
+        class="panel-block has-text-grey has-text-centered"
+        @click="showingExtra = !showingExtra"
+      >
+        <span class="is-fullwidth">
+          {{ showingExtra ? "Hide" : "Show" }} Extra ({{
+            extraAssessments.length
+          }})
+        </span>
+      </div>
     </div>
   </b-modal>
 </template>
@@ -103,7 +80,7 @@ export default {
   },
   data () {
     return {
-      limit: 10,
+      limit: 3,
       showingExtra: false
     }
   },
@@ -115,6 +92,9 @@ export default {
           ? this.timeFormat(this.end)
           : this.shortDateTimeFormat(this.end)
       }
+    },
+    showingAssessments () {
+      return this.showingExtra ? this.assessments : this.limitedAssessments
     },
     limitedAssessments () {
       return this.assessments.slice(0, this.limit)
