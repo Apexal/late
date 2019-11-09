@@ -425,8 +425,6 @@ footer.footer {
 }
 
 .work-block-event {
-  border-width: 3px !important;
-
   .margin-left {
     margin-left: 5px;
   }
@@ -442,6 +440,19 @@ footer.footer {
     .event-location {
       opacity: 1;
     }
+  }
+
+  .corner {
+    opacity: 0.3;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 2.5em;
+  }
+
+  /* Give some spacing in .fc-time */
+  :not(.corner) {
+    margin-right: 2px;
   }
 }
 
