@@ -17,6 +17,7 @@ const exceptions = [
 
 module.exports = router => {
   // router.use(path, router);
+
   router.use(
     '/api',
     async function (ctx, next) {
