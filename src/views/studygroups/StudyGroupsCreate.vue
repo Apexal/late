@@ -291,7 +291,7 @@ export default {
           title: this.groupTitle,
           description: this.groupDescription,
           publicPrivate: this.publicPrivate,
-          members: this.memberList
+          members: this.publicPrivate === 'public' ? [] : this.memberList
         })
         this.$buefy.toast.open({
           message: 'Successfully created this group',
@@ -317,10 +317,15 @@ export default {
     },
     getFormattedTime () {
       let formattedTime = ''
-      formattedTime += moment(this.chosenTime).hour()
+      let amOrPm = 'AM'
+      if (moment(this.chosenTime).hour() > 12) {
+        formattedTime += (moment(this.chosenTime).hour() - 12)
+        amOrPm = 'PM'
+      } else formattedTime += moment(this.chosenTime).hour()
       formattedTime += ':'
       if (String(moment(this.chosenTime).minute().length < 2)) formattedTime += '0'
       formattedTime += moment(this.chosenTime).minute()
+      formattedTime += ' ' + amOrPm
       return formattedTime
     },
     getFormattedDate () {
