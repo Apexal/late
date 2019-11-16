@@ -17,6 +17,24 @@
       >
         No assignments or exams are open to work on at that time.
       </div>
+      <!-- Buefy version of tabs -->
+      <div class="panel-block">
+        <b-tabs
+          position="is-centered"
+          class="block"
+        >
+          <b-tab-item label="Sort by Due Date">
+            aaaah1
+          </b-tab-item>
+          <b-tab-item label="Sort by Class">
+            aaaah2
+          </b-tab-item>
+          <b-tab-item label="Sort by Time Required">
+            aaaah3
+          </b-tab-item>
+        </b-tabs>
+      </div>
+      <!-- This div block displays the list of assignments -->
       <div
         v-for="assessment in showingAssessments"
         :key="assessment._id"
