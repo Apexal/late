@@ -22,9 +22,34 @@
         <b-tabs
           position="is-centered"
           class="block"
+          expanded
         >
           <b-tab-item label="Sort by Due Date">
-            aaaah1
+            <div
+              v-for="assessment in showingAssessments"
+              :key="assessment._id"
+              class="panel-block is-flex"
+              @click="$emit('add-work-block', assessment)"
+            >
+              <span style="flex: 1">
+                <span
+                  class="tag"
+                  :style="tagStyle(assessment)"
+                >{{ course(assessment.courseCRN).title }}</span>
+                {{ assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for' }}
+                <b>{{ assessment.title }}</b>
+                <i
+                  v-if="
+                    assessment.assessmentType === 'assignment' && assessment.shared
+                  "
+                  class="fas fa-users has-text-grey-light"
+                  title="Shared assignment"
+                />
+              </span>
+              <span
+                class="has-text-grey is-pulled-right"
+              >due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}</span>
+            </div>
           </b-tab-item>
           <b-tab-item label="Sort by Class">
             aaaah2
@@ -35,31 +60,7 @@
         </b-tabs>
       </div>
       <!-- This div block displays the list of assignments -->
-      <div
-        v-for="assessment in showingAssessments"
-        :key="assessment._id"
-        class="panel-block is-flex"
-        @click="$emit('add-work-block', assessment)"
-      >
-        <span style="flex: 1">
-          <span
-            class="tag"
-            :style="tagStyle(assessment)"
-          >{{ course(assessment.courseCRN).title }}</span>
-          {{ assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for' }}
-          <b>{{ assessment.title }}</b>
-          <i
-            v-if="
-              assessment.assessmentType === 'assignment' && assessment.shared
-            "
-            class="fas fa-users has-text-grey-light"
-            title="Shared assignment"
-          />
-        </span>
-        <span
-          class="has-text-grey is-pulled-right"
-        >due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}</span>
-      </div>
+
       <div
         v-if="hasExtra"
         class="panel-block has-text-grey has-text-centered"
