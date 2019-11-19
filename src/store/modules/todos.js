@@ -22,7 +22,6 @@ const actions = {
     await axios.delete('/todos/' + todo._id)
   }
 }
-
 const mutations = {
   ADD_TODO: (state, todo) => {
     state.todos.push(todo)

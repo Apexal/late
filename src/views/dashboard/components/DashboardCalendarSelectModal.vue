@@ -24,7 +24,7 @@
           class="block"
           expanded
         >
-          <b-tab-item label="Sort by Due Date">
+          <b-tab-item label="Assignments">
             <div
               v-for="assessment in showingAssessments"
               :key="assessment._id"
@@ -51,11 +51,23 @@
               >due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}</span>
             </div>
           </b-tab-item>
-          <b-tab-item label="Sort by Class">
-            aaaah2
+          <b-tab-item label="General Work Blocks">
+            <div
+              v-for="c in courses"
+              :key="c.crn"
+              class="panel-block"
+            >
+              {{ c.title }}
+            </div>
           </b-tab-item>
-          <b-tab-item label="Sort by Time Required">
-            aaaah3
+          <b-tab-item label="To-dos">
+            <div
+              v-for="t in todos"
+              :key="t.index"
+              class="panel-block"
+            >
+              {{ t.text }}
+            </div>
           </b-tab-item>
         </b-tabs>
       </div>
@@ -111,6 +123,9 @@ export default {
           ? this.timeFormat(this.end)
           : this.shortDateTimeFormat(this.end)
       }
+    },
+    todos () {
+      return this.$store.state.todos.todos
     },
     showingAssessments () {
       return this.showingExtra ? this.assessments : this.limitedAssessments
