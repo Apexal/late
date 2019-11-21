@@ -139,14 +139,17 @@ export default {
     todos () {
       return this.$store.state.todos.todos
     },
+    incompleteTodos () {
+      return this.todos.filter(todo => !todo.completed)
+    },
     limitedTodos () {
-      return this.todos.slice(0, this.limit)
+      return this.incompleteTodos.slice(0, this.limit)
     },
     showingAssessments () {
       return this.showingExtra ? this.assessments : this.limitedAssessments
     },
     showingTodos () {
-      return this.showingExtra ? this.todos : this.limitedTodos
+      return this.showingExtra ? this.incompleteTodos : this.limitedTodos
     },
     limitedAssessments () {
       return this.assessments.slice(0, this.limit)
@@ -157,13 +160,13 @@ export default {
     },
     extraTodos () {
       if (!this.hasExtraTodos) return []
-      return this.todos.slice(this.limit, this.todos.length)
+      return this.incompleteTodos.slice(this.limit, this.incompleteTodos.length)
     },
     hasExtraAssesments () {
       return this.assessments.length > this.limit
     },
     hasExtraTodos () {
-      return this.todos.length > this.limit
+      return this.incompleteTodos.length > this.limit
     }
   },
   methods: {
