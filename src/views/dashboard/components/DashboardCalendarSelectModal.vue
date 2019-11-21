@@ -50,40 +50,52 @@
                 class="has-text-grey is-pulled-right"
               >due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}</span>
             </div>
+            <div
+              v-if="hasExtraAssesments"
+              class="panel-block has-text-grey has-text-centered"
+              @click="showingExtra = !showingExtra"
+            >
+              <span class="is-fullwidth">
+                {{ showingExtra ? "Hide" : "Show" }} Extra ({{
+                  extraAssessments.length
+                }})
+              </span>
+            </div>
           </b-tab-item>
           <b-tab-item label="General Work Blocks">
             <div
               v-for="c in courses"
               :key="c.crn"
               class="panel-block"
+              @click="$emit('add-work-block', c)"
             >
               {{ c.title }}
             </div>
           </b-tab-item>
           <b-tab-item label="To-dos">
             <div
-              v-for="t in todos"
-              :key="t.index"
+              v-for="todo in showingTodos"
+              :key="todo.index"
               class="panel-block"
+              @click="$emit('add-work-block', todo)"
             >
-              {{ t.text }}
+              {{ todo.text }}
+            </div>
+            <div
+              v-if="hasExtraTodos"
+              class="panel-block has-text-grey has-text-centered"
+              @click="showingExtra = !showingExtra"
+            >
+              <span class="is-fullwidth">
+                {{ showingExtra ? "Hide" : "Show" }} Extra ({{
+                  extraTodos.length
+                }})
+              </span>
             </div>
           </b-tab-item>
         </b-tabs>
       </div>
       <!-- This div block displays the list of assignments -->
-
-      <div
-        v-if="hasExtra"
-        class="panel-block has-text-grey has-text-centered"
-        @click="showingExtra = !showingExtra"
-      >
-        <span class="is-fullwidth">
-          {{ showingExtra ? "Hide" : "Show" }} Extra ({{
-            extraAssessments.length
-          }})
-        </span>
-      </div>
     </div>
   </b-modal>
 </template>
@@ -127,18 +139,31 @@ export default {
     todos () {
       return this.$store.state.todos.todos
     },
+    limitedTodos () {
+      return this.todos.slice(0, this.limit)
+    },
     showingAssessments () {
       return this.showingExtra ? this.assessments : this.limitedAssessments
+    },
+    showingTodos () {
+      return this.showingExtra ? this.todos : this.limitedTodos
     },
     limitedAssessments () {
       return this.assessments.slice(0, this.limit)
     },
     extraAssessments () {
-      if (!this.hasExtra) return []
+      if (!this.hasExtraAssesments) return []
       return this.assessments.slice(this.limit, this.assessments.length)
     },
-    hasExtra () {
+    extraTodos () {
+      if (!this.hasExtraTodos) return []
+      return this.todos.slice(this.limit, this.todos.length)
+    },
+    hasExtraAssesments () {
       return this.assessments.length > this.limit
+    },
+    hasExtraTodos () {
+      return this.todos.length > this.limit
     }
   },
   methods: {
