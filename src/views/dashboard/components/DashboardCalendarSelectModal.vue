@@ -72,7 +72,7 @@
               {{ c.title }}
             </div>
           </b-tab-item>
-          <b-tab-item label="To-dos">
+          <b-tab-item label="To-Dos">
             <div
               v-for="todo in showingTodos"
               :key="todo.index"
