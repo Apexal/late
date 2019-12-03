@@ -60,6 +60,11 @@ export default {
           )
         }
 
+        // Prevent classes from showing up after the end of classes
+        if (event.start > this.currentTerm.classesEnd) {
+          return false
+        }
+
         addCornerIcon('fa-graduation-cap')
         if (period.location) {
           el.querySelector('.fc-content').append(element('i', { className: 'event-location', innerText: period.location }))
