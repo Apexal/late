@@ -5,7 +5,12 @@
     <p class="title">
       Right Now
     </p>
-
+    <p class="subtitle">
+      <span
+        class="has-text-white is-italic is-size-4 is-family-monospace"
+        @click="changeQuote"
+      >{{ randomQuote }}</span>
+    </p>
     <p
       v-if="currentStatus === 'busy'"
       class="subtitle"
@@ -86,9 +91,15 @@
 
 <script>
 import moment from 'moment'
+import quotes from '@/modules/quotes'
 
 export default {
   name: 'DashboardOverviewCurrent',
+  data () {
+    return {
+      randomQuote: ''
+    }
+  },
   computed: {
     currentStatus () {
       if (this.currentEvent) return this.currentEvent.eventType
@@ -126,6 +137,7 @@ export default {
     }
   },
   mounted () {
+    this.changeQuote()
     this.$emit('current-status', this.currentStatus)
   },
   methods: {
@@ -134,6 +146,9 @@ export default {
     },
     isCurrentEvent (event) {
       return moment(this.rightNow).isBetween(event.start, event.end)
+    },
+    changeQuote () {
+      this.randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
     },
     assessmentRoute (assessment) {
       return {
