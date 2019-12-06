@@ -141,7 +141,7 @@ export default {
     filteredUpcomingAssessments () {
       return this.$store.state.assessments.upcomingAssessments.filter(
         assessment =>
-          moment(this.selectModal.end).isSameOrBefore(
+          moment(this.selectModal.end).isSameOrBefore( // fix
             assessment.dueDate || assessment.date
           ) &&
           (assessment.assessmentType === 'exam' ||
