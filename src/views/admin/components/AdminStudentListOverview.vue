@@ -52,28 +52,33 @@
       <br>
       <span>
         <b>Last Login:</b>
-        {{ shortDateTimeFormat(student.lastLogin) }}
+        <!-- {{ shortDateTimeFormat(student.lastLogin) }} -->
+        {{ student.lastLogin ? shortDateTimeFormat(student.lastLogin) : 'N/A' }}
       </span>
     </div>
 
     <div class="student-actions">
       <hr>
       <div class="buttons has-addons">
-        <b-button size="is-small">
+        <a
+          class="button is-small"
+          :href="'mailto:' + student.rcs_id + '@rpi.edu'"
+          :target="'_blank'"
+        >
           Email
-        </b-button>
-        <b-button
+        </a>
+        <!-- <b-button
           type="is-info"
           size="is-small"
         >
           View Account
-        </b-button>
+        </b-button> -->
         <b-button
           type="is-warning"
           size="is-small"
           @click="updateStudent({accountLocked: !student.accountLocked})"
         >
-          Lock Account
+          {{ student.accountLocked ? "Unlock Account" : "Lock Account" }}
         </b-button>
         <template v-if="user.rcs_id === 'matraf'">
           <b-button

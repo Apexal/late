@@ -180,7 +180,7 @@
         />
         <b-input
           v-model="newLink.url"
-          type="url"
+          type="text"
           placeholder="URL"
           required
         />
@@ -300,6 +300,11 @@ export default {
     },
     async submitLink () {
       this.loading = true
+
+      // concatonates an https://www. if one is not present
+      if (!this.newLink.url.includes('http')) {
+        this.newLink.url = 'https://www.'.concat(this.newLink.url)
+      }
 
       let request
       try {

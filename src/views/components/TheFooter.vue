@@ -2,14 +2,13 @@
 <template>
   <footer class="footer">
     <h1 class="is-size-5 has-text-centered">
-      A
       <span
         class="has-text-grey"
-        @click="changeAdjective"
+        @mouseover="changeAdjective"
       >{{ randomAdjective }}</span>
       <router-link
         :to="{name: 'about'}"
-        title="View project proposal and contributors"
+        title="Check out the goal of LATE and its team of developers!"
       >
         RCOS project!
       </router-link>
@@ -52,7 +51,7 @@
           href="https://github.com/Apexal/late/"
           target="_blank"
           title="View repository"
-        >Github.</a>
+        >GitHub.</a>
       </p>
       <p class="column">
         <span class="icon">
@@ -76,20 +75,31 @@ export default {
   name: 'TheFooter',
   data () {
     return {
-      randomAdjective: adjectives[Math.floor(Math.random() * adjectives.length)]
+      randomAdjective: ''
     }
+  },
+  mounted () {
+    this.changeAdjective()
   },
   methods: {
     changeAdjective () {
       this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+      let vowels = ['a', 'e', 'i', 'o', 'u', 'h']
+      let startsWithVowel = vowels.some(vowel => this.randomAdjective[0] === vowel)
+
+      if (startsWithVowel) {
+        this.randomAdjective = 'An ' + this.randomAdjective
+      } else {
+        this.randomAdjective = 'A ' + this.randomAdjective
+      }
     }
   }
 }
 </script>
 
 <style lang="scss">
-//Adjusts padding for footer to display columns closer together
 .footer {
+  //Adjusts padding for footer to display columns closer together
   //Desktop styles
   @media screen and (min-width: 769px) {
     padding: 2rem 6rem 2rem !important;
@@ -119,4 +129,5 @@ export default {
     }
   }
 }
+
 </style>

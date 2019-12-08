@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import * as Sentry from '@sentry/browser'
 import moment from 'moment'
 
 import TheHeader from '@/views/components/TheHeader'
@@ -210,11 +211,17 @@ export default {
     }
 
     if (this.loggedIn) {
+      this.$ga.set({ userId: this.$store.start.auth.user._id })
       // Check if time to reupdate from SIS
       if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
         this.$router.push({ name: 'account', query: { importFromSIS: true } })
       }
+
+      Sentry.configureScope(function (scope) {
+        scope.setUser({ 'username': this.user.rcs_id })
+      })
     }
+
     const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
     console.log(this.sistext)
     console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px')
@@ -418,8 +425,6 @@ footer.footer {
 }
 
 .work-block-event {
-  border-width: 3px !important;
-
   .margin-left {
     margin-left: 5px;
   }
@@ -435,6 +440,19 @@ footer.footer {
     .event-location {
       opacity: 1;
     }
+  }
+
+  .corner {
+    opacity: 0.3;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 2.5em;
+  }
+
+  /* Give some spacing in .fc-time */
+  :not(.corner) {
+    margin-right: 2px;
   }
 }
 

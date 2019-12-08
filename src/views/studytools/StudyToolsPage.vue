@@ -156,6 +156,9 @@ export default {
   watch: {
     scratchHTML (newHTML) {
       localStorage.setItem('scratchHTML', newHTML)
+    },
+    seconds (val) {
+      document.title = this.$store.getters.studyToolsTimerMinutes + ':' + this.$store.getters.studyToolsTimerSeconds
     }
   },
   mounted () {
@@ -207,6 +210,9 @@ export default {
     display: block;
     border-bottom: 1px solid rgba(219, 219, 219, 0.7);
   }
+  @media only screen and (max-width: 1000px) {
+    font-size: 2rem;
+  }
 }
 
 .study-tools-scratchpad {
@@ -217,7 +223,7 @@ export default {
   margin: 0 auto;
 }
 
-.button i.fas {
-  margin-right: 3px;
+.button i.fas,.instructions li .fas {
+  margin-right: 5px;
 }
 </style>

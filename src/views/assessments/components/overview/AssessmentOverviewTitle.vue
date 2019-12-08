@@ -153,6 +153,9 @@ export default {
     }
   },
   watch: {
+    assessment (newAssessment) {
+      this.editing = false
+    },
     editing (newEditing) {
       this.tempCourseCRN = this.assessment.courseCRN
       this.tempTitle = this.assessment.title

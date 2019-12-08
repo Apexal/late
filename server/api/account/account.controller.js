@@ -13,6 +13,7 @@ const {
 } = require('../../modules/scraping')
 
 const colorThemes = require('../../modules/color_themes')
+const directory = require('../../modules/directory')
 
 const randomColor = require('randomcolor')
 
@@ -90,12 +91,12 @@ async function setAllFromSIS (ctx) {
   ctx.state.user.terms = registeredTermCodes
   ctx.state.user.setup.terms = true
 
-  const profileInfo = await scrapeSISForProfileInfo(rin, pin)
+  const profileInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
   if (!ctx.state.user.name.first) {
     ctx.state.user.name.first = profileInfo.name.first
   }
   if (!ctx.state.user.name.last) {
-    ctx.state.user.name.first = profileInfo.name.last
+    ctx.state.user.name.last = profileInfo.name.last
   }
   if (!ctx.state.user.major) {
     ctx.state.user.major = profileInfo.major
@@ -149,9 +150,9 @@ async function setAllFromSIS (ctx) {
     if (ctx.state.user.integrations.google.calendarID) {
       try {
         await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarID, termCode, courseSchedule)
-        logger.info(`Updated GCal for ${ctx.state.user.rcs_id}`)
+        logger.info(`Updated GCal for ${ctx.state.user.identifier}`)
       } catch (e) {
-        logger.error(`Couldn't update GCal for ${ctx.state.user.rcs_id}`)
+        logger.error(`Couldn't update GCal for ${ctx.state.user.identifier}`)
         Sentry.captureException(e)
       }
     }
@@ -200,7 +201,7 @@ async function setProfile (ctx) {
     const { rin, pin } = body
 
     // Grab as much info as possible from SIS
-    const scrapedInfo = await scrapeSISForProfileInfo(rin, pin)
+    const scrapedInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
     ctx.state.user.set(scrapedInfo)
   } else {
     return ctx.badRequest('Invalid method.')
@@ -211,13 +212,13 @@ async function setProfile (ctx) {
   try {
     await ctx.state.user.save()
 
-    logger.info(`Saved personal info for ${ctx.state.user.rcs_id}`)
+    logger.info(`Saved personal info for ${ctx.state.user.identifier}`)
     return ctx.ok({
       updatedUser: ctx.state.user
     })
   } catch (err) {
     logger.error(
-      `Failed to save personal info for ${ctx.state.user.rcs_id}: ${err}`
+      `Failed to save personal info for ${ctx.state.user.identifier}: ${err}`
     )
     Sentry.captureException(err)
     return ctx.badRequest('There was an error saving your personal info.')
@@ -234,14 +235,14 @@ async function setProfile (ctx) {
 async function setTerms (ctx) {
   const { termCodes } = ctx.request.body
 
-  logger.info(`Setting terms for ${ctx.state.user.rcs_id}`)
+  logger.info(`Setting terms for ${ctx.state.user.identifier}`)
 
   // Validate the termCodes
   if (
     termCodes.some(code => !ctx.session.terms.find(term => term.code === code))
   ) {
     logger.error(
-      `Could not set terms for ${ctx.state.user.rcs_id}: Invalid term given.`
+      `Could not set terms for ${ctx.state.user.identifier}: Invalid term given.`
     )
     return ctx.badRequest(
       'Couldn\'t set terms. You gave an invalid term code!'
@@ -254,7 +255,7 @@ async function setTerms (ctx) {
   try {
     await ctx.state.user.save()
   } catch (e) {
-    logger.error(`Failed to save user ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to save user ${ctx.state.user.identifier}: ${e}`)
     Sentry.captureException(e)
     return ctx.internalServerError('There was an error saving the terms.')
   }
@@ -277,7 +278,7 @@ async function importCourseSchedule (ctx) {
   const body = ctx.request.body
   const termCode = ctx.session.currentTerm.code
 
-  logger.info(`Setting schedule info for ${ctx.state.user.rcs_id}`)
+  logger.info(`Setting schedule info for ${ctx.state.user.identifier}`)
 
   let courseSchedule = []
   try {
@@ -289,7 +290,7 @@ async function importCourseSchedule (ctx) {
     )
   } catch (e) {
     logger.error(
-      `Failed to scrape SIS course schedule for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to scrape SIS course schedule for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest(e.message)
   }
@@ -299,7 +300,7 @@ async function importCourseSchedule (ctx) {
     courseSchedule = await scrapePeriodTypesFromCRNs(termCode, courseSchedule)
   } catch (e) {
     logger.error(
-      `Failed to scrape period types for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to scrape period types for ${ctx.state.user.identifier}: ${e}`
     )
     ctx.internalServerError(
       'There was an error getting the proper period types for your schedule. Please manually set them below.'
@@ -321,9 +322,9 @@ async function importCourseSchedule (ctx) {
   if (ctx.state.user.integrations.google.calendarID) {
     try {
       await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarID, termCode, courses)
-      logger.info(`Updated GCal for ${ctx.state.user.rcs_id}`)
+      logger.info(`Updated GCal for ${ctx.state.user.identifier}`)
     } catch (e) {
-      logger.error(`Couldn't update GCal for ${ctx.state.user.rcs_id}`)
+      logger.error(`Couldn't update GCal for ${ctx.state.user.identifier}`)
       Sentry.captureException(e)
     }
   }
@@ -370,12 +371,12 @@ async function addCourseByCRN (ctx) {
   try {
     await course.save()
   } catch (e) {
-    logger.error(`Failed to save new course ${crn} for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to save new course ${crn} for ${ctx.state.user.identifier}: ${e}`)
     Sentry.captureException(e)
     return ctx.badRequest('There was an issue saving the new course.')
   }
 
-  logger.info(`Added new course ${course.originalTitle} by CRN for ${ctx.state.user.rcs_id}`)
+  logger.info(`Added new course ${course.originalTitle} by CRN for ${ctx.state.user.identifier}`)
 
   return ctx.created({
     course
@@ -416,7 +417,7 @@ async function setTimePreference (ctx) {
     return ctx.badRequest('Failed to set work/study time preference schedule.')
   }
 
-  logger.info(`Set work/study time preference for ${ctx.state.user.rcs_id}`)
+  logger.info(`Set work/study time preference for ${ctx.state.user.identifier}`)
   ctx.ok({ updatedUser: ctx.state.user })
 }
 

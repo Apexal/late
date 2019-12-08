@@ -16,7 +16,7 @@
           Administration
         </h1>
         <router-link
-          :to="{name: 'admin-student-list'}"
+          :to="{name: 'admin-student-list', params: {page: 1}}"
           tag="li"
         >
           <a>Students</a>
@@ -38,6 +38,12 @@
           tag="li"
         >
           <a>Fun</a>
+        </router-link>
+        <router-link
+          :to="{name: 'admin-development'}"
+          tag="li"
+        >
+          <a>Dev Mode</a>
         </router-link>
       </ul>
     </div>

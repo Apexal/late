@@ -16,7 +16,7 @@ async function getTerms (ctx) {
   try {
     terms = await Term.find().sort({ startTime: -1 })
   } catch (e) {
-    logger.error(`Failed to get all terms for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to get all terms for ${ctx.state.user.identifier}: ${e}`)
     return ctx.internalServerError(
       'There was an error getting the list of terms.'
     )
@@ -58,7 +58,7 @@ async function createTerm (ctx) {
     await createdTerm.save()
   } catch (e) {
     logger.error(
-      `Failed to get create term for admin ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to get create term for admin ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError('There was an error creating the term.')
   }
@@ -66,7 +66,7 @@ async function createTerm (ctx) {
   ctx.session.terms.push(createdTerm)
 
   logger.info(
-    `Created term ${createdTerm.name} for admin ${ctx.state.user.rcs_id}.`
+    `Created term ${createdTerm.name} for admin ${ctx.state.user.identifier}.`
   )
 
   ctx.ok({ createdTerm })

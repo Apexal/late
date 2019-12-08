@@ -457,7 +457,10 @@ export default {
     },
     addLink () {
       this.editedLinks.push(this.newLink)
-      this.newLink = ''
+      this.newLink = {
+        name: '',
+        url: ''
+      }
     },
     changePeriodTime (p, startOrEnd, inputFormat) {
       p[startOrEnd] = moment(inputFormat, 'HH:mm', true).format('Hmm')

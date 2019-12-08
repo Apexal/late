@@ -67,7 +67,7 @@
           <h4 class="subtitle has-text-grey">
             Project Contributors
           </h4>
-          <ul>
+          <ul class="contrib-list">
             <li>
               <b-tag type="is-success">
                 Project Lead
@@ -134,30 +134,30 @@ export default {
         'https://www.youtube.com/embed/aB93j7LUK0w'
       ],
       contributors: [
+        'Caitlin Bennett',
+        'Kristen Bertrand',
+        'Mark Borelli II',
+        'Shardul Joshi',
+        'Aidan Lane',
         'Zach Love',
-        'Christie Nero',
-        'Abigail Medina',
-        'Alexandra Rachiele',
         'Tyler Machado',
-        'Colton Zecca',
-        'Angela Lopez',
-        'Sam Fawcett',
-        'Jose Deantes',
-        'Gabe Benelli',
-        'Henry Heffernan',
-        'Seth Laurenceau',
-        'Ziyi Wang',
-        'Kikiola Sanusi',
-        'Bowen Wang'
+        'Stéfan Martin',
+        'Tobias Park',
+        'Samarth Patel',
+        'Wolf Personeous',
+        'Alexandra Rachiele',
+        'Aaron Reers',
+        'Erik Roberts',
+        'Andrew Smith',
+        'Calynn Vitus',
+        'Colton Zecca'
       ],
       testers: [
-        'Caitlin Bennett',
         'Sarah Tedesco',
         'Ben Sherman',
         'Hannah Lim',
         'Nishant Srivastava',
         'Dan Madras',
-        'Stéfan Martin',
         'Lael Kutame',
         'Alice Varughese'
       ]
@@ -176,7 +176,7 @@ export default {
 }
 
 ul {
-  list-style-type: circle;
+  list-style-type: none;
   margin-left: 20px;
 }
 
@@ -193,5 +193,9 @@ ul {
   overflow: hidden;
   max-width: 250px;
   flex: 1 1 auto;
+}
+
+.contrib-list {
+  margin-left: 0;
 }
 </style>

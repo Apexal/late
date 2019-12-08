@@ -28,5 +28,49 @@ export default [
     '行春や',
     '鳥啼き魚の',
     '目は泪'
+  ],
+  [
+    'I\'m going to take',
+    'My Horse down the old town road.',
+    'Ride until I can\'t.'
+  ],
+  [
+    'Haikus have three lines',
+    'Haikus go five seven five',
+    "I'm not creative enough"
+  ],
+  [
+    'The Frank Matranga',
+    'Father of glorious LATE',
+    'Will always find you'
+  ],
+  [
+    'The Frank Matranga',
+    'One day you might threaten him',
+    'But he\'ll delete you'
+  ],
+  [
+    'you should not be here',
+    'this error page is sacred',
+    'leave now or suffer'
+  ],
+  [
+    'SIS-Man speaks to you',
+    'you do not belong here child',
+    'look for help elsewhere'
+  ],
+  [
+    'Pizza\'s a circle',
+    'The slices are triangles',
+    'The box is a square'
+  ],
+  [
+    'F I V E  Five',
+    'S E V E N  Seven',
+    'F I V E  Five'
+  ],
+  [ 'Do you hear that noise?',
+    'The whooshing sound of all your',
+    'deadlines passing by'
   ]
 ]

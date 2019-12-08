@@ -6,6 +6,8 @@ const Assignment = require('./assignments.model')
 const Student = require('../students/students.model')
 const Unavailability = require('../unavailabilities/unavailabilities.model')
 
+const { generateDummyAssignment } = require('../../modules/dummydata')
+
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
@@ -85,7 +87,7 @@ async function getAssignments (ctx) {
     assignments = await ctx.state.user.getUserAssignments(ctx.query)
   } catch (e) {
     logger.error(
-      `Failed to send assignments to ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to send assignments to ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError(
       'There was an error getting your assignments.'
@@ -212,10 +214,12 @@ async function setAssignmentCollaborators (ctx) {
     logger.error(
       `Failed to save collaborators for assignment ${
         ctx.state.assignment._id
-      } for student ${ctx.state.user.rcs_id}: ${e}`
+      } for student ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError('There was an error saving the assignment.')
   }
+
+  logger.info(`${ctx.state.user.identifier} updated collaborators for ${ctx.state.assignment.identifier}`)
 
   ctx.ok({
     updatedAssessment: ctx.state.assignment,
@@ -237,7 +241,7 @@ async function getAssignmentCollaboratorInfo (ctx) {
 
   const assignmentID = ctx.params.assignmentID
   logger.info(
-    `Sending assignment ${assignmentID} collaborator info to ${
+    `Sending ${ctx.state.assignment.identifier} collaborator info to ${
       ctx.state.user.rcs_id
     }`
   )
@@ -385,7 +389,7 @@ async function createAssignment (ctx) {
     }
 
     logger.error(
-      `Failed to create new assignment for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to create new assignment for ${ctx.state.user.identifier}: ${e}`
     )
 
     return ctx.badRequest({
@@ -394,9 +398,7 @@ async function createAssignment (ctx) {
   }
 
   logger.info(
-    `Created new assignment '${newAssignment.title}' for ${
-      ctx.state.user.rcs_id
-    }`
+    `${ctx.state.user.identifier} created new ${newAssignment.identifier}`
   )
 
   ctx.created({
@@ -472,9 +474,7 @@ async function editAssignment (ctx) {
   }
 
   logger.info(
-    `Updated assignment ${ctx.state.assignment._id} for ${
-      ctx.state.user.rcs_id
-    }.`
+    `${ctx.state.user.identifier} edited ${ctx.state.assignment.identifier}`
   )
 
   ctx.ok({
@@ -516,9 +516,9 @@ async function toggleAssignment (ctx) {
   }
 
   logger.info(
-    `Set assignment ${ctx.state.assignment._id} completion status to ${
+    `${ctx.state.user.identifier} set ${ctx.state.assignment.identifier} completion status to ${
       ctx.state.assignment.completed
-    } for ${ctx.state.user.rcs_id}.`
+    }`
   )
 
   ctx.ok({
@@ -560,9 +560,7 @@ async function deleteAssignment (ctx) {
   }
 
   logger.info(
-    `Deleted assignment ${ctx.state.assignment._id} for ${
-      ctx.state.user.rcs_id
-    }`
+    `${ctx.state.user.identifier} deleted ${ctx.state.assignment.identifier}`
   )
 
   let removedRecurringAssignments = []
@@ -622,6 +620,8 @@ async function addComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.')
   }
 
+  logger.info(`${ctx.state.user.identifier} added a comment on ${ctx.state.assignment.identifier}`)
+
   ctx.ok({
     updatedAssessment: ctx.state.assignment,
     updatedAssignment: ctx.state.assignment
@@ -677,10 +677,39 @@ async function deleteComment (ctx) {
     return ctx.badRequest('There was an error adding the comment.')
   }
 
+  logger.info(`${ctx.state.user.identifier} deleted a comment on ${ctx.state.assignment.identifier}`)
+
   ctx.ok({
     updatedAssessment: ctx.state.assignment,
     updatedAssignment: ctx.state.assignment
   })
+}
+
+async function generateAssignments (ctx) {
+  // Make sure proper environment
+  if (process.env.NODE_ENV !== 'development') return ctx.forbidden('Must be in development mode to generate assignments.')
+  if (!ctx.state.user.admin) return ctx.forbidden('Must be an admin to generate assignments.')
+
+  const { startDate, endDate, count } = ctx.request.body
+  if (count < 0 || count > 30) {
+    return ctx.badRequest('Count must be between 0 and 30 (inclusive)')
+  }
+
+  const term = ctx.session.currentTerm
+  const courses = await ctx.state.user.getCoursesForTerm(term.code)
+
+  const generateAssessments = []
+  for (let i = 0; i < count; i++) {
+    const newAssignment = new Assignment({
+      _student: ctx.state.user._id,
+      ...generateDummyAssignment(courses, term.code, startDate, endDate)
+    })
+    await newAssignment.save()
+
+    generateAssessments.push(newAssignment)
+  }
+
+  ctx.created({ generateAssessments })
 }
 
 module.exports = {
@@ -695,5 +724,6 @@ module.exports = {
   editAssignment,
   deleteAssignment,
   addComment,
-  deleteComment
+  deleteComment,
+  generateAssignments
 }
