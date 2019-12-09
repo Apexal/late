@@ -12,6 +12,13 @@ const element = (tag, properties) => {
 export default {
   methods: {
     eventRender ({ event, el, view }) {
+      if (event.extendedProps.eventType === 'course') {
+        // Prevent classes from showing up after the end of classes
+        if (moment(event.start).isAfter(this.currentTerm.classesEnd)) {
+          return false
+        }
+      }
+
       if (event.rendering === 'background') return
 
       const duration = moment(event.end).diff(event.start, 'minutes')
@@ -58,11 +65,6 @@ export default {
               assessment.courseCRN === course.crn &&
               moment(assessment.date).isSame(event.start, 'day')
           )
-        }
-
-        // Prevent classes from showing up after the end of classes
-        if (event.start > this.currentTerm.classesEnd) {
-          return false
         }
 
         addCornerIcon('fa-graduation-cap')
