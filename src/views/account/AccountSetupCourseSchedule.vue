@@ -63,7 +63,10 @@
               <button
                 class="button"
                 @click="colorsModalOpen = true"
-              >Colors</button>
+              >
+                <span class="icon"><i class="fas fa-palette" /></span>
+                <span>Colors</span>
+              </button>
               <b-modal
                 :active.sync="colorsModalOpen"
                 has-modal-card
@@ -85,6 +88,7 @@
                       :key="course.crn"
                       type="color"
                       :value="course.color"
+                      @change="updateCourseColor(course, $event.target.value)"
                       @mouseover="hoverCourseTitle = course.title"
                       @mouseleave="hoverCourseTitle = null"
                     >
@@ -317,6 +321,24 @@ export default {
       })
 
       this.loading = false
+    },
+    async updateCourseColor (course, color) {
+      const c = Object.assign({}, course, { color })
+
+      let updatedCourse
+      try {
+        updatedCourse = await this.$store.dispatch(
+          'UPDATE_COURSE',
+          c
+        )
+      } catch (e) {
+        const message = e.response ? e.response.data.message : e.message
+        this.$buefy.toast.open({
+          duration: 5000,
+          message,
+          type: 'is-danger'
+        })
+      }
     }
   }
 }
