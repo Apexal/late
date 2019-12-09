@@ -18,7 +18,7 @@
         No assignments or exams are open to work on at that time.
       </div>
       <!-- Buefy version of tabs -->
-      <div class="panel-block">
+      <div class="panel-block is-marginless is-paddingless">
         <b-tabs
           position="is-centered"
           class="block"
@@ -187,5 +187,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.block .tab-content {
+  padding: 0;
+}
 </style>
