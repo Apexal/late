@@ -112,6 +112,7 @@
         type="is-danger"
         :leading="loading"
         class="is-pulled-right margin-right"
+        @click="clearAllUnavailabilities"
       >
         Clear All
       </b-button>
@@ -348,10 +349,7 @@ export default {
     async clearAllUnavailabilities () {
       let request
       try {
-        request = await this.$http.post('/unavailabilities/clear', {
-          earliest: this.earliest,
-          latest: this.fixedLatest
-        })
+        request = await this.$http.delete('/unavailabilities/clear')
       } catch (e) {
         this.loading = false
         this.$buefy.toast.open({
