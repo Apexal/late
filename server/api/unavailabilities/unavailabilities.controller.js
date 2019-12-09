@@ -120,9 +120,18 @@ async function removeUnavailability (ctx) {
   ctx.ok({ deletedUnavailability })
 }
 
+async function clearUnavailabilities (ctx) {
+  const deletedUnavailabilities = await Unavailability.deleteMany({
+    _student: ctx.state.user._id
+  })
+
+  logger.info(`Deleted all unavailabilities for ${ctx.state.user.identifier}`)
+  ctx.ok({ deletedUnavailabilities })
+}
 module.exports = {
   getUnavailabilities,
   createUnavailability,
   updateUnavailability,
-  removeUnavailability
+  removeUnavailability,
+  clearUnavailabilities
 }
