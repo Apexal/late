@@ -72,5 +72,9 @@ export default [
   [ 'Do you hear that noise?',
     'The whooshing sound of all your',
     'deadlines passing by'
+  ],
+  [ 'Freezing afforest',
+    'A small, ferocious frog eats',
+    'whilst watching the lynx'
   ]
 ]
