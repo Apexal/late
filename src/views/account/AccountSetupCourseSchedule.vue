@@ -59,6 +59,46 @@
             <small
               class="has-text-grey"
             >{{ coursesWithoutOther.length }} total</small>
+            <span class="is-pulled-right">
+              <button
+                class="button"
+                @click="colorsModalOpen = true"
+              >Colors</button>
+              <b-modal
+                :active.sync="colorsModalOpen"
+                has-modal-card
+                trap-focus
+                aria-role="dialog"
+                aria-modal
+              >
+                <div
+                  class="modal-card"
+                  style="width: auto"
+                >
+                  <header class="modal-card-head">
+                    <p class="modal-card-title">Course Colors</p>
+                  </header>
+                  <section class="modal-card-body">
+                    <p>{{ hoverCourseTitle || 'Hover over a color!' }}</p>
+                    <input
+                      v-for="course in courses"
+                      :key="course.crn"
+                      type="color"
+                      :value="course.color"
+                      @mouseover="hoverCourseTitle = course.title"
+                      @mouseleave="hoverCourseTitle = null"
+                    >
+                    <br>
+                    <input
+                      type="text"
+                      class="input"
+                      :value="courses.map(c => c.color).join(',')"
+                    >
+                  </section>
+                </div>
+              </b-modal>
+
+            </span>
           </h2>
           <AccountCourse
             v-for="c in coursesWithoutOther"
@@ -153,7 +193,9 @@ export default {
       tab: 'list',
       saved: false,
       loading: false,
+      colorsModalOpen: false,
       openedCourseID: '',
+      hoverCourseTitle: null,
       addingCustomCourse: false
     }
   },
