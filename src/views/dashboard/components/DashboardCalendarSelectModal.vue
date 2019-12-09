@@ -7,9 +7,9 @@
   >
     <div class="modal-content panel">
       <p class="panel-heading">
-        Schedule
+        What do you want to do from
         <b>{{ dateStrs.start }}</b> to
-        <b>{{ dateStrs.end }}</b>
+        <b>{{ dateStrs.end }}</b>?
       </p>
       <div
         v-if="assessments.length === 0"
@@ -24,7 +24,7 @@
           class="block"
           expanded
         >
-          <b-tab-item label="Assignments">
+          <b-tab-item label="Study/Work on Item">
             <div
               v-for="assessment in showingAssessments"
               :key="assessment._id"
@@ -62,22 +62,22 @@
               </span>
             </div>
           </b-tab-item>
-          <b-tab-item label="General Work Blocks">
+          <b-tab-item label="Study for Course">
             <div
               v-for="c in courses"
               :key="c.crn"
               class="panel-block"
-              @click="$emit('add-work-block', c)"
+              @click="$emit('add-course-block', c)"
             >
               {{ c.title }}
             </div>
           </b-tab-item>
-          <b-tab-item label="To-Dos">
+          <b-tab-item label="Work on To-Dos">
             <div
               v-for="todo in showingTodos"
               :key="todo.index"
               class="panel-block"
-              @click="$emit('add-work-block', todo)"
+              @click="$emit('add-todo-block', todo)"
             >
               {{ todo.text }}
             </div>
