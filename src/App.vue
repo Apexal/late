@@ -456,6 +456,12 @@ footer.footer {
   }
 }
 
+// .fc-time-grid-event:hover {
+//   min-height: fit-content !important;
+//   z-index: 100 !important;
+//   box-shadow: 1px 1px 2px white;
+// }
+
 .fc-content {
   .remove-work-block {
     display: none;
