@@ -156,6 +156,9 @@ export default {
   watch: {
     scratchHTML (newHTML) {
       localStorage.setItem('scratchHTML', newHTML)
+    },
+    seconds (val) {
+      document.title = this.$store.getters.studyToolsTimerMinutes + ':' + this.$store.getters.studyToolsTimerSeconds
     }
   },
   mounted () {

@@ -18,7 +18,7 @@
         No assignments or exams are open to work on at that time.
       </div>
       <div
-        v-for="assessment in limitedAssessments"
+        v-for="assessment in showingAssessments"
         :key="assessment._id"
         class="panel-block is-flex"
         @click="$emit('add-work-block', assessment)"
@@ -26,9 +26,9 @@
         <span style="flex: 1">
           <span
             class="tag"
-            :style="{'background-color': course(assessment.courseCRN).color}"
+            :style="tagStyle(assessment)"
           >{{ course(assessment.courseCRN).title }}</span>
-          {{ assessment.assessmentType === 'assessment' ? 'Work on' : 'Study for' }}
+          {{ assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for' }}
           <b>{{ assessment.title }}</b>
           <i
             v-if="
@@ -42,40 +42,17 @@
           class="has-text-grey is-pulled-right"
         >due {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}</span>
       </div>
-      <template v-if="hasExtra">
-        <div v-if="showingExtra">
-          <div
-            v-for="assessment in extraAssessments"
-            :key="assessment._id"
-            class="panel-block is-flex"
-            @click="$emit('add-work-block', assessment)"
-          >
-            <span style="flex: 1">
-              <span
-                class="tag assessment-type-tag"
-                :style="{
-                  'background-color': course(assessment.courseCRN).color
-                }"
-              >{{ assessment.assessmentType }}</span>
-              {{ assessment.title }}
-            </span>
-            <span class="has-text-grey is-pulled-right">
-              due
-              {{ shortDateTimeFormat(assessment.dueDate || assessment.date) }}
-            </span>
-          </div>
-        </div>
-        <div
-          class="panel-block has-text-grey has-text-centered"
-          @click="showingExtra = !showingExtra"
-        >
-          <span class="is-fullwidth">
-            {{ showingExtra ? "Hide" : "Show" }} Extra ({{
-              extraAssessments.length
-            }})
-          </span>
-        </div>
-      </template>
+      <div
+        v-if="hasExtra"
+        class="panel-block has-text-grey has-text-centered"
+        @click="showingExtra = !showingExtra"
+      >
+        <span class="is-fullwidth">
+          {{ showingExtra ? "Hide" : "Show" }} Extra ({{
+            extraAssessments.length
+          }})
+        </span>
+      </div>
     </div>
   </b-modal>
 </template>
@@ -103,7 +80,7 @@ export default {
   },
   data () {
     return {
-      limit: 10,
+      limit: 3,
       showingExtra: false
     }
   },
@@ -115,6 +92,9 @@ export default {
           ? this.timeFormat(this.end)
           : this.shortDateTimeFormat(this.end)
       }
+    },
+    showingAssessments () {
+      return this.showingExtra ? this.assessments : this.limitedAssessments
     },
     limitedAssessments () {
       return this.assessments.slice(0, this.limit)
@@ -130,6 +110,16 @@ export default {
   methods: {
     course (crn) {
       return this.$store.getters.getCourseFromCRN(crn)
+    },
+    // Returns style of course tag
+    // Used when adding work block from dashboard calendar
+    // Background is course color
+    // If course color is dark, use light text. If course color is light, use dark text
+    tagStyle (assessment) {
+      return {
+        'background-color': this.course(assessment.courseCRN).color,
+        color: this.course(assessment.courseCRN).color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
+      }
     }
   }
 }
