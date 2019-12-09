@@ -350,6 +350,7 @@ export default {
       let request
       try {
         request = await this.$http.delete('/unavailabilities/clear')
+        this.$store.commit('SET_UNAVAILABILITIES', [])
       } catch (e) {
         this.loading = false
         this.$buefy.toast.open({
