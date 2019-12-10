@@ -14,7 +14,7 @@ export default {
     eventRender ({ event, el, view }) {
       if (event.extendedProps.eventType === 'course') {
         // Prevent classes from showing up after the end of classes
-        if (moment(event.start).isAfter(this.currentTerm.classesEnd)) {
+        if (moment(event.start).isAfter(moment(this.currentTerm.classesEnd).endOf('day'))) {
           return false
         }
       }
