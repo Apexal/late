@@ -72,18 +72,23 @@
         title="Add an assignment"
         @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
       >
-        <i class="fas fa-clipboard-check" />
+        <span class="icon">
 
-        Add Assignment
+          <i class="fas fa-clipboard-check" />
+        </span>
+        <span>Add Assignment</span>
       </b-button>
       <b-button
         type="is-dark"
         title="Add an exam"
         @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
       >
-        <i class="fas fa-exclamation-triangle" />
+        <span class="icon">
 
-        Add Exam
+          <i class="fas fa-exclamation-triangle" />
+        </span>
+
+        <span>Add Exam</span>
       </b-button>
     </div>
   </section>

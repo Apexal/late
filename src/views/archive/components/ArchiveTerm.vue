@@ -137,7 +137,7 @@
       <span class="icon">
         <i class="fas fa-angle-left" />
       </span>
-      Select Semester
+      <span>Select Semester</span>
     </router-link>
   </div>
 </template>
@@ -253,10 +253,6 @@ export default {
   height: 10px;
   border-radius: 100%;
   display: inline-block;
-}
-
-.button .icon {
-  margin-right: 3px !important;
 }
 
 .fa-check {
