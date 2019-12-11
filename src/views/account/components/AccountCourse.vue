@@ -152,8 +152,11 @@
               @close="editedLinks.splice(index, 1)"
             >
               <i class="fa fa-link" />
-              {{ link.name }} -
-              {{ link.url }}
+              {{ link.name | limit }} -
+              <span
+                class="link-url"
+                :title="link.url"
+              >{{ link.url | limit }}</span>
             </b-tag>
           </b-taglist>
           <div class="field has-addons">
@@ -369,6 +372,13 @@ import moment from 'moment'
 
 export default {
   name: 'AccountCourse',
+  filters: {
+    limit: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.length > 50 ? value.slice(0, 50) + '...' : value
+    }
+  },
   props: {
     course: {
       type: Object,
