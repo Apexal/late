@@ -12,6 +12,13 @@ const element = (tag, properties) => {
 export default {
   methods: {
     eventRender ({ event, el, view }) {
+      if (event.extendedProps.eventType === 'course') {
+        // Prevent classes from showing up after the end of classes
+        if (moment(event.start).isAfter(moment(this.currentTerm.classesEnd).endOf('day'))) {
+          return false
+        }
+      }
+
       if (event.rendering === 'background') return
 
       const duration = moment(event.end).diff(event.start, 'minutes')
