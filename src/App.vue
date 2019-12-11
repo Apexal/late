@@ -372,14 +372,12 @@ section.section {
 .slide-left-enter,
 .slide-right-leave-active {
   opacity: 0;
-  -webkit-transform: translate(30px, 0);
   transform: translate(30px, 0);
   margin-right: -30px;
 }
 .slide-left-leave-active,
 .slide-right-enter {
   opacity: 0;
-  -webkit-transform: translate(-30px, 0);
   transform: translate(-30px, 0);
 }
 
@@ -402,9 +400,9 @@ section.section {
   max-width: 800px;
 }
 
-.modal-content, .modal-card {
-  margin: 0;
-}
+// .modal-content, .modal-card {
+//   margin: 0;
+// }
 
 .exam-event {
   font-weight: bold;
@@ -423,12 +421,6 @@ footer.footer {
 @media only screen and (max-width: 768px) {
   .fc-toolbar.fc-header-toolbar {
     flex-direction: column;
-  }
-}
-
-.work-block-event {
-  .margin-left {
-    margin-left: 5px;
   }
 }
 

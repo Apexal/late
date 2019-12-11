@@ -76,7 +76,6 @@ const getters = {
     title: (assessment.assessmentType === 'assignment' ? 'Work on ' : 'Study for ') + assessment.title,
     className: 'work-block-event',
     color: getters.getCourseFromCRN(assessment.courseCRN).color,
-    borderColor: 'black',
     start: b.startTime,
     end: b.endTime,
     constraint: {
