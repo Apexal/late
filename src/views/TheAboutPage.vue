@@ -40,16 +40,15 @@
           <h4 class="subtitle has-text-grey">
             Check in with our development milestones
           </h4>
-          <div class="tile is-parent status-updates">
+          <div class="status-updates columns is-multiline">
             <div
               v-for="url in statusUpdateURLs"
               :key="url"
-              class="iframe-container is-child is-6"
+              class="column is-half"
             >
               <iframe
                 :key="url"
-                width="600"
-                height="700"
+                width="100%"
                 :src="url"
                 frameborder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -171,21 +170,6 @@ export default {
 ul {
   list-style-type: none;
   margin-left: 20px;
-}
-
-//Disgusting way to tile iframes. Then again iframes are disgusting too.
-.status-updates {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0px;
-  padding: 0px;
-}
-
-.status-updates .iframe-container {
-  position: relative;
-  overflow: hidden;
-  max-width: 250px;
-  flex: 1 1 auto;
 }
 
 .contrib-list {
