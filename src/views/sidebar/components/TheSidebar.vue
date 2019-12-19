@@ -270,6 +270,18 @@ export default {
     font-weight: 400;
     padding: 2px;
   }
+
+  .no-items {
+    flex-direction: column;
+
+    .no-items-icon {
+      width: 100%;
+      text-align: center;
+      font-size: 4em;
+      padding: 15px 0px 5px 0px;
+      display: block;
+    }
+  }
 }
 
 // The "Add Assignment" and "Add Exam" buttons at the top of the sidebar
