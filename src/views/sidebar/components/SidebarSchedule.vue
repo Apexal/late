@@ -3,25 +3,21 @@
   <div class="sidebar-schedule">
     <div
       v-if="onBreak"
-      class="no-classes"
+      class="no-classes panel-block has-text-grey"
     >
       <i class="fas fa-umbrella-beach no-classes-icon" />
-      <div class="panel-block has-text-grey no-hover">
-        <span v-if="!nextTerm">No courses over break!</span>
-        <span v-else>
-          {{ daysUntilNextTerm }} days left of break until
-          {{ nextTerm.name }}!
-        </span>
-      </div>
+      <span v-if="!nextTerm">No courses over break!</span>
+      <span v-else>
+        {{ daysUntilNextTerm }} days left of break until
+        {{ nextTerm.name }}!
+      </span>
     </div>
     <div
       v-else-if="!setup"
-      class="no-classes"
+      class="no-classes panel-block has-text-grey"
     >
       <i class="far fa-frown no-classes-icon" />
-      <div class="panel-block has-text-grey no-hover">
-        You have not set your course schedule yet!
-      </div>
+      You have not set your course schedule yet!
     </div>
     <div
       v-else
@@ -29,17 +25,15 @@
     >
       <div
         v-if="filteredTodaysAgenda.length === 0"
-        class="no-classes"
+        class="no-classes panel-block has-text-grey"
       >
         <i class="far fa-calendar-check no-classes-icon" />
-        <div class="panel-block has-text-grey">
-          Nothing scheduled for the
-          {{
-            todaysAgenda.length === filteredTodaysAgenda.length
-              ? ""
-              : "rest of the "
-          }}day!
-        </div>
+        Nothing scheduled for the
+        {{
+          todaysAgenda.length === filteredTodaysAgenda.length
+            ? ""
+            : "rest of the "
+        }}day!
       </div>
       <div
         v-for="event in filteredTodaysAgenda"
@@ -90,11 +84,12 @@
     </div>
     <div
       v-if="!onBreak && setup"
-      class="panel-block has-background-light has-text-centered no-hover"
+      class="panel-block has-background-light has-text-centered"
     >
       <b-button
         :class="{'is-active': showPassed}"
         class="is-fullwidth showPassedButton"
+        :disabled="filteredTodaysAgenda.length === 0"
         @click="showPassed = !showPassed"
       >
         <i
@@ -106,7 +101,7 @@
     </div>
     <div
       v-if="!onBreak && !setup"
-      class="panel-block has-background-light has-text-centered no-hover"
+      class="panel-block has-background-light has-text-centered"
     >
       <router-link
         class="button is-secondary is-fullwidth showPassedButton"
@@ -253,19 +248,9 @@ export default {
   font-size: 4em;
   padding: 15px 0px 5px 0px;
   display: block;
-  color: rgba(128, 128, 128, 0.5);
-
-  border-left: 1px solid #dbdbdb;
-  border-right: 1px solid #dbdbdb;
 }
 
-.no-classes div {
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-
-.no-classes div:hover {
-  background-color: inherit !important;
+.no-classes {
+  flex-direction: column;
 }
 </style>
