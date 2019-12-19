@@ -96,9 +96,7 @@ export default {
     async getUnconfirmedDormPhotos () {
       this.loading = true
 
-      let request
-
-      request = await this.$http.get('/dormphotos', { params: { confirmed: false } })
+      const request = await this.$http.get('/dormphotos', { params: { confirmed: false } })
 
       this.unconfirmedDormPhotos = request.data.dormPhotos
 
@@ -107,9 +105,7 @@ export default {
     async confirmPhoto (photoID) {
       this.loading = true
 
-      let request
-
-      request = await this.$http.post(`/dormphotos/${photoID}/confirm`)
+      const request = await this.$http.post(`/dormphotos/${photoID}/confirm`)
 
       this.unconfirmedDormPhotos = this.unconfirmedDormPhotos.filter(photo => photo.id !== photoID)
 
@@ -120,9 +116,7 @@ export default {
     async denyPhoto (photoID) {
       this.loading = true
 
-      let request
-
-      request = await this.$http.delete(`/dormphotos/${photoID}`)
+      const request = await this.$http.delete(`/dormphotos/${photoID}`)
 
       this.unconfirmedDormPhotos = this.unconfirmedDormPhotos.filter(photo => photo.id !== photoID)
 

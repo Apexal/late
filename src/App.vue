@@ -119,7 +119,6 @@ export default {
     PinnedAnnouncements,
     StudyToolsTimerOverlay,
     SISMan
-
   },
   mixins: [account],
   data () {
@@ -219,7 +218,7 @@ export default {
       }
 
       Sentry.configureScope(function (scope) {
-        scope.setUser({ 'username': this.user.rcs_id })
+        scope.setUser({ username: this.user.rcs_id })
       })
     }
 
@@ -250,32 +249,6 @@ export default {
 
 .is-fullwidth {
   width: 100%;
-}
-
-.header-title {
-  padding-bottom: 0px;
-  padding-left: 0px;
-  border-bottom-color: #dbdbdb;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-
-hgroup {
-  margin-bottom: 10px;
-}
-
-.header-description {
-  .instructions {
-    font-size: 1.2em;
-    .subtitle {
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    li i {
-      width: 25px;
-      margin-right: 10px;
-    }
-  }
 }
 
 //Removes annoying outline around elements when clicked.
@@ -396,9 +369,9 @@ section.section {
   opacity: 0;
 }
 
-.modal-content {
-  max-width: 800px;
-}
+// .modal-content {
+//   max-width: 800px;
+// }
 
 // .modal-content, .modal-card {
 //   margin: 0;

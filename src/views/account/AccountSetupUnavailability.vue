@@ -291,7 +291,8 @@ export default {
       try {
         await this.$store.dispatch(
           'UPDATE_UNAVAILABILITY',
-          { unavailabilityID: unavailability.id,
+          {
+            unavailabilityID: unavailability.id,
             updates: {
               startTime: moment(unavailability.start).format('HH:mm'),
               endTime: moment(unavailability.end).format('HH:mm'),

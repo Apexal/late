@@ -84,8 +84,8 @@ export default {
   methods: {
     changeAdjective () {
       this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
-      let vowels = ['a', 'e', 'i', 'o', 'u', 'h']
-      let startsWithVowel = vowels.some(vowel => this.randomAdjective[0] === vowel)
+      const vowels = ['a', 'e', 'i', 'o', 'u', 'h']
+      const startsWithVowel = vowels.some(vowel => this.randomAdjective[0] === vowel)
 
       if (startsWithVowel) {
         this.randomAdjective = 'An ' + this.randomAdjective
