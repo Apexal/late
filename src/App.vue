@@ -286,9 +286,13 @@ body {
 section.section {
   padding: 1.5rem;
 
+  /*
+    There are two kinds of page titles. One is a simple title (with an optional subtitle)
+    and the other is a title inside page tabs.
+  */
   .title {
-    padding-bottom: 0px;
-    padding-left: 0px;
+    padding: 0px;
+    padding-bottom: 5px;
   }
 
   .tabs .title {
@@ -387,14 +391,6 @@ section.section {
   //margin-right: -80px;
   opacity: 0;
 }
-
-// .modal-content {
-//   max-width: 800px;
-// }
-
-// .modal-content, .modal-card {
-//   margin: 0;
-// }
 
 .exam-event {
   font-weight: bold;
