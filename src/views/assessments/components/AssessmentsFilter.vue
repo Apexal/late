@@ -2,7 +2,7 @@
 <template>
   <div class="assessments-filter has-background-light box">
     <p
-      class="is-hidden-desktop has-text-centered"
+      class="toggle-filters has-text-centered"
       @click="toggleExpanded"
     >
       <b>{{ expanded ? "Hide" : "Show" }} Filters</b>
@@ -158,16 +158,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.toggle-filters {
+  cursor: pointer;
+}
+
 .assessments-filter {
   margin-top: 8px;
   padding: 5px;
 
+  // Hide the filters if they are toggled off
   .columns {
-    @media only screen and (max-width: 1023px) {
-      display: none;
-      &.expanded {
-        display: flex;
-      }
+    display: none;
+    &.expanded {
+      display: flex;
     }
   }
 }
@@ -185,69 +188,29 @@ export default {
 .courses {
   line-height: 2;
 }
-// .assessments-filter:hover {
-//   cursor: pointer;
-// }
 
-// .assessments-filter {
-//   padding: 0;
-//   margin: 0;
-//   margin-bottom: 20px;
-//   margin-top: 10px;
-
-//   .filters-body {
-//     padding: 10px;
-//     animation: fadein 0.3s;
-//   }
-//   .is-flex {
-//     align-items: center;
-//     justify-content: center;
-
-//     &:not(:first-child) {
-//       padding-top: 10px;
-//     }
-//   }
-
-//   .field {
-//     margin: 0;
-//     padding: 0px 30px;
-//   }
-
-//   .subtitle {
-//     margin: 0;
-//   }
-
-//   .hide-label {
-//     font-weight: 500;
-//     width: 60px;
-//     align-self: flex-start;
-//   }
-
-//   #group-by-select {
-//     margin-left: 5px;
-//   }
-// }
-span.tag.course-tag {
-  cursor: pointer;
+.course-tag {
   margin: 0 2px;
-  color: white;
+  cursor: pointer;
 
-  transition: opacity 0.1s ease-out;
+  transition: all 0.1s ease-out;
 
   span {
+    color: white;
     max-width: 150px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   &.filtered-out {
-    opacity: 0.3;
-    //color: #686868 !important;
-    //background-color: rgb(214, 214, 214) !important;
+    background-color: initial !important;
+    span {
+      color: grey !important;
+    }
   }
-  &:hover:not(.filtered-out) {
-    opacity: 0.8;
-  }
+//   &:hover:not(.filtered-out) {
+//     opacity: 0.8;
+//   }
 }
 
 @keyframes fadein {

@@ -276,9 +276,6 @@ span.tag.course-tag {
 
 .tab-nav {
   margin-bottom: 0;
-  .title {
-    margin: 0;
-  }
 }
 
 .buttons {

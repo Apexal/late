@@ -285,6 +285,25 @@ body {
 
 section.section {
   padding: 1.5rem;
+
+  .title {
+    padding-bottom: 0px;
+    padding-left: 0px;
+  }
+
+  .tabs .title {
+    margin: 0;
+  }
+
+  > .title {
+    border-bottom-color: #dbdbdb;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+  }
+
+  > .subtitle {
+    color: #777;
+  }
 }
 
 @media only screen and (max-width: 1216px) {
