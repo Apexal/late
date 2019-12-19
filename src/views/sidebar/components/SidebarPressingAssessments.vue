@@ -5,24 +5,18 @@
     class="sidebar-pressing-assessments"
   >
     <template v-if="onBreak">
-      <div class="no-work">
-        <i class="fas fa-umbrella-beach no-work-icon" />
-        <div class="panel-block has-text-grey no-hover">
-          No work over break!
-        </div>
+      <div class="no-items panel-block has-text-grey">
+        <i class="fas fa-umbrella-beach no-items-icon" />
+        No work over break!
       </div>
     </template>
     <template v-else>
       <div
         v-if="pressing.length === 0"
-        class="no-work"
+        class="no-items panel-block has-text-grey"
       >
-        <i class="far fa-check-square no-work-icon" />
-        <div
-          class="panel-block has-text-grey no-hover has-text-centered"
-        >
-          No pressing assignments or exams!
-        </div>
+        <i class="far fa-check-square no-items-icon" />
+        No pressing assignments or exams!
       </div>
 
       <router-link
@@ -83,7 +77,7 @@
         </span>
       </router-link>
 
-      <div class="panel-block has-background-light no-hover">
+      <div class="panel-block has-background-light">
         <router-link
           :to="{name: 'coursework-upcoming'}"
           class="button is-fullwidth browseAssessmentsButton"
@@ -162,25 +156,5 @@ export default {
   border-color: black;
   box-shadow: none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-}
-
-.no-work {
-  i {
-    width: 100%;
-    text-align: center;
-    font-size: 4em;
-    padding: 15px 0px 5px 0px;
-    display: block;
-    color: rgba(128, 128, 128, 0.5);
-
-    border-left: 1px solid #dbdbdb;
-    border-right: 1px solid #dbdbdb;
-  }
-
-  div {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
 }
 </style>
