@@ -410,6 +410,14 @@ footer.footer {
 
 // ------ FULLCALENDAR -------
 
+.fc-button-primary {
+  background-color: var(--dark-color);
+}
+
+.fc-button-active {
+  background-color: rgb(37, 48, 72) !important;
+}
+
 @media only screen and (max-width: 768px) {
   .fc-toolbar.fc-header-toolbar {
     flex-direction: column;
