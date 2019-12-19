@@ -3,9 +3,9 @@
   <div class="sidebar-schedule">
     <div
       v-if="onBreak"
-      class="no-classes panel-block has-text-grey"
+      class="no-items panel-block has-text-grey"
     >
-      <i class="fas fa-umbrella-beach no-classes-icon" />
+      <i class="fas fa-umbrella-beach no-items-icon" />
       <span v-if="!nextTerm">No courses over break!</span>
       <span v-else>
         {{ daysUntilNextTerm }} days left of break until
@@ -14,9 +14,9 @@
     </div>
     <div
       v-else-if="!setup"
-      class="no-classes panel-block has-text-grey"
+      class="no-items panel-block has-text-grey"
     >
-      <i class="far fa-frown no-classes-icon" />
+      <i class="far fa-frown no-items-icon" />
       You have not set your course schedule yet!
     </div>
     <div
@@ -25,9 +25,9 @@
     >
       <div
         v-if="filteredTodaysAgenda.length === 0"
-        class="no-classes panel-block has-text-grey"
+        class="no-items panel-block has-text-grey"
       >
-        <i class="far fa-calendar-check no-classes-icon" />
+        <i class="far fa-calendar-check no-items-icon" />
         Nothing scheduled for the
         {{
           todaysAgenda.length === filteredTodaysAgenda.length
@@ -240,17 +240,5 @@ export default {
 
 .show-passed-icon {
   margin-right: 5px;
-}
-
-.no-classes i {
-  width: 100%;
-  text-align: center;
-  font-size: 4em;
-  padding: 15px 0px 5px 0px;
-  display: block;
-}
-
-.no-classes {
-  flex-direction: column;
 }
 </style>
