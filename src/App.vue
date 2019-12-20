@@ -290,7 +290,7 @@ section.section {
     There are two kinds of page titles. One is a simple title (with an optional subtitle)
     and the other is a title inside page tabs.
   */
-  .title {
+  .title:not(.main-title) {
     padding: 0px;
     padding-bottom: 5px;
   }
@@ -299,7 +299,7 @@ section.section {
     margin: 0;
   }
 
-  > .title {
+  > .title:not(.main-title) {
     border-bottom-color: #dbdbdb;
     border-bottom-style: solid;
     border-bottom-width: 1px;
