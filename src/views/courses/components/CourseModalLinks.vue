@@ -7,7 +7,7 @@
     >
       <li
         v-for="l in links"
-        :key="l"
+        :key="l.url"
       >
         <a
           :href="l.url"
