@@ -24,6 +24,7 @@
             <div class="field">
               <b-checkbox
                 v-model="filteredCourses"
+                type="is-link"
                 :native-value="c.crn"
               >
                 Hide {{ c.title }}
