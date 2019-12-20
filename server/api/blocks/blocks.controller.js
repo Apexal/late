@@ -6,7 +6,7 @@ const logger = require('../../modules/logger')
 const google = require('../../modules/google')
 
 /**
- * Add a work block to a specific assignment and have the updated
+ * Add a block to a specific assignment and have the updated
  * assignment returned. The request body should contain the following:
  * - startTime
  * - endTime
@@ -16,7 +16,7 @@ const google = require('../../modules/google')
  *
  * POST /
  */
-async function addWorkBlock (ctx) {
+async function addBlock (ctx) {
   const { assessmentType, assessmentID } = ctx.params
   const { startTime, endTime, shared } = ctx.request.body
 
@@ -25,6 +25,7 @@ async function addWorkBlock (ctx) {
     _assessment: assessmentID,
     startTime,
     endTime,
+    blockType: 'assessment',
     completed: false,
     locked: false,
     notified: false,
@@ -109,7 +110,7 @@ async function addWorkBlock (ctx) {
 }
 
 /**
- * Edit a work block by changing the start and end times.
+ * Edit a block by changing the start and end times.
  * The request body should contain:
  * - startTime
  * - endTime
@@ -120,7 +121,7 @@ async function addWorkBlock (ctx) {
  *
  * PATCH /:blockID
  */
-async function editWorkBlock (ctx) {
+async function editBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params
   const { startTime, endTime, location } = ctx.request.body
 
@@ -130,7 +131,7 @@ async function editWorkBlock (ctx) {
 
   if (!editedBlock) {
     logger.error(`Could not find work block ${blockID} for ${ctx.state.user.identifier} to edit`)
-    return ctx.notFound(`Couldn't find work block to edit!`)
+    return ctx.notFound('Couldn\'t find work block to edit!')
   }
 
   editedBlock.set(ctx.request.body)
@@ -210,13 +211,13 @@ async function editWorkBlock (ctx) {
 }
 
 /**
- * Delete a work block given its ID
+ * Delete a block given its ID
  * @param {Koa context} ctx
  * @returns Deleted block
  *
  * DELETE /:blockID
  */
-async function deleteWorkBlock (ctx) {
+async function deleteBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params
 
   const removedBlock = await Block.findOne({
@@ -225,7 +226,7 @@ async function deleteWorkBlock (ctx) {
 
   if (!removedBlock) {
     logger.error(`Could not find work block ${blockID} to remove for ${ctx.state.user.identifier}`)
-    return ctx.notFound(`Could not find the work block to delete!`)
+    return ctx.notFound('Could not find the work block to delete!')
   }
 
   removedBlock.remove()
@@ -293,7 +294,7 @@ async function deleteWorkBlock (ctx) {
 }
 
 module.exports = {
-  addWorkBlock,
-  editWorkBlock,
-  deleteWorkBlock
+  addBlock,
+  editBlock,
+  deleteBlock
 }

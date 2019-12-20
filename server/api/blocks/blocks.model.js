@@ -15,6 +15,7 @@ const schema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true
     },
+    blockType: { type: String, enum: ['assessment', 'course', 'todo'], default: 'assessment', required: true },
     shared: { type: Boolean, default: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
