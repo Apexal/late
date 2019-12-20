@@ -27,7 +27,8 @@ const getters = {
     className: 'course-block-event',
     color: course.color,
     start: b.startTime,
-    end: b.endTime
+    end: b.endTime,
+    course
   })
 }
 

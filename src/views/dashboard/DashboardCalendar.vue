@@ -320,6 +320,8 @@ export default {
           time: moment(event.start).format('HH:mm')
         })
         this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
+      } else if (eventType === 'course-block') {
+        this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
       } else if (eventType === 'assignment') {
         this.$router.push({
           name: 'assignment-overview',
