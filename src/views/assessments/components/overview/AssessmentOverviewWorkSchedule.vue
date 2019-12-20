@@ -384,7 +384,7 @@ export default {
       }
     },
     eventClick (calEvent, jsEvent, view) {
-      if (calEvent.eventType !== 'work-block') return
+      if (calEvent.eventType !== 'assessment-block') return
 
       const dateStr = moment(calEvent.start).format('dddd M/D')
       const startStr = moment(calEvent.start).format('h:mm a')

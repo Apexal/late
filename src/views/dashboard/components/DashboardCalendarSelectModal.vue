@@ -29,7 +29,7 @@
               v-for="assessment in showingAssessments"
               :key="assessment._id"
               class="panel-block is-flex"
-              @click="$emit('add-work-block', assessment)"
+              @click="$emit('add-assessment-block', assessment)"
             >
               <span style="flex: 1">
                 <span

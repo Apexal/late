@@ -73,7 +73,7 @@ export default new Vuex.Store({
           getters.getAssessmentBlocksAsEvents
             .filter(e => moment(e.start).isSame(state.now, 'day'))
             .map(e => ({
-              eventType: 'work-block',
+              eventType: 'assessment-block',
               block: e.block,
               assessmentType: e.assessmentType,
               assessment: e.assessment,

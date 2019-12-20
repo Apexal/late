@@ -112,7 +112,7 @@ export default {
       itemSelector: '.assessment-link',
       eventData: (eventEl) => {
         return {
-          eventType: 'new-work-block',
+          eventType: 'new-assessment-block',
           title: 'Drop to schedule',
           assessmentID: eventEl.dataset.assessmentID,
           assessmentType: eventEl.dataset.assessmentType,

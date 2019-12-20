@@ -81,7 +81,7 @@ export default {
       } else if (eventType === 'academic-calendar-event') {
         addIcon('fa-info-circle')
         el.title = 'Click for full message.'
-      } else if (eventType === 'work-block') {
+      } else if (eventType === 'assessment-block') {
         el.title = `${
           assessment.assessmentType === 'assignment'
             ? 'Work on'
@@ -93,7 +93,7 @@ export default {
         addCornerIcon(assessment.assessmentType ? 'fa-clipboard-check' : 'fa-exclamation-triangle')
 
         // --- DELETE BUTTON ---
-        const deleteButton = element('span', { className: 'delete remove-work-block', title: 'Unschedule' })
+        const deleteButton = element('span', { className: 'delete remove-assessment-block', title: 'Unschedule' })
         deleteButton.onclick = async ev => {
           ev.stopPropagation()
 

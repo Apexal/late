@@ -6,10 +6,10 @@ const getters = {
   mapAssessmentBlockToEvent: (state, getters) => (type, assessment, b) => ({
     blockID: b._id,
     block: b,
-    eventType: 'work-block',
+    eventType: 'assessment-block',
     assessmentType: type,
     title: (assessment.assessmentType === 'assignment' ? 'Work on ' : 'Study for ') + assessment.title,
-    className: 'work-block-event',
+    className: 'assessment-block-event',
     color: getters.getCourseFromCRN(assessment.courseCRN).color,
     start: b.startTime,
     end: b.endTime,

@@ -62,7 +62,7 @@
             <b class="period-title">{{ event.course.title }}</b>
             <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
           </template>
-          <template v-else-if="event.eventType === 'work-block'">
+          <template v-else-if="event.eventType === 'assessment-block'">
             <span>
               {{
                 event.assessmentType === "assignment"

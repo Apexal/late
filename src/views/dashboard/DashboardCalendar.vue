@@ -6,7 +6,7 @@
       :start="selectModal.start"
       :end="selectModal.end"
       :assessments="filteredUpcomingAssessments"
-      @add-work-block="addWorkBlock"
+      @add-assessment-block="addWorkBlock"
       @close-modal="selectModal.open = false"
     />
     <DashboardCalendarEventModal
@@ -307,7 +307,7 @@ export default {
           name: 'exam-overview',
           params: { examID: assessment._id }
         })
-      } else if (eventType === 'work-block') {
+      } else if (eventType === 'assessment-block') {
         const { assessmentType } = assessment
 
         if (assessmentType === 'assignment') {
@@ -351,7 +351,7 @@ export default {
     },
     eventDrop ({ event, revert }) {
       const { eventType, assessment, blockID } = event.extendedProps
-      if (eventType === 'work-block') {
+      if (eventType === 'assessment-block') {
         // Update work block on server
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
@@ -377,7 +377,7 @@ export default {
     },
     eventResize ({ event, revert }) {
       const { eventType, assessment, blockID } = event.extendedProps
-      if (eventType === 'work-block') {
+      if (eventType === 'assessment-block') {
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
             message: 'Edit this past work block?',

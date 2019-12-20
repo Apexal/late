@@ -60,7 +60,7 @@ module.exports = {
       start: moment(block.startTime).format('Hmm'),
       end: moment(block.endTime).format('Hmm'),
       location: block.location,
-      eventType: 'work-block',
+      eventType: 'assessment-block',
       course: courses.find(c => c.crn === block.assessment.courseCRN)
     }))
 
@@ -99,7 +99,7 @@ module.exports = {
           `${event.course.title} ${periodTypes[event.type] || event.type}`,
           `${start} - ${end} | *${event.location}*`
         )
-      } else if (event.eventType === 'work-block') {
+      } else if (event.eventType === 'assessment-block') {
         embed.addField(
           `${
             event.assessment.assessmentType === 'assignment'

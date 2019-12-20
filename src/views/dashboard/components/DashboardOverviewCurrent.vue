@@ -14,7 +14,7 @@
       <b>{{ duration(currentUnavailabilityDates.start, currentUnavailabilityDates.end) }} minutes</b>
       until {{ timeFormat(currentUnavailabilityDates.end) }}!
     </p>
-    <template v-else-if="currentStatus === 'work-block'">
+    <template v-else-if="currentStatus === 'assessment-block'">
       <p class="subtitle">
         For the next <b>{{ duration(currentEvent.start, currentEvent.end) }} minutes</b> until <b>{{ timeFormat(currentEvent.end) }}</b>, you should be {{ currentEvent.assessment.assessmentType === 'assignment' ? 'working on' : 'studying for' }}
       </p>
@@ -103,7 +103,7 @@ export default {
   name: 'DashboardOverviewCurrent',
   computed: {
     // Based on what is currently schedule (if anything), return the type of event
-    // This will return one of ['none', 'busy', 'period', 'work-block']
+    // This will return one of ['none', 'busy', 'period', 'assessment-block']
     currentStatus () {
       if (this.currentEvent) return this.currentEvent.eventType
       if (this.currentUnavailability) return 'busy'

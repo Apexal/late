@@ -447,14 +447,14 @@ footer.footer {
 }
 
 .fc-content {
-  .remove-work-block {
+  .remove-assessment-block {
     display: none;
     position: absolute;
     right: 0;
     top: 0;
   }
 
-  .remove-work-block {
+  .remove-assessment-block {
     display: none;
     position: absolute;
     right: 0;
@@ -465,7 +465,7 @@ footer.footer {
   }
 
   &:hover {
-    .remove-work-block {
+    .remove-assessment-block {
       display: block;
     }
   }
