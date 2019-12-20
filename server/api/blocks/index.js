@@ -9,6 +9,7 @@ const Ctrl = require('./blocks.controller')
 // router.post('/todo/:todoID', Ctrl.addToDoBlock)
 
 // Course blocks
+router.post('/course/:courseID', Ctrl.addCourseBlock)
 
 // To Do Blocks
 
