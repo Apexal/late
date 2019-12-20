@@ -1,3 +1,4 @@
+const Course = require('../courses/courses.model')
 const Block = require('./blocks.model')
 const Assignment = require('../assignments/assignments.model')
 const Exam = require('../exams/exams.model')
@@ -293,8 +294,44 @@ async function deleteAssessmentBlock (ctx) {
   })
 }
 
+async function addCourseBlock (ctx) {
+  const { courseID } = ctx.request.params
+  const { startTime, endTime } = ctx.request.body
+
+  // Find course and make sure it belongs to student
+  const course = await Course.findOne({
+    _student: ctx.state.user._id,
+    _id: courseID
+  })
+
+  if (!course) return ctx.notFound('Course not found.')
+
+  const createdCourseBlock = new Block({
+    blockType: 'course',
+    _student: ctx.state.user._id,
+    _course: courseID,
+    startTime,
+    endTime
+  })
+
+  try {
+    await createdCourseBlock.save()
+  } catch (e) {
+    logger.error(`Failed to add course block for ${ctx.state.user.identifier}`)
+    return ctx.badRequest('Failed to add course block.')
+  }
+
+  course._blocks.push(createdCourseBlock._id)
+
+  ctx.created({
+    updatedCourse: course,
+    createdCourseBlock
+  })
+}
+
 module.exports = {
   addAssessmentBlock,
   editAssessmentBlock,
-  deleteAssessmentBlock
+  deleteAssessmentBlock,
+  addCourseBlock
 }
