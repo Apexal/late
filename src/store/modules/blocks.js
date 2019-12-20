@@ -18,16 +18,7 @@ const getters = {
     },
     assessment,
     [type]: assessment
-  }),
-  getAssessmentBlocksAsEvents: (state, getters) => {
-    const assessmentBlocks = state.upcomingAssessments.map(assessment =>
-      assessment._blocks.map(b =>
-        getters.mapAssessmentBlockToEvent(assessment.assessmentType, assessment, b)
-      )
-    )
-
-    return assessmentBlocks.flat()
-  }
+  })
 }
 
 const actions = {

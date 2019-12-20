@@ -76,6 +76,15 @@ const getters = {
     return state.upcomingAssessments
       .map(assessment => assessment._blocks)
       .flat()
+  },
+  getAssessmentBlocksAsEvents: (state, getters, rootState, rootGetters) => {
+    const assessmentBlocks = state.upcomingAssessments.map(assessment =>
+      assessment._blocks.map(b =>
+        rootGetters.mapAssessmentBlockToEvent(assessment.assessmentType, assessment, b)
+      )
+    )
+
+    return assessmentBlocks.flat()
   }
 }
 
