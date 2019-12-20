@@ -10,6 +10,7 @@ const Ctrl = require('./blocks.controller')
 
 // Course blocks
 router.post('/course/:courseID', Ctrl.addCourseBlock)
+router.patch('/course/:courseID/:blockID', Ctrl.editCourseBlock)
 
 // To Do Blocks
 

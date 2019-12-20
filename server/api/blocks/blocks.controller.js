@@ -127,7 +127,8 @@ async function editAssessmentBlock (ctx) {
   const { startTime, endTime, location } = ctx.request.body
 
   const editedBlock = await Block.findOne({
-    _id: blockID
+    _id: blockID,
+    _student: ctx.state.user._id
   })
 
   if (!editedBlock) {
@@ -221,7 +222,8 @@ async function deleteAssessmentBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params
 
   const removedBlock = await Block.findOne({
-    _id: blockID
+    _id: blockID,
+    _student: ctx.state.user._id
   })
 
   if (!removedBlock) {
@@ -330,9 +332,99 @@ async function addCourseBlock (ctx) {
   })
 }
 
+/**
+ * Edit a course block by changing the start and end times (and possibly location).
+ * The request body should contain:
+ * - startTime
+ * - endTime
+ * - location
+ *
+ * @param {Koa context} ctx
+ * @returns updatedBlock
+ * @returns updatedCourse
+ *
+ * PATCH /course/:blockID
+ */
+async function editCourseBlock (ctx) {
+  const { courseID, blockID } = ctx.params
+  const { startTime, endTime, location } = ctx.request.body
+
+  const editedBlock = await Block.findOne({
+    blockType: 'course',
+    _id: blockID,
+    _student: ctx.state.user._id
+  })
+
+  if (!editedBlock) {
+    logger.error(`Could not find course block ${blockID} for ${ctx.state.user.identifier} to edit`)
+    return ctx.notFound('Couldn\'t find course block to edit!')
+  }
+
+  editedBlock.set({
+    startTime,
+    endTime,
+    location
+  })
+
+  try {
+    await editedBlock.save()
+  } catch (e) {
+    logger.error(
+      `Failed to edit course block for ${ctx.state.user.identifier}: ${e}`
+    )
+    return ctx.badRequest('There was an error updatng the course block.')
+  }
+
+  // Get course
+  let course
+  try {
+    course = await Course.findOne({
+      _student: ctx.state.user._id,
+      _id: courseID
+    }).populate('_blocks')
+  } catch (e) {
+    logger.error(
+      `Failed to get course for course block edit for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    )
+    return ctx.internalServerError(
+      'There was an error editing the course block.'
+    )
+  }
+
+  logger.info(`Edited course block for ${ctx.state.user.identifier}`)
+
+  // if (ctx.state.user.integrations.google.calendarID) {
+  //   try {
+  //     await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
+  //       location,
+  //       start: {
+  //         dateTime: startTime
+  //       },
+  //       end: {
+  //         dateTime: endTime
+  //       }
+  //     })
+  //   } catch (e) {
+  //     logger.error(
+  //       `Failed to patch GCal event for work block for ${
+  //         ctx.state.user.rcs_id
+  //       }: ${e}`
+  //     )
+  //   }
+  // }
+
+  return ctx.ok({
+    updatedCourse: course,
+    updatedBlock: editedBlock
+  })
+}
+
 module.exports = {
   addAssessmentBlock,
   editAssessmentBlock,
   deleteAssessmentBlock,
-  addCourseBlock
+  addCourseBlock,
+  editCourseBlock
 }
