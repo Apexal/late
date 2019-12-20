@@ -159,7 +159,7 @@ export default {
         if (assessment.shared && block.shared) addIcon('fa-users margin-left', '.fc-title', false)
         // -------------------
       } else if (eventType === 'course-block') {
-        el.title = `Work on ${course.title}${
+        el.title = `Study ${course.title}${
           block.location ? ' | ' + block.location : ''
         }`
 

@@ -23,11 +23,15 @@ const getters = {
     blockID: b._id,
     block: b,
     eventType: 'course-block',
-    title: `Work on ${course.title}`,
+    title: `Study ${course.title}`,
     className: 'course-block-event',
     color: course.color,
     start: b.startTime,
     end: b.endTime,
+    constraint: {
+      start: course.startDate,
+      end: course.endDate
+    },
     course
   })
 }
