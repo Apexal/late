@@ -11,12 +11,6 @@
         <b>{{ dateStrs.start }}</b> to
         <b>{{ dateStrs.end }}</b>?
       </p>
-      <div
-        v-if="assessments.length === 0"
-        class="panel-block has-text-grey"
-      >
-        No assignments or exams are open to work on at that time.
-      </div>
       <!-- Buefy version of tabs -->
       <div class="panel-block is-marginless is-paddingless">
         <b-tabs
@@ -25,6 +19,12 @@
           expanded
         >
           <b-tab-item label="Study/Work on Item">
+            <div
+              v-if="assessments.length === 0"
+              class="panel-block has-text-grey"
+            >
+              No assignments or exams are open to work on at that time.
+            </div>
             <div
               v-for="assessment in showingAssessments"
               :key="assessment._id"
@@ -69,6 +69,7 @@
               class="panel-block"
               @click="$emit('add-course-block', c)"
             >
+              <CourseAssessmentDot :course="c" />
               {{ c.title }}
             </div>
           </b-tab-item>
