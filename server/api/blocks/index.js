@@ -11,6 +11,7 @@ const Ctrl = require('./blocks.controller')
 // Course blocks
 router.post('/course/:courseID', Ctrl.addCourseBlock)
 router.patch('/course/:courseID/:blockID', Ctrl.editCourseBlock)
+router.delete('/course/:courseID/:blockID', Ctrl.deleteCourseBlock)
 
 // To Do Blocks
 

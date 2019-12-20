@@ -212,7 +212,7 @@ async function editAssessmentBlock (ctx) {
 }
 
 /**
- * Delete a block given its ID
+ * Delete an assessment block given its ID
  * @param {Koa context} ctx
  * @returns Deleted block
  *
@@ -421,10 +421,77 @@ async function editCourseBlock (ctx) {
   })
 }
 
+/**
+ * Delete a course block given its ID
+ * @param {Koa context} ctx
+ * @returns Deleted block
+ *
+ * DELETE /course/:courseID/:blockID
+ */
+async function deleteCourseBlock (ctx) {
+  const { courseID, blockID } = ctx.params
+
+  const removedBlock = await Block.findOne({
+    blockType: 'course',
+    _id: blockID,
+    _student: ctx.state.user._id
+  })
+
+  if (!removedBlock) {
+    logger.error(`Could not find course block ${blockID} to remove for ${ctx.state.user.identifier}`)
+    return ctx.notFound('Could not find the course block to delete!')
+  }
+
+  removedBlock.remove()
+
+  let course
+  // Get assessment
+  try {
+    course = await Course.findOne({
+      _id: courseID,
+      _student: ctx.state.user._id
+    })
+    course._blocks = course._blocks.filter(
+      b => b._id !== removedBlock._id
+    )
+
+    await course.save()
+  } catch (e) {
+    logger.error(
+      `Failed to get course for course block remove for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    )
+    return ctx.internalServerError(
+      'There was an error removing the course block.'
+    )
+  }
+
+  logger.info(`Deleted course block for ${ctx.state.user.identifier}`)
+
+  // if (ctx.state.user.integrations.google.calendarID) {
+  //   try {
+  //     await google.actions.deleteEventFromWorkBlock(ctx, blockID)
+  //   } catch (e) {
+  //     logger.error(
+  //       `Failed to delete GCal event for work block for ${
+  //         ctx.state.user.rcs_id
+  //       }: ${e}`
+  //     )
+  //   }
+  // }
+
+  return ctx.ok({
+    removeBlock: removedBlock,
+    updatedCourse: course
+  })
+}
+
 module.exports = {
   addAssessmentBlock,
   editAssessmentBlock,
   deleteAssessmentBlock,
   addCourseBlock,
-  editCourseBlock
+  editCourseBlock,
+  deleteCourseBlock
 }
