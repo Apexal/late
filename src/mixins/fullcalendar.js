@@ -158,6 +158,32 @@ export default {
         // --- SHARED ICON ---
         if (assessment.shared && block.shared) addIcon('fa-users margin-left', '.fc-title', false)
         // -------------------
+      } else if (eventType === 'course-block') {
+        el.title = `Work on ${course.title}${
+          block.location ? ' | ' + block.location : ''
+        }`
+
+        addCornerIcon('fa-book-reader')
+
+        // --- DELETE BUTTON ---
+        const deleteButton = element('span', { className: 'delete remove-course-block', title: 'Unschedule' })
+        deleteButton.onclick = async ev => {
+          ev.stopPropagation()
+
+          const updatedCourse = await this.$store.dispatch(
+            'REMOVE_COURSE_BLOCK',
+            {
+              course,
+              blockID: block._id
+            }
+          )
+
+          this.$buefy.toast.open({
+            message: 'Unscheduled course block!',
+            type: 'is-primary'
+          })
+        }
+        el.querySelector('.fc-content').append(deleteButton)
       }
     },
     dateClick ({ date }) {

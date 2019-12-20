@@ -90,7 +90,7 @@ const actions = {
 
     commit('UPDATE_COURSE', request.data.updatedCourse)
 
-    return request.data.updatedAssessment
+    return request.data.updatedCourse
   },
   async EDIT_COURSE_BLOCK (
     { commit, getters },
@@ -109,7 +109,14 @@ const actions = {
 
     commit('UPDATE_COURSE', request.data.updatedCourse)
 
-    return request.data.updatedAssessment
+    return request.data.updatedCourse
+  },
+  async REMOVE_COURSE_BLOCK ({ commit }, { course, blockID }) {
+    const request = await axios.delete(`/blocks/course/${course._id}/${blockID}`)
+
+    commit('UPDATE_COURSE', request.data.updatedCourse)
+
+    return request.data.updatedCourse
   }
 }
 
