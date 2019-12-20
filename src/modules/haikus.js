@@ -1,3 +1,10 @@
+/**
+ * These haikus have all been written by past LATE developers,
+ * usually as their very first contribution! Please add yours
+ * to the list.
+ *
+ * These haikus appear on the 404 page.
+ */
 export default [
   [
     'the page you once sought',
@@ -69,11 +76,13 @@ export default [
     'S E V E N  Seven',
     'F I V E  Five'
   ],
-  [ 'Do you hear that noise?',
+  [
+    'Do you hear that noise?',
     'The whooshing sound of all your',
     'deadlines passing by'
   ],
-  [ 'Freezing afforest',
+  [
+    'Freezing afforest',
     'A small, ferocious frog eats',
     'whilst watching the lynx'
   ]
