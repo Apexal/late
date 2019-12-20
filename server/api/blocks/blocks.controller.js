@@ -159,7 +159,6 @@ async function editAssessmentBlock (ctx) {
       })
       .populate('comments._student', '_id rcs_id name graduationYear')
       .populate('_student', '_id rcs_id name graduationYear integrations')
-
       .populate({
         path: '_blocks',
         match: {
@@ -295,14 +294,14 @@ async function deleteAssessmentBlock (ctx) {
 }
 
 async function addCourseBlock (ctx) {
-  const { courseID } = ctx.request.params
+  const { courseID } = ctx.params
   const { startTime, endTime } = ctx.request.body
 
   // Find course and make sure it belongs to student
   const course = await Course.findOne({
     _student: ctx.state.user._id,
     _id: courseID
-  })
+  }).populate('_blocks')
 
   if (!course) return ctx.notFound('Course not found.')
 
@@ -317,11 +316,13 @@ async function addCourseBlock (ctx) {
   try {
     await createdCourseBlock.save()
   } catch (e) {
-    logger.error(`Failed to add course block for ${ctx.state.user.identifier}`)
+    logger.error(`Failed to add course block for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('Failed to add course block.')
   }
 
-  course._blocks.push(createdCourseBlock._id)
+  course._blocks.push(createdCourseBlock)
+
+  await course.save()
 
   ctx.created({
     updatedCourse: course,

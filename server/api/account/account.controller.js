@@ -52,7 +52,7 @@ async function updateCourses (studentID, termCode, newCourses) {
       _student: studentID,
       termCode,
       crn: course.crn
-    })
+    }).populate('_blocks')
 
     if (courseDoc) {
       Object.assign(courseDoc, {
@@ -346,7 +346,7 @@ async function addCourseByCRN (ctx) {
   const { rin, pin } = ctx.request.body
 
   // First make sure that the student hasn't already added this course
-  const existingCourse = await Course.findOne({ _student: ctx.state.user._id, crn })
+  const existingCourse = await Course.findOne({ _student: ctx.state.user._id, crn }).populate('_blocks')
   if (existingCourse) {
     return ctx.badRequest('You already have added that course!')
   }
