@@ -28,6 +28,12 @@ const schema = new Schema(
         location: { type: String, default: '???' }
       }
     ],
+    _blocks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Block'
+      }
+    ],
     gradingCategories: [
       {
         title: { type: String, trim: true, minlength: 1, maxlength: 100 },

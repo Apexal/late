@@ -9,6 +9,12 @@ const schema = new Schema(
       required: true
     },
     text: { type: String, minlength: 1, maxlength: 3000, required: true },
+    _blocks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Block'
+      }
+    ],
     completed: { type: Date, default: null }
   },
   { timestamps: true }
