@@ -90,6 +90,20 @@ const getters = {
 
     return events
   },
+  getCourseBlocks: state => {
+    return state.courses
+      .map(course => course._blocks)
+      .flat()
+  },
+  getCourseBlocksAsEvents: (state, getters, rootState, rootGetters) => {
+    const courseBlocks = state.courses.map(course =>
+      course._blocks.map(b =>
+        rootGetters.mapCourseBlockToEvent(course, b)
+      )
+    )
+
+    return courseBlocks.flat()
+  },
   roomIntoLocation: state => location => {
     const locationParts = location.split(' ')
     return locationParts.slice(0, locationParts.length - 1).join(' ') +

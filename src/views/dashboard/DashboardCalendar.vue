@@ -6,7 +6,8 @@
       :start="selectModal.start"
       :end="selectModal.end"
       :assessments="filteredUpcomingAssessments"
-      @add-assessment-block="addWorkBlock"
+      @add-assessment-block="addAssessmentBlock"
+      @add-course-block="addCourseBlock"
       @close-modal="selectModal.open = false"
     />
     <DashboardCalendarEventModal
@@ -164,18 +165,18 @@ export default {
         }
       )
 
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents
+      const assessmentBlocks = this.$store.getters.getAssessmentBlocksAsEvents
 
       return courseSchedule
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
-        .concat(workBlocks)
+        .concat(assessmentBlocks)
         // .concat(this.academicCalendarEvents)
     },
     earliest () {
       const earliest = this.$store.state.auth.user.earliestWorkTime
       // const courses = this.$store.getters.getCourseScheduleAsEvents;
-      // const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
+      // const assessmentBlocks = this.$store.getters.getAssessmentBlocksAsEvents.map(e =>
       //   Object.assign({}, e)
       // );
 
@@ -185,9 +186,9 @@ export default {
       //     earliest = courses[i].start;
       //   }
       // }
-      // for (i = 0; i < workBlocks.length; i++) {
-      //   if (workBlocks[i].start.localeCompare(earliest) < 0) {
-      //     earliest = workBlocks[i].start;
+      // for (i = 0; i < assessmentBlocks.length; i++) {
+      //   if (assessmentBlocks[i].start.localeCompare(earliest) < 0) {
+      //     earliest = assessmentBlocks[i].start;
       //   }
       // }
 
@@ -262,10 +263,10 @@ export default {
       this.selectModal.end = moment(end)
       this.selectModal.open = true
     },
-    async addWorkBlock (assessment) {
+    async addAssessmentBlock (assessment) {
       if (!assessment || !this.selectModal.open) return
 
-      await this.$store.dispatch('ADD_WORK_BLOCK', {
+      await this.$store.dispatch('ADD_ASSESSMENT_BLOCK', {
         assessment,
         start: this.selectModal.start,
         end: this.selectModal.end
@@ -273,6 +274,26 @@ export default {
 
       this.$buefy.toast.open({
         message: 'Added work block to your schedule!',
+        type: 'is-primary',
+        duration: 1000
+      })
+
+      this.selectModal.open = false
+
+      const calendarApi = this.$refs['dashboard-calendar'].getApi()
+      calendarApi.unselect()
+    },
+    async addCourseBlock (course) {
+      if (!course || !this.selectModal.open) return
+
+      await this.$store.dispatch('ADD_COURSE_BLOCK', {
+        course,
+        start: this.selectModal.start,
+        end: this.selectModal.end
+      })
+
+      this.$buefy.toast.open({
+        message: 'Added course block to your schedule!',
         type: 'is-primary',
         duration: 1000
       })
@@ -332,7 +353,7 @@ export default {
       const { assessmentID } = event.extendedProps
       const assessment = this.$store.getters.getUpcomingAssessmentById(assessmentID)
       try {
-        await this.$store.dispatch('ADD_WORK_BLOCK', { assessment, start: event.start, end: event.end })
+        await this.$store.dispatch('ADD_ASSESSMENT_BLOCK', { assessment, start: event.start, end: event.end })
       } catch (e) {
         this.$buefy.toast.open({
           message: 'There was an error scheduling that work block...',
@@ -357,7 +378,7 @@ export default {
           this.$buefy.dialog.confirm({
             message: 'Move this past work block?',
             onConfirm: () =>
-              this.editWorkBlock(
+              this.editAssessmentBlock(
                 assessment,
                 blockID,
                 event.start,
@@ -366,7 +387,7 @@ export default {
             onCancel: revert
           })
         } else {
-          this.editWorkBlock(
+          this.editAssessmentBlock(
             assessment,
             blockID,
             event.start,
@@ -382,7 +403,7 @@ export default {
           this.$buefy.dialog.confirm({
             message: 'Edit this past work block?',
             onConfirm: () =>
-              this.editWorkBlock(
+              this.editAssessmentBlock(
                 assessment,
                 blockID,
                 event.start,
@@ -391,7 +412,7 @@ export default {
             onCancel: revert
           })
         } else {
-          this.editWorkBlock(
+          this.editAssessmentBlock(
             assessment,
             blockID,
             event.start,
@@ -400,8 +421,8 @@ export default {
         }
       }
     },
-    async editWorkBlock (assessment, blockID, start, end) {
-      await this.$store.dispatch('EDIT_WORK_BLOCK', {
+    async editAssessmentBlock (assessment, blockID, start, end) {
+      await this.$store.dispatch('EDIT_ASSESSMENT_BLOCK', {
         assessment,
         blockID,
         start,

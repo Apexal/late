@@ -98,7 +98,7 @@ export default {
           ev.stopPropagation()
 
           const updatedAssessment = await this.$store.dispatch(
-            'REMOVE_WORK_BLOCK',
+            'REMOVE_ASSESSMENT_BLOCK',
             {
               assessment: assessment,
               blockID: block._id
@@ -137,7 +137,7 @@ export default {
             },
             onConfirm: async location => {
               const updatedAssessment = await this.$store.dispatch(
-                'EDIT_WORK_BLOCK',
+                'EDIT_ASSESSMENT_BLOCK',
                 {
                   assessment: assessment,
                   blockID: block._id,

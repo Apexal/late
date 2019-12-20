@@ -18,6 +18,16 @@ const getters = {
     },
     assessment,
     [type]: assessment
+  }),
+  mapCourseBlockToEvent: (state, getters) => (course, b) => ({
+    blockID: b._id,
+    block: b,
+    eventType: 'course-block',
+    title: `Work on ${course.title}`,
+    className: 'course-block-event',
+    color: course.color,
+    start: b.startTime,
+    end: b.endTime
   })
 }
 
@@ -66,6 +76,19 @@ const actions = {
     if (getters.getUpcomingAssessmentById(assessment._id)) {
       commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
     }
+    return request.data.updatedAssessment
+  },
+  async ADD_COURSE_BLOCK (
+    { commit },
+    { course, start, end }
+  ) {
+    const request = await axios.post(
+      `/blocks/course/${course._id}`,
+      { startTime: start, endTime: end }
+    )
+
+    commit('UPDATE_COURSE', request.data.updatedCourse)
+
     return request.data.updatedAssessment
   }
 }
