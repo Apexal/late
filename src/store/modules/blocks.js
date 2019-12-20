@@ -91,6 +91,25 @@ const actions = {
     commit('UPDATE_COURSE', request.data.updatedCourse)
 
     return request.data.updatedAssessment
+  },
+  async EDIT_COURSE_BLOCK (
+    { commit, getters },
+    { course, blockID, start, end, location }
+  ) {
+    const updates = {
+      startTime: start,
+      endTime: end
+    }
+    if (location) updates.location = location
+
+    const request = await axios.patch(
+      `/blocks/course/${course._id}/${blockID}`,
+      updates
+    )
+
+    commit('UPDATE_COURSE', request.data.updatedCourse)
+
+    return request.data.updatedAssessment
   }
 }
 

@@ -375,7 +375,7 @@ export default {
       })
     },
     eventDrop ({ event, revert }) {
-      const { eventType, assessment, blockID } = event.extendedProps
+      const { eventType, assessment, course, blockID } = event.extendedProps
       if (eventType === 'assessment-block') {
         // Update work block on server
         if (moment(event.end).isBefore(moment())) {
@@ -398,10 +398,17 @@ export default {
             event.end
           )
         }
+      } else if (eventType === 'course-block') {
+        this.editCourseBlock(
+          course,
+          blockID,
+          event.start,
+          event.end
+        )
       }
     },
     eventResize ({ event, revert }) {
-      const { eventType, assessment, blockID } = event.extendedProps
+      const { eventType, assessment, course, blockID } = event.extendedProps
       if (eventType === 'assessment-block') {
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
@@ -423,6 +430,13 @@ export default {
             event.end
           )
         }
+      } else if (eventType === 'course-block') {
+        this.editCourseBlock(
+          course,
+          blockID,
+          event.start,
+          event.end
+        )
       }
     },
     async editAssessmentBlock (assessment, blockID, start, end) {
@@ -435,6 +449,20 @@ export default {
 
       this.$buefy.toast.open({
         message: 'Rescheduled work block!',
+        type: 'is-primary',
+        duration: 1000
+      })
+    },
+    async editCourseBlock (course, blockID, start, end) {
+      await this.$store.dispatch('EDIT_COURSE_BLOCK', {
+        course,
+        blockID,
+        start,
+        end
+      })
+
+      this.$buefy.toast.open({
+        message: 'Rescheduled course block!',
         type: 'is-primary',
         duration: 1000
       })
