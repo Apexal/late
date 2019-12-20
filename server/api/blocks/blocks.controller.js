@@ -16,7 +16,7 @@ const google = require('../../modules/google')
  *
  * POST /
  */
-async function addBlock (ctx) {
+async function addAssessmentBlock (ctx) {
   const { assessmentType, assessmentID } = ctx.params
   const { startTime, endTime, shared } = ctx.request.body
 
@@ -121,7 +121,7 @@ async function addBlock (ctx) {
  *
  * PATCH /:blockID
  */
-async function editBlock (ctx) {
+async function editAssessmentBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params
   const { startTime, endTime, location } = ctx.request.body
 
@@ -217,7 +217,7 @@ async function editBlock (ctx) {
  *
  * DELETE /:blockID
  */
-async function deleteBlock (ctx) {
+async function deleteAssessmentBlock (ctx) {
   const { assessmentType, assessmentID, blockID } = ctx.params
 
   const removedBlock = await Block.findOne({
@@ -294,7 +294,7 @@ async function deleteBlock (ctx) {
 }
 
 module.exports = {
-  addBlock,
-  editBlock,
-  deleteBlock
+  addAssessmentBlock,
+  editAssessmentBlock,
+  deleteAssessmentBlock
 }

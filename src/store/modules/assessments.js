@@ -277,7 +277,7 @@ const actions = {
     { assessment, start, end, shared = true }
   ) {
     const request = await axios.post(
-      `/blocks/${assessment.assessmentType}/${assessment._id}`,
+      `/blocks/assessment/${assessment.assessmentType}/${assessment._id}`,
       { startTime: start, endTime: end, shared }
     )
 
@@ -299,7 +299,7 @@ const actions = {
     if (location) updates.location = location
 
     const request = await axios.patch(
-      `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`,
+      `/blocks/assessment/${assessment.assessmentType}/${assessment._id}/${blockID}`,
       updates
     )
 
@@ -311,7 +311,7 @@ const actions = {
   },
   async REMOVE_WORK_BLOCK ({ commit, getters }, { assessment, blockID }) {
     const request = await axios.delete(
-      `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`
+      `/blocks/assessment/${assessment.assessmentType}/${assessment._id}/${blockID}`
     )
     if (getters.getUpcomingAssessmentById(assessment._id)) {
       commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
