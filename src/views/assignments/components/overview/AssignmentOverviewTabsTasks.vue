@@ -2,11 +2,11 @@
   <div class="assignment-tasks content">
     <ol v-if="assessment.tasks.length > 0">
       <Draggable
-        v-model="assessment.tasks"
-        @change="orderChanged"
+        v-model="tasks"
+        @change="updateTasks"
       >
         <li
-          v-for="task in assessment.tasks"
+          v-for="task in tasks"
           :key="task.id"
           class="task"
         >
@@ -77,17 +77,26 @@ export default {
   data () {
     return {
       loading: false,
+      tasks: [],
       newTaskText: ''
     }
   },
+  watch: {
+    'assessment.tasks' (newTasks) {
+      this.tasks = newTasks
+    }
+  },
+  mounted () {
+    this.tasks = this.assessment.tasks
+  },
   methods: {
-    async updateTasks (tasks) {
+    async updateTasks () {
       let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.assessment._id,
           assessmentType: this.assessment.assessmentType,
-          updates: { tasks }
+          updates: { tasks: this.tasks }
         })
       } catch (e) {
         this.$buefy.toast.open({
@@ -102,8 +111,9 @@ export default {
       this.loading = true
 
       const newTask = { text: this.newTaskText, addedAt: new Date() }
+      this.tasks = [...this.tasks, newTask]
 
-      this.updateTasks([...this.assessment.tasks, newTask])
+      this.updateTasks()
 
       this.newTaskText = ''
 
@@ -115,20 +125,16 @@ export default {
       this.loading = false
     },
     async toggleTask (taskID) {
-      const tasks = [...this.assessment.tasks] // clone
-      const task = tasks.find(task => task._id === taskID)
+      const task = this.tasks.find(task => task._id === taskID)
       task.completed = !task.completed
       task.completedAt = (task.completed ? new Date() : undefined)
 
-      this.updateTasks(tasks)
+      this.updateTasks()
     },
     async deleteTask (taskID) {
-      const tasks = this.assessment.tasks.filter(task => task._id !== taskID)
+      this.tasks = this.tasks.filter(task => task._id !== taskID)
 
-      this.updateTasks(tasks)
-    },
-    async orderChanged () {
-      this.updateTasks(this.assessment.tasks)
+      this.updateTasks()
     }
   }
 }
