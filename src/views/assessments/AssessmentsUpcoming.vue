@@ -36,7 +36,7 @@
               @click="headerClick(key)"
             >{{ headerText(key) }}</span>
             <!-- <span class="tag is-danger is-pulled-right day-weight-tag">Light</span> -->
-            <span class="is-pulled-right add-assessment-buttons">
+            <span class="add-assessment-buttons">
               <i
                 class="has-text-white fas fa-clipboard-check"
                 :title="addAssessmentTitle(key, 'assignment')"
@@ -231,11 +231,15 @@ export default {
 
 <style lang="scss" scoped>
 .key-heading {
+  position: relative;
   span.key.courseCRN {
     cursor: pointer;
   }
 
   .add-assessment-buttons {
+    position: absolute;
+    right: 10px;
+
     transition: opacity 0.1s;
     @media only screen and (min-width: 768px) {
       opacity: 0;
