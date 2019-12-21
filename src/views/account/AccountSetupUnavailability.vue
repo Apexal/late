@@ -92,7 +92,7 @@
         time-format="h(:mm)t"
         :now-indicator="true"
         :event-render="eventRender"
-        :default-date="courses[0].startDate"
+        :default-date="courses.length > 0 ? courses[0].startDate : new Date()"
         @eventResize="eventChanged"
         @eventDrop="eventChanged"
         @eventClick="eventClick"
