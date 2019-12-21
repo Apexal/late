@@ -156,7 +156,7 @@ const actions = {
       for (const period of course.periods) {
         const start = moment(
           courseStart.format('YYYY-MM-DD') + ' ' + period.start,
-          'YYYY-MM-DD Hmm',
+          'YYYY-MM-DD HH:mm',
           true
         )
         while (start.day() !== period.day) {
@@ -165,7 +165,7 @@ const actions = {
 
         const end = moment(
           start.format('YYYY-MM-DD') + ' ' + period.end,
-          'YYYY-MM-DD Hmm',
+          'YYYY-MM-DD HH:mm',
           true
         )
         const recurrence = new RRule({

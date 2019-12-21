@@ -48,7 +48,15 @@ const getters = {
     return getters.ongoingCourses
       .map(course => course.periods.filter(p => p.day === day))
       .flat()
-      .sort((a, b) => parseInt(a.start) - parseInt(b.start))
+      .sort((a, b) => {
+        if (a.startTime > b.startTime) {
+          return 1
+        } else if (a.startTime < b.startTime) {
+          return -1
+        }
+
+        return 0
+      })
   },
   onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
   classesOver: (state, getters) => moment().isAfter(getters.currentTerm.classesEnd),
@@ -63,17 +71,14 @@ const getters = {
     }[type] || type),
   mapCourseToEvents: (state, getters, rootState, rootGetters) => course => {
     return course.periods.map(p => {
-      const start = moment(p.start, 'Hmm', true).format('HH:mm')
-      const end = moment(p.end, 'Hmm', true).format('HH:mm')
-
       return {
         id: course._id,
         eventType: 'course',
         title: `${course.title} ${getters.periodType(p.type)}`,
         startRecur: course.startDate,
         endRecur: course.endDate,
-        startTime: start,
-        endTime: end,
+        startTime: p.startTime,
+        endTime: p.endTime,
         daysOfWeek: [p.day],
         color: course.color,
         editable: false,

@@ -66,8 +66,8 @@ export default new Vuex.Store({
           eventType: 'period',
           course: getters.getCourseFromPeriod(p),
           period: p,
-          start: moment(p.start, 'Hmm', true),
-          end: moment(p.end, 'Hmm', true)
+          start: p.startTime,
+          end: p.endTime
         }))
         .concat(
           getters.getAssessmentBlocksAsEvents

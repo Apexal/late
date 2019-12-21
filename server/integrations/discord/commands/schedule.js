@@ -57,8 +57,8 @@ module.exports = {
     const workBlockEvents = workBlocks.map(block => ({
       shared: block.shared,
       assessment: block.assessment,
-      start: moment(block.startTime).format('Hmm'),
-      end: moment(block.endTime).format('Hmm'),
+      start: moment(block.startTime).format('HH:mm'),
+      end: moment(block.endTime).format('HH:mm'),
       location: block.location,
       eventType: 'assessment-block',
       course: courses.find(c => c.crn === block.assessment.courseCRN)
@@ -91,8 +91,8 @@ module.exports = {
     for (const i in sortedEvents) {
       const event = sortedEvents[i]
 
-      const start = moment(event.start, 'Hmm', true).format('h:mma')
-      const end = moment(event.end, 'Hmm', true).format('h:mma')
+      const start = moment(event.start, 'HH:mm', true).format('h:mma')
+      const end = moment(event.end, 'HH:mm', true).format('h:mma')
 
       if (event.eventType === 'period') {
         embed.addField(

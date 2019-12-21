@@ -106,7 +106,7 @@ export default {
     nextTermCourseHourCount () {
       // Tally up durations of all periods
       const total = this.nextTermPeriods
-        .reduce((acc, period) => acc + moment(period.end, 'Hmm').diff(moment(period.start, 'Hmm'), 'minutes'), 0)
+        .reduce((acc, period) => acc + moment(period.end, 'HH:mm').diff(moment(period.start, 'HH:mm'), 'minutes'), 0)
 
       return {
         hours: parseInt(total / 60),
@@ -120,7 +120,7 @@ export default {
         if (parseInt(period.start) < earliest) { earliest = parseInt(period.start) }
       }
 
-      return moment(earliest, 'Hmm', true).format('h:mm a')
+      return moment(earliest, 'HH:mm', true).format('h:mm a')
     },
     latestClassTime () {
       let latest = 800
@@ -129,7 +129,7 @@ export default {
         if (parseInt(period.end) > latest) { latest = parseInt(period.end) }
       }
 
-      return moment(latest, 'Hmm', true).format('h:mm a')
+      return moment(latest, 'HH:mm', true).format('h:mm a')
     }
   },
   async mounted () {

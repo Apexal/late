@@ -186,7 +186,7 @@ export default {
       if (event.link) this.$router.push(event.link)
     },
     fromNow (datetime) {
-      const time = moment(datetime, 'Hmm', true)
+      const time = moment(datetime, 'HH:mm', true)
       return `${time.isBefore(this.rightNow) ? 'Started' : 'Starting'} ${time.from(
         this.rightNow
       )}`
