@@ -1,23 +1,28 @@
 <template>
   <div class="assignment-tasks content">
     <ol v-if="assessment.tasks.length > 0">
-      <li
-        v-for="task in assessment.tasks"
-        :key="task.id"
-        class="task"
+      <Draggable
+        v-model="assessment.tasks"
+        @change="orderChanged"
       >
-        <b-checkbox
-          :value="task.completed"
-          @input="toggleTask(task._id)"
+        <li
+          v-for="task in assessment.tasks"
+          :key="task.id"
+          class="task"
         >
-          {{ task.text }}
-        </b-checkbox>
-        <span
-          title="Remove task"
-          class="delete"
-          @click="deleteTask(task._id)"
-        />
-      </li>
+          <b-checkbox
+            :value="task.completed"
+            @input="toggleTask(task._id)"
+          >
+            {{ task.text }}
+          </b-checkbox>
+          <span
+            title="Remove task"
+            class="delete"
+            @click="deleteTask(task._id)"
+          />
+        </li>
+      </Draggable>
     </ol>
     <p
       v-else
@@ -58,8 +63,11 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
+
 export default {
   name: 'AssignmentOverviewTabsTask',
+  components: { Draggable },
   props: {
     assessment: {
       type: Object,
@@ -73,28 +81,29 @@ export default {
     }
   },
   methods: {
-    async addTask () {
-      this.loading = true
-
-      const newTask = { text: this.newTaskText, addedAt: new Date() }
-
+    async updateTasks (tasks) {
       let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.assessment._id,
           assessmentType: this.assessment.assessmentType,
-          updates: { tasks: [...this.assessment.tasks, newTask] }
+          updates: { tasks }
         })
       } catch (e) {
         this.$buefy.toast.open({
           message: e.response.data.message,
           type: 'is-danger'
         })
-        this.loading = false
-        return
       }
 
       this.$emit('updated-assessment', updatedAssessment)
+    },
+    async addTask () {
+      this.loading = true
+
+      const newTask = { text: this.newTaskText, addedAt: new Date() }
+
+      this.updateTasks([...this.assessment.tasks, newTask])
 
       this.newTaskText = ''
 
@@ -111,39 +120,15 @@ export default {
       task.completed = !task.completed
       task.completedAt = (task.completed ? new Date() : undefined)
 
-      let updatedAssessment
-      try {
-        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
-          assessmentID: this.assessment._id,
-          assessmentType: this.assessment.assessmentType,
-          updates: { tasks }
-        })
-      } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-      }
+      this.updateTasks(tasks)
     },
     async deleteTask (taskID) {
       const tasks = this.assessment.tasks.filter(task => task._id !== taskID)
 
-      let updatedAssessment
-      try {
-        updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
-          assessmentID: this.assessment._id,
-          assessmentType: this.assessment.assessmentType,
-          updates: { tasks }
-        })
-      } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-        return
-      }
-
-      this.$emit('updated-assessment', updatedAssessment)
+      this.updateTasks(tasks)
+    },
+    async orderChanged () {
+      this.updateTasks(this.assessment.tasks)
     }
   }
 }
