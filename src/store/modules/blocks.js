@@ -121,6 +121,45 @@ const actions = {
     commit('UPDATE_COURSE', request.data.updatedCourse)
 
     return request.data.updatedCourse
+  },
+  async ADD_TODO_BLOCK (
+    { commit },
+    { todo, start, end }
+  ) {
+    const request = await axios.post(
+      `/blocks/todo/${todo._id}`,
+      { startTime: start, endTime: end }
+    )
+
+    commit('UPDATE_TODO', request.data.updatedTodo)
+
+    return request.data.updatedTodo
+  },
+  async EDIT_TODO_BLOCK (
+    { commit },
+    { todo, blockID, start, end, location }
+  ) {
+    const updates = {
+      startTime: start,
+      endTime: end
+    }
+    if (location) updates.location = location
+
+    const request = await axios.patch(
+      `/blocks/todo/${todo._id}/${blockID}`,
+      updates
+    )
+
+    commit('UPDATE_TODO', request.data.updatedTodo)
+
+    return request.data.updatedTodo
+  },
+  async REMOVE_TODO_BLOCK ({ commit }, { todo, blockID }) {
+    const request = await axios.delete(`/blocks/course/${todo._id}/${blockID}`)
+
+    commit('UPDATE_TODO', request.data.updatedTodo)
+
+    return request.data.updatedTodo
   }
 }
 
