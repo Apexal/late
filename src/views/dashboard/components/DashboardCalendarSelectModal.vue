@@ -64,6 +64,12 @@
           </b-tab-item>
           <b-tab-item label="Study for Course">
             <div
+              v-if="courses.length === 0"
+              class="panel-block has-text-grey"
+            >
+              No ongoing courses at that time.
+            </div>
+            <div
               v-for="c in courses"
               :key="c.crn"
               class="panel-block"
@@ -74,6 +80,12 @@
             </div>
           </b-tab-item>
           <b-tab-item label="Work on To-Dos">
+            <div
+              v-if="showingTodos.length === 0"
+              class="panel-block has-text-grey"
+            >
+              No todos are open to work on at that time.
+            </div>
             <div
               v-for="todo in showingTodos"
               :key="todo.index"
