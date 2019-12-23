@@ -166,7 +166,7 @@ const actions = {
     return request.data.updatedTodo
   },
   async REMOVE_TODO_BLOCK ({ commit }, { todo, blockID }) {
-    const request = await axios.delete(`/blocks/course/${todo._id}/${blockID}`)
+    const request = await axios.delete(`/blocks/todo/${todo._id}/${blockID}`)
 
     commit('UPDATE_TODO', request.data.updatedTodo)
 

@@ -30,7 +30,7 @@ const actions = {
   },
   async UPDATE_TODO ({ commit }, todo) {
     commit('UPDATE_TODO', todo)
-    await axios.post('/todos/' + todo._id, { text: todo.text, completed: todo.completed })
+    await axios.post('/todos/' + todo._id, todo)
   },
   async REMOVE_TODO ({ commit }, todo) {
     commit('REMOVE_TODO', todo)

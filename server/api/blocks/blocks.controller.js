@@ -626,7 +626,7 @@ async function deleteTodoBlock (ctx) {
     blockType: 'todo',
     _id: blockID,
     _student: ctx.state.user._id
-  })
+  }).populate('_blocks')
 
   if (!removedBlock) {
     logger.error(`Could not find todo block ${blockID} to remove for ${ctx.state.user.identifier}`)

@@ -23,7 +23,7 @@ export default {
 
       const duration = moment(event.end).diff(event.start, 'minutes')
 
-      const { eventType, assessment, course, period, block } = event.extendedProps
+      const { eventType, assessment, course, todo, period, block } = event.extendedProps
 
       if (view.type === 'dayGridMonth') {
         if (
@@ -180,6 +180,32 @@ export default {
 
           this.$buefy.toast.open({
             message: 'Unscheduled course block!',
+            type: 'is-primary'
+          })
+        }
+        el.querySelector('.fc-content').append(deleteButton)
+      } else if (eventType === 'todo-block') {
+        el.title = `${todo.text}${
+          block.location ? ' | ' + block.location : ''
+        }`
+
+        addCornerIcon('fa-check')
+
+        // --- DELETE BUTTON ---
+        const deleteButton = element('span', { className: 'delete remove-todo-block', title: 'Unschedule' })
+        deleteButton.onclick = async ev => {
+          ev.stopPropagation()
+
+          const updatedTodo = await this.$store.dispatch(
+            'REMOVE_TODO_BLOCK',
+            {
+              todo,
+              blockID: block._id
+            }
+          )
+
+          this.$buefy.toast.open({
+            message: 'Unscheduled todo block!',
             type: 'is-primary'
           })
         }
