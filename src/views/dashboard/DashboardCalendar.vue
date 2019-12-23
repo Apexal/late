@@ -6,8 +6,9 @@
       :start="selectModal.start"
       :end="selectModal.end"
       :assessments="filteredUpcomingAssessments"
-      @add-assessment-block="addAssessmentBlock"
-      @add-course-block="addCourseBlock"
+      @add-assessment-block="addBlock('assessment', arguments[0])"
+      @add-course-block="addBlock('course', arguments[0])"
+      @add-todo-block="addBlock('todo', arguments[0])"
       @close-modal="selectModal.open = false"
     />
     <DashboardCalendarEventModal
@@ -265,37 +266,17 @@ export default {
       this.selectModal.end = moment(end)
       this.selectModal.open = true
     },
-    async addAssessmentBlock (assessment) {
-      if (!assessment || !this.selectModal.open) return
+    async addBlock (blockType, item) {
+      if (!item || !this.selectModal.open) return
 
-      await this.$store.dispatch('ADD_ASSESSMENT_BLOCK', {
-        assessment,
+      await this.$store.dispatch('ADD_' + blockType.toUpperCase() + '_BLOCK', {
+        [blockType]: item,
         start: this.selectModal.start,
         end: this.selectModal.end
       })
 
       this.$buefy.toast.open({
-        message: 'Added work block to your schedule!',
-        type: 'is-primary',
-        duration: 1000
-      })
-
-      this.selectModal.open = false
-
-      const calendarApi = this.$refs['dashboard-calendar'].getApi()
-      calendarApi.unselect()
-    },
-    async addCourseBlock (course) {
-      if (!course || !this.selectModal.open) return
-
-      await this.$store.dispatch('ADD_COURSE_BLOCK', {
-        course,
-        start: this.selectModal.start,
-        end: this.selectModal.end
-      })
-
-      this.$buefy.toast.open({
-        message: 'Added course block to your schedule!',
+        message: `Added ${blockType} block to your schedule!`,
         type: 'is-primary',
         duration: 1000
       })
