@@ -15,7 +15,7 @@ const schema = new Schema(
         ref: 'Block'
       }
     ],
-    completed: { type: Date, default: null }
+    completed: { type: Date }
   },
   { timestamps: true }
 )

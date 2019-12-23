@@ -305,6 +305,8 @@ export default {
         this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
       } else if (eventType === 'course-block') {
         this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
+      } else if (eventType === 'todo-block') {
+        // TODO: something
       } else if (eventType === 'assignment') {
         this.$router.push({
           name: 'assignment-overview',
@@ -358,94 +360,102 @@ export default {
       })
     },
     eventDrop ({ event, revert }) {
-      const { eventType, assessment, course, blockID } = event.extendedProps
+      const { eventType, assessment, course, todo, blockID } = event.extendedProps
       if (eventType === 'assessment-block') {
         // Update work block on server
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
             message: 'Move this past work block?',
             onConfirm: () =>
-              this.editAssessmentBlock(
-                assessment,
+              this.editBlock(
+                'assessment',
                 blockID,
+                assessment,
                 event.start,
                 event.end
               ),
             onCancel: revert
           })
         } else {
-          this.editAssessmentBlock(
-            assessment,
+          this.editBlock(
+            'assessment',
             blockID,
+            assessment,
             event.start,
             event.end
           )
         }
       } else if (eventType === 'course-block') {
-        this.editCourseBlock(
-          course,
+        this.editBlock(
+          'course',
           blockID,
+          course,
+          event.start,
+          event.end
+        )
+      } else if (eventType === 'todo-block') {
+        this.editBlock(
+          'todo',
+          blockID,
+          todo,
           event.start,
           event.end
         )
       }
     },
     eventResize ({ event, revert }) {
-      const { eventType, assessment, course, blockID } = event.extendedProps
+      const { eventType, assessment, course, todo, blockID } = event.extendedProps
       if (eventType === 'assessment-block') {
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
             message: 'Edit this past work block?',
             onConfirm: () =>
-              this.editAssessmentBlock(
-                assessment,
+              this.editBlock(
+                'assessment',
                 blockID,
+                assessment,
                 event.start,
                 event.end
               ),
             onCancel: revert
           })
         } else {
-          this.editAssessmentBlock(
-            assessment,
+          this.editBlock(
+            'assessment',
             blockID,
+            assessment,
             event.start,
             event.end
           )
         }
       } else if (eventType === 'course-block') {
-        this.editCourseBlock(
-          course,
+        this.editBlock(
+          'course',
           blockID,
+          course,
+          event.start,
+          event.end
+        )
+      } else if (eventType === 'todo-block') {
+        this.editBlock(
+          'todo',
+          blockID,
+          todo,
           event.start,
           event.end
         )
       }
     },
-    async editAssessmentBlock (assessment, blockID, start, end) {
-      await this.$store.dispatch('EDIT_ASSESSMENT_BLOCK', {
-        assessment,
+    async editBlock (blockType, blockID, item, start, end) {
+      await this.$store.dispatch('EDIT_' + blockType.toUpperCase() + '_BLOCK', {
+        [blockType]: item,
         blockID,
         start,
         end
       })
 
       this.$buefy.toast.open({
-        message: 'Rescheduled work block!',
-        type: 'is-primary',
-        duration: 1000
-      })
-    },
-    async editCourseBlock (course, blockID, start, end) {
-      await this.$store.dispatch('EDIT_COURSE_BLOCK', {
-        course,
-        blockID,
-        start,
-        end
-      })
-
-      this.$buefy.toast.open({
-        message: 'Rescheduled course block!',
+        message: `Rescheduled ${blockType} block!`,
         type: 'is-primary',
         duration: 1000
       })

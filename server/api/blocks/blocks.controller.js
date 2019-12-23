@@ -28,9 +28,6 @@ async function addAssessmentBlock (ctx) {
     startTime,
     endTime,
     blockType: 'assessment',
-    completed: false,
-    locked: false,
-    notified: false,
     shared
   })
 
@@ -516,7 +513,6 @@ async function addTodoBlock (ctx) {
   }
 
   todo._blocks.push(createdTodoBlock)
-
   await todo.save()
 
   ctx.created({
