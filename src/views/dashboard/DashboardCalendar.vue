@@ -168,12 +168,14 @@ export default {
 
       const assessmentBlocks = this.$store.getters.getAssessmentBlocksAsEvents
       const courseBlocks = this.$store.getters.getCourseBlocksAsEvents
+      const todoBlocks = this.$store.getters.getTodoBlocksAsEvents
 
       return courseSchedule
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
         .concat(assessmentBlocks)
         .concat(courseBlocks)
+        .concat(todoBlocks)
         // .concat(this.academicCalendarEvents)
     },
     earliest () {

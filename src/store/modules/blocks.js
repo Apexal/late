@@ -33,6 +33,17 @@ const getters = {
       end: course.endDate
     },
     course
+  }),
+  mapTodoBlockToEvent: (state, getters) => (todo, b) => ({
+    blockID: b._id,
+    block: b,
+    eventType: 'todo-block',
+    title: `${todo.text}`,
+    className: 'todo-block-event',
+    color: 'blue',
+    start: b.startTime,
+    end: b.endTime,
+    todo
   })
 }
 

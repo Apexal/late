@@ -262,6 +262,10 @@ export default {
       return this.$store.getters.getCourseBlocksAsEvents.map(e =>
         Object.assign({}, { rendering: 'background' }, e))
     },
+    todoBlockEvents () {
+      return this.$store.getters.getTodoBlocksAsEvents.map(e =>
+        Object.assign({}, { rendering: 'background' }, e))
+    },
     unavailabilitySchedule () {
       return this.$store.getters.getUnavailabilityAsEvents.map(e =>
         Object.assign({}, e, {
@@ -307,6 +311,7 @@ export default {
         .concat(this.unavailabilitySchedule)
         .concat(this.collaboratorUnavailabilitySchedule)
         .concat(this.courseBlockEvents)
+        .concat(this.todoBlockEvents)
         .concat([this.dueDateEvent])
     }
   },
