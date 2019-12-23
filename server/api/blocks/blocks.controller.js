@@ -2,6 +2,7 @@ const Course = require('../courses/courses.model')
 const Block = require('./blocks.model')
 const Assignment = require('../assignments/assignments.model')
 const Exam = require('../exams/exams.model')
+const Todo = require('../todos/todos.model')
 
 const logger = require('../../modules/logger')
 const google = require('../../modules/google')
@@ -487,11 +488,208 @@ async function deleteCourseBlock (ctx) {
   })
 }
 
+async function addTodoBlock (ctx) {
+  const { todoID } = ctx.params
+  const { startTime, endTime } = ctx.request.body
+
+  // Find todo and make sure it belongs to student
+  const todo = await Todo.findOne({
+    _student: ctx.state.user._id,
+    _id: todoID
+  }).populate('_blocks')
+
+  if (!todo) return ctx.notFound('Todo not found.')
+
+  const createdTodoBlock = new Block({
+    blockType: 'todo',
+    _student: ctx.state.user._id,
+    _todo: todoID,
+    startTime,
+    endTime
+  })
+
+  try {
+    await createdTodoBlock.save()
+  } catch (e) {
+    logger.error(`Failed to add todo block for ${ctx.state.user.identifier}: ${e}`)
+    return ctx.badRequest('Failed to add todo block.')
+  }
+
+  todo._blocks.push(createdTodoBlock)
+
+  await todo.save()
+
+  ctx.created({
+    updatedTodo: todo,
+    createdTodoBlock
+  })
+}
+
+/**
+ * Edit a todo block by changing the start and end times (and possibly location).
+ * The request body should contain:
+ * - startTime
+ * - endTime
+ * - location
+ *
+ * @param {Koa context} ctx
+ * @returns updatedBlock
+ * @returns updatedTodo
+ *
+ * PATCH /todo/:blockID
+ */
+async function editTodoBlock (ctx) {
+  const { todoID, blockID } = ctx.params
+  const { startTime, endTime, location } = ctx.request.body
+
+  const editedBlock = await Block.findOne({
+    blockType: 'todo',
+    _id: blockID,
+    _student: ctx.state.user._id
+  })
+
+  if (!editedBlock) {
+    logger.error(`Could not find todo block ${blockID} for ${ctx.state.user.identifier} to edit`)
+    return ctx.notFound('Couldn\'t find todo block to edit!')
+  }
+
+  editedBlock.set({
+    startTime,
+    endTime,
+    location
+  })
+
+  try {
+    await editedBlock.save()
+  } catch (e) {
+    logger.error(
+      `Failed to edit todo block for ${ctx.state.user.identifier}: ${e}`
+    )
+    return ctx.badRequest('There was an error updatng the todo block.')
+  }
+
+  // Get todo
+  let todo
+  try {
+    todo = await Todo.findOne({
+      _student: ctx.state.user._id,
+      _id: todoID
+    }).populate('_blocks')
+
+    if (!todo) throw new Error('Not found')
+  } catch (e) {
+    logger.error(
+      `Failed to get todo for todo block edit for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    )
+    return ctx.internalServerError(
+      'There was an error editing the todo block.'
+    )
+  }
+
+  logger.info(`Edited todo block for ${ctx.state.user.identifier}`)
+
+  // if (ctx.state.user.integrations.google.calendarID) {
+  //   try {
+  //     await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
+  //       location,
+  //       start: {
+  //         dateTime: startTime
+  //       },
+  //       end: {
+  //         dateTime: endTime
+  //       }
+  //     })
+  //   } catch (e) {
+  //     logger.error(
+  //       `Failed to patch GCal event for work block for ${
+  //         ctx.state.user.rcs_id
+  //       }: ${e}`
+  //     )
+  //   }
+  // }
+
+  return ctx.ok({
+    updatedTodo: todo,
+    updatedBlock: editedBlock
+  })
+}
+
+/**
+ * Delete a todo block given its ID
+ * @param {Koa context} ctx
+ * @returns Deleted block
+ *
+ * DELETE /todo/:todoID/:blockID
+ */
+async function deleteTodoBlock (ctx) {
+  const { todoID, blockID } = ctx.params
+
+  const removedBlock = await Block.findOne({
+    blockType: 'todo',
+    _id: blockID,
+    _student: ctx.state.user._id
+  })
+
+  if (!removedBlock) {
+    logger.error(`Could not find todo block ${blockID} to remove for ${ctx.state.user.identifier}`)
+    return ctx.notFound('Could not find the todo block to delete!')
+  }
+
+  removedBlock.remove()
+
+  let todo
+  // Get assessment
+  try {
+    todo = await Todo.findOne({
+      _id: todoID,
+      _student: ctx.state.user._id
+    })
+    todo._blocks = todo._blocks.filter(
+      b => b._id !== removedBlock._id
+    )
+
+    await todo.save()
+  } catch (e) {
+    logger.error(
+      `Failed to get todo for todo block remove for ${
+        ctx.state.user.rcs_id
+      }: ${e}`
+    )
+    return ctx.internalServerError(
+      'There was an error removing the todo block.'
+    )
+  }
+
+  logger.info(`Deleted todo block for ${ctx.state.user.identifier}`)
+
+  // if (ctx.state.user.integrations.google.calendarID) {
+  //   try {
+  //     await google.actions.deleteEventFromWorkBlock(ctx, blockID)
+  //   } catch (e) {
+  //     logger.error(
+  //       `Failed to delete GCal event for work block for ${
+  //         ctx.state.user.rcs_id
+  //       }: ${e}`
+  //     )
+  //   }
+  // }
+
+  return ctx.ok({
+    removeBlock: removedBlock,
+    updatedTodo: todo
+  })
+}
+
 module.exports = {
   addAssessmentBlock,
   editAssessmentBlock,
   deleteAssessmentBlock,
   addCourseBlock,
   editCourseBlock,
-  deleteCourseBlock
+  deleteCourseBlock,
+  addTodoBlock,
+  editTodoBlock,
+  deleteTodoBlock
 }
