@@ -3,11 +3,10 @@
   <b-modal
     class="course-modal"
     :active="open"
-    has-modal-card
     @close="$store.commit('CLOSE_COURSE_MODAL')"
   >
     <div
-      class="modal-card"
+      class="card"
     >
       <div class="card-content">
         <router-link
@@ -151,7 +150,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-card {
+.card {
   border-radius: 6px;
 }
 
