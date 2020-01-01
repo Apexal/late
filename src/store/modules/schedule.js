@@ -129,6 +129,11 @@ const actions = {
 
     return response.data.createdTerm
   },
+  async UPDATE_TERM ({ commit, state }, { termID, updatedTerm }) {
+    const response = await axios.patch('/terms/' + termID, updatedTerm)
+    commit('UPDATE_TERM', response.data.updatedTerm)
+    return response.data.updatedTerm
+  },
   async GET_COURSES ({ commit, dispatch }) {
     const response = await axios.get('/courses')
     commit('SET_COURSES', response.data.courses)
@@ -176,6 +181,9 @@ const mutations = {
   },
   REMOVE_COURSE: (state, removedCourse) => {
     state.courses = state.courses.filter(c => c._id !== removedCourse._id)
+  },
+  UPDATE_TERM: (state, updatedTerm) => {
+    Object.assign(state.terms.find(term => term._id === updatedTerm._id), updatedTerm)
   },
   SET_TERMS: (state, terms) => {
     state.terms = terms
