@@ -5,6 +5,11 @@
       School Terms
     </h2>
 
+    <AdminTermModal
+      :open="termModalOpen"
+      :term="selectedTerm"
+      @close-modal="termModalOpen = false"
+    />
     <table class="table is-fullwidth is-striped terms">
       <thead>
         <tr>
@@ -13,6 +18,7 @@
           <th>Start</th>
           <th>End of Classes</th>
           <th>End</th>
+          <th />
         </tr>
       </thead>
       <tbody>
@@ -36,6 +42,16 @@
           </td>
           <td :title="fromNow(term.end)">
             {{ longDateFormat(term.end) }}
+          </td>
+          <td>
+            <button
+              class="button"
+              @click="selectedTerm = term; termModalOpen = true"
+            >
+              <span class="icon">
+                <i class="fas fa-pencil-alt" />
+              </span>
+            </button>
           </td>
         </tr>
       </tbody>
@@ -86,10 +102,15 @@
 </template>
 
 <script>
+import AdminTermModal from './AdminTermModal'
+
 export default {
   name: 'AdminTermsList',
+  components: { AdminTermModal },
   data () {
     return {
+      selectedTerm: {},
+      termModalOpen: false,
       newTerm: {
         code: '',
         name: '',
