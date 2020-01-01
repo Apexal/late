@@ -91,7 +91,7 @@ export default {
   data () {
     return {
       editedTerm: {
-        code: 'yee',
+        code: '',
         name: '',
         start: null,
         end: null,

@@ -276,16 +276,22 @@ async function setTerms (ctx) {
  */
 async function importCourseSchedule (ctx) {
   const body = ctx.request.body
-  const termCode = ctx.session.currentTerm.code
+  const termCode = ctx.session.currentTerm ? ctx.session.currentTerm.code : ctx.query.termCode
 
-  logger.info(`Setting schedule info for ${ctx.state.user.identifier}`)
+  const targetTerm = await Term.findOne({ code: termCode })
+  if (!targetTerm) {
+    logger.error(`Failed to find term ${termCode}`)
+    return ctx.notFound(`Term with code '${termCode}' not found.`)
+  }
+
+  logger.info(`Setting schedule info for term  ${ctx.state.user.identifier}`)
 
   let courseSchedule = []
   try {
     courseSchedule = await scrapeSISForCourseSchedule(
       body.rin,
       body.pin,
-      ctx.session.currentTerm,
+      targetTerm,
       ctx.state.user._id
     )
   } catch (e) {
@@ -308,15 +314,15 @@ async function importCourseSchedule (ctx) {
   }
 
   // "Other" course
-  courseSchedule.push(generateOtherCourse(ctx.state.user, ctx.session.currentTerm))
+  courseSchedule.push(generateOtherCourse(ctx.state.user, targetTerm))
 
   // If reimporting, only update sectionId, start/end dates, credits, and periods
-  await updateCourses(ctx.state.user._id, ctx.session.currentTerm.code, courseSchedule)
+  await updateCourses(ctx.state.user._id, targetTerm.code, courseSchedule)
 
-  ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code)
+  ctx.state.user.setup.course_schedule.push(targetTerm.code)
   ctx.state.user.lastSISUpdate = new Date()
 
-  const courses = await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code)
+  const courses = await ctx.state.user.getCoursesForTerm(targetTerm.code)
 
   // Handle GCal
   if (ctx.state.user.integrations.google.calendarID) {
