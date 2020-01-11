@@ -105,7 +105,7 @@
                   :before-adding="validateValue"
                   ellipsis
                   icon="label"
-                  placeholder="Add your grades, or just your singular average"
+                  placeholder="91, 45/50, etc."
                 />
                 <p class="control">
                   <span class="button is-static">
@@ -171,7 +171,7 @@ export default {
         const values = category.values
 
         averages[category.title] =
-          values.reduce((acc, v) => acc + (v ? parseInt(v) : 0), 0) /
+          values.reduce((acc, v) => acc + this.getGradeValue(v), 0) /
           values.length
       })
       return averages
@@ -192,6 +192,15 @@ export default {
     this.getCategories()
   },
   methods: {
+    getGradeValue (gradeString) {
+      // Convert fractions to decimals
+      if (gradeString.indexOf('/') !== -1) {
+        const parts = gradeString.split('/').map(val => parseFloat(val))
+
+        return (parts[0] / parts[1]) * 100
+      }
+      return parseFloat(gradeString)
+    },
     changeWeight (categoryIndex) {
       this.$buefy.dialog.prompt({
         message: `Change weight of ${this.categories[categoryIndex].title}`,

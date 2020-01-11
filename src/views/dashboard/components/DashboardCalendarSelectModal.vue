@@ -11,12 +11,6 @@
         <b>{{ dateStrs.start }}</b> to
         <b>{{ dateStrs.end }}</b>?
       </p>
-      <div
-        v-if="assessments.length === 0"
-        class="panel-block has-text-grey"
-      >
-        No assignments or exams are open to work on at that time.
-      </div>
       <!-- Buefy version of tabs -->
       <div class="panel-block is-marginless is-paddingless">
         <b-tabs
@@ -26,16 +20,22 @@
         >
           <b-tab-item label="Study/Work on Item">
             <div
+              v-if="assessments.length === 0"
+              class="panel-block has-text-grey"
+            >
+              No assignments or exams are open to work on at that time.
+            </div>
+            <div
               v-for="assessment in showingAssessments"
               :key="assessment._id"
               class="panel-block is-flex"
-              @click="$emit('add-work-block', assessment)"
+              @click="$emit('add-assessment-block', assessment)"
             >
               <span style="flex: 1">
                 <span
                   class="tag"
                   :style="tagStyle(assessment)"
-                >{{ course(assessment.courseCRN).title }}</span>
+                >{{ getCourseFromCRN(assessment.courseCRN).title }}</span>
                 {{ assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for' }}
                 <b>{{ assessment.title }}</b>
                 <i
@@ -64,15 +64,28 @@
           </b-tab-item>
           <b-tab-item label="Study for Course">
             <div
+              v-if="courses.length === 0"
+              class="panel-block has-text-grey"
+            >
+              No ongoing courses at that time.
+            </div>
+            <div
               v-for="c in courses"
               :key="c.crn"
               class="panel-block"
               @click="$emit('add-course-block', c)"
             >
+              <CourseAssessmentDot :course="c" />
               {{ c.title }}
             </div>
           </b-tab-item>
           <b-tab-item label="Work on To-Dos">
+            <div
+              v-if="showingTodos.length === 0"
+              class="panel-block has-text-grey"
+            >
+              No todos are open to work on at that time.
+            </div>
             <div
               v-for="todo in showingTodos"
               :key="todo.index"
@@ -170,17 +183,14 @@ export default {
     }
   },
   methods: {
-    course (crn) {
-      return this.$store.getters.getCourseFromCRN(crn)
-    },
     // Returns style of course tag
     // Used when adding work block from dashboard calendar
     // Background is course color
     // If course color is dark, use light text. If course color is light, use dark text
     tagStyle (assessment) {
       return {
-        'background-color': this.course(assessment.courseCRN).color,
-        color: this.course(assessment.courseCRN).color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
+        'background-color': this.getCourseFromCRN(assessment.courseCRN).color,
+        color: this.getCourseFromCRN(assessment.courseCRN).color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
       }
     }
   }

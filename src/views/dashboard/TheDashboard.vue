@@ -32,14 +32,14 @@
     <DashboardNextTermPreview v-if="onBreak && nextTerm" />
     <template v-else-if="onBreak">
       <h2 class="subtitle">
-        Enjoy your break! LATE will be here for you when you return!
+        You are on break and do not have another semester at RPI! If this is incorrect, please choose update your school terms.
       </h2>
       <hr>
       <router-link
         :to="{name: 'account'}"
         class="button is-dark"
       >
-        Continue Account Setup
+        Account Setup
       </router-link>
     </template>
     <router-view v-else />

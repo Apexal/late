@@ -1,6 +1,12 @@
 <!--Footer module-->
 <template>
-  <footer class="footer">
+  <footer
+    class="footer"
+  >
+    <canvas
+      id="footer-canvas"
+      :style="{'pointer-events': 'none', position: 'fixed', 'top': 0, width: '100%', height: '100%'}"
+    />
     <h1 class="is-size-5 has-text-centered">
       <span
         class="has-text-grey"
@@ -13,8 +19,11 @@
         RCOS project!
       </router-link>
     </h1>
-    <h2 class="has-text-grey has-text-centered">
-      v1.0.0 - The Honorable
+    <h2
+      class="has-text-grey has-text-centered"
+      @click="honorableClicks+=1"
+    >
+      v1.1.{{ honorableClicks }} - The Honorable
     </h2>
     <div class="content has-text-centered columns">
       <p class="column">
@@ -69,23 +78,43 @@
 </template>
 
 <script>
+import ConfettiGenerator from 'confetti-js'
 import adjectives from '@/modules/adjectives'
 
 export default {
   name: 'TheFooter',
   data () {
     return {
+      honorableClicks: 0,
+      confetti: null,
+      confettiSettings: { target: 'footer-canvas', clock: 75, max: 150 },
       randomAdjective: ''
     }
   },
+  watch: {
+    honorableClicks (newClicks) {
+      if (newClicks > 10) {
+        this.confetti.render()
+        setTimeout(() => this.confetti.clear(), 7000)
+        this.honorableClicks = 0
+
+        this.$buefy.toast.open({
+          type: 'is-success',
+          duration: 10000,
+          message: '<b>Congratulations! You\'ve earned your diploma!</b>'
+        })
+      }
+    }
+  },
   mounted () {
+    this.confetti = new ConfettiGenerator(this.confettiSettings)
     this.changeAdjective()
   },
   methods: {
     changeAdjective () {
       this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
-      let vowels = ['a', 'e', 'i', 'o', 'u', 'h']
-      let startsWithVowel = vowels.some(vowel => this.randomAdjective[0] === vowel)
+      const vowels = ['a', 'e', 'i', 'o', 'u', 'h']
+      const startsWithVowel = vowels.some(vowel => this.randomAdjective[0] === vowel)
 
       if (startsWithVowel) {
         this.randomAdjective = 'An ' + this.randomAdjective

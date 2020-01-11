@@ -303,7 +303,7 @@ async function createAssignment (ctx) {
   }
   const newAssignment = new Assignment(assignmentData)
 
-  // AUTO WORK-BLOCK ALLOCATION
+  // AUTO assessment-block ALLOCATION
   // const openSchedule = compileWeeklyOpenSchedule(
   //   ctx.session.currentTerm,
   //   ctx.state.user

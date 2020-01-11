@@ -199,12 +199,12 @@ export default {
     },
     datePeriodStart () {
       if (!this.datePeriod) return '00:00'
-      const time = moment(this.datePeriod.start, 'Hmm', true)
+      const time = moment(this.datePeriod.start, 'HH:mm', true)
       return time.format('HH:mm')
     },
     datePeriodEnd () {
       if (!this.datePeriod) return '00:00'
-      const time = moment(this.datePeriod.end, 'Hmm', true)
+      const time = moment(this.datePeriod.end, 'HH:mm', true)
       return time.format('HH:mm')
     },
     datePeriod () {

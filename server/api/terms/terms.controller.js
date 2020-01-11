@@ -72,7 +72,35 @@ async function createTerm (ctx) {
   ctx.ok({ createdTerm })
 }
 
+async function updateTerm (ctx) {
+  if (!ctx.state.user.admin) return ctx.forbidden('Only admins can add terms.')
+
+  const { termID } = ctx.params
+
+  let updatedTerm
+  try {
+    updatedTerm = await Term.findById(termID)
+  } catch (e) {
+    logger.error(`Failed to find term to update for ${ctx.state.user.identifier}: ${e}`)
+    return ctx.notFound(`Could not find term with ID ${termID}`)
+  }
+
+  updatedTerm.set(ctx.request.body)
+
+  try {
+    await updatedTerm.save()
+  } catch (e) {
+    logger.error(`Failed to save updates for term ${updatedTerm.name}: ${e}`)
+    return ctx.badRequest('Could not save updates to term.')
+  }
+
+  logger.info(`${ctx.state.user.identifier} updated term ${updateTerm.name}`)
+
+  return ctx.ok({ updatedTerm })
+}
+
 module.exports = {
   getTerms,
-  createTerm
+  createTerm,
+  updateTerm
 }

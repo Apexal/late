@@ -1,3 +1,33 @@
+/**
+ * LATE uses the Axios library to easily make HTTP requests to the server
+ * or to any url. It is available to all components as 'this.$http'
+ *
+ * Making requests is extremely easy. You can make GET, POST, PUSH, DELETE, etc.
+ * requests simply by calling the appropriate function this.$http.<HTTP VERB>, e.g.
+ * this.$http.get(), this.$http.post()
+ *
+ * They should be made in asynchronous functions
+ * since the requests are asynchronous. For example:
+ *
+ * async function getAssignments() {
+ *   const request = await this.$http.get('/assignments')
+ *   const assignments = request.data.assignments
+ * }
+ *
+ * It is common to wrap an API call in a try-catch block to handle an error:
+ *
+ * async function addAssignment() {
+ *   const data = { ... }
+ *   let request
+ *   try {
+ *     request = await this.$http.post('/assignments', data)
+ *   } catch (e) {
+ *     alert('Failed to add assignment: ' + e)
+ *   }
+ * }
+ *
+ * Documentation can be found at https://github.com/axios/axios
+ */
 import axios from 'axios'
 import app from './main'
 
@@ -11,17 +41,22 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(config => {
-  app.$Progress.start() // for every request start the progress
+  app.$Progress.start() // For every request start the progress
   return config
 })
 
 instance.interceptors.response.use(
   response => {
-    app.$Progress.finish() // finish when a response is received
+    app.$Progress.finish() // Finish when a response is received
     return response
   },
   error => {
-    app.$Progress.finish()
+    app.$Progress.finish() // Finish if the request errors
+
+    // If the request returns an error, its most likely that
+    // the session has expired and we need to refresh the page
+    // However, there could be an exception where we don't want
+    // to force refresh.
     if (
       error.response.status === 401 &&
       error.response.config.url !== '/api/students/user' &&

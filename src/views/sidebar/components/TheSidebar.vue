@@ -27,27 +27,27 @@
 
       <div
         v-if="!onBreak"
-        class="panel-block has-background-white-ter has-text-centered controls"
+        class="has-background-white-ter has-text-centered controls"
       >
         <a
-          class
+          class="button is-small is-light"
           title="Add a new assignment"
           @click="toggleModal('assignment')"
         >
           <span class="icon">
             <i class="fa fa-plus" />
           </span>
-          Assignment
+          <span>Add Assignment</span>
         </a>
         <a
-          class="s"
+          class="button is-small is-light"
           title="Add a new exam"
           @click="toggleModal('exam')"
         >
           <span class="icon">
             <i class="fa fa-plus" />
           </span>
-          Exam
+          <span>Add Exam</span>
         </a>
       </div>
 
@@ -200,15 +200,17 @@ export default {
 
 <style lang='scss'>
 #sidebar {
+
+  // Sticky sidebar when on desktop-sized screen
   @media only screen and (min-width: 768px) {
     position: sticky;
     width: 100%;
     top: 70px;
     padding: 0;
-    //margin-top: 30px;
   }
 
   .local-toggle-sidebar {
+    cursor: pointer;
     background-color: white;
     width: 40px;
     i {
@@ -226,50 +228,39 @@ export default {
     background-color: white;
   }
 
-  .panel-heading {
-    border: 1px solid #2e3b59 !important;
-  }
-
+  // Everything is smooth!
   .panel * {
     transition: 0.15s;
   }
 
+  // Prevents a sidebar tab with a long stack of items from growing past the bottom edge of the screen
   .sidebar-body {
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 50vh;
   }
 
-  //Janky selector for bottom sidebar block
-  .panel
-    .is-size-7
-    div:last-child:not(.control):not(.course-panel-block):not(.event):not(.has-text-grey) {
-    border-radius: 0px 0px 4px 4px;
-  }
+  // //Janky selector for bottom sidebar block
+  // .panel
+  //   .is-size-7
+  //   div:last-child:not(.control):not(.course-panel-block):not(.event):not(.has-text-grey) {
+  //   border-radius: 0px 0px 4px 4px;
+  // }
 
   z-index: 2;
 
+  // Stretch the sidebar panel tabs out
   .panel-tabs {
     display: flex;
     a {
       text-align: center;
       flex: 1;
-      color: black;
-    }
-    a.is-active {
-      color: #3273dc;
-    }
-    a:hover {
-      border-bottom: 1px solid black;
     }
   }
 
   .tab-count {
     margin-left: 3px;
     transform: scale(0.8);
-  }
-  .local-toggle-sidebar {
-    cursor: pointer;
   }
 
   .countdown {
@@ -279,28 +270,26 @@ export default {
     font-weight: 400;
     padding: 2px;
   }
+
+  .no-items {
+    flex-direction: column;
+
+    .no-items-icon {
+      width: 100%;
+      text-align: center;
+      font-size: 4em;
+      padding: 15px 0px 5px 0px;
+      display: block;
+    }
+  }
 }
 
+// The "Add Assignment" and "Add Exam" buttons at the top of the sidebar
 .controls {
   display: flex;
-  justify-content: space-around;
-  padding: 0px !important;
 
-  a:first-child {
-    border-right: 1px solid #dbdbdb;
-  }
-  a {
-    flex: 0 0 50%;
-    color: #4a4a4a;
-    padding: 5px;
-    span.icon {
-      margin: 0;
-    }
-    //Prevents overflow but also breaks apart the longer words at lower resolution. Worth it?
-    overflow: auto;
-  }
-  a:hover {
-    background-color: #dbdbdb;
+  .button {
+    flex: 1;
   }
 }
 

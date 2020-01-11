@@ -1,10 +1,10 @@
 <!--Tools: Timer page-->
 <template>
   <section class="section">
-    <h1 class="title header-title has-text-centered-mobile">
+    <h1 class="title has-text-centered-mobile">
       Study Timer
     </h1>
-    <h2 class="subtitle header-description has-text-centered-mobile">
+    <h2 class="subtitle has-text-centered-mobile">
       Breaks down your work into 25 minute focus times and 5 minute breaks
       using the
       <a

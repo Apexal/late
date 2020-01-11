@@ -92,7 +92,7 @@
         time-format="h(:mm)t"
         :now-indicator="true"
         :event-render="eventRender"
-        :default-date="courses[0].startDate"
+        :default-date="courses.length > 0 ? courses[0].startDate : new Date()"
         @eventResize="eventChanged"
         @eventDrop="eventChanged"
         @eventClick="eventClick"
@@ -291,7 +291,8 @@ export default {
       try {
         await this.$store.dispatch(
           'UPDATE_UNAVAILABILITY',
-          { unavailabilityID: unavailability.id,
+          {
+            unavailabilityID: unavailability.id,
             updates: {
               startTime: moment(unavailability.start).format('HH:mm'),
               endTime: moment(unavailability.end).format('HH:mm'),

@@ -20,6 +20,55 @@
       {{ termTodos.length }} todo's
     </div>
 
+    <b-modal
+      v-if="selectedCourse"
+      :active.sync="courseModalOpen"
+      has-modal-card
+    >
+      <div
+        class="modal-card"
+        style="width: auto"
+      >
+        <header class="modal-card-head">
+          <p class="modal-card-title">
+            <strong>{{ selectedCourse.title }}</strong> {{ term.name }}
+          </p>
+        </header>
+        <section class="modal-card-body">
+          <table class="table is-fullwidth">
+            <tbody>
+              <tr v-if="selectedCourse.originalTitle !== selectedCourse.title">
+                <th>Original Title</th>
+                <td>{{ selectedCourse.originalTitle }}</td>
+              </tr>
+              <tr>
+                <th>Color</th>
+                <td :style="'color:' + selectedCourse.color">
+                  {{ selectedCourse.color }}
+                </td>
+              </tr>
+              <tr>
+                <th>CRN</th>
+                <td>{{ selectedCourse.crn }}</td>
+              </tr>
+              <tr>
+                <th>Summary</th>
+                <td>{{ selectedCourse.summary }}</td>
+              </tr>
+              <tr>
+                <th>Section</th>
+                <td>{{ selectedCourse.sectionId }}</td>
+              </tr>
+              <tr>
+                <th>Credits</th>
+                <td>{{ selectedCourse.credits }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- <pre>{{ selectedCourse }}</pre> -->
+        </section>
+      </div>
+    </b-modal>
     <h2
       id="archive-courses"
       class="subtitle"
@@ -28,8 +77,9 @@
     </h2>
     <ol>
       <li
-        v-for="(course, index) in termCourses"
-        :key="index"
+        v-for="course in termCourses"
+        :key="course.crn"
+        @click="selectedCourse=course;courseModalOpen=true"
       >
         <i
           class="course-dot"
@@ -148,6 +198,8 @@ export default {
   data () {
     return {
       loading: true,
+      courseModalOpen: false,
+      selectedCourse: null,
       termCourses: [],
       termAssignments: [],
       termExams: [],

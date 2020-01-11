@@ -64,7 +64,7 @@ async function agenda (ctx) {
     if (periods.length === 0) continue
 
     for (const period of periods) {
-      events.push({ startTime: moment(period.start, 'Hmm'), text: `${course.title} ${period.type}` })
+      events.push({ startTime: moment(period.start, 'HH:mm'), text: `${course.title} ${period.type}` })
     }
   }
 
@@ -75,7 +75,7 @@ async function agenda (ctx) {
 
   for (const assignment of upcomingAssignments) {
     for (const block of assignment._blocks.filter(block => moment().isSame(block.startTime, 'day'))) {
-      events.push({ startTime: moment(block.startTime, 'Hmm'), text: `Work on ${assignment.title}` })
+      events.push({ startTime: moment(block.startTime, 'HH:mm'), text: `Work on ${assignment.title}` })
     }
   }
 
@@ -85,7 +85,7 @@ async function agenda (ctx) {
 
   for (const exam of upcomingExams) {
     for (const block of exam._blocks.filter(block => moment().isSame(block.startTime, 'day'))) {
-      events.push({ startTime: moment(block.startTime, 'Hmm'), text: `Study for ${exam.title}` })
+      events.push({ startTime: moment(block.startTime, 'HH:mm'), text: `Study for ${exam.title}` })
     }
   }
 

@@ -6,7 +6,9 @@
       :start="selectModal.start"
       :end="selectModal.end"
       :assessments="filteredUpcomingAssessments"
-      @add-work-block="addWorkBlock"
+      @add-assessment-block="addBlock('assessment', arguments[0])"
+      @add-course-block="addBlock('course', arguments[0])"
+      @add-todo-block="addBlock('todo', arguments[0])"
       @close-modal="selectModal.open = false"
     />
     <DashboardCalendarEventModal
@@ -164,18 +166,22 @@ export default {
         }
       )
 
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents
+      const assessmentBlocks = this.$store.getters.getAssessmentBlocksAsEvents
+      const courseBlocks = this.$store.getters.getCourseBlocksAsEvents
+      const todoBlocks = this.$store.getters.getTodoBlocksAsEvents
 
       return courseSchedule
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
-        .concat(workBlocks)
+        .concat(assessmentBlocks)
+        .concat(courseBlocks)
+        .concat(todoBlocks)
         // .concat(this.academicCalendarEvents)
     },
     earliest () {
       const earliest = this.$store.state.auth.user.earliestWorkTime
       // const courses = this.$store.getters.getCourseScheduleAsEvents;
-      // const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
+      // const assessmentBlocks = this.$store.getters.getAssessmentBlocksAsEvents.map(e =>
       //   Object.assign({}, e)
       // );
 
@@ -185,9 +191,9 @@ export default {
       //     earliest = courses[i].start;
       //   }
       // }
-      // for (i = 0; i < workBlocks.length; i++) {
-      //   if (workBlocks[i].start.localeCompare(earliest) < 0) {
-      //     earliest = workBlocks[i].start;
+      // for (i = 0; i < assessmentBlocks.length; i++) {
+      //   if (assessmentBlocks[i].start.localeCompare(earliest) < 0) {
+      //     earliest = assessmentBlocks[i].start;
       //   }
       // }
 
@@ -262,17 +268,17 @@ export default {
       this.selectModal.end = moment(end)
       this.selectModal.open = true
     },
-    async addWorkBlock (assessment) {
-      if (!assessment || !this.selectModal.open) return
+    async addBlock (blockType, item) {
+      if (!item || !this.selectModal.open) return
 
-      await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessment,
+      await this.$store.dispatch('ADD_' + blockType.toUpperCase() + '_BLOCK', {
+        [blockType]: item,
         start: this.selectModal.start,
         end: this.selectModal.end
       })
 
       this.$buefy.toast.open({
-        message: 'Added work block to your schedule!',
+        message: `Added ${blockType} block to your schedule!`,
         type: 'is-primary',
         duration: 1000
       })
@@ -297,6 +303,10 @@ export default {
           time: moment(event.start).format('HH:mm')
         })
         this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
+      } else if (eventType === 'course-block') {
+        this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
+      } else if (eventType === 'todo-block') {
+        // TODO: something
       } else if (eventType === 'assignment') {
         this.$router.push({
           name: 'assignment-overview',
@@ -307,7 +317,7 @@ export default {
           name: 'exam-overview',
           params: { examID: assessment._id }
         })
-      } else if (eventType === 'work-block') {
+      } else if (eventType === 'assessment-block') {
         const { assessmentType } = assessment
 
         if (assessmentType === 'assignment') {
@@ -332,7 +342,7 @@ export default {
       const { assessmentID } = event.extendedProps
       const assessment = this.$store.getters.getUpcomingAssessmentById(assessmentID)
       try {
-        await this.$store.dispatch('ADD_WORK_BLOCK', { assessment, start: event.start, end: event.end })
+        await this.$store.dispatch('ADD_ASSESSMENT_BLOCK', { assessment, start: event.start, end: event.end })
       } catch (e) {
         this.$buefy.toast.open({
           message: 'There was an error scheduling that work block...',
@@ -350,66 +360,102 @@ export default {
       })
     },
     eventDrop ({ event, revert }) {
-      const { eventType, assessment, blockID } = event.extendedProps
-      if (eventType === 'work-block') {
+      const { eventType, assessment, course, todo, blockID } = event.extendedProps
+      if (eventType === 'assessment-block') {
         // Update work block on server
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
             message: 'Move this past work block?',
             onConfirm: () =>
-              this.editWorkBlock(
-                assessment,
+              this.editBlock(
+                'assessment',
                 blockID,
+                assessment,
                 event.start,
                 event.end
               ),
             onCancel: revert
           })
         } else {
-          this.editWorkBlock(
-            assessment,
+          this.editBlock(
+            'assessment',
             blockID,
+            assessment,
             event.start,
             event.end
           )
         }
+      } else if (eventType === 'course-block') {
+        this.editBlock(
+          'course',
+          blockID,
+          course,
+          event.start,
+          event.end
+        )
+      } else if (eventType === 'todo-block') {
+        this.editBlock(
+          'todo',
+          blockID,
+          todo,
+          event.start,
+          event.end
+        )
       }
     },
     eventResize ({ event, revert }) {
-      const { eventType, assessment, blockID } = event.extendedProps
-      if (eventType === 'work-block') {
+      const { eventType, assessment, course, todo, blockID } = event.extendedProps
+      if (eventType === 'assessment-block') {
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
             message: 'Edit this past work block?',
             onConfirm: () =>
-              this.editWorkBlock(
-                assessment,
+              this.editBlock(
+                'assessment',
                 blockID,
+                assessment,
                 event.start,
                 event.end
               ),
             onCancel: revert
           })
         } else {
-          this.editWorkBlock(
-            assessment,
+          this.editBlock(
+            'assessment',
             blockID,
+            assessment,
             event.start,
             event.end
           )
         }
+      } else if (eventType === 'course-block') {
+        this.editBlock(
+          'course',
+          blockID,
+          course,
+          event.start,
+          event.end
+        )
+      } else if (eventType === 'todo-block') {
+        this.editBlock(
+          'todo',
+          blockID,
+          todo,
+          event.start,
+          event.end
+        )
       }
     },
-    async editWorkBlock (assessment, blockID, start, end) {
-      await this.$store.dispatch('EDIT_WORK_BLOCK', {
-        assessment,
+    async editBlock (blockType, blockID, item, start, end) {
+      await this.$store.dispatch('EDIT_' + blockType.toUpperCase() + '_BLOCK', {
+        [blockType]: item,
         blockID,
         start,
         end
       })
 
       this.$buefy.toast.open({
-        message: 'Rescheduled work block!',
+        message: `Rescheduled ${blockType} block!`,
         type: 'is-primary',
         duration: 1000
       })
