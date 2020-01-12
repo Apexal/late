@@ -59,9 +59,9 @@ instance.interceptors.response.use(
     // to force refresh.
     if (
       error.response.status === 401 &&
-      error.response.config.url !== '/api/students/user' &&
+      error.response.config.url !== '/students/user' &&
       !error.response.config.url.includes('discordapp') &&
-      error.response.config.url !== '/api/students/loginas'
+      error.response.config.url !== '/students/loginas'
     ) {
       alert('Your session has expired! Refreshing...')
       location.reload()
