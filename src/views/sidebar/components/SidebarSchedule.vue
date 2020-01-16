@@ -192,7 +192,7 @@ export default {
       )}`
     },
     hasPassed (datetime) {
-      return datetime.isBefore(this.rightNow)
+      return moment(datetime).isBefore(this.rightNow)
     },
     isCurrentEvent (event) {
       return moment(this.rightNow).isBetween(event.start, event.end)
