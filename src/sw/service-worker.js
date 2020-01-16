@@ -4,6 +4,8 @@
 // CHANGE THIS VALUE BEFORE EVERY DEPLOY
 const LATEST_VERSION = 'v0.2.0'
 
+workbox.precaching.cleanupOutdatedCaches()
+
 workbox.core.setCacheNameDetails({
   prefix: 'late'
 })
@@ -33,8 +35,8 @@ self.addEventListener('activate', async event => {
   }
 })
 
-workbox.skipWaiting()
-workbox.clientsClaim()
+workbox.core.skipWaiting()
+workbox.core.clientsClaim()
 
 self.__precacheManifest = [].concat(self.__precacheManifest || [])
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {})
