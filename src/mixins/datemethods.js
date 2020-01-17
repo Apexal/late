@@ -7,7 +7,7 @@ const LONG_DATE_FORMAT = 'dddd, MMMM Do YYYY '
 
 export default {
   methods: {
-    timeFormat: date => moment(date).format(TIME_FORMAT),
+    timeFormat: dateOrStr => (typeof date === 'string' ? moment(dateOrStr) : moment(dateOrStr, 'HH:mm')).format(TIME_FORMAT),
     shortDateFormat: date => moment(date).format(SHORT_DATE_FORMAT),
     longDateFormat: date => moment(date).format(LONG_DATE_FORMAT),
     shortDateTimeFormat: date =>
