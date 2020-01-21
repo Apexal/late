@@ -3,9 +3,9 @@ const router = new Router()
 
 const Ctrl = require('./polls.controller')
 
-router.post('/', Ctrl.createPoll)
+router.put('/', Ctrl.createPoll)
 router.get('/', Ctrl.getPolls)
 router.delete('/', Ctrl.deletePoll)
-router.patch('/', Ctrl.addVote)
+router.post('/', Ctrl.addVote)
 
 module.exports = router.routes()

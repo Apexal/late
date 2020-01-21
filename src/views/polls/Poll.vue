@@ -35,7 +35,7 @@ export default {
       // options.UID: the UID of the poll in the database
       // obj.value: the id of the user's answer
       try {
-        request = await this.$http.patch('/polls', { id: this.options.UID, value: obj.value })
+        request = await this.$http.post('/polls', { id: this.options.UID, value: obj.value })
       } catch (e) {
         console.error(e)
       }
@@ -57,20 +57,33 @@ export default {
     font-family: Avenir,Helvetica,Arial,sans-serif;
     color: #2c3e50;
   }
+
   .qst {
-    font-size: 1.3em;
-    padding-top: 5%;
+    font-size: 1.6em;
+    padding-top: 3%;
     text-align: center;
   }
+
   .vue-poll .ans-cnt {
     margin-top: 2%;
-    margin-bottom: 4%;
+    margin-bottom: 2%;
   }
+
   .vue-poll .ans-cnt .ans-no-vote {
-    border: 2px solid #2E3B59;
-    border-radius: 4px;
+    margin-left: 5%;
+    margin-right: 5%;
+
+    border: 2px solid transparent;
+    border-image: linear-gradient(to right, #3273DC 0%, #85b2fc 100%);
+    border-image-slice: 1;
+
     .txt {
       color: #2E3B59;
+      font-size: 1.2em;
+    }
+
+    &:hover {
+      transform: scale(1.1);
     }
   }
 </style>

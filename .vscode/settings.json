@@ -14,5 +14,8 @@
   "prettier.eslintIntegration": true,
   "prettier.semi": false,
   "prettier.singleQuote": true,
-  "prettier.disableLanguages": []
+  "prettier.disableLanguages": [],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

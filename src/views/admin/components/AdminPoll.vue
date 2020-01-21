@@ -139,7 +139,7 @@ export default {
       // submit poll to KOA server
       let request
       try {
-        request = await this.$http.post('/polls', { options: this.options, endDate: this.endDate })
+        request = await this.$http.put('/polls', { options: this.options, endDate: this.endDate })
       } catch (e) {
         console.error(e)
       }

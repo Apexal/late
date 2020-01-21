@@ -10,7 +10,7 @@ async function createPoll (ctx) {
   poll.endDate = ctx.request.body.endDate
 
   poll.save()
-  ctx.ok()
+  ctx.created()
 }
 
 async function getPolls (ctx) {
@@ -53,7 +53,7 @@ async function addVote (ctx) {
     return ctx.badRquest('Error, updating poll vote')
   }
 
-  ctx.ok()
+  ctx.noContent()
 }
 
 // returns number of deleted polls
