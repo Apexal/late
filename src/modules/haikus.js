@@ -82,6 +82,11 @@ export default [
     'deadlines passing by'
   ],
   [
+    'Do your homework kids',
+    'because if you do not try',
+    'SIS Man will be sad'
+  ],
+  [
     'Freezing afforest',
     'A small, ferocious frog eats',
     'whilst watching the lynx'
