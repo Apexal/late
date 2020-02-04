@@ -72,5 +72,10 @@ export default [
   [ 'Do you hear that noise?',
     'The whooshing sound of all your',
     'deadlines passing by'
+  ],
+  [
+    'Do your homework kids',
+    'because if you do not try',
+    'SIS Man will be sad'
   ]
 ]
