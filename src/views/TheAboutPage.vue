@@ -133,23 +133,14 @@ export default {
         'https://www.youtube.com/embed/aB93j7LUK0w'
       ],
       contributors: [
-        'Caitlin Bennett',
-        'Kristen Bertrand',
-        'Mark Borelli II',
-        'Shardul Joshi',
+        'Jerome Carter',
+        'Karen Mu',
         'Aidan Lane',
-        'Zach Love',
-        'Tyler Machado',
-        'Stéfan Martin',
-        'Tobias Park',
-        'Samarth Patel',
-        'Wolf Personeous',
-        'Alexandra Rachiele',
-        'Aaron Reers',
-        'Erik Roberts',
-        'Andrew Smith',
-        'Calynn Vitus',
-        'Colton Zecca'
+        'Joseph D. Hernberg',
+        'Sam Fawcett',
+        'Xilin Xu',
+        'Lehar Mogilisetty',
+        'Kristen Bertrand'
       ],
       testers: [
         'Sarah Tedesco',
