@@ -366,14 +366,6 @@ export default {
   margin-right: 3px;
 }
 
-.title {
-  padding-bottom: 0px;
-  padding-left: 0px;
-  border-bottom-color: #dbdbdb;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-
 .category {
   .link-category-title {
     margin-bottom: 10px;

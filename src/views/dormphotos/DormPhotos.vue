@@ -106,11 +106,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  padding-bottom: 0px;
-  padding-left: 0px;
-  border-bottom-color: #dbdbdb;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
+
 </style>

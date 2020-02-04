@@ -95,16 +95,13 @@ export default {
     }
   },
   methods: {
-    course (crn) {
-      return this.$store.getters.getCourseFromCRN(crn)
-    },
     eventClick ({ event }) {
       this.$emit('update-time', moment(event.start).format('HH:mm'))
       this.updateDate(moment(event.start).startOf('day'))
     },
     dayRender ({ date, el }) {
       if (moment(date).isSame(this.date, 'day')) {
-        el.style.backgroundColor = this.course(this.courseCRN).color
+        el.style.backgroundColor = this.getCourseFromCRN(this.courseCRN).color
       }
     },
     dateClick ({ date }) {

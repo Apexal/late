@@ -82,7 +82,7 @@
               <span class="icon">
                 <i class="fas fa-home" />
               </span>
-              Dashboard
+              <span>Dashboard</span>
             </router-link>
 
             <router-link
@@ -94,7 +94,7 @@
               <span class="icon">
                 <i class="far fa-question-circle" />
               </span>
-              About
+              <span>About</span>
             </router-link>
 
             <div
@@ -109,7 +109,7 @@
                 <span class="icon">
                   <i class="fas fa-graduation-cap" />
                 </span>
-                Coursework
+                <span>Coursework</span>
               </router-link>
 
               <div class="navbar-dropdown">
@@ -143,7 +143,7 @@
                   <span class="icon">
                     <i class="fas fa-clipboard-check" />
                   </span>
-                  Add Assignment
+                  <span>Add Assignment</span>
                 </a>
                 <a
                   class="navbar-item"
@@ -153,7 +153,7 @@
                   <span class="icon">
                     <i class="fas fa-exclamation-triangle" />
                   </span>
-                  Add Exam
+                  <span>Add Exam</span>
                 </a>
               </div>
             </div>
@@ -167,7 +167,7 @@
               <span class="icon">
                 <i class="far fa-question-circle" />
               </span>
-              About
+              <span>About</span>
             </router-link>
           </template>
           <div
@@ -181,7 +181,7 @@
               <span class="icon">
                 <i class="fas fa-toolbox" />
               </span>
-              Tools
+              <span>Tools</span>
             </router-link>
 
             <div class="navbar-dropdown">
@@ -260,7 +260,7 @@
                     :style="user.admin ? 'color:#e5c100' : 'color:#ffffff'"
                   />
                 </span>
-                {{ user.displayName }}
+                <span>{{ user.displayName }}</span>
               </a>
 
               <div class="navbar-dropdown is-right">
@@ -273,7 +273,7 @@
                   <span class="icon">
                     <i class="fas fa-user-lock" />
                   </span>
-                  Administration
+                  <span>Administration</span>
                 </router-link>
 
                 <router-link
@@ -284,7 +284,7 @@
                   <span class="icon">
                     <i class="fas fa-pencil-alt" />
                   </span>
-                  Edit Account
+                  <span>Edit Account</span>
                 </router-link>
 
                 <a
@@ -299,7 +299,7 @@
                       style="margin-right: 5px"
                     />
                   </span>
-                  Report a bug
+                  <span>Report a bug</span>
                 </a>
 
                 <hr class="navbar-divider">
@@ -313,7 +313,7 @@
                   <span class="icon">
                     <i class="fas fa-chart-pie" />
                   </span>
-                  Your Statistics
+                  <span>Your Statistics</span>
                 </router-link>
                 <router-link
                   class="navbar-item"
@@ -323,7 +323,7 @@
                   <span class="icon">
                     <i class="fas fa-archive" />
                   </span>
-                  Archive
+                  <span>Archive</span>
                 </router-link>
 
                 <a
@@ -334,7 +334,7 @@
                   <span class="icon">
                     <i class="far fa-question-circle" />
                   </span>
-                  Site Tour
+                  <span>Site Tour</span>
                 </a>
                 <hr
                   class="navbar-divider"
@@ -348,7 +348,7 @@
                   <span class="icon">
                     <i class="fas fa-sign-out-alt" />
                   </span>
-                  Log out
+                  <span>Log out</span>
                 </a>
               </div>
             </div>
@@ -540,10 +540,7 @@ export default {
   padding: 0;
 
   .navbar-item {
-    span.icon {
-      margin-right: 1px;
-      margin-left: 1px;
-    }
+
   }
 
   .announcement-icon {

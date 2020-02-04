@@ -5,6 +5,12 @@
 $dark: #2e3b59;
 $primary: #70cad1;
 
+// Setup CSS Variables
+:root {
+  --dark-color: #2e3b59;
+  --primary-color: #70cad1;
+}
+
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: (
   "white": (

@@ -16,28 +16,28 @@ async function submitGitHubIssue (ctx) {
 }
 
 async function getAcademicCalendarEvents (ctx) {
-  const response = await request.post(CALENDAR_URL, {
-    form: {
-      calPath: '/user/public-user/Academic Calendar',
-      nocache: 'no',
-      contentName: 'Academic Calendar.ics',
-      dateLimits: 'all'
-    }
-  })
+  // const response = await request.post(CALENDAR_URL, {
+  //   form: {
+  //     calPath: '/user/public-user/Academic Calendar',
+  //     nocache: 'no',
+  //     contentName: 'Academic Calendar.ics',
+  //     dateLimits: 'all'
+  //   }
+  // })
 
   const events = {}
 
-  const parsed = ical.parseICS(response)
-  for (const id in parsed) {
-    if (
-      moment(parsed[id].start).isBetween(
-        ctx.session.currentTerm.start,
-        ctx.session.currentTerm.end
-      )
-    ) {
-      events[id] = parsed[id]
-    }
-  }
+  // const parsed = ical.parseICS(response)
+  // for (const id in parsed) {
+  //   if (
+  //     moment(parsed[id].start).isBetween(
+  //       ctx.session.currentTerm.start,
+  //       ctx.session.currentTerm.end
+  //     )
+  //   ) {
+  //     events[id] = parsed[id]
+  //   }
+  // }
 
   return ctx.ok({ events })
 }

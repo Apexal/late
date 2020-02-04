@@ -39,17 +39,20 @@
       </ul>
     </div>
 
-    <AssessmentsFilter
-      :filter="filter"
+    <AssessmentsFilterModal
+      :open="filtersModalOpen"
+      :filter="hiddenCourseCRNs"
       :show-show-completed="true"
       :show-completed="showCompleted"
       :show-scheduled="showScheduled"
       :show-group-by="view === 'coursework-upcoming'"
       :group-by="groupBy"
       @toggle-filter="toggleFilter"
+      @set-filter-course-crns="hiddenCourseCRNs = arguments[0]"
       @toggle-show-completed="showCompleted = !showCompleted"
       @change-group-by="groupBy = $event"
       @toggle-show-scheduled="showScheduled = !showScheduled"
+      @close-modal="filtersModalOpen = false"
     />
 
     <transition
@@ -61,51 +64,71 @@
         :group-by="groupBy"
         :show-completed="showCompleted"
         :show-scheduled="showScheduled"
-        :filter="filter"
+        :filter="hiddenCourseCRNs"
         @toggle-assignment="toggleAssignment"
       />
     </transition>
     <hr>
     <div class="buttons">
       <b-button
+        title="Change how assignments and exams are shown"
+        :type="isFilterActive ? 'is-warning' : undefined"
+        @click="filtersModalOpen = true"
+      >
+        <span class="icon">
+          <i class="fas fa-filter" />
+        </span>
+        <span>Filters</span>
+      </b-button>
+      <span class="spacer" />
+      <b-button
         type="is-dark"
         title="Add an assignment"
         @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
       >
-        <i class="fas fa-clipboard-check" />
+        <span class="icon">
 
-        Add Assignment
+          <i class="fas fa-clipboard-check" />
+        </span>
+        <span>Add Assignment</span>
       </b-button>
       <b-button
         type="is-dark"
         title="Add an exam"
         @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
       >
-        <i class="fas fa-exclamation-triangle" />
+        <span class="icon">
 
-        Add Exam
+          <i class="fas fa-exclamation-triangle" />
+        </span>
+
+        <span>Add Exam</span>
       </b-button>
     </div>
   </section>
 </template>
 
 <script>
-import AssessmentsFilter from '@/views/assessments/components/AssessmentsFilter'
+import AssessmentsFilterModal from '@/views/assessments/components/AssessmentsFilterModal'
 
 export default {
   name: 'AssessmentsPage',
-  components: { AssessmentsFilter },
+  components: { AssessmentsFilterModal },
   data () {
     return {
       groupBy: 'date',
       showCompleted: true,
       showScheduled: true,
-      filter: []
+      hiddenCourseCRNs: [],
+      filtersModalOpen: false
     }
   },
   computed: {
     view () {
       return this.$route.name
+    },
+    isFilterActive () {
+      return this.hiddenCourseCRNs.length > 0 || !this.showCompleted
     },
     title () {
       return this.$route.meta.title
@@ -224,59 +247,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-span.tag.course-tag {
-  cursor: pointer;
-  //font-weight: bold;
-  margin: 0;
-  margin-left: 2px;
-  margin-right: 2px;
-  color: white;
-
-  span {
-    max-width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: 0.3s;
-    -webkit-transition: 0.3s;
-    transition-delay: 0.1s;
-    -webkit-transition-delay: 0.1s;
-  }
-
-  span:hover {
-    max-width: 100vw;
-    transition: 0.4s;
-    -webkit-transition: 0.4s;
-    //transition-delay:0.3s;
-  }
-}
-
-.level .disable-shrink {
-  flex-shrink: initial;
-}
-
-@media only screen and (max-width: 768px) {
-  .buttons.assignment-view-buttons {
-    float: unset !important;
-  }
-  .buttons.exam-view-buttons {
-    float: unset !important;
-  }
-  // TODO^^
-
-  .level-left + .level-right {
-    margin-top: 5px !important;
-  }
-}
-
-.tab-nav {
-  margin-bottom: 0;
-  .title {
-    margin: 0;
-  }
-}
-
-.buttons {
-  justify-content: flex-end;
+.spacer {
+  flex: 1;
 }
 </style>

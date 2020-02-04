@@ -199,13 +199,11 @@ export default {
     },
     datePeriodStart () {
       if (!this.datePeriod) return '00:00'
-      const time = moment(this.datePeriod.start, 'Hmm', true)
-      return time.format('HH:mm')
+      return this.datePeriod.startTime
     },
     datePeriodEnd () {
       if (!this.datePeriod) return '00:00'
-      const time = moment(this.datePeriod.end, 'Hmm', true)
-      return time.format('HH:mm')
+      return this.datePeriod.endTime
     },
     datePeriod () {
       if (!this.courseCRN) return false

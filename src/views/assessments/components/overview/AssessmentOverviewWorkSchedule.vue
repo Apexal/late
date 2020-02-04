@@ -258,6 +258,14 @@ export default {
         )
       )
     },
+    courseBlockEvents () {
+      return this.$store.getters.getCourseBlocksAsEvents.map(e =>
+        Object.assign({}, { rendering: 'background' }, e))
+    },
+    todoBlockEvents () {
+      return this.$store.getters.getTodoBlocksAsEvents.map(e =>
+        Object.assign({}, { rendering: 'background' }, e))
+    },
     unavailabilitySchedule () {
       return this.$store.getters.getUnavailabilityAsEvents.map(e =>
         Object.assign({}, e, {
@@ -281,27 +289,29 @@ export default {
       }
       return events.flat()
     },
-    workBlockEvents () {
+    assessmentBlockEvents () {
       return this.assessment._blocks
         .map(block =>
-          this.$store.getters.mapWorkBlockToEvent(
+          this.$store.getters.mapAssessmentBlockToEvent(
             this.assessmentType,
             this.assessment,
             block
           )
         )
         .concat(
-          this.$store.getters.getWorkBlocksAsEvents
+          this.$store.getters.getAssessmentBlocksAsEvents
             .filter(ev => ev.assessment._id !== this.assessment._id)
             .map(ev => Object.assign({ rendering: 'background' }, ev))
         )
     },
     totalEvents () {
       // Render work blocks for other assessments in the background
-      return this.workBlockEvents
+      return this.assessmentBlockEvents
         .concat(this.courseScheduleEvents)
         .concat(this.unavailabilitySchedule)
         .concat(this.collaboratorUnavailabilitySchedule)
+        .concat(this.courseBlockEvents)
+        .concat(this.todoBlockEvents)
         .concat([this.dueDateEvent])
     }
   },
@@ -367,24 +377,24 @@ export default {
             'Schedule work block for everyone in this group assignment or just you?',
           cancelText: 'Just Me',
           confirmText: 'Group',
-          onConfirm: () => this.addWorkBlock(start, end),
-          onCancel: () => this.addWorkBlock(start, end, false)
+          onConfirm: () => this.addAssessmentBlock(start, end),
+          onCancel: () => this.addAssessmentBlock(start, end, false)
         })
       } else if (moment(start).isBefore(moment())) {
         this.$buefy.dialog.confirm({
           message: 'Add work block to the past?',
-          onConfirm: () => this.addWorkBlock(start, end),
+          onConfirm: () => this.addAssessmentBlock(start, end),
           onCancel: () => {
             const calendarApi = this.$refs.calendar.getApi()
             calendarApi.unselect()
           }
         })
       } else {
-        this.addWorkBlock(start, end)
+        this.addAssessmentBlock(start, end)
       }
     },
     eventClick (calEvent, jsEvent, view) {
-      if (calEvent.eventType !== 'work-block') return
+      if (calEvent.eventType !== 'assessment-block') return
 
       const dateStr = moment(calEvent.start).format('dddd M/D')
       const startStr = moment(calEvent.start).format('h:mm a')
@@ -394,7 +404,7 @@ export default {
         message: `Unschedule ${dateStr} from <b>${startStr}</b> to <b>${endStr}</b>${
           this.assessment.shared ? ' for everyone' : ''
         }?`,
-        onConfirm: () => this.removeWorkBlock(calEvent.blockID)
+        onConfirm: () => this.removeAssessmentBlock(calEvent.blockID)
       })
     },
     eventDrop ({ event, revert }) {
@@ -405,11 +415,11 @@ export default {
         this.$buefy.dialog.confirm({
           message: 'Move this past work block?',
           onConfirm: () =>
-            this.editWorkBlock(blockID, event.start, event.end),
+            this.editAssessmentBlock(blockID, event.start, event.end),
           onCancel: revert
         })
       } else {
-        this.editWorkBlock(blockID, event.start, event.end)
+        this.editAssessmentBlock(blockID, event.start, event.end)
       }
     },
     eventResize ({ event, revert }) {
@@ -419,15 +429,15 @@ export default {
         this.$buefy.dialog.confirm({
           message: 'Edit this past work block?',
           onConfirm: () =>
-            this.editWorkBlock(blockID, event.start, event.end),
+            this.editAssessmentBlock(blockID, event.start, event.end),
           onCancel: revert
         })
       } else {
-        this.editWorkBlock(blockID, event.start, event.end)
+        this.editAssessmentBlock(blockID, event.start, event.end)
       }
     },
-    async addWorkBlock (start, end, shared = true) {
-      const updatedAssessment = await this.$store.dispatch('ADD_WORK_BLOCK', {
+    async addAssessmentBlock (start, end, shared = true) {
+      const updatedAssessment = await this.$store.dispatch('ADD_ASSESSMENT_BLOCK', {
         assessment: this.assessment,
         start,
         end,
@@ -444,8 +454,8 @@ export default {
       const calendarApi = this.$refs.calendar.getApi()
       calendarApi.unselect()
     },
-    async editWorkBlock (blockID, start, end) {
-      const updatedAssessment = await this.$store.dispatch('EDIT_WORK_BLOCK', {
+    async editAssessmentBlock (blockID, start, end) {
+      const updatedAssessment = await this.$store.dispatch('EDIT_ASSESSMENT_BLOCK', {
         assessment: this.assessment,
         blockID,
         start,
@@ -461,12 +471,12 @@ export default {
         type: 'is-info'
       })
     },
-    async removeWorkBlock (blockID) {
+    async removeAssessmentBlock (blockID) {
       // if upcoming, use Vuex, else directly call API
       const block = this.assessment._blocks.find(b => b._id === blockID)
       if (!block) return
 
-      const updatedAssessment = await this.$store.dispatch('REMOVE_WORK_BLOCK', {
+      const updatedAssessment = await this.$store.dispatch('REMOVE_ASSESSMENT_BLOCK', {
         assessment: this.assessment,
         blockID
       })

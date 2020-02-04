@@ -10,7 +10,7 @@ async function getCourses (ctx) {
   const courses = await Course.find({
     _student: ctx.state.user._id,
     termCode: ctx.session.currentTerm.code
-  }).sort('-credits title')
+  }).sort('-credits title').populate('_blocks')
 
   return ctx.ok({ courses })
 }
@@ -20,7 +20,7 @@ async function getTermCourses (ctx) {
   const courses = await Course.find({
     _student: ctx.state.user._id,
     termCode
-  }).sort('-credits title')
+  }).sort('-credits title').populate('_blocks')
 
   logger.info(`Sending term ${termCode} courses to ${ctx.state.user.identifier}`)
 
@@ -41,7 +41,7 @@ async function updateCourse (ctx) {
     course = await Course.findOne({
       _id: courseID,
       _student: ctx.state.user._id
-    })
+    }).populate('_blocks')
 
     if (!course) {
       return ctx.notFound('A course that matches this criteria could not be found.')
@@ -80,7 +80,7 @@ async function removeCourse (ctx) {
     course = await Course.findOne({
       _id: courseID,
       _student: ctx.state.user._id
-    })
+    }).populate('_blocks')
   } catch (e) {
     logger.error(`Failed to remove course ${courseID} for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('There was an error getting the course.')

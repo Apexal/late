@@ -12,9 +12,17 @@ const schema = new Schema(
       required: true
     },
     _assessment: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true
+      type: mongoose.Schema.Types.ObjectId
     },
+    _course: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Course'
+    },
+    _todo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Todo'
+    },
+    blockType: { type: String, enum: ['assessment', 'course', 'todo'], default: 'assessment', required: true },
     shared: { type: Boolean, default: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },

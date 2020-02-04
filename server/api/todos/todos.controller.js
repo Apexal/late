@@ -9,7 +9,7 @@ const logger = require('../../modules/logger')
 async function getTodos (ctx) {
   const todos = await Todo.find({
     _student: ctx.state.user._id
-  })
+  }).populate('_blocks')
   return ctx.ok({ todos })
 }
 /**
@@ -22,7 +22,7 @@ async function getRecentTodos (ctx) {
   const todos = await Todo.find({
     _student: ctx.state.user._id,
     completed: { $not: { $lt: new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000)) } }
-  })
+  }).populate('_blocks')
   return ctx.ok({ todos })
 }
 
@@ -63,7 +63,7 @@ async function updateTodo (ctx) {
   const todo = await Todo.findOne({
     _id: todoID,
     _student: ctx.state.user._id
-  })
+  }).populate('_blocks')
 
   if (!todo) {
     return ctx.notFound('No todo item could be found that matches this criteria.')
@@ -92,7 +92,7 @@ async function deleteTodo (ctx) {
   const deletedTodo = await Todo.findOne({
     _id: todoID,
     _student: ctx.state.user._id
-  })
+  }).populate('_blocks')
 
   if (!deletedTodo) {
     return ctx.notFound('No todo item could be found that matches this criteria.')
