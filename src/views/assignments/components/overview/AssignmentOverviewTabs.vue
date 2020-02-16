@@ -184,7 +184,7 @@ export default {
       return this.assignment.timeEstimate * 60
     },
     fullyScheduled () {
-      return this.scheduledMinutes >= this.totalEstimatedMinutes
+      return this.scheduledMinutes >= this.totalEstimatedMinutes // 2.85 5.03
     },
     completedTasksLength () {
       return this.assignment.tasks.filter(t => t.completed).length
@@ -203,6 +203,15 @@ export default {
         whiteboard: 'AssessmentOverviewWhiteboard',
         tasks: 'AssignmentOverviewTabsTasks'
       }[this.tab]
+    }
+  },
+  watch: {
+    hasComments (val) {
+      console.log(val)
+    },
+    completedTasksLength (val) {
+      console.log(val)
+      if (!this.assignment.completed && this.assignment.tasks.length === this.completedTasksLength) { this.$emit('toggle-completed') }
     }
   },
   methods: {

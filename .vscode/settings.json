@@ -12,5 +12,8 @@
   "vetur.format.defaultFormatter.js": "none",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
+  },
+  "files.associations": {
+    "c8051_sdcc.h": "c"
   }
 }
