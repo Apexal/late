@@ -5,6 +5,7 @@
   "description": "Lazy Automatic Time Evaluator",
   "author": "Frank Matranga <thefrankmatranga@gmail.com>",
   "scripts": {
+    "cypress:open": "./node_modules/.bin/cypress open",
     "build": "vue-cli-service build --target app --modern",
     "test": "npm run lint",
     "lint": "vue-cli-service lint --fix",
@@ -84,6 +85,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "cypress": "^4.0.2",
     "@babel/cli": "^7.7.7",
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
