@@ -9,7 +9,7 @@
     "build": "vue-cli-service build --target app --modern",
     "test": "npm run lint",
     "lint": "vue-cli-service lint --fix",
-    "backend": "cross-env NODE_ENV=development nodemon --ignore './src/' index.js",
+    "backend": "cross-env NODE_ENV=development nodemon index.js --ignore './src/' --ignore './cypress/'",
     "fix-watch": "echo fs.inotify.max_user_watches=16384 | tee -a /etc/sysctl.conf",
     "frontend": "cross-env PORT=8080 vue-cli-service serve",
     "start": "cross-env NODE_ENV=production node index.js"
@@ -85,7 +85,6 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "cypress": "^4.0.2",
     "@babel/cli": "^7.7.7",
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
@@ -96,8 +95,10 @@
     "@vue/eslint-config-standard": "^5.1.0",
     "babel-eslint": "^10.0.3",
     "cross-env": "^6.0.3",
+    "cypress": "^4.0.2",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-cypress": "^2.10.1",
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
