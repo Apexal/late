@@ -121,6 +121,7 @@ import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectC
 import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar'
 import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription'
 import ModalTime from '@/views/assessments/components/modal/ModalTime'
+import ModalScheduler from '@/views/assessments/components/modal/ModalScheduler'
 
 export default {
   name: 'AssignmentsModalAdd',
@@ -128,7 +129,8 @@ export default {
     ModalSelectCourse,
     ModalCalendar,
     ModalTitleAndDescription,
-    ModalTime
+    ModalTime,
+    ModalScheduler
   },
   props: {
     open: {
@@ -161,6 +163,11 @@ export default {
           label: 'Time',
           completed: false,
           component: 'ModalTime'
+        },
+        {
+          label: 'Schedule',
+          completed: false,
+          component: 'ModalScheduler'
         }
       ]
     }
