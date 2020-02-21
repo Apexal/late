@@ -38,6 +38,7 @@ app.use(Body({ multipart: true }))
 /* Adds useful ctx functions for API responses */
 app.use(Respond())
 
+/* Use compression for API responses to decrease size */
 app.use(Compress())
 
 app.keys = [process.env.SESSION_KEY]
@@ -127,7 +128,7 @@ app.use(async (ctx, next) => {
   }
 })
 
-/* Router setup */
+/* All of the routes are set up in ./routes.js so we require and use them here */
 require('./routes')(router)
 app.use(router.routes())
 app.use(router.allowedMethods())
