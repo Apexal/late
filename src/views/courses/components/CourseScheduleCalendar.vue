@@ -53,8 +53,8 @@ export default {
           }
         },
         validRange: {
-          start: this.$store.getters.currentTerm.start,
-          end: this.$store.getters.currentTerm.end
+          start: this.$store.getters.currentTerm.startDate,
+          end: this.$store.getters.currentTerm.endDate
         }
       }
     }

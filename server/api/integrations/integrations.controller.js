@@ -31,8 +31,8 @@ async function getAcademicCalendarEvents (ctx) {
   // for (const id in parsed) {
   //   if (
   //     moment(parsed[id].start).isBetween(
-  //       ctx.session.currentTerm.start,
-  //       ctx.session.currentTerm.end
+  //       ctx.session.currentTerm.startDate,
+  //       ctx.session.currentTerm.endDate
   //     )
   //   ) {
   //     events[id] = parsed[id]
