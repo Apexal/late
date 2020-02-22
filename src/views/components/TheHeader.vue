@@ -264,6 +264,13 @@
               </a>
 
               <div class="navbar-dropdown is-right">
+                <a
+                  v-if="inDevMode"
+                  href="#"
+                  class="navbar-item"
+                  @click="changeDevUser"
+                >Change Dev User</a>
+
                 <router-link
                   v-if="user.admin"
                   class="navbar-item"
@@ -426,6 +433,13 @@ export default {
     }
   },
   methods: {
+    changeDevUser () {
+      const rcsId = prompt('Change dev user to? (RCS ID)')
+      if (rcsId) {
+        localStorage.setItem('devUserRcsId', rcsId)
+        location.reload()
+      }
+    },
     openAnnouncementsModal () {
       // Mark all announcements as seen
       localStorage.setItem(

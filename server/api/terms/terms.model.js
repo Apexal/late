@@ -7,9 +7,9 @@ const schema = new Schema(
   {
     name: { type: String, required: true }, // e,g. 'Fall 2018'
     code: { type: String, minlength: 6, maxlength: 6, required: true }, // e.g. '201809' This is taken from SIS forms
-    start: { type: Date, required: true },
-    classesEnd: { type: Date, required: true }, // The last date of classes
-    end: { type: Date, required: true },
+    startDate: { type: Date, required: true },
+    classesEndDate: { type: Date, required: true }, // The last date of classes
+    endDate: { type: Date, required: true },
     exceptions: [
       {
         date: { type: Date, required: true },
@@ -22,7 +22,7 @@ const schema = new Schema(
 )
 
 schema.virtual('isCurrent').get(function () {
-  return moment().isBetween(this.start, this.end)
+  return moment().isBetween(this.startDate, this.endDate)
 })
 
 module.exports = mongoose.model('Term', schema)

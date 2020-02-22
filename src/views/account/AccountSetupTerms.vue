@@ -61,7 +61,7 @@ export default {
       )
     },
     terms () {
-      return this.$store.state.schedule.terms.filter(term => moment(term.end).isAfter(this.rightNow))
+      return this.$store.state.schedule.terms.filter(term => moment(term.endDate).isAfter(this.rightNow))
     }
   },
   created () {

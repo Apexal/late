@@ -10,8 +10,8 @@
       {{ term.name }}
     </h2>
     <div class="box summary has-text-centered">
-      Ran from <b>{{ longDateFormat(term.start) }}</b> to
-      <b>{{ longDateFormat(term.end) }}</b> —
+      Ran from <b>{{ longDateFormat(term.startDate) }}</b> to
+      <b>{{ longDateFormat(term.endDate) }}</b> —
       <a href="#archive-courses">{{ termCourses.length }} courses</a> —
       <a
         href="#archive-assignments"

@@ -61,7 +61,7 @@ export default {
     try {
       response = await this.$http.get('/assignments', {
         params: {
-          start: moment(this.currentTerm.start).format('YYYY-MM-DD'),
+          start: moment(this.currentTerm.startDate).format('YYYY-MM-DD'),
           end: moment(this.rightNow).format('YYYY-MM-DD'),
           completed: false,
           confirmed: false
