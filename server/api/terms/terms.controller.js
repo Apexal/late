@@ -14,7 +14,7 @@ async function getTerms (ctx) {
   let terms
 
   try {
-    terms = await Term.find().sort({ startTime: -1 })
+    terms = await Term.find().sort({ startDate: -1 })
   } catch (e) {
     logger.error(`Failed to get all terms for ${ctx.state.user.identifier}: ${e}`)
     return ctx.internalServerError(
@@ -73,7 +73,7 @@ async function createTerm (ctx) {
 }
 
 async function updateTerm (ctx) {
-  if (!ctx.state.user.admin) return ctx.forbidden('Only admins can add terms.')
+  if (!ctx.state.user.admin) return ctx.forbidden('Only admins can update terms.')
 
   const { termID } = ctx.params
 
