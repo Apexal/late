@@ -231,7 +231,7 @@ export default {
       else return this.assessment.dueDate
     },
     start () {
-      return moment(this.currentTerm.start).startOf('day')
+      return moment(this.currentTerm.startDate).startOf('day')
     },
     end () {
       return moment(this.assessmentDate).endOf('day')

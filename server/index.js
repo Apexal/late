@@ -75,7 +75,7 @@ app.use(async (ctx, next) => {
   if (
     ctx.state.env === 'development' ||
     !ctx.session.currentTerm ||
-    (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
+    (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.endDate))
   ) {
     ctx.session.currentTerm = ctx.session.terms.find(t => t.isCurrent)
   }
