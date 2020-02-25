@@ -34,14 +34,14 @@
           <td>
             <b>{{ term.name }}</b>
           </td>
-          <td :title="fromNow(term.start)">
-            {{ longDateFormat(term.start) }}
+          <td :title="fromNow(term.startDate)">
+            {{ longDateFormat(term.startDate) }}
           </td>
-          <td :title="fromNow(term.classesEnd)">
-            {{ longDateFormat(term.classesEnd) }}
+          <td :title="fromNow(term.classesEndDate)">
+            {{ longDateFormat(term.classesEndDate) }}
           </td>
-          <td :title="fromNow(term.end)">
-            {{ longDateFormat(term.end) }}
+          <td :title="fromNow(term.endDate)">
+            {{ longDateFormat(term.endDate) }}
           </td>
           <td>
             <button
