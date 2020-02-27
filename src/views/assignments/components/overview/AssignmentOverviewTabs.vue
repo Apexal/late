@@ -206,12 +206,8 @@ export default {
     }
   },
   watch: {
-    hasComments (val) {
-      console.log(val)
-    },
-    completedTasksLength (val) {
-      console.log(val)
-      if (!this.assignment.completed && this.assignment.tasks.length === this.completedTasksLength) { this.$emit('toggle-completed') }
+    tasksTagClass: function (ret) {
+      if (ret === 'is-success' && this.assignment.completed === false) { this.$emit('toggle-completed') }
     }
   },
   methods: {
