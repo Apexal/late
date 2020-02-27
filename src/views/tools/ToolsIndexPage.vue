@@ -167,17 +167,7 @@ export default {
 .tools-button,
 .tools-button::after,
 .tools-button i {
-  transition: all 0.3s;
-}
-
-.tools-button::before,
-.tools-button::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-}
-.tools-button:before {
-  background: hsl(171, 100%, 41%);
+  transition: all 0.1s;
 }
 
 .tools-button {
@@ -186,35 +176,12 @@ export default {
 
 .tools-button:hover {
   color: white;
-}
-
-.tools-button::after {
-  background-color: #2e3b59;
-  height: 100%;
-  left: -50%;
-  top: 0;
-  transform: skew(50deg);
-  transition-duration: 0.3s;
-  transform-origin: top left;
-  width: 0;
-}
-
-.tools-button:hover:after {
-  height: 100%;
-  width: 150%;
+  background: #2e3b59;
 }
 
 .tools-button:hover i {
   color: rgba(255, 255, 255, 0.6);
   opacity: 0.3;
-}
-
-.title:not(p) {
-  padding-bottom: 0px;
-  padding-left: 0px;
-  border-bottom-color: #dbdbdb;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
 }
 
 .help {

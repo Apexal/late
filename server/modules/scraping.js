@@ -70,7 +70,7 @@ async function loginToSIS (RIN, PIN) {
   })
 
   // TODO: validate login
-  if (!checkLogin($)) throw new Error(`Failed to login to SIS. Please check your credentials!`)
+  if (!checkLogin($)) throw new Error('Failed to login to SIS. Please check your credentials!')
 
   return jar
 }
@@ -155,7 +155,7 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
   // Must be used with each request
   const jar = await loginToSIS(RIN, PIN)
 
-  logger.info(`Getting courses for student ${RIN} from SIS.`)
+  logger.info(`Getting courses for student ${studentID} from SIS.`)
 
   // Submit schedule form choosing the right term
   const $ = await request({
@@ -219,8 +219,8 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
       termCode: term.code,
       summary,
       crn,
-      startDate: term.start,
-      endDate: term.classesEnd,
+      startDate: term.startDate,
+      endDate: term.classesEndDate,
       credits,
       links: [],
       periods: []
@@ -236,10 +236,10 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
           .find('td:nth-child(2)')
           .text()
           .split(' - ')
-        const start = moment(time[0], 'h:mm a', true).format('Hmm')
-        const end = moment(time[1], 'h:mm a', true).format('Hmm')
+        const startTime = moment(time[0], 'h:mm a', true).format('HH:mm')
+        const endTime = moment(time[1], 'h:mm a', true).format('HH:mm')
 
-        if (start === 'Invalid date') return
+        if (startTime === 'Invalid date') return
 
         const days = $(this)
           .find('td:nth-child(3)')
@@ -262,8 +262,8 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
         for (const day of days) {
           const period = {
             day,
-            start,
-            end,
+            startTime,
+            endTime,
             type: 'LEC',
             location
           }
@@ -275,8 +275,8 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
     course.periods = course.periods.sort((a, b) => {
       if (a.day > b.day) return 1
       else if (a.day < b.day) return -1
-      else if (parseInt(a.start) > parseInt(b.start)) return 1
-      else if (parseInt(a.start) < parseInt(b.start)) return -1
+      else if (a.startTime > b.startTime) return 1
+      else if (a.startTime < b.startTime) return -1
 
       return 0
     })
@@ -301,7 +301,7 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
   // Must be used with each request
   const jar = await loginToSIS(RIN, PIN)
 
-  logger.info(`Getting course ${crn} for student ${RIN} from SIS.`)
+  logger.info(`Getting course ${crn} for a student from SIS.`)
 
   // Submit schedule form choosing the right term
   const $ = await request({
@@ -328,8 +328,8 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
 
   let periods = []
 
-  let startDate = moment(term.start)
-  let endDate = moment(term.end)
+  let startDate = moment(term.startDate)
+  let endDate = moment(term.endDate)
 
   $('table[summary="This table lists the scheduled meeting times and assigned instructors for this class.."]')
     .find('tr:not(:first-child)')
@@ -338,10 +338,10 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
         .find('td:nth-child(2)')
         .text()
         .split(' - ')
-      const start = moment(time[0], 'h:mm a', true).format('Hmm')
-      const end = moment(time[1], 'h:mm a', true).format('Hmm')
+      const startTime = moment(time[0], 'h:mm a', true).format('HH:mm')
+      const endTime = moment(time[1], 'h:mm a', true).format('HH:mm')
 
-      if (start === 'Invalid date') return
+      if (startTime === 'Invalid date') return
 
       const days = $(this)
         .find('td:nth-child(3)')
@@ -364,8 +364,8 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
       for (const day of days) {
         const period = {
           day,
-          start,
-          end,
+          startTime,
+          endTime,
           type: 'LEC',
           location
         }
@@ -377,8 +377,8 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
   periods = periods.sort((a, b) => {
     if (a.day > b.day) return 1
     else if (a.day < b.day) return -1
-    else if (parseInt(a.start) > parseInt(b.start)) return 1
-    else if (parseInt(a.start) < parseInt(b.start)) return -1
+    else if (a.startTime > b.startTime) return 1
+    else if (a.startTime < b.startTime) return -1
 
     return 0
   })
@@ -479,8 +479,8 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
       const matchedPeriod = course.periods.find(
         p =>
           days.includes(p.day) &&
-          p.start === startTime.format('Hmm') &&
-          p.end === endTime.format('Hmm')
+          p.startTime === startTime.format('HH:mm') &&
+          p.endTime === endTime.format('HH:mm')
       )
 
       if (matchedPeriod) {

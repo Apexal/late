@@ -1,10 +1,10 @@
 <!--Tools: Timer page-->
 <template>
   <section class="section">
-    <h1 class="title header-title has-text-centered-mobile">
+    <h1 class="title has-text-centered-mobile">
       Study Timer
     </h1>
-    <h2 class="subtitle header-description has-text-centered-mobile">
+    <h2 class="subtitle has-text-centered-mobile">
       Breaks down your work into 25 minute focus times and 5 minute breaks
       using the
       <a
@@ -156,6 +156,9 @@ export default {
   watch: {
     scratchHTML (newHTML) {
       localStorage.setItem('scratchHTML', newHTML)
+    },
+    seconds (val) {
+      document.title = this.$store.getters.studyToolsTimerMinutes + ':' + this.$store.getters.studyToolsTimerSeconds
     }
   },
   mounted () {
@@ -207,6 +210,9 @@ export default {
     display: block;
     border-bottom: 1px solid rgba(219, 219, 219, 0.7);
   }
+  @media only screen and (max-width: 1000px) {
+    font-size: 2rem;
+  }
 }
 
 .study-tools-scratchpad {
@@ -217,7 +223,7 @@ export default {
   margin: 0 auto;
 }
 
-.button i.fas {
-  margin-right: 3px;
+.button i.fas,.instructions li .fas {
+  margin-right: 5px;
 }
 </style>

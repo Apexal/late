@@ -391,10 +391,14 @@ const router = new Router({
       children: [
         {
           path: '',
-          redirect: 'students'
+          redirect: 'students/1'
         },
         {
           path: 'students',
+          redirect: 'students/1'
+        },
+        {
+          path: 'students/:page',
           name: 'admin-student-list',
           meta: {
             title: 'Students'
@@ -425,6 +429,14 @@ const router = new Router({
             title: 'Admin Fun'
           },
           component: () => import('@/views/admin/components/AdminFun.vue')
+        },
+        {
+          path: 'development',
+          name: 'admin-development',
+          meta: {
+            title: 'Admin Dev Mode'
+          },
+          component: () => import('@/views/admin/components/AdminDevelopment.vue')
         }
       ]
     },
@@ -456,7 +468,11 @@ router.beforeEach(async (to, from, next) => {
     process.env.NODE_ENV === 'development' &&
     store.state.auth.isAuthenticated === null
   ) {
-    const rcsID = prompt('Log in as what user? (rcs_id) Leave blank to not login.')
+    let rcsID = localStorage.getItem('devUserRcsId')
+    if (rcsID === null) {
+      rcsID = prompt('Log in as what user? (rcs_id) Leave blank to not login.')
+      localStorage.setItem('devUserRcsId', rcsID)
+    }
 
     if (rcsID) {
       const response = await api.get('/students/loginas?rcs_id=' + rcsID)

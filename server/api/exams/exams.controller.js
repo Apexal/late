@@ -24,14 +24,14 @@ async function getExamMiddleware (ctx, next) {
       .populate('comments._student', '_id rcs_id name graduationYear')
   } catch (e) {
     logger.error(
-      `Error getting exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+      `Error getting exam ${examID} for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError('Failed to get exam.')
   }
 
   if (!exam) {
     logger.error(
-      `Failed to find exam with ID ${examID} for ${ctx.state.user.rcs_id}.`
+      `Failed to find exam with ID ${examID} for ${ctx.state.user.identifier}.`
     )
     return ctx.notFound('Could not find exam.')
   }
@@ -54,7 +54,7 @@ async function getExams (ctx) {
   try {
     exams = await ctx.state.user.getExams(start, end, title, courseCRN)
   } catch (e) {
-    logger.error(`Failed to send exams to ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to send exams to ${ctx.state.user.identifier}: ${e}`)
     return ctx.internalServerError('There was an error loading your exams.')
   }
 
@@ -83,8 +83,8 @@ async function getTermExams (ctx) {
         { termCode },
         {
           date: {
-            $gte: term.start,
-            $lt: term.end
+            $gte: term.startDate,
+            $lt: term.endDate
           }
         }
       ]
@@ -95,7 +95,7 @@ async function getTermExams (ctx) {
   }
 
   logger.info(
-    `Sending all exams for term ${termCode} to ${ctx.state.user.rcs_id}`
+    `Sending all exams for term ${termCode} to ${ctx.state.user.identifier}`
   )
 
   ctx.ok({
@@ -111,7 +111,7 @@ async function getTermExams (ctx) {
 async function getExam (ctx) {
   const examID = ctx.params.examID
 
-  logger.info(`Sending exam ${examID} to ${ctx.state.user.rcs_id}`)
+  logger.info(`Sending ${ctx.state.exam.identifier} to ${ctx.state.user.identifier}`)
 
   ctx.ok({
     exam: ctx.state.exam
@@ -130,12 +130,12 @@ async function createExam (ctx) {
   // Limit to this semester
   if (
     !moment(date).isBetween(
-      ctx.session.currentTerm.start,
-      ctx.session.currentTerm.end
+      ctx.session.currentTerm.startDate,
+      ctx.session.currentTerm.endDate
     )
   ) {
     logger.error(
-      `${ctx.state.user.rcs_id} tried to add exam outside of current semester.`
+      `${ctx.state.user.identifier} tried to add exam outside of current semester.`
     )
     return ctx.badRequest('You cannot add an exam outisde of this semester.')
   }
@@ -155,11 +155,11 @@ async function createExam (ctx) {
   try {
     await newExam.save()
   } catch (e) {
-    logger.error(`Failed to add exam for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to add exam for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest(`Failed to add exam ${body.title}`)
   }
 
-  logger.info(`Added exam ${newExam._id} for ${ctx.state.user._id}`)
+  logger.info(`${ctx.state.user.identifier} added ${newExam.identifier}`)
   ctx.created({
     createdAssessent: newExam,
     createdExam: newExam
@@ -194,12 +194,12 @@ async function editExam (ctx) {
   // Limit to this semester
   if (
     !moment(updates.date).isBetween(
-      ctx.session.currentTerm.start,
-      ctx.session.currentTerm.end
+      ctx.session.currentTerm.startDate,
+      ctx.session.currentTerm.endDate
     )
   ) {
     logger.error(
-      `${ctx.state.user.rcs_id} tried to set exam outside of current semester.`
+      `${ctx.state.user.identifier} tried to set exam outside of current semester.`
     )
     return ctx.badRequest(
       'You cannot set an exam due outisde of this semester.'
@@ -213,13 +213,13 @@ async function editExam (ctx) {
     await ctx.state.exam.save()
   } catch (e) {
     logger.error(
-      `Failed to update exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to update exam ${examID} for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error updating the exam.')
   }
 
   logger.info(
-    `Updated exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}.`
+    `${ctx.state.user.identifier} edited ${ctx.state.exam.identifier}`
   )
 
   ctx.ok({
@@ -247,7 +247,7 @@ async function deleteExam (ctx) {
   }
 
   logger.info(
-    `Deleted exam ${ctx.state.exam._id} for ${ctx.state.user.rcs_id}`
+    `${ctx.state.user.identifier} deleted ${ctx.state.exam.identifier}`
   )
 
   ctx.ok({
@@ -279,10 +279,12 @@ async function addComment (ctx) {
     await ctx.state.exam.save()
   } catch (e) {
     logger.error(
-      `Failed to save exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to save exam ${examID} for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error adding the comment.')
   }
+
+  logger.info(`${ctx.state.user.identifier} addded a comment on ${ctx.state.exam.identifier}`)
 
   ctx.ok({
     updatedAssessment: ctx.state.exam,
@@ -309,10 +311,12 @@ async function deleteComment (ctx) {
     await ctx.state.exam.save()
   } catch (e) {
     logger.error(
-      `Failed to save exam ${examID} for ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to save exam ${examID} for ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error adding the comment.')
   }
+
+  logger.info(`${ctx.state.user.identifier} deleted a comment on ${ctx.state.exam.identifier}`)
 
   ctx.ok({
     updatedAssessment: ctx.state.exam,

@@ -20,7 +20,7 @@ const logger = require('./modules/logger')
 
 const Sentry = require('@sentry/node')
 Sentry.init({
-  dsn: 'https://8ee2afb35b1b4faab2e45b860ec36c38@sentry.io/1548265',
+  dsn: process.env.NODE_ENV === 'production' ? 'https://8ee2afb35b1b4faab2e45b860ec36c38@sentry.io/1548265' : null,
   environment: process.env.NODE_ENV
 })
 
@@ -74,7 +74,7 @@ app.use(async (ctx, next) => {
   if (
     ctx.state.env === 'development' ||
     !ctx.session.currentTerm ||
-    (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
+    (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.endDate))
   ) {
     ctx.session.currentTerm = ctx.session.terms.find(t => t.isCurrent)
   }

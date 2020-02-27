@@ -8,7 +8,14 @@ const schema = new Schema(
       ref: 'Student',
       required: true
     },
-    text: { type: String, minlength: 1, maxlength: 3000, required: true }
+    text: { type: String, minlength: 1, maxlength: 3000, required: true },
+    _blocks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Block'
+      }
+    ],
+    completed: { type: Date }
   },
   { timestamps: true }
 )

@@ -7,13 +7,13 @@
     >
       <li
         v-for="l in links"
-        :key="l"
+        :key="l.url"
       >
         <a
-          :href="l"
+          :href="l.url"
           target="_blank"
-          :title="l"
-        >{{ l }}</a>
+          :title="l.url"
+        >{{ l.name }}</a>
       </li>
     </ul>
     <p

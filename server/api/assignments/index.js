@@ -51,4 +51,6 @@ router.delete(
   Ctrl.deleteComment
 )
 
+router.post('/generate', Ctrl.generateAssignments)
+
 module.exports = router.routes()

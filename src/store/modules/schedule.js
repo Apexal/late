@@ -22,7 +22,7 @@ const getters = {
   currentTerm: (state, getters, rootState) =>
     state.terms
       .filter(t => rootState.auth.user.terms.includes(t.code))
-      .find(t => moment(rootState.now).isBetween(t.start, t.end)) || {},
+      .find(t => moment(rootState.now).isBetween(t.startDate, t.endDate)) || {},
   nextTerm: (state, getters, rootState) => {
     return state.terms
       .filter(t => rootState.auth.user.terms.includes(t.code))
@@ -48,10 +48,18 @@ const getters = {
     return getters.ongoingCourses
       .map(course => course.periods.filter(p => p.day === day))
       .flat()
-      .sort((a, b) => parseInt(a.start) - parseInt(b.start))
+      .sort((a, b) => {
+        if (a.startTime > b.startTime) {
+          return 1
+        } else if (a.startTime < b.startTime) {
+          return -1
+        }
+
+        return 0
+      })
   },
   onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
-  classesOver: (state, getters) => moment().isAfter(getters.currentTerm.classesEnd),
+  classesOver: (state, getters) => moment().isAfter(getters.currentTerm.classesEndDate),
   periodType: () => type =>
     ({
       LEC: 'Lecture',
@@ -63,17 +71,14 @@ const getters = {
     }[type] || type),
   mapCourseToEvents: (state, getters, rootState, rootGetters) => course => {
     return course.periods.map(p => {
-      const start = moment(p.start, 'Hmm', true).format('HH:mm')
-      const end = moment(p.end, 'Hmm', true).format('HH:mm')
-
       return {
         id: course._id,
         eventType: 'course',
         title: `${course.title} ${getters.periodType(p.type)}`,
         startRecur: course.startDate,
         endRecur: course.endDate,
-        startTime: start,
-        endTime: end,
+        startTime: p.startTime,
+        endTime: p.endTime,
         daysOfWeek: [p.day],
         color: course.color,
         editable: false,
@@ -89,6 +94,20 @@ const getters = {
       .flat()
 
     return events
+  },
+  getCourseBlocks: state => {
+    return state.courses
+      .map(course => course._blocks)
+      .flat()
+  },
+  getCourseBlocksAsEvents: (state, getters, rootState, rootGetters) => {
+    const courseBlocks = state.courses.map(course =>
+      course._blocks.map(b =>
+        rootGetters.mapCourseBlockToEvent(course, b)
+      )
+    )
+
+    return courseBlocks.flat()
   },
   roomIntoLocation: state => location => {
     const locationParts = location.split(' ')
@@ -110,6 +129,11 @@ const actions = {
 
     return response.data.createdTerm
   },
+  async UPDATE_TERM ({ commit, state }, { termID, updatedTerm }) {
+    const response = await axios.patch('/terms/' + termID, updatedTerm)
+    commit('UPDATE_TERM', response.data.updatedTerm)
+    return response.data.updatedTerm
+  },
   async GET_COURSES ({ commit, dispatch }) {
     const response = await axios.get('/courses')
     commit('SET_COURSES', response.data.courses)
@@ -128,7 +152,7 @@ const actions = {
     commit('UPDATE_COURSE', updatedCourse)
 
     // Check if GCal has to be updated
-    if (rootState.auth.user.integrations.google.calendarID) {
+    if (rootState.auth.user.integrations.google && rootState.auth.user.integrations.google.calendarID) {
       axios.post('/google/courseschedule', { termCode: course.termCode })
     }
 
@@ -157,6 +181,9 @@ const mutations = {
   },
   REMOVE_COURSE: (state, removedCourse) => {
     state.courses = state.courses.filter(c => c._id !== removedCourse._id)
+  },
+  UPDATE_TERM: (state, updatedTerm) => {
+    Object.assign(state.terms.find(term => term._id === updatedTerm._id), updatedTerm)
   },
   SET_TERMS: (state, terms) => {
     state.terms = terms

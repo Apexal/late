@@ -1,4 +1,7 @@
 export default {
+  calculateAssessmentWeight (assessment) {
+    return 0
+  },
   determineWeight (assignmentCount, examCount) {
     const weight = assignmentCount + examCount * 5
     if (weight === 0) {

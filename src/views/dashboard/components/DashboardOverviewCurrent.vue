@@ -14,7 +14,7 @@
       <b>{{ duration(currentUnavailabilityDates.start, currentUnavailabilityDates.end) }} minutes</b>
       until {{ timeFormat(currentUnavailabilityDates.end) }}!
     </p>
-    <template v-else-if="currentStatus === 'work-block'">
+    <template v-else-if="currentStatus === 'assessment-block'">
       <p class="subtitle">
         For the next <b>{{ duration(currentEvent.start, currentEvent.end) }} minutes</b> until <b>{{ timeFormat(currentEvent.end) }}</b>, you should be {{ currentEvent.assessment.assessmentType === 'assignment' ? 'working on' : 'studying for' }}
       </p>
@@ -46,12 +46,12 @@
       </div>
     </template>
     <template v-else-if="currentStatus === 'period'">
-      <p
+      <!-- <p
         class="subtitle has-text-centered"
         style="margin-bottom: 3px;padding-top: 5px;"
       >
         For the next <b>{{ minutesLeft }} minutes</b> (until <b>{{ timeFormat(currentEvent.end) }}</b>), you are in
-      </p>
+      </p> -->
       <div>
         <div
           class="has-text-centered is-size-3 currentClass"
@@ -79,6 +79,18 @@
         >
           {{ percentThrough }}%
         </progress>
+
+        <h2 v-if="nextCourseAssessment">
+          <b>Next {{ nextCourseAssessment.assessmentType }}</b>:
+          <router-link
+            :to="{
+              name: nextCourseAssessment.assessmentType + '-overview',
+              params: {[nextCourseAssessment.assessmentType + 'ID']: nextCourseAssessment._id}
+            }"
+          >
+            {{ nextCourseAssessment.title }}
+          </router-link>
+        </h2>
       </div>
     </template>
   </div>
@@ -90,6 +102,8 @@ import moment from 'moment'
 export default {
   name: 'DashboardOverviewCurrent',
   computed: {
+    // Based on what is currently schedule (if anything), return the type of event
+    // This will return one of ['none', 'busy', 'period', 'assessment-block']
     currentStatus () {
       if (this.currentEvent) return this.currentEvent.eventType
       if (this.currentUnavailability) return 'busy'
@@ -118,6 +132,18 @@ export default {
         start: moment(this.currentUnavailability.startTime, 'HH:mm'),
         end: moment(this.currentUnavailability.endTime, 'HH:mm')
       }
+    },
+    nextCourseAssessment () {
+      if (this.currentStatus !== 'period') return
+
+      // What is the course of the period we are in right now?
+      const courseCRN = this.currentEvent.course.crn
+
+      // Find next assessment in that course (if one exists)
+      const nextAssessment = this.$store.state.assessments.upcomingAssessments
+        .find(assessment => assessment.courseCRN === courseCRN)
+
+      return nextAssessment
     }
   },
   watch: {

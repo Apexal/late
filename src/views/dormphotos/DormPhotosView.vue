@@ -108,9 +108,7 @@ export default {
     async getDormPhotos () {
       this.loading = true
 
-      let request
-
-      request = await this.$http.get('/dormphotos', { params: { dormKey: this.$route.params.dormKey } })
+      const request = await this.$http.get('/dormphotos', { params: { dormKey: this.$route.params.dormKey } })
 
       this.dormPhotos = request.data.dormPhotos
 

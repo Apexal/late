@@ -27,7 +27,7 @@
         v-if="courses.length === 0"
         class="has-text-grey has-text-centered"
       >
-        Set your courses above.
+        Set your courses below.
       </p>
       <template v-else>
         <div class="tabs">

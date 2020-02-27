@@ -4,42 +4,21 @@ const moment = require('moment')
 
 const Block = require('../blocks/blocks.model')
 
+const assessmentSchema = require('../assessments/assessment.mixin')
+
 const schema = new Schema(
   {
-    _student: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Student',
-      required: true
-    },
-    title: { type: String, required: true, minlength: 3, maxlength: 200 },
-    description: { type: String, maxlength: 4000, default: '' },
-    dueDate: { type: Date, required: true },
-    courseCRN: { type: String, required: true }, // CRN
-    timeEstimate: { type: Number, required: true, min: 0, max: 696969420 },
-    timeRemaining: { type: Number, required: true },
+    ...assessmentSchema,
     priority: { type: Number, min: 1, max: 5, default: 3 },
-    termCode: {
-      type: String
-    },
-    comments: [
-      {
-        _student: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Student',
-          required: true
-        },
-        addedAt: { type: Date, required: true },
-        body: { type: String, minlength: 1, maxlength: 2000, required: true }
-      }
-    ],
+    dueDate: { type: Date, required: true },
     completed: { type: Boolean, default: false },
     completedAt: { type: Date },
-    _blocks: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Block'
-      }
-    ],
+    tasks: [{
+      text: { type: String, minlength: 3, maxlength: 200, required: true },
+      addedAt: { type: Date, required: true },
+      completed: { type: Boolean, default: false },
+      completedAt: Date
+    }],
     isRecurring: {
       type: Boolean,
       default: false
@@ -71,6 +50,10 @@ const schema = new Schema(
 
 schema.set('toObject', { getters: true, virtuals: true })
 schema.set('toJSON', { getters: true, virtuals: true })
+
+schema.virtual('identifier').get(function () {
+  return `${this.shared ? 'Shared ' : ''}Assignment '${this.title}' (${this._id})`
+})
 
 schema.virtual('assessmentType').get(function () {
   return 'assignment'

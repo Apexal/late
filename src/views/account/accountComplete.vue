@@ -152,6 +152,14 @@ export default {
 }
 
 /*Button stylings*/
+.tools-button i {
+  position: absolute;
+  right: 30px;
+  font-size: 3.5em;
+  opacity: 0.1;
+  color: rgba(0, 0, 0, 0.4);
+}
+
 .tools-button {
   background: none;
   border: 1px solid rgba(224, 224, 224, 0.8);
@@ -163,53 +171,25 @@ export default {
   position: relative;
   cursor: pointer;
   max-width: 650px;
-  overflow: hidden;
-  i {
-    position: absolute;
-    right: 30px;
-    font-size: 3.5em;
-    opacity: 0.1;
-    color: rgba(0, 0, 0, 0.4);
-  }
 }
 
 .tools-button,
 .tools-button::after,
 .tools-button i {
-  transition: all 0.3s;
+  transition: all 0.1s;
 }
 
-.tools-button::before,
-.tools-button::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-}
-.tools-button:before {
-  background: hsl(171, 100%, 41%);
+.tools-button {
+  overflow: hidden;
 }
 
 .tools-button:hover {
   color: white;
-  i {
-    color: rgba(255, 255, 255, 0.6);
-    opacity: 0.3;
-  }
+  background: #2e3b59;
 }
 
-.tools-button::after {
-  background-color: #2e3b59;
-  height: 100%;
-  left: -60%;
-  top: 0;
-  transform: skew(50deg);
-  transition-duration: 0.3s;
-  transform-origin: top left;
-  width: 0;
-}
-
-.tools-button:hover:after {
-  height: 150%;
-  width: 160%;
+.tools-button:hover i {
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 0.3;
 }
 </style>

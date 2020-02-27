@@ -36,7 +36,7 @@
               @click="headerClick(key)"
             >{{ headerText(key) }}</span>
             <!-- <span class="tag is-danger is-pulled-right day-weight-tag">Light</span> -->
-            <span class="is-pulled-right add-assessment-buttons">
+            <span class="add-assessment-buttons">
               <i
                 class="has-text-white fas fa-clipboard-check"
                 :title="addAssessmentTitle(key, 'assignment')"
@@ -147,9 +147,6 @@ export default {
     }
   },
   methods: {
-    course (crn) {
-      return this.$store.getters.getCourseFromCRN(crn)
-    },
     headerTitle (key) {
       if (this.groupBy === 'courseCRN') {
         return 'Open course modal'
@@ -162,24 +159,24 @@ export default {
     },
     headerText (key) {
       return this.groupBy === 'courseCRN'
-        ? this.course(key).title
+        ? this.getCourseFromCRN(key).title
         : this.relativeDateFormat(moment(key, 'YYYY-MM-DD', true))
     },
     headerStyle (key) {
       if (this.groupBy === 'date') return {}
-      let color = this.course(key).color
+      let color = this.getCourseFromCRN(key).color
       if (color.length < 5) {
         color += color.slice(1)
       }
       return {
         'background-color':
-          this.groupBy === 'courseCRN' ? this.course(key).color : 'inherit',
+          this.groupBy === 'courseCRN' ? this.getCourseFromCRN(key).color : 'inherit',
         color: color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
       }
     },
     headerClick (key) {
       if (this.groupBy === 'courseCRN') {
-        this.$store.commit('OPEN_COURSE_MODAL', this.course(key))
+        this.$store.commit('OPEN_COURSE_MODAL', this.getCourseFromCRN(key))
       } else {
         // TODO: this will open DayModal
         // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
@@ -209,7 +206,7 @@ export default {
     },
     addAssessmentTitle (key, assessmentType) {
       if (this.groupBy === 'courseCRN') {
-        return `Add new ${this.course(key).title} ${assessmentType}`
+        return `Add new ${this.getCourseFromCRN(key).title} ${assessmentType}`
       } else {
         return `Add new ${assessmentType} on ${moment(
           key,
@@ -233,17 +230,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.panel-heading {
-  border-left: 1px solid #2e3b59;
-  border-right:1px solid #2e3b59;
-  border-top:1px solid #2e3b59;
-}
 .key-heading {
+  position: relative;
   span.key.courseCRN {
     cursor: pointer;
   }
 
   .add-assessment-buttons {
+    position: absolute;
+    right: 10px;
+
     transition: opacity 0.1s;
     @media only screen and (min-width: 768px) {
       opacity: 0;

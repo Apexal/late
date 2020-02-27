@@ -3,32 +3,41 @@ const SMS = require('../../integrations/sms')
 const ical = require('node-ical')
 const request = require('request-promise')
 const moment = require('moment')
+const { createIssue } = require('../../modules/github')
 
 const CALENDAR_URL = 'http://events.rpi.edu/cal/misc/export.gdo?b=de'
 
+async function submitGitHubIssue (ctx) {
+  const { title, description } = ctx.request.body
+
+  // call function from github.js file
+  createIssue(ctx.state.user.rcs_id, title, description)
+  ctx.ok({ message: 'Submitted issue to GitHub!' })
+}
+
 async function getAcademicCalendarEvents (ctx) {
-  const response = await request.post(CALENDAR_URL, {
-    form: {
-      calPath: '/user/public-user/Academic Calendar',
-      nocache: 'no',
-      contentName: 'Academic Calendar.ics',
-      dateLimits: 'all'
-    }
-  })
+  // const response = await request.post(CALENDAR_URL, {
+  //   form: {
+  //     calPath: '/user/public-user/Academic Calendar',
+  //     nocache: 'no',
+  //     contentName: 'Academic Calendar.ics',
+  //     dateLimits: 'all'
+  //   }
+  // })
 
   const events = {}
 
-  const parsed = ical.parseICS(response)
-  for (const id in parsed) {
-    if (
-      moment(parsed[id].start).isBetween(
-        ctx.session.currentTerm.start,
-        ctx.session.currentTerm.end
-      )
-    ) {
-      events[id] = parsed[id]
-    }
-  }
+  // const parsed = ical.parseICS(response)
+  // for (const id in parsed) {
+  //   if (
+  //     moment(parsed[id].start).isBetween(
+  //       ctx.session.currentTerm.startDate,
+  //       ctx.session.currentTerm.endDate
+  //     )
+  //   ) {
+  //     events[id] = parsed[id]
+  //   }
+  // }
 
   return ctx.ok({ events })
 }
@@ -78,14 +87,14 @@ async function submitSMS (ctx) {
     )
   } catch (e) {
     logger.error(
-      `Failed to send SMS verification code to ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to send SMS verification code to ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.internalServerError(
       `Failed to send verification code to ${phoneNumber}.`
     )
   }
 
-  logger.info(`Sent SMS verification code to ${ctx.state.user.rcs_id}.`)
+  logger.info(`Sent SMS verification code to ${ctx.state.user.identifier}.`)
   ctx.ok(`Successfully sent SMS verification code to ${phoneNumber}.`)
 }
 
@@ -124,7 +133,7 @@ async function verifySMS (ctx) {
     await ctx.state.user.save()
   } catch (e) {
     logger.error(
-      `Failed to verify phone number of ${ctx.state.user.rcs_id}: ${e}`
+      `Failed to verify phone number of ${ctx.state.user.identifier}: ${e}`
     )
     return ctx.badRequest('There was an error verifying your phone number.')
   }
@@ -146,11 +155,11 @@ async function disableSMS (ctx) {
   try {
     await ctx.state.user.save()
   } catch (e) {
-    logger.error(`Failed to disable SMS for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to disable SMS for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('Failed to disable SMS integration.')
   }
 
-  logger.info(`Disabled SMS integration for ${ctx.state.user.rcs_id}.`)
+  logger.info(`Disabled SMS integration for ${ctx.state.user.identifier}.`)
   ctx.ok({ updatedUser: ctx.state.user })
 }
 
@@ -179,7 +188,7 @@ async function saveNotificationPreferences (ctx) {
     )
   }
 
-  logger.info(`Updated notification preferences for ${ctx.state.user.rcs_id}.`)
+  logger.info(`Updated notification preferences for ${ctx.state.user.identifier}.`)
 
   ctx.ok({ updatedUser: ctx.state.user })
 }
@@ -189,5 +198,6 @@ module.exports = {
   submitSMS,
   verifySMS,
   disableSMS,
-  saveNotificationPreferences
+  saveNotificationPreferences,
+  submitGitHubIssue
 }

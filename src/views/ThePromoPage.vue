@@ -30,8 +30,10 @@
 
       <p id="sis-man-holder">
         <img
+          :style="sisManStyle"
           title="Better LATE than never!"
           src="@/assets/img/sisman.png"
+          @click="clickedSISMan"
         >
       </p>
 
@@ -139,6 +141,7 @@ export default {
     return {
       testers: 0,
       waitlist: 0,
+      sisManClicks: 0,
       splashMovementStrength: 25,
       interval: null,
       promos: [
@@ -184,6 +187,11 @@ export default {
   computed: {
     waitlisted () {
       return !!this.$route.query.waitlisted
+    },
+    sisManStyle () {
+      return {
+        transform: `scale(${1 + Math.pow(this.sisManClicks, 2) / 100})`
+      }
     }
   },
   async created () {
@@ -205,6 +213,18 @@ export default {
     this.interval = null
   },
   methods: {
+    clickedSISMan () {
+      this.sisManClicks += 1
+      if (this.sisManClicks === 10) {
+        alert('He approaches...')
+      } else if (this.sisManClicks === 25) {
+        alert('Resistance is futile...')
+      } else if (this.sisManClicks === 100) {
+        alert('Have you done your homework...')
+      } else if (this.sisManClicks === 150) {
+        // reward them with ???
+      }
+    },
     async getCounts () {
       const request = await this.$http.get('/students/counts')
       this.testers = request.data.testers
@@ -321,7 +341,7 @@ export default {
   z-index: -1;
   background: url(/splash-bg.png);
   background-size: cover;
-  backround-repeat:no-repeat;
+  background-repeat:no-repeat;
   height: 100%;
   //filter: blur(5px);
 }
@@ -335,8 +355,18 @@ export default {
   margin-top: -20px;
   img {
     width: 250px;
-    pointer-events: none;
+    // pointer-events: none;
+    transform-origin: 100px 0;
+    z-index: 1000;
     transition: transform 0.5s;
+  }
+
+  img:hover {
+    transform: rotate(10deg);
+  }
+
+  img.flipped {
+    transform: rotate3d(1, 1, 1, 45deg);
   }
 }
 
