@@ -205,6 +205,13 @@ export default {
       }[this.tab]
     }
   },
+  watch: {
+    'assignment.tasks' (tasks) {
+      if (tasks.filter(t => t.completed).length === this.assignment.tasks.length && this.assignment.completed === false) {
+        this.$emit('toggle-completed')
+      }
+    }
+  },
   methods: {
     scrollTo () {
       this.$refs.tabs.scrollIntoView({

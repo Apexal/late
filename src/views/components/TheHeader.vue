@@ -220,6 +220,13 @@
               >
                 RPI Dorm Photos
               </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{name: 'study-groups-home'}"
+                title="Create and join study groups with your peers"
+              >
+                Study Groups
+              </router-link>
             </div>
           </div>
         </div>

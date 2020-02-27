@@ -51,6 +51,7 @@
         :assignment="assessment"
         :loading="loading || commentLoading"
         @set-tab="tabChanged"
+        @toggle-completed="toggleCompleted"
         @updated-assessment="updatedAssessment"
       />
 
