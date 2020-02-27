@@ -206,8 +206,10 @@ export default {
     }
   },
   watch: {
-    tasksTagClass: function (ret) {
-      if (ret === 'is-success' && this.assignment.completed === false) { this.$emit('toggle-completed') }
+    'assignment.tasks' (tasks) {
+      if (tasks.filter(t => t.completed).length === this.assignment.tasks.length && this.assignment.completed === false) {
+        this.$emit('toggle-completed')
+      }
     }
   },
   methods: {
