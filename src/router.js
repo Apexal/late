@@ -131,6 +131,40 @@ const router = new Router({
       ]
     },
     {
+      path: '/study-groups',
+      component: () => import('@/views/studygroups/StudyGroups'),
+      children: [
+        {
+          path: '',
+          redirect: 'home'
+        },
+        {
+          path: 'home',
+          name: 'study-groups-home',
+          component: () => import('@/views/studygroups/StudyGroupsHome'),
+          meta: {
+            title: 'Study Groups'
+          }
+        },
+        {
+          path: 'create',
+          name: 'study-groups-create',
+          component: () => import('@/views/studygroups/StudyGroupsCreate')
+        },
+        {
+          path: 'join',
+          name: 'study-groups-join',
+          component: () => import('@/views/studygroups/StudyGroupsJoin')
+        }
+      ]
+    },
+    {
+      path: ':groupID',
+      name: 'study-groups-overview',
+      component: () =>
+        import('@/views/studygroups/StudyGroupsOverview')
+    },
+    {
       path: '/checklist',
       name: 'checklist',
       component: () => import('@/views/checklists/MoveInChecklist.vue'),
