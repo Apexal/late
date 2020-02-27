@@ -184,7 +184,7 @@ export default {
       return this.assignment.timeEstimate * 60
     },
     fullyScheduled () {
-      return this.scheduledMinutes >= this.totalEstimatedMinutes // 2.85 5.03
+      return this.scheduledMinutes >= this.totalEstimatedMinutes
     },
     completedTasksLength () {
       return this.assignment.tasks.filter(t => t.completed).length
