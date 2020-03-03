@@ -19,7 +19,8 @@ const state = {
   timeEstimate: 1.0, // The chosen time estimate in hours
   priority: 3, // The chosen priority of the assignment
   isRecurring: false, // Whether or not the assignment repeats
-  recurringDays: [] // The days (0-6) the assignment repeats
+  recurringDays: [], // The days (0-6) the assignment repeats
+  autoSchedule: true // if assignments should automatically be assigned to time block
 }
 const actions = {
   COPY_ASSIGNMENT_TO_MODAL ({ commit }, assignment) {
@@ -31,7 +32,8 @@ const actions = {
       description: assignment.description,
       timeEstimate: assignment.timeEstimate,
       priority: assignment.priority,
-      recurringDays: [moment(assignment.dueDate).day()]
+      recurringDays: [moment(assignment.dueDate).day()],
+      autoSchedule: true
     })
   }
 }
@@ -55,7 +57,8 @@ const mutations = {
       timeEstimate: 1.0,
       priority: 3,
       isRecurring: false,
-      recurringDays: []
+      recurringDays: [],
+      autoSchedule: true
     })
   },
   TOGGLE_ADD_ASSIGNMENT_MODAL: state => (state.expanded = !state.expanded)

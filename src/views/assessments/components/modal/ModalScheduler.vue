@@ -17,15 +17,21 @@ export default {
   props: {
     autoAssign: {
       type: Boolean,
-      default: true,
-      required: false
+      default: true
+    }
+  },
+  watch: {
+    autoAssign: function (newVal, oldVal) {
+      console.log('changed' + newVal)
+      this.$emit(
+        'update-auto-schedule',
+        newVal
+      )
     }
   }
 }
 </script>
 
-<script>
-export default {
+<style scoped>
 
-}
-</script>
+</style>

@@ -63,6 +63,7 @@
             :is-recurring="isRecurring"
             :recurring-days="recurringDays"
             :old-titles="oldTitles"
+            :auto-assign="autoSchedule"
             @update-crn="setValue('courseCRN', $event)"
             @update-date="
               setValue('dueDate', $event);
@@ -76,6 +77,8 @@
             @update-is-recurring="setValue('isRecurring', $event)"
             @update-recurring-days="setValue('recurringDays', $event)"
             @next-step="nextStep()"
+
+            @update-auto-schedule="setValue('autoSchedule', $event)"
           />
         </transition>
       </section>
@@ -222,6 +225,9 @@ export default {
         ModalTitleAndDescription: this.title.length > 0,
         ModalTime: true
       }
+    },
+    autoSchedule () {
+      return this.$store.state.addAssignmentModal.autoSchedule
     }
   },
   watch: {
@@ -305,6 +311,11 @@ export default {
         return
       }
 
+      // if auto assign enabled, add assignment to valid time block
+      if (this.autoSchedule) {
+        this.autoAssign()
+      }
+
       // Update global state if they are not in the past
       if (
         moment(request.data.createdAssignment.dueDate).isAfter(
@@ -362,6 +373,27 @@ export default {
           })
         }
       })
+    },
+    autoAssign () {
+      console.log(this.$store)
+      /*
+      to consider:
+       - Unavailability this.$store.state.unavailability.unavailabilities []
+       - Courses this.$store.state.schedule.courses []
+       - Assessments this.$store.state.assessments.upcomingAssessments []
+      */
+
+      const unavailabilities = this.$store.state.unavailability.unavailabilities
+      const courses = this.$store.state.schedule.courses
+      const assessments = this.$store.state.assessments.upcomingAssessments
+
+      // find latest due date
+      const latest = Math.max(...assessments.map(object => {
+        return (new Date().getTime() - object.dueDate) / (1000 * 3600 * 24)
+      }))
+
+      // create a new day reprsentation in a table.
+      let dayTable = new Array(latest)
     }
   }
 }
