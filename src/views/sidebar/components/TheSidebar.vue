@@ -88,6 +88,7 @@ import SidebarSchedule from '@/views/sidebar/components/SidebarSchedule'
 import SidebarPressingAssessments from '@/views/sidebar/components/SidebarPressingAssessments'
 import SidebarTodoList from '@/views/sidebar/components/todo/SidebarTodoList'
 import SidebarCourseList from '@/views/sidebar/components/SidebarCourseList'
+import PollPages from '@/views/polls/PollPages'
 
 export default {
   name: 'TheSidebar',
@@ -95,8 +96,8 @@ export default {
     SidebarPressingAssessments,
     SidebarSchedule,
     SidebarTodoList,
-    SidebarCourseList
-
+    SidebarCourseList,
+    PollPages
   },
   data () {
     return {
@@ -125,6 +126,12 @@ export default {
           name: 'To-Do List',
           icon: 'fas fa-check',
           tagColor: 'success'
+        },
+        polls: {
+          component: PollPages,
+          name: 'Polls',
+          icon: 'fas fa-poll',
+          tagColor: 'link'
         }
       }
     }
@@ -135,7 +142,8 @@ export default {
         schedule: this.$store.getters.todaysAgenda.length,
         assessments: this.pressingAssessments.length,
         courseList: this.courses.length,
-        todos: this.incompleteTodos.length
+        todos: this.incompleteTodos.length,
+        polls: this.$store.state.polls.unvoted
       }
     },
     currentTab () {
@@ -173,7 +181,6 @@ export default {
       return this.$store.state.todos.todos
     }
   },
-  mounted () {},
   methods: {
     updatedCount ({ tab, count }) {
       this.externalCounts[tab] = count

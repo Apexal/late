@@ -10,6 +10,10 @@
   "editor.formatOnSave": false,
   "editor.formatOnType": false,
   "vetur.format.defaultFormatter.js": "none",
+  "prettier.eslintIntegration": true,
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
+  "prettier.disableLanguages": [],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   }
