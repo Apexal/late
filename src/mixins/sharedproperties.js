@@ -1,3 +1,11 @@
+/**
+ * This is a global mixing that is added to EVERY component.
+ * This means that at any point in time (in a component)
+ * you can access the current logger in user, the user's courses,
+ * get a course from its CRN, etc.
+ *
+ * Check out https://vuejs.org/v2/guide/mixins.html for more detail.
+ */
 export default {
   computed: {
     loggedIn () {
@@ -20,6 +28,11 @@ export default {
     },
     rightNow () {
       return this.$store.state.now
+    }
+  },
+  methods: {
+    getCourseFromCRN (crn) {
+      return this.$store.getters.getCourseFromCRN(crn)
     }
   }
 }

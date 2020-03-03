@@ -59,7 +59,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1.title {
-  margin: 0;
-}
+
 </style>

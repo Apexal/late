@@ -2,10 +2,6 @@ module.exports = {
   devServer: {
     proxy: 'http://localhost:3000'
   },
-
-  baseUrl: undefined,
-  outputDir: undefined,
-  assetsDir: undefined,
   runtimeCompiler: undefined,
   productionSourceMap: false,
   parallel: undefined,
@@ -17,7 +13,7 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map'
   },
-  lintOnSave: 'error',
+  lintOnSave: 'warning',
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {

@@ -83,8 +83,8 @@ async function getTermExams (ctx) {
         { termCode },
         {
           date: {
-            $gte: term.start,
-            $lt: term.end
+            $gte: term.startDate,
+            $lt: term.endDate
           }
         }
       ]
@@ -130,8 +130,8 @@ async function createExam (ctx) {
   // Limit to this semester
   if (
     !moment(date).isBetween(
-      ctx.session.currentTerm.start,
-      ctx.session.currentTerm.end
+      ctx.session.currentTerm.startDate,
+      ctx.session.currentTerm.endDate
     )
   ) {
     logger.error(
@@ -194,8 +194,8 @@ async function editExam (ctx) {
   // Limit to this semester
   if (
     !moment(updates.date).isBetween(
-      ctx.session.currentTerm.start,
-      ctx.session.currentTerm.end
+      ctx.session.currentTerm.startDate,
+      ctx.session.currentTerm.endDate
     )
   ) {
     logger.error(

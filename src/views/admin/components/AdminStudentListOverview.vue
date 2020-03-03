@@ -150,9 +150,7 @@ export default {
   },
   methods: {
     async getStats () {
-      let request
-
-      request = await this.$http.get(`/students/${this.student._id}`, {
+      const request = await this.$http.get(`/students/${this.student._id}`, {
         params: { counts: true }
       })
       this.counts = request.data.counts

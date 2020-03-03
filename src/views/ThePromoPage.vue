@@ -341,7 +341,7 @@ export default {
   z-index: -1;
   background: url(/splash-bg.png);
   background-size: cover;
-  backround-repeat:no-repeat;
+  background-repeat:no-repeat;
   height: 100%;
   //filter: blur(5px);
 }

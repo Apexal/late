@@ -65,14 +65,7 @@ export default {
   margin-right: 3px;
 }
 
-.title {
-  padding-bottom: 0px;
-  padding-left: 0px;
-}
 .tab-nav {
   margin-bottom: 0;
-  .title {
-    margin: 0;
-  }
 }
 </style>

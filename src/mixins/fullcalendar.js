@@ -12,9 +12,18 @@ const element = (tag, properties) => {
 export default {
   methods: {
     eventRender ({ event, el, view }) {
+      if (event.extendedProps.eventType === 'course') {
+        // Prevent classes from showing up after the end of classes
+        if (moment(event.start).isAfter(moment(this.currentTerm.classesEndDate).endOf('day'))) {
+          return false
+        }
+      }
+
       if (event.rendering === 'background') return
 
-      const { eventType, assessment, course, period, block } = event.extendedProps
+      const duration = moment(event.end).diff(event.start, 'minutes')
+
+      const { eventType, assessment, course, todo, period, block } = event.extendedProps
 
       if (view.type === 'dayGridMonth') {
         if (
@@ -27,7 +36,18 @@ export default {
       }
 
       el.title = event.title
+      const addCornerIcon = (iconName) => {
+        const icon = document.createElement('i')
+        icon.className = 'fas ' + iconName
 
+        if (duration >= 80) {
+          icon.classList.add('corner'); el.append(icon)
+        } else {
+          el.querySelector('.fc-time').prepend(icon)
+        }
+
+        return icon
+      }
       const addIcon = (iconName, selector = '.fc-content', prepend = true) => {
         const icon = document.createElement('i')
         icon.className = 'fas ' + iconName
@@ -47,22 +67,21 @@ export default {
           )
         }
 
-        addIcon('fa-graduation-cap', '.fc-time')
+        addCornerIcon('fa-graduation-cap')
         if (period.location) {
           el.querySelector('.fc-content').append(element('i', { className: 'event-location', innerText: period.location }))
         }
       } else if (eventType === 'assignment') {
         addIcon('fa-clipboard-check')
-
         if (assessment.shared) addIcon('fa-users is-pulled-right')
       } else if (eventType === 'exam') {
         addIcon('fa-exclamation-triangle')
       } else if (eventType === 'unavailability') {
-        addIcon('fa-door-closed', '.fc-time')
+        addCornerIcon('fa-ban')
       } else if (eventType === 'academic-calendar-event') {
         addIcon('fa-info-circle')
         el.title = 'Click for full message.'
-      } else if (eventType === 'work-block') {
+      } else if (eventType === 'assessment-block') {
         el.title = `${
           assessment.assessmentType === 'assignment'
             ? 'Work on'
@@ -71,15 +90,15 @@ export default {
           block.location ? ' | ' + block.location : ''
         }`
 
-        addIcon(assessment.assessmentType ? 'fa-clipboard-check' : 'fa-exclamation-triangle', '.fc-time')
+        addCornerIcon(assessment.assessmentType ? 'fa-clipboard-check' : 'fa-exclamation-triangle')
 
         // --- DELETE BUTTON ---
-        const deleteButton = element('span', { className: 'delete remove-work-block', title: 'Unschedule' })
+        const deleteButton = element('span', { className: 'delete remove-assessment-block', title: 'Unschedule' })
         deleteButton.onclick = async ev => {
           ev.stopPropagation()
 
           const updatedAssessment = await this.$store.dispatch(
-            'REMOVE_WORK_BLOCK',
+            'REMOVE_ASSESSMENT_BLOCK',
             {
               assessment: assessment,
               blockID: block._id
@@ -118,7 +137,7 @@ export default {
             },
             onConfirm: async location => {
               const updatedAssessment = await this.$store.dispatch(
-                'EDIT_WORK_BLOCK',
+                'EDIT_ASSESSMENT_BLOCK',
                 {
                   assessment: assessment,
                   blockID: block._id,
@@ -139,6 +158,58 @@ export default {
         // --- SHARED ICON ---
         if (assessment.shared && block.shared) addIcon('fa-users margin-left', '.fc-title', false)
         // -------------------
+      } else if (eventType === 'course-block') {
+        el.title = `Study ${course.title}${
+          block.location ? ' | ' + block.location : ''
+        }`
+
+        addCornerIcon('fa-book-reader')
+
+        // --- DELETE BUTTON ---
+        const deleteButton = element('span', { className: 'delete remove-course-block', title: 'Unschedule' })
+        deleteButton.onclick = async ev => {
+          ev.stopPropagation()
+
+          const updatedCourse = await this.$store.dispatch(
+            'REMOVE_COURSE_BLOCK',
+            {
+              course,
+              blockID: block._id
+            }
+          )
+
+          this.$buefy.toast.open({
+            message: 'Unscheduled course block!',
+            type: 'is-primary'
+          })
+        }
+        el.querySelector('.fc-content').append(deleteButton)
+      } else if (eventType === 'todo-block') {
+        el.title = `${todo.text}${
+          block.location ? ' | ' + block.location : ''
+        }`
+
+        addCornerIcon('fa-check')
+
+        // --- DELETE BUTTON ---
+        const deleteButton = element('span', { className: 'delete remove-todo-block', title: 'Unschedule' })
+        deleteButton.onclick = async ev => {
+          ev.stopPropagation()
+
+          const updatedTodo = await this.$store.dispatch(
+            'REMOVE_TODO_BLOCK',
+            {
+              todo,
+              blockID: block._id
+            }
+          )
+
+          this.$buefy.toast.open({
+            message: 'Unscheduled todo block!',
+            type: 'is-primary'
+          })
+        }
+        el.querySelector('.fc-content').append(deleteButton)
       }
     },
     dateClick ({ date }) {

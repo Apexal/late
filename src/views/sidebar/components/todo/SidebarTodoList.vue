@@ -56,12 +56,10 @@
     </div>
     <div
       v-if="getIncompletedTodos().length === 0"
-      class="no-todo"
+      class="panel-block has-text-grey no-items"
     >
-      <i class="far fa-sticky-note no-todo-icon" />
-      <div class="panel-block has-text-grey-light no-hover">
-        No to-dos saved yet.
-      </div>
+      <i class="far fa-sticky-note no-items-icon" />
+      No to-dos saved yet.
     </div>
   </div>
 </template>
@@ -233,26 +231,6 @@ export default {
     .incomplete {
       text-decoration: line-through;
     }
-  }
-}
-
-.no-todo {
-  i {
-    width: 100%;
-    text-align: center;
-    font-size: 4em;
-    padding: 15px 0px 5px 0px;
-    display: block;
-    color: rgba(128, 128, 128, 0.5);
-
-    border-left: 1px solid #dbdbdb;
-    border-right: 1px solid #dbdbdb;
-  }
-
-  div {
-    display: block;
-    width: 100%;
-    text-align: center;
   }
 }
 </style>

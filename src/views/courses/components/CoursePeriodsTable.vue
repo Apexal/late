@@ -12,13 +12,13 @@
     <tbody>
       <tr
         v-for="p in periods"
-        :key="p.day + p.start"
+        :key="p.day + p.startTime"
       >
         <td>{{ day(p.day) }}</td>
         <td>
-          {{ time(p.start) }}
+          {{ time(p.startTime) }}
           <span class="has-text-grey-light">-</span>
-          {{ time(p.end) }}
+          {{ time(p.endTime) }}
         </td>
         <td>
           {{ p.location }}<a
@@ -50,7 +50,7 @@ export default {
       return this.$store.getters.roomIntoLocation(location)
     },
     time: t => {
-      const dt = moment(t, 'Hmm', true)
+      const dt = moment(t, 'HH:mm', true)
       if (dt.hours() === 12 && dt.minutes() === 0) {
         return 'Noon'
       } else if (dt.minutes() === 0) {

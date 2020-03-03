@@ -71,7 +71,7 @@ async function getStudents (ctx) {
   }
 
   const students = await Student.find(searchObject).sort('rcs_id').skip((page - 1) * itemsPerPage).limit(itemsPerPage)
-  const studentCount = await Student.count(searchObject)
+  const studentCount = await Student.countDocuments(searchObject)
   ctx.ok({ students, studentCount })
 }
 
@@ -105,12 +105,14 @@ function formSearchObject (str) {
   regexStr += '.*'
   const regex = new RegExp(regexStr, 'i')
 
-  return Object.assign({ $or: [
-    { 'name.first': regex },
-    { 'name.preferred': regex },
-    { 'name.last': regex },
-    { rcs_id: regex }
-  ] }, filter)
+  return Object.assign({
+    $or: [
+      { 'name.first': regex },
+      { 'name.preferred': regex },
+      { 'name.last': regex },
+      { rcs_id: regex }
+    ]
+  }, filter)
 }
 
 /**

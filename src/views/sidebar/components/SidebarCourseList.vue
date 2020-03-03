@@ -3,12 +3,10 @@
   <div class="sidebar-course-list">
     <div
       v-if="onBreak"
-      class="no-courses"
+      class="panel-block has-text-grey no-items"
     >
-      <i class="fas fa-umbrella-beach no-courses-icon" />
-      <div class="panel-block has-text-grey no-hover">
-        No courses over break!
-      </div>
+      <i class="fas fa-umbrella-beach no-items-icon" />
+      No courses over break!
     </div>
     <div
       v-else
@@ -82,25 +80,5 @@ export default {
   border-color: black;
   box-shadow: none !important;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-}
-
-.no-courses {
-  i {
-    width: 100%;
-    text-align: center;
-    font-size: 4em;
-    padding: 15px 0px 5px 0px;
-    display: block;
-    color: rgba(128, 128, 128, 0.5);
-
-    border-left: 1px solid #dbdbdb;
-    border-right: 1px solid #dbdbdb;
-  }
-
-  div {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
 }
 </style>
