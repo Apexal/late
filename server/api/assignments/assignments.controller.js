@@ -134,8 +134,8 @@ async function getTermAssignments (ctx) {
             { termCode },
             {
               dueDate: {
-                $gte: term.start,
-                $lt: term.end
+                $gte: term.startDate,
+                $lt: term.endDate
               }
             }
           ]
@@ -279,7 +279,7 @@ async function createAssignment (ctx) {
 
   // Limit to this semester
   if (
-    !due.isBetween(ctx.session.currentTerm.start, ctx.session.currentTerm.end)
+    !due.isBetween(ctx.session.currentTerm.startDate, ctx.session.currentTerm.endDate)
   ) {
     logger.error(
       `${
@@ -303,7 +303,7 @@ async function createAssignment (ctx) {
   }
   const newAssignment = new Assignment(assignmentData)
 
-  // AUTO WORK-BLOCK ALLOCATION
+  // AUTO assessment-block ALLOCATION
   // const openSchedule = compileWeeklyOpenSchedule(
   //   ctx.session.currentTerm,
   //   ctx.state.user
@@ -359,7 +359,7 @@ async function createAssignment (ctx) {
         }
 
         // For day of week of actual assignment
-        while (nextFirst.isBefore(ctx.session.currentTerm.classesEnd)) {
+        while (nextFirst.isBefore(ctx.session.currentTerm.classesEndDate)) {
           const recurringAssignment = new Assignment({
             ...assignmentData,
             _recurringOriginal: newAssignment._id,
@@ -444,8 +444,8 @@ async function editAssignment (ctx) {
   // Limit to this semester
   if (
     !moment(updates.dueDate).isBetween(
-      ctx.session.currentTerm.start,
-      ctx.session.currentTerm.end
+      ctx.session.currentTerm.startDate,
+      ctx.session.currentTerm.endDate
     )
   ) {
     logger.error(

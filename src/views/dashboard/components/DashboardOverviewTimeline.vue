@@ -16,7 +16,7 @@
         class="timeline-item"
         :class="timelineItemClass(event)"
       >
-        <template v-if="event.eventType === 'work-block'">
+        <template v-if="event.eventType === 'assessment-block'">
           <router-link
             tag="div"
             class="timeline-marker is-icon"
@@ -49,7 +49,7 @@
             {{ timeFormat(event.start) }} to {{ timeFormat(event.end) }}
           </p>
           <p>
-            <template v-if="event.eventType === 'work-block'">
+            <template v-if="event.eventType === 'assessment-block'">
               {{
                 event.assessment.assessmentType === "assignment"
                   ? "Work on"
@@ -153,14 +153,14 @@ export default {
     timelineItemTitle (event) {
       if (event.eventType === 'period') {
         return `${event.course.title} ${this.periodType(event.period.type)}`
-      } else if (event.eventType === 'work-block') {
+      } else if (event.eventType === 'assessment-block') {
         return `${event.course.title} ${event.assessment.assessmentType}`
       }
     },
     markerIcon (event) {
       if (event.eventType === 'period') {
         return 'fa-graduation-cap'
-      } else if (event.eventType === 'work-block') {
+      } else if (event.eventType === 'assessment-block') {
         return 'fa-clipboard-check'
       }
 

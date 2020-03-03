@@ -30,5 +30,7 @@ export default [
   'moist',
   'dank',
   'zany',
-  'squishy'
+  'squishy',
+  'exquisite',
+  'large'
 ]

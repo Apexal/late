@@ -269,7 +269,9 @@ export default {
         })
         return
       }
-
+      if (this.$store.state.assessments.upcomingAssessments.find(assessment => assessment.title === this.title && assessment.courseCRN === this.courseCRN && moment(assessment.dueDate).isSame(this.dueDate, 'day'))) {
+        alert('You\'ve already added this assignment!')
+      }
       let request
       try {
         request = await this.$http.post('/assignments', {

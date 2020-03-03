@@ -3,25 +3,21 @@
   <div class="sidebar-schedule">
     <div
       v-if="onBreak"
-      class="no-classes"
+      class="no-items panel-block has-text-grey"
     >
-      <i class="fas fa-umbrella-beach no-classes-icon" />
-      <div class="panel-block has-text-grey no-hover">
-        <span v-if="!nextTerm">No courses over break!</span>
-        <span v-else>
-          {{ daysUntilNextTerm }} days left of break until
-          {{ nextTerm.name }}!
-        </span>
-      </div>
+      <i class="fas fa-umbrella-beach no-items-icon" />
+      <span v-if="!nextTerm">No courses over break!</span>
+      <span v-else>
+        {{ daysUntilNextTerm }} days left of break until
+        {{ nextTerm.name }}!
+      </span>
     </div>
     <div
       v-else-if="!setup"
-      class="no-classes"
+      class="no-items panel-block has-text-grey"
     >
-      <i class="far fa-frown no-classes-icon" />
-      <div class="panel-block has-text-grey no-hover">
-        You have not set your course schedule yet!
-      </div>
+      <i class="far fa-frown no-items-icon" />
+      You have not set your course schedule yet!
     </div>
     <div
       v-else
@@ -29,17 +25,15 @@
     >
       <div
         v-if="filteredTodaysAgenda.length === 0"
-        class="no-classes"
+        class="no-items panel-block has-text-grey"
       >
-        <i class="far fa-calendar-check no-classes-icon" />
-        <div class="panel-block has-text-grey">
-          Nothing scheduled for the
-          {{
-            todaysAgenda.length === filteredTodaysAgenda.length
-              ? ""
-              : "rest of the "
-          }}day!
-        </div>
+        <i class="far fa-calendar-check no-items-icon" />
+        Nothing scheduled for the
+        {{
+          todaysAgenda.length === filteredTodaysAgenda.length
+            ? ""
+            : "rest of the "
+        }}day!
       </div>
       <div
         v-for="event in filteredTodaysAgenda"
@@ -68,7 +62,7 @@
             <b class="period-title">{{ event.course.title }}</b>
             <span class="has-text-grey">{{ periodType(event.period.type) }}</span>
           </template>
-          <template v-else-if="event.eventType === 'work-block'">
+          <template v-else-if="event.eventType === 'assessment-block'">
             <span>
               {{
                 event.assessmentType === "assignment"
@@ -90,11 +84,12 @@
     </div>
     <div
       v-if="!onBreak && setup"
-      class="panel-block has-background-light has-text-centered no-hover"
+      class="panel-block has-background-light has-text-centered"
     >
       <b-button
         :class="{'is-active': showPassed}"
         class="is-fullwidth showPassedButton"
+        :disabled="filteredTodaysAgenda.length === 0"
         @click="showPassed = !showPassed"
       >
         <i
@@ -106,7 +101,7 @@
     </div>
     <div
       v-if="!onBreak && !setup"
-      class="panel-block has-background-light has-text-centered no-hover"
+      class="panel-block has-background-light has-text-centered"
     >
       <router-link
         class="button is-secondary is-fullwidth showPassedButton"
@@ -191,13 +186,13 @@ export default {
       if (event.link) this.$router.push(event.link)
     },
     fromNow (datetime) {
-      const time = moment(datetime, 'Hmm', true)
+      const time = moment(datetime, 'HH:mm', true)
       return `${time.isBefore(this.rightNow) ? 'Started' : 'Starting'} ${time.from(
         this.rightNow
       )}`
     },
     hasPassed (datetime) {
-      return datetime.isBefore(this.rightNow)
+      return moment(datetime).isBefore(this.rightNow)
     },
     isCurrentEvent (event) {
       return moment(this.rightNow).isBetween(event.start, event.end)
@@ -245,27 +240,5 @@ export default {
 
 .show-passed-icon {
   margin-right: 5px;
-}
-
-.no-classes i {
-  width: 100%;
-  text-align: center;
-  font-size: 4em;
-  padding: 15px 0px 5px 0px;
-  display: block;
-  color: rgba(128, 128, 128, 0.5);
-
-  border-left: 1px solid #dbdbdb;
-  border-right: 1px solid #dbdbdb;
-}
-
-.no-classes div {
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-
-.no-classes div:hover {
-  background-color: inherit !important;
 }
 </style>

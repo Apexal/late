@@ -3,11 +3,12 @@
   <b-modal
     class="course-modal"
     :active="open"
-    :width="800"
     @close="$store.commit('CLOSE_COURSE_MODAL')"
   >
-    <div class="modal-content">
-      <div class="box">
+    <div
+      class="card"
+    >
+      <div class="card-content">
         <router-link
           title="Edit course info and links"
           :to="{name: 'setup-course-schedule'}"
@@ -149,6 +150,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.card {
+  border-radius: 6px;
+}
+
 div.tabs.is-centered {
   margin-bottom: 12px;
 }

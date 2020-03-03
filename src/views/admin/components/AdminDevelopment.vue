@@ -95,7 +95,7 @@ export default {
 
       const generatedAssessments = response.data.generatedAssessments
       // Add upcoming ones to Vuex
-      for (let assessment of generatedAssessments) {
+      for (const assessment of generatedAssessments) {
         if (
           moment(assessment.date).isSameOrAfter(moment().startOf('day'))
         ) {

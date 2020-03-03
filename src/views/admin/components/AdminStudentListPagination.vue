@@ -42,9 +42,11 @@
 export default {
 
   name: 'AdminStudentListPagination',
-  props: { totalItems: { type: Number, required: true },
+  props: {
+    totalItems: { type: Number, required: true },
     perPage: { type: Number, required: true },
-    currentPage: { type: Number, required: true } },
+    currentPage: { type: Number, required: true }
+  },
   data () {
     return {}
   },

@@ -13,6 +13,7 @@ const {
 } = require('../../modules/scraping')
 
 const colorThemes = require('../../modules/color_themes')
+const directory = require('../../modules/directory')
 
 const randomColor = require('randomcolor')
 
@@ -24,8 +25,8 @@ const generateOtherCourse = (user, term) => ({
   sectionId: 0,
   originalTitle: 'Other',
   title: 'Other',
-  startDate: term.start,
-  endDate: term.end,
+  startDate: term.startDate,
+  endDate: term.endDate,
   summary: 'OTHER',
   termCode: term.code,
   crn: '00000',
@@ -51,7 +52,7 @@ async function updateCourses (studentID, termCode, newCourses) {
       _student: studentID,
       termCode,
       crn: course.crn
-    })
+    }).populate('_blocks')
 
     if (courseDoc) {
       Object.assign(courseDoc, {
@@ -90,12 +91,12 @@ async function setAllFromSIS (ctx) {
   ctx.state.user.terms = registeredTermCodes
   ctx.state.user.setup.terms = true
 
-  const profileInfo = await scrapeSISForProfileInfo(rin, pin)
+  const profileInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
   if (!ctx.state.user.name.first) {
     ctx.state.user.name.first = profileInfo.name.first
   }
   if (!ctx.state.user.name.last) {
-    ctx.state.user.name.first = profileInfo.name.last
+    ctx.state.user.name.last = profileInfo.name.last
   }
   if (!ctx.state.user.major) {
     ctx.state.user.major = profileInfo.major
@@ -200,7 +201,7 @@ async function setProfile (ctx) {
     const { rin, pin } = body
 
     // Grab as much info as possible from SIS
-    const scrapedInfo = await scrapeSISForProfileInfo(rin, pin)
+    const scrapedInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
     ctx.state.user.set(scrapedInfo)
   } else {
     return ctx.badRequest('Invalid method.')
@@ -275,16 +276,22 @@ async function setTerms (ctx) {
  */
 async function importCourseSchedule (ctx) {
   const body = ctx.request.body
-  const termCode = ctx.session.currentTerm.code
+  const termCode = ctx.session.currentTerm ? ctx.session.currentTerm.code : ctx.query.termCode
 
-  logger.info(`Setting schedule info for ${ctx.state.user.identifier}`)
+  const targetTerm = await Term.findOne({ code: termCode })
+  if (!targetTerm) {
+    logger.error(`Failed to find term ${termCode}`)
+    return ctx.notFound(`Term with code '${termCode}' not found.`)
+  }
+
+  logger.info(`Setting schedule info for term  ${ctx.state.user.identifier}`)
 
   let courseSchedule = []
   try {
     courseSchedule = await scrapeSISForCourseSchedule(
       body.rin,
       body.pin,
-      ctx.session.currentTerm,
+      targetTerm,
       ctx.state.user._id
     )
   } catch (e) {
@@ -307,15 +314,15 @@ async function importCourseSchedule (ctx) {
   }
 
   // "Other" course
-  courseSchedule.push(generateOtherCourse(ctx.state.user, ctx.session.currentTerm))
+  courseSchedule.push(generateOtherCourse(ctx.state.user, targetTerm))
 
   // If reimporting, only update sectionId, start/end dates, credits, and periods
-  await updateCourses(ctx.state.user._id, ctx.session.currentTerm.code, courseSchedule)
+  await updateCourses(ctx.state.user._id, targetTerm.code, courseSchedule)
 
-  ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code)
+  ctx.state.user.setup.course_schedule.push(targetTerm.code)
   ctx.state.user.lastSISUpdate = new Date()
 
-  const courses = await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code)
+  const courses = await ctx.state.user.getCoursesForTerm(targetTerm.code)
 
   // Handle GCal
   if (ctx.state.user.integrations.google.calendarID) {
@@ -345,7 +352,7 @@ async function addCourseByCRN (ctx) {
   const { rin, pin } = ctx.request.body
 
   // First make sure that the student hasn't already added this course
-  const existingCourse = await Course.findOne({ _student: ctx.state.user._id, crn })
+  const existingCourse = await Course.findOne({ _student: ctx.state.user._id, crn }).populate('_blocks')
   if (existingCourse) {
     return ctx.badRequest('You already have added that course!')
   }

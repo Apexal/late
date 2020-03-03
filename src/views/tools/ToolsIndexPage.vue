@@ -184,14 +184,6 @@ export default {
   opacity: 0.3;
 }
 
-.title:not(p) {
-  padding-bottom: 0px;
-  padding-left: 0px;
-  border-bottom-color: #dbdbdb;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-
 .help {
   display: none !important;
   width: 0px !important;

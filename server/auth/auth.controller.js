@@ -6,6 +6,8 @@ const Student = require('../api/students/students.model')
 const cas = require('../modules/cas')
 const google = require('../modules/google')
 
+const { getNameAndMajor } = require('../modules/directory')
+
 const { sendDiscordWebhookMessage } = require('../modules/webhooks')
 
 const { sendNewUserEmail } = require('../integrations/email')
@@ -45,6 +47,19 @@ async function loginStudent (ctx) {
       rcs_id: ctx.session.cas_user,
       accountLocked: true // WAIT LIST
     })
+
+    try {
+      const directoryData = await getNameAndMajor(ctx.session.cas_user)
+      if (directoryData.name.first && directoryData.name.last) {
+        student.name = directoryData.name
+      }
+      if (directoryData.major) {
+        student.major = directoryData.major
+      }
+    } catch (e) {
+      // Couldn't get name and major from directory
+    }
+
     /*
     logger.info(
       `Creating and logging in new student with rcs_id: ${student.rcs_id}`

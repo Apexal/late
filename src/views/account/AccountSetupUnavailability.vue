@@ -92,7 +92,7 @@
         time-format="h(:mm)t"
         :now-indicator="true"
         :event-render="eventRender"
-        :default-date="courses[0].startDate"
+        :default-date="courses.length > 0 ? courses[0].startDate : new Date()"
         @eventResize="eventChanged"
         @eventDrop="eventChanged"
         @eventClick="eventClick"
@@ -107,6 +107,14 @@
         @click="saveTimePreferencesAndContinue"
       >
         {{ saved ? '' : 'Save and ' }}Continue
+      </b-button>
+      <b-button
+        type="is-danger"
+        :leading="loading"
+        class="is-pulled-right margin-right"
+        @click="clearAllUnavailabilities"
+      >
+        Clear All
       </b-button>
     </template>
   </div>
@@ -283,7 +291,8 @@ export default {
       try {
         await this.$store.dispatch(
           'UPDATE_UNAVAILABILITY',
-          { unavailabilityID: unavailability.id,
+          {
+            unavailabilityID: unavailability.id,
             updates: {
               startTime: moment(unavailability.start).format('HH:mm'),
               endTime: moment(unavailability.end).format('HH:mm'),
@@ -337,10 +346,26 @@ export default {
       this.$router.push({ name: 'setup-integrations' })
       this.loading = false
       this.saved = true
+    },
+    async clearAllUnavailabilities () {
+      let request
+      try {
+        request = await this.$http.delete('/unavailabilities/clear')
+        this.$store.commit('SET_UNAVAILABILITIES', [])
+      } catch (e) {
+        this.loading = false
+        this.$buefy.toast.open({
+          type: 'is-danger',
+          message: e.response.data.message
+        })
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.margin-right {
+  margin-right: 1.5em;
+}
 </style>

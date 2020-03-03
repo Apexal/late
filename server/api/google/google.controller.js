@@ -19,13 +19,17 @@ async function createCourseSchedule (ctx) {
 
   if (courses.length === 0) return ctx.badRequest('You have no courses for term ' + termCode)
 
-  await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarID, termCode, courses)
+  try {
+    await google.actions.createRecurringEventsFromCourseSchedule(ctx.state.googleAuth, ctx.state.user.integrations.google.calendarID, termCode, courses)
 
-  logger.info(
-    `Created recurring GCAL events for term ${termCode} for ${
-      ctx.state.user.rcs_id
-    }`
-  )
+    logger.info(
+      `Created recurring GCAL events for term ${termCode} for ${
+        ctx.state.user.identifier
+      }`
+    )
+  } catch (e) {
+    logger.error(`Failed to create GCal events for ${ctx.state.user.identifier}: ${e}`)
+  }
 
   ctx.ok({
     message: 'Successfully made GCal events.'

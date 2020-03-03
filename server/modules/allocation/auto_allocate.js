@@ -29,8 +29,8 @@ function compileWeeklyOpenSchedule (currentTerm, student) {
     .map(c => c.periods)
     .flat()
     .map(p => ({
-      start: moment(p.start, 'Hmm', true).format('HH:mm'),
-      end: moment(p.end, 'Hmm', true)
+      start: moment(p.start, 'HH:mm', true).format('HH:mm'),
+      end: moment(p.end, 'HH:mm', true)
         .add(10, 'minutes') // We add ten minutes because classes end 10 to the hour
         .format('HH:mm'),
       day: p.day
