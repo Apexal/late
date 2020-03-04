@@ -61,7 +61,7 @@
           style="max-width:800px;margin:0 auto;"
         >
           <b>LATE</b> is an open-source academic hub, planner, and coordinator, designed for RPI students. Launching in
-          <b>Fall 2019.</b>
+          <b>Summer 2020.</b>
         </p>
 
         <p class="has-text-centered">
