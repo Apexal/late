@@ -28,6 +28,9 @@ export default {
         newVal
       )
     }
+  },
+  mounted () {
+    console.log(this.$store.state)
   }
 }
 </script>

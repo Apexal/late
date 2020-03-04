@@ -374,8 +374,10 @@ export default {
         }
       })
     },
+    getDifferenceInDays (startDate, endDate) {
+      return parseInt(Math.abs(endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24))
+    },
     autoAssign () {
-      console.log(this.$store)
       /*
       to consider:
        - Unavailability this.$store.state.unavailability.unavailabilities []
@@ -388,12 +390,20 @@ export default {
       const assessments = this.$store.state.assessments.upcomingAssessments
 
       // find latest due date
-      const latest = Math.max(...assessments.map(object => {
-        return (new Date().getTime() - object.dueDate) / (1000 * 3600 * 24)
+      const currentDate = new Date()
+      const latest = Math.max(...assessments.map(assessment => {
+        return this.getDifferenceInDays(currentDate, new Date(assessment.dueDate))
       }))
 
-      // create a new day reprsentation in a table.
-      let dayTable = new Array(latest)
+      // create a new day reprsentation in a table
+      const dayTable = []
+      for (let i = 0; i < latest; i++) {
+        dayTable.push([])
+      }
+
+      for (let i = 0; i < assessments.length; i++) {
+        // dayTable[this.getDifferenceInDays(currentDate, new Date(assessments[i].dueDate))]
+      }
     }
   }
 }
