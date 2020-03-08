@@ -65,7 +65,6 @@
         :show-completed="showCompleted"
         :show-scheduled="showScheduled"
         :filter="hiddenCourseCRNs"
-        @toggle-assignment="toggleAssignment"
       />
     </transition>
     <hr>
@@ -190,34 +189,6 @@ export default {
     }
   },
   methods: {
-    async toggleAssignment (assignment) {
-      try {
-        const toggledAssignment = await this.$store.dispatch(
-          'TOGGLE_ASSIGNMENT',
-          assignment
-        )
-
-        this.$buefy.snackbar.open({
-          message: `Marked '${toggledAssignment.title}' as ${
-            toggledAssignment.completed ? 'complete' : 'incomplete'
-          }!`,
-          type: 'is-primary',
-          position: 'is-bottom',
-          actionText: 'View',
-          onAction: () => {
-            this.$router.push({
-              name: 'assignment-overview',
-              params: { assignmentID: assignment._id }
-            })
-          }
-        })
-      } catch (e) {
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-      }
-    },
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN)
     },
