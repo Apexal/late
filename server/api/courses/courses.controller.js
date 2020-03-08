@@ -43,6 +43,7 @@ async function getUniqueCourses (ctx) {
       }, {
         $group: {
           _id: '$summary',
+          title: { $first: '$originalTitle' },
           links: {
             $addToSet: '$links'
           },

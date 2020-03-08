@@ -10,7 +10,7 @@
         :key="course._id"
         class="box"
       >
-        {{ course._id }}
+        {{ course._id }} - {{ course.title }}
       </div>
     </div>
   </div>
