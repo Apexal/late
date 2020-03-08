@@ -207,8 +207,11 @@ export default {
   },
   watch: {
     'assignment.tasks' (tasks) {
-      if (tasks.filter(t => t.completed).length === this.assignment.tasks.length && this.assignment.completed === false) {
-        this.$emit('toggle-completed')
+      // If there are tasks, and they are now all completed, prompt the user to toggle the assignment
+      if (tasks.length > 0) {
+        if (tasks.filter(t => t.completed).length === this.assignment.tasks.length && this.assignment.completed === false) {
+          this.$emit('toggle-completed')
+        }
       }
     }
   },
