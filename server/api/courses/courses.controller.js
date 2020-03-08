@@ -16,34 +16,44 @@ async function getCourses (ctx) {
 }
 
 async function getUniqueCourses (ctx) {
-  let { termCode } = ctx.request.query
+  let { termCode, courseSummary } = ctx.request.query
 
   if (!termCode) termCode = ctx.session.currentTerm.code
 
-  const data = await Course.aggregate([
+  const $match = {
+    termCode
+  }
+
+  if (courseSummary) $match.summary = courseSummary
+
+  const data = await Course.aggregate(
     [
       {
-        $match: {
-          termCode
-        }
+        $match
       }, {
         $unwind: {
           path: '$crn',
-          preserveNullAndEmptyArrays: false
+          preserveNullAndEmptyArrays: true
+        }
+      }, {
+        $unwind: {
+          path: '$links',
+          preserveNullAndEmptyArrays: true
         }
       }, {
         $group: {
           _id: '$summary',
+          links: {
+            $addToSet: '$links'
+          },
           sections: {
             $addToSet: '$crn'
           },
-          total: {
-            $sum: 1
-          }
+          count: { $sum: 1 }
         }
       }
     ]
-  ])
+  )
 
   return ctx.ok(data)
 }

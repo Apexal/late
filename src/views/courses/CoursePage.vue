@@ -1,14 +1,79 @@
 <template>
-  <div class="course-page">
+  <section class="section course-page">
     <h1 class="title">
-      Course
+      {{ courseSummary }} {{ term.name }}
     </h1>
-  </div>
+    <h2 class="subtitle">
+      Your peers are in {{ courseGroup.count }} sections
+    </h2>
+
+    <div class="columns">
+      <div class="column course-links">
+        <div class="box">
+          <h2 class="subtitle">
+            Links
+          </h2>
+          <ul>
+            <li
+              v-for="link in courseGroup.links"
+              :key="link.url"
+            >
+              <a :href="link.url">{{ link.name }}</a>
+              <span class="icon">
+                <i class="fas fa-plus" />
+              </span>
+              <br>
+              <span>{{ link.url }}</span>
+            </li>
+
+            <p
+              v-if="courseGroup.links.length === 0"
+              class="has-text-grey"
+            >
+              Nobody has submitted links for this course yet.
+            </p>
+          </ul>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="box">
+          <h2 class="subtitle">
+            Study Groups
+          </h2>
+          <p class="has-text-grey">
+            Coming soon...
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
 export default {
-  name: 'CoursePage'
+  name: 'CoursePage',
+  data () {
+    return {
+      courseGroup: {}
+    }
+  },
+  computed: {
+    termCode () {
+      return this.$route.params.termCode
+    },
+    term () {
+      return this.$store.state.schedule.terms.find(term => term.code === this.termCode)
+    },
+    courseSummary () {
+      return this.$route.params.courseSummary.replace('-', ' ')
+    }
+  },
+  async mounted () {
+    const response = await this.$http.get('/courses/unique', { params: { termCode: this.termCode, courseSummary: this.courseSummary } })
+
+    this.courseGroup = response.data[0]
+  }
 }
 </script>
 

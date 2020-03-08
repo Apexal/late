@@ -199,6 +199,16 @@ const router = new Router({
       }
     },
     {
+      path: '/courses/:courseSummary/:termCode',
+      name: 'course',
+      component: () => import('@/views/courses/CoursePage.vue'),
+      meta: {
+        title: 'Course',
+        cantViewOnBreak: true,
+        requiresAuth: true
+      }
+    },
+    {
       path: '/coursework',
       component: () => import('@/views/assessments/AssessmentsPage.vue'),
       meta: {
