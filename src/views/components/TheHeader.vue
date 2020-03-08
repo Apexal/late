@@ -109,7 +109,7 @@
                 <span class="icon">
                   <i class="fas fa-graduation-cap" />
                 </span>
-                <span>Coursework</span>
+                <span>Your Coursework</span>
               </router-link>
 
               <div class="navbar-dropdown">
@@ -157,6 +157,17 @@
                 </a>
               </div>
             </div>
+
+            <router-link
+              class="navbar-item"
+              :to="{name: 'courses'}"
+              title="Backwork, study groups, and more"
+            >
+              <span class="icon">
+                <i class="fas fa-chalkboard-teacher" />
+              </span>
+              <span>Courses</span>
+            </router-link>
           </template>
           <template v-else>
             <router-link
