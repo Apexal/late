@@ -189,6 +189,16 @@ const router = new Router({
       component: () => import('@/views/TheAboutPage.vue')
     },
     {
+      path: '/courses',
+      name: 'courses',
+      component: () => import('@/views/courses/CoursesHome.vue'),
+      meta: {
+        title: 'Courses',
+        cantViewOnBreak: true,
+        requiresAuth: true
+      }
+    },
+    {
       path: '/coursework',
       component: () => import('@/views/assessments/AssessmentsPage.vue'),
       meta: {
