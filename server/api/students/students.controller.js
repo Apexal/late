@@ -19,23 +19,24 @@ async function loginAs (ctx) {
   }
 
   const rcsID = ctx.request.query.rcs_id
-  ctx.session.cas_user = rcsID
+
   logger.info(`Logging in as ${rcsID}`)
 
   let student = await Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
+    .byUsername(rcsID)
     .exec()
 
   if (!student) {
     student = Student({
-      rcs_id: ctx.session.cas_user,
+      rcs_id: rcsID,
       lastLogin: new Date(),
       admin: true // Users on the dev server will only be admins
     })
     await student.save()
     logger.info('Created new user for testing.')
   }
-  ctx.state.user = student
+
+  await ctx.login(student)
 
   await getUser(ctx)
 }

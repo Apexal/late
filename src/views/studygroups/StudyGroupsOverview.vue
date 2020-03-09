@@ -94,7 +94,7 @@ export default {
   },
   computed: {
     groupID () {
-      return this.$route.params['groupID']
+      return this.$route.params.groupID
     }
   },
   created () {
