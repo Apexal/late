@@ -23,7 +23,7 @@ module.exports = router => {
     async function (ctx, next) {
       if (
         exceptions.every(url => !ctx.request.url.startsWith('/api' + url)) &&
-        !ctx.session.cas_user
+        ctx.isUnauthenticated()
       ) {
         return ctx.unauthorized('You must be logged in to use the API.')
       }
