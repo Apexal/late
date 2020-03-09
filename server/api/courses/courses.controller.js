@@ -16,14 +16,10 @@ async function getCourses (ctx) {
 }
 
 async function getUniqueCourses (ctx) {
-  let { termCode, courseSummary } = ctx.request.query
+  const { termCode, courseSummary } = ctx.request.query
 
-  if (!termCode) termCode = ctx.session.currentTerm.code
-
-  const $match = {
-    termCode
-  }
-
+  const $match = {}
+  if (termCode) $match.termCode = termCode
   if (courseSummary) $match.summary = courseSummary
 
   const data = await Course.aggregate(
@@ -49,6 +45,9 @@ async function getUniqueCourses (ctx) {
           },
           sections: {
             $addToSet: '$crn'
+          },
+          terms: {
+            $addToSet: '$termCode'
           },
           count: { $sum: 1 }
         }

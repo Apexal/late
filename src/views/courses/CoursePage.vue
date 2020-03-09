@@ -9,20 +9,13 @@
       aria-label="breadcrumbs"
     >
       <ul>
-        <li>
-          <a href="#">Bulma</a>
-        </li>
-        <li>
-          <a href="#">Documentation</a>
-        </li>
-        <li>
-          <a href="#">Components</a>
-        </li>
-        <li class="is-active">
-          <a
-            href="#"
-            aria-current="page"
-          >Breadcrumb</a>
+        <li
+          v-for="t in courseTerms"
+          :key="t.code"
+        >
+          <router-link :to="{name: 'course-term', params: {termCode: t.code}}">
+            {{ t.name }}
+          </router-link>
         </li>
       </ul>
     </nav>
@@ -36,22 +29,24 @@ export default {
   name: 'CoursePage',
   data () {
     return {
-      courseGroup: {}
+      courseGroup: {
+        summary: '',
+        title: '',
+        terms: [],
+        links: []
+      }
     }
   },
   computed: {
-    termCode () {
-      return this.$route.params.termCode
-    },
-    term () {
-      return this.$store.state.schedule.terms.find(term => term.code === this.termCode)
+    courseTerms () {
+      return this.courseGroup.terms.map(termCode => this.$store.state.schedule.terms.find(term => term.code === termCode))
     },
     courseSummary () {
       return this.$route.params.courseSummary.replace('-', ' ')
     }
   },
   async mounted () {
-    const response = await this.$http.get('/courses/unique', { params: { termCode: this.termCode, courseSummary: this.courseSummary } })
+    const response = await this.$http.get('/courses/unique', { params: { courseSummary: this.courseSummary } })
 
     this.courseGroup = response.data[0]
   }

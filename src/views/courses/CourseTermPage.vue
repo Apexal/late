@@ -55,7 +55,12 @@ export default {
   name: 'CoursePage',
   data () {
     return {
-      courseGroup: {}
+      courseGroup: {
+        summary: '',
+        title: '',
+        terms: [],
+        links: []
+      }
     }
   },
   computed: {
@@ -69,10 +74,20 @@ export default {
       return this.$route.params.courseSummary.replace('-', ' ')
     }
   },
+  watch: {
+    termCode (newTermCode) {
+      this.getCourseGroup(newTermCode)
+    }
+  },
   async mounted () {
-    const response = await this.$http.get('/courses/unique', { params: { termCode: this.termCode, courseSummary: this.courseSummary } })
+    await this.getCourseGroup(this.termCode)
+  },
+  methods: {
+    async getCourseGroup (termCode) {
+      const response = await this.$http.get('/courses/unique', { params: { termCode, courseSummary: this.courseSummary } })
 
-    this.courseGroup = response.data[0]
+      this.courseGroup = response.data[0]
+    }
   }
 }
 </script>

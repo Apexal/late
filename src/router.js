@@ -155,14 +155,14 @@ const router = new Router({
           path: 'join',
           name: 'study-groups-join',
           component: () => import('@/views/studygroups/StudyGroupsJoin')
+        },
+        {
+          path: ':groupID',
+          name: 'study-groups-overview',
+          component: () =>
+            import('@/views/studygroups/StudyGroupsOverview')
         }
       ]
-    },
-    {
-      path: ':groupID',
-      name: 'study-groups-overview',
-      component: () =>
-        import('@/views/studygroups/StudyGroupsOverview')
     },
     {
       path: '/checklist',
