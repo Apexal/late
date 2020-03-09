@@ -116,7 +116,7 @@ export default {
   methods: {
     addAnswer () {
       if (!this.currentAnswer) return // do nothing if input is empty
-      let answer = { value: this.currentID++, text: this.currentAnswer, votes: 0 }
+      const answer = { value: this.currentID++, text: this.currentAnswer, votes: 0 }
 
       this.options.answers.push(answer)
 
@@ -145,7 +145,7 @@ export default {
       }
 
       // updates the AdminPollViewer component by ref
-      this.$refs['adminViewer'].getPolls()
+      this.$refs.adminViewer.getPolls()
     }
   }
 }

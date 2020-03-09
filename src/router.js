@@ -199,14 +199,16 @@ const router = new Router({
       }
     },
     {
-      path: '/courses/:courseSummary/:termCode',
+      path: '/courses/:courseSummary',
       name: 'course',
       component: () => import('@/views/courses/CoursePage.vue'),
-      meta: {
-        title: 'Course',
-        cantViewOnBreak: true,
-        requiresAuth: true
-      }
+      children: [
+        {
+          path: ':termCode',
+          name: 'course-term',
+          component: () => import('@/views/courses/CourseTermPage.vue')
+        }
+      ]
     },
     {
       path: '/coursework',

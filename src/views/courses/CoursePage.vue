@@ -1,52 +1,33 @@
 <template>
   <section class="section course-page">
     <h1 class="title">
-      {{ courseSummary }} {{ term.name }}
+      {{ courseSummary }} - {{ courseGroup.title }}
     </h1>
-    <h2 class="subtitle">
-      Your peers are in {{ courseGroup.count }} sections
-    </h2>
 
-    <div class="columns">
-      <div class="column course-links">
-        <div class="box">
-          <h2 class="subtitle">
-            Links
-          </h2>
-          <ul>
-            <li
-              v-for="link in courseGroup.links"
-              :key="link.url"
-            >
-              <a :href="link.url">{{ link.name }}</a>
-              <span class="icon">
-                <i class="fas fa-plus" />
-              </span>
-              <br>
-              <span>{{ link.url }}</span>
-            </li>
+    <nav
+      class="breadcrumb"
+      aria-label="breadcrumbs"
+    >
+      <ul>
+        <li>
+          <a href="#">Bulma</a>
+        </li>
+        <li>
+          <a href="#">Documentation</a>
+        </li>
+        <li>
+          <a href="#">Components</a>
+        </li>
+        <li class="is-active">
+          <a
+            href="#"
+            aria-current="page"
+          >Breadcrumb</a>
+        </li>
+      </ul>
+    </nav>
 
-            <p
-              v-if="courseGroup.links.length === 0"
-              class="has-text-grey"
-            >
-              Nobody has submitted links for this course yet.
-            </p>
-          </ul>
-        </div>
-      </div>
-
-      <div class="column">
-        <div class="box">
-          <h2 class="subtitle">
-            Study Groups
-          </h2>
-          <p class="has-text-grey">
-            Coming soon...
-          </p>
-        </div>
-      </div>
-    </div>
+    <router-view />
   </section>
 </template>
 
@@ -78,5 +59,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>
