@@ -103,7 +103,7 @@ import SISMan from '@/views/sisman/components/SISMan'
 import account from '@/mixins/account'
 
 import Konami from 'konami'
-import reverse from '@/modules/konami'
+// import reverse from '@/modules/konami'
 
 export default {
   name: 'LATE',
@@ -223,7 +223,7 @@ export default {
     }
 
     const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
-    reverse.addReverse()
+    // reverse.addReverse()
     console.log(this.sistext)
     console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px')
   },
