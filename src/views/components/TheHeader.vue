@@ -170,7 +170,7 @@
               <span>About</span>
             </router-link>
           </template>
-          <div
+          <!-- <div
             class="navbar-item has-dropdown is-hoverable toolsDropdown"
           >
             <router-link
@@ -228,7 +228,7 @@
                 Study Groups
               </router-link>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="navbar-end">
