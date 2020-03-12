@@ -7,7 +7,7 @@
       :open="editing"
       :initial-assignment="assessment"
       @toggle-modal="editing = !editing"
-      @edit-assignment="updatedAssessment"
+      @updated-assessment="updatedAssessment"
       @remove-assignment="removeAssessment"
     />
     <ExamsModalEdit
@@ -15,7 +15,7 @@
       :open="editing"
       :initial-exam="assessment"
       @toggle-modal="editing = !editing"
-      @edit-exam="updatedAssessment"
+      @updated-assessment="updatedAssessment"
       @remove-exam="removeAssessment"
     />
     <section class="section">
