@@ -69,7 +69,7 @@
     <div class="buttons">
       <b-button
         title="Show completed assignments?"
-        :type="showCompleted ? 'is-success' : ''"
+        :type="showCompleted ? '' : 'is-warning'"
         @click="showCompleted = !showCompleted"
       >
         <span class="icon">
