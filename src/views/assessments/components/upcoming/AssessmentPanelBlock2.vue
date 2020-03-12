@@ -21,9 +21,14 @@
       </span>
       <span
         class="assessment-title"
+        :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+
         style="flex: 1"
       >
-        <strong class="course-title">{{ course.title }}</strong>
+        <strong
+          class="course-title"
+          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+        >{{ course.title }}</strong>
         {{ assessment.title }}
       </span>
       <span class="has-text-grey assessment-time">{{ assessmentTime }}</span>
