@@ -139,6 +139,7 @@ export default {
   padding: 0;
   align-items: stretch;
   position: relative;
+  border-left: 4px solid white;
 
   .holder {
     padding: 12px 8px;
@@ -190,6 +191,7 @@ export default {
 }
 
 .assessment-icon {
+  font-size: 1.2em;
   cursor: pointer;
   // color: rgb(172, 172, 172);
   margin-right: 5px;
