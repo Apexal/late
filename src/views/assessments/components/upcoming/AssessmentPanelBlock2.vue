@@ -47,7 +47,10 @@
         :title="'Mark ' + (assessment.completed ? 'incomplete' : 'complete')"
         @click="toggleAssignment"
       >
-        <i class="fas fa-check" />
+        <i
+          class="fas"
+          :class="assessment.completed ? 'fa-times' : 'fa-check'"
+        />
       </span>
       <router-link
         :to="routeTo"
