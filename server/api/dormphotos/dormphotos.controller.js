@@ -116,14 +116,14 @@ async function confirmDormPhoto (ctx) {
 
   if (!confirmedDormPhoto) {
     logger.error(`Failed to find dorm photo submission ${dormPhotoID}`)
-    return ctx.notFound(`Could not find dorm photo submission!`)
+    return ctx.notFound('Could not find dorm photo submission!')
   }
 
   confirmedDormPhoto.confirmed = true
 
   await confirmedDormPhoto.save()
 
-  logger.info(`${ctx.state.user.rcs_id} confirmed a dorm photo submission`)
+  logger.info(`${ctx.state.user.identifier} confirmed a dorm photo submission`)
 
   return ctx.created({ confirmedDormPhoto })
 }
@@ -141,7 +141,7 @@ async function removeDormPhoto (ctx) {
 
   if (!removeDormPhoto) {
     logger.error(`Failed to find dorm photo submission ${dormPhotoID}`)
-    return ctx.notFound(`Could not find dorm photo submission!`)
+    return ctx.notFound('Could not find dorm photo submission!')
   }
 
   const parts = removedDormPhoto.imageURL.split('/')
@@ -154,7 +154,7 @@ async function removeDormPhoto (ctx) {
 
   removedDormPhoto.remove()
 
-  logger.info(`${ctx.state.user.rcs_id} denied a dorm photo submission`)
+  logger.info(`${ctx.state.user.identifier} denied a dorm photo submission`)
 
   ctx.ok({
     removedDormPhoto

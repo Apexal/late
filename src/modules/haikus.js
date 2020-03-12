@@ -1,3 +1,10 @@
+/**
+ * These haikus have all been written by past LATE developers,
+ * usually as their very first contribution! Please add yours
+ * to the list.
+ *
+ * These haikus appear on the 404 page.
+ */
 export default [
   [
     'the page you once sought',
@@ -58,5 +65,30 @@ export default [
     'SIS-Man speaks to you',
     'you do not belong here child',
     'look for help elsewhere'
+  ],
+  [
+    'Pizza\'s a circle',
+    'The slices are triangles',
+    'The box is a square'
+  ],
+  [
+    'F I V E  Five',
+    'S E V E N  Seven',
+    'F I V E  Five'
+  ],
+  [
+    'Do you hear that noise?',
+    'The whooshing sound of all your',
+    'deadlines passing by'
+  ],
+  [
+    'Do your homework kids',
+    'because if you do not try',
+    'SIS Man will be sad'
+  ],
+  [
+    'Freezing afforest',
+    'A small, ferocious frog eats',
+    'whilst watching the lynx'
   ]
 ]

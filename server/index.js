@@ -12,7 +12,7 @@ const Compress = require('koa-compress')
 
 const google = require('./modules/google')
 const moment = require('moment')
-
+const passport = require('koa-passport')
 // Start the Discord bot
 const discordClient = require('./integrations/discord').client
 
@@ -38,6 +38,7 @@ app.use(Body({ multipart: true }))
 /* Adds useful ctx functions for API responses */
 app.use(Respond())
 
+/* Use compression for API responses to decrease size */
 app.use(Compress())
 
 app.keys = [process.env.SESSION_KEY]
@@ -49,6 +50,9 @@ const CONFIG = {
   renew: true
 }
 app.use(Session(CONFIG, app))
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 /* Better security by default */
 app.use(Helmet())
@@ -74,43 +78,36 @@ app.use(async (ctx, next) => {
   if (
     ctx.state.env === 'development' ||
     !ctx.session.currentTerm ||
-    (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.end))
+    (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.endDate))
   ) {
     ctx.session.currentTerm = ctx.session.terms.find(t => t.isCurrent)
   }
 
-  if (ctx.session.cas_user) {
+  if (ctx.isAuthenticated()) {
     // Find the logged in user to make it available in all routes
-    ctx.state.user = await Student.findOne()
-      .byUsername(ctx.session.cas_user.toLowerCase())
-      .exec()
 
     Sentry.configureScope((scope) => {
-      scope.setUser({ username: ctx.state.user ? ctx.state.user.rcs_id : ctx.session.cas_user })
+      scope.setUser({ username: ctx.state.user.rcs_id })
     })
 
     ctx.state.discordClient = discordClient
 
-    if (ctx.state.user) {
-      ctx.state.onBreak =
-        !ctx.session.currentTerm ||
-        !ctx.state.user.terms.includes(ctx.session.currentTerm.code)
+    ctx.state.onBreak =
+      !ctx.session.currentTerm ||
+      !ctx.state.user.terms.includes(ctx.session.currentTerm.code)
 
-      // Create Google auth if logged in and setup
-      if (ctx.state.user && ctx.state.user.integrations.google.calendarID) {
-        const auth = google.createConnection()
-        auth.setCredentials(ctx.state.user.integrations.google.tokens)
-        ctx.state.googleAuth = auth
-      }
-    } else {
-      logger.error('User is NULL: ' + ctx.session.cas_user)
+    // Create Google auth if logged in and setup
+    if (ctx.state.user && ctx.state.user.integrations.google.calendarID) {
+      const auth = google.createConnection()
+      auth.setCredentials(ctx.state.user.integrations.google.tokens)
+      ctx.state.googleAuth = auth
     }
   }
   try {
     await next()
   } catch (e) {
     ctx.status = e.status || 500
-    logger.error(e)
+    logger.error(e.stack)
 
     Sentry.withScope(scope => {
       scope.addEventProcessor(event => Sentry.Handlers.parseRequest(event, ctx.request))
@@ -127,7 +124,7 @@ app.use(async (ctx, next) => {
   }
 })
 
-/* Router setup */
+/* All of the routes are set up in ./routes.js so we require and use them here */
 require('./routes')(router)
 app.use(router.routes())
 app.use(router.allowedMethods())

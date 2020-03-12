@@ -3,10 +3,9 @@
   "eslint.validate": [
     "javascript",
     "javascriptreact",
-    { "language": "vue", "autoFix": true }
+    "vue"
   ],
   "vetur.validation.template": false,
-  "eslint.autoFixOnSave": true,
   "editor.formatOnPaste": false,
   "editor.formatOnSave": false,
   "editor.formatOnType": false,
@@ -14,5 +13,8 @@
   "prettier.eslintIntegration": true,
   "prettier.semi": false,
   "prettier.singleQuote": true,
-  "prettier.disableLanguages": []
+  "prettier.disableLanguages": [],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

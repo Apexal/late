@@ -3,104 +3,116 @@ const logger = require('../../modules/logger')
 
 /**
  * Fetches a list of ALL todos for the current user, including todos completed over 30 days ago.
- * @param {Koa context} ctx
- * @retuns A JSON list of todos
+ *
+ * **Response JSON**
+ * - todos: list of user's todo objects
  */
-async function getTodos (ctx) {
+module.exports.getTodos = async function getTodos (ctx) {
   const todos = await Todo.find({
     _student: ctx.state.user._id
-  })
-  return ctx.ok({ todos })
-}
-/**
- * Fetches a list of todos for the current user which haven't
- * been completed or were only completed within the last 30 days
- * @param {Koa context} ctx
- * @retuns A JSON list of todos
- */
-async function getRecentTodos (ctx) {
-  const todos = await Todo.find({
-    _student: ctx.state.user._id,
-    completed: { $not: { $lt: new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000)) } }
-  })
+  }).populate('_blocks')
   return ctx.ok({ todos })
 }
 
 /**
- * Saves a new todo.
- * Request body:
- *  - text: the todo text
- * @param {Koa context} ctx
+ * Fetches a list of todos for the current user which haven't
+ * been completed or were only completed within the last 30 days
+ *
+ * **Response JSON**
+ * - todos: list of user's recent todos
  */
-async function createTodo (ctx) {
+module.exports.getRecentTodos = async function getRecentTodos (ctx) {
+  const todos = await Todo.find({
+    _student: ctx.state.user._id,
+    completed: { $not: { $lt: new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000)) } }
+  }).populate('_blocks')
+  return ctx.ok({ todos })
+}
+
+/**
+ * Saves a new todo for the logged in user.
+ *
+ * **Request Body**
+ * - text: the todo text string
+ *
+ * **Response JSON**
+ * - createdTodo: the new todo object
+ */
+module.exports.createTodo = async function createTodo (ctx) {
   const { text } = ctx.request.body
-  const todo = Todo({
+  const createdTodo = Todo({
     _student: ctx.state.user._id,
     text
   })
   try {
-    await todo.save()
+    await createdTodo.save()
   } catch (e) {
-    logger.error(`Failed to save new todo for ${ctx.state.user.rcs_id}: ${e}`)
+    logger.error(`Failed to save new todo for ${ctx.state.user.identifier}: ${e}`)
     return ctx.badRequest('There was an error adding the todo.')
   }
 
-  logger.info(`Added todo for ${ctx.state.user.rcs_id}`)
-  return ctx.created({ createdTodo: todo })
+  logger.info(`Added todo for ${ctx.state.user.identifier}`)
+  return ctx.created({ createdTodo })
 }
 
 /**
- * Updates a todo given its ID.
- * Request body:
- *   - text: the todo text
- *   - completed: boolean whether or not the todo is completed
- * @param ctx {Koa context} ctx
- * @returns {Promise<void>} void
+ * Updates the logged in user's todo with ID `todoID`.
+ *
+ * **Request Body**
+ * - text: the todo text s tring
+ * - completed: boolean whether or not the todo is completed
+ *
+ * **Response JSON**
+ * - todo: the updated todo object
  */
-async function updateTodo (ctx) {
+module.exports.updateTodo = async function updateTodo (ctx) {
   const { todoID } = ctx.params
   const { text, completed } = ctx.request.body
   const todo = await Todo.findOne({
     _id: todoID,
     _student: ctx.state.user._id
-  })
+  }).populate('_blocks')
 
-  if (todo) {
-    if (typeof text === 'string') {
-      todo.text = text
-    }
-    if (typeof completed === 'number' || completed === null) {
-      todo.completed = completed
-    }
-
-    todo.save()
+  if (!todo) {
+    return ctx.notFound('No todo item could be found that matches this criteria.')
   }
+
+  if (typeof text === 'string') {
+    todo.text = text
+  }
+  if (typeof completed === 'number' || completed === null) {
+    todo.completed = completed
+  }
+
+  try {
+    await todo.save()
+  } catch (e) {
+    logger.error(`Failed to update a todo for ${ctx.state.user.identifier}: ${e}`)
+    return ctx.badRequest('There was an error updating the todo.')
+  }
+
   ctx.ok({ todo })
 }
 
 /**
- * Deletes a todo given its ID.
- * Request parameters:
- *  - todoID: the todo ID
- * @param {Koa context} ctx
+ * Deletes the logged in user's todo with ID `todoID`.
+ *
+ * **Response JSON**
+ * - deletedTodo: the deleted todo object
  */
-async function deleteTodo (ctx) {
+module.exports.deleteTodo = async function deleteTodo (ctx) {
   const { todoID } = ctx.params
   const deletedTodo = await Todo.findOne({
     _id: todoID,
     _student: ctx.state.user._id
-  })
+  }).populate('_blocks')
+
+  if (!deletedTodo) {
+    return ctx.notFound('No todo item could be found that matches this criteria.')
+  }
 
   deletedTodo.remove()
 
-  logger.info(`Deleted todo for ${ctx.state.user.rcs_id}`)
+  logger.info(`Deleted todo for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedTodo })
-}
-
-module.exports = {
-  getTodos,
-  getRecentTodos,
-  createTodo,
-  updateTodo,
-  deleteTodo
 }

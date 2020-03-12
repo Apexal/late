@@ -15,25 +15,28 @@ const Block = require('../blocks/blocks.model')
  **/
 async function loginAs (ctx) {
   if (ctx.state.env !== 'development') {
-    return ctx.forbidden('Not in development mode.')
+    return ctx.forbidden('Nice try, hackerman.')
   }
 
   const rcsID = ctx.request.query.rcs_id
-  ctx.session.cas_user = rcsID
+
   logger.info(`Logging in as ${rcsID}`)
 
   let student = await Student.findOne()
-    .byUsername(ctx.session.cas_user.toLowerCase())
+    .byUsername(rcsID)
     .exec()
+
   if (!student) {
     student = Student({
-      rcs_id: ctx.session.cas_user,
-      lastLogin: new Date()
+      rcs_id: rcsID,
+      lastLogin: new Date(),
+      admin: true // Users on the dev server will only be admins
     })
     await student.save()
     logger.info('Created new user for testing.')
   }
-  ctx.state.user = student
+
+  await ctx.login(student)
 
   await getUser(ctx)
 }
@@ -69,7 +72,7 @@ async function getStudents (ctx) {
   }
 
   const students = await Student.find(searchObject).sort('rcs_id').skip((page - 1) * itemsPerPage).limit(itemsPerPage)
-  const studentCount = await Student.count(searchObject)
+  const studentCount = await Student.countDocuments(searchObject)
   ctx.ok({ students, studentCount })
 }
 
@@ -103,12 +106,14 @@ function formSearchObject (str) {
   regexStr += '.*'
   const regex = new RegExp(regexStr, 'i')
 
-  return Object.assign({ $or: [
-    { 'name.first': regex },
-    { 'name.preferred': regex },
-    { 'name.last': regex },
-    { rcs_id: regex }
-  ] }, filter)
+  return Object.assign({
+    $or: [
+      { 'name.first': regex },
+      { 'name.preferred': regex },
+      { 'name.last': regex },
+      { rcs_id: regex }
+    ]
+  }, filter)
 }
 
 /**
@@ -191,14 +196,14 @@ async function getStudent (ctx) {
   }
   const studentID = ctx.params.studentID
 
-  logger.info(`Getting student ${studentID} for ${ctx.state.user.rcs_id}`)
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }
+  logger.info(`Getting student ${student.rcs_id} for ${ctx.state.user.identifier}`)
   const counts = {}
   if (ctx.query.counts) {
     // Also get stats
@@ -227,7 +232,7 @@ async function editStudent (ctx) {
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for admin ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for admin ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }
@@ -265,7 +270,7 @@ async function deleteStudent (ctx) {
   const student = await Student.findById(studentID)
   if (!student) {
     logger.error(
-      `Failed to find student ${studentID} for admin ${ctx.state.user.rcs_id}`
+      `Failed to find student ${studentID} for admin ${ctx.state.user.identifier}`
     )
     return ctx.notFound(`Student ${studentID} not found.`)
   }

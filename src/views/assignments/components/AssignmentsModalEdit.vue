@@ -211,10 +211,10 @@ export default {
   },
   computed: {
     maxDate () {
-      return moment(this.currentTerm.end).format('YYYY-MM-DD')
+      return moment(this.currentTerm.endDate).format('YYYY-MM-DD')
     },
     minDate () {
-      return moment(this.currentTerm.start).format('YYYY-MM-DD')
+      return moment(this.currentTerm.startDate).format('YYYY-MM-DD')
     }
   },
   watch: {

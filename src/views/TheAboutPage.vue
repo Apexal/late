@@ -40,16 +40,15 @@
           <h4 class="subtitle has-text-grey">
             Check in with our development milestones
           </h4>
-          <div class="tile is-parent status-updates">
+          <div class="status-updates columns is-multiline">
             <div
               v-for="url in statusUpdateURLs"
               :key="url"
-              class="iframe-container is-child is-6"
+              class="column is-half"
             >
               <iframe
                 :key="url"
-                width="600"
-                height="700"
+                width="100%"
                 :src="url"
                 frameborder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -134,23 +133,14 @@ export default {
         'https://www.youtube.com/embed/aB93j7LUK0w'
       ],
       contributors: [
-        'Caitlin Bennet',
-        'Kristen Bertrand',
-        'Mark Borelli II',
-        'Shardul Joshi',
+        'Jerome Carter',
+        'Karen Mu',
         'Aidan Lane',
-        'Zach Love',
-        'Tyler Machado',
-        'Stéfan Martin',
-        'Tobias Park',
-        'Samarth Patel',
-        'Wolf Personeous',
-        'Alexandra Rachiele',
-        'Aaron Reers',
-        'Erik Roberts',
-        'Andrew Smith',
-        'Calynn Vitus',
-        'Colton Zecca'
+        'Joseph D. Hernberg',
+        'Sam Fawcett',
+        'Xilin Xu',
+        'Lehar Mogilisetty',
+        'Kristen Bertrand'
       ],
       testers: [
         'Sarah Tedesco',
@@ -167,32 +157,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  padding-bottom: 0px;
-  padding-left: 0px;
-  border-bottom-color: #dbdbdb;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
 
 ul {
   list-style-type: none;
   margin-left: 20px;
-}
-
-//Disgusting way to tile iframes. Then again iframes are disgusting too.
-.status-updates {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0px;
-  padding: 0px;
-}
-
-.status-updates .iframe-container {
-  position: relative;
-  overflow: hidden;
-  max-width: 250px;
-  flex: 1 1 auto;
 }
 
 .contrib-list {

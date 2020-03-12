@@ -88,7 +88,7 @@
                   <span class="button is-static">credits</span>
                 </p>
               </b-field>
-              <b>{{ c.title }}</b>
+              <b class="courseTitle">{{ c.title }}</b>
             </b-field>
           </li>
         </ul>
@@ -203,5 +203,9 @@ export default {
 
 .gpa {
   font-size: 5em;
+}
+
+.courseTitle {
+  padding-top: 0.35em;
 }
 </style>

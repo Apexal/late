@@ -1,21 +1,29 @@
 <!--Footer module-->
 <template>
-  <footer class="footer">
+  <footer
+    class="footer"
+  >
+    <canvas
+      id="footer-canvas"
+      :style="{'pointer-events': 'none', position: 'fixed', 'top': 0, width: '100%', height: '100%'}"
+    />
     <h1 class="is-size-5 has-text-centered">
-      A
       <span
         class="has-text-grey"
-        @click="changeAdjective"
+        @mouseover="changeAdjective"
       >{{ randomAdjective }}</span>
       <router-link
         :to="{name: 'about'}"
-        title="View project proposal and contributors"
+        title="Check out the goal of LATE and its team of developers!"
       >
         RCOS project!
       </router-link>
     </h1>
-    <h2 class="has-text-grey has-text-centered">
-      v1.0.0 - The Honorable
+    <h2
+      class="has-text-grey has-text-centered"
+      @click="honorableClicks+=1"
+    >
+      v1.1.{{ honorableClicks }} - The Honorable
     </h2>
     <div class="content has-text-centered columns">
       <p class="column">
@@ -52,7 +60,7 @@
           href="https://github.com/Apexal/late/"
           target="_blank"
           title="View repository"
-        >Github.</a>
+        >GitHub.</a>
       </p>
       <p class="column">
         <span class="icon">
@@ -70,26 +78,57 @@
 </template>
 
 <script>
+import ConfettiGenerator from 'confetti-js'
 import adjectives from '@/modules/adjectives'
 
 export default {
   name: 'TheFooter',
   data () {
     return {
-      randomAdjective: adjectives[Math.floor(Math.random() * adjectives.length)]
+      honorableClicks: 0,
+      confetti: null,
+      confettiSettings: { target: 'footer-canvas', clock: 75, max: 150 },
+      randomAdjective: ''
     }
+  },
+  watch: {
+    honorableClicks (newClicks) {
+      if (newClicks > 10) {
+        this.confetti.render()
+        setTimeout(() => this.confetti.clear(), 7000)
+        this.honorableClicks = 0
+
+        this.$buefy.toast.open({
+          type: 'is-success',
+          duration: 10000,
+          message: '<b>Congratulations! You\'ve earned your diploma!</b>'
+        })
+      }
+    }
+  },
+  mounted () {
+    this.confetti = new ConfettiGenerator(this.confettiSettings)
+    this.changeAdjective()
   },
   methods: {
     changeAdjective () {
       this.randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+      const vowels = ['a', 'e', 'i', 'o', 'u', 'h']
+      const startsWithVowel = vowels.some(vowel => this.randomAdjective[0] === vowel)
+
+      if (startsWithVowel) {
+        this.randomAdjective = 'An ' + this.randomAdjective
+      } else {
+        this.randomAdjective = 'A ' + this.randomAdjective
+      }
     }
   }
 }
 </script>
 
 <style lang="scss">
-//Adjusts padding for footer to display columns closer together
 .footer {
+  //Adjusts padding for footer to display columns closer together
   //Desktop styles
   @media screen and (min-width: 769px) {
     padding: 2rem 6rem 2rem !important;
@@ -119,4 +158,5 @@ export default {
     }
   }
 }
+
 </style>

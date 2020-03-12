@@ -39,6 +39,18 @@
         >
           <a>Fun</a>
         </router-link>
+        <router-link
+          :to="{name: 'admin-poll'}"
+          tag="li"
+        >
+          <a>Polls</a>
+        </router-link>
+        <router-link
+          :to="{name: 'admin-development'}"
+          tag="li"
+        >
+          <a>Dev Mode</a>
+        </router-link>
       </ul>
     </div>
 
@@ -53,7 +65,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1.title {
-  margin: 0;
-}
+
 </style>

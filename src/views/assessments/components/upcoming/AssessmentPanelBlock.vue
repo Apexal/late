@@ -1,75 +1,78 @@
 <template>
-  <div class="assessment panel-block">
-    <span class="is-fullwidth">
+  <div
+    class="assessment panel-block"
+    :class="panelBlockClasses"
+    :data-tooltip="showScheduled ? scheduleWarningTitle : undefined"
+    :style="{'border-right-color': `rgba(255, 0, 0, ${assessmentTimeWarningOpacity})`}"
+  >
+    <span
+      v-if="assessmentType === 'assignment'"
+      class="icon toggle-assignment"
+      @click="toggleAssignment()"
+    >
       <span
-        v-if="assessmentType === 'assignment'"
-        class="icon toggle-assignment"
-        @click="$emit('toggle-assignment', assessment)"
-      >
-        <span
-          :class="[
-            assessment.completed ? 'fas fa-check-circle' : 'far fa-circle'
-          ]"
-          :title="toggleAssignmentTitle"
-          :style="{color: course.color}"
-        />
-      </span>
-      <router-link
-        class="assessment-link"
-        :title="
-          (assessment.priority === 1 ? '(OPTIONAL) ' : '') +
-            (assessment.description || '').substring(0, 500)
-        "
-        :to="linkToParams"
-        :class="{
-          [assessment.assessmentType]: true,
-          priority: assessment.priority > 3,
-          'has-text-grey is-italic': assessment.priority === 1
-        }"
-      >
-        <span
-          v-if="assessmentType === 'exam'"
-          :style="{color: course.color}"
-          class="icon exam-icon"
-          :title="`${course.title} Exam`"
-        >
-          <i class="fas fa-exclamation-triangle" />
-        </span>
-        <b class="course-title is-hidden-tablet">{{ course.title }}</b>
-        {{ assessment.title }}
-        <i
-          v-if="assessmentType === 'assignment' && assessment.shared"
-          class="fas fa-users has-text-grey-light"
-          title="Shared assignment"
-        />
-      </router-link>
-      <span
-        v-if="showScheduled"
-        class="is-tooltip-left icon has-text-danger is-pulled-right"
-        :class="{
-          tooltip:
-            assessmentType === 'exam' ||
-            (assessmentType === 'assignment' && !assessment.completed)
-        }"
-        :data-tooltip="scheduleWarningTitle"
-      >
-        <i
-          :style="{opacity: assessmentTimeWarningOpacity}"
-          class="far fa-clock"
-        />
-      </span>
-      <small
-        v-if="groupBy === 'date'"
-        class="is-pulled-right has-text-grey"
-      >{{
-        timeFormat(assessment.date)
-      }}</small>
-      <small
-        v-else
-        class="is-pulled-right tooltip is-tooltip-left has-text-grey"
-        :data-tooltip="toDateShortString + ' ' + timeFormat(assessment.date)"
-      >{{ fromNow(assessmentDate) }}</small>
+        :class="[
+          assessment.completed ? 'fas fa-check-circle' : 'far fa-circle'
+        ]"
+        :title="toggleAssignmentTitle"
+        :style="{color: course.color}"
+      />
     </span>
+    <router-link
+      class="assessment-link"
+      :title="
+        (assessment.priority === 1 ? '(OPTIONAL) ' : '') +
+          (assessment.description || '').substring(0, 500)
+      "
+      :to="linkToParams"
+      :class="{
+        [assessment.assessmentType]: true,
+        priority: assessment.priority > 3,
+        'has-text-grey is-italic': assessment.priority === 1
+      }"
+    >
+      <span
+        v-if="assessmentType === 'exam'"
+        :style="{color: course.color}"
+        class="icon exam-icon"
+        :title="`${course.title} Exam`"
+      >
+        <i class="fas fa-exclamation-triangle" />
+      </span>
+      <b class="course-title is-hidden-tablet">{{ course.title }}</b>
+      <span class="assessment-title">{{ assessment.title }}</span>
+      <i
+        v-if="assessmentType === 'assignment' && assessment.shared"
+        class="fas fa-users has-text-grey-light"
+        title="Shared assignment"
+      />
+    </router-link>
+    <!-- <span
+      v-if="showScheduled"
+      class="is-tooltip-left icon has-text-danger is-pulled-right"
+      :class="{
+        tooltip:
+          assessmentType === 'exam' ||
+          (assessmentType === 'assignment' && !assessment.completed)
+      }"
+      :data-tooltip="scheduleWarningTitle"
+    >
+      <i
+        :style="{opacity: assessmentTimeWarningOpacity}"
+        class="far fa-clock"
+      />
+    </span> -->
+    <small
+      v-if="groupBy === 'date'"
+      class="has-text-grey"
+    >{{
+      timeFormat(assessment.date)
+    }}</small>
+    <small
+      v-else
+      class="is-pulled-right tooltip is-tooltip-left has-text-grey"
+      :data-tooltip="toDateShortString + ' ' + timeFormat(assessment.date)"
+    >{{ fromNow(assessmentDate) }}</small>
   </div>
 </template>
 
@@ -100,18 +103,32 @@ export default {
     },
     toggleAssignmentTitle () {
       return (
+        'Click to mark ' +
         this.course.title +
         ' Assignment' +
         (this.assessment.completedAt
-          ? ` | Completed ${this.shortDateTimeFormat(
+          ? ` (Completed ${this.shortDateTimeFormat(
             this.assessment.completedAt
-          )}`
-          : '')
+          )}) as incomplete`
+          : ' as complete')
       )
     },
     scheduleWarningTitle () {
       return `${this.assessment.scheduledTime}/${this.assessment.timeEstimate *
         60} min scheduled`
+    },
+    panelBlockClasses () {
+      return {
+        'tooltip has-tooltip-right':
+          this.showScheduled &&
+          (
+            this.assessmentType === 'exam' ||
+            (this.assessmentType === 'assignment' && !this.assessment.completed)
+          )
+      }
+    },
+    panelBlockStyle () {
+      return {}
     },
     assessmentDate () {
       return this.assessmentType === 'assignment'
@@ -153,6 +170,36 @@ export default {
         params: { [this.assessmentType + 'ID']: this.assessment._id }
       }
     }
+  },
+  methods: {
+    async toggleAssignment () {
+      try {
+        const toggledAssignment = await this.$store.dispatch(
+          'TOGGLE_ASSIGNMENT',
+          this.assessment
+        )
+
+        this.$buefy.snackbar.open({
+          message: `Marked '${toggledAssignment.title}' as ${
+            toggledAssignment.completed ? 'complete' : 'incomplete'
+          }!`,
+          type: 'is-primary',
+          position: 'is-bottom',
+          actionText: 'View',
+          onAction: () => {
+            this.$router.push({
+              name: 'assignment-overview',
+              params: { assignmentID: this.assessment._id }
+            })
+          }
+        })
+      } catch (e) {
+        return this.$buefy.toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        })
+      }
+    }
   }
 }
 </script>
@@ -163,9 +210,15 @@ export default {
   padding-left: 5px;
   transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
 
+  &.tooltip {
+    border-right-width: 2px;
+    border-right-style: solid;
+  }
+
   .assessment-link {
     color: inherit;
     word-wrap: break-word;
+    flex: 1;
   }
   .is-completed {
     text-decoration: line-through;

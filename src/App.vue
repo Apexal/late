@@ -103,6 +103,7 @@ import SISMan from '@/views/sisman/components/SISMan'
 import account from '@/mixins/account'
 
 import Konami from 'konami'
+// import reverse from '@/modules/konami'
 
 export default {
   name: 'LATE',
@@ -118,7 +119,6 @@ export default {
     PinnedAnnouncements,
     StudyToolsTimerOverlay,
     SISMan
-
   },
   mixins: [account],
   data () {
@@ -218,11 +218,12 @@ export default {
       }
 
       Sentry.configureScope(function (scope) {
-        scope.setUser({ 'username': this.user.rcs_id })
+        scope.setUser({ username: this.user.rcs_id })
       })
     }
 
     const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
+    // reverse.addReverse()
     console.log(this.sistext)
     console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px')
   },
@@ -248,32 +249,6 @@ export default {
 
 .is-fullwidth {
   width: 100%;
-}
-
-.header-title {
-  padding-bottom: 0px;
-  padding-left: 0px;
-  border-bottom-color: #dbdbdb;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-
-hgroup {
-  margin-bottom: 10px;
-}
-
-.header-description {
-  .instructions {
-    font-size: 1.2em;
-    .subtitle {
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    li i {
-      width: 25px;
-      margin-right: 10px;
-    }
-  }
 }
 
 //Removes annoying outline around elements when clicked.
@@ -310,6 +285,29 @@ body {
 
 section.section {
   padding: 1.5rem;
+
+  /*
+    There are two kinds of page titles. One is a simple title (with an optional subtitle)
+    and the other is a title inside page tabs.
+  */
+  .title:not(.main-title) {
+    padding: 0px;
+    padding-bottom: 5px;
+  }
+
+  .tabs .title {
+    margin: 0;
+  }
+
+  > .title:not(.main-title) {
+    border-bottom-color: #dbdbdb;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+  }
+
+  > .subtitle {
+    color: #777;
+  }
 }
 
 @media only screen and (max-width: 1216px) {
@@ -370,14 +368,12 @@ section.section {
 .slide-left-enter,
 .slide-right-leave-active {
   opacity: 0;
-  -webkit-transform: translate(30px, 0);
   transform: translate(30px, 0);
   margin-right: -30px;
 }
 .slide-left-leave-active,
 .slide-right-enter {
   opacity: 0;
-  -webkit-transform: translate(-30px, 0);
   transform: translate(-30px, 0);
 }
 
@@ -396,14 +392,6 @@ section.section {
   opacity: 0;
 }
 
-.modal-content {
-  max-width: 800px;
-}
-
-.modal-content, .modal-card {
-  margin: 0;
-}
-
 .exam-event {
   font-weight: bold;
 }
@@ -418,17 +406,17 @@ footer.footer {
 
 // ------ FULLCALENDAR -------
 
+.fc-button-primary {
+  background-color: var(--dark-color);
+}
+
+.fc-button-active {
+  background-color: rgb(37, 48, 72) !important;
+}
+
 @media only screen and (max-width: 768px) {
   .fc-toolbar.fc-header-toolbar {
     flex-direction: column;
-  }
-}
-
-.work-block-event {
-  border-width: 3px !important;
-
-  .margin-left {
-    margin-left: 5px;
   }
 }
 
@@ -443,17 +431,23 @@ footer.footer {
       opacity: 1;
     }
   }
+
+  .corner {
+    opacity: 0.3;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 2.5em;
+  }
+
+  /* Give some spacing in .fc-time */
+  :not(.corner) {
+    margin-right: 2px;
+  }
 }
 
 .fc-content {
-  .remove-work-block {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-
-  .remove-work-block {
+  .delete {
     display: none;
     position: absolute;
     right: 0;
@@ -464,7 +458,7 @@ footer.footer {
   }
 
   &:hover {
-    .remove-work-block {
+    .delete {
       display: block;
     }
   }

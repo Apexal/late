@@ -6,7 +6,9 @@
       :start="selectModal.start"
       :end="selectModal.end"
       :assessments="filteredUpcomingAssessments"
-      @add-work-block="addWorkBlock"
+      @add-assessment-block="addBlock('assessment', arguments[0])"
+      @add-course-block="addBlock('course', arguments[0])"
+      @add-todo-block="addBlock('todo', arguments[0])"
       @close-modal="selectModal.open = false"
     />
     <DashboardCalendarEventModal
@@ -48,11 +50,13 @@
       @select="select"
     />
     <b-button
+      id="fullscreen-toggle"
+      class="enter-fullscreen"
       title="Toggle Fullscreen"
-      class="fullscreen-toggle"
       @click="toggleFullscreen"
     >
       <i class="fas fa-expand-arrows-alt" />
+      <i class="fas fa-compress-arrows-alt" />
     </b-button>
   </div>
 </template>
@@ -116,8 +120,8 @@ export default {
           }
         },
         validRange: {
-          start: this.$store.getters.currentTerm.start,
-          end: this.$store.getters.currentTerm.end
+          start: this.$store.getters.currentTerm.startDate,
+          end: this.$store.getters.currentTerm.endDate
         },
         businessHours: {
           daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
@@ -139,7 +143,7 @@ export default {
     filteredUpcomingAssessments () {
       return this.$store.state.assessments.upcomingAssessments.filter(
         assessment =>
-          moment(this.selectModal.end).isBefore(
+          moment(this.selectModal.end).isSameOrBefore( // fix
             assessment.dueDate || assessment.date
           ) &&
           (assessment.assessmentType === 'exam' ||
@@ -162,18 +166,22 @@ export default {
         }
       )
 
-      const workBlocks = this.$store.getters.getWorkBlocksAsEvents
+      const assessmentBlocks = this.$store.getters.getAssessmentBlocksAsEvents
+      const courseBlocks = this.$store.getters.getCourseBlocksAsEvents
+      const todoBlocks = this.$store.getters.getTodoBlocksAsEvents
 
       return courseSchedule
         .concat(upcomingAssessments)
         .concat(unavailabilitySchedule)
-        .concat(workBlocks)
-        .concat(this.academicCalendarEvents)
+        .concat(assessmentBlocks)
+        .concat(courseBlocks)
+        .concat(todoBlocks)
+        // .concat(this.academicCalendarEvents)
     },
     earliest () {
       const earliest = this.$store.state.auth.user.earliestWorkTime
       // const courses = this.$store.getters.getCourseScheduleAsEvents;
-      // const workBlocks = this.$store.getters.getWorkBlocksAsEvents.map(e =>
+      // const assessmentBlocks = this.$store.getters.getAssessmentBlocksAsEvents.map(e =>
       //   Object.assign({}, e)
       // );
 
@@ -183,9 +191,9 @@ export default {
       //     earliest = courses[i].start;
       //   }
       // }
-      // for (i = 0; i < workBlocks.length; i++) {
-      //   if (workBlocks[i].start.localeCompare(earliest) < 0) {
-      //     earliest = workBlocks[i].start;
+      // for (i = 0; i < assessmentBlocks.length; i++) {
+      //   if (assessmentBlocks[i].start.localeCompare(earliest) < 0) {
+      //     earliest = assessmentBlocks[i].start;
       //   }
       // }
 
@@ -246,9 +254,13 @@ export default {
     toggleFullscreen () {
       if (document.fullscreenElement) {
         document.exitFullscreen()
+        document.getElementById('fullscreen-toggle').classList.remove('exit-fullscreen')
+        document.getElementById('fullscreen-toggle').classList.add('enter-fullscreen')
       } else {
         const div = document.getElementById('calendar-holder')
         div.requestFullscreen()
+        document.getElementById('fullscreen-toggle').classList.remove('enter-fullscreen')
+        document.getElementById('fullscreen-toggle').classList.add('exit-fullscreen')
       }
     },
     select ({ start, end }) {
@@ -256,17 +268,17 @@ export default {
       this.selectModal.end = moment(end)
       this.selectModal.open = true
     },
-    async addWorkBlock (assessment) {
-      if (!assessment || !this.selectModal.open) return
+    async addBlock (blockType, item) {
+      if (!item || !this.selectModal.open) return
 
-      await this.$store.dispatch('ADD_WORK_BLOCK', {
-        assessment,
+      await this.$store.dispatch('ADD_' + blockType.toUpperCase() + '_BLOCK', {
+        [blockType]: item,
         start: this.selectModal.start,
         end: this.selectModal.end
       })
 
       this.$buefy.toast.open({
-        message: 'Added work block to your schedule!',
+        message: `Added ${blockType} block to your schedule!`,
         type: 'is-primary',
         duration: 1000
       })
@@ -291,6 +303,10 @@ export default {
           time: moment(event.start).format('HH:mm')
         })
         this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
+      } else if (eventType === 'course-block') {
+        this.$store.commit('OPEN_COURSE_MODAL', event.extendedProps.course)
+      } else if (eventType === 'todo-block') {
+        // TODO: something
       } else if (eventType === 'assignment') {
         this.$router.push({
           name: 'assignment-overview',
@@ -301,7 +317,7 @@ export default {
           name: 'exam-overview',
           params: { examID: assessment._id }
         })
-      } else if (eventType === 'work-block') {
+      } else if (eventType === 'assessment-block') {
         const { assessmentType } = assessment
 
         if (assessmentType === 'assignment') {
@@ -326,7 +342,7 @@ export default {
       const { assessmentID } = event.extendedProps
       const assessment = this.$store.getters.getUpcomingAssessmentById(assessmentID)
       try {
-        await this.$store.dispatch('ADD_WORK_BLOCK', { assessment, start: event.start, end: event.end })
+        await this.$store.dispatch('ADD_ASSESSMENT_BLOCK', { assessment, start: event.start, end: event.end })
       } catch (e) {
         this.$buefy.toast.open({
           message: 'There was an error scheduling that work block...',
@@ -344,66 +360,102 @@ export default {
       })
     },
     eventDrop ({ event, revert }) {
-      const { eventType, assessment, blockID } = event.extendedProps
-      if (eventType === 'work-block') {
+      const { eventType, assessment, course, todo, blockID } = event.extendedProps
+      if (eventType === 'assessment-block') {
         // Update work block on server
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
             message: 'Move this past work block?',
             onConfirm: () =>
-              this.editWorkBlock(
-                assessment,
+              this.editBlock(
+                'assessment',
                 blockID,
+                assessment,
                 event.start,
                 event.end
               ),
             onCancel: revert
           })
         } else {
-          this.editWorkBlock(
-            assessment,
+          this.editBlock(
+            'assessment',
             blockID,
+            assessment,
             event.start,
             event.end
           )
         }
+      } else if (eventType === 'course-block') {
+        this.editBlock(
+          'course',
+          blockID,
+          course,
+          event.start,
+          event.end
+        )
+      } else if (eventType === 'todo-block') {
+        this.editBlock(
+          'todo',
+          blockID,
+          todo,
+          event.start,
+          event.end
+        )
       }
     },
     eventResize ({ event, revert }) {
-      const { eventType, assessment, blockID } = event.extendedProps
-      if (eventType === 'work-block') {
+      const { eventType, assessment, course, todo, blockID } = event.extendedProps
+      if (eventType === 'assessment-block') {
         if (moment(event.end).isBefore(moment())) {
           this.$buefy.dialog.confirm({
             message: 'Edit this past work block?',
             onConfirm: () =>
-              this.editWorkBlock(
-                assessment,
+              this.editBlock(
+                'assessment',
                 blockID,
+                assessment,
                 event.start,
                 event.end
               ),
             onCancel: revert
           })
         } else {
-          this.editWorkBlock(
-            assessment,
+          this.editBlock(
+            'assessment',
             blockID,
+            assessment,
             event.start,
             event.end
           )
         }
+      } else if (eventType === 'course-block') {
+        this.editBlock(
+          'course',
+          blockID,
+          course,
+          event.start,
+          event.end
+        )
+      } else if (eventType === 'todo-block') {
+        this.editBlock(
+          'todo',
+          blockID,
+          todo,
+          event.start,
+          event.end
+        )
       }
     },
-    async editWorkBlock (assessment, blockID, start, end) {
-      await this.$store.dispatch('EDIT_WORK_BLOCK', {
-        assessment,
+    async editBlock (blockType, blockID, item, start, end) {
+      await this.$store.dispatch('EDIT_' + blockType.toUpperCase() + '_BLOCK', {
+        [blockType]: item,
         blockID,
         start,
         end
       })
 
       this.$buefy.toast.open({
-        message: 'Rescheduled work block!',
+        message: `Rescheduled ${blockType} block!`,
         type: 'is-primary',
         duration: 1000
       })
@@ -448,9 +500,22 @@ export default {
     }
   }
 }
-.fullscreen-toggle {
+#fullscreen-toggle {
   float: right;
-  margin-top: -35px;
   z-index: 10;
+}
+.enter-fullscreen {
+  transition: 0.2s;
+  margin-top: -35px;
+  .fa-compress-arrows-alt { display: none; }
+}
+.exit-fullscreen {
+  transition: 0.2s;
+  margin-top: -35px;
+  .fa-expand-arrows-alt { display: none; }
+}
+
+.fc-time-grid-container {
+  max-height: 80vh!important;
 }
 </style>

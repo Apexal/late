@@ -2,6 +2,7 @@
  * This file starts the server on the HOST and PORT specified in .env file.
  */
 
+// The `dotenv` package parses the KEY=VALUE pairs in .env and sets them on process.env
 require('dotenv').config()
 
 const app = require('./server')
@@ -15,7 +16,8 @@ const server = require('http').createServer(app.callback())
 server.listen(port, host)
 
 logger.info(
-  `API server running on host ${host} on port ${port}\nGo to http://localhost:${port} to view.`
+  `Backend API server now running on host ${host} on port ${port}`
 )
 
+// Pass the server to Socket.IO for realtime communication
 require('./server/modules/socketio')(server)

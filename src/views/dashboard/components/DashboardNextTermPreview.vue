@@ -25,12 +25,22 @@
         </div>
       </div>
       <div class="column has-text-centered is-size-4">
-        <div class="tile  is-vertical">
+        <div class="tile is-vertical">
+          <div
+            v-if="true"
+            class="tile is-child notification"
+          >
+            <b-button @click="importNextTermCourseSchedule">
+              Enter Courses
+            </b-button>
+          </div>
           <div class="tile is-child notification is-primary">
             <b>{{ nextTermCourses.length }}</b> courses
           </div>
           <div class="tile is-child notification is-dark">
-            ~<b>{{ nextTermCourseHourCount.hours }}hrs</b>&nbsp;<b>{{ nextTermCourseHourCount.minutes }}min</b>
+            ~
+            <b>{{ nextTermCourseHourCount.hours }}hrs</b>&nbsp;
+            <b>{{ nextTermCourseHourCount.minutes }}min</b>
             of class each week
           </div>
           <div class="tile is-child notification is-warning">
@@ -57,9 +67,12 @@ import '@fullcalendar/core/main.css'
 import '@fullcalendar/daygrid/main.css'
 import '@fullcalendar/timegrid/main.css'
 
+import accountMixin from '@/mixins/account'
+
 export default {
   name: 'DashboardNextTermPreview',
   components: { FullCalendar },
+  mixins: [accountMixin],
   data () {
     return {
       nextTermCourses: [],
@@ -106,7 +119,7 @@ export default {
     nextTermCourseHourCount () {
       // Tally up durations of all periods
       const total = this.nextTermPeriods
-        .reduce((acc, period) => acc + moment(period.end, 'Hmm').diff(moment(period.start, 'Hmm'), 'minutes'), 0)
+        .reduce((acc, period) => acc + moment(period.endTime, 'HH:mm').diff(moment(period.startTime, 'HH:mm'), 'minutes'), 0)
 
       return {
         hours: parseInt(total / 60),
@@ -114,22 +127,22 @@ export default {
       }
     },
     earliestClassTime () {
-      let earliest = 2300
+      let earliest = '2300'
 
       for (const period of this.nextTermPeriods) {
-        if (parseInt(period.start) < earliest) { earliest = parseInt(period.start) }
+        if (period.startTime < earliest) { earliest = period.startTime }
       }
 
-      return moment(earliest, 'Hmm', true).format('h:mm a')
+      return moment(earliest, 'HH:mm', true).format('h:mm a')
     },
     latestClassTime () {
-      let latest = 800
+      let latest = '0800'
 
       for (const period of this.nextTermPeriods) {
-        if (parseInt(period.end) > latest) { latest = parseInt(period.end) }
+        if (period.endTime > latest) { latest = period.endTime }
       }
 
-      return moment(latest, 'Hmm', true).format('h:mm a')
+      return moment(latest, 'HH:mm', true).format('h:mm a')
     }
   },
   async mounted () {
@@ -164,6 +177,28 @@ export default {
 
       el.querySelector('.fc-content').append(locationEl)
     },
+    async importNextTermCourseSchedule () {
+      this.promptCredentials(async (rin, pin) => {
+        let request
+        try {
+          request = await this.$http.post('/account/courseschedule?termCode=' + this.nextTerm.code, {
+            rin,
+            pin
+          })
+        } catch (e) {
+          this.loading = false
+          this.$buefy.toast.open({
+            message: e.response.data.message,
+            type: 'is-danger'
+          })
+          return
+        }
+
+        this.$store.commit('SET_USER', request.data.updatedUser)
+
+        this.nextTermCourses = request.data.courses.filter(c => c.originalTitle !== 'Other')
+      })
+    },
     importToGoogleCalendar () {
       this.$router.push({ name: 'setup-integrations', hash: '#google-calendar' })
       this.$buefy.toast.open({
@@ -178,5 +213,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

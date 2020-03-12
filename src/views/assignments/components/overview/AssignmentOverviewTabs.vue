@@ -26,6 +26,27 @@
           </a>
         </li>
         <li
+          class="tasks"
+          :class="{'is-active': tab === 'tasks'}"
+          @click="$emit('set-tab', 'tasks')"
+        >
+          <a>
+            <span
+              class="icon is-small"
+            ><i
+              class="fas fa-tasks"
+              aria-hidden="true"
+            /></span>
+            <span>Tasks</span>
+            <span
+              v-if="assignment.tasks && assignment.tasks.length > 0"
+              class="tag tooltip is-tooltip-right"
+              :class="tasksTagClass"
+              :data-tooltip="`Completed ${completedTasksLength} out of ${assignment.tasks.length} tasks`"
+            >{{ completedTasksLength }}/{{ assignment.tasks.length }}</span>
+          </a>
+        </li>
+        <li
           class="comments"
           :class="{'is-active': tab === 'comments'}"
           @click="$emit('set-tab', 'comments')"
@@ -134,6 +155,7 @@ import AssessmentOverviewRelated from '@/views/assessments/components/overview/A
 import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo'
 import AssessmentOverviewWhiteboard from '@/views/assessments/components/overview/AssessmentOverviewWhiteboard'
 import AssessmentOverviewReminders from '@/views/assessments/components/overview/AssessmentOverviewReminders'
+import AssignmentOverviewTabsTasks from '@/views/assignments/components/overview/AssignmentOverviewTabsTasks'
 
 export default {
   name: 'AssignmentOverviewTabs',
@@ -143,7 +165,8 @@ export default {
     AssessmentOverviewRelated,
     AssignmentOverviewTabsSharedInfo,
     AssessmentOverviewWhiteboard,
-    AssessmentOverviewReminders
+    AssessmentOverviewReminders,
+    AssignmentOverviewTabsTasks
   },
   props: {
     tab: {
@@ -184,6 +207,14 @@ export default {
     fullyScheduled () {
       return this.scheduledMinutes >= this.totalEstimatedMinutes
     },
+    completedTasksLength () {
+      return this.assignment.tasks.filter(t => t.completed).length
+    },
+    tasksTagClass () {
+      if (this.assignment.tasks.length === 0) return 'is-danger'
+      else if (this.assignment.tasks.length === this.completedTasksLength) return 'is-success'
+      return 'is-warning'
+    },
     componentName () {
       return {
         comments: 'AssessmentOverviewComments',
@@ -191,8 +222,19 @@ export default {
         related: 'AssessmentOverviewRelated',
         'shared-info': 'AssignmentOverviewTabsSharedInfo',
         whiteboard: 'AssessmentOverviewWhiteboard',
-        reminders: 'AssessmentOverviewReminders'
+        reminders: 'AssessmentOverviewReminders',
+        tasks: 'AssignmentOverviewTabsTasks'
       }[this.tab]
+    }
+  },
+  watch: {
+    'assignment.tasks' (tasks) {
+      // If there are tasks, and they are now all completed, prompt the user to toggle the assignment
+      if (tasks.length > 0) {
+        if (tasks.filter(t => t.completed).length === this.assignment.tasks.length && this.assignment.completed === false) {
+          this.$emit('toggle-completed')
+        }
+      }
     }
   },
   methods: {
@@ -217,5 +259,6 @@ export default {
 
 .tag {
   margin-left: 3px;
+  padding: 5px;
 }
 </style>

@@ -5,7 +5,7 @@ const logger = require('../modules/logger')
 
 const notOnBreak = (ctx, next) => {
   if (ctx.state.onBreak && !ctx.request.url.includes('/term/')) {
-    logger.error(`${ctx.state.user.rcs_id} tried to access '${ctx.request.url}' on break`)
+    logger.error(`${ctx.state.user.identifier} tried to access '${ctx.request.url}' on break`)
     return ctx.badRequest('You are on break!')
   }
   return next()
@@ -26,6 +26,8 @@ router.use('/checklists', require('./checklists'))
 router.use('/quicklinks', require('./quicklinks'))
 router.use('/dormphotos', require('./dormphotos'))
 router.use('/sms', require('./sms'))
+router.use('/polls', require('./polls'))
+router.use('/studygroups', require('./studygroups'))
 
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)

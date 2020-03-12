@@ -11,7 +11,7 @@ import vm from '@/main'
 import axios from '@/api'
 import moment from 'moment'
 
-const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14 // How many days away are "Far future assignments"
+const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 21 // How many days away are "Far future assignments"
 
 const state = {
   upcomingAssessments: []
@@ -68,40 +68,23 @@ const getters = {
   }),
   getUpcomingAssessmentsAsEvents: (state, getters) =>
     state.upcomingAssessments.map(getters.mapAssessmentToEvent),
-  mapWorkBlockToEvent: (state, getters) => (type, assessment, b) => ({
-    blockID: b._id,
-    block: b,
-    eventType: 'work-block',
-    assessmentType: type,
-    title: (assessment.assessmentType === 'assignment' ? 'Work on ' : 'Study for ') + assessment.title,
-    className: 'work-block-event',
-    color: getters.getCourseFromCRN(assessment.courseCRN).color,
-    borderColor: 'black',
-    start: b.startTime,
-    end: b.endTime,
-    constraint: {
-      end: type === 'assignment' ? assessment.dueDate : assessment.date
-    },
-    assessment,
-    [type]: assessment
-  }),
   /**
-   * Get all the work blocks from all UPCOMING assessments in the state.
+   * Get all the assessment blocks from all UPCOMING assessments in the state.
    * @returns The array of work block objects
    */
-  getWorkBlocks: state => {
+  getAssessmentBlocks: state => {
     return state.upcomingAssessments
       .map(assessment => assessment._blocks)
       .flat()
   },
-  getWorkBlocksAsEvents: (state, getters) => {
-    const assessmentWorkBlocks = state.upcomingAssessments.map(assessment =>
+  getAssessmentBlocksAsEvents: (state, getters, rootState, rootGetters) => {
+    const assessmentBlocks = state.upcomingAssessments.map(assessment =>
       assessment._blocks.map(b =>
-        getters.mapWorkBlockToEvent(assessment.assessmentType, assessment, b)
+        rootGetters.mapAssessmentBlockToEvent(assessment.assessmentType, assessment, b)
       )
     )
 
-    return assessmentWorkBlocks.flat()
+    return assessmentBlocks.flat()
   }
 }
 
@@ -272,52 +255,6 @@ const actions = {
       }
     }
     return removedAssessments
-  },
-  async ADD_WORK_BLOCK (
-    { commit, getters },
-    { assessment, start, end, shared = true }
-  ) {
-    const request = await axios.post(
-      `/blocks/${assessment.assessmentType}/${assessment._id}`,
-      { startTime: start, endTime: end, shared }
-    )
-
-    if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
-    }
-
-    return request.data.updatedAssessment
-  },
-  async EDIT_WORK_BLOCK (
-    { commit, getters },
-    { assessment, blockID, start, end, location }
-  ) {
-    const updates = {
-      startTime: start,
-      endTime: end,
-      assessmentType: assessment.assessmentType
-    }
-    if (location) updates.location = location
-
-    const request = await axios.patch(
-      `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`,
-      updates
-    )
-
-    if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
-    }
-
-    return request.data.updatedAssessment
-  },
-  async REMOVE_WORK_BLOCK ({ commit, getters }, { assessment, blockID }) {
-    const request = await axios.delete(
-      `/blocks/${assessment.assessmentType}/${assessment._id}/${blockID}`
-    )
-    if (getters.getUpcomingAssessmentById(assessment._id)) {
-      commit('UPDATE_UPCOMING_ASSESSMENT', request.data.updatedAssessment)
-    }
-    return request.data.updatedAssessment
   },
   async ADD_ASSESSMENT_COMMENT (
     { commit, getters },

@@ -19,27 +19,27 @@
 #### Links
 
 - [RCOS Project Profile](https://rcos.io/projects/apexal/late/profile)
-- [Project Proposal](https://docs.google.com/document/d/1bq5DBvEQhnIkPUz-keMvDHq_dEQ21vwJqSUVB9zdSYk/edit)
+- [Project Proposal](https://docs.google.com/document/d/19D9do_i9MQvUSwz2oh7kbKlGVwLrpwxIYsgLeVjuQfU/view)
 - [RCOS Observatory](https://rcos.io/)
 - [Website](https://www.late.work/)
 
 ### Overview
 
-**LATE** is a web app that tracks and automatically distributes your homework/study time based on your calendar while also adapting if you fall off schedule.
+**LATE** is a web app that tracks your coursework, keeps you on track with reminders and reports, and connects you with your peers with a database of backwork, course recommendations, and more.
 
 **Goals**
 
 - To provide the user with a clear list of all upcoming assignments and tests.
-- To automatically use free time in a user’s calendar to work on/study for assignments/tests.
+- To allow users to schedule time in their schedule to study/work.
 - To remind users to follow the allocated study/work times through means including notifications, text messages, etc.
-- To account for missing scheduled work by reallocating work times
+- To allow users to collaborate by forming study groups, collecting backwork, combining resources, etc.
 
 **Target Audience**
-The target audience is college students who use tools such as Google Calendar to track their daily schedules.
+The target audience is **all** RPI students, especially freshmen.
 
 ### Local Setup
 
-Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with version `>= 11.0.0`.
+Make sure you have [NodeJS](https://nodejs.org/en/download/) installed with version `>= 12.0.0`.
 
 - Clone the repository
 - Checkout the `dev` branch with `$ git checkout dev`
@@ -63,6 +63,9 @@ Make sure you have [Docker](https://docs.docker.com/install/) installed. WSL use
 - Create a `.env` file based on `.env.example` in the root folder with the proper configuration environment variables **TEAM MEMBERS:** Ask Frank for the official `.env` file
 - Run LATE with `$ ./docker-run --build`. Subsequent runs only need the `--build` flag when there are changes.
 - Go to url `http://localhost:3000` in your browser
+
+## Development
+The GitHub repo [wiki](https://github.com/Apexal/late/wiki) contains custom resources on the whole stack LATE uses and how to develop the site.
 
 ## License
 MIT

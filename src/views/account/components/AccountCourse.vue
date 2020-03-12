@@ -51,9 +51,9 @@
               >
                 <td>{{ day(p.day) }}</td>
                 <td>
-                  {{ time(p.start) }}
+                  {{ time(p.startTime) }}
                   <span class="has-text-grey-light">-</span>
-                  {{ time(p.end) }}
+                  {{ time(p.endTime) }}
                 </td>
                 <td>
                   {{ p.location }}<a
@@ -79,10 +79,10 @@
                 <i class="fa fa-link" />
               </span>
               <a
-                :href="l"
+                :href="l.url"
                 target="_blank"
                 style="color: white"
-              >{{ l }}</a>
+              >{{ l.name }}</a>
             </b-tag>
           </b-taglist>
         </div>
@@ -152,16 +152,26 @@
               @close="editedLinks.splice(index, 1)"
             >
               <i class="fa fa-link" />
-              {{ link }}
+              {{ link.name | limit }} -
+              <span
+                class="link-url"
+                :title="link.url"
+              >{{ link.url | limit }}</span>
             </b-tag>
           </b-taglist>
           <div class="field has-addons">
             <div class="control has-icons-left has-icons-right is-expanded">
               <input
                 :id="'course-links-' + elementID"
-                v-model="newLink"
+                v-model="newLink.url"
                 class="input is-primary"
-                placeholder="Add link"
+                placeholder="Link url"
+              >
+              <input
+                :id="'course-links-' + elementID"
+                v-model="newLink.name"
+                class="input is-primary"
+                placeholder="Link name"
               >
               <span class="icon is-small is-left">
                 <i
@@ -194,7 +204,7 @@
             <tbody>
               <tr
                 v-for="p in editedPeriods"
-                :key="p.day + p.start"
+                :key="p.day + p.startTime"
               >
                 <td>
                   <b-select
@@ -214,19 +224,17 @@
                 </td>
                 <td>
                   <input
+                    v-model="p.startTime"
                     class="input is-small time-input"
-                    :value="formatToInputTime(p.start)"
                     type="time"
                     required
-                    @change="changePeriodTime(p, 'start', $event.target.value)"
                   >
                   <span class="has-text-grey-light">-</span>
                   <input
+                    v-model="p.endTime"
                     class="input is-small time-input"
-                    :value="formatToInputTime(p.end)"
                     type="time"
                     required
-                    @change="changePeriodTime(p, 'end', $event.target.value)"
                   >
                 </td>
                 <td>
@@ -362,6 +370,13 @@ import moment from 'moment'
 
 export default {
   name: 'AccountCourse',
+  filters: {
+    limit: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.length > 50 ? value.slice(0, 50) + '...' : value
+    }
+  },
   props: {
     course: {
       type: Object,
@@ -376,7 +391,10 @@ export default {
   data () {
     return {
       open: false,
-      newLink: '',
+      newLink: {
+        name: '',
+        url: ''
+      },
       courseData: Object.assign({}, this.course),
       editedLinks: this.course.links.slice(0),
       editedPeriods: JSON.parse(JSON.stringify(this.course.periods)),
@@ -447,10 +465,13 @@ export default {
     },
     addLink () {
       this.editedLinks.push(this.newLink)
-      this.newLink = ''
+      this.newLink = {
+        name: '',
+        url: ''
+      }
     },
     changePeriodTime (p, startOrEnd, inputFormat) {
-      p[startOrEnd] = moment(inputFormat, 'HH:mm', true).format('Hmm')
+      p[startOrEnd] = moment(inputFormat, 'HH:mm', true).format('HH:mm')
     },
     day: num =>
       [
@@ -463,7 +484,7 @@ export default {
         'Saturday'
       ][num],
     time: t => {
-      const dt = moment(t, 'Hmm', true)
+      const dt = moment(t, 'HH:mm', true)
       if (dt.hours() === 12 && dt.minutes() === 0) {
         return 'Noon'
       } else if (dt.minutes() === 0) {
@@ -472,7 +493,7 @@ export default {
       return dt.format('h:mma')
     },
     formatToInputTime: oldFormat =>
-      moment(oldFormat, 'Hmm', true).format('HH:mm'),
+      moment(oldFormat, 'HH:mm', true).format('HH:mm'),
     type (pType) {
       return this.$store.getters.periodType(pType)
     },
@@ -538,11 +559,11 @@ export default {
           periodToRemove.type
         )}</b> period on ${this.day(periodToRemove.day)} from <b>${moment(
           periodToRemove.start,
-          'Hmm',
+          'HH:mm',
           true
         ).format('h:mma')}</b> to <b>${moment(
           periodToRemove.end,
-          'Hmm',
+          'HH:mm',
           true
         ).format('h:mma')}</b>?`,
         confirmText: 'Yes',
@@ -571,11 +592,11 @@ export default {
         })
         return
       }
-      // Remeber to convert start/end from HH:mm to Hmm
+      // Remeber to convert start/end from HH:mm to HH:mm
       this.editedPeriods.push(
         Object.assign({}, this.newPeriod, {
-          start: moment(this.newPeriod.start, 'HH:mm', true).format('Hmm'),
-          end: moment(this.newPeriod.end, 'HH:mm', true).format('Hmm')
+          start: moment(this.newPeriod.start, 'HH:mm', true).format('HH:mm'),
+          end: moment(this.newPeriod.end, 'HH:mm', true).format('HH:mm')
         })
       )
 

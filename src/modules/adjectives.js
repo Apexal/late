@@ -23,5 +23,14 @@ export default [
   'determined',
   'good-natured',
   'eager',
-  'late'
+  'late',
+  'early',
+  'strange',
+  'uncomfy',
+  'moist',
+  'dank',
+  'zany',
+  'squishy',
+  'exquisite',
+  'large'
 ]

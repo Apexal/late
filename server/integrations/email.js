@@ -30,8 +30,8 @@ const emailFunctions = {
 
     periods.forEach(p => {
       const course = student.current_schedule.find(c => c.periods.includes(p))
-      p.start = moment(p.start, 'Hmm', true).format('h:mma')
-      p.end = moment(p.end, 'Hmm', true).format('h:mma')
+      p.start = moment(p.start, 'HH:mm', true).format('h:mma')
+      p.end = moment(p.end, 'HH:mm', true).format('h:mma')
       p.course = {
         longname: course.longname
       }

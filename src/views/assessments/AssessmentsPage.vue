@@ -39,18 +39,21 @@
       </ul>
     </div>
 
-    <AssessmentsFilter
-      :filter="filter"
+    <!-- <AssessmentsFilterModal
+      :open="filtersModalOpen"
+      :filter="hiddenCourseCRNs"
       :show-show-completed="true"
       :show-completed="showCompleted"
       :show-scheduled="showScheduled"
       :show-group-by="view === 'coursework-upcoming'"
       :group-by="groupBy"
       @toggle-filter="toggleFilter"
+      @set-filter-course-crns="hiddenCourseCRNs = arguments[0]"
       @toggle-show-completed="showCompleted = !showCompleted"
       @change-group-by="groupBy = $event"
       @toggle-show-scheduled="showScheduled = !showScheduled"
-    />
+      @close-modal="filtersModalOpen = false"
+    /> -->
 
     <transition
       name="slide-left"
@@ -58,49 +61,58 @@
     >
       <router-view
         class="child-view"
-        :group-by="groupBy"
         :show-completed="showCompleted"
         :show-scheduled="showScheduled"
-        :filter="filter"
-        @toggle-assignment="toggleAssignment"
       />
     </transition>
     <hr>
     <div class="buttons">
       <b-button
+        title="Show completed assignments?"
+        :type="showCompleted ? 'is-success' : ''"
+        @click="showCompleted = !showCompleted"
+      >
+        <span class="icon">
+          <i class="fas fa-filter" />
+        </span>
+        <span>{{ showCompleted ? "Showing" : "Hiding" }} completed</span>
+      </b-button>
+      <span class="spacer" />
+      <b-button
         type="is-dark"
         title="Add an assignment"
         @click="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
       >
-        <i class="fas fa-clipboard-check" />
+        <span class="icon">
 
-        Add Assignment
+          <i class="fas fa-clipboard-check" />
+        </span>
+        <span>Add Assignment</span>
       </b-button>
       <b-button
         type="is-dark"
         title="Add an exam"
         @click="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
       >
-        <i class="fas fa-exclamation-triangle" />
+        <span class="icon">
 
-        Add Exam
+          <i class="fas fa-exclamation-triangle" />
+        </span>
+
+        <span>Add Exam</span>
       </b-button>
     </div>
   </section>
 </template>
 
 <script>
-import AssessmentsFilter from '@/views/assessments/components/AssessmentsFilter'
 
 export default {
   name: 'AssessmentsPage',
-  components: { AssessmentsFilter },
   data () {
     return {
-      groupBy: 'date',
       showCompleted: true,
-      showScheduled: true,
-      filter: []
+      showScheduled: true
     }
   },
   computed: {
@@ -120,9 +132,6 @@ export default {
         type: 'is-info',
         duration: 1000
       })
-    },
-    groupBy (newGroupBy) {
-      localStorage.setItem('assessmentsGroupBy', newGroupBy)
     },
     showScheduled (nowShowing) {
       localStorage.setItem('assignmentsShowScheduled', nowShowing)
@@ -153,130 +162,17 @@ export default {
         localStorage.removeItem('assignmentsShowScheduled')
       }
     }
-    if (localStorage.getItem('assessmentsGroupBy')) {
-      try {
-        this.groupBy = localStorage.getItem('assessmentsGroupBy') || 'date'
-        if (this.groupBy !== 'courseCRN' && this.groupBy !== 'date') {
-          throw new Error(
-            'Invalid value for assessmentsGroupBy in localStorage'
-          )
-        }
-      } catch (e) {
-        localStorage.removeItem('assessmentsGroupBy')
-      }
-    }
   },
   methods: {
-    async toggleAssignment (assignment) {
-      try {
-        const toggledAssignment = await this.$store.dispatch(
-          'TOGGLE_ASSIGNMENT',
-          assignment
-        )
-
-        this.$buefy.snackbar.open({
-          message: `Marked '${toggledAssignment.title}' as ${
-            toggledAssignment.completed ? 'complete' : 'incomplete'
-          }!`,
-          type: 'is-primary',
-          position: 'is-bottom',
-          actionText: 'View',
-          onAction: () => {
-            this.$router.push({
-              name: 'assignment-overview',
-              params: { assignmentID: assignment._id }
-            })
-          }
-        })
-      } catch (e) {
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-      }
-    },
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN)
-    },
-    isFiltered (c) {
-      return this.filter.includes(c.crn)
-    },
-    toggleFilter (c) {
-      // TODO change word assessments to exam or assignment depending on type
-      if (this.filter.includes(c.crn)) {
-        this.filter.splice(this.filter.indexOf(c.crn), 1)
-        this.$buefy.toast.open({
-          message: `Showing '${c.title}' coursework.`,
-          type: 'is-info',
-          duration: 1000
-        })
-      } else {
-        this.filter.push(c.crn)
-        this.$buefy.toast.open({
-          message: `Hiding '${c.title}' coursework.`,
-          type: 'is-info',
-          duration: 1000
-        })
-      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-span.tag.course-tag {
-  cursor: pointer;
-  //font-weight: bold;
-  margin: 0;
-  margin-left: 2px;
-  margin-right: 2px;
-  color: white;
-
-  span {
-    max-width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: 0.3s;
-    -webkit-transition: 0.3s;
-    transition-delay: 0.1s;
-    -webkit-transition-delay: 0.1s;
-  }
-
-  span:hover {
-    max-width: 100vw;
-    transition: 0.4s;
-    -webkit-transition: 0.4s;
-    //transition-delay:0.3s;
-  }
-}
-
-.level .disable-shrink {
-  flex-shrink: initial;
-}
-
-@media only screen and (max-width: 768px) {
-  .buttons.assignment-view-buttons {
-    float: unset !important;
-  }
-  .buttons.exam-view-buttons {
-    float: unset !important;
-  }
-  // TODO^^
-
-  .level-left + .level-right {
-    margin-top: 5px !important;
-  }
-}
-
-.tab-nav {
-  margin-bottom: 0;
-  .title {
-    margin: 0;
-  }
-}
-
-.buttons {
-  justify-content: flex-end;
+.spacer {
+  flex: 1;
 }
 </style>

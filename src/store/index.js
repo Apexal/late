@@ -5,6 +5,7 @@ import moment from 'moment'
 /* MODULES */
 import auth from './modules/auth'
 import assessments from './modules/assessments'
+import blocks from './modules/blocks'
 import schedule from './modules/schedule'
 import addAssignmentModal from './modules/addAssignmentModal'
 import addExamModal from './modules/addExamModal'
@@ -17,6 +18,7 @@ import checklists from './modules/checklists'
 import SISMan from './modules/sisman'
 import tours from './modules/tours'
 import socketio from './modules/socketio'
+import polls from './modules/polls'
 
 Vue.use(Vuex)
 
@@ -26,6 +28,7 @@ export default new Vuex.Store({
   modules: {
     auth,
     assessments,
+    blocks,
     schedule,
     addAssignmentModal,
     addExamModal,
@@ -37,7 +40,8 @@ export default new Vuex.Store({
     checklists,
     SISMan,
     tours,
-    socketio
+    socketio,
+    polls
   },
   state: {
     navbarExpanded: false,
@@ -64,14 +68,14 @@ export default new Vuex.Store({
           eventType: 'period',
           course: getters.getCourseFromPeriod(p),
           period: p,
-          start: moment(p.start, 'Hmm', true),
-          end: moment(p.end, 'Hmm', true)
+          start: p.startTime,
+          end: p.endTime
         }))
         .concat(
-          getters.getWorkBlocksAsEvents
+          getters.getAssessmentBlocksAsEvents
             .filter(e => moment(e.start).isSame(state.now, 'day'))
             .map(e => ({
-              eventType: 'work-block',
+              eventType: 'assessment-block',
               block: e.block,
               assessmentType: e.assessmentType,
               assessment: e.assessment,

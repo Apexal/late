@@ -6,6 +6,8 @@ const Student = require('../api/students/students.model')
 const cas = require('../modules/cas')
 const google = require('../modules/google')
 
+const { getNameAndMajor } = require('../modules/directory')
+
 const { sendDiscordWebhookMessage } = require('../modules/webhooks')
 
 const { sendNewUserEmail } = require('../integrations/email')
@@ -45,6 +47,19 @@ async function loginStudent (ctx) {
       rcs_id: ctx.session.cas_user,
       accountLocked: true // WAIT LIST
     })
+
+    try {
+      const directoryData = await getNameAndMajor(ctx.session.cas_user)
+      if (directoryData.name.first && directoryData.name.last) {
+        student.name = directoryData.name
+      }
+      if (directoryData.major) {
+        student.major = directoryData.major
+      }
+    } catch (e) {
+      // Couldn't get name and major from directory
+    }
+
     /*
     logger.info(
       `Creating and logging in new student with rcs_id: ${student.rcs_id}`
@@ -110,7 +125,7 @@ async function googleAuth (ctx) {
 
   // Create calendar
   if (!ctx.state.user.integrations.google.calendarID) {
-    logger.info(`Creating Google Calendar for ${ctx.state.user.rcs_id}`)
+    logger.info(`Creating Google Calendar for ${ctx.state.user.identifier}`)
     let request
     try {
       request = await calendar.calendars.insert({
@@ -141,7 +156,7 @@ async function googleAuth (ctx) {
       await google.actions.createRecurringEventsFromCourseSchedule(googleAuth, request.data.id, termCode, courses)
     } catch (e) {
       logger.error(
-        `Failed to create new calendar for ${ctx.state.user.rcs_id}: ${e}`
+        `Failed to create new calendar for ${ctx.state.user.identifier}: ${e}`
       )
       return ctx.badRequest('Failed to create new Google Calendar.')
     }
@@ -161,7 +176,7 @@ async function discordAuth (ctx) {
   const creds = btoa(
     `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`
   )
-  logger.info(`Authenticating ${ctx.state.user.rcs_id} through Discord...`)
+  logger.info(`Authenticating ${ctx.state.user.identifier} through Discord...`)
   const tokens = await request({
     uri: `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${
       process.env.DISCORD_CALLBACK_URL
@@ -213,7 +228,7 @@ async function discordAuth (ctx) {
     json: true
   })
   logger.info(
-    `Added ${ctx.state.user.rcs_id} to the LATE Discord server as @${
+    `Added ${ctx.state.user.identifier} to the LATE Discord server as @${
       ctx.state.user.displayName
     }`
   )
@@ -221,7 +236,7 @@ async function discordAuth (ctx) {
 }
 
 module.exports = {
-  loginStudent,
+  // loginStudent,
   startGoogleAuth,
   googleAuth,
   startDiscordAuth,
