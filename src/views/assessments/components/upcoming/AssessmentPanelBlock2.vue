@@ -32,20 +32,22 @@
       class="behind is-flex has-text-white"
       :class="coverClass"
     >
-      <router-link
-        :to="routeTo"
-        tag="span"
-        class="icon"
-      >
-        <i class="fas fa-eye" />
-      </router-link>
       <span
         v-if="assessmentType === 'assignment'"
         class="icon toggle-assignment"
+        :title="'Mark ' + (assessment.completed ? 'incomplete' : 'complete')"
         @click="toggleAssignment"
       >
         <i class="fas fa-check" />
       </span>
+      <router-link
+        :to="routeTo"
+        tag="span"
+        class="icon"
+        :title="'View ' + assessmentType "
+      >
+        <i class="fas fa-eye" />
+      </router-link>
     </div>
   </div>
 </template>
@@ -139,10 +141,12 @@ export default {
     justify-content: center;
     align-items: center;
     padding: 0 10px;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease-out;
     transform: scaleX(0);
     transform-origin: right;
     .icon {
+      font-size: 1.3em;
+      margin: 0 5px;
       cursor: pointer;
     }
   }
@@ -163,7 +167,7 @@ export default {
 
   .course-title {
     position: absolute;
-    top: -10px;
+    top: -11px;
     font-size: 12px;
   }
 }
