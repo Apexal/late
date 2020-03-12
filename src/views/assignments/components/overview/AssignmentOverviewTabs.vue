@@ -127,7 +127,7 @@
             </span>
             <span>Reminders</span>
             <span
-              v-if="assignment.reminders.length > 0"
+              v-if="assignment.reminders && assignment.reminders.length > 0"
               class="tag is-dark comment-count"
             >{{
               assignment.reminders.length

@@ -50,13 +50,13 @@
           placeholder="Method of contact"
         >
           <option value="sms">
-            SMS
+            Text Me
           </option>
           <option value="email">
-            Email
+            Email Me
           </option>
           <option value="discord">
-            Discord
+            Discord DM
           </option>
         </b-select>
 
@@ -75,10 +75,10 @@
           <option
             value="days"
           >
-            Days
+            Days Before
           </option>
           <option value="hours">
-            Hours
+            Hours Before
           </option>
         </b-select>
         <button class="button is-dark">
@@ -141,31 +141,13 @@ export default {
       const when = moment(this.assessment.date).subtract(reminder.count, reminder.unit)
       return when.isBefore(Date.now())
     },
-    removeReminder (reminder) {
-      // if (this.hasPassed(reminder)) {
-      //   return
-      // }
-
-      // // API
-      // this.reminders = this.reminders.filter(r => r._id !== reminder._id)
-    },
-    async addReminder () {
-      // Check if count fits with unit
-      if (!this.isValid) {
-        return
-      }
-
-      const finalReminder = {
-        ...this.newReminder,
-        datetime: moment(this.assessment.date).subtract(this.newReminder.count, this.newReminder.unit)
-      }
-
+    async updateAssessment (updates) {
       let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.assessment._id,
           assessmentType: this.assessment.assessmentType,
-          updates: { reminders: [...this.assessment.reminders, finalReminder] }
+          updates
         })
       } catch (e) {
         this.$buefy.toast.open({
@@ -180,6 +162,29 @@ export default {
         message: 'Added reminder!',
         type: 'is-success'
       })
+    },
+    async addReminder () {
+      // Check if count fits with unit
+      if (!this.isValid) {
+        return
+      }
+
+      const finalReminder = {
+        ...this.newReminder,
+        datetime: moment(this.assessment.date).subtract(this.newReminder.count, this.newReminder.unit)
+      }
+
+      await this.updateAssessment({ reminders: [...this.assessment.reminders, finalReminder] })
+    },
+    async removeReminder (reminder) {
+      if (this.hasPassed(reminder)) {
+        return
+      }
+
+      // API
+      const reminders = this.assessment.reminders.filter(r => r._id !== reminder._id)
+
+      await this.updateAssessment({ reminders })
     }
   }
 }
