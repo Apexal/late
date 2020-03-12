@@ -117,6 +117,7 @@
         </li>
 
         <li
+          v-if="!assignment.completed && !assignment.passed"
           class="reminders"
           :class="{'is-active': tab === 'reminders'}"
           @click="$emit('set-tab', 'reminders')"
