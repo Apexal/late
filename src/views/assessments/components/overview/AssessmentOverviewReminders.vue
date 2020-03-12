@@ -49,15 +49,18 @@
           v-model="newReminder.integration"
           placeholder="Method of contact"
         >
-          <option value="sms">
-            Text Me
-          </option>
           <option value="email">
             Email Me
           </option>
-          <option value="discord">
-            Discord DM
+          <option
+            v-if="user.integrations.sms.verified"
+            value="sms"
+          >
+            Text Me
           </option>
+          <!-- <option value="discord">
+            Discord DM
+          </option> -->
         </b-select>
 
         <b-input

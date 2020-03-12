@@ -19,6 +19,7 @@ async function sendReminder (assessment, reminder) {
   const url = 'https://late.work/coursework/' + assessment.assessmentType.charAt(0) + '/' + assessment._id
 
   const { assessmentType } = assessment
+  const capitalizedAssessmentType = assessmentType === 'assignment' ? 'Assignment' : 'Exam'
 
   if (reminder.integration === 'sms') {
     let message
@@ -40,17 +41,21 @@ async function sendReminder (assessment, reminder) {
   } else if (reminder.integration === 'email') {
     try {
       logger.info('Sending email reminder...')
-      await sendGenericEmail(assessment._student.rcs_id, 'Reminder', {
-        preheader: `An ${assessmentType} is coming up!`,
-        title: 'Title Woo!',
+      await sendGenericEmail(assessment._student.rcs_id, `${course.title} ${capitalizedAssessmentType} Reminder`, {
+        preheader: `${assessment.title} ${assessmentType === 'assignment' ? 'is due' : 'is'} ${fromNow} | `,
+        title: 'Heads Up!',
         content: `
         <p>
-          Don't forget about your <b>${assessmentType}</b> <i>${assessment.title}</i> coming up soon!
+          Your <b>${course.title} ${assessmentType}</b> <i>${assessment.title}</i> ${assessmentType === 'assignment' ? 'is due' : 'is'} on ${dateTimeString}. That's just ${fromNow}!
+        </p>
+        <br>
+        <p>You originally estimated it was going to take <b>${assessment.timeEstimate} hours</b> to ${assessmentType === 'assignment' ? 'complete' : 'study for'}. Remember that LATE can
+        ${assessmentType === 'assignment' ? 'let you track tasks for the assignment' : 'create a trackable study plan'} and schedule time to ${assessmentType === 'assignment' ? 'work' : 'study'}.
         </p>
         `,
         buttons: [
           {
-            text: 'View on LATE',
+            text: 'View ' + capitalizedAssessmentType,
             url
           }
         ]
