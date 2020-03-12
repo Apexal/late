@@ -48,7 +48,7 @@
 
 <script>
 import moment from 'moment'
-import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock'
+import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock2'
 
 export default {
   name: 'AssessmentsUpcomingWeek',
