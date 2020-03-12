@@ -74,7 +74,7 @@ export default {
       const weeks = {}
       const thisWeek = moment().startOf('week')
 
-      for (const assessment of this.$store.getters.limitedUpcomingAssessments) {
+      for (const assessment of this.filteredLimitedAssessments) {
         const weeksAway = moment(assessment.date).diff(thisWeek, 'week')
 
         if (!(weeksAway in weeks)) weeks[weeksAway] = []

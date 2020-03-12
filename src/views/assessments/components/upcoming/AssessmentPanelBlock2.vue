@@ -152,7 +152,7 @@ export default {
     justify-content: center;
     align-items: center;
     padding: 0 10px;
-    transition: transform 0.3s ease-out;
+    transition: transform 0.2s ease-out;
     transform: scaleX(0);
     transform-origin: right;
     .icon {
