@@ -19,18 +19,23 @@
           class="fas fa-clipboard-check"
         />
       </span>
-      <span
-        class="assessment-title"
-        :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
 
+      <div
+        class="is-flex vertical"
         style="flex: 1"
       >
         <strong
           class="course-title"
           :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
         >{{ course.title }}</strong>
-        {{ assessment.title }}
-      </span>
+        <span
+          class="assessment-title"
+          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+        >
+
+          {{ assessment.title }}
+        </span>
+      </div>
       <span class="has-text-grey assessment-time">{{ assessmentTime }}</span>
     </div>
     <div
@@ -51,7 +56,7 @@
         class="icon"
         :title="'View ' + assessmentType "
       >
-        <i class="fas fa-eye" />
+        <i class="fas fa-info-circle" />
       </router-link>
     </div>
   </div>
@@ -136,6 +141,7 @@ export default {
   .holder {
     padding: 12px 8px;
     width: 100%;
+    align-items: center;
   }
 
   .behind {
@@ -167,14 +173,18 @@ export default {
   border-left: 4px solid green;
 }
 
+.vertical {
+  flex-direction: column;
+}
+
 .assessment-title {
   position: relative;
 
-  .course-title {
-    position: absolute;
-    top: -11px;
-    font-size: 12px;
-  }
+}
+.course-title {
+  // position: absolute;
+  // top: -11px;
+  font-size: 12px;
 }
 
 .assessment-icon {
