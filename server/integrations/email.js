@@ -6,7 +6,18 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 require('../api/assignments/assignments.model')
 
+const GENERTIC_SENDGRID_TEMPLATE_ID = 'd-78a8680f9b724f5196f497857c433c7c'
+
 const emailFunctions = {
+  async sendGenericEmail (rcsID, subject, data) {
+    return sgMail.send({
+      to: rcsID + '@rpi.edu',
+      from: 'LATE <noreply@late.work>',
+      subject,
+      templateId: GENERTIC_SENDGRID_TEMPLATE_ID,
+      dynamic_template_data: { ...data, subject }
+    })
+  },
   async sendNewUserEmail (rcsID) {
     logger.info(`Sending new user email to ${rcsID}@rpi.edu`)
     return sgMail.send({

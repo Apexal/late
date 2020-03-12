@@ -116,7 +116,7 @@ async function confirmDormPhoto (ctx) {
 
   if (!confirmedDormPhoto) {
     logger.error(`Failed to find dorm photo submission ${dormPhotoID}`)
-    return ctx.notFound(`Could not find dorm photo submission!`)
+    return ctx.notFound('Could not find dorm photo submission!')
   }
 
   confirmedDormPhoto.confirmed = true
@@ -141,7 +141,7 @@ async function removeDormPhoto (ctx) {
 
   if (!removeDormPhoto) {
     logger.error(`Failed to find dorm photo submission ${dormPhotoID}`)
-    return ctx.notFound(`Could not find dorm photo submission!`)
+    return ctx.notFound('Could not find dorm photo submission!')
   }
 
   const parts = removedDormPhoto.imageURL.split('/')

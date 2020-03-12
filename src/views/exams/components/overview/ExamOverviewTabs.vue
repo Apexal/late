@@ -69,6 +69,20 @@
             </span>
           </a>
         </li>
+
+        <li
+          v-if="!exam.passed"
+          class="reminders"
+          :class="{'is-active': tab === 'reminders'}"
+          @click="$emit('set-tab', 'reminders')"
+        >
+          <a>
+            <span class="icon is-small">
+              <i class="fas fa-bell" />
+            </span>
+            <span>Reminders</span>
+          </a>
+        </li>
       </ul>
     </div>
 
@@ -86,6 +100,7 @@
 // Tabs
 import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overview/AssessmentOverviewWorkSchedule'
 import AssessmentOverviewComments from '@/views/assessments/components/overview/AssessmentOverviewComments'
+import AssessmentOverviewReminders from '@/views/assessments/components/overview/AssessmentOverviewReminders'
 import ExamOverviewStudyPlan from '@/views/exams/components/overview/ExamOverviewStudyPlan'
 
 export default {
@@ -93,7 +108,8 @@ export default {
   components: {
     AssessmentOverviewComments,
     AssessmentOverviewWorkSchedule,
-    ExamOverviewStudyPlan
+    ExamOverviewStudyPlan,
+    AssessmentOverviewReminders
   },
   props: {
     tab: {
@@ -151,7 +167,8 @@ export default {
       return {
         comments: 'AssessmentOverviewComments',
         schedule: 'AssessmentOverviewWorkSchedule',
-        studyPlan: 'ExamOverviewStudyPlan'
+        studyPlan: 'ExamOverviewStudyPlan',
+        reminders: 'AssessmentOverviewReminders'
       }[this.tab]
     }
   }
