@@ -27,7 +27,7 @@
           <td>
             <i
               v-if="!hasPassed(reminder)"
-              class="fas fa-times has-text-danger"
+              class="fas fa-times has-text-danger remove-reminder"
               @click="removeReminder(reminder)"
             />
           </td>
@@ -193,5 +193,9 @@ export default {
 <style lang="scss" scoped>
 .reminder-integration {
   text-transform: capitalize;
+}
+
+.remove-reminder {
+  cursor: pointer;
 }
 </style>
