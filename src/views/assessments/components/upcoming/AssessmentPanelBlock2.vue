@@ -2,7 +2,6 @@
   <div
     class="assessment panel-block is-flex"
     :class="{'is-completed': assessment.completed}"
-    tabindex="0"
   >
     <div class="holder is-flex">
       <span
@@ -163,7 +162,7 @@ export default {
   }
 }
 
-.assessment:hover, .assessment:focus {
+.assessment:hover {
   .behind {
     transform: scaleX(1);
   }
