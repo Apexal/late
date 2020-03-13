@@ -21,6 +21,7 @@ const connection = mongoose
   })
   .catch(err => {
     logger.error(`Failed to connect to MongoDB: ${err}`)
+    process.exit(1)
   })
 
 module.exports = {
