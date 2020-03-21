@@ -6,6 +6,7 @@ const discordClient = require('../integrations/discord').client
 
 const { sendDiscordWebhookMessage } = require('../modules/webhooks')
 const { sendNewUserEmail } = require('../integrations/email')
+const { getNameAndMajor } = require('../modules/directory')
 
 const Student = require('../api/students/students.model')
 
@@ -25,6 +26,7 @@ passport.deserializeUser(async (rcsId, done) => {
 const cas = new CasStrategy({
   casURL: 'https://cas-auth.rpi.edu/cas'
 }, async function getOrCreateStudent (username, profile, done) {
+  username = username.toLowerCase()
   try {
     let student = await Student.findOne().byUsername(username)
 
@@ -37,6 +39,7 @@ const cas = new CasStrategy({
             .send(`**${student.displayName}** *(${student.rcs_id})* has logged in.`)
         } catch (e) {}
       }
+      logger.info(`Logging in student '${username}'...`)
     } else {
       // New user!!
       logger.info(`Creating new student '${username}'...`)
@@ -46,17 +49,17 @@ const cas = new CasStrategy({
         accountLocked: true // WAITLIST
       })
 
-      // try {
-      //   const directoryData = await getNameAndMajor(username)
-      //   if (directoryData.name.first && directoryData.name.last) {
-      //     student.name = directoryData.name
-      //   }
-      //   if (directoryData.major) {
-      //     student.major = directoryData.major
-      //   }
-      // } catch (e) {
-      //   // Couldn't get name and major from directory
-      // }
+      try {
+        const directoryData = await getNameAndMajor(username)
+        if (directoryData.name.first && directoryData.name.last) {
+          student.name = directoryData.name
+        }
+        if (directoryData.major) {
+          student.major = directoryData.major
+        }
+      } catch (e) {
+        // Couldn't get name and major from directory
+      }
 
       if (process.env.NODE_ENV !== 'development') {
         sendNewUserEmail(username)
