@@ -9,16 +9,18 @@ const logger = require('../modules/logger')
 // ------- CAS -------
 router.get(
   '/login',
-  passport.authenticate('cas', { failureRedirect: '/failed' }),
-  async function (ctx) {
-    if (ctx.state.user.accountLocked) {
-      return ctx.redirect('/?waitlisted=1')
-    }
-    if (!ctx.state.user.setup.profile) {
-      return ctx.redirect('/account')
-    }
-
-    ctx.redirect('/')
+  function (ctx, next) {
+    return passport.authenticate('cas', function (err, user, info, status) {
+      if (err) {
+        return ctx.redirect('/?waitlisted=1')
+      }
+      ctx.login(user, function (loginErr) {
+        if (!ctx.state.user.setup.profile) {
+          return ctx.redirect('/account')
+        }
+        ctx.redirect('/')
+      })
+    })(ctx, next)
   }
 )
 

@@ -71,6 +71,8 @@ const cas = new CasStrategy({
 
     await student.save()
 
+    if (student.accountLocked) return done(new Error('Account locked.'))
+
     return done(null, student)
   } catch (e) {
     return done(e)
