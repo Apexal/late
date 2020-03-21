@@ -12,7 +12,8 @@
     "backend": "cross-env NODE_ENV=development nodemon index.js --ignore './src/' --ignore './cypress/'",
     "fix-watch": "echo fs.inotify.max_user_watches=16384 | tee -a /etc/sysctl.conf",
     "frontend": "cross-env PORT=8080 vue-cli-service serve",
-    "start": "cross-env NODE_ENV=production node index.js"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "server-test": "mocha ./server/test"
   },
   "main": "index.js",
   "dependencies": {
@@ -107,6 +108,7 @@
     "fibers": "^4.0.2",
     "jest": "^24.9.0",
     "lint-staged": "^9.5.0",
+    "mocha": "^7.1.1",
     "node-sass": "^4.13.0",
     "nodemon": "^2.0.2",
     "sass-loader": "^8.0.1",
