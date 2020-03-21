@@ -26,6 +26,8 @@ router.use('/checklists', require('./checklists'))
 router.use('/quicklinks', require('./quicklinks'))
 router.use('/dormphotos', require('./dormphotos'))
 router.use('/sms', require('./sms'))
+router.use('/polls', require('./polls'))
+router.use('/studygroups', require('./studygroups'))
 
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)

@@ -23,7 +23,7 @@
       class="has-text-grey has-text-centered"
       @click="honorableClicks+=1"
     >
-      v1.1.{{ honorableClicks }} - The Honorable
+      v2.0.{{ honorableClicks }} - The Honorable
     </h2>
     <div class="content has-text-centered columns">
       <p class="column">
@@ -95,7 +95,10 @@ export default {
     honorableClicks (newClicks) {
       if (newClicks > 10) {
         this.confetti.render()
-        setTimeout(() => this.confetti.clear(), 7000)
+        setTimeout(() => {
+          this.confetti.clear()
+          this.confetti = new ConfettiGenerator(this.confettiSettings)
+        }, 7000)
         this.honorableClicks = 0
 
         this.$buefy.toast.open({

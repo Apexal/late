@@ -8,7 +8,7 @@
     <span
       v-if="assessmentType === 'assignment'"
       class="icon toggle-assignment"
-      @click="$emit('toggle-assignment', assessment)"
+      @click="toggleAssignment()"
     >
       <span
         :class="[
@@ -168,6 +168,36 @@ export default {
       return {
         name: this.assessmentType + '-overview',
         params: { [this.assessmentType + 'ID']: this.assessment._id }
+      }
+    }
+  },
+  methods: {
+    async toggleAssignment () {
+      try {
+        const toggledAssignment = await this.$store.dispatch(
+          'TOGGLE_ASSIGNMENT',
+          this.assessment
+        )
+
+        this.$buefy.snackbar.open({
+          message: `Marked '${toggledAssignment.title}' as ${
+            toggledAssignment.completed ? 'complete' : 'incomplete'
+          }!`,
+          type: 'is-primary',
+          position: 'is-bottom',
+          actionText: 'View',
+          onAction: () => {
+            this.$router.push({
+              name: 'assignment-overview',
+              params: { assignmentID: this.assessment._id }
+            })
+          }
+        })
+      } catch (e) {
+        return this.$buefy.toast.open({
+          message: e.response.data.message,
+          type: 'is-danger'
+        })
       }
     }
   }

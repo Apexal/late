@@ -22,6 +22,34 @@
     >
       You haven't added any links for this course yet.
     </p>
+    <hr>
+    <form @submit.prevent="addLink">
+      <div class="field has-addons">
+        <div class="control">
+          <input
+            v-model.trim="newLink.name"
+            type="text"
+            class="input"
+            placeholder="Link title"
+            required
+          >
+        </div>
+        <div class="control is-expanded">
+          <input
+            v-model.trim="newLink.url"
+            type="url"
+            class="input"
+            placeholder="Link URL"
+            required
+          >
+        </div>
+        <div class="control">
+          <button class="button">
+            Add Link
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -34,9 +62,30 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      newLink: {
+        name: '',
+        url: ''
+      }
+    }
+  },
   computed: {
     links () {
       return this.course.links || []
+    }
+  },
+  methods: {
+    async addLink () {
+      const newLinks = [...this.links, this.newLink]
+
+      // Send to server
+      await this.$store.dispatch('UPDATE_COURSE', Object.assign({}, this.course, { links: newLinks }))
+
+      this.newLink = {
+        name: '',
+        url: ''
+      }
     }
   }
 }

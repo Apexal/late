@@ -22,7 +22,7 @@ const getters = {
   currentTerm: (state, getters, rootState) =>
     state.terms
       .filter(t => rootState.auth.user.terms.includes(t.code))
-      .find(t => moment(rootState.now).isBetween(t.start, t.end)) || {},
+      .find(t => moment(rootState.now).isBetween(t.startDate, t.endDate)) || {},
   nextTerm: (state, getters, rootState) => {
     return state.terms
       .filter(t => rootState.auth.user.terms.includes(t.code))
@@ -59,7 +59,7 @@ const getters = {
       })
   },
   onBreak: (state, getters) => Object.keys(getters.currentTerm).length === 0,
-  classesOver: (state, getters) => moment().isAfter(getters.currentTerm.classesEnd),
+  classesOver: (state, getters) => moment().isAfter(getters.currentTerm.classesEndDate),
   periodType: () => type =>
     ({
       LEC: 'Lecture',

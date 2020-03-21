@@ -219,8 +219,8 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
       termCode: term.code,
       summary,
       crn,
-      startDate: term.start,
-      endDate: term.classesEnd,
+      startDate: term.startDate,
+      endDate: term.classesEndDate,
       credits,
       links: [],
       periods: []
@@ -328,8 +328,8 @@ async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
 
   let periods = []
 
-  let startDate = moment(term.start)
-  let endDate = moment(term.end)
+  let startDate = moment(term.startDate)
+  let endDate = moment(term.endDate)
 
   $('table[summary="This table lists the scheduled meeting times and assigned instructors for this class.."]')
     .find('tr:not(:first-child)')

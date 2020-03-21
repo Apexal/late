@@ -236,7 +236,7 @@ async function discordAuth (ctx) {
 }
 
 module.exports = {
-  loginStudent,
+  // loginStudent,
   startGoogleAuth,
   googleAuth,
   startDiscordAuth,

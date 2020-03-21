@@ -141,7 +141,7 @@ export default {
     canGoPrev () {
       return moment(this.startMoment)
         .subtract(1, 'week')
-        .isSameOrAfter(this.currentTerm.start, 'week')
+        .isSameOrAfter(this.currentTerm.startDate, 'week')
     },
     startMoment () {
       return moment(this.startDate, 'YYYY-MM-DD', true)

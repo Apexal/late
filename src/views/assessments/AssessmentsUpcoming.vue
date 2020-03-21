@@ -7,64 +7,23 @@
     >
       No upcoming assignments or exams
       <i
-        v-if="filter.length > 0 || !showCompleted"
+        v-if="!showCompleted"
         style="font-style:inherit"
       >matching your filters</i>
       for the next 2 weeks!
     </p>
-    <div
-      v-else
-      class="columns is-multiline"
-    >
-      <div
-        v-for="(assessments, key) in groupedFilteredLimitedAssessments"
-        :key="key"
-        class="column is-one-third-desktop is-half-tablet"
-      >
-        <div class="panel">
-          <p
-            class="panel-heading is-unselectable key-heading"
-            :class="{
-              'has-background-dark has-text-white': groupBy === 'date'
-            }"
-            :style="headerStyle(key)"
-          >
-            <span
-              class="key"
-              :class="groupBy"
-              :title="headerTitle(key)"
-              @click="headerClick(key)"
-            >{{ headerText(key) }}</span>
-            <!-- <span class="tag is-danger is-pulled-right day-weight-tag">Light</span> -->
-            <span class="add-assessment-buttons">
-              <i
-                class="has-text-white fas fa-clipboard-check"
-                :title="addAssessmentTitle(key, 'assignment')"
-                @click="addAssessmentClick(key, 'assignment')"
-              />
-              <i
-                class="has-text-white fas fa-exclamation-triangle"
-                :title="addAssessmentTitle(key, 'exam')"
-                @click="addAssessmentClick(key, 'exam')"
-              />
-            </span>
-          </p>
-          <AssessmentPanelBlock
-            v-for="a in assessments"
-            :key="a._id"
-            :group-by="groupBy"
-            :show-scheduled="showScheduled"
-            :assessment="a"
-            @toggle-assignment="$emit('toggle-assignment', arguments[0])"
-          />
-        </div>
-      </div>
-    </div>
+
+    <AssessmentsUpcomingWeek
+      v-for="(assessments, week) in assessmentsEachWeek"
+      :key="week"
+      :week-number="parseInt(week)"
+      :week-assessments="assessments"
+    />
+
     <div
       v-if="filteredFarFutureAssessments.length > 0"
       class="far-future-assignments"
     >
-      <hr>
       <p class="has-text-centered has-text-grey">
         {{ filteredFarFutureAssessments.length }} far future items
         {{ showingFutureAssessments ? "shown" : "hidden" }}
@@ -85,24 +44,17 @@
 <script>
 import moment from 'moment'
 
+import AssessmentsUpcomingWeek from '@/views/assessments/components/upcoming/AssessmentsUpcomingWeek'
 import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock'
 import AssessmentsTable from '@/views/assessments/components/AssessmentsTable.vue'
 
 export default {
   name: 'AssessmentsUpcoming',
-  components: { AssessmentsTable, AssessmentPanelBlock },
+  components: { AssessmentsUpcomingWeek, AssessmentsTable },
   props: {
     showCompleted: {
       type: Boolean,
       default: true
-    },
-    groupBy: {
-      type: String,
-      required: true
-    },
-    filter: {
-      type: Array,
-      default: () => []
     },
     showScheduled: {
       type: Boolean,
@@ -118,20 +70,27 @@ export default {
     none () {
       return Object.keys(this.filteredLimitedAssessments).length === 0
     },
+    assessmentsEachWeek () {
+      const weeks = {}
+      const thisWeek = moment().startOf('week')
+
+      for (const assessment of this.filteredLimitedAssessments) {
+        const weeksAway = moment(assessment.date).diff(thisWeek, 'week')
+
+        if (!(weeksAway in weeks)) weeks[weeksAway] = []
+        weeks[weeksAway].push(assessment)
+      }
+
+      return weeks
+    },
     filteredLimitedAssessments () {
       return this.$store.getters.limitedUpcomingAssessments.filter(
         assessment => {
           if (assessment.assessmentType === 'assignment') {
             if (!this.showCompleted && assessment.completed) return false
           }
-          return !this.filter.includes(assessment.courseCRN)
+          return true
         }
-      )
-    },
-    groupedFilteredLimitedAssessments () {
-      return this.$store.getters.groupAssessments(
-        this.groupBy,
-        this.filteredLimitedAssessments
       )
     },
     farFutureUpcomingAssessments () {
@@ -142,118 +101,12 @@ export default {
         if (assessment.assessmentType === 'assignment') {
           if (!this.showCompleted && assessment.completed) return false
         }
-        return !this.filter.includes(assessment.courseCRN)
+        return true
       })
-    }
-  },
-  methods: {
-    headerTitle (key) {
-      if (this.groupBy === 'courseCRN') {
-        return 'Open course modal'
-      } else {
-        const today = moment().startOf('day')
-        const day = moment(key, 'YYYY-MM-DD', true)
-        if (day.diff(today, 'days') > 1) return day.from(today)
-      }
-      return ''
-    },
-    headerText (key) {
-      return this.groupBy === 'courseCRN'
-        ? this.getCourseFromCRN(key).title
-        : this.relativeDateFormat(moment(key, 'YYYY-MM-DD', true))
-    },
-    headerStyle (key) {
-      if (this.groupBy === 'date') return {}
-      let color = this.getCourseFromCRN(key).color
-      if (color.length < 5) {
-        color += color.slice(1)
-      }
-      return {
-        'background-color':
-          this.groupBy === 'courseCRN' ? this.getCourseFromCRN(key).color : 'inherit',
-        color: color.replace('#', '0x') > 0xffffff / 1.2 ? '#333' : '#fff'
-      }
-    },
-    headerClick (key) {
-      if (this.groupBy === 'courseCRN') {
-        this.$store.commit('OPEN_COURSE_MODAL', this.getCourseFromCRN(key))
-      } else {
-        // TODO: this will open DayModal
-        // this.$store.commit('SET_ADD_ASSIGNMENT_MODAL_VALUES', {
-        //   dueDate: moment(key)
-        // });
-        // this.$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL');
-      }
-    },
-    addAssessmentClick (key, assessmentType) {
-      const updates = {}
-      if (this.groupBy === 'courseCRN') {
-        updates.courseCRN = key
-        updates.modalStep = 1
-      } else {
-        updates[assessmentType === 'assignment' ? 'dueDate' : 'date'] = moment(
-          key
-        )
-        updates.modalStep = 0
-      }
-      this.$store.commit(
-        'SET_ADD_' + assessmentType.toUpperCase() + '_MODAL_VALUES',
-        updates
-      )
-      this.$store.commit(
-        'TOGGLE_ADD_' + assessmentType.toUpperCase() + '_MODAL'
-      )
-    },
-    addAssessmentTitle (key, assessmentType) {
-      if (this.groupBy === 'courseCRN') {
-        return `Add new ${this.getCourseFromCRN(key).title} ${assessmentType}`
-      } else {
-        return `Add new ${assessmentType} on ${moment(
-          key,
-          'YYYY-MM-DD',
-          true
-        ).format('M/DD/YY')}`
-      }
-    },
-    relativeDateFormat (dueDate) {
-      if (moment(dueDate).isSame(moment(), 'day')) return 'Today'
-      if (moment(dueDate).isSame(moment().add(1, 'day'), 'day')) {
-        return 'Tomorrow'
-      }
-      return moment(dueDate).format('dddd [the] Do')
-    },
-    daysAway (date) {
-      return moment(date).diff(moment(this.rightNow).startOf('day'), 'days')
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.key-heading {
-  position: relative;
-  span.key.courseCRN {
-    cursor: pointer;
-  }
-
-  .add-assessment-buttons {
-    position: absolute;
-    right: 10px;
-
-    transition: opacity 0.1s;
-    @media only screen and (min-width: 768px) {
-      opacity: 0;
-    }
-    i {
-      cursor: pointer;
-      padding-left: 10px;
-    }
-  }
-
-  &:hover {
-    .add-assessment-buttons {
-      opacity: 1;
-    }
-  }
-}
 </style>

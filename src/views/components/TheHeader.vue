@@ -170,7 +170,7 @@
               <span>About</span>
             </router-link>
           </template>
-          <div
+          <!-- <div
             class="navbar-item has-dropdown is-hoverable toolsDropdown"
           >
             <router-link
@@ -220,8 +220,15 @@
               >
                 RPI Dorm Photos
               </router-link>
+              <router-link
+                class="navbar-item"
+                :to="{name: 'study-groups-home'}"
+                title="Create and join study groups with your peers"
+              >
+                Study Groups
+              </router-link>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="navbar-end">
@@ -264,6 +271,13 @@
               </a>
 
               <div class="navbar-dropdown is-right">
+                <a
+                  v-if="inDevMode"
+                  href="#"
+                  class="navbar-item"
+                  @click="changeDevUser"
+                >Change Dev User</a>
+
                 <router-link
                   v-if="user.admin"
                   class="navbar-item"
@@ -426,6 +440,13 @@ export default {
     }
   },
   methods: {
+    changeDevUser () {
+      const rcsId = prompt('Change dev user to? (RCS ID)')
+      if (rcsId) {
+        localStorage.setItem('devUserRcsId', rcsId)
+        location.reload()
+      }
+    },
     openAnnouncementsModal () {
       // Mark all announcements as seen
       localStorage.setItem(

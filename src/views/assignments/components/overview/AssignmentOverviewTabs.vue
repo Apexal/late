@@ -115,6 +115,26 @@
             <span>Related</span>
           </a>
         </li>
+
+        <li
+          v-if="!assignment.completed && !assignment.passed"
+          class="reminders"
+          :class="{'is-active': tab === 'reminders'}"
+          @click="$emit('set-tab', 'reminders')"
+        >
+          <a>
+            <span class="icon is-small">
+              <i class="fas fa-bell" />
+            </span>
+            <span>Reminders</span>
+            <span
+              v-if="assignment.reminders && assignment.reminders.length > 0"
+              class="tag is-dark comment-count"
+            >{{
+              assignment.reminders.length
+            }}</span>
+          </a>
+        </li>
       </ul>
     </div>
 
@@ -135,6 +155,7 @@ import AssessmentOverviewWorkSchedule from '@/views/assessments/components/overv
 import AssessmentOverviewRelated from '@/views/assessments/components/overview/AssessmentOverviewRelated'
 import AssignmentOverviewTabsSharedInfo from '@/views/assignments/components/overview/AssignmentOverviewTabsSharedInfo'
 import AssessmentOverviewWhiteboard from '@/views/assessments/components/overview/AssessmentOverviewWhiteboard'
+import AssessmentOverviewReminders from '@/views/assessments/components/overview/AssessmentOverviewReminders'
 import AssignmentOverviewTabsTasks from '@/views/assignments/components/overview/AssignmentOverviewTabsTasks'
 
 export default {
@@ -145,6 +166,7 @@ export default {
     AssessmentOverviewRelated,
     AssignmentOverviewTabsSharedInfo,
     AssessmentOverviewWhiteboard,
+    AssessmentOverviewReminders,
     AssignmentOverviewTabsTasks
   },
   props: {
@@ -201,8 +223,19 @@ export default {
         related: 'AssessmentOverviewRelated',
         'shared-info': 'AssignmentOverviewTabsSharedInfo',
         whiteboard: 'AssessmentOverviewWhiteboard',
+        reminders: 'AssessmentOverviewReminders',
         tasks: 'AssignmentOverviewTabsTasks'
       }[this.tab]
+    }
+  },
+  watch: {
+    'assignment.tasks' (tasks) {
+      // If there are tasks, and they are now all completed, prompt the user to toggle the assignment
+      if (tasks.length > 0) {
+        if (tasks.filter(t => t.completed).length === this.assignment.tasks.length && this.assignment.completed === false) {
+          this.$emit('toggle-completed')
+        }
+      }
     }
   },
   methods: {

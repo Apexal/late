@@ -17,7 +17,8 @@ async function getPage (URL) {
 // Function to get Name and Major from Directory
 async function scrapeForName (RCSID) {
   const page = await getPage(RPI_DIRECTORY_BASE_URL + RCSID)
-  return RPI_INFO_BASE_URL + page('.views-field-title a').attr().href
+  const el = page(`.views-field-field-email:contains(${RCSID}@rpi.edu)`).parent().find('a')
+  return RPI_INFO_BASE_URL + el.attr('href')
 }
 
 /**

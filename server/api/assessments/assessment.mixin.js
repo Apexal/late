@@ -34,5 +34,12 @@ module.exports = {
       addedAt: { type: Date, required: true },
       body: { type: String, minlength: 1, maxlength: 2000, required: true }
     }
-  ]
+  ],
+  reminders: [{
+    integration: { type: String, enum: ['discord', 'sms', 'email'], required: true },
+    count: { type: Number, min: 1, max: 100, required: true },
+    unit: { type: String, enum: ['days', 'hours'], required: true },
+    datetime: { type: Date },
+    sent: { type: Boolean, default: false }
+  }]
 }

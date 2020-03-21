@@ -11,7 +11,7 @@ import vm from '@/main'
 import axios from '@/api'
 import moment from 'moment'
 
-const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 14 // How many days away are "Far future assignments"
+const UPCOMING_ASSESSMENTS_DAYS_CUTOFF = 21 // How many days away are "Far future assignments"
 
 const state = {
   upcomingAssessments: []
