@@ -153,7 +153,7 @@ export default {
           component: 'ModalCalendar'
         },
         {
-          label: 'Basic Info',
+          label: 'Title & Details',
           completed: false,
           component: 'ModalTitleAndDescription'
         },
