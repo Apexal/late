@@ -7,13 +7,12 @@
   "scripts": {
     "cypress:open": "./node_modules/.bin/cypress open",
     "build": "vue-cli-service build --target app --modern",
-    "test": "npm run lint",
+    "test": "mocha ./server/test",
     "lint": "vue-cli-service lint --fix",
     "backend": "cross-env NODE_ENV=development nodemon index.js --ignore './src/' --ignore './cypress/'",
     "fix-watch": "echo fs.inotify.max_user_watches=16384 | tee -a /etc/sysctl.conf",
     "frontend": "cross-env PORT=8080 vue-cli-service serve",
-    "start": "cross-env NODE_ENV=production node index.js",
-    "server-test": "mocha ./server/test"
+    "start": "cross-env NODE_ENV=production node index.js"
   },
   "main": "index.js",
   "dependencies": {
