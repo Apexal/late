@@ -1,24 +1,28 @@
-const request = require('request-promise')
-const cheerio = require('cheerio')
+const { JSDOM } = require('jsdom')
 
 const logger = require('./logger')
-const RPI_INFO_BASE_URL = 'https://info.rpi.edu/'
+const RPI_INFO_BASE_URL = 'https://info.rpi.edu'
 const RPI_DIRECTORY_BASE_URL = RPI_INFO_BASE_URL + '/directory-search/'
-
-// Helper function to get a page and return the parsed HTML body with Cheerio
-async function getPage (URL) {
-  const page = await request({
-    uri: URL,
-    transform: body => cheerio.load(body)
-  })
-  return page
-}
 
 // Function to get Name and Major from Directory
 async function scrapeForName (RCSID) {
-  const page = await getPage(RPI_DIRECTORY_BASE_URL + RCSID)
-  const el = page(`.views-field-field-email:contains(${RCSID}@rpi.edu)`).parent().find('a')
-  return RPI_INFO_BASE_URL + el.attr('href')
+  const dom = await JSDOM.fromURL(RPI_DIRECTORY_BASE_URL + RCSID)
+
+  const document = dom.window.document
+  let el = null
+  document.querySelectorAll('.views-field-field-email').forEach(span => {
+    if (span.textContent.trim() === RCSID + '@rpi.edu') {
+      el = span
+    }
+  })
+
+  if (el === null) {
+    throw new Error('Could not find student!')
+  }
+
+  const linkEl = el.parentNode.querySelector('a')
+
+  return linkEl.href
 }
 
 /**
@@ -29,15 +33,16 @@ async function scrapeForName (RCSID) {
  */
 async function getNameAndMajor (RCSID) {
   const directorySearchUrl = await scrapeForName(RCSID)
+  const dom = await JSDOM.fromURL(directorySearchUrl)
+  const document = dom.window.document
 
   const name = {}
 
-  const directoryListingPage = await getPage(directorySearchUrl)
-  const directoryFullName = directoryListingPage('#page-title').html().split(' ')
+  const directoryFullName = document.getElementById('page-title').textContent.trim().split(' ') // directoryListingPage('#page-title').html().split(' ')
   name.first = directoryFullName[0]
   name.last = directoryFullName[1]
 
-  const major = directoryListingPage('.views-field-field-major div').html()
+  const major = document.querySelector('.views-field-field-major div').textContent.trim()
   return { name, major }
 }
 
