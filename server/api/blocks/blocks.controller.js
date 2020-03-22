@@ -258,7 +258,7 @@ async function deleteAssessmentBlock (ctx) {
         }
       })
     assessment._blocks = assessment._blocks.filter(
-      b => b._id !== removedBlock._id
+      b => b.id !== removedBlock.id
     )
 
     await assessment.save()
