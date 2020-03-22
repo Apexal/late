@@ -206,6 +206,24 @@ import '@fullcalendar/timegrid/main.css'
 
 import courses from './202001.json'
 
+/* God bless https://stackoverflow.com/questions/4331092/finding-all-combinations-cartesian-product-of-javascript-array-values */
+function allPossibleCases (arr) {
+  if (arr.length === 0) {
+    return []
+  } else if (arr.length === 1) {
+    return arr[0]
+  } else {
+    var result = []
+    var allCasesOfRest = allPossibleCases(arr.slice(1)) // recur with the rest of array
+    for (var c in allCasesOfRest) {
+      for (var i = 0; i < arr[0].length; i++) {
+        result.push(arr[0][i] + allCasesOfRest[c])
+      }
+    }
+    return result
+  }
+}
+
 export default {
   name: 'SchedulerPlannerPage',
   components: { FullCalendar },
@@ -279,21 +297,8 @@ export default {
       return Object.values(this.groupedCRNs).reduce((acc, arr) => acc * arr.length, 1)
     },
     possibleSchedules () {
-      // Bless me father for I have sinned...
       const vals = Object.values(this.groupedCRNs)
-      const possible = []
-      const possibleCount = this.possibleScheduleCount
-      while (possible.length !== possibleCount) {
-        const result = []
-        for (const arr of vals) {
-          const randomElement = arr[Math.floor(Math.random() * arr.length)]
-          result.push(randomElement)
-        }
-        if (!possible.map(arr => arr.join(',')).find(str => str === result.join(','))) {
-          possible.push(result)
-        }
-      }
-      return possible
+      return allPossibleCases(vals)
     },
     selectedSchedule () {
       return this.possibleSchedules[this.selectedScheduleIndex]
