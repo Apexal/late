@@ -3,8 +3,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN // Your Auth Token from www.twil
 const phoneNumber = process.env.TWILIO_PHONE_NUMBER
 const moment = require('moment')
 
-const Twilio = require('twilio')
-const client = new Twilio(accountSid, authToken)
+const client = require('twilio')(accountSid, authToken)
 
 const sanitizePhoneNumber = number => '+1' + number.replace('-', '')
 
