@@ -1,5 +1,5 @@
 <template>
-  <div class="courses-home">
+  <section class="section courses-home">
     <h1 class="title">
       Courses
     </h1>
@@ -13,7 +13,7 @@
         {{ course._id }} - {{ course.title }}
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>

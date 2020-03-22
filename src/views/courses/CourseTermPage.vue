@@ -7,8 +7,8 @@
       Your peers are in {{ courseGroup.count }} sections
     </h2>
 
-    <div class="columns">
-      <div class="column course-links">
+    <div class="columns is-multiline">
+      <div class="column is-half course-links">
         <div class="box">
           <h2 class="subtitle">
             Links
@@ -36,14 +36,32 @@
         </div>
       </div>
 
-      <div class="column">
+      <div class="column is-half">
         <div class="box">
           <h2 class="subtitle">
-            Study Groups
+            Upcoming Study Groups
           </h2>
           <p class="has-text-grey">
             Coming soon...
           </p>
+
+          <a
+            href="#"
+            class="button is-link"
+          >Create Study Group</a>
+        </div>
+      </div>
+
+      <div class="column is-half">
+        <div class="box">
+          <h2 class="subtitle">
+            Recent Backwork
+          </h2>
+
+          <a
+            href="#"
+            class="button is-link"
+          >Browse Backwork</a>
         </div>
       </div>
     </div>
