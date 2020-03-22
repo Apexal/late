@@ -78,8 +78,17 @@
                 class="vertical"
                 style="flex: 1"
               >
-                <span>{{ course.title }}</span>
-                <small>{{ selectedSubjectCode }}-{{ course.number }} <span class="tag is-small">{{ course.sections.length }} sections</span></small>
+                <strong>{{ course.title }}</strong>
+                <small>
+                  {{ selectedSubjectCode }}-{{ course.number }}
+                  <div
+                    class="tags"
+                    style="display: inline-block"
+                  >
+                    <span class="tag is-small">{{ course.sections.length }} sections</span>
+                    <span class="tag is-smal">{{ totalCredits(course) }} credits</span>
+                  </div>
+                </small>
               </div>
               <span class="icon">
                 <i class="fas fa-chevron-down" />
@@ -154,6 +163,11 @@ export default {
       }
 
       return grouped
+    }
+  },
+  methods: {
+    totalCredits (course) {
+      return [...new Set(course.sections.map(section => section.credits))].join(' or ')
     }
   }
 }
