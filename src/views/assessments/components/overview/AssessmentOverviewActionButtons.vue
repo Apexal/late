@@ -12,7 +12,7 @@
         <i class="fas fa-edit" />
         Edit {{ capitalizedAssessmentType }}
       </b-button>
-      <b-button
+      <!-- <b-button
         v-if="assessmentType === 'assignment' && isOwner"
         type="is-link"
         class="tooltip is-tooltip-top share-assignment"
@@ -21,7 +21,7 @@
       >
         <i class="fas fa-users" />
         {{ assessment.shared ? "Stop Sharing" : "Share" }}
-      </b-button>
+      </b-button> -->
       <b-button
         class="is-pulled-right copy-assessment"
         @click="$emit('copy-assessment')"
