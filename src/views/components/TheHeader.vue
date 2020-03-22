@@ -157,7 +157,52 @@
                 </a>
               </div>
             </div>
+            <div
+              v-if="!onBreak"
+              class="navbar-item has-dropdown is-hoverable"
+            >
+              <router-link
+                :to="{name: 'schedule-planner'}"
+                class="navbar-link coursework-link"
+                title="Manage your assignments and exams!"
+              >
+                <span class="icon">
+                  <i class="fas fa-users" />
+                </span>
+                <span>Collaboration</span>
+              </router-link>
 
+              <div class="navbar-dropdown">
+                <a
+                  class="navbar-item has-text-grey"
+                  href="#"
+                  title="(coming soon) See what your peers have though about courses!"
+                >
+                  Course Opinions
+                </a>
+                <a
+                  class="navbar-item has-text-grey"
+                  href="#"
+                  title="(coming soon) View and contribute past assignments, exams, etc. from courses!"
+                >
+                  Backwork Database
+                </a>
+                <router-link
+                  class="navbar-item"
+                  :to="{name: 'study-groups-home'}"
+                  title="Find times to meet with your peers"
+                >
+                  Study Groups
+                </router-link>
+                <a
+                  class="navbar-item has-text-grey"
+                  href="#"
+                  title="(coming soon) Find peers willing to help you out!"
+                >
+                  Peer Help
+                </a>
+              </div>
+            </div>
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
@@ -177,16 +222,9 @@
                 <router-link
                   class="navbar-item"
                   :to="{name: 'schedule-planner'}"
-                  title="View upcoming assessments"
+                  title="Plan course sections"
                 >
                   Plan Course Schedule
-                </router-link>
-                <router-link
-                  class="navbar-item"
-                  :to="{name: 'coursework-past'}"
-                  title="Browse all past assessments"
-                >
-                  Find Meeting Times
                 </router-link>
               </div>
             </div>
