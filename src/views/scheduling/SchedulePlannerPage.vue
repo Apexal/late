@@ -76,7 +76,7 @@
           >
             <div
               class="is-flex course-summary"
-              @click="selectedCourseNumber = selectedCourseNumber === '' ? course.number : ''"
+              @click="selectedCourseNumber = selectedCourseNumber === course.number ? '' : course.number"
             >
               <div
                 class="vertical"
@@ -103,7 +103,7 @@
               class="course-details"
             >
               <p>Course description here...</p>
-              <table class="table is-narrow is-fullwidth">
+              <table class="table is-narrow is-hoverable is-fullwidth">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -142,6 +142,29 @@
       </div>
 
       <div class="column">
+        <div class="buttons">
+          <button
+            class="button"
+            :disabled="selectedScheduleIndex <= 0"
+            @click="selectedScheduleIndex -= 1"
+          >
+            <span class="icon">
+              <i class="fas fa-chevron-left" />
+            </span>
+          </button>
+          <h1>{{ selectedScheduleIndex + 1 }} / {{ possibleScheduleCount }}</h1>
+
+          <button
+            class="button"
+            :disabled="selectedScheduleIndex >= possibleScheduleCount - 1"
+            @click="selectedScheduleIndex += 1"
+          >
+            <span class="icon">
+              <i class="fas fa-chevron-right" />
+
+            </span>
+          </button>
+        </div>
         <FullCalendar
           :plugins="calendar.plugins"
           :header="calendar.header"
@@ -153,7 +176,7 @@
           max-time="22:00:00"
           default-view="timeGridWeek"
           height="auto"
-          :events="periodEvents"
+          :events="selectedScheduleEvents"
         />
       </div>
     </div>
@@ -196,7 +219,8 @@ export default {
       selectedSubjectCode: '',
       selectedCourseNumber: '',
       hoveredCRN: '',
-      selectedCRNs: []
+      selectedCRNs: [],
+      selectedScheduleIndex: 0
     }
   },
   computed: {
@@ -214,11 +238,11 @@ export default {
     selectedSections () {
       return courses.map(course => course.sections).flat().filter(section => this.selectedCRNs.includes(section.crn))
     },
-    selectedPeriods () {
-      return this.selectedSections.map(section => section.periods).flat()
+    selectedSchedulePeriods () {
+      return this.selectedSections.filter(section => this.selectedSchedule.includes(section.crn)).map(section => section.periods).flat()
     },
-    periodEvents () {
-      return this.selectedPeriods.map(this.mapPeriodToEvent).concat(this.hoveredEvents)
+    selectedScheduleEvents () {
+      return this.selectedSchedulePeriods.map(this.mapPeriodToEvent).concat(this.hoveredEvents)
     },
     hoveredEvents () {
       if (!this.hoveredCRN || this.selectedCRNs.includes(this.hoveredCRN)) return []
@@ -230,6 +254,38 @@ export default {
           ...this.mapPeriodToEvent(period),
           color: 'lightblue'
         }))
+    },
+    groupedCRNs () {
+      const grouped = {}
+      for (const section of this.selectedSections) {
+        const key = section.courseSubjectCode + section.courseNumber
+        if (!grouped[key]) grouped[key] = []
+        grouped[key].push(section.crn)
+      }
+      return grouped
+    },
+    possibleScheduleCount () {
+      return Object.values(this.groupedCRNs).reduce((acc, arr) => acc * arr.length, 1)
+    },
+    possibleSchedules () {
+      // Bless me father for I have sinned...
+      const vals = Object.values(this.groupedCRNs)
+      const possible = []
+      const possibleCount = this.possibleScheduleCount
+      while (possible.length !== possibleCount) {
+        const result = []
+        for (const arr of vals) {
+          const randomElement = arr[Math.floor(Math.random() * arr.length)]
+          result.push(randomElement)
+        }
+        if (!possible.map(arr => arr.join(',')).find(str => str === result.join(','))) {
+          possible.push(result)
+        }
+      }
+      return possible
+    },
+    selectedSchedule () {
+      return this.possibleSchedules[this.selectedScheduleIndex]
     }
   },
   methods: {
