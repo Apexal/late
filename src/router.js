@@ -315,6 +315,14 @@ const router = new Router({
       }
     },
     {
+      path: '/scheduling/plan',
+      name: 'schedule-planner',
+      component: () => import('@/views/scheduling/SchedulePlannerPage.vue'),
+      meta: {
+        title: 'Schedule Planner'
+      }
+    },
+    {
       path: '/account',
       component: () => import('@/views/account/AccountPage.vue'),
       meta: {

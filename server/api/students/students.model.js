@@ -181,12 +181,12 @@ schema.methods.getUserAssignments = function ({
 
   if (start) {
     query.dueDate = query.dueDate || {}
-    query.dueDate['$gte'] = moment(start, 'YYYY-MM-DD', true).toDate()
+    query.dueDate.$gte = moment(start, 'YYYY-MM-DD', true).toDate()
   }
 
   if (end) {
     query.dueDate = query.dueDate || {}
-    query.dueDate['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate()
+    query.dueDate.$lte = moment(end, 'YYYY-MM-DD', true).toDate()
   }
 
   if (title) {
@@ -234,12 +234,12 @@ schema.methods.getExams = function (start, end, title, courseCRN) {
 
   if (start) {
     query.date = query.date || {}
-    query.date['$gte'] = moment(start, 'YYYY-MM-DD', true).toDate()
+    query.date.$gte = moment(start, 'YYYY-MM-DD', true).toDate()
   }
 
   if (end) {
     query.date = query.date || {}
-    query.date['$lte'] = moment(end, 'YYYY-MM-DD', true).toDate()
+    query.date.$lte = moment(end, 'YYYY-MM-DD', true).toDate()
   }
 
   if (title) {

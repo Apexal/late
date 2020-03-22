@@ -39,7 +39,7 @@
       </ul>
     </div>
 
-    <AssessmentsFilterModal
+    <!-- <AssessmentsFilterModal
       :open="filtersModalOpen"
       :filter="hiddenCourseCRNs"
       :show-show-completed="true"
@@ -53,7 +53,7 @@
       @change-group-by="groupBy = $event"
       @toggle-show-scheduled="showScheduled = !showScheduled"
       @close-modal="filtersModalOpen = false"
-    />
+    /> -->
 
     <transition
       name="slide-left"
@@ -61,23 +61,21 @@
     >
       <router-view
         class="child-view"
-        :group-by="groupBy"
         :show-completed="showCompleted"
         :show-scheduled="showScheduled"
-        :filter="hiddenCourseCRNs"
       />
     </transition>
     <hr>
     <div class="buttons">
       <b-button
-        title="Change how assignments and exams are shown"
-        :type="isFilterActive ? 'is-warning' : undefined"
-        @click="filtersModalOpen = true"
+        title="Show completed assignments?"
+        :type="showCompleted ? '' : 'is-warning'"
+        @click="showCompleted = !showCompleted"
       >
         <span class="icon">
           <i class="fas fa-filter" />
         </span>
-        <span>Filters</span>
+        <span>{{ showCompleted ? "Showing" : "Hiding" }} completed</span>
       </b-button>
       <span class="spacer" />
       <b-button
@@ -108,26 +106,18 @@
 </template>
 
 <script>
-import AssessmentsFilterModal from '@/views/assessments/components/AssessmentsFilterModal'
 
 export default {
   name: 'AssessmentsPage',
-  components: { AssessmentsFilterModal },
   data () {
     return {
-      groupBy: 'date',
       showCompleted: true,
-      showScheduled: true,
-      hiddenCourseCRNs: [],
-      filtersModalOpen: false
+      showScheduled: true
     }
   },
   computed: {
     view () {
       return this.$route.name
-    },
-    isFilterActive () {
-      return this.hiddenCourseCRNs.length > 0 || !this.showCompleted
     },
     title () {
       return this.$route.meta.title
@@ -142,9 +132,6 @@ export default {
         type: 'is-info',
         duration: 1000
       })
-    },
-    groupBy (newGroupBy) {
-      localStorage.setItem('assessmentsGroupBy', newGroupBy)
     },
     showScheduled (nowShowing) {
       localStorage.setItem('assignmentsShowScheduled', nowShowing)
@@ -175,43 +162,10 @@ export default {
         localStorage.removeItem('assignmentsShowScheduled')
       }
     }
-    if (localStorage.getItem('assessmentsGroupBy')) {
-      try {
-        this.groupBy = localStorage.getItem('assessmentsGroupBy') || 'date'
-        if (this.groupBy !== 'courseCRN' && this.groupBy !== 'date') {
-          throw new Error(
-            'Invalid value for assessmentsGroupBy in localStorage'
-          )
-        }
-      } catch (e) {
-        localStorage.removeItem('assessmentsGroupBy')
-      }
-    }
   },
   methods: {
     course (ex) {
       return this.$store.getters.getCourseFromCRN(ex.courseCRN)
-    },
-    isFiltered (c) {
-      return this.filter.includes(c.crn)
-    },
-    toggleFilter (c) {
-      // TODO change word assessments to exam or assignment depending on type
-      if (this.filter.includes(c.crn)) {
-        this.filter.splice(this.filter.indexOf(c.crn), 1)
-        this.$buefy.toast.open({
-          message: `Showing '${c.title}' coursework.`,
-          type: 'is-info',
-          duration: 1000
-        })
-      } else {
-        this.filter.push(c.crn)
-        this.$buefy.toast.open({
-          message: `Hiding '${c.title}' coursework.`,
-          type: 'is-info',
-          duration: 1000
-        })
-      }
     }
   }
 }

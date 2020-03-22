@@ -144,7 +144,7 @@ export default {
           component: 'ModalCalendar'
         },
         {
-          label: 'Basic Info',
+          label: 'Title & Details',
           completed: false,
           component: 'ModalTitleAndDescription'
         },
@@ -259,7 +259,7 @@ export default {
 
       // Update global state if they are not in the past
       if (
-        moment(request.data.createdExam.dueDate).isAfter(
+        moment(request.data.createdExam.date).isAfter(
           moment().startOf('day')
         )
       ) {

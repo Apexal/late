@@ -185,7 +185,7 @@ export default {
           active: true
         },
         {
-          label: 'Basic Info',
+          label: 'Title & Details',
           step: 2,
           completed: true,
           active: false
@@ -237,13 +237,13 @@ export default {
     convertAssignment (assignment) {
       const data = Object.assign({}, assignment)
       data.dueDate = moment(assignment.dueDate).format('YYYY-MM-DD')
-      let time, hour, minute, isAm
+      let time, hour, isAm
 
       time = moment(assignment.dueDate).format('HH:mm')
       time = time.split(':')
 
       hour = parseInt(time[0])
-      minute = parseInt(time[1])
+      const minute = parseInt(time[1])
 
       if (hour > 12) {
         hour -= 12
@@ -261,11 +261,9 @@ export default {
 
       this.loading = true
       // TODO: error handle
-      let request
 
       const complete = this.steps.some(step => !step.completed)
 
-      let time
       let hour = parseInt(this.assignment.timeHour)
       let minute = parseInt(this.assignment.timeMinute)
 
@@ -293,11 +291,11 @@ export default {
       if (minute > 0 && minute < 10) {
         minute = '0' + minute
       }
-      time = hour + ':' + minute
+      const time = hour + ':' + minute
 
       this.loading = true
 
-      request = await this.$http.patch(
+      const request = await this.$http.patch(
         `/assignments/a/${this.assignment._id}`,
         {
           title: this.assignment.title,

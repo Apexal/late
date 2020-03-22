@@ -157,17 +157,77 @@
                 </a>
               </div>
             </div>
-
-            <router-link
-              class="navbar-item"
-              :to="{name: 'courses'}"
-              title="Backwork, study groups, and more"
+            <div
+              v-if="!onBreak"
+              class="navbar-item has-dropdown is-hoverable"
             >
-              <span class="icon">
-                <i class="fas fa-chalkboard-teacher" />
-              </span>
-              <span>Courses</span>
-            </router-link>
+              <router-link
+                :to="{name: 'courses'}"
+                class="navbar-link coursework-link"
+                title="Backwork, study groups, and more!"
+              >
+                <span class="icon">
+                  <i class="fas fa-users" />
+                </span>
+                <span>Collaboration</span>
+              </router-link>
+
+              <div class="navbar-dropdown">
+                <a
+                  class="navbar-item has-text-grey"
+                  href="#"
+                  title="(coming soon) See what your peers have though about courses!"
+                >
+                  Course Opinions
+                </a>
+                <a
+                  class="navbar-item has-text-grey"
+                  href="#"
+                  title="(coming soon) View and contribute past assignments, exams, etc. from courses!"
+                >
+                  Backwork Database
+                </a>
+                <router-link
+                  class="navbar-item"
+                  :to="{name: 'study-groups-home'}"
+                  title="Find times to meet with your peers"
+                >
+                  Study Groups
+                </router-link>
+                <a
+                  class="navbar-item has-text-grey"
+                  href="#"
+                  title="(coming soon) Find peers willing to help you out!"
+                >
+                  Peer Help
+                </a>
+              </div>
+            </div>
+            <div
+              v-if="!onBreak"
+              class="navbar-item has-dropdown is-hoverable"
+            >
+              <router-link
+                :to="{name: 'schedule-planner'}"
+                class="navbar-link coursework-link"
+                title="Manage your assignments and exams!"
+              >
+                <span class="icon">
+                  <i class="far fa-calendar-alt" />
+                </span>
+                <span>Scheduling</span>
+              </router-link>
+
+              <div class="navbar-dropdown">
+                <router-link
+                  class="navbar-item"
+                  :to="{name: 'schedule-planner'}"
+                  title="Plan course sections"
+                >
+                  Plan Course Schedule
+                </router-link>
+              </div>
+            </div>
           </template>
           <template v-else>
             <router-link
@@ -181,7 +241,7 @@
               <span>About</span>
             </router-link>
           </template>
-          <div
+          <!-- <div
             class="navbar-item has-dropdown is-hoverable toolsDropdown"
           >
             <router-link
@@ -239,7 +299,7 @@
                 Study Groups
               </router-link>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="navbar-end">

@@ -103,7 +103,7 @@ import SISMan from '@/views/sisman/components/SISMan'
 import account from '@/mixins/account'
 
 import Konami from 'konami'
-import reverse from '@/modules/konami'
+// import reverse from '@/modules/konami'
 
 export default {
   name: 'LATE',
@@ -223,7 +223,7 @@ export default {
     }
 
     const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
-    reverse.addReverse()
+    // reverse.addReverse()
     console.log(this.sistext)
     console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px')
   },
@@ -445,6 +445,12 @@ footer.footer {
     margin-right: 2px;
   }
 }
+
+// .fc-time-grid-event:hover {
+//   min-height: fit-content !important;
+//   z-index: 100 !important;
+//   box-shadow: 1px 1px 2px white;
+// }
 
 .fc-content {
   .delete {

@@ -29,50 +29,6 @@
           <b>{{ scheduledMinutes }}</b> min
         </b-progress>
       </div>
-      <div class="columns percents">
-        <!-- <div
-          class="column is-one-half tooltip"
-          :data-tooltip="scheduledPercent + '% scheduled'"
-        >
-          <div class="is-narrow">
-            You've scheduled
-            <b>{{ scheduledMinutes }}</b> out of
-            <b>{{ totalEstimatedMinutes }}</b>
-            minutes to {{ assessmentType === "assignment" ? "work" : "study" }}.
-          </div>
-          <div class>
-            <progress
-              class="progress is-info"
-              :value="scheduledMinutes"
-              :max="totalEstimatedMinutes"
-            >
-              {{ scheduledPercent }}%
-            </progress>
-          </div>
-        </div> -->
-
-        <!-- <div
-          class="column is-one-half tooltip"
-          :data-tooltip="finishedPercent + '% finished'"
-        >
-          <div class="is-narrow">
-            You've finished
-            <b>{{ finishedMinutes }}</b> out of
-            <b>{{ scheduledMinutes }}</b>
-            scheduled minutes to
-            {{ assessmentType === "assignment" ? "work" : "study" }}.
-          </div>
-          <div class>
-            <progress
-              class="progress is-success"
-              :value="finishedMinutes"
-              :max="scheduledMinutes"
-            >
-              {{ finishedPercent }}%
-            </progress>
-          </div>
-        </div> -->
-      </div>
     </div>
 
     <b-taglist v-if="assessment.shared">
@@ -494,10 +450,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.box.percents {
-  padding: 10px;
-}
-
 .collaborator {
   cursor: pointer;
 }

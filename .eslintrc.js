@@ -3,9 +3,10 @@ module.exports = {
   env: {
     node: true
   },
-  'extends': [
+  extends: [
     'plugin:vue/recommended',
-    '@vue/standard'
+    '@vue/standard',
+    'plugin:cypress/recommended'
   ],
   rules: {
     'no-debugger': 'off',
