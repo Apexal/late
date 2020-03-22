@@ -157,6 +157,39 @@
                 </a>
               </div>
             </div>
+
+            <div
+              v-if="!onBreak"
+              class="navbar-item has-dropdown is-hoverable"
+            >
+              <router-link
+                :to="{name: 'schedule-planner'}"
+                class="navbar-link coursework-link"
+                title="Manage your assignments and exams!"
+              >
+                <span class="icon">
+                  <i class="far fa-calendar-alt" />
+                </span>
+                <span>Scheduling</span>
+              </router-link>
+
+              <div class="navbar-dropdown">
+                <router-link
+                  class="navbar-item"
+                  :to="{name: 'schedule-planner'}"
+                  title="View upcoming assessments"
+                >
+                  Plan Course Schedule
+                </router-link>
+                <router-link
+                  class="navbar-item"
+                  :to="{name: 'coursework-past'}"
+                  title="Browse all past assessments"
+                >
+                  Find Meeting Times
+                </router-link>
+              </div>
+            </div>
           </template>
           <template v-else>
             <router-link
