@@ -10,7 +10,9 @@
         :key="course._id"
         class="box"
       >
-        {{ course._id }} - {{ course.title }}
+        <router-link :to="{name: 'course', params: {courseSummary: course._id.replace(' ', '-')}}">
+          {{ course._id }} - {{ course.title }}
+        </router-link>
       </div>
     </div>
   </section>
