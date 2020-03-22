@@ -5,7 +5,7 @@
     </h1>
 
     <div class="columns">
-      <div class="column">
+      <div class="column is-half is-full-tablet">
         <div class="tabs">
           <ul>
             <li
@@ -32,24 +32,27 @@
               Subjects
             </p>
           </div>
-          <div
-            v-for="(fullTitle, subjectCode) in subjectCodes"
-            :key="subjectCode"
-            class="panel-block"
-            @click="selectedSubjectCode = subjectCode"
-          >
+          <div class="scroll">
             <div
-              class="vertical"
-              style="flex: 1"
+              v-for="(fullTitle, subjectCode) in subjectCodes"
+              :key="subjectCode"
+              class="panel-block subject-code-block"
+              @click="selectedSubjectCode = subjectCode"
             >
-              <span>{{ fullTitle }}</span>
-              <small>{{ subjectCode }}</small>
+              <div
+                class="vertical"
+                style="flex: 1"
+              >
+                <span>{{ fullTitle }}</span>
+                <small>{{ subjectCode }}</small>
+              </div>
+              <span class="icon">
+                <i class="fas fa-chevron-right" />
+              </span>
             </div>
-            <span class="icon">
-              <i class="fas fa-chevron-right" />
-            </span>
           </div>
         </div>
+
         <div
           v-else
           class="panel"
@@ -69,73 +72,76 @@
               </button>
             </p>
           </div>
-          <div
-            v-for="course in coursesGroupedBySubjectCode[selectedSubjectCode]"
-            :key="course.number"
-            class="panel-block course-block"
-          >
+          <div class="scroll">
             <div
-              class="is-flex course-summary"
-              @click="selectedCourseNumber = selectedCourseNumber === course.number ? '' : course.number"
+              v-for="course in coursesGroupedBySubjectCode[selectedSubjectCode]"
+              :key="course.number"
+              class="panel-block course-block"
             >
               <div
-                class="vertical"
-                style="flex: 1"
+                class="is-flex course-summary"
+                @click="selectedCourseNumber = selectedCourseNumber === course.number ? '' : course.number"
               >
-                <strong>{{ course.title }}</strong>
-                <small>
-                  {{ selectedSubjectCode }}-{{ course.number }}
-                  <div
-                    class="tags"
-                    style="display: inline-block"
-                  >
-                    <span class="tag is-small">{{ course.sections.length }} sections</span>
-                    <span class="tag is-smal">{{ totalCredits(course) }} credits</span>
-                  </div>
-                </small>
+                <div
+                  class="vertical"
+                  style="flex: 1"
+                >
+                  <strong>{{ course.title }}</strong>
+                  <small>
+                    {{ selectedSubjectCode }}-{{ course.number }}
+                    <div
+                      class="tags"
+                      style="display: inline-block"
+                    >
+                      <span class="tag is-small">{{ course.sections.length }} sections</span>
+                      <span class="tag is-smal">{{ totalCredits(course) }} credits</span>
+                      <!-- <span class="tag is-small is-danger">conflicts</span> -->
+                    </div>
+                  </small>
+                </div>
+                <span class="icon">
+                  <i class="fas fa-chevron-down" />
+                </span>
               </div>
-              <span class="icon">
-                <i class="fas fa-chevron-down" />
-              </span>
-            </div>
-            <div
-              v-if="selectedCourseNumber === course.number"
-              class="course-details"
-            >
-              <p>Course description here...</p>
-              <table class="table is-narrow is-hoverable is-fullwidth">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>CRN</th>
-                    <th>Instructors</th>
-                    <th>Mon</th>
-                    <th>Tue</th>
-                    <th>Wed</th>
-                    <th>Thu</th>
-                    <th>Fri</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="section in course.sections"
-                    :key="section.crn"
-                    :class="{'is-selected': selectedCRNs.includes(section.crn)}"
-                    @mouseover="hoveredCRN = section.crn"
-                    @mouseout="hoveredCRN = ''"
-                    @click="toggleCRN(section.crn)"
-                  >
-                    <td>{{ section.sectionId }}</td>
-                    <td>{{ section.crn }}</td>
-                    <td>{{ section.instructors.join(', ') }}</td>
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                  </tr>
-                </tbody>
-              </table>
+              <div
+                v-if="selectedCourseNumber === course.number"
+                class="course-details"
+              >
+                <p><em>Course description here...</em></p>
+                <table class="table is-narrow is-hoverable is-fullwidth">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>CRN</th>
+                      <th>Instructors</th>
+                      <th>Mon</th>
+                      <th>Tue</th>
+                      <th>Wed</th>
+                      <th>Thu</th>
+                      <th>Fri</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="section in course.sections"
+                      :key="section.crn"
+                      :class="{'is-selected': selectedCRNs.includes(section.crn)}"
+                      @mouseover="hoveredCRN = section.crn"
+                      @mouseout="hoveredCRN = ''"
+                      @click="toggleCRN(section.crn)"
+                    >
+                      <td>{{ section.sectionId }}</td>
+                      <td>{{ section.crn }}</td>
+                      <td>{{ section.instructors.join(', ') }}</td>
+                      <td />
+                      <td />
+                      <td />
+                      <td />
+                      <td />
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -328,12 +334,39 @@ export default {
     flex-direction: column;
   }
 
-  .course-summary {
+  .course-summary, .subject-code-block {
     width: 100%;
+    cursor: pointer;
+    align-items: center;
+  }
+
+  span.icon {
+    font-size: 1.2em;
+  }
+
+  .subject-code-block {
+    span.icon {
+      transition: 0.3s transform;
+    }
+    &:hover {
+      span.icon {
+        transform: translateX(5px);
+      }
+    }
   }
 
   .course-block {
     display: block;
+  }
+
+  .scroll {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    // table {
+    //   overflow-x: auto;
+    // }
   }
 }
 </style>
