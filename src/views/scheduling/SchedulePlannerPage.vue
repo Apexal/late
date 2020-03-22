@@ -65,15 +65,19 @@
                 <span class="icon">
                   <i class="fas fa-chevron-left" />
                 </span>
+                <span>Subjects</span>
               </button>
             </p>
           </div>
           <div
             v-for="course in coursesGroupedBySubjectCode[selectedSubjectCode]"
             :key="course.number"
-            class="panel-block"
+            class="panel-block course-block"
           >
-            <div class="is-flex course-summary">
+            <div
+              class="is-flex course-summary"
+              @click="selectedCourseNumber = selectedCourseNumber === '' ? course.number : ''"
+            >
               <div
                 class="vertical"
                 style="flex: 1"
@@ -94,6 +98,45 @@
                 <i class="fas fa-chevron-down" />
               </span>
             </div>
+            <div
+              v-if="selectedCourseNumber === course.number"
+              class="course-details"
+            >
+              <p>Course description here...</p>
+              <table class="table is-narrow is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>CRN</th>
+                    <th>Instructors</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="section in course.sections"
+                    :key="section.crn"
+                    :class="{'is-selected': selectedCRNs.includes(section.crn)}"
+                    @mouseover="hoveredCRN = section.crn"
+                    @mouseout="hoveredCRN = ''"
+                    @click="toggleCRN(section.crn)"
+                  >
+                    <td>{{ section.sectionId }}</td>
+                    <td>{{ section.crn }}</td>
+                    <td>{{ section.instructors.join(', ') }}</td>
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -110,6 +153,7 @@
           max-time="22:00:00"
           default-view="timeGridWeek"
           height="auto"
+          :events="periodEvents"
         />
       </div>
     </div>
@@ -149,7 +193,10 @@ export default {
         CSCI: 'Computer Science',
         ITWS: 'Information Tech and Web Science'
       },
-      selectedSubjectCode: ''
+      selectedSubjectCode: '',
+      selectedCourseNumber: '',
+      hoveredCRN: '',
+      selectedCRNs: []
     }
   },
   computed: {
@@ -163,11 +210,47 @@ export default {
       }
 
       return grouped
+    },
+    selectedSections () {
+      return courses.map(course => course.sections).flat().filter(section => this.selectedCRNs.includes(section.crn))
+    },
+    selectedPeriods () {
+      return this.selectedSections.map(section => section.periods).flat()
+    },
+    periodEvents () {
+      return this.selectedPeriods.map(this.mapPeriodToEvent).concat(this.hoveredEvents)
+    },
+    hoveredEvents () {
+      if (!this.hoveredCRN || this.selectedCRNs.includes(this.hoveredCRN)) return []
+      return courses.map(course => course.sections)
+        .flat()
+        .find(section => section.crn === this.hoveredCRN)
+        .periods
+        .map(period => ({
+          ...this.mapPeriodToEvent(period),
+          color: 'lightblue'
+        }))
     }
   },
   methods: {
     totalCredits (course) {
       return [...new Set(course.sections.map(section => section.credits))].join(' or ')
+    },
+    toggleCRN (crn) {
+      if (this.selectedCRNs.includes(crn)) {
+        this.selectedCRNs = this.selectedCRNs.filter(oldCRN => oldCRN !== crn)
+      } else {
+        this.selectedCRNs.push(crn)
+      }
+    },
+    mapPeriodToEvent (period) {
+      return {
+        title: period.courseTitle + ' ' + period.periodType,
+        startTime: period.startTime,
+        endTime: period.endTime,
+        daysOfWeek: period.days,
+        crn: period.crn
+      }
     }
   }
 }
@@ -191,6 +274,10 @@ export default {
 
   .course-summary {
     width: 100%;
+  }
+
+  .course-block {
+    display: block;
   }
 }
 </style>
