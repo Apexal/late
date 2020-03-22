@@ -99,6 +99,12 @@
                     </div>
                   </small>
                 </div>
+                <span
+                  class="icon"
+                  @click.stop="addCourseSections(course)"
+                >
+                  <i class="fas fa-folder-plus" />
+                </span>
                 <span class="icon">
                   <i class="fas fa-chevron-down" />
                 </span>
@@ -167,7 +173,6 @@
           >
             <span class="icon">
               <i class="fas fa-chevron-right" />
-
             </span>
           </button>
         </div>
@@ -304,6 +309,9 @@ export default {
       } else {
         this.selectedCRNs.push(crn)
       }
+    },
+    addCourseSections (course) {
+      this.selectedCRNs = [...new Set(this.selectedCRNs.concat(course.sections.map(section => section.crn)))]
     },
     mapPeriodToEvent (period) {
       return {
