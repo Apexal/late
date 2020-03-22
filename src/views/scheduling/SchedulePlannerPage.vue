@@ -304,6 +304,11 @@ export default {
       return this.possibleSchedules[this.selectedScheduleIndex]
     }
   },
+  watch: {
+    possibleSchedules (newSchedules) {
+      if (this.selectedScheduleIndex >= newSchedules.length) { this.selectedScheduleIndex = Math.max(newSchedules.length - 1, 0) }
+    }
+  },
   methods: {
     totalCredits (course) {
       return [...new Set(course.sections.map(section => section.credits))].join(' or ')
