@@ -8,14 +8,20 @@
       <div class="column">
         <div class="tabs">
           <ul>
-            <li><a>Offered Courses</a></li>
-            <li><a>Selected Sections</a></li>
+            <li
+              :class="{'is-active': viewing === 'offered'}"
+              @click="viewing = 'offered'"
+            >
+              <a>Offered Courses</a>
+            </li>
+            <li
+              :class="{'is-active': viewing === 'selected'}"
+              @click="viewing = 'selected'"
+            >
+              <a>Selected Sections</a>
+            </li>
           </ul>
         </div>
-
-        <h2 class="subtitle">
-          Offered Courses
-        </h2>
 
         <div
           v-if="!selectedSubjectCode"
@@ -32,10 +38,16 @@
             class="panel-block"
             @click="selectedSubjectCode = subjectCode"
           >
-            <div class="vertical">
+            <div
+              class="vertical"
+              style="flex: 1"
+            >
               <span>{{ fullTitle }}</span>
               <small>{{ subjectCode }}</small>
             </div>
+            <span class="icon">
+              <i class="fas fa-chevron-right" />
+            </span>
           </div>
         </div>
         <div
@@ -123,6 +135,7 @@ export default {
           right: ''
         }
       },
+      viewing: 'offered',
       subjectCodes: {
         CSCI: 'Computer Science',
         ITWS: 'Information Tech and Web Science'
