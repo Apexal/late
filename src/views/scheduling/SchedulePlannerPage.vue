@@ -188,6 +188,52 @@
               class="tag is-dark"
             >{{ crn }}</span>
           </div>
+
+          <div class="box">
+            <form>
+              <div class="block">
+                <label class="label">When do you prefer classes to start?</label>
+                <b-radio
+                  v-model="parameters.startTime"
+                  name="startTime"
+                  native-value="early morning"
+                >
+                  Early morning
+                </b-radio>
+                <b-radio
+                  v-model="parameters.startTime"
+                  name="startTime"
+                  native-value="morning"
+                >
+                  Morning
+                </b-radio>
+                <b-radio
+                  v-model="parameters.startTime"
+                  name="startTime"
+                  native-value="noon"
+                >
+                  Noon
+                </b-radio>
+              </div>
+              <div class="block">
+                <label class="label">How do you prefer your weekly schedule spread?</label>
+                <b-radio
+                  v-model="parameters.spread"
+                  name="spread"
+                  native-value="condensed"
+                >
+                  Condensed
+                </b-radio>
+                <b-radio
+                  v-model="parameters.spread"
+                  name="spread"
+                  native-value="spread out"
+                >
+                  Spread out
+                </b-radio>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -270,7 +316,11 @@ export default {
       hoveredCRN: '',
       selectedCRNs: [],
       selectedScheduleIndex: 0,
-      courseSearch: ''
+      courseSearch: '',
+      parameters: {
+        startTime: 'early morning',
+        spread: 'condensed'
+      }
     }
   },
   computed: {
@@ -322,7 +372,9 @@ export default {
 
       const vals = Object.values(this.groupedCRNs)
       if (vals.length === 0) return []
-      return vals.reduce((acc, curr) => acc.flatMap(c => curr.map(n => [].concat(c, n))))
+      const possible = vals.reduce((acc, curr) => acc.flatMap(c => curr.map(n => [].concat(c, n))))
+      if (typeof possible[0] === 'string') return possible.map(p => [p])
+      return possible
     },
     selectedSchedule () {
       return this.possibleSchedules[this.selectedScheduleIndex]
@@ -428,6 +480,10 @@ export default {
 
   .panel-block.is-selected {
     border-left: 4px solid #70cad1;
+  }
+
+  tr {
+    cursor: pointer;
   }
 }
 </style>
