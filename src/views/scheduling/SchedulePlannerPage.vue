@@ -248,11 +248,14 @@
               <i class="fas fa-chevron-left" />
             </span>
           </button>
-          <h1>{{ selectedScheduleIndex + 1 }} / {{ possibleScheduleCount }}</h1>
-
+          <h1>{{ selectedScheduleIndex + 1 }} / {{ possibleSchedules.length || 1 }}</h1>
+          <span
+            v-if="!hasNoConflicts(selectedSchedule)"
+            class="tag is-danger"
+          >CONFLICTS</span>
           <button
             class="button"
-            :disabled="selectedScheduleIndex >= possibleScheduleCount - 1"
+            :disabled="selectedScheduleIndex >= possibleSchedules.length - 1"
             @click="selectedScheduleIndex += 1"
           >
             <span class="icon">
@@ -279,6 +282,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -317,6 +322,7 @@ export default {
       selectedCRNs: [],
       selectedScheduleIndex: 0,
       courseSearch: '',
+      includeConflicts: false,
       parameters: {
         startTime: 'early morning',
         spread: 'condensed'
@@ -364,9 +370,6 @@ export default {
       }
       return grouped
     },
-    possibleScheduleCount () {
-      return Object.values(this.groupedCRNs).reduce((acc, arr) => acc * arr.length, 1)
-    },
     possibleSchedules () {
       /* God bless https://stackoverflow.com/questions/12303989/cartesian-product-of-multiple-arrays-in-javascript/57597533#57597533 */
 
@@ -374,7 +377,8 @@ export default {
       if (vals.length === 0) return []
       const possible = vals.reduce((acc, curr) => acc.flatMap(c => curr.map(n => [].concat(c, n))))
       if (typeof possible[0] === 'string') return possible.map(p => [p])
-      return possible
+
+      return this.includeConflicts ? possible : possible.filter(this.hasNoConflicts)
     },
     selectedSchedule () {
       return this.possibleSchedules[this.selectedScheduleIndex]
@@ -422,6 +426,24 @@ export default {
         color: 'white',
         classNames: 'has-background-primary'
       }
+    },
+    hasNoConflicts (crns) {
+      const periods = this.selectedSections.filter(section => crns.includes(section.crn)).map(section => section.periods).flat()
+      // Look for overlaps
+      for (const period1 of periods) {
+        const start1 = moment(period1.startTime, 'HH:mm').add(period1.days[0], 'days')
+        const end1 = moment(period1.endTime, 'HH:mm').add(period1.days[0], 'days')
+        for (const period2 of periods) {
+          if (period1 === period2) continue
+
+          const start2 = moment(period2.startTime, 'HH:mm').add(period2.days[0], 'days')
+          const end2 = moment(period2.endTime, 'HH:mm').add(period2.days[0], 'days')
+
+          if (start2.isBetween(start1, end1) || end2.isBetween(start1, end1) || start1.isSame(start2) || start1.isSame(end2) || end1.isSame(start2) || end1.isSame(end2)) return false
+        }
+      }
+
+      return true
     }
   }
 }
