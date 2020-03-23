@@ -73,9 +73,31 @@
               </button>
             </p>
           </div>
+          <div class="panel-block">
+            <p class="control has-icons-left">
+              <input
+                v-model.trim="courseSearch"
+                class="input"
+                type="text"
+                placeholder="Search courses"
+              >
+              <span class="icon is-left">
+                <i
+                  class="fas fa-search"
+                  aria-hidden="true"
+                />
+              </span>
+            </p>
+          </div>
           <div class="scroll">
             <div
-              v-for="course in coursesGroupedBySubjectCode[selectedSubjectCode]"
+              v-if="selectedSubjectCourses.length === 0"
+              class="panel-block has-text-grey"
+            >
+              No courses found matching your search!
+            </div>
+            <div
+              v-for="course in selectedSubjectCourses"
               :key="course.number"
               class="panel-block course-block"
               :class="{'is-selected': courseHasSelectedSections(course)}"
@@ -251,7 +273,8 @@ export default {
       selectedCourseNumber: '',
       hoveredCRN: '',
       selectedCRNs: [],
-      selectedScheduleIndex: 0
+      selectedScheduleIndex: 0,
+      courseSearch: ''
     }
   },
   computed: {
@@ -304,6 +327,13 @@ export default {
     },
     selectedSchedule () {
       return this.possibleSchedules[this.selectedScheduleIndex]
+    },
+    selectedSubjectCourses () {
+      if (this.courseSearch === '') {
+        return this.coursesGroupedBySubjectCode[this.selectedSubjectCode]
+      }
+
+      return this.coursesGroupedBySubjectCode[this.selectedSubjectCode].filter(course => course.title.toLowerCase().includes(this.courseSearch.toLowerCase()))
     }
   },
   watch: {
