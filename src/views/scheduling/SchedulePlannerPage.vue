@@ -37,6 +37,7 @@
               v-for="(fullTitle, subjectCode) in subjectCodes"
               :key="subjectCode"
               class="panel-block subject-code-block"
+              :class="{'is-selected': subjectHasSelectedSections(subjectCode)}"
               @click="selectedSubjectCode = subjectCode"
             >
               <div
@@ -77,6 +78,7 @@
               v-for="course in coursesGroupedBySubjectCode[selectedSubjectCode]"
               :key="course.number"
               class="panel-block course-block"
+              :class="{'is-selected': courseHasSelectedSections(course)}"
             >
               <div
                 class="is-flex course-summary"
@@ -320,6 +322,12 @@ export default {
         this.selectedCRNs.push(crn)
       }
     },
+    subjectHasSelectedSections (subjectCode) {
+      return this.selectedSections.some(section => section.courseSubjectCode === subjectCode)
+    },
+    courseHasSelectedSections (course) {
+      return course.sections.some(section => this.selectedSections.includes(section))
+    },
     addCourseSections (course) {
       this.selectedCRNs = [...new Set(this.selectedCRNs.concat(course.sections.map(section => section.crn)))]
     },
@@ -329,7 +337,9 @@ export default {
         startTime: period.startTime,
         endTime: period.endTime,
         daysOfWeek: period.days,
-        crn: period.crn
+        crn: period.crn,
+        color: 'white',
+        classNames: 'has-background-primary'
       }
     }
   }
@@ -385,6 +395,10 @@ export default {
     // table {
     //   overflow-x: auto;
     // }
+  }
+
+  .panel-block.is-selected {
+    border-left: 4px solid #70cad1;
   }
 }
 </style>
