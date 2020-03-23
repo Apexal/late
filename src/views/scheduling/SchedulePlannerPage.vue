@@ -4,183 +4,211 @@
       Course Schedule Planner
     </h1>
 
-    <div class="columns">
-      <div class="column is-half is-full-tablet">
-        <div class="tabs">
-          <ul>
-            <li
-              :class="{'is-active': viewing === 'offered'}"
-              @click="viewing = 'offered'"
-            >
-              <a>Offered Courses</a>
-            </li>
-            <li
-              :class="{'is-active': viewing === 'selected'}"
-              @click="viewing = 'selected'"
-            >
-              <a>Selected Sections</a>
-            </li>
-          </ul>
-        </div>
-
-        <div
-          v-if="viewing === 'offered'"
-          class="offered-courses"
+    <div class="tabs">
+      <ul>
+        <li
+          :class="{'is-active': viewing === 'offered'}"
+          @click="viewing = 'offered'"
         >
+          <a>Offered Courses</a>
+        </li>
+        <li
+          :class="{'is-active': viewing === 'selected'}"
+          @click="viewing = 'selected'"
+        >
+          <a>Selected Sections</a>
+        </li>
+      </ul>
+    </div>
+
+    <div
+      v-if="viewing === 'offered'"
+      class="offered-courses"
+    >
+      <div
+        v-if="!selectedSubjectCode"
+        class="panel"
+      >
+        <div class="panel-heading">
+          <p class="panel-title">
+            Subjects
+          </p>
+        </div>
+        <div class="scroll">
           <div
-            v-if="!selectedSubjectCode"
-            class="panel"
+            v-for="(fullTitle, subjectCode) in subjectCodes"
+            :key="subjectCode"
+            class="panel-block subject-code-block"
+            :class="{'is-selected': subjectHasSelectedSections(subjectCode)}"
+            @click="selectedSubjectCode = subjectCode"
           >
-            <div class="panel-heading">
-              <p class="panel-title">
-                Subjects
-              </p>
+            <div
+              class="vertical"
+              style="flex: 1"
+            >
+              <span>{{ fullTitle }}</span>
+              <small>{{ subjectCode }}</small>
             </div>
-            <div class="scroll">
-              <div
-                v-for="(fullTitle, subjectCode) in subjectCodes"
-                :key="subjectCode"
-                class="panel-block subject-code-block"
-                :class="{'is-selected': subjectHasSelectedSections(subjectCode)}"
-                @click="selectedSubjectCode = subjectCode"
-              >
-                <div
-                  class="vertical"
-                  style="flex: 1"
-                >
-                  <span>{{ fullTitle }}</span>
-                  <small>{{ subjectCode }}</small>
-                </div>
-                <span class="icon">
-                  <i class="fas fa-chevron-right" />
-                </span>
-              </div>
-            </div>
+            <span class="icon">
+              <i class="fas fa-chevron-right" />
+            </span>
           </div>
+        </div>
+      </div>
 
+      <div
+        v-else
+        class="panel"
+      >
+        <div class="panel-heading">
+          <p class="panel-title">
+            {{ selectedSubjectCode }} Courses
+
+            <button
+              class="button is-small is-pulled-right"
+              @click="selectedSubjectCode = ''"
+            >
+              <span class="icon">
+                <i class="fas fa-chevron-left" />
+              </span>
+              <span>Subjects</span>
+            </button>
+          </p>
+        </div>
+        <div class="panel-block">
+          <p class="control has-icons-left">
+            <input
+              v-model.trim="courseSearch"
+              class="input"
+              type="text"
+              placeholder="Search courses"
+            >
+            <span class="icon is-left">
+              <i
+                class="fas fa-search"
+                aria-hidden="true"
+              />
+            </span>
+          </p>
+        </div>
+        <div class="scroll">
           <div
-            v-else
-            class="panel"
+            v-if="selectedSubjectCourses.length === 0"
+            class="panel-block has-text-grey"
           >
-            <div class="panel-heading">
-              <p class="panel-title">
-                {{ selectedSubjectCode }} Courses
-
-                <button
-                  class="button is-small is-pulled-right"
-                  @click="selectedSubjectCode = ''"
-                >
-                  <span class="icon">
-                    <i class="fas fa-chevron-left" />
-                  </span>
-                  <span>Subjects</span>
-                </button>
-              </p>
-            </div>
-            <div class="panel-block">
-              <p class="control has-icons-left">
-                <input
-                  v-model.trim="courseSearch"
-                  class="input"
-                  type="text"
-                  placeholder="Search courses"
-                >
-                <span class="icon is-left">
-                  <i
-                    class="fas fa-search"
-                    aria-hidden="true"
-                  />
-                </span>
-              </p>
-            </div>
-            <div class="scroll">
+            No courses found matching your search!
+          </div>
+          <div
+            v-for="course in selectedSubjectCourses"
+            :key="course.number"
+            class="panel-block course-block"
+            :class="{'is-selected': courseHasSelectedSections(course)}"
+          >
+            <div
+              class="is-flex course-summary"
+              @click="selectedCourseNumber = selectedCourseNumber === course.number ? '' : course.number"
+            >
               <div
-                v-if="selectedSubjectCourses.length === 0"
-                class="panel-block has-text-grey"
+                class="vertical"
+                style="flex: 1"
               >
-                No courses found matching your search!
-              </div>
-              <div
-                v-for="course in selectedSubjectCourses"
-                :key="course.number"
-                class="panel-block course-block"
-                :class="{'is-selected': courseHasSelectedSections(course)}"
-              >
-                <div
-                  class="is-flex course-summary"
-                  @click="selectedCourseNumber = selectedCourseNumber === course.number ? '' : course.number"
-                >
+                <strong>{{ course.title }}</strong>
+                <small>
+                  {{ selectedSubjectCode }}-{{ course.number }}
                   <div
-                    class="vertical"
-                    style="flex: 1"
+                    class="tags"
+                    style="display: inline-block"
                   >
-                    <strong>{{ course.title }}</strong>
-                    <small>
-                      {{ selectedSubjectCode }}-{{ course.number }}
-                      <div
-                        class="tags"
-                        style="display: inline-block"
-                      >
-                        <span class="tag is-small">{{ course.sections.length }} sections</span>
-                        <span class="tag is-smal">{{ totalCredits(course) }} credits</span>
-                      <!-- <span class="tag is-small is-danger">conflicts</span> -->
-                      </div>
-                    </small>
+                    <span class="tag is-small">{{ course.sections.length }} sections</span>
+                    <span class="tag is-smal">{{ totalCredits(course) }} credits</span>
+                    <!-- <span class="tag is-small is-danger">conflicts</span> -->
                   </div>
-                  <span
-                    class="icon"
-                    @click.stop="addCourseSections(course)"
-                  >
-                    <i class="fas fa-folder-plus" />
-                  </span>
-                  <span class="icon">
-                    <i class="fas fa-chevron-down" />
-                  </span>
-                </div>
-                <div
-                  v-if="selectedCourseNumber === course.number"
-                  class="course-details"
-                >
-                  <p><em>Course description here...</em></p>
-                  <table class="table is-narrow is-hoverable is-fullwidth">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>CRN</th>
-                        <th>Instructors</th>
-                        <th>Mon</th>
-                        <th>Tue</th>
-                        <th>Wed</th>
-                        <th>Thu</th>
-                        <th>Fri</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="section in course.sections"
-                        :key="section.crn"
-                        :class="{'is-selected': selectedCRNs.includes(section.crn)}"
-                        @mouseover="hoveredCRN = section.crn"
-                        @mouseout="hoveredCRN = ''"
-                        @click="toggleCRN(section.crn)"
-                      >
-                        <td>{{ section.sectionId }}</td>
-                        <td>{{ section.crn }}</td>
-                        <td>{{ section.instructors.join(', ') }}</td>
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                </small>
               </div>
+              <span
+                class="icon"
+                @click.stop="addCourseSections(course)"
+              >
+                <i class="fas fa-folder-plus" />
+              </span>
+              <span class="icon">
+                <i class="fas fa-chevron-down" />
+              </span>
+            </div>
+            <div
+              v-if="selectedCourseNumber === course.number"
+              class="course-details"
+            >
+              <p><em>Course description here...</em></p>
+              <table class="table is-narrow is-hoverable is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>CRN</th>
+                    <th>Instructors</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="section in course.sections"
+                    :key="section.crn"
+                    :class="{'is-selected': selectedCRNs.includes(section.crn)}"
+                    @mouseover="hoveredCRN = section.crn"
+                    @mouseout="hoveredCRN = ''"
+                    @click="toggleCRN(section.crn)"
+                  >
+                    <td>{{ section.sectionId }}</td>
+                    <td>{{ section.crn }}</td>
+                    <td>{{ section.instructors.join(', ') }}</td>
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-        <div v-else-if="viewing === 'selected'">
+      </div>
+    </div>
+    <div
+      v-else-if="viewing === 'selected'"
+      class="columns"
+    >
+      <div class="columns">
+        <div class="column is-one-third">
+          <div class="buttons">
+            <button
+              class="button"
+              :disabled="selectedScheduleIndex <= 0"
+              @click="selectedScheduleIndex -= 1"
+            >
+              <span class="icon">
+                <i class="fas fa-chevron-left" />
+              </span>
+            </button>
+            <h1>{{ selectedScheduleIndex + 1 }} / {{ possibleSchedules.length || 1 }}</h1>
+            <span
+              v-if="!hasNoConflicts(selectedSchedule)"
+              class="tag is-danger"
+            >CONFLICTS</span>
+            <button
+              class="button"
+              :disabled="selectedScheduleIndex >= possibleSchedules.length - 1"
+              @click="selectedScheduleIndex += 1"
+            >
+              <span class="icon">
+                <i class="fas fa-chevron-right" />
+              </span>
+            </button>
+          </div>
           <div class="tags">
             <span
               v-for="crn in selectedSchedule"
@@ -188,7 +216,6 @@
               class="tag is-dark"
             >{{ crn }}</span>
           </div>
-
           <div class="box">
             <form>
               <div class="block">
@@ -235,47 +262,21 @@
             </form>
           </div>
         </div>
-      </div>
-
-      <div class="column">
-        <div class="buttons">
-          <button
-            class="button"
-            :disabled="selectedScheduleIndex <= 0"
-            @click="selectedScheduleIndex -= 1"
-          >
-            <span class="icon">
-              <i class="fas fa-chevron-left" />
-            </span>
-          </button>
-          <h1>{{ selectedScheduleIndex + 1 }} / {{ possibleSchedules.length || 1 }}</h1>
-          <span
-            v-if="!hasNoConflicts(selectedSchedule)"
-            class="tag is-danger"
-          >CONFLICTS</span>
-          <button
-            class="button"
-            :disabled="selectedScheduleIndex >= possibleSchedules.length - 1"
-            @click="selectedScheduleIndex += 1"
-          >
-            <span class="icon">
-              <i class="fas fa-chevron-right" />
-            </span>
-          </button>
+        <div class="column">
+          <FullCalendar
+            :plugins="calendar.plugins"
+            :header="calendar.header"
+            :weekends="false"
+            :column-header-format="calendar.columnHeaderFormat"
+            slot-duration="01:00:00"
+            :all-day-slot="false"
+            min-time="08:00:00"
+            max-time="22:00:00"
+            default-view="timeGridWeek"
+            height="auto"
+            :events="selectedScheduleEvents"
+          />
         </div>
-        <FullCalendar
-          :plugins="calendar.plugins"
-          :header="calendar.header"
-          :weekends="false"
-          :column-header-format="calendar.columnHeaderFormat"
-          slot-duration="01:00:00"
-          :all-day-slot="false"
-          min-time="08:00:00"
-          max-time="22:00:00"
-          default-view="timeGridWeek"
-          height="auto"
-          :events="selectedScheduleEvents"
-        />
       </div>
     </div>
   </section>
@@ -504,7 +505,7 @@ export default {
     border-left: 4px solid #70cad1;
   }
 
-  tr {
+  .panel tr {
     cursor: pointer;
   }
 }

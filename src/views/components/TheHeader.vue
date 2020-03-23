@@ -157,7 +157,7 @@
                 </a>
               </div>
             </div>
-            <div
+            <!-- <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
@@ -202,7 +202,7 @@
                   Peer Help
                 </a>
               </div>
-            </div>
+            </div> -->
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
