@@ -173,7 +173,7 @@ export default {
 }
 
 .assessment.is-completed {
-  border-left: 4px solid green;
+  border-left: 4px solid #48c774;
 }
 
 .vertical {
