@@ -169,13 +169,17 @@ export default {
     async addTodo () {
       if (!this.newTodo) return
 
+      const split = this.newTodo.split('and')
+      split.forEach(this.addTodoFromArray)
+    },
+    async addTodoFromArray (todo, index, array) {
       try {
-        await this.$store.dispatch('ADD_TODO', this.newTodo)
+        await this.$store.dispatch('ADD_TODO', todo)
         this.$buefy.toast.open({
           type: 'is-success',
-          message: `Added to-do '${this.newTodo}'.`
+          message: `Added to-do '${todo}'.`
         })
-        this.newTodo = ''
+        this.newTodo = '' // reset global todo string
       } catch (e) {
         this.$buefy.toast.open({
           message: e.response.data.message,
