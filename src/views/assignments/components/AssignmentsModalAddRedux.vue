@@ -269,8 +269,13 @@ export default {
         })
         return
       }
+      // Fix multiple assignments being add with same description
       if (this.$store.state.assessments.upcomingAssessments.find(assessment => assessment.title === this.title && assessment.courseCRN === this.courseCRN && moment(assessment.dueDate).isSame(this.dueDate, 'day'))) {
-        alert('You\'ve already added this assignment!')
+        // Allow user to cancel adding repeat assignment
+        if (confirm("You've already added an assignment with this name. Do you want to cancel?")) {
+          this.$emit('toggle-modal')
+          return
+        }
       }
       let request
       try {
