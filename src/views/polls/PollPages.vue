@@ -10,7 +10,7 @@ polls from MongoDB and display them on separate pages
       v-if="length === 0"
       style="font-size: 1.5em; padding-top: 1em; text-align: center;"
     >
-      There no current polls
+      No current polls at the moment
     </div>
     <div v-if="length > 0">
       <ul>
