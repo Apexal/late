@@ -382,6 +382,7 @@ export default {
       return this.includeConflicts ? possible : possible.filter(this.hasNoConflicts)
     },
     selectedSchedule () {
+      if (!this.possibleSchedules.length) return []
       return this.possibleSchedules[this.selectedScheduleIndex]
     },
     selectedSubjectCourses () {
@@ -429,6 +430,8 @@ export default {
       }
     },
     hasNoConflicts (crns) {
+      if (crns === undefined || !crns.length) return false
+
       const periods = this.selectedSections.filter(section => crns.includes(section.crn)).map(section => section.periods).flat()
       // Look for overlaps
       for (const period1 of periods) {
