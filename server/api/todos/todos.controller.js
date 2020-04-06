@@ -5,12 +5,13 @@ const logger = require('../../modules/logger')
  * Fetches a list of ALL todos for the current user, including todos completed over 30 days ago.
  *
  * **Response JSON**
- * - todos: list of user's todo objects
+ * - todos: list of user's Todo documents
  */
-module.exports.getTodos = async function getTodos (ctx) {
+module.exports.getTodos = async function (ctx) {
   const todos = await Todo.find({
     _student: ctx.state.user._id
   }).populate('_blocks')
+
   return ctx.ok({ todos })
 }
 
@@ -21,7 +22,7 @@ module.exports.getTodos = async function getTodos (ctx) {
  * **Response JSON**
  * - todos: list of user's recent todos
  */
-module.exports.getRecentTodos = async function getRecentTodos (ctx) {
+module.exports.getRecentTodos = async function (ctx) {
   const todos = await Todo.find({
     _student: ctx.state.user._id,
     completed: { $not: { $lt: new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000)) } }
@@ -36,9 +37,9 @@ module.exports.getRecentTodos = async function getRecentTodos (ctx) {
  * - text: the todo text string
  *
  * **Response JSON**
- * - createdTodo: the new todo object
+ * - createdTodo: the new Todo document
  */
-module.exports.createTodo = async function createTodo (ctx) {
+module.exports.createTodo = async function (ctx) {
   const { text } = ctx.request.body
   const createdTodo = Todo({
     _student: ctx.state.user._id,
@@ -65,7 +66,7 @@ module.exports.createTodo = async function createTodo (ctx) {
  * **Response JSON**
  * - todo: the updated todo object
  */
-module.exports.updateTodo = async function updateTodo (ctx) {
+module.exports.updateTodo = async function (ctx) {
   const { todoID } = ctx.params
   const { text, completed } = ctx.request.body
   const todo = await Todo.findOne({
@@ -98,9 +99,9 @@ module.exports.updateTodo = async function updateTodo (ctx) {
  * Deletes the logged in user's todo with ID `todoID`.
  *
  * **Response JSON**
- * - deletedTodo: the deleted todo object
+ * - deletedTodo: the deleted Todo document
  */
-module.exports.deleteTodo = async function deleteTodo (ctx) {
+module.exports.deleteTodo = async function (ctx) {
   const { todoID } = ctx.params
   const deletedTodo = await Todo.findOne({
     _id: todoID,
@@ -111,7 +112,7 @@ module.exports.deleteTodo = async function deleteTodo (ctx) {
     return ctx.notFound('No todo item could be found that matches this criteria.')
   }
 
-  deletedTodo.remove()
+  await deletedTodo.remove()
 
   logger.info(`Deleted todo for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedTodo })
