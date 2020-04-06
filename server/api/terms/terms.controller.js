@@ -1,15 +1,15 @@
 const logger = require('../../modules/logger')
 const moment = require('moment')
-
+const { findOneOr404 } = require('../utils')
 const Term = require('./terms.model')
 
 /**
  * Get all terms sorted in descending order of start date.
  *
  * **Response JSON**
- * - terms: array of sorted term objects
+ * - terms: array of sorted Term documents
  **/
-module.exports.getTerms = async function getTerms (ctx) {
+module.exports.getTerms = async function (ctx) {
   let terms
 
   try {
@@ -35,9 +35,9 @@ module.exports.getTerms = async function getTerms (ctx) {
  * - classesEndDate: date of lass class day before finals
  *
  * **Response JSON**
- * - createdTerm: object
+ * - createdTerm: the created Term document
  **/
-module.exports.createTerm = async function createTerm (ctx) {
+module.exports.createTerm = async function (ctx) {
   if (!ctx.state.user.admin) return ctx.forbidden('Only admins can add terms.')
 
   const { name, code, startDate, classesEndDate, endDate } = ctx.request.body
@@ -84,24 +84,18 @@ module.exports.createTerm = async function createTerm (ctx) {
  * Update a term with ID specified by paramter termID with data in request body. Admins only.
  *
  * **Request Body**
- * - *term object*
+ * - *term object properties*
  *
  * **Response JSON**
- * - updatedTerm: object
+ * - updatedTerm: the updated Term document
  */
-module.exports.updateTerm = async function updateTerm (ctx) {
+module.exports.updateTerm = async function (ctx) {
   if (!ctx.state.user.admin) return ctx.forbidden('Only admins can update terms.')
 
   const { termID } = ctx.params
 
   // Attempt to find the term by its ID
-  let updatedTerm
-  try {
-    updatedTerm = await Term.findById(termID)
-  } catch (e) {
-    logger.error(`Failed to find term to update for ${ctx.state.user.identifier}: ${e}`)
-    return ctx.notFound(`Could not find term with ID ${termID}`)
-  }
+  const updatedTerm = await findOneOr404(ctx, Term.findById(termID))
 
   // Update the term by applying the values in request body to it
   updatedTerm.set(ctx.request.body)
@@ -114,7 +108,7 @@ module.exports.updateTerm = async function updateTerm (ctx) {
     return ctx.badRequest('Could not save updates to term.')
   }
 
-  logger.info(`${ctx.state.user.identifier} updated term ${updateTerm.name}`)
+  logger.info(`${ctx.state.user.identifier} updated term ${updatedTerm.name}`)
 
   return ctx.ok({ updatedTerm })
 }

@@ -1,6 +1,8 @@
 const Announcement = require('./announcements.model')
 const logger = require('../../modules/logger')
 
+const { findOneOr404 } = require('../utils')
+
 /**
  * Fetches all announcements.
  *
@@ -66,13 +68,10 @@ module.exports.editAnnouncement = async function (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!')
   }
-  const announcementID = ctx.params.announcementID
-  const body = ctx.request.body
-  const updatedAnnouncement = await Announcement.findOne({
-    _id: announcementID
-  })
+  const { announcementID } = ctx.params
+  const { body } = ctx.request
 
-  if (!updatedAnnouncement) return ctx.notFound('Could not find announcement.')
+  const updatedAnnouncement = await findOneOr404(ctx, Announcement.findById(announcementID))
 
   if ('title' in body) updatedAnnouncement.title = body.title
   if ('body' in body) updatedAnnouncement.body = body.body
@@ -105,16 +104,13 @@ module.exports.deleteAnnouncement = async function (ctx) {
     return ctx.forbidden('You are not an administrator!')
   }
   const { announcementID } = ctx.params
-  const deletedAnnouncement = await Announcement.findOne({
-    _id: announcementID
-  })
 
-  if (!deletedAnnouncement) {
-    return ctx.notFound('Couldn\'t find the announcement!')
-  }
+  const deletedAnnouncement = await findOneOr404(ctx, Announcement.findOne({
+    _id: announcementID
+  }))
 
   await deletedAnnouncement.remove()
 
-  logger.info(`Deleted announcement for ${ctx.state.user.identifier}`)
+  logger.info(`Deleted announcement ${announcementID} for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedAnnouncement })
 }
