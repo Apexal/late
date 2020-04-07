@@ -2,10 +2,12 @@ const Checklist = require('./checklists.model')
 const logger = require('../../modules/logger')
 
 const { findOneOr404 } = require('../utils')
+
 /**
- * Get all non-private checklists.
+ * Get the checklist of the current logged in student if it exists.
  *
- * @param {Koa context} ctx
+ * **Response JSON**
+ * - checklist: the found Checklist document if it exists
  */
 module.exports.getStudentChecklist = async function (ctx) {
   const checklist = await findOneOr404(ctx, Checklist.findOne({
@@ -20,9 +22,10 @@ module.exports.getStudentChecklist = async function (ctx) {
 }
 
 /**
- * Get a public checklist by its ID
+ * Get a public checklist by its ID `checklistID`
  *
- * @param {Koa context} ctx
+ * **Request JSON**
+ * - checklist: the found Checklist document
  */
 module.exports.getChecklist = async function (ctx) {
   const { checklistID } = ctx.params
@@ -39,6 +42,13 @@ module.exports.getChecklist = async function (ctx) {
   })
 }
 
+/**
+ * Create or update the current student's checklist.
+ *
+ * **Request Body**
+ * - categories: an array of the checklist categories
+ * - private: if the checklist is private or not
+ */
 module.exports.createOrUpdateChecklist = async function (ctx) {
   // DO NOT USE findOr404 since we want to create if does not exist
   let checklist
