@@ -47,7 +47,7 @@
             <tbody>
               <tr
                 v-for="p in sortedPeriods"
-                :key="p.day + p.start"
+                :key="p.day + p.startTime"
               >
                 <td>{{ day(p.day) }}</td>
                 <td>
@@ -291,13 +291,13 @@
                 </td>
                 <td>
                   <input
-                    v-model="newPeriod.start"
+                    v-model="newPeriod.startTime"
                     class="input time-input is-small"
                     type="time"
                   >
                   <span class="has-text-grey-light">-</span>
                   <input
-                    v-model="newPeriod.end"
+                    v-model="newPeriod.endTime"
                     class="input time-input is-small"
                     type="time"
                   >
@@ -402,8 +402,8 @@ export default {
       periodTypes: ['LEC', 'REC', 'LAB', 'TES', 'STU', 'MET'],
       newPeriod: {
         day: undefined,
-        start: '08:00',
-        end: '09:50',
+        startTime: '08:00',
+        endTime: '09:50',
         location: '',
         type: 'LEC'
       }
@@ -549,11 +549,11 @@ export default {
         message: `Remove <b>${this.courseData.title} ${this.type(
           periodToRemove.type
         )}</b> period on ${this.day(periodToRemove.day)} from <b>${moment(
-          periodToRemove.start,
+          periodToRemove.startTime,
           'HH:mm',
           true
         ).format('h:mma')}</b> to <b>${moment(
-          periodToRemove.end,
+          periodToRemove.endTime,
           'HH:mm',
           true
         ).format('h:mma')}</b>?`,
@@ -564,7 +564,7 @@ export default {
           this.editedPeriods = this.editedPeriods.filter(
             p =>
               !(
-                p.day === periodToRemove.day && p.start === periodToRemove.start
+                p.day === periodToRemove.day && p.startTime === periodToRemove.startTime
               )
           )
         }
@@ -574,23 +574,23 @@ export default {
       // Validate
       if (
         this.newPeriod.location.length === 0 ||
-        !this.newPeriod.start ||
-        !this.newPeriod.end
+        !this.newPeriod.startTime ||
+        !this.newPeriod.endTime
       ) {
         return this.showError('Make sure the time and location is set!')
       }
       // Remeber to convert start/end from HH:mm to HH:mm
       this.editedPeriods.push(
         Object.assign({}, this.newPeriod, {
-          start: moment(this.newPeriod.start, 'HH:mm', true).format('HH:mm'),
-          end: moment(this.newPeriod.end, 'HH:mm', true).format('HH:mm')
+          startTime: moment(this.newPeriod.startTime, 'HH:mm', true).format('HH:mm'),
+          endTime: moment(this.newPeriod.endTime, 'HH:mm', true).format('HH:mm')
         })
       )
 
       this.newPeriod = {
         day: 1,
-        start: '08:00',
-        end: '09:50',
+        startTime: '08:00',
+        endTime: '09:50',
         location: '',
         type: 'LEC'
       }
