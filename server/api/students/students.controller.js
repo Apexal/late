@@ -239,6 +239,9 @@ async function editStudent (ctx) {
 
   delete ctx.request.body._id // Cannot change a user's _id!
   delete ctx.request.body.rcs_id // Cannot change a user's rcs_id!
+  if (ctx.request.body.admin && ctx.request.body.admin === false && student.admin) {
+    return ctx.forbidden('Admins cannot demote other admins!')
+  }
   student.set(ctx.request.body)
 
   try {
