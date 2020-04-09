@@ -325,6 +325,19 @@ async function addCourseBlock (ctx) {
 
   await course.save()
 
+  // Attempt to create a Google Calendar event for this block
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.createEventFromBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, course, createdCourseBlock)
+    } catch (e) {
+      logger.error(
+        `Failed to add GCal event for course block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      )
+    }
+  }
+
   ctx.created({
     updatedCourse: course,
     createdCourseBlock
@@ -519,6 +532,21 @@ async function addTodoBlock (ctx) {
 
   todo._blocks.push(createdTodoBlock)
   await todo.save()
+
+  // Attempt to create a Google Calendar event for this block
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.createEventFromBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, todo, createdTodoBlock)
+    } catch (e) {
+      logger.error(
+        `Failed to add GCal event for todo block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      )
+
+      console.error(e)
+    }
+  }
 
   ctx.created({
     updatedTodo: todo,

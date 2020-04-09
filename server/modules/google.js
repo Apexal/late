@@ -87,6 +87,7 @@ const actions = {
     } else if (block.blockType === 'todo') {
       colorId = 12
       summary = `Work on TODO ${item.text}`
+      description = 'TODO'
       extendedPrivateProperties = {
         todoID: item.id
       }
@@ -97,6 +98,7 @@ const actions = {
       calendarId: user.integrations.google.calendarID,
       requestBody: {
         colorId,
+        location: block.location,
         summary,
         description,
         guestsCanInviteOthers: false,
