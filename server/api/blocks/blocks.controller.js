@@ -93,7 +93,7 @@ async function addAssessmentBlock (ctx) {
   // Attempt to create a Google Calendar event for this block
   if (ctx.state.user.integrations.google.calendarID) {
     try {
-      await google.actions.createEventFromWorkBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock)
+      await google.actions.createEventFromBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock)
     } catch (e) {
       logger.error(
         `Failed to add GCal event for work block for ${

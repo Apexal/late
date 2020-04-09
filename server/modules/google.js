@@ -31,37 +31,66 @@ function createUrl (auth) {
 const scopes = ['https://www.googleapis.com/auth/calendar']
 
 const actions = {
-  async createEventFromWorkBlock (googleAuth, currentTerm, user, assessment, block) {
-    const { assessmentType } = assessment
+
+  async createEventFromBlock (googleAuth, currentTerm, user, item, block) {
     const calendar = google.calendar({
       version: 'v3',
       auth: googleAuth
     })
 
-    // Link to assessment
-    const assessmentURL = `${
-      process.env.BASE_URL
-    }/coursework/${assessmentType.charAt(0)}/${assessment._id}`
+    let colorId, summary, description, source, extendedPrivateProperties
 
-    // Find course associated with this block
-    const course = await user.courseFromCRN(
-      currentTerm.code,
-      assessment.courseCRN
-    )
-    const capitalizedAssessmentType =
-    assessmentType === 'assignment' ? 'Assignment' : 'Exam'
+    if (block.blockType === 'assessment') {
+      const assessment = item
+      const { assessmentType } = assessment
 
-    const colorId = assessment.assessmentType === 'assignment' ? 9 : 11
-    // Event title
-    const summary = `${
-      assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for'
-    } ${assessment.title}`
+      // Link to assessment
+      const assessmentURL = `${
+        process.env.BASE_URL
+      }/coursework/${assessmentType.charAt(0)}/${assessment._id}`
 
-    const description = `<b>${
-      course.title
-    } ${capitalizedAssessmentType}</b> <i>${
-      assessment.title
-    }</i><br><blockquote>${assessment.description}</blockquote><br>${assessmentURL}`
+      // Find course associated with this block
+      const course = await user.courseFromCRN(
+        currentTerm.code,
+        assessment.courseCRN
+      )
+      const capitalizedAssessmentType =
+      assessmentType === 'assignment' ? 'Assignment' : 'Exam'
+
+      colorId = assessment.assessmentType === 'assignment' ? 9 : 11
+      // Event title
+      summary = `${
+        assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for'
+      } ${assessment.title}`
+
+      description = `<b>${
+        course.title
+      } ${capitalizedAssessmentType}</b> <i>${
+        assessment.title
+      }</i><br><blockquote>${assessment.description}</blockquote><br>${assessmentURL}`
+
+      source = {
+        title: assessment.title,
+        url: assessmentURL
+      }
+
+      extendedPrivateProperties = {
+        assessmentID: assessment._id
+      }
+    } else if (block.blockType === 'course') {
+      colorId = 10
+      summary = `Study for ${item.title}`
+      description = item.originalTitle
+      extendedPrivateProperties = {
+        courseID: item.id
+      }
+    } else if (block.blockType === 'todo') {
+      colorId = 12
+      summary = `Work on TODO ${item.text}`
+      extendedPrivateProperties = {
+        todoID: item.id
+      }
+    }
 
     // Make request to Google Calendar API to create event
     const request = await calendar.events.insert({
@@ -70,27 +99,24 @@ const actions = {
         colorId,
         summary,
         description,
-        source: {
-          title: assessment.title,
-          url: assessmentURL
-        },
+        guestsCanInviteOthers: false,
+        source,
         organizer: {
           displayName: user.displayName,
           email: user.rcs_id + '@rpi.edu'
         },
-        guestsCanInviteOthers: false,
         extendedProperties: {
           private: {
             scheduledByLATE: true,
-            blockID: block._id, // Links this event to the block
-            assessmentID: assessment._id // Links this event to the assessment
+            blockID: block.id, // Links this event to the block
+            ...extendedPrivateProperties // Links this event to the assessment
           }
         },
         ...block.asGoogleCalendarEvent // Start and end dates, etc.
       }
     })
 
-    logger.info(`Added GCal event for ${user.identifier}.`)
+    logger.info(`Added GCal event for ${block.blockType} block ${user.identifier}.`)
     return request.data
   },
   async patchEventFromWorkBlock (googleAuth, user, blockID, updates) {
