@@ -90,9 +90,10 @@ async function addAssessmentBlock (ctx) {
 
   logger.info(`Adding work block for ${ctx.state.user.identifier}`)
 
+  // Attempt to create a Google Calendar event for this block
   if (ctx.state.user.integrations.google.calendarID) {
     try {
-      await google.actions.createEventFromWorkBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock)
+      await google.actions.createEventFromBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock)
     } catch (e) {
       logger.error(
         `Failed to add GCal event for work block for ${
@@ -186,7 +187,7 @@ async function editAssessmentBlock (ctx) {
 
   if (ctx.state.user.integrations.google.calendarID) {
     try {
-      await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
+      await google.actions.patchEventFromBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
         location,
         start: {
           dateTime: startTime
@@ -277,7 +278,7 @@ async function deleteAssessmentBlock (ctx) {
 
   if (ctx.state.user.integrations.google.calendarID) {
     try {
-      await google.actions.deleteEventFromWorkBlock(ctx, blockID)
+      await google.actions.deleteEventFromBlock(ctx, blockID)
     } catch (e) {
       logger.error(
         `Failed to delete GCal event for work block for ${
@@ -323,6 +324,19 @@ async function addCourseBlock (ctx) {
   course._blocks.push(createdCourseBlock)
 
   await course.save()
+
+  // Attempt to create a Google Calendar event for this block
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.createEventFromBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, course, createdCourseBlock)
+    } catch (e) {
+      logger.error(
+        `Failed to add GCal event for course block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      )
+    }
+  }
 
   ctx.created({
     updatedCourse: course,
@@ -393,25 +407,27 @@ async function editCourseBlock (ctx) {
 
   logger.info(`Edited course block for ${ctx.state.user.identifier}`)
 
-  // if (ctx.state.user.integrations.google.calendarID) {
-  //   try {
-  //     await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
-  //       location,
-  //       start: {
-  //         dateTime: startTime
-  //       },
-  //       end: {
-  //         dateTime: endTime
-  //       }
-  //     })
-  //   } catch (e) {
-  //     logger.error(
-  //       `Failed to patch GCal event for work block for ${
-  //         ctx.state.user.rcs_id
-  //       }: ${e}`
-  //     )
-  //   }
-  // }
+  // Attempt to update Google calendar event
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.patchEventFromBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
+        location,
+        start: {
+          dateTime: startTime
+        },
+        end: {
+          dateTime: endTime
+        }
+      })
+      logger.info(`Patched GCal event for course block for ${ctx.state.user.identifier}`)
+    } catch (e) {
+      logger.error(
+        `Failed to patch GCal event for course block for ${
+          ctx.state.user.identifier
+        }: ${e}`
+      )
+    }
+  }
 
   return ctx.ok({
     updatedCourse: course,
@@ -448,9 +464,9 @@ async function deleteCourseBlock (ctx) {
     course = await Course.findOne({
       _id: courseID,
       _student: ctx.state.user._id
-    })
+    }).populate('_blocks')
     course._blocks = course._blocks.filter(
-      b => b._id !== removedBlock._id
+      b => b.id !== removedBlock.id
     )
 
     await course.save()
@@ -467,17 +483,19 @@ async function deleteCourseBlock (ctx) {
 
   logger.info(`Deleted course block for ${ctx.state.user.identifier}`)
 
-  // if (ctx.state.user.integrations.google.calendarID) {
-  //   try {
-  //     await google.actions.deleteEventFromWorkBlock(ctx, blockID)
-  //   } catch (e) {
-  //     logger.error(
-  //       `Failed to delete GCal event for work block for ${
-  //         ctx.state.user.rcs_id
-  //       }: ${e}`
-  //     )
-  //   }
-  // }
+  // Attempt to delete GCal event for work block
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.deleteEventFromBlock(ctx, blockID)
+      logger.info(`Deleted GCal event for course block for ${ctx.state.user.identifier}`)
+    } catch (e) {
+      logger.error(
+        `Failed to delete GCal event for course block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      )
+    }
+  }
 
   return ctx.ok({
     removeBlock: removedBlock,
@@ -514,6 +532,19 @@ async function addTodoBlock (ctx) {
 
   todo._blocks.push(createdTodoBlock)
   await todo.save()
+
+  // Attempt to create a Google Calendar event for this block
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.createEventFromBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, todo, createdTodoBlock)
+    } catch (e) {
+      logger.error(
+        `Failed to add GCal event for todo block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      )
+    }
+  }
 
   ctx.created({
     updatedTodo: todo,
@@ -586,25 +617,25 @@ async function editTodoBlock (ctx) {
 
   logger.info(`Edited todo block for ${ctx.state.user.identifier}`)
 
-  // if (ctx.state.user.integrations.google.calendarID) {
-  //   try {
-  //     await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
-  //       location,
-  //       start: {
-  //         dateTime: startTime
-  //       },
-  //       end: {
-  //         dateTime: endTime
-  //       }
-  //     })
-  //   } catch (e) {
-  //     logger.error(
-  //       `Failed to patch GCal event for work block for ${
-  //         ctx.state.user.rcs_id
-  //       }: ${e}`
-  //     )
-  //   }
-  // }
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.patchEventFromBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
+        location,
+        start: {
+          dateTime: startTime
+        },
+        end: {
+          dateTime: endTime
+        }
+      })
+    } catch (e) {
+      logger.error(
+        `Failed to patch GCal event for todo block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      )
+    }
+  }
 
   return ctx.ok({
     updatedTodo: todo,
@@ -626,7 +657,7 @@ async function deleteTodoBlock (ctx) {
     blockType: 'todo',
     _id: blockID,
     _student: ctx.state.user._id
-  }).populate('_blocks')
+  })
 
   if (!removedBlock) {
     logger.error(`Could not find todo block ${blockID} to remove for ${ctx.state.user.identifier}`)
@@ -641,9 +672,9 @@ async function deleteTodoBlock (ctx) {
     todo = await Todo.findOne({
       _id: todoID,
       _student: ctx.state.user._id
-    })
+    }).populate('_blocks')
     todo._blocks = todo._blocks.filter(
-      b => b._id !== removedBlock._id
+      b => b.id !== removedBlock.id
     )
 
     await todo.save()
@@ -660,17 +691,17 @@ async function deleteTodoBlock (ctx) {
 
   logger.info(`Deleted todo block for ${ctx.state.user.identifier}`)
 
-  // if (ctx.state.user.integrations.google.calendarID) {
-  //   try {
-  //     await google.actions.deleteEventFromWorkBlock(ctx, blockID)
-  //   } catch (e) {
-  //     logger.error(
-  //       `Failed to delete GCal event for work block for ${
-  //         ctx.state.user.rcs_id
-  //       }: ${e}`
-  //     )
-  //   }
-  // }
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.deleteEventFromBlock(ctx, blockID)
+    } catch (e) {
+      logger.error(
+        `Failed to delete GCal event for todo block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      )
+    }
+  }
 
   return ctx.ok({
     removeBlock: removedBlock,

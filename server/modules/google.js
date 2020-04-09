@@ -31,91 +31,121 @@ function createUrl (auth) {
 const scopes = ['https://www.googleapis.com/auth/calendar']
 
 const actions = {
-  async createEventFromWorkBlock (googleAuth, currentTerm, user, assessment, block) {
-    // TODO: fix bug
 
-    // const { assessmentType } = assessment
-    // const calendar = google.calendar({
-    //   version: 'v3',
-    //   auth: googleAuth
-    // })
+  async createEventFromBlock (googleAuth, currentTerm, user, item, block) {
+    const calendar = google.calendar({
+      version: 'v3',
+      auth: googleAuth
+    })
 
-    // const assessmentURL = `${
-    //   process.env.BASE_URL
-    // }/coursework/${assessmentType.charAt(0)}/${assessment._id}`
-    // const course = await user.courseFromCRN(
-    //   currentTerm.code,
-    //   assessment.courseCRN
-    // )
-    // const capitalizedAssessmentType =
-    // assessmentType === 'assignment' ? 'Assignment' : 'Exam'
+    let colorId, summary, description, source, extendedPrivateProperties
 
-    // const request = await calendar.events.insert({
-    //   calendarId: user.integrations.google.calendarID,
-    //   requestBody: {
-    //     colorId: assessment.assessmentType === 'assignment' ? 9 : 11,
-    //     summary: `${
-    //       assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for'
-    //     } ${assessment.title}`,
-    //     description: `<b>${
-    //       course.title
-    //     } ${capitalizedAssessmentType}</b> <i>${
-    //       assessment.title
-    //     }</i><br><blockquote>${assessment.description}</blockquote><br>${assessmentURL}`,
-    //     source: {
-    //       title: assessment.title,
-    //       url: assessmentURL
-    //     },
-    //     organizer: {
-    //       displayName: user.displayName,
-    //       email: user.rcs_id + '@rpi.edu'
-    //     },
-    //     locked: true,
-    //     guestsCanInviteOthers: false,
-    //     extendedProperties: {
-    //       private: {
-    //         scheduledByLATE: true,
-    //         assessmentID: assessment._id // links this event to the assessment
-    //       }
-    //     },
-    //     ...block.asGoogleCalendarEvent
-    //   }
-    // })
+    if (block.blockType === 'assessment') {
+      const assessment = item
+      const { assessmentType } = assessment
 
-    // logger.info(`Added GCal event for ${user.identifier}.`)
-    // return request.data
+      // Link to assessment
+      const assessmentURL = `${
+        process.env.BASE_URL
+      }/coursework/${assessmentType.charAt(0)}/${assessment._id}`
+
+      // Find course associated with this block
+      const course = await user.courseFromCRN(
+        currentTerm.code,
+        assessment.courseCRN
+      )
+      const capitalizedAssessmentType =
+      assessmentType === 'assignment' ? 'Assignment' : 'Exam'
+
+      colorId = assessment.assessmentType === 'assignment' ? 9 : 11
+      // Event title
+      summary = `${
+        assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for'
+      } ${assessment.title}`
+
+      description = `<b>${
+        course.title
+      } ${capitalizedAssessmentType}</b> <i>${
+        assessment.title
+      }</i><br><blockquote>${assessment.description}</blockquote><br>${assessmentURL}`
+
+      source = {
+        title: assessment.title,
+        url: assessmentURL
+      }
+
+      extendedPrivateProperties = {
+        assessmentID: assessment._id
+      }
+    } else if (block.blockType === 'course') {
+      colorId = 10
+      summary = `Study for ${item.title}`
+      description = item.originalTitle
+      extendedPrivateProperties = {
+        courseID: item.id
+      }
+    } else if (block.blockType === 'todo') {
+      colorId = 9
+      summary = `Work on TODO ${item.text}`
+      description = 'TODO'
+      extendedPrivateProperties = {
+        todoID: item.id
+      }
+    }
+
+    // Make request to Google Calendar API to create event
+    const request = await calendar.events.insert({
+      calendarId: user.integrations.google.calendarID,
+      requestBody: {
+        colorId,
+        location: block.location,
+        summary,
+        description,
+        guestsCanInviteOthers: false,
+        source,
+        organizer: {
+          displayName: user.displayName,
+          email: user.rcs_id + '@rpi.edu'
+        },
+        extendedProperties: {
+          private: {
+            scheduledByLATE: true,
+            blockID: block.id, // Links this event to the block
+            ...extendedPrivateProperties // Links this event to the assessment
+          }
+        },
+        ...block.asGoogleCalendarEvent // Start and end dates, etc.
+      }
+    })
+
+    logger.info(`Added GCal event for ${block.blockType} block ${user.identifier}.`)
+    return request.data
   },
-  async patchEventFromWorkBlock (googleAuth, user, blockID, updates) {
-    // TODO: fix bug
+  async patchEventFromBlock (googleAuth, user, blockID, updates) {
+    const calendar = google.calendar({
+      version: 'v3',
+      auth: googleAuth
+    })
+    const request = await calendar.events.patch({
+      calendarId: user.integrations.google.calendarID,
+      eventId: blockID,
+      requestBody: updates
+    })
 
-    // const calendar = google.calendar({
-    //   version: 'v3',
-    //   auth: googleAuth
-    // })
-    // const request = await calendar.events.patch({
-    //   calendarId: user.integrations.google.calendarID,
-    //   eventId: blockID,
-    //   requestBody: updates
-    // })
-
-    // return request.data
+    return request.data
   },
-  async deleteEventFromWorkBlock (ctx, blockID) {
-    // TODO: fix bug
+  async deleteEventFromBlock (ctx, blockID) {
+    const calendar = google.calendar({
+      version: 'v3',
+      auth: ctx.state.googleAuth
+    })
 
-    // const calendar = google.calendar({
-    //   version: 'v3',
-    //   auth: ctx.state.googleAuth
-    // })
+    const request = await calendar.events.delete({
+      calendarId: ctx.state.user.integrations.google.calendarID,
+      eventId: blockID
+    })
 
-    // const request = await calendar.events.delete({
-    //   calendarId: ctx.state.user.integrations.google.calendarID,
-    //   eventId: blockID
-    // })
-
-    // logger.info(`Deleted work block GCal event for ${ctx.state.user.identifier}.`)
-
-    // return request.data
+    return request.data
   },
   /**
    * Fill a calendar with class events with period type, location, and proper range.

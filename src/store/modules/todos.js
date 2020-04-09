@@ -45,11 +45,8 @@ const mutations = {
     state.todos = todos
   },
   UPDATE_TODO: (state, todo) => {
-    const index = state.todos.findIndex((t) => t._id === todo._id)
-    if (index < 0) {
-      return
-    }
-    state.todos.splice(index, 1, todo)
+    const foundTodo = state.todos.find(t => t.id === todo.id)
+    if (foundTodo) Object.assign(foundTodo, todo)
   },
   REMOVE_TODO: (state, todo) => {
     state.todos = state.todos.filter(t => t._id !== todo._id)
