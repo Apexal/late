@@ -374,9 +374,9 @@
 
                 <a
                   class="navbar-item"
-                  target="none"
+                  target="_blank"
                   title="Report a bug or request a feature on GitHub"
-                  @click="isBugReportModalOpen = true"
+                  href="https://forms.gle/SBbjRaxZ7KmbgPeC9"
                 >
                   <span class="icon bug-report">
                     <i
@@ -384,7 +384,7 @@
                       style="margin-right: 5px"
                     />
                   </span>
-                  <span>Report a bug</span>
+                  <span>Give feedback</span>
                 </a>
 
                 <hr class="navbar-divider">
@@ -449,11 +449,6 @@
         </div>
       </div>
     </nav>
-    <BugReportModal
-      :open="isBugReportModalOpen"
-      false
-      @close-modal="isBugReportModalOpen = false"
-    />
     <b-modal
       class="rick-roll-modal"
       style="height: 100%;"
@@ -473,15 +468,10 @@
 </template>
 
 <script>
-import BugReportModal from './BugReportModal.vue'
 export default {
   name: 'TheHeader',
-  components: {
-    BugReportModal
-  },
   data () {
     return {
-      isBugReportModalOpen: false,
       rickRollModalOpen: false
     }
   },
