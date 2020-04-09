@@ -90,6 +90,7 @@ async function addAssessmentBlock (ctx) {
 
   logger.info(`Adding work block for ${ctx.state.user.identifier}`)
 
+  // Attempt to create a Google Calendar event for this block
   if (ctx.state.user.integrations.google.calendarID) {
     try {
       await google.actions.createEventFromWorkBlock(ctx.state.googleAuth, ctx.session.currentTerm, ctx.state.user, assessment, newBlock)
@@ -393,25 +394,27 @@ async function editCourseBlock (ctx) {
 
   logger.info(`Edited course block for ${ctx.state.user.identifier}`)
 
-  // if (ctx.state.user.integrations.google.calendarID) {
-  //   try {
-  //     await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
-  //       location,
-  //       start: {
-  //         dateTime: startTime
-  //       },
-  //       end: {
-  //         dateTime: endTime
-  //       }
-  //     })
-  //   } catch (e) {
-  //     logger.error(
-  //       `Failed to patch GCal event for work block for ${
-  //         ctx.state.user.rcs_id
-  //       }: ${e}`
-  //     )
-  //   }
-  // }
+  // Attempt to update Google calendar event
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.patchEventFromWorkBlock(ctx.state.googleAuth, ctx.state.user, blockID, {
+        location,
+        start: {
+          dateTime: startTime
+        },
+        end: {
+          dateTime: endTime
+        }
+      })
+      logger.info(`Patched GCal event for work block for ${ctx.state.user.identifier}`)
+    } catch (e) {
+      logger.error(
+        `Failed to patch GCal event for work block for ${
+          ctx.state.user.identifier
+        }: ${e}`
+      )
+    }
+  }
 
   return ctx.ok({
     updatedCourse: course,
@@ -467,17 +470,19 @@ async function deleteCourseBlock (ctx) {
 
   logger.info(`Deleted course block for ${ctx.state.user.identifier}`)
 
-  // if (ctx.state.user.integrations.google.calendarID) {
-  //   try {
-  //     await google.actions.deleteEventFromWorkBlock(ctx, blockID)
-  //   } catch (e) {
-  //     logger.error(
-  //       `Failed to delete GCal event for work block for ${
-  //         ctx.state.user.rcs_id
-  //       }: ${e}`
-  //     )
-  //   }
-  // }
+  // Attempt to delete GCal event for work block
+  if (ctx.state.user.integrations.google.calendarID) {
+    try {
+      await google.actions.deleteEventFromWorkBlock(ctx, blockID)
+      logger.info(`Deleted GCal event for work block for ${ctx.state.user.identifier}`)
+    } catch (e) {
+      logger.error(
+        `Failed to delete GCal event for work block for ${
+          ctx.state.user.rcs_id
+        }: ${e}`
+      )
+    }
+  }
 
   return ctx.ok({
     removeBlock: removedBlock,

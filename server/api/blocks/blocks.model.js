@@ -46,7 +46,7 @@ schema.virtual('duration').get(function () {
 
 schema.virtual('asGoogleCalendarEvent').get(function () {
   return {
-    id: this._id,
+    id: this.id,
     start: {
       dateTime: this.startTime,
       timezone: 'America/New_York'
