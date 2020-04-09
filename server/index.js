@@ -47,6 +47,7 @@ app.keys = [process.env.SESSION_KEY]
 const CONFIG = {
   key: 'koa:sess',
   maxAge: 86400000,
+  secure: true,
   renew: true
 }
 app.use(Session(CONFIG, app))
