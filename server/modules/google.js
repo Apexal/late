@@ -85,7 +85,7 @@ const actions = {
         courseID: item.id
       }
     } else if (block.blockType === 'todo') {
-      colorId = 12
+      colorId = 9
       summary = `Work on TODO ${item.text}`
       description = 'TODO'
       extendedPrivateProperties = {
@@ -121,7 +121,7 @@ const actions = {
     logger.info(`Added GCal event for ${block.blockType} block ${user.identifier}.`)
     return request.data
   },
-  async patchEventFromWorkBlock (googleAuth, user, blockID, updates) {
+  async patchEventFromBlock (googleAuth, user, blockID, updates) {
     const calendar = google.calendar({
       version: 'v3',
       auth: googleAuth
@@ -134,7 +134,7 @@ const actions = {
 
     return request.data
   },
-  async deleteEventFromWorkBlock (ctx, blockID) {
+  async deleteEventFromBlock (ctx, blockID) {
     const calendar = google.calendar({
       version: 'v3',
       auth: ctx.state.googleAuth
