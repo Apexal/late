@@ -344,12 +344,8 @@ export default {
       try {
         await this.$store.dispatch('ADD_ASSESSMENT_BLOCK', { assessment, start: event.start, end: event.end })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: 'There was an error scheduling that work block...',
-          type: 'is-danger'
-        })
         event.remove()
-        return
+        return this.showError('There was an error scheduling that work block...')
       }
 
       event.remove()

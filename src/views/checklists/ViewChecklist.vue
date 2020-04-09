@@ -87,11 +87,7 @@ export default {
       try {
         response = await this.$http.get('/checklists/' + this.checklistID)
       } catch (e) {
-        this.$buefy.toast.open({
-          message:
-            e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
         this.$router.push({ name: 'tools' })
         return
       }

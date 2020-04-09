@@ -82,10 +82,7 @@ export default {
       try {
         response = await this.$http.post(`/${this.assessmentType}/generate`, { startDate: this.startDate, endDate: this.endDate, count: this.count })
       } catch (e) {
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        return this.showError(e.response.data.message)
       }
 
       this.$buefy.toast.open({

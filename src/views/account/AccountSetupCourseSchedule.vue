@@ -257,8 +257,7 @@ export default {
           pin
         })
       } catch (e) {
-        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$store.commit('SET_CREDENTIALS', { rin, pin })
@@ -275,8 +274,7 @@ export default {
       try {
         removedCourse = await this.$store.dispatch('REMOVE_COURSE', courseID)
       } catch (e) {
-        this.$buefy.toast.open({ message: e.response.data.message, type: 'is-danger' })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$buefy.toast.open({ message: `Removed ${removedCourse.title}!`, type: 'is-success' })
@@ -295,11 +293,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$store.commit('SET_COURSES', request.data.courses)
@@ -333,11 +327,7 @@ export default {
         )
       } catch (e) {
         const message = e.response ? e.response.data.message : e.message
-        this.$buefy.toast.open({
-          duration: 5000,
-          message,
-          type: 'is-danger'
-        })
+        this.showError(message)
       }
     }
   }

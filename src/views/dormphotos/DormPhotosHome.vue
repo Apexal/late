@@ -146,9 +146,8 @@ export default {
       try {
         request = await this.$http.get('/dormphotos', { params: { count: true } })
       } catch (e) {
-        this.$buefy.toast.open({ type: 'is-danger', message: e.request.data.message })
         this.loading = false
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.counts = request.data.counts

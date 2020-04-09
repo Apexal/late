@@ -136,12 +136,8 @@ export default {
           )
         }
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
         this.loading = false
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$emit('updated-assessment', response.data.updatedAssessment)
@@ -176,12 +172,8 @@ export default {
           )
         }
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
         this.loading = false
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$emit('updated-assessment', response.data.updatedAssessment)
@@ -208,10 +200,7 @@ export default {
           '/assignments/a/' + this.assessment._id + '/collaborators'
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        this.showError(e.response.data.message)
         return
       }
 

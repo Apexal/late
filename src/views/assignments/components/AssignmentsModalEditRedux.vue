@@ -262,7 +262,7 @@ export default {
       this.loading = true
       // TODO: error handle
 
-      const complete = this.steps.some(step => !step.completed)
+      const incomplete = this.steps.some(step => !step.completed)
 
       let hour = parseInt(this.assignment.timeHour)
       let minute = parseInt(this.assignment.timeMinute)
@@ -274,12 +274,8 @@ export default {
         minute = 59
       }
 
-      if (complete) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'Make sure you complete every step!'
-        })
-        return
+      if (incomplete) {
+        return this.showError('Make sure you complete every step!')
       }
 
       if (!this.assignment.timeisAm && hour !== 12) {

@@ -275,11 +275,7 @@ export default {
           unavailability
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$store.commit('SET_USER', request.data.updatedUser)
@@ -302,10 +298,7 @@ export default {
           }
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
         throw e
       }
     },
@@ -316,10 +309,7 @@ export default {
           unavailabilityEvent
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
       }
     },
     async saveTimePreferencesAndContinue () {
@@ -332,11 +322,9 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        return this.showError(e.response.data.message)
       }
+
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
       // Notify user of success
       this.$buefy.toast.open({
@@ -354,10 +342,7 @@ export default {
         this.$store.commit('SET_UNAVAILABILITIES', [])
       } catch (e) {
         this.loading = false
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        return this.showError(e.response.data.message)
       }
     }
   }

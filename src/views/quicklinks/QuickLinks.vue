@@ -248,12 +248,8 @@ export default {
       try {
         response = await this.$http.delete('/quicklinks/' + quickLinkID)
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
         this.loading = false
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.quickLinks = this.quickLinks.filter(
@@ -276,12 +272,8 @@ export default {
           confirmed: true
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
         this.loading = false
-        return
+        return this.showError(e.response.data.message)
       }
 
       Object.assign(
@@ -310,12 +302,8 @@ export default {
       try {
         request = await this.$http.post('/quicklinks', { ...this.newLink, category: this.newLink.category === 'other' ? this.otherCategory : this.newLink.category })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
         this.loading = false
-        return
+        return this.showError(e.response.data.message)
       }
 
       if (request.data.createdQuickLink.confirmed) {
@@ -345,12 +333,8 @@ export default {
       try {
         request = await this.$http.get('/quicklinks')
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
         this.loading = false
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.quickLinks = request.data.quickLinks

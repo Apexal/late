@@ -144,10 +144,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        return this.showError(e.response.data.message)
       }
 
       this.$buefy.toast.open({ type: 'is-success', message: request.data.message })
@@ -167,10 +164,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        return this.showError(e.response.data.message)
       }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser)
@@ -195,10 +189,7 @@ export default {
             request = await this.$http.delete('/integrations/sms')
           } catch (e) {
             this.loading = false
-            return this.$buefy.toast.open({
-              message: e.response.data.message,
-              type: 'is-danger'
-            })
+            return this.showError(e.response.data.message)
           }
 
           await this.$store.dispatch('SET_USER', request.data.updatedUser)
@@ -211,7 +202,7 @@ export default {
       })
     },
     async resetPhoneNumber () {
-      this.$buefy.toast.open({ type: 'is-danger', message: 'Coming soon!' })
+      this.showError('Coming soon!')
     }
   }
 }

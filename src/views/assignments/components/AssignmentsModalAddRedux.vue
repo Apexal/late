@@ -263,11 +263,7 @@ export default {
       this.loading = true
 
       if (!this.isComplete) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'Make sure you complete every step!'
-        })
-        return
+        return this.showError('Make sure you complete every step!')
       }
       // Fix multiple assignments being add with same description
       if (this.$store.state.assessments.upcomingAssessments.find(assessment => assessment.title === this.title && assessment.courseCRN === this.courseCRN && moment(assessment.dueDate).isSame(this.dueDate, 'day'))) {
@@ -294,13 +290,8 @@ export default {
           recurringDays: this.isRecurring ? this.recurringDays : undefined
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message:
-            'There was an error adding the assignment. Please try again later.',
-          type: 'is-danger'
-        })
         this.loading = false
-        return
+        return this.showError('There was an error adding the assignment. Please try again later.')
       }
 
       // Update global state if they are not in the past

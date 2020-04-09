@@ -127,10 +127,7 @@ export default {
           { assessment: this.assessment, newComment: this.newComment }
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
         this.loading = false
         return
       }
@@ -155,10 +152,7 @@ export default {
           { assessment: this.assessment, commentIndex }
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
         this.loading = false
         return
       }

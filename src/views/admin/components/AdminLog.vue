@@ -49,10 +49,7 @@ export default {
       try {
         request = await this.$http.get('/students/log')
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        this.showError(e.response.data.message)
         this.log = []
         this.loading = false
         return

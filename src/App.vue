@@ -197,11 +197,7 @@ export default {
   },
   async mounted () {
     if (this.$route.query.accountLocked) {
-      return this.$buefy.toast.open({
-        message: 'Your account has been locked by administrators.',
-        type: 'is-warning',
-        duration: 70000
-      })
+      return this.showError('Your account has been locked by administrators.')
     } else if (this.$route.query.invited) {
       this.$buefy.toast.open({
         message: 'Your invitation has been accepted!',
@@ -250,13 +246,6 @@ export default {
 .is-fullwidth {
   width: 100%;
 }
-
-//Removes annoying outline around elements when clicked.
-// *:focus {
-//   outline: none;
-//   box-shadow: none !important;
-//   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-// }
 
 html,
 body {

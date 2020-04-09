@@ -520,11 +520,7 @@ export default {
         this.courseData.title.length === 0 ||
         this.courseData.sectionId.length === 0
       ) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'You cannot set an empty name or section for a course!'
-        })
-        return
+        return this.showError('You cannot set an empty name or section for a course!')
       }
 
       let updatedCourse
@@ -535,12 +531,7 @@ export default {
         )
       } catch (e) {
         const message = e.response ? e.response.data.message : e.message
-        this.$buefy.toast.open({
-          duration: 5000,
-          message,
-          type: 'is-danger'
-        })
-        return
+        return this.showError(message)
       }
 
       this.$buefy.toast.open({
@@ -586,11 +577,7 @@ export default {
         !this.newPeriod.start ||
         !this.newPeriod.end
       ) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'Make sure the time and location is set!'
-        })
-        return
+        return this.showError('Make sure the time and location is set!')
       }
       // Remeber to convert start/end from HH:mm to HH:mm
       this.editedPeriods.push(

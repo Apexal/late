@@ -85,10 +85,7 @@ export default {
             updates: { description: this.edited }
           })
         } catch (e) {
-          this.$buefy.toast.open({
-            message: e.response.data.message,
-            type: 'is-danger'
-          })
+          this.showError(e.response.data.message)
           this.editing = false
           return
         }

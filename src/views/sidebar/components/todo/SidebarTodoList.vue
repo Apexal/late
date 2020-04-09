@@ -133,10 +133,7 @@ export default {
           message: `Changed to-do to '${text}'.`
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
       }
     },
     /**
@@ -156,10 +153,7 @@ export default {
           })
         }
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
       }
     },
     /**
@@ -181,10 +175,7 @@ export default {
         })
         this.newTodo = '' // reset global todo string
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
       }
     },
     /**
@@ -200,10 +191,7 @@ export default {
           try {
             await this.$store.dispatch('REMOVE_TODO', todo)
           } catch (e) {
-            this.$buefy.toast.open({
-              message: e.response.data.message,
-              type: 'is-danger'
-            })
+            this.showError(e.response.data.message)
           }
           if (callback) {
             callback()

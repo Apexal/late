@@ -15,6 +15,7 @@ import CourseAssessmentDot from '@/views/courses/components/CourseAssessmentDot'
 
 import datemethods from './mixins/datemethods'
 import sharedproperties from './mixins/sharedproperties'
+import utils from './mixins/utils'
 
 import * as VueGoogleMaps from 'vue2-google-maps'
 
@@ -102,6 +103,7 @@ Vue.use(VueGoogleMaps, {
 
 Vue.mixin(datemethods)
 Vue.mixin(sharedproperties)
+Vue.mixin(utils)
 
 const app = new Vue({
   router,

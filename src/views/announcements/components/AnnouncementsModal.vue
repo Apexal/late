@@ -169,10 +169,7 @@ export default {
       try {
         request = await this.$http.post('/announcements', this.newAnnouncement)
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        this.showError(e.response.data.message)
         this.loading = false
         return
       }
@@ -201,8 +198,7 @@ export default {
           isPinned: !announcement.isPinned
         })
       } catch (e) {
-        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$store.commit('UPDATE_ANNOUNCEMENT', request.data.updatedAnnouncement)
@@ -216,8 +212,7 @@ export default {
       try {
         request = await this.$http.delete(`/announcements/${announcement._id}`)
       } catch (e) {
-        this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$store.commit('REMOVE_ANNOUNCEMENT', request.data.deletedAnnouncement)

@@ -227,11 +227,7 @@ export default {
       this.loading = true
 
       if (!this.isComplete) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'Make sure you complete every step!'
-        })
-        return
+        return this.showError('Make sure you complete every step!')
       }
 
       let request
@@ -249,12 +245,8 @@ export default {
           timeEstimate: this.timeEstimate
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'There was an error adding the exam. Please try again later.'
-        })
         this.loading = false
-        return
+        return this.showError('There was an error adding the exam. Please try again later.')
       }
 
       // Update global state if they are not in the past

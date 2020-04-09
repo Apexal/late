@@ -255,10 +255,7 @@ export default {
       try {
         response = await this.$http.get('/courses/term/' + this.term.code)
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        this.showError(e.response.data.message)
         this.loading = false
         return
       }
@@ -269,10 +266,7 @@ export default {
       try {
         response = await this.$http.get('/assignments/term/' + this.term.code)
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        this.showError(e.response.data.message)
         this.loading = false
         return
       }
@@ -283,10 +277,7 @@ export default {
       try {
         response = await this.$http.get('/exams/term/' + this.term.code)
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        this.showError(e.response.data.message)
         this.loading = false
         return
       }

@@ -239,11 +239,7 @@ export default {
           )
         } catch (e) {
           const message = e.response ? e.response.data.message : e.message
-          this.$buefy.toast.open({
-            duration: 5000,
-            message,
-            type: 'is-danger'
-          })
+          return this.showError(message)
         }
 
         this.$buefy.toast.open({

@@ -314,10 +314,7 @@ export default {
           '/assignments/a/' + this.assessment._id + '/collaborators'
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        this.showError(e.response.data.message)
         return
       }
 

@@ -146,10 +146,7 @@ export default {
         )
       } catch (e) {
         this.loading = false
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        return this.showError(e.response.data.message)
       }
 
       this.$store.dispatch('SET_USER', request.data.updatedUser)

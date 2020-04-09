@@ -137,11 +137,7 @@ export default {
       try {
         createdTerm = await this.$store.dispatch('ADD_TERM', this.newTerm)
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$buefy.toast.open({

@@ -293,12 +293,8 @@ export default {
           updates: { studyPlan }
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
         this.editing = false
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$emit('updated-assessment', updatedAssessment)

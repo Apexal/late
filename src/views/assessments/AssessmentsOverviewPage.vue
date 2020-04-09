@@ -222,10 +222,7 @@ export default {
               setTimeout(() => this.confetti.clear(), 2000)
             }
           } catch (e) {
-            this.$buefy.toast.open({
-              message: e.response.data.message,
-              type: 'is-danger'
-            })
+            this.showError(e.response.data.message)
             this.toggleLoading = false
             return
           }
@@ -263,10 +260,7 @@ export default {
         this.loading = false
         this.$router.push('/coursework')
 
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        return this.showError(e.response.data.message)
       }
 
       this.assessment = request.data[this.assessmentType]
@@ -296,11 +290,7 @@ export default {
                     this.assessment
                   )
                 } catch (e) {
-                  this.$buefy.toast.open({
-                    type: 'is-danger',
-                    message: e.response.data.message
-                  })
-                  return
+                  return this.showError(e.response.data.message)
                 }
                 this.$buefy.toast.open({
                   message: `Successfully removed repeating assignment <b>${assessmentTitle}</b> and future ones.`,
@@ -317,11 +307,7 @@ export default {
                     this.assessment
                   )
                 } catch (e) {
-                  this.$buefy.toast.open({
-                    type: 'is-danger',
-                    message: e.response.data.message
-                  })
-                  return
+                  return this.showError(e.response.data.message)
                 }
 
                 // Notify user of success
@@ -338,11 +324,7 @@ export default {
             try {
               await this.$store.dispatch('REMOVE_ASSESSMENT', this.assessment)
             } catch (e) {
-              this.$buefy.toast.open({
-                type: 'is-danger',
-                message: e.response.data.message
-              })
-              return
+              return this.showError(e.response.data.message)
             }
 
             // Notify user of success
