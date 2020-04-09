@@ -464,7 +464,7 @@ async function deleteCourseBlock (ctx) {
     course = await Course.findOne({
       _id: courseID,
       _student: ctx.state.user._id
-    })
+    }).populate('_blocks')
     course._blocks = course._blocks.filter(
       b => b._id !== removedBlock._id
     )
@@ -659,7 +659,7 @@ async function deleteTodoBlock (ctx) {
     blockType: 'todo',
     _id: blockID,
     _student: ctx.state.user._id
-  }).populate('_blocks')
+  })
 
   if (!removedBlock) {
     logger.error(`Could not find todo block ${blockID} to remove for ${ctx.state.user.identifier}`)
@@ -674,7 +674,7 @@ async function deleteTodoBlock (ctx) {
     todo = await Todo.findOne({
       _id: todoID,
       _student: ctx.state.user._id
-    })
+    }).populate('_blocks')
     todo._blocks = todo._blocks.filter(
       b => b._id !== removedBlock._id
     )
