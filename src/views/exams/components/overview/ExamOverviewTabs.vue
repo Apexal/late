@@ -21,7 +21,7 @@
 
             <span
               v-if="!exam.passed && !fullyScheduled"
-              class="tag is-danger tooltip is-tooltip-right"
+              class="tag is-danger tooltip has-tooltip-right"
               data-tooltip="You haven't scheduled enough time to study for this!"
             >!</span>
           </a>
@@ -45,7 +45,7 @@
             <span
               v-else
               data-tooltip="You have not made a study plan for this exam yet!"
-              class="tag is-danger tooltip is-tooltip-right"
+              class="tag is-danger tooltip has-tooltip-right"
             >!</span>
           </a>
         </li>

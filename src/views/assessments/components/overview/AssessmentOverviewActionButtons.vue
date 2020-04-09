@@ -15,7 +15,7 @@
       <!-- <b-button
         v-if="assessmentType === 'assignment' && isOwner"
         type="is-link"
-        class="tooltip is-tooltip-top share-assignment"
+        class="tooltip has-tooltip-top share-assignment"
         data-tooltip="Collaborate on this assignment with other students!"
         @click="toggleSharedClick"
       >

@@ -20,7 +20,7 @@
             <span>Schedule</span>
             <span
               v-if="!assignment.completed && !fullyScheduled"
-              class="tag is-danger tooltip is-tooltip-right"
+              class="tag is-danger tooltip has-tooltip-right"
               data-tooltip="You haven't scheduled enough time to work on this!"
             >!</span>
           </a>
@@ -40,7 +40,7 @@
             <span>Tasks</span>
             <span
               v-if="assignment.tasks && assignment.tasks.length > 0"
-              class="tag tooltip is-tooltip-right"
+              class="tag tooltip has-tooltip-right"
               :class="tasksTagClass"
               :data-tooltip="`Completed ${completedTasksLength} out of ${assignment.tasks.length} tasks`"
             >{{ completedTasksLength }}/{{ assignment.tasks.length }}</span>

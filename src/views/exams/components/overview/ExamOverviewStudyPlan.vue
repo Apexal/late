@@ -146,7 +146,7 @@
         @click="editing = !editing"
       >{{ editing ? "Save Plan" : "Edit Plan" }}</b-button>
       <progress
-        class="progress is-success is-tooltip-bottom"
+        class="progress is-success has-tooltip-bottom"
         :value="completedCount"
         :title="completedPercent + '%'"
         :max="totalItemCount"

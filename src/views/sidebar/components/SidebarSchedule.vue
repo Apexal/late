@@ -75,7 +75,7 @@
         </span>
 
         <span
-          class="event-times is-pulled-right has-text-grey tooltip is-tooltip-left"
+          class="event-times is-pulled-right has-text-grey tooltip has-tooltip-left"
           :data-tooltip="
             timeFormat(event.start) + ' - ' + timeFormat(event.end)
           "

@@ -22,7 +22,7 @@
       </template>
       <span
         v-if="assessmentType === 'exam' || isOwner"
-        class="edit-description tooltip is-tooltip-left"
+        class="edit-description tooltip has-tooltip-left"
         :data-tooltip="
           editing ? 'Click to save description.' : 'Click to edit description.'
         "

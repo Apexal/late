@@ -49,7 +49,7 @@
     </router-link>
     <!-- <span
       v-if="showScheduled"
-      class="is-tooltip-left icon has-text-danger is-pulled-right"
+      class="has-tooltip-left icon has-text-danger is-pulled-right"
       :class="{
         tooltip:
           assessmentType === 'exam' ||
@@ -70,7 +70,7 @@
     }}</small>
     <small
       v-else
-      class="is-pulled-right tooltip is-tooltip-left has-text-grey"
+      class="is-pulled-right tooltip has-tooltip-left has-text-grey"
       :data-tooltip="toDateShortString + ' ' + timeFormat(assessment.date)"
     >{{ fromNow(assessmentDate) }}</small>
   </div>
