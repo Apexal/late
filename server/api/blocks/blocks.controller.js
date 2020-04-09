@@ -466,7 +466,7 @@ async function deleteCourseBlock (ctx) {
       _student: ctx.state.user._id
     }).populate('_blocks')
     course._blocks = course._blocks.filter(
-      b => b._id !== removedBlock._id
+      b => b.id !== removedBlock.id
     )
 
     await course.save()
@@ -676,7 +676,7 @@ async function deleteTodoBlock (ctx) {
       _student: ctx.state.user._id
     }).populate('_blocks')
     todo._blocks = todo._blocks.filter(
-      b => b._id !== removedBlock._id
+      b => b.id !== removedBlock.id
     )
 
     await todo.save()
