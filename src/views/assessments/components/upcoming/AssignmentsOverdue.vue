@@ -1,17 +1,19 @@
 <template>
   <div class="assignments-overdue">
-    <button
-      v-if="overdueAssignments.length > 0"
-      class="button is-danger is-pulled-right"
-      @click="modalActive = !modalActive"
-    >
-      <span class="icon">
-        <i class="fas fa-exclamation-circle" />
-      </span>
-      <span>
-        {{ overdueAssignments.length }} Overdue Assignments
-      </span>
-    </button>
+    <p class="has-text-centered is-pulled-right-desktop overdue-button-holder">
+      <button
+        v-if="overdueAssignments.length > 0"
+        class="button is-danger"
+        @click="modalActive = !modalActive"
+      >
+        <span class="icon">
+          <i class="fas fa-exclamation-circle" />
+        </span>
+        <span>
+          {{ overdueAssignments.length }} Overdue Assignments
+        </span>
+      </button>
+    </p>
 
     <div
       class="modal"
@@ -195,5 +197,18 @@ export default {
 
 .assignment-details {
   flex: 1;
+}
+
+.overdue-button-holder {
+  margin-bottom: 20px;
+}
+
+@media screen and (min-width: 768px) {
+  .overdue-button-holder {
+    margin-bottom: 0;
+  }
+  .is-pulled-right-desktop {
+    float: right;
+  }
 }
 </style>
