@@ -28,7 +28,40 @@
           </p>
         </header>
         <section class="modal-card-body">
-          <!-- Content ... -->
+          <div class="columns is-multiline">
+            <div
+              v-for="assignment in overdueAssignments"
+              :key="assignment.id"
+              class="column is-half"
+            >
+              <CourseAssessmentDot
+                :assessment="assignment"
+                :course="course(assignment)"
+              />
+              <strong class="assignment-title">{{ assignment.title }}</strong>
+              <p>Was due {{ fromNow(assignment.dueDate) }} on {{ shortDateTimeFormat(assignment.dueDate) }}</p>
+              <p class="actions has-text-grey">
+                <router-link
+                  class="has-text-grey"
+                  :to="{name: 'assignment-overview', params: {assignmentID: assignment.id}}"
+                >
+                  View
+                </router-link>
+                |
+                <a
+                  class="has-text-grey"
+                  href="#"
+                  @click="completeAssignment(assignment)"
+                >Mark Complete</a>
+                |
+                <a
+                  class="has-text-grey"
+                  href="#"
+                  @click="confirmAssignment(assignment)"
+                >Ignore</a>
+              </p>
+            </div>
+          </div>
         </section>
         <footer class="modal-card-foot">
           <button
@@ -61,6 +94,9 @@ export default {
     await this.getOverdueAssignments()
   },
   methods: {
+    course (assignment) {
+      return this.$store.getters.getCourseFromCRN(assignment.courseCRN)
+    },
     async getOverdueAssignments () {
       const params = {
         completed: false,
@@ -69,7 +105,19 @@ export default {
         dueDate: { $lt: this.now }
       }
       const response = await this.$http.get('/assignments', { params })
-      this.overdueAssignments = response.data.assignments
+      this.overdueAssignments = response.data.assignments.reverse() // Reverse to sort by most recent
+    },
+    async completeAssignment (assignment) {
+      const toggledAssignment = await this.$store.dispatch(
+        'TOGGLE_ASSIGNMENT',
+        assignment
+      )
+    },
+    async confirmAssignment (assignment) {
+      await this.$http.patch('/assignments/a/' + assignment.id, {
+        confirmed: true
+      })
+      this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
     }
   }
 }
