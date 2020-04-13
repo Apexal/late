@@ -77,17 +77,14 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'AssignmentsOverdue',
   data () {
     return {
       modalActive: false,
       overdueAssignments: []
-    }
-  },
-  computed: {
-    today () {
-      return this.now
     }
   },
   async mounted () {
@@ -102,7 +99,8 @@ export default {
         completed: false,
         confirmed: false,
         termCode: this.currentTerm.code,
-        dueDate: { $lt: this.now }
+        start: moment(this.currentTerm.startDate).format('YYYY-MM-DD'),
+        end: moment(this.rightNow).format('YYYY-MM-DD')
       }
       const response = await this.$http.get('/assignments', { params })
       this.overdueAssignments = response.data.assignments.reverse() // Reverse to sort by most recent
@@ -112,6 +110,7 @@ export default {
         'TOGGLE_ASSIGNMENT',
         assignment
       )
+      this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
     },
     async confirmAssignment (assignment) {
       await this.$http.patch('/assignments/a/' + assignment.id, {
