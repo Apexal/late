@@ -80,8 +80,8 @@ export default new Vuex.Store({
               assessmentType: e.assessmentType,
               assessment: e.assessment,
               course: getters.getCourseFromCRN(e.assessment.courseCRN),
-              start: moment(e.start),
-              end: moment(e.end),
+              start: moment(e.start).toDate(),
+              end: moment(e.end).toDate(),
               link: {
                 name: `${e.assessmentType}-overview`,
                 params: { [`${e.assessmentType}ID`]: e.assessment._id }

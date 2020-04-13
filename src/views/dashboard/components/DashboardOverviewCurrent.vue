@@ -159,7 +159,12 @@ export default {
       return moment(end).diff(start, 'minutes')
     },
     isCurrentEvent (event) {
-      return moment(this.rightNow).isBetween(event.start, event.end)
+      let { start, end } = event
+      if (typeof start === 'string') {
+        start = moment(start, 'HH:mm', true)
+        end = moment(end, 'HH:mm', true)
+      }
+      return moment(this.rightNow).isBetween(start, end)
     },
     assessmentRoute (assessment) {
       return {

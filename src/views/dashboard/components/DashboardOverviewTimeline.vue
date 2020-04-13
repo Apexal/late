@@ -144,9 +144,14 @@ export default {
       }
     },
     timelineItemClass (event) {
-      if (moment(event.end).isSameOrBefore(this.rightNow)) {
+      let { start, end } = event
+      if (typeof start === 'string') {
+        start = moment(start, 'HH:mm', true)
+        end = moment(end, 'HH:mm', true)
+      }
+      if (moment(end).isSameOrBefore(this.rightNow)) {
         return 'is-primary'
-      } else if (moment(this.rightNow).isBetween(event.start, event.end)) {
+      } else if (moment(this.rightNow).isBetween(start, end)) {
         return 'is-warning'
       }
     },
