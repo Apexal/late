@@ -1,7 +1,7 @@
 <template>
   <div class="assessments-upcoming-week">
-    <h1 class="subtitle week-name">
-      {{ weekName }}
+    <h1 class="title is-size-4 has-text-weight-medium week-name">
+      Due {{ weekName }} <span class="has-text-grey">({{ weekAssessments.length }})</span>
       <!-- <span class="tag is-danger">Heavy</span> -->
     </h1>
     <div class="columns is-multiline">
