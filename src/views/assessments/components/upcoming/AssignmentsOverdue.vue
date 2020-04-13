@@ -131,7 +131,21 @@ export default {
       this.overdueAssignments = response.data.assignments.reverse() // Reverse to sort by most recent
     },
     async rescheduleAssignment (assignment) {
+      try {
+        const tonight = moment(this.rightNow).hours(23).minutes(59)
+        const updates = {
+          dueDate: tonight.toDate()
+        }
+        await this.$store.dispatch('UPDATE_ASSESSMENT', { assessmentType: 'assignment', assessmentID: assignment.id, updates })
+        this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
 
+        this.$buefy.toast.open({
+          message: 'Rescheduled assignment to tonight at midnight!',
+          type: 'is-primary'
+        })
+      } catch (e) {
+        this.showError('Failed to reschedule.')
+      }
     },
     async completeAssignment (assignment) {
       try {
