@@ -111,10 +111,18 @@ export default {
         assignment
       )
       this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
+      this.$buefy.toast.open({
+        message: 'Marked assignment complete!',
+        type: 'is-primary'
+      })
     },
     async confirmAssignment (assignment) {
       await this.$http.patch('/assignments/a/' + assignment.id, {
         confirmed: true
+      })
+      this.$buefy.toast.open({
+        message: 'Ignored the incomplete assignment.',
+        type: 'is-warning'
       })
       this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
     }
