@@ -1,6 +1,7 @@
 <template>
   <div class="assignments-overdue">
     <button
+      v-if="overdueAssignments.length > 0"
       class="button is-danger is-pulled-right"
       @click="modalActive = !modalActive"
     >
