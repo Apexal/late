@@ -28,7 +28,16 @@
           </p>
         </header>
         <section class="modal-card-body">
-          <div class="columns is-multiline">
+          <p
+            v-if="overdueAssignments.length === 0"
+            class="has-text-grey has-text-centered"
+          >
+            No overdue assignments! <em>Nice.</em>
+          </p>
+          <div
+            v-else
+            class="columns is-multiline"
+          >
             <div
               v-for="assignment in overdueAssignments"
               :key="assignment.id"
