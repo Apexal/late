@@ -106,25 +106,33 @@ export default {
       this.overdueAssignments = response.data.assignments.reverse() // Reverse to sort by most recent
     },
     async completeAssignment (assignment) {
-      const toggledAssignment = await this.$store.dispatch(
-        'TOGGLE_ASSIGNMENT',
-        assignment
-      )
-      this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
-      this.$buefy.toast.open({
-        message: 'Marked assignment complete!',
-        type: 'is-primary'
-      })
+      try {
+        const toggledAssignment = await this.$store.dispatch(
+          'TOGGLE_ASSIGNMENT',
+          assignment
+        )
+        this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
+        this.$buefy.toast.open({
+          message: 'Marked assignment complete!',
+          type: 'is-primary'
+        })
+      } catch (e) {
+        this.showError('Failed to complete the assignment.')
+      }
     },
     async confirmAssignment (assignment) {
-      await this.$http.patch('/assignments/a/' + assignment.id, {
-        confirmed: true
-      })
-      this.$buefy.toast.open({
-        message: 'Ignored the incomplete assignment.',
-        type: 'is-warning'
-      })
-      this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
+      try {
+        await this.$http.patch('/assignments/a/' + assignment.id, {
+          confirmed: true
+        })
+        this.$buefy.toast.open({
+          message: 'Ignored the incomplete assignment.',
+          type: 'is-warning'
+        })
+        this.overdueAssignments = this.overdueAssignments.filter(a => a.id !== assignment.id)
+      } catch (e) {
+        this.showError('Failed to ignore the assignment.')
+      }
     }
   }
 }
