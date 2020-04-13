@@ -35,20 +35,24 @@
             No overdue assignments! <em>Nice.</em>
           </p>
           <div
-            v-else
-            class="columns is-multiline"
+            v-for="assignment in overdueAssignments"
+            :key="assignment.id"
+            class="is-flex assignment-holder"
           >
-            <div
-              v-for="assignment in overdueAssignments"
-              :key="assignment.id"
-              class="column is-half"
-            >
-              <CourseAssessmentDot
-                :assessment="assignment"
-                :course="course(assignment)"
-              />
-              <strong class="assignment-title">{{ assignment.title }}</strong>
-              <p>Was due {{ fromNow(assignment.dueDate) }} on {{ shortDateTimeFormat(assignment.dueDate) }}</p>
+            <CourseAssessmentDot
+              class="is-hidden-touch"
+              :assessment="assignment"
+              :course="course(assignment)"
+            />
+            <div class="is-flex is-flex-column assignment-details">
+              <div>
+                <strong>{{ course(assignment).title }}</strong>
+                <span class="has-text-weight-medium assignment-title">{{ assignment.title }}</span>
+                <p class="is-hidden-desktop">
+                  Was due {{ fromNow(assignment.dueDate) }} on {{ shortDateTimeFormat(assignment.dueDate) }}
+                </p>
+              </div>
+
               <p class="actions has-text-grey">
                 <router-link
                   class="has-text-grey"
@@ -56,6 +60,12 @@
                 >
                   View
                 </router-link>
+                |
+                <a
+                  class="has-text-grey"
+                  href="#"
+                  @click="rescheduleAssignment(assignment)"
+                >Reschedule to Tonight</a>
                 |
                 <a
                   class="has-text-grey"
@@ -70,6 +80,10 @@
                 >Ignore</a>
               </p>
             </div>
+            <span
+              class="is-hidden-touch tooltip has-tooltip-left"
+              :data-tooltip="shortDateTimeFormat(assignment.dueDate)"
+            >due {{ fromNow(assignment.dueDate) }}</span>
           </div>
         </section>
         <footer class="modal-card-foot">
@@ -114,6 +128,9 @@ export default {
       const response = await this.$http.get('/assignments', { params })
       this.overdueAssignments = response.data.assignments.reverse() // Reverse to sort by most recent
     },
+    async rescheduleAssignment (assignment) {
+
+    },
     async completeAssignment (assignment) {
       try {
         const toggledAssignment = await this.$store.dispatch(
@@ -148,16 +165,35 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.overdue-assignments-holder.scroll {
-  overflow: auto;
-  width: auto;
-  white-space: nowrap;
-  max-width: 100%;
-  scrollbar-width: thin;
+.assignment-title {
+  margin-left: 4px;
+}
 
-  .overdue-assignment {
-    display: inline-block;
-    padding: 5px 10px;
-  }
+.is-flex-column {
+  flex-direction: column;
+}
+
+.assignment-holder {
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 2px solid rgb(219, 219, 219);
+}
+
+.assignment-holder:first-child {
+  padding-top: 0;
+}
+
+.assignment-holder:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.assignment-holder > :first-child {
+  font-size: 1.5em;
+  padding-right: 10px;
+}
+
+.assignment-details {
+  flex: 1;
 }
 </style>
