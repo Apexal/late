@@ -238,10 +238,6 @@ export default {
 /*               Global Styles
 /* These styles will apply to the whole app. */
 /*-------------------------------------------*/
-* {
-  word-wrap: break-word;
-  outline: 0;
-}
 
 .is-fullwidth {
   width: 100%;
@@ -435,12 +431,6 @@ footer.footer {
   }
 }
 
-// .fc-time-grid-event:hover {
-//   min-height: fit-content !important;
-//   z-index: 100 !important;
-//   box-shadow: 1px 1px 2px white;
-// }
-
 .fc-content {
   .delete {
     display: none;
@@ -457,6 +447,11 @@ footer.footer {
       display: block;
     }
   }
+}
+
+/* UTILS */
+.is-clickable {
+  cursor: pointer;
 }
 
 </style>
