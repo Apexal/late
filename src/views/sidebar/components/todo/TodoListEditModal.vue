@@ -58,7 +58,6 @@ export default {
       this.$emit('delete-todo', this.item)
     },
     saveItem (newValue, evt) {
-      this.item.text = newValue
       this.$emit('save-todo', this.item, newValue)
       this.$parent.close()
     }
