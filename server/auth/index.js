@@ -30,7 +30,7 @@ router.get('/logout', function (ctx) {
     // return cas.logout(ctx, ctx.res)
     ctx.logout()
   }
-  ctx.redirect('/')
+  ctx.redirect('https://cas-auth.rpi.edu/cas/logout?service=' + process.env.BASE_URL)
 })
 
 // ------ GOOGLE ------
