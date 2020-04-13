@@ -1,6 +1,7 @@
 <!--Assessments: Upcoming assessments list-->
 <template>
   <div class="assessments-upcoming">
+    <AssignmentsOverdue />
     <p
       v-if="none"
       class="has-text-centered has-text-grey"
@@ -44,13 +45,14 @@
 <script>
 import moment from 'moment'
 
+import AssignmentsOverdue from '@/views/assessments/components/upcoming/AssignmentsOverdue'
 import AssessmentsUpcomingWeek from '@/views/assessments/components/upcoming/AssessmentsUpcomingWeek'
 import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock'
 import AssessmentsTable from '@/views/assessments/components/AssessmentsTable.vue'
 
 export default {
   name: 'AssessmentsUpcoming',
-  components: { AssessmentsUpcomingWeek, AssessmentsTable },
+  components: { AssignmentsOverdue, AssessmentsUpcomingWeek, AssessmentsTable },
   props: {
     showCompleted: {
       type: Boolean,
