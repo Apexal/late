@@ -27,13 +27,15 @@
           class="course-title"
           :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
         >{{ course.title }}</strong>
-        <span
-          class="assessment-title"
+        <router-link
+          tag="span"
+          class="is-clickable assessment-title"
           :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+          :to="routeTo"
+          :title="assessment.description"
         >
-
           {{ assessment.title }}
-        </span>
+        </router-link>
       </div>
       <span class="has-text-grey assessment-time">{{ assessmentTime }}</span>
     </div>
@@ -43,7 +45,7 @@
     >
       <span
         class="icon drag-assessment"
-        title="Reschedule to another day"
+        title="Drag to reschedule to another day!"
       >
         <i
           class="fas fa-grip-vertical"
