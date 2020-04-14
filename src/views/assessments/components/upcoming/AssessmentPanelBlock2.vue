@@ -42,6 +42,14 @@
       :class="coverClass"
     >
       <span
+        class="icon drag-assessment"
+        title="Reschedule to another day"
+      >
+        <i
+          class="fas fa-grip-vertical"
+        />
+      </span>
+      <span
         v-if="assessmentType === 'assignment'"
         class="icon toggle-assignment"
         :title="'Mark ' + (assessment.completed ? 'incomplete' : 'complete')"

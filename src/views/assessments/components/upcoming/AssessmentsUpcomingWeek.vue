@@ -32,13 +32,24 @@
               />
             </span>
           </p>
-          <AssessmentPanelBlock
-            v-for="a in assessments"
-            :key="a._id"
-            :group-by="'date'"
-            :show-scheduled="false"
-            :assessment="a"
-          />
+          <Draggable
+            :list="assessments"
+            group="upcoming-assessments"
+            :move="checkAssessmentDrag"
+            handle=".drag-assessment"
+            :data-date="key"
+            @end="draggedAssessment"
+          >
+            <AssessmentPanelBlock
+              v-for="a in assessments"
+              :key="a._id"
+              :group-by="'date'"
+              :show-scheduled="false"
+              :assessment="a"
+              :data-assessment-id="a.id"
+              :data-assessment-type="a.assessmentType"
+            />
+          </Draggable>
         </div>
       </div>
     </div>
@@ -47,12 +58,13 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
 import moment from 'moment'
 import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock2'
 
 export default {
   name: 'AssessmentsUpcomingWeek',
-  components: { AssessmentPanelBlock },
+  components: { Draggable, AssessmentPanelBlock },
   props: {
     weekNumber: { type: Number, required: true },
     weekAssessments: { type: Array, required: true }
@@ -76,6 +88,37 @@ export default {
     }
   },
   methods: {
+    checkAssessmentDrag (event) {
+      return event.from.dataset.date !== event.to.dataset.date
+    },
+    async draggedAssessment ({ item, from, to }) {
+      if (from.dataset.date === to.dataset.date) return false
+      // Change assessment due date to other date
+      const assessmentID = item.dataset.assessmentId
+      const assessmentType = item.dataset.assessmentType
+
+      const assessment = await this.$store.getters.getUpcomingAssessmentById(assessmentID)
+      if (!assessment) return false
+
+      const newDate = moment(to.dataset.date, 'YYYY-MM-DD', true)
+
+      const newDueDate = moment(assessment.dueDate)
+      newDueDate.set({
+        year: newDate.year(),
+        month: newDate.month(),
+        date: newDate.date()
+      })
+
+      try {
+        await this.$store.dispatch('UPDATE_ASSESSMENT', { assessmentID, assessmentType, updates: { dueDate: newDueDate } })
+        this.$store.commit('SORT_UPCOMING_ASSESSMENTS')
+      } catch (e) {
+        this.showError(`Failed to rescheduled ${assessmentType}...`)
+        return
+      }
+
+      this.$buefy.toast.open({ type: 'is-success', message: `Rescheduled ${assessmentType}!`, duration: 3000 })
+    },
     headerTitle (key) {
       const today = moment().startOf('day')
       const day = moment(key, 'YYYY-MM-DD', true)
