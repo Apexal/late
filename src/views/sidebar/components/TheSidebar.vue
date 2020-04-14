@@ -167,10 +167,16 @@ export default {
       return this.todaysAgenda.find(this.isCurrentEvent)
     },
     countdown () {
-      if (!this.currentEvent);
+      if (!this.currentEvent) return
+
+      let { start, end } = this.currentEvent
+      if (typeof start === 'string') {
+        start = moment(start, 'HH:mm', true)
+        end = moment(end, 'HH:mm', true)
+      }
 
       const diff = moment.duration(
-        moment(this.currentEvent.end).diff(this.rightNow)
+        moment(end).diff(this.rightNow)
       )
       return `${diff.hours()}h ${diff.minutes()}m left`
     },
