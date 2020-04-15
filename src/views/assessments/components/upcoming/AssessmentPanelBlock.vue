@@ -24,14 +24,25 @@
         style="flex: 1"
       >
         <strong
-          class="is-clickable course-title"
-          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+          class="is-clickable course-title is-hidden-touch"
+          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed}"
           @click="$store.commit('OPEN_COURSE_MODAL', course)"
         >{{ course.title }}</strong>
+        <strong
+          class="course-title is-hidden-desktop"
+          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed}"
+        >{{ course.title }}</strong>
+
+        <span
+          class="assessment-title is-hidden-desktop"
+          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed}"
+        >
+          {{ assessment.title }}
+        </span>
         <router-link
           tag="span"
-          class="is-clickable assessment-title"
-          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+          class="is-clickable assessment-title is-hidden-touch"
+          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed}"
           :to="routeTo"
           :title="assessment.description"
         >
