@@ -44,8 +44,8 @@
       :class="coverClass"
     >
       <span
-        class="icon drag-assessment"
-        title="Drag to reschedule to another day!"
+        class="icon tooltip has-tooltip-left drag-assessment"
+        data-tooltip="Drag to another day to reschedule!"
       >
         <i
           class="fas fa-grip-vertical"
@@ -169,6 +169,10 @@ export default {
       font-size: 1.3em;
       margin: 0 5px;
       cursor: pointer;
+    }
+
+    .drag-assessment {
+      cursor: move;
     }
   }
 }
