@@ -48,7 +48,7 @@
         data-tooltip="Drag to another day to reschedule!"
       >
         <i
-          class="fas fa-grip-vertical"
+          class="fas fa-arrows-alt"
         />
       </span>
       <span
