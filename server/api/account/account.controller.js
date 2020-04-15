@@ -78,7 +78,18 @@ async function updateCourses (studentID, termCode, newCourses) {
   return Promise.all(promises)
 }
 
-async function setAllFromSIS (ctx) {
+/**
+ * Given SIS credentials, grab a student's course schedules, name and major, etc.
+ *
+ * **Request Body**
+ * - rin: String RIN of student
+ * - pin: String SIS password of student
+ *
+ * **Response JSON**
+ * - updatedUser: The updated logged in user document
+ * - courses: Array of new/updated Course documents
+ */
+module.exports.setAllFromSIS = async function (ctx) {
   const { rin, pin } = ctx.request.body
 
   if (!rin || !pin) {
@@ -170,52 +181,32 @@ async function setAllFromSIS (ctx) {
 }
 
 /**
- * Given personal info in the request body:
+ * Updates the profile of the current logged in student.
+ *
+ * **Request Body**
  * - first_name
  * - last_name
  * - rin
  * - graduationYear
- * Save it to the logged in user.
  *
- * @param {Koa context} ctx
+ * **Response JSON**
+ * - updatedUser: The updated user document
+ *
  */
-async function setProfile (ctx) {
+module.exports.setProfile = async function (ctx) {
   const body = ctx.request.body
 
-  // There are two methods:
-  // manual: the body has the fields given
-  // sis: the body has the RIN and PIN to scrape SIS
+  if (body.first_name) ctx.state.user.name.first = body.first_name
+  if (body.last_name) ctx.state.user.name.last = body.last_name
 
-  if (!body.method) {
-    return ctx.badRequest('You must supply a method!')
-  }
+  if ('major' in body) { ctx.state.user.major = body.major ? body.major : undefined }
 
-  if (body.method === 'manual') {
-    ctx.state.user.name.first = body.first_name
-    ctx.state.user.name.last = body.last_name
-
-    if ('major' in body) { ctx.state.user.major = body.major ? body.major : undefined }
-
-    if ('graduationYear' in body) { ctx.state.user.graduationYear = isNaN(parseInt(body.graduationYear)) ? undefined : parseInt(body.graduationYear) }
-  } else if (body.method === 'sis') {
-    const { rin, pin } = body
-
-    // Grab as much info as possible from SIS
-    const scrapedInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
-    ctx.state.user.set(scrapedInfo)
-  } else {
-    return ctx.badRequest('Invalid method.')
-  }
+  if ('graduationYear' in body) { ctx.state.user.graduationYear = isNaN(parseInt(body.graduationYear)) ? undefined : parseInt(body.graduationYear) }
 
   ctx.state.user.setup.profile = true
 
   try {
     await ctx.state.user.save()
-
-    logger.info(`Saved personal info for ${ctx.state.user.identifier}`)
-    return ctx.ok({
-      updatedUser: ctx.state.user
-    })
   } catch (err) {
     logger.error(
       `Failed to save personal info for ${ctx.state.user.identifier}: ${err}`
@@ -223,16 +214,24 @@ async function setProfile (ctx) {
     Sentry.captureException(err)
     return ctx.badRequest('There was an error saving your personal info.')
   }
+
+  logger.info(`Saved personal info for ${ctx.state.user.identifier}`)
+  return ctx.ok({
+    updatedUser: ctx.state.user
+  })
 }
 
 /**
  * Set the logged in user's terms that they are on campus.
  * The term codes should be in the request body as `termCodes`
  *
- * @param {Koa context} ctx
- * @retturns updatedUser
+ * **Request Body**
+ * - termCodes: Array of term codes like '202001'
+ *
+ * **Response JSON**
+ * - updatedUser: The updated current user document
  */
-async function setTerms (ctx) {
+module.exports.setTerms = async function (ctx) {
   const { termCodes } = ctx.request.body
 
   logger.info(`Setting terms for ${ctx.state.user.identifier}`)
@@ -266,15 +265,20 @@ async function setTerms (ctx) {
 }
 
 /**
- * Given the following data in the request body:
- * - SIS PIN as sis_pin
- *  OR
- * - Period CRNs as crns
- * Set the user's course schedule using SIS scraping.
+ * Set the user's course schedule for a school term using SIS scraping.
  *
- * @param {Koa context} ctx
+ * **Request Query**
+ * - termCode: (optional) Specific term code to grab courses from, defaults to current term
+ *
+ * **Request Body**
+ * - rin: The user's SIS RIN
+ * - pin: The user's SIS password
+ *
+ * **Response JSON**
+ * - updatedUser: The updated current user document
+ * - courses: The updated course array
  */
-async function importCourseSchedule (ctx) {
+module.exports.importCourseSchedule = async function (ctx) {
   const body = ctx.request.body
   const termCode = ctx.session.currentTerm ? ctx.session.currentTerm.code : ctx.query.termCode
 
@@ -341,13 +345,19 @@ async function importCourseSchedule (ctx) {
 }
 
 /**
- * Given the CRN of a course in the URL params and the user's RIN and PIN in the request body,
- * grab a course from SIS and add it to the student's list.
+ * Grab a course from SIS and add it to the current student's list.
  *
- * @param {Koa context} ctx
- * @returns {Object} The new course
+ * **Request Params**
+ * - crn: The crn of the course to search for and add
+ *
+ * **Request Body**
+ * - rin: The user's SIS RIN
+ * - pin: The user's SIS password
+ *
+ * **Response JSON**
+ * - course: The new course document
  */
-async function addCourseByCRN (ctx) {
+module.exports.addCourseByCRN = async function (ctx) {
   const { crn } = ctx.params
   const { rin, pin } = ctx.request.body
 
@@ -392,12 +402,14 @@ async function addCourseByCRN (ctx) {
 /**
  * Set the study/work time preference of the logged in user.
  *
- * Body:
- * - earliest 'HH:mm'
- * - latest 'HH:mm'
- * @param {Koa context} ctx
+ * **Request Body**
+ * - earliest: Earliest work time in string format 'HH:mm'
+ * - latest: Latest work time in string format 'HH:mm'
+ *
+ * **Request JSON**
+ * - updatedUser: The updated current user document
  */
-async function setTimePreference (ctx) {
+module.exports.setTimePreference = async function (ctx) {
   const { earliest, latest } = ctx.request.body
 
   if (!earliest || !latest) return ctx.badRequest('You must give an earliest AND latest time.')
@@ -425,13 +437,4 @@ async function setTimePreference (ctx) {
 
   logger.info(`Set work/study time preference for ${ctx.state.user.identifier}`)
   ctx.ok({ updatedUser: ctx.state.user })
-}
-
-module.exports = {
-  setAllFromSIS,
-  setProfile,
-  setTerms,
-  importCourseSchedule,
-  addCourseByCRN,
-  setTimePreference
 }
