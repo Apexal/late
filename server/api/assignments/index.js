@@ -26,7 +26,7 @@ router.post(
 router.patch(
   '/a/:assignmentID',
   Ctrl.getAssignmentMiddleware,
-  Ctrl.editAssignment
+  Ctrl.updateAssignment
 )
 router.post(
   '/a/:assignmentID/toggle',

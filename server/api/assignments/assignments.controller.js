@@ -417,29 +417,17 @@ async function createAssignment (ctx) {
  * @param {Koa context} ctx
  * @returns The updated assignment
  */
-async function editAssignment (ctx) {
+async function updateAssignment (ctx) {
   const assignmentID = ctx.params.assignmentID
   const updates = ctx.request.body
 
-  // const allowedProperties = [
-  //   '_id',
-  //   'title',
-  //   'description',
-  //   'dueDate',
-  //   'courseCRN',
-  //   'timeEstimate',
-  //   'priority'
-  // ];
+  const disallowedProperties = [
+    '_id',
+    'termCode',
+    '_student'
+  ]
 
-  // // Ensure no unallowed properties are passed to update
-  // if (Object.keys(updates).some(prop => !allowedProperties.includes(prop))) {
-  //   logger.error(
-  //     `Failed to update assignment for ${
-  //       ctx.state.user.rcs_id
-  //     } because of invalid update properties.`
-  //   );
-  //   return ctx.badRequest('Passed unallowed properties.');
-  // }
+  disallowedProperties.forEach(prop => delete updates[prop])
 
   // Limit to this semester
   if (
@@ -459,7 +447,6 @@ async function editAssignment (ctx) {
   }
 
   // Update assignment
-  delete updates._student
   ctx.state.assignment.set(updates)
 
   try {
@@ -721,7 +708,7 @@ module.exports = {
   setAssignmentCollaborators,
   createAssignment,
   toggleAssignment,
-  editAssignment,
+  updateAssignment,
   deleteAssignment,
   addComment,
   deleteComment,
