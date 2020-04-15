@@ -38,6 +38,10 @@
           :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed}"
         >
           {{ assessment.title }}
+          <span
+            v-if="assessment.tasks.length > 0 && !assessment.completed"
+            class="has-text-grey"
+          >{{ assessmentTaskDisplay(assessment.tasks) }}</span>
         </span>
         <router-link
           tag="span"
@@ -47,6 +51,10 @@
           :title="assessment.description"
         >
           {{ assessment.title }}
+          <span
+            v-if="assessment.tasks.length > 0 && !assessment.completed"
+            class="has-text-grey"
+          >{{ assessmentTaskDisplay(assessment.tasks) }}</span>
         </router-link>
       </div>
       <span class="has-text-grey assessment-time">{{ assessmentTime }}</span>
@@ -124,6 +132,10 @@ export default {
     }
   },
   methods: {
+    assessmentTaskDisplay (tasks) {
+      const completed = tasks.filter(task => task.completed)
+      return `(${completed.length}/${tasks.length})`
+    },
     async toggleAssignment () {
       try {
         const toggledAssignment = await this.$store.dispatch(
