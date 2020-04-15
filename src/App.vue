@@ -34,7 +34,7 @@
               :open="addAssignmentModalExpanded"
               @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
             />
-            <ExamsModalAddRedux
+            <ExamsModalAdd
               v-if="!onBreak"
               :open="addExamModalExpanded"
               @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
@@ -86,8 +86,8 @@ import moment from 'moment'
 import TheHeader from '@/views/components/TheHeader'
 import TheFooter from '@/views/components/TheFooter'
 import TheSidebar from '@/views/sidebar/components/TheSidebar'
-import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAddRedux'
-import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux'
+import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAdd'
+import ExamsModalAdd from '@/views/exams/components/ExamsModalAdd'
 import CourseModal from '@/views/courses/components/CourseModal'
 import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements'
 import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal'
@@ -112,7 +112,7 @@ export default {
     TheSidebar,
     TheFooter,
     AssignmentsModalAdd,
-    ExamsModalAddRedux,
+    ExamsModalAdd,
     AnnouncementsModal,
     PinnedAnnouncements,
     StudyToolsTimerOverlay,

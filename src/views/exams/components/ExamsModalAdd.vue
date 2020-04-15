@@ -116,7 +116,7 @@ import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar'
 import ModalTime from '@/views/assessments/components/modal/ModalTime'
 
 export default {
-  name: 'ExamsModalAddRedux',
+  name: 'ExamsModalAdd',
   components: {
     ModalSelectCourse,
     ModalCalendar,
