@@ -60,7 +60,7 @@
 <script>
 import Draggable from 'vuedraggable'
 import moment from 'moment'
-import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock2'
+import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock'
 
 export default {
   name: 'AssessmentsUpcomingWeek',

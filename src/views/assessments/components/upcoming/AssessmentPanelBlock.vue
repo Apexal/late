@@ -1,173 +1,114 @@
 <template>
   <div
-    class="assessment panel-block"
-    :class="panelBlockClasses"
-    :data-tooltip="showScheduled ? scheduleWarningTitle : undefined"
-    :style="{'border-right-color': `rgba(255, 0, 0, ${assessmentTimeWarningOpacity})`}"
+    class="assessment panel-block is-flex"
+    :class="{'is-completed': assessment.completed}"
   >
-    <span
-      v-if="assessmentType === 'assignment'"
-      class="icon toggle-assignment"
-      @click="toggleAssignment()"
-    >
+    <div class="holder is-flex">
       <span
-        :class="[
-          assessment.completed ? 'fas fa-check-circle' : 'far fa-circle'
-        ]"
-        :title="toggleAssignmentTitle"
+        class="icon assessment-icon"
         :style="{color: course.color}"
-      />
-    </span>
-    <router-link
-      class="assessment-link"
-      :title="
-        (assessment.priority === 1 ? '(OPTIONAL) ' : '') +
-          (assessment.description || '').substring(0, 500)
-      "
-      :to="linkToParams"
-      :class="{
-        [assessment.assessmentType]: true,
-        priority: assessment.priority > 3,
-        'has-text-grey is-italic': assessment.priority === 1
-      }"
-    >
-      <span
-        v-if="assessmentType === 'exam'"
-        :style="{color: course.color}"
-        class="icon exam-icon"
-        :title="`${course.title} Exam`"
+        @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
-        <i class="fas fa-exclamation-triangle" />
+        <i
+          v-if="assessmentType === 'exam'"
+          class="fas fa-exclamation-triangle"
+        />
+        <i
+          v-else-if="assessmentType === 'assignment'"
+          class="fas fa-clipboard-check"
+        />
       </span>
-      <b class="course-title is-hidden-tablet">{{ course.title }}</b>
-      <span class="assessment-title">{{ assessment.title }}</span>
-      <i
-        v-if="assessmentType === 'assignment' && assessment.shared"
-        class="fas fa-users has-text-grey-light"
-        title="Shared assignment"
-      />
-    </router-link>
-    <!-- <span
-      v-if="showScheduled"
-      class="has-tooltip-left icon has-text-danger is-pulled-right"
-      :class="{
-        tooltip:
-          assessmentType === 'exam' ||
-          (assessmentType === 'assignment' && !assessment.completed)
-      }"
-      :data-tooltip="scheduleWarningTitle"
+
+      <div
+        class="is-flex vertical"
+        style="flex: 1"
+      >
+        <strong
+          class="is-clickable course-title"
+          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+          @click="$store.commit('OPEN_COURSE_MODAL', course)"
+        >{{ course.title }}</strong>
+        <router-link
+          tag="span"
+          class="is-clickable assessment-title"
+          :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+          :to="routeTo"
+          :title="assessment.description"
+        >
+          {{ assessment.title }}
+        </router-link>
+      </div>
+      <span class="has-text-grey assessment-time">{{ assessmentTime }}</span>
+    </div>
+    <div
+      class="behind is-flex has-text-white"
+      :class="coverClass"
     >
-      <i
-        :style="{opacity: assessmentTimeWarningOpacity}"
-        class="far fa-clock"
-      />
-    </span> -->
-    <small
-      v-if="groupBy === 'date'"
-      class="has-text-grey"
-    >{{
-      timeFormat(assessment.date)
-    }}</small>
-    <small
-      v-else
-      class="is-pulled-right tooltip has-tooltip-left has-text-grey"
-      :data-tooltip="toDateShortString + ' ' + timeFormat(assessment.date)"
-    >{{ fromNow(assessmentDate) }}</small>
+      <span
+        class="icon tooltip has-tooltip-left drag-assessment"
+        data-tooltip="Drag to another day to reschedule!"
+      >
+        <i
+          class="fas fa-arrows-alt"
+        />
+      </span>
+      <span
+        v-if="assessmentType === 'assignment'"
+        class="icon toggle-assignment"
+        :title="'Mark ' + (assessment.completed ? 'incomplete' : 'complete')"
+        @click="toggleAssignment"
+      >
+        <i
+          class="fas"
+          :class="assessment.completed ? 'fa-times' : 'fa-check'"
+        />
+      </span>
+      <router-link
+        :to="routeTo"
+        tag="span"
+        class="icon"
+        :title="'View ' + assessmentType "
+      >
+        <i class="fas fa-info-circle" />
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
+
 export default {
-  name: 'AssessmentsUpcomingPanelBlock',
+  name: 'AssessmentPanelBlock',
   props: {
-    groupBy: {
-      type: String,
-      required: true
-    },
     assessment: {
       type: Object,
       required: true
-    },
-    showScheduled: {
-      type: Boolean,
-      required: false
     }
   },
   computed: {
     assessmentType () {
       return this.assessment.assessmentType
     },
+    assessmentTime () {
+      return moment(this.assessment.date).format('h:mma')
+    },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN)
     },
-    toggleAssignmentTitle () {
-      return (
-        'Click to mark ' +
-        this.course.title +
-        ' Assignment' +
-        (this.assessment.completedAt
-          ? ` (Completed ${this.shortDateTimeFormat(
-            this.assessment.completedAt
-          )}) as incomplete`
-          : ' as complete')
-      )
-    },
-    scheduleWarningTitle () {
-      return `${this.assessment.scheduledTime}/${this.assessment.timeEstimate *
-        60} min scheduled`
-    },
-    panelBlockClasses () {
-      return {
-        'tooltip has-tooltip-right':
-          this.showScheduled &&
-          (
-            this.assessmentType === 'exam' ||
-            (this.assessmentType === 'assignment' && !this.assessment.completed)
-          )
-      }
-    },
-    panelBlockStyle () {
-      return {}
-    },
-    assessmentDate () {
-      return this.assessmentType === 'assignment'
-        ? this.assessment.dueDate
-        : this.assessment.date
-    },
-    toDateShortString () {
-      if (moment(this.assessmentDate).isSame(moment(), 'day')) {
-        return 'Today'
-      }
-      if (moment(this.assessmentDate).isSame(moment().add(1, 'day'), 'day')) {
-        return 'Tomorrow'
-      }
-      return moment(this.assessmentDate).format('dddd [the] Do')
-    },
-    daysAway () {
-      return moment(this.assessmentDate).diff(
-        moment(this.rightNow).startOf('day'),
-        'days'
-      )
-    },
-    assessmentTimeWarningOpacity () {
-      if (this.assessmentType === 'assignment' && this.assessment.completed) {
-        return 0
-      }
-      if (this.assessment.scheduledTime === 0) return 1
-      if (this.assessment.timeEstimate === 0) return 0
-      if (this.assessment.timeEstimate === this.assessment.scheduledTime) {
-        return 0
+    coverClass () {
+      if (this.assessmentType === 'assignment') {
+        return this.assessment.completed ? 'has-background-success' : 'has-background-danger'
       }
 
-      return (
-        1 - this.assessment.scheduledTime / (this.assessment.timeEstimate * 60)
-      )
+      return 'has-background-dark'
     },
-    linkToParams () {
+    routeTo () {
       return {
-        name: this.assessmentType + '-overview',
-        params: { [this.assessmentType + 'ID']: this.assessment._id }
+        name: this.assessment.assessmentType + '-overview',
+        params: {
+          [this.assessment.assessmentType + 'ID']: this.assessment.id
+        }
       }
     }
   },
@@ -203,31 +144,68 @@ export default {
 
 <style lang="scss" scoped>
 .assessment {
-  padding-right: 5px;
-  padding-left: 5px;
-  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  padding: 0;
+  align-items: stretch;
+  position: relative;
+  border-left: 4px solid white;
 
-  &.tooltip {
-    border-right-width: 2px;
-    border-right-style: solid;
-  }
-
-  .assessment-link {
-    color: inherit;
-    word-wrap: break-word;
-    flex: 1;
-  }
-  .is-completed {
-    text-decoration: line-through;
+  .holder {
+    padding: 12px 8px;
+    width: 100%;
+    align-items: center;
   }
 
-  .toggle-assignment {
-    cursor: pointer;
-  }
+  .behind {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+    transition: transform 0.2s ease-out;
+    transform: scaleX(0);
+    transform-origin: right;
+    .icon {
+      font-size: 1.3em;
+      margin: 0 5px;
+      cursor: pointer;
+    }
 
-  .priority,
-  .exam {
-    font-weight: 500;
+    .drag-assessment {
+      cursor: move;
+    }
   }
+}
+
+.assessment:hover {
+  .behind {
+    transform: scaleX(1);
+  }
+}
+
+.assessment.is-completed {
+  border-left: 4px solid #48c774;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.assessment-title {
+  position: relative;
+
+}
+.course-title {
+  // position: absolute;
+  // top: -11px;
+  font-size: 12px;
+}
+
+.assessment-icon {
+  font-size: 1.2em;
+  cursor: pointer;
+  // color: rgb(172, 172, 172);
+  margin-right: 5px;
 }
 </style>

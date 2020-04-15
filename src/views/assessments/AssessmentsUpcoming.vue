@@ -47,7 +47,6 @@ import moment from 'moment'
 
 import AssignmentsOverdue from '@/views/assessments/components/upcoming/AssignmentsOverdue'
 import AssessmentsUpcomingWeek from '@/views/assessments/components/upcoming/AssessmentsUpcomingWeek'
-import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock'
 import AssessmentsTable from '@/views/assessments/components/AssessmentsTable.vue'
 
 export default {
