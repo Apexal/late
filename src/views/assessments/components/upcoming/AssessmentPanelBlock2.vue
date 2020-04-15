@@ -24,8 +24,9 @@
         style="flex: 1"
       >
         <strong
-          class="course-title"
+          class="is-clickable course-title"
           :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed} "
+          @click="$store.commit('OPEN_COURSE_MODAL', course)"
         >{{ course.title }}</strong>
         <router-link
           tag="span"
