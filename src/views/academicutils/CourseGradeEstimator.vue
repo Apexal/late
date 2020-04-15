@@ -233,9 +233,10 @@ export default {
         try {
           await this.$store.dispatch(
             'UPDATE_COURSE',
-            Object.assign({}, this.selectedCourse, {
-              gradingCategories: this.categories
-            })
+            {
+              courseID: this.selectedCourse.id,
+              updates: { gradingCategories: this.categories }
+            }
           )
         } catch (e) {
           const message = e.response ? e.response.data.message : e.message

@@ -144,16 +144,16 @@ const actions = {
    * Update a user's course. This updates the single course object passed on the server and validates that no special properties are change (_id, originalTitle, etc.)
    *
    * @param {Object} course The course to update with its new properties and values
-   * @returns {Object} The updatedCourse returned from the POST api call
+   * @returns {Object} The updatedCourse returned from the PATCH API call
    */
-  async UPDATE_COURSE ({ commit, rootState }, course) {
-    const request = await axios.post(`/courses/${course._id}`, course)
+  async UPDATE_COURSE ({ commit, rootState }, { courseID, updates }) {
+    const request = await axios.patch(`/courses/${courseID}`, updates)
     const updatedCourse = request.data.updatedCourse
     commit('UPDATE_COURSE', updatedCourse)
 
     // Check if GCal has to be updated
     if (rootState.auth.user.integrations.google && rootState.auth.user.integrations.google.calendarID) {
-      axios.post('/google/courseschedule', { termCode: course.termCode })
+      axios.post('/google/courseschedule', { termCode: updatedCourse.termCode })
     }
 
     return updatedCourse

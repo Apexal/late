@@ -527,7 +527,10 @@ export default {
       try {
         updatedCourse = await this.$store.dispatch(
           'UPDATE_COURSE',
-          this.updatedCourse
+          {
+            courseID: this.course.id,
+            updates: this.updatedCourse
+          }
         )
       } catch (e) {
         const message = e.response ? e.response.data.message : e.message

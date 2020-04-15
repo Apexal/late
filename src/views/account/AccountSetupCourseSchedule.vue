@@ -317,13 +317,14 @@ export default {
       this.loading = false
     },
     async updateCourseColor (course, color) {
-      const c = Object.assign({}, course, { color })
-
       let updatedCourse
       try {
         updatedCourse = await this.$store.dispatch(
           'UPDATE_COURSE',
-          c
+          {
+            courseID: course.id,
+            updates: { color }
+          }
         )
       } catch (e) {
         const message = e.response ? e.response.data.message : e.message
