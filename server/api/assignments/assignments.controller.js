@@ -449,6 +449,21 @@ async function updateAssignment (ctx) {
   // Update assignment
   ctx.state.assignment.set(updates)
 
+  if ('dueDate' in updates) {
+    if (moment(updates.dueDate).isBefore(moment())) {
+      // Moved to the past
+      for (const reminder of ctx.state.assignment.reminders) {
+        reminder.sent = true
+      }
+    } else {
+      // Update reminders
+      for (const reminder of ctx.state.assignment.reminders) {
+        // Find newly adjusted
+        reminder.datetime = moment(updates.dueDate).subtract(reminder.count, reminder.unit)
+      }
+    }
+  }
+
   try {
     await ctx.state.assignment.save()
   } catch (e) {
