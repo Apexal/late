@@ -6,6 +6,7 @@
     <div class="holder is-flex">
       <span
         class="icon assessment-icon"
+        :title="course.title + ' ' + assessment.assessmentType"
         :style="{color: course.color}"
         @click="$store.commit('OPEN_COURSE_MODAL', course)"
       >
@@ -39,7 +40,7 @@
         >
           {{ assessment.title }}
           <span
-            v-if="assessment.tasks.length > 0 && !assessment.completed"
+            v-if="assessment.tasks && assessment.tasks.length > 0 && !assessment.completed"
             class="has-text-grey"
           >{{ assessmentTaskDisplay(assessment.tasks) }}</span>
         </span>
@@ -52,7 +53,7 @@
         >
           {{ assessment.title }}
           <span
-            v-if="assessment.tasks.length > 0 && !assessment.completed"
+            v-if="assessment.tasks && assessment.tasks.length > 0 && !assessment.completed"
             class="has-text-grey"
           >{{ assessmentTaskDisplay(assessment.tasks) }}</span>
         </router-link>
