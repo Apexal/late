@@ -39,6 +39,12 @@
         empty-message="No assignments or exams due in over 2 weeks."
       />
     </div>
+    <p
+      v-else
+      class="has-text-centered has-text-grey"
+    >
+      No far future assignments after 3 weeks.
+    </p>
   </div>
 </template>
 

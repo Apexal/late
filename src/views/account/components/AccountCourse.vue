@@ -70,8 +70,8 @@
 
           <b-taglist class="course-links">
             <b-tag
-              v-for="l in course.links"
-              :key="l.url"
+              v-for="(l, index) in course.links"
+              :key="index + l.url"
               type="is-link"
               class="course-link"
             >
