@@ -25,4 +25,14 @@ schema.virtual('isCurrent').get(function () {
   return moment().isBetween(this.startDate, this.endDate)
 })
 
+/**
+ * Find term where midDate is between
+ */
+schema.statics.findOneFromDate = function findOneFromDate (midDate) {
+  return this.findOne({
+    startDate: { $lt: midDate },
+    endDate: { $gt: midDate }
+  })
+}
+
 module.exports = mongoose.model('Term', schema)
