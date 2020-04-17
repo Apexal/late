@@ -130,10 +130,10 @@ const actions = {
 
     return request.data
   },
-  async patchEventFromBlock (googleAuth, user, blockID, updates) {
+  async patchEvent (user, blockID, updates) {
     const calendar = google.calendar({
       version: 'v3',
-      auth: googleAuth
+      auth: createAuth(user.integrations.google.tokens)
     })
     const request = await calendar.events.patch({
       calendarId: user.integrations.google.calendarID,
@@ -149,14 +149,14 @@ const actions = {
    * @param {Object} googleIntegration Object with `calendarId` and `tokens`
    * @param {String} eventId String ID of the GCal event to delete
    */
-  async deleteEvent (googleIntegration, eventId) {
+  async deleteEvent (user, eventId) {
     const calendar = google.calendar({
       version: 'v3',
-      auth: createAuth(googleIntegration.tokens)
+      auth: createAuth(user.integrations.google.tokens)
     })
 
     const request = await calendar.events.delete({
-      calendarId: googleIntegration.calendarID,
+      calendarId: user.integrations.google.calendarID,
       eventId
     })
 
