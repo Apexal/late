@@ -41,16 +41,15 @@ const actions = {
   /**
    * Create a GCal event for a work/course/todo block
    *
-   * @param {Object} googleIntegration
-   * @param {String} currentTermCode
    * @param {Student document} user
+   * @param {String} currentTermCode
    * @param {Assignent/Exam/Course/Todo document} item
    * @param {Block document} block
    */
-  async createBlockEvent (googleIntegration, user, termCode, item, block) {
+  async createBlockEvent (user, termCode, item, block) {
     const calendar = google.calendar({
       version: 'v3',
-      auth: createAuth(googleIntegration.tokens)
+      auth: createAuth(user.integrations.google.tokens)
     })
 
     let colorId, summary, description, source, extendedPrivateProperties
@@ -110,7 +109,7 @@ const actions = {
 
     // Make request to Google Calendar API to create event
     const request = await calendar.events.insert({
-      calendarId: googleIntegration.calendarID,
+      calendarId: user.integrations.google.calendarID,
       requestBody: {
         colorId,
         location: block.location,

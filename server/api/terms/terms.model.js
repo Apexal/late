@@ -30,9 +30,9 @@ schema.virtual('isCurrent').get(function () {
  */
 schema.statics.findOneFromDate = function findOneFromDate (midDate) {
   return this.findOne({
-    startDate: { $lt: midDate },
-    endDate: { $gt: midDate }
-  })
+    startDate: { $lte: midDate },
+    endDate: { $gte: midDate }
+  }).exec()
 }
 
 module.exports = mongoose.model('Term', schema)
