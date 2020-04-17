@@ -99,9 +99,7 @@ app.use(async (ctx, next) => {
 
     // Create Google auth if logged in and setup
     if (ctx.state.user && ctx.state.user.integrations.google.calendarID) {
-      const auth = google.createConnection()
-      auth.setCredentials(ctx.state.user.integrations.google.tokens)
-      ctx.state.googleAuth = auth
+      ctx.state.googleAuth = google.createAuth(ctx.state.user.integrations.google.tokens)
     }
   }
   try {

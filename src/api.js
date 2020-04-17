@@ -22,7 +22,7 @@
  *   try {
  *     request = await this.$http.post('/assignments', data)
  *   } catch (e) {
- *     alert('Failed to add assignment: ' + e)
+ *     this.showError('Failed to add assignment: ' + e)
  *   }
  * }
  *

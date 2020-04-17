@@ -28,14 +28,29 @@ function createUrl (auth) {
     scope: scopes
   })
 }
+
+function createAuth (tokens) {
+  const auth = createConnection()
+  auth.setCredentials(tokens)
+  return auth
+}
+
 const scopes = ['https://www.googleapis.com/auth/calendar']
 
 const actions = {
-
-  async createEventFromBlock (googleAuth, currentTerm, user, item, block) {
+  /**
+   * Create a GCal event for a work/course/todo block
+   *
+   * @param {Object} googleIntegration
+   * @param {String} currentTermCode
+   * @param {Student document} user
+   * @param {Assignent/Exam/Course/Todo document} item
+   * @param {Block document} block
+   */
+  async createBlockEvent (googleIntegration, user, termCode, item, block) {
     const calendar = google.calendar({
       version: 'v3',
-      auth: googleAuth
+      auth: createAuth(googleIntegration.tokens)
     })
 
     let colorId, summary, description, source, extendedPrivateProperties
@@ -49,11 +64,6 @@ const actions = {
         process.env.BASE_URL
       }/coursework/${assessmentType.charAt(0)}/${assessment._id}`
 
-      // Find course associated with this block
-      const course = await user.courseFromCRN(
-        currentTerm.code,
-        assessment.courseCRN
-      )
       const capitalizedAssessmentType =
       assessmentType === 'assignment' ? 'Assignment' : 'Exam'
 
@@ -62,6 +72,11 @@ const actions = {
       summary = `${
         assessment.assessmentType === 'assignment' ? 'Work on' : 'Study for'
       } ${assessment.title}`
+
+      const course = await user.courseFromCRN(
+        termCode,
+        assessment.courseCRN
+      )
 
       description = `<b>${
         course.title
@@ -95,7 +110,7 @@ const actions = {
 
     // Make request to Google Calendar API to create event
     const request = await calendar.events.insert({
-      calendarId: user.integrations.google.calendarID,
+      calendarId: googleIntegration.calendarID,
       requestBody: {
         colorId,
         location: block.location,
@@ -103,10 +118,6 @@ const actions = {
         description,
         guestsCanInviteOthers: false,
         source,
-        organizer: {
-          displayName: user.displayName,
-          email: user.rcs_id + '@rpi.edu'
-        },
         extendedProperties: {
           private: {
             scheduledByLATE: true,
@@ -118,7 +129,6 @@ const actions = {
       }
     })
 
-    logger.info(`Added GCal event for ${block.blockType} block ${user.identifier}.`)
     return request.data
   },
   async patchEventFromBlock (googleAuth, user, blockID, updates) {
@@ -134,15 +144,40 @@ const actions = {
 
     return request.data
   },
-  async deleteEventFromBlock (ctx, blockID) {
+  /**
+   * Delete a Google Calendar event from a student's connected calendar.
+   *
+   * @param {Object} googleIntegration Object with `calendarId` and `tokens`
+   * @param {String} eventId String ID of the GCal event to delete
+   */
+  async deleteEvent (googleIntegration, eventId) {
+    const calendar = google.calendar({
+      version: 'v3',
+      auth: createAuth(googleIntegration.tokens)
+    })
+
+    const request = await calendar.events.delete({
+      calendarId: googleIntegration.calendarID,
+      eventId
+    })
+
+    return request.data
+  },
+  async deleteWorkBlockEventsForAssessment (ctx, assessment, cutoffDate) {
     const calendar = google.calendar({
       version: 'v3',
       auth: ctx.state.googleAuth
     })
 
-    const request = await calendar.events.delete({
+    // const request = await calendar.events.delete({
+    //   calendarId: ctx.state.user.integrations.google.calendarID,
+    //   eventId: blockID
+    // })
+
+    const request = await calendar.events.list({
       calendarId: ctx.state.user.integrations.google.calendarID,
-      eventId: blockID
+      privateExtendedProperty: '',
+      timeMin: cutoffDate
     })
 
     return request.data
@@ -270,6 +305,7 @@ const actions = {
 module.exports = {
   apis: google,
   createConnection,
+  createAuth,
   createUrl,
   actions
 }
