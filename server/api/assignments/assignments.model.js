@@ -86,6 +86,25 @@ schema.virtual('fullyScheduled').get(function () {
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the assignment date now
   if (!this.isNew) {
+    const Student = require('../students/students.model')
+    const student = await Student.findOne({ _id: this._student })
+
+    // GCal events
+    if (student.integrations.google.calendarID) {
+      const blocks = await Block.find({
+        _student: this._student,
+        _id: { $in: this._blocks },
+        $or: [
+          { endTime: { $gt: this.dueDate } },
+          { endTime: { $gt: this.completedAt } }
+        ]
+      })
+
+      try {
+        await Promise.allSettled(blocks.map(block => google.actions.deleteEvent(student, block.id)))
+      } catch (e) {}
+    }
+
     await Block.deleteMany({
       _student: this._student,
       _id: { $in: this._blocks },
