@@ -5,6 +5,7 @@ const google = require('../../modules/google')
 const Sentry = require('@sentry/node')
 
 const {
+  loginToSIS,
   scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,
@@ -89,28 +90,35 @@ async function updateCourses (studentID, termCode, newCourses) {
  * - updatedUser: The updated logged in user document
  * - courses: Array of new/updated Course documents
  */
-module.exports.setAllFromSIS = async function (ctx) {
+module.exports.setAllFromSIS = async function (ctx, next) {
   const { rin, pin } = ctx.request.body
 
   if (!rin || !pin) {
     return ctx.badRequest('You must pass `rin` and `pin`!')
   }
 
+  const jar = await loginToSIS(rin, pin)
+
   const terms = await Term.find()
 
-  let registeredTermCodes = await scrapeSISForRegisteredTerms(rin, pin)
+  let registeredTermCodes = await scrapeSISForRegisteredTerms(jar)
   ctx.state.user.terms = registeredTermCodes
   ctx.state.user.setup.terms = true
 
-  const profileInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
-  if (!ctx.state.user.name.first) {
-    ctx.state.user.name.first = profileInfo.name.first
-  }
-  if (!ctx.state.user.name.last) {
-    ctx.state.user.name.last = profileInfo.name.last
-  }
-  if (!ctx.state.user.major) {
-    ctx.state.user.major = profileInfo.major
+  try {
+    const profileInfo = await scrapeSISForProfileInfo(jar)
+    if (!ctx.state.user.name.first) {
+      ctx.state.user.name.first = profileInfo.name.first
+    }
+    if (!ctx.state.user.name.last) {
+      ctx.state.user.name.last = profileInfo.name.last
+    }
+    if (!ctx.state.user.major) {
+      ctx.state.user.major = profileInfo.major
+    }
+  } catch (e) {
+    // Might fail for some random reason
+    logger.error(`Could not find profile details for ${ctx.state.user.rcs_id}`)
   }
 
   ctx.state.user.setup.profile = true
@@ -134,8 +142,7 @@ module.exports.setAllFromSIS = async function (ctx) {
     let courseSchedule
     try {
       courseSchedule = await scrapeSISForCourseSchedule(
-        rin,
-        pin,
+        jar,
         term,
         ctx.state.user._id
       )
@@ -170,14 +177,8 @@ module.exports.setAllFromSIS = async function (ctx) {
   }
 
   ctx.state.user.lastSISUpdate = new Date()
-  await ctx.state.user.save()
 
-  const courses = !ctx.session.currentTerm ? [] : await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code)
-
-  ctx.ok({
-    updatedUser: ctx.state.user,
-    courses
-  })
+  ctx.state.data.courses = !ctx.session.currentTerm ? [] : await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code)
 }
 
 /**
@@ -196,29 +197,14 @@ module.exports.setAllFromSIS = async function (ctx) {
 module.exports.setProfile = async function (ctx) {
   const body = ctx.request.body
 
-  if (body.first_name) ctx.state.user.name.first = body.first_name
-  if (body.last_name) ctx.state.user.name.last = body.last_name
-
+  if ('first_name' in body) ctx.state.user.name.first = body.first_name
+  if ('last_name' in body) ctx.state.user.name.last = body.last_name
   if ('major' in body) { ctx.state.user.major = body.major ? body.major : undefined }
-
   if ('graduationYear' in body) { ctx.state.user.graduationYear = isNaN(parseInt(body.graduationYear)) ? undefined : parseInt(body.graduationYear) }
 
   ctx.state.user.setup.profile = true
 
-  try {
-    await ctx.state.user.save()
-  } catch (err) {
-    logger.error(
-      `Failed to save personal info for ${ctx.state.user.identifier}: ${err}`
-    )
-    Sentry.captureException(err)
-    return ctx.badRequest('There was an error saving your personal info.')
-  }
-
-  logger.info(`Saved personal info for ${ctx.state.user.identifier}`)
-  return ctx.ok({
-    updatedUser: ctx.state.user
-  })
+  logger.info(`Saving personal info for ${ctx.state.user.identifier}`)
 }
 
 /**
@@ -250,18 +236,6 @@ module.exports.setTerms = async function (ctx) {
 
   ctx.state.user.setup.terms = true
   ctx.state.user.terms = termCodes.sort() // this works even though they're strings
-
-  try {
-    await ctx.state.user.save()
-  } catch (e) {
-    logger.error(`Failed to save user ${ctx.state.user.identifier}: ${e}`)
-    Sentry.captureException(e)
-    return ctx.internalServerError('There was an error saving the terms.')
-  }
-
-  ctx.ok({
-    updatedUser: ctx.state.user
-  })
 }
 
 /**
