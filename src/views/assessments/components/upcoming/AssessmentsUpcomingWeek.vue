@@ -110,7 +110,7 @@ export default {
       })
 
       try {
-        await this.$store.dispatch('UPDATE_ASSESSMENT', { assessmentID, assessmentType, updates: { dueDate: newDueDate } })
+        await this.$store.dispatch('UPDATE_ASSESSMENT', { assessmentID, assessmentType, updates: { [assessmentType === 'assignment' ? 'dueDate' : 'date']: newDueDate } })
         this.$store.commit('SORT_UPCOMING_ASSESSMENTS')
       } catch (e) {
         this.showError(`Failed to rescheduled ${assessmentType}...`)
