@@ -466,6 +466,15 @@ const router = new Router({
       component: () => import('@/views/ThePrivacyPolicyPage.vue')
     },
     {
+      path: '/tos',
+      name: 'terms-of-service',
+      meta: {
+        title: 'LATE Terms of Service',
+        requiresAuth: false
+      },
+      component: () => import('@/views/TheTermsOfServicePage.vue')
+    },
+    {
       path: '*',
       name: 'NotFound',
       meta: {
