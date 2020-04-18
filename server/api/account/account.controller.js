@@ -91,22 +91,14 @@ async function updateCourses (studentID, termCode, newCourses) {
  * - courses: Array of new/updated Course documents
  */
 module.exports.setAllFromSIS = async function (ctx, next) {
-  const { rin, pin } = ctx.request.body
-
-  if (!rin || !pin) {
-    return ctx.badRequest('You must pass `rin` and `pin`!')
-  }
-
-  const jar = await loginToSIS(rin, pin)
-
   const terms = await Term.find()
 
-  let registeredTermCodes = await scrapeSISForRegisteredTerms(jar)
+  let registeredTermCodes = await scrapeSISForRegisteredTerms(ctx.state.jar)
   ctx.state.user.terms = registeredTermCodes
   ctx.state.user.setup.terms = true
 
   try {
-    const profileInfo = await scrapeSISForProfileInfo(jar)
+    const profileInfo = await scrapeSISForProfileInfo(ctx.state.jar)
     if (!ctx.state.user.name.first) {
       ctx.state.user.name.first = profileInfo.name.first
     }
@@ -142,7 +134,7 @@ module.exports.setAllFromSIS = async function (ctx, next) {
     let courseSchedule
     try {
       courseSchedule = await scrapeSISForCourseSchedule(
-        jar,
+        ctx.state.jar,
         term,
         ctx.state.user._id
       )
@@ -192,7 +184,6 @@ module.exports.setAllFromSIS = async function (ctx, next) {
  *
  * **Response JSON**
  * - updatedUser: The updated user document
- *
  */
 module.exports.setProfile = async function (ctx) {
   const body = ctx.request.body
@@ -267,8 +258,7 @@ module.exports.importCourseSchedule = async function (ctx) {
   let courseSchedule = []
   try {
     courseSchedule = await scrapeSISForCourseSchedule(
-      body.rin,
-      body.pin,
+      ctx.state.jar,
       targetTerm,
       ctx.state.user._id
     )
@@ -313,9 +303,7 @@ module.exports.importCourseSchedule = async function (ctx) {
     }
   }
 
-  await ctx.state.user.save()
-
-  ctx.ok({ updatedUser: ctx.state.user, courses })
+  ctx.state.data.courses = courses
 }
 
 /**
@@ -333,7 +321,6 @@ module.exports.importCourseSchedule = async function (ctx) {
  */
 module.exports.addCourseByCRN = async function (ctx) {
   const { crn } = ctx.params
-  const { rin, pin } = ctx.request.body
 
   // First make sure that the student hasn't already added this course
   const existingCourse = await Course.findOne({ _student: ctx.state.user._id, crn }).populate('_blocks')
@@ -343,7 +330,7 @@ module.exports.addCourseByCRN = async function (ctx) {
 
   let courseData
   try {
-    courseData = await scrapeSISForSingleCourse(rin, pin, ctx.session.currentTerm, crn)
+    courseData = await scrapeSISForSingleCourse(ctx.state.jar, ctx.session.currentTerm, crn)
   } catch (e) {
     logger.error(`Failed to scrape SIS for single course ${crn}: ${e}`)
     Sentry.captureException(e)
@@ -397,18 +384,5 @@ module.exports.setTimePreference = async function (ctx) {
     ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code)
   }
 
-  try {
-    await ctx.state.user.save()
-  } catch (e) {
-    Sentry.captureException(e)
-    logger.error(
-      `Failed to set work/study time preference schedule for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
-    )
-    return ctx.badRequest('Failed to set work/study time preference schedule.')
-  }
-
-  logger.info(`Set work/study time preference for ${ctx.state.user.identifier}`)
-  ctx.ok({ updatedUser: ctx.state.user })
+  logger.info(`Setting work/study time preference for ${ctx.state.user.identifier}`)
 }
