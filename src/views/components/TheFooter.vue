@@ -37,18 +37,24 @@
           href="https://github.com/Apexal/old-ontrac/"
           target="_blank"
           title="View the project that inspired LATE"
-        >OnTrac.</a>
+        >OnTrac</a>
       </p>
-      <p class="column">
+      <p class="column is-5">
         <span class="icon">
           <i class="fas fa-shield-alt" />
         </span>
         Read
         <router-link
           :to="{name: 'privacy-policy'}"
-          title="View source code license"
+          title="Read about LATE's stance on collected data"
         >
-          Privacy Policy.
+          Privacy Policy
+        </router-link>
+        and
+        <router-link
+          :to="{name: 'terms-of-service'}"
+        >
+          Terms of Service
         </router-link>
       </p>
       <p class="column">
@@ -60,18 +66,7 @@
           href="https://github.com/Apexal/late/"
           target="_blank"
           title="View repository"
-        >GitHub.</a>
-      </p>
-      <p class="column">
-        <span class="icon">
-          <i class="far fa-eye" />
-        </span>
-        View on
-        <a
-          href="https://rcos.io/projects/apexal/late/profile"
-          target="_blank"
-          title="View RCOS project listing"
-        >Observatory.</a>
+        >GitHub</a>
       </p>
     </div>
   </footer>
