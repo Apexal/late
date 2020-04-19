@@ -3,7 +3,7 @@ const SMS = require('../../integrations/sms')
 const ical = require('node-ical')
 const request = require('request-promise')
 const moment = require('moment')
-const { createIssue } = require('../../modules/github')
+const { createIssue, getReleases } = require('../../modules/github')
 
 const CALENDAR_URL = 'http://events.rpi.edu/cal/misc/export.gdo?b=de'
 
@@ -193,11 +193,24 @@ async function saveNotificationPreferences (ctx) {
   ctx.ok({ updatedUser: ctx.state.user })
 }
 
+/**
+ * Get the LATE repo's releases as a changelog.
+ *
+ * **Request Query**
+ * - page (optional) Page number for GitHub API (default 1)
+ */
+async function getChangelog (ctx) {
+  const response = await getReleases(ctx.query.page || 1)
+
+  ctx.ok({ releases: response.data })
+}
+
 module.exports = {
   getAcademicCalendarEvents,
   submitSMS,
   verifySMS,
   disableSMS,
   saveNotificationPreferences,
-  submitGitHubIssue
+  submitGitHubIssue,
+  getChangelog
 }
