@@ -184,9 +184,19 @@ const router = new Router({
       path: '/about',
       name: 'about',
       meta: {
-        title: 'About'
+        title: 'About',
+        requiresAuth: false
       },
       component: () => import('@/views/TheAboutPage.vue')
+    },
+    {
+      path: '/changelog',
+      name: 'changelog',
+      meta: {
+        title: 'Changelog',
+        requiresAuth: false
+      },
+      component: () => import('@/views/changelog/TheChangelogPage.vue')
     },
     {
       path: '/coursework',
