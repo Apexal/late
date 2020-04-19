@@ -23,3 +23,17 @@ module.exports.createIssue = function (submitterRCSID, title, body) {
     body: body ? `**Issue submitted from the web app by ${submitterRCSID}**\n---\n${body}` : 'The use did not give any further info.'
   })
 }
+
+/**
+ * Get LATE's releases from the repo.
+ *
+ * @param {Number} page Page number (default=1)
+ * @returns {Promise<Response>} Response from GitHub API
+ */
+module.exports.getReleases = function (page = 1) {
+  return octokit.repos.listReleases({
+    owner,
+    repo,
+    page
+  })
+}
