@@ -6,6 +6,9 @@
  * The authentication routes are located in ./auth
  */
 
+/**
+ * These routes will allow unauthorized access as they do not depend on having the user logged in
+ */
 const exceptions = [
   '/students/loginas',
   '/students/counts',
@@ -16,21 +19,24 @@ const exceptions = [
 ]
 
 module.exports = router => {
-  // router.use(path, router);
-
+  // The /api folder contains all API routes and is mounted at /api/ here
   router.use(
     '/api',
     async function (ctx, next) {
+      // If the current route is NOT an exception, only allow access if the user is logged in!
       if (
         exceptions.every(url => !ctx.request.url.startsWith('/api' + url)) &&
         ctx.isUnauthenticated()
       ) {
+        // Otherwise block and complain
         return ctx.unauthorized('You must be logged in to use the API.')
       }
+
       await next()
     },
     require('./api')
   )
 
+  // Auth routes are mounted on /auth
   router.use('/auth', require('./auth'))
 }

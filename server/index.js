@@ -18,6 +18,7 @@ const discordClient = require('./integrations/discord').client
 
 const logger = require('./modules/logger')
 
+/* Setup Sentry which logs backend errors */
 const Sentry = require('@sentry/node')
 Sentry.init({
   dsn: process.env.NODE_ENV === 'production' ? 'https://8ee2afb35b1b4faab2e45b860ec36c38@sentry.io/1548265' : null,
@@ -52,6 +53,7 @@ const CONFIG = {
 }
 app.use(Session(CONFIG, app))
 
+/* Initialize Passport for authentication */
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -67,7 +69,12 @@ app.use(Static('dist/'))
 const Student = require('./api/students/students.model')
 const Term = require('./api/terms/terms.model')
 app.use(async (ctx, next) => {
+  /* Every route passes through this middleware first! */
+
+  // Make the environment available to routes so we know if we are in development or production
   ctx.state.env = process.env.NODE_ENV
+
+  // Is this route for the API?
   ctx.state.isAPI = ctx.request.url.startsWith('/api')
 
   // If first request, get terms
@@ -85,7 +92,7 @@ app.use(async (ctx, next) => {
   }
 
   if (ctx.isAuthenticated()) {
-    // Find the logged in user to make it available in all routes
+    // The user is logged in
 
     Sentry.configureScope((scope) => {
       scope.setUser({ username: ctx.state.user.rcs_id })
@@ -93,6 +100,7 @@ app.use(async (ctx, next) => {
 
     ctx.state.discordClient = discordClient
 
+    // Is the user on break?
     ctx.state.onBreak =
       !ctx.session.currentTerm ||
       !ctx.state.user.terms.includes(ctx.session.currentTerm.code)
@@ -102,12 +110,16 @@ app.use(async (ctx, next) => {
       ctx.state.googleAuth = google.createAuth(ctx.state.user.integrations.google.tokens)
     }
   }
+
+  // Try to complete the route
   try {
     await next()
   } catch (e) {
+    // An uncaught error occurred at some point in the route!
     ctx.status = e.status || 500
     logger.error(e.stack)
 
+    // Make sure request details for the error are sent to Sentry
     Sentry.withScope(scope => {
       scope.addEventProcessor(event => Sentry.Handlers.parseRequest(event, ctx.request))
       Sentry.captureException(e)
