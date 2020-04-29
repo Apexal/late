@@ -13,7 +13,7 @@
         <div class="panel">
           <p
             class="panel-heading has-text-white is-unselectable key-heading"
-            :class="relativeDateFormat(key) === 'Today' ? 'has-background-black-ter' : 'has-background-dark'"
+            :class="headerClass(key)"
           >
             <span
               class="key"
@@ -129,6 +129,15 @@ export default {
     },
     headerText (key) {
       return this.relativeDateFormat(moment(key, 'YYYY-MM-DD', true))
+    },
+    headerClass (key) {
+      switch (this.headerText(key)) {
+        case 'Today':
+        case 'Tomorrow':
+          return 'has-background-grey-darker'
+        default:
+          return 'has-background-dark'
+      }
     },
     headerClick (key) {
       // TODO: this will open DayModal
