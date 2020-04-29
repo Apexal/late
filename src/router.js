@@ -506,7 +506,11 @@ router.beforeEach(async (to, from, next) => {
     let rcsID = localStorage.getItem('devUserRcsId')
     if (rcsID === null) {
       rcsID = prompt('Log in as what user? (rcs_id) Leave blank to not login.')
-      localStorage.setItem('devUserRcsId', rcsID)
+      if (rcsID) {
+        localStorage.setItem('devUserRcsId', rcsID)
+      } else {
+        localStorage.removeItem('devUserRcsId')
+      }
     }
 
     if (rcsID) {
