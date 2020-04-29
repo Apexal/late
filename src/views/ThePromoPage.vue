@@ -118,8 +118,12 @@
               >
                 <video muted>
                   <source
-                    :src="'/video/promos/' + promo.videoName"
+                    :src="'/video/promos/' + promo.videoName + '.webm'"
                     type="video/webm"
+                  >
+                  <source
+                    :src="'/video/promos/' + promo.videoName + '.mp4'"
+                    type="video/mp4"
                   >
                 </video>
               </div>
@@ -149,43 +153,37 @@ export default {
           type: 'is-dark',
           title: 'Login with your RPI account',
           description: 'No need to make an account! Plus, you don\'t need to tell us your name or major or course schedule! Let us grab that from SIS for you! Once that is done you can manually change and add any information we have on you.',
-          videoName: 'sis.webm',
-          video: null
+          videoName: 'sis'
         },
         {
           type: 'is-info',
           title: 'Manage your entire courseload',
           description: 'Just tell LATE what assignments and tests you have and it will handle the rest. You\'ll always have a clear overview of everything you need to do. View your upcoming work in clear categories, in calendar form, or in list form. View statistics on your progress and study/work activities.',
-          videoName: 'coursework.webm',
-          video: null
+          videoName: 'coursework'
         },
         {
           type: 'is-primary',
           title: 'Get notified to study/work',
           description: 'Connect to SMS, Discord, Google Calendar, and more to receive reminders and manage your courseload. Chat with our bots to manage your work. Customize when you want to be reached out to and when you want to receive summaries of your progress along with recommendations.',
-          videoName: 'reminders.webm',
-          video: null
+          videoName: 'reminders'
         },
         {
           type: 'is-success',
           title: 'Completely Mobile-Friendly',
           description: 'LATE is designed for easy use on mobile devices- even while offline! Select "Install LATE" or "Add to Home Screen" for even more mobile functionality!',
-          imageName: 'mobiledevices.png',
-          video: null
+          imageName: 'mobiledevices.png'
         },
         {
           type: 'is-warning',
           title: 'Use integrated student tools',
           description: 'Use LATE\'s grade calculators, work timers, and more tools which integrate with your courses and courseload. You don\'t even need to use LATE to use them!',
-          videoName: 'tools.webm',
-          video: null
+          videoName: 'tools'
         },
         {
           type: 'is-danger',
           title: 'And much, much more!',
           description: 'New features are constantly being added to LATE by the student team that works on it! We add features that solve the problems we encounter each day on campus. If you are a developer, contribute to the repo. If you are not, suggest new features directly!',
-          videoName: 'issues.webm',
-          video: null
+          videoName: 'issues'
         }
       ]
     }
@@ -272,7 +270,7 @@ export default {
           if (promise !== undefined) {
             promise
               .then(_ => {})
-              .catch(err => alert(err))
+              .catch(_ => {})
           }
 
           found = promoEl
@@ -293,7 +291,7 @@ export default {
             if (promise !== undefined) {
               promise
                 .then(_ => {})
-                .catch(err => alert(err))
+                .catch(_ => {})
             }
 
             found = promoEl
@@ -315,7 +313,7 @@ export default {
             if (promise !== undefined) {
               promise
                 .then(_ => {})
-                .catch(err => alert(err))
+                .catch(_ => {})
             }
 
             found = promoEl
