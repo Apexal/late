@@ -179,10 +179,6 @@ export default {
   transition: all 0.1s;
 }
 
-.tools-button {
-  overflow: hidden;
-}
-
 .tools-button:hover {
   color: white;
   background: #2e3b59;
