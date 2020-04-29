@@ -6,6 +6,8 @@ const Assignment = require('./assignments.model')
 const Student = require('../students/students.model')
 const Unavailability = require('../unavailabilities/unavailabilities.model')
 
+const google = require('../../modules/google')
+
 const { generateDummyAssignment } = require('../../modules/dummydata')
 
 const sgMail = require('@sendgrid/mail')
@@ -511,10 +513,34 @@ async function toggleAssignment (ctx) {
       ctx.state.assignment._blocks
         .filter(b => b.endTime <= ctx.state.assignment.completedAt)
         .reduce((acc, b) => acc + b.duration, 0) / 60 // MUST BE IN HOURS
+
+    // Cut short any current blocks
+    const ongoing = ctx.state.assignment._blocks.find(block => moment().isBetween(block.startTime, block.endTime))
+    if (ongoing) {
+      ongoing.endTime = new Date()
+      await ongoing.save()
+
+      if (ctx.state.user.integrations.google.calendarID) {
+        try {
+          await google.actions.patchEvent(ctx.state.user, ongoing._id, {
+            end: {
+              dateTime: ongoing.endTime
+            }
+          })
+        } catch (e) {
+          logger.error(
+            `Failed to patch GCal event for work block for ${
+              ctx.state.user.rcs_id
+            }: ${e}`
+          )
+        }
+      }
+    }
   }
   ctx.state.assignment.confirmed = true
 
   try {
+    await ctx.state.assignment.populate('_blocks')
     await ctx.state.assignment.save()
   } catch (e) {
     logger.error(`Failed to toggle assignment with ID ${assignmentID}: ${e}`)
