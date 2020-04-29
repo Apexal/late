@@ -142,7 +142,7 @@ export default {
       testers: 0,
       waitlist: 0,
       sisManClicks: 0,
-      splashMovementStrength: 25,
+      splashMovementStrength: 10,
       interval: null,
       promos: [
         {
