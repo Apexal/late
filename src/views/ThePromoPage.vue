@@ -149,7 +149,7 @@ export default {
           type: 'is-dark',
           title: 'Login with your RPI account',
           description: 'No need to make an account! Plus, you don\'t need to tell us your name or major or course schedule! Let us grab that from SIS for you! Once that is done you can manually change and add any information we have on you.',
-          videoName: 'SIS.webm',
+          videoName: 'sis.webm',
           video: null
         },
         {
@@ -266,9 +266,14 @@ export default {
           promoEl.classList.add('active')
           const videoEl = promoEl.querySelector('video')
           if (!videoEl || videoEl.playing) continue
-          videoEl.play()
-            .then(_ => {})
-            .catch(err => alert(err))
+
+          // Edge doesn't return a promise
+          const promise = videoEl.play()
+          if (promise !== undefined) {
+            promise
+              .then(_ => {})
+              .catch(err => alert(err))
+          }
 
           found = promoEl
         }
@@ -283,9 +288,14 @@ export default {
             const videoEl = promoEl.querySelector('video')
             if (!videoEl || videoEl.playing) continue
 
-            videoEl.play()
-              .then(_ => {})
-              .catch(err => alert(err))
+            // Edge doesn't return a promise
+            const promise = videoEl.play()
+            if (promise !== undefined) {
+              promise
+                .then(_ => {})
+                .catch(err => alert(err))
+            }
+
             found = promoEl
           }
         }
@@ -299,9 +309,14 @@ export default {
             promoEl.classList.add('active')
             const videoEl = promoEl.querySelector('video')
             if (!videoEl || videoEl.playing) continue
-            videoEl.play()
-              .then(_ => {})
-              .catch(err => alert(err))
+
+            // Edge doesn't return a promise
+            const promise = videoEl.play()
+            if (promise !== undefined) {
+              promise
+                .then(_ => {})
+                .catch(err => alert(err))
+            }
 
             found = promoEl
           }
