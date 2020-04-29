@@ -108,6 +108,9 @@ module.exports.updateTerm = async function (ctx) {
     return ctx.badRequest('Could not save updates to term.')
   }
 
+  // Update terms in the session
+  ctx.session.terms = await Term.find().exec()
+
   logger.info(`${ctx.state.user.identifier} updated term ${updatedTerm.name}`)
 
   return ctx.ok({ updatedTerm })
