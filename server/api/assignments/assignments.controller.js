@@ -427,6 +427,10 @@ async function updateAssignment (ctx) {
     '_student'
   ]
 
+  if (updates.completed && updates.completed !== ctx.state.assignment.completed) {
+    return ctx.badRequest('Do not use this route to change the completed status.')
+  }
+
   disallowedProperties.forEach(prop => delete updates[prop])
 
   // Limit to this semester
