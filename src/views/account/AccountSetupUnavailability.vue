@@ -335,15 +335,24 @@ export default {
       this.loading = false
       this.saved = true
     },
-    async clearAllUnavailabilities () {
-      let request
-      try {
-        request = await this.$http.delete('/unavailabilities/clear')
-        this.$store.commit('SET_UNAVAILABILITIES', [])
-      } catch (e) {
-        this.loading = false
-        return this.showError(e.response.data.message)
-      }
+    clearAllUnavailabilities () {
+      this.$buefy.dialog.confirm({
+        message: 'Clear all unavailable times?',
+        onConfirm: async () => {
+          let request
+          try {
+            request = await this.$http.delete('/unavailabilities')
+            this.$store.commit('SET_UNAVAILABILITIES', [])
+            this.$buefy.toast.open({
+              type: 'is-success',
+              message: 'Cleared all unavailable times!'
+            })
+          } catch (e) {
+            this.loading = false
+            return this.showError(e.response.data.message)
+          }
+        }
+      })
     }
   }
 }
