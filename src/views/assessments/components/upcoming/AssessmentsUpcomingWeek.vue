@@ -12,7 +12,8 @@
       >
         <div class="panel">
           <p
-            class="panel-heading has-background-dark has-text-white is-unselectable key-heading"
+            class="panel-heading has-text-white is-unselectable key-heading"
+            :class="relativeDateFormat(key) === 'Today' ? 'has-background-black-ter' : 'has-background-dark'"
           >
             <span
               class="key"
