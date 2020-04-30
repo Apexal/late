@@ -1,8 +1,8 @@
 {
   "name": "late",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
-  "description": "Lazy Automatic Time Evaluator",
+  "description": "A web app for RPI students to manage their course load.",
   "author": "Frank Matranga <thefrankmatranga@gmail.com>",
   "scripts": {
     "cypress:open": "./node_modules/.bin/cypress open",

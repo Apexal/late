@@ -1,6 +1,6 @@
 {
-  "name": "RPI LATE",
-  "description": "Lazy Automatic Time Evaluator",
+  "name": "LATE",
+  "description": "A web app for RPI students to manage their course load.",
   "repository": "https://github.com/Apexal/late",
   "logo": "https://cdn.jsdelivr.net/gh/heroku/node-js-getting-started/public/node.svg",
   "keywords": ["node", "koa", "time-management"],

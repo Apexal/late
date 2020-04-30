@@ -11,7 +11,7 @@
 # LATE
 
 
-> Lazy Automatic Time Evaluator
+> Better LATE than never!
 
   <img align="right" src="./src/assets/img/sisman.svg" width="150">
 
