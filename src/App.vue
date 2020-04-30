@@ -212,6 +212,9 @@ export default {
         window.customerlySettings.user_id = this.user._id
         window.customerlySettings.name = this.user.displayName
         window.customerlySettings.email = this.user.rcs_id + '@rpi.edu'
+        window.customerlySettings.attributes = {
+          joinedAt: this.user.createdAt
+        }
 
         const customerly = document.createElement('script')
         customerly.src = 'https://widget-ga.customerly.io/launcher.js'
