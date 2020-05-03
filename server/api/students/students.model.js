@@ -64,7 +64,7 @@ const schema = new Schema(
     },
     admin: { type: Boolean, default: false }, // Whether the user is an administrator or not and can therefore access the admin page
     reportPreferences: {
-      enabled: { type: Boolean, default: true }
+      enabled: { type: Boolean, default: false }
     },
     notificationPreferences: {
       preWorkBlockReminders: {
