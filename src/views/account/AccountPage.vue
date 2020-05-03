@@ -100,8 +100,8 @@ export default {
     },
     setupIndex: {
       get () {
-        console.log(this.$route)
-        return this.setups.indexOf(this.setups.find(s => { return s.link === this.$route.path }))
+        const index = this.setups.indexOf(this.setups.find(s => { return s.link === this.$route.path }))
+        return Math.max(index, 0)
       },
       set (index) {
         this.$router.push(this.setups[index].link)
