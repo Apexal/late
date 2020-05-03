@@ -8,6 +8,8 @@ const email = require('../integrations/email')
 const Student = require('../api/students/students.model')
 const Assignment = require('../api/assignments/assignments.model')
 const Exam = require('../api/exams/exams.model')
+const Course = require('../api/courses/courses.model')
+const Term = require('../api/terms/terms.model')
 
 const moment = require('moment')
 
@@ -33,18 +35,25 @@ module.exports.sendWeeklyReportToStudent = async function sendWeeklyReportToStud
     }
   }
 
+  // Find school term based on week date
+  const term = await Term.findOneFromDate(weekStartDate)
+  if (!term) {
+    throw new Error('No term so cannot send reports.')
+  }
+
   const dateQuery = {
     $gte: weekStartDate,
     $lt: moment(weekStartDate).add(1, 'week')
   }
 
   // Get assessments for that date range
-  const [assignments, exams] = await Promise.all([Assignment.find({ dueDate: dateQuery }).sort('dueDate'), Assignment.find({ date: dateQuery }).sort('dueDate')])
-  console.log(weekStartDate)
-  console.log(assignments)
-  console.log(exams)
+  const [courses, assignments, exams] = await Promise.all([
+    student.getCoursesForTerm(term.code),
+    Assignment.find({ dueDate: dateQuery }).sort('dueDate'),
+    Exam.find({ date: dateQuery }).sort('dueDate')
+  ])
 
-  return [assignments, exams]
+  return email.sendReportEmail(student, weekStartDate, courses, assignments.concat(exams))
 }
 
 /**
@@ -53,6 +62,6 @@ module.exports.sendWeeklyReportToStudent = async function sendWeeklyReportToStud
 module.exports.sendWeeklyReports = async function sendWeeklyReports () {
   // Find all students who want to receive reports
   const students = await Student.find({ accountLocked: false, 'reportPreferences.enabled': true })
-  console.log(students)
-  console.log(await Promise.allSettled(students.map(s => module.exports.sendWeeklyReportToStudent(s))))
+  logger.info(`Sending week reports for ${students.length} students`)
+  return await Promise.allSettled(students.map(s => module.exports.sendWeeklyReportToStudent(s)))
 }

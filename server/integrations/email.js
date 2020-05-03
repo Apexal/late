@@ -4,9 +4,8 @@ const moment = require('moment')
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-require('../api/assignments/assignments.model')
-
 const GENERTIC_SENDGRID_TEMPLATE_ID = 'd-78a8680f9b724f5196f497857c433c7c'
+const WEEKLY_REPORTS_SENDGRID_TEMPLATE_ID = 'd-26a7611dfe78488caa8903c1a1c4267a'
 
 const emailFunctions = {
   async sendGenericEmail (rcsID, subject, data) {
@@ -30,50 +29,41 @@ const emailFunctions = {
       }
     })
   },
-  async sendMorningReportEmail (student) {
-    // Compile periods for the day
-    const day = moment().day()
+  async sendReportEmail (student, startDate, courses, assessments) {
+    const weekDisplay = moment(startDate).format('MMM Do')
 
-    const periods = student.current_schedule
-      .map(course => course.periods.filter(p => p.day === day))
-      .flat()
-      .sort((a, b) => parseInt(a.start) - parseInt(b.start))
+    const days = new Array(7).fill({})
+    for (const dayIndex in days) {
+      const date = moment(startDate).add(dayIndex, 'days').startOf('day')
+      const dateAssessments = assessments.filter(a => moment(a.date).isSame(date, 'day'))
 
-    periods.forEach(p => {
-      const course = student.current_schedule.find(c => c.periods.includes(p))
-      p.start = moment(p.start, 'HH:mm', true).format('h:mma')
-      p.end = moment(p.end, 'HH:mm', true).format('h:mma')
-      p.course = {
-        longname: course.longname
+      days[dayIndex] = {
+        dateDisplay: date.format('dddd [the] Do'),
+        assessments: dateAssessments.map(a => ({
+          courseTitle: courses.find(c => c.crn === a.courseCRN)?.title ?? 'Removed Course',
+          title: a.title,
+          assessmentType: a.assessmentType,
+          dueDisplay: moment(a.date).format('h:mm a'),
+          link: `https://www.late.work/coursework/${a.assessmentType.charAt(0)}/${a._id}`
+        }))
       }
-    })
-
-    const assignmentsDueToday = await student.getUserAssignments({
-      start: moment().startOf('day'),
-      end: moment().endOf('day')
-    })
-
-    for (const a in assignmentsDueToday) {
-      assignmentsDueToday[a] = assignmentsDueToday[a].toJSON()
-      assignmentsDueToday[a].course = student.current_schedule.find(
-        c => c.crn === assignmentsDueToday[a].courseCRN
-      )
-      assignmentsDueToday[a].dueString = moment(
-        assignmentsDueToday[a].dueDate
-      ).format('h:mma')
+      console.log(days[dayIndex].assessments)
     }
 
-    logger.info(`Sending morning report to ${student.rcs_id}@rpi.edu`)
+    logger.info(`Sending report email to ${student.identifier}`)
     return sgMail.send({
       to: student.rcs_id + '@rpi.edu',
-      from: 'LATE <thefrankmatranga@gmail.com>',
-      subject: 'Morning Report',
-      templateId: 'd-dfb84e300f34479896c697feae156c8a',
+      from: 'LATE <reports@late.work>',
+      templateId: WEEKLY_REPORTS_SENDGRID_TEMPLATE_ID,
       dynamic_template_data: {
-        dateString: moment().format('dddd, MMM Do YYYY'),
+        subject: `Coursework Report for Week of ${weekDisplay}`,
         student,
-        periods,
-        assignmentsDueToday
+        weekDisplay,
+        days,
+        quote: {
+          text: 'Better LATE than never!',
+          author: 'SIS Man'
+        }
       }
     })
   }
