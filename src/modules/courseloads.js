@@ -28,7 +28,6 @@ export default {
    */
   determineWeight (assessments) {
     const weight = assessments.reduce((acc, ass) => acc + this.calculateAssessmentWeight(ass), 0)
-    console.log(weight)
 
     if (weight === 0) {
       return this.weights[0]

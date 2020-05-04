@@ -33,7 +33,6 @@
           class="course-title is-hidden-desktop"
           :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed}"
         >{{ course.title }}</strong>
-
         <span
           class="assessment-title is-hidden-desktop"
           :class="{'has-text-grey': assessmentType === 'assignment' && assessment.completed}"
@@ -51,6 +50,12 @@
           :to="routeTo"
           :title="assessment.description"
         >
+          <i
+            v-if="highPriority"
+            :style="{opacity: priorityOpacity}"
+            title="You marked this as important!"
+            class="has-text-danger fas fa-exclamation"
+          />
           {{ assessment.title }}
           <span
             v-if="assessment.tasks && assessment.tasks.length > 0 && !assessment.completed"
@@ -112,6 +117,15 @@ export default {
     },
     assessmentTime () {
       return moment(this.assessment.date).format('h:mma')
+    },
+    highPriority () {
+      return (this.assessmentType === 'assignment' && this.assessment.priority > 3) || (this.assessmentType === 'exam' && this.assessment.priority === 3)
+    },
+    priorityOpacity () {
+      if (this.assessmentType === 'assignment') {
+        return this.assessment.priority === 4 ? 0.5 : 1
+      }
+      return 1
     },
     course () {
       return this.$store.getters.getCourseFromCRN(this.assessment.courseCRN)
@@ -229,7 +243,6 @@ export default {
 .assessment-icon {
   font-size: 1.2em;
   cursor: pointer;
-  // color: rgb(172, 172, 172);
   margin-right: 5px;
 }
 </style>
