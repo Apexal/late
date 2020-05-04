@@ -59,8 +59,6 @@
 </template>
 
 <script>
-// import 'bulma-steps'
-
 export default {
   name: 'AccountPage',
   data () {

@@ -115,8 +115,6 @@
 <script>
 import moment from 'moment'
 
-import 'bulma-steps'
-
 import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse'
 import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar'
 import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription'

@@ -25,7 +25,7 @@ export default {
   name: 'DashboardOverviewCourseload',
   computed: {
     courseLoad () {
-      return courseloads.determineWeight(this.assignments.length, this.exams.length)
+      return courseloads.determineWeight(this.assignments.concat(this.exams))
     },
     upcomingWeekAssessments () {
       const limit = moment().add(7, 'days').endOf('day')
