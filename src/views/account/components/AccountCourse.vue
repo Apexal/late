@@ -25,13 +25,6 @@
               Section {{ course.sectionId }}
             </b-tag>
           </b-taglist>
-          <span
-            class="icon edit-course is-pulled-right"
-            title="Click to edit this course"
-            @click="editing = true"
-          >
-            <i class="fas fa-pencil-alt" />
-          </span>
         </summary>
 
         <div class="periods">
@@ -67,6 +60,17 @@
               </tr>
             </tbody>
           </table>
+
+          <b-button
+            class="is-pulled-right edit-button"
+            title="Click to edit this course"
+            icon-pack="fas"
+            icon-left="pencil-alt"
+            type="is-warning"
+            @click="editing = true"
+          >
+            Edit
+          </b-button>
 
           <b-taglist class="course-links">
             <b-tag
@@ -617,15 +621,15 @@ export default {
     }
   }
 
-  .edit-course {
-    display: none;
-    cursor: pointer;
-  }
-  &:hover {
-    .edit-course {
-      display: inherit;
-    }
-  }
+  // .edit-course {
+  //   display: none;
+  //   cursor: pointer;
+  // }
+  // &:hover {
+  //   .edit-course {
+  //     display: inherit;
+  //   }
+  // }
 
   .time-input {
     width: unset;
@@ -634,18 +638,13 @@ export default {
 }
 
 //Displays edit button with better margins
-.fa-pencil-alt {
-  margin-left: 6px;
-}
+// .fa-pencil-alt {
+//   margin-left: 6px;
+// }
 
 .course-edit {
   p {
     margin-top: 5px;
-  }
-  //Button readability and interactivity
-  button {
-    margin-top: 10px;
-    margin-right: 10px;
   }
 
   .remove-period,
@@ -662,5 +661,10 @@ td .location-link {
 
 td:hover .location-link {
   opacity: 1;
+}
+
+.edit-button {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 </style>
