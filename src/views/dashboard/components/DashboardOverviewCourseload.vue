@@ -49,7 +49,6 @@ export default {
     startDate () {
       const start = moment(this.rightNow)
       while (start.day() !== 0) {
-        alert('add 1 day')
         start.add(1, 'day')
       }
       return start.startOf('day')
