@@ -13,6 +13,25 @@
       tag="b"
       :to="{name: 'coursework-upcoming'}"
     >Browse</router-link></span>
+
+    <div
+      v-if="importantAssessments.length > 0"
+      class="important-assessments"
+    >
+      <strong>You specifically marked these as important</strong>
+      <ol>
+        <router-link
+          v-for="a in importantAssessments"
+          :key="a._id"
+          tag="li"
+          :to="assessmentLink(a)"
+          class="is-capitalized"
+        >
+          <strong>{{ course(a).title }} {{ a.assessmentType }}</strong>:
+          {{ a.title }}
+        </router-link>
+      </ol>
+    </div>
   </div>
 </template>
 
@@ -38,6 +57,9 @@ export default {
     upcomingWeekAssessments () {
       return this.$store.state.assessments.upcomingAssessments.filter(assessment => moment(assessment.date).isBetween(this.startDate, moment(this.startDate).add(1, 'week')))
     },
+    importantAssessments () {
+      return this.upcomingWeekAssessments.filter(ass => (ass.assessmentType === 'assignment' && ass.priority === 5) || (ass.assessmentType === 'exam' && ass.priority === 3))
+    },
     assignments () {
       return this.upcomingWeekAssessments.filter(a => a.assessmentType === 'assignment')
     },
@@ -45,9 +67,17 @@ export default {
       return this.upcomingWeekAssessments.filter(a => a.assessmentType === 'exam')
     }
   },
-  watch: {
-    startDate2 (newDate) {
-      console.log(newDate)
+  methods: {
+    course (assessment) {
+      return this.$store.getters.getCourseFromCRN(assessment.courseCRN)
+    },
+    assessmentLink (assessment) {
+      return {
+        name: assessment.assessmentType + '-overview',
+        params: {
+          [assessment.assessmentType + 'ID']: assessment.id
+        }
+      }
     }
   }
 }
@@ -61,6 +91,18 @@ export default {
 
 .counts {
   cursor: pointer;
+}
+
+.important-assessments {
+  margin-top: 1em;
+
+  ol {
+    margin-left: 20px;
+
+    li {
+      cursor: pointer;
+    }
+  }
 }
 
 </style>

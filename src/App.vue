@@ -451,5 +451,4 @@ footer.footer {
 .is-clickable {
   cursor: pointer;
 }
-
 </style>
