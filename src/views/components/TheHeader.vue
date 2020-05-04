@@ -541,39 +541,6 @@ export default {
   margin-left: 5px;
 }
 
-@keyframes bellshake {
-  0% {
-    transform: rotate(0);
-  }
-  10% {
-    transform: rotate(5deg);
-  }
-  25% {
-    transform: rotate(-5deg);
-  }
-  40% {
-    transform: rotate(4deg);
-  }
-  55% {
-    transform: rotate(-4deg);
-  }
-  70% {
-    transform: rotate(2deg);
-  }
-  80% {
-    transform: rotate(-2deg);
-  }
-  87% {
-    transform: rotate(1deg);
-  }
-  95% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(0);
-  }
-}
-
 @keyframes navAnimOpen {
   0% {display: none;opacity: 0;margin-top: -5px}
   1% {display: block;opacity: 0;}
@@ -620,10 +587,6 @@ export default {
 #top-navbar {
   //Pushes the left and right navbar menus slightly off the edges of the screen.
   padding: 0;
-
-  .navbar-item {
-
-  }
 
   .announcement-icon {
     padding: 0.5rem 0.2rem;

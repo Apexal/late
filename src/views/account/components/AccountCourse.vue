@@ -72,23 +72,30 @@
             Edit
           </b-button>
 
-          <b-taglist class="course-links">
-            <b-tag
+          <b-field
+            grouped
+            group-multiline
+          >
+            <div
               v-for="(l, index) in course.links"
               :key="index + l.url"
-              type="is-link"
-              class="course-link"
+              class="control"
             >
-              <span class="icon">
-                <i class="fa fa-link" />
-              </span>
-              <a
-                :href="l.url"
-                target="_blank"
-                style="color: white"
-              >{{ l.name }}</a>
-            </b-tag>
-          </b-taglist>
+              <b-tag
+                type="is-link"
+                class="course-link"
+              >
+                <span class="icon">
+                  <i class="fa fa-link" />
+                </span>
+                <a
+                  :href="l.url"
+                  target="_blank"
+                  style="color: white"
+                >{{ l.name }}</a>
+              </b-tag>
+            </div>
+          </b-field>
         </div>
       </details>
     </template>
@@ -146,6 +153,7 @@
           style="padding-bottom: 10px;"
         >
           <label :for="'course-links-' + elementID">Add/Remove Links</label>
+
           <b-taglist>
             <b-tag
               v-for="(link, index) in editedLinks"
@@ -613,14 +621,6 @@ export default {
 
 .course.box {
 
-  .tags {
-    margin: 0;
-    .tag {
-      //padding: 10px;
-      margin-bottom: 0;
-    }
-  }
-
   // .edit-course {
   //   display: none;
   //   cursor: pointer;
@@ -667,4 +667,5 @@ td:hover .location-link {
   padding-top: 0;
   padding-bottom: 0;
 }
+
 </style>

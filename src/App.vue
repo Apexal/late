@@ -8,7 +8,12 @@
         :is-full-page="true"
         :active="!loaded"
         :can-cancel="false"
-      />
+      >
+        <img
+          src="@/assets/img/sisman.png"
+          class="loading-sis-man"
+        >
+      </b-loading>
 
       <div :class="appClass">
         <span
@@ -450,5 +455,43 @@ footer.footer {
 /* UTILS */
 .is-clickable {
   cursor: pointer;
+}
+
+@keyframes bellshake {
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(5deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  40% {
+    transform: rotate(4deg);
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+  80% {
+    transform: rotate(-2deg);
+  }
+  87% {
+    transform: rotate(1deg);
+  }
+  95% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+.loading-sis-man {
+  animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation-iteration-count: infinite;
 }
 </style>
