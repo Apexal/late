@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import * as Sentry from '@sentry/browser'
 
 import api from './api'
 
@@ -554,6 +555,11 @@ router.beforeEach(async (to, from, next) => {
     window.location = '/auth/login' + (to.fullPath ? '?redirectTo=' + to.fullPath : '')
     return
   }
+
+  Sentry.configureScope(function (scope) {
+    console.log('ser user in router.js')
+    scope.setUser(store.state.auth.user ? { email: store.state.auth.user.rcs_id + '@rpi.edu' } : null)
+  })
 
   if (
     to.matched.some(record => record.meta.requiresAdmin) &&

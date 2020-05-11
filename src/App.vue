@@ -85,7 +85,6 @@
 </template>
 
 <script>
-import * as Sentry from '@sentry/browser'
 import moment from 'moment'
 
 import TheHeader from '@/views/components/TheHeader'
@@ -215,10 +214,6 @@ export default {
       if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
         this.$router.push({ name: 'account', query: { importFromSIS: true } })
       }
-
-      Sentry.configureScope(function (scope) {
-        scope.setUser({ username: this.user.rcs_id })
-      })
     }
 
     const easterEgg = new Konami('http://www.shirleyannjackson.biz/')

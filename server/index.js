@@ -95,7 +95,7 @@ app.use(async (ctx, next) => {
     // The user is logged in
 
     Sentry.configureScope((scope) => {
-      scope.setUser({ username: ctx.state.user.rcs_id })
+      scope.setUser({ email: ctx.state.user.rcs_id + '@rpi.edu' })
     })
 
     ctx.state.discordClient = discordClient
