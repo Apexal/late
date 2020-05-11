@@ -557,7 +557,6 @@ router.beforeEach(async (to, from, next) => {
   }
 
   Sentry.configureScope(function (scope) {
-    console.log('ser user in router.js')
     scope.setUser(store.state.auth.user ? { email: store.state.auth.user.rcs_id + '@rpi.edu' } : null)
   })
 
