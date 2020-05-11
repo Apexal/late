@@ -51,7 +51,15 @@ Sentry.init({
   beforeSend (event, hint) {
     // Check if it is an exception, and if so, show the report dialog
     if (event.exception) {
-      Sentry.showReportDialog({ eventId: event.event_id })
+      Sentry.showReportDialog({
+        eventId: event.event_id,
+        title: 'Something went wrong!',
+        subtitle: 'The LATE team has been notified.',
+        user: {
+          email: store.state.auth.user ? (store.state.auth.user.rcs_id + '@rpi.edu') : '',
+          name: store.state.auth.user ? store.state.auth.user.displayName : ''
+        }
+      })
     }
     return event
   }
