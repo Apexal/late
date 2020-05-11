@@ -2,9 +2,6 @@ module.exports = {
   devServer: {
     proxy: 'http://localhost:3000'
   },
-  runtimeCompiler: undefined,
-  productionSourceMap: false,
-  parallel: undefined,
 
   css: {
     sourceMap: true
@@ -13,7 +10,11 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map'
   },
+
+  productionSourceMap: true,
+
   lintOnSave: 'warning',
+
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
