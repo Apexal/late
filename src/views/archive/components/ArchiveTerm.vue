@@ -150,7 +150,7 @@
                 v-for="(exam, index) in termExams"
                 :key="index"
               >
-                <td>{{ shortDateTimeFormat(term.date) }}</td>
+                <td>{{ shortDateTimeFormat(exam.date) }}</td>
                 <td>
                   <i
                     class="course-dot"
