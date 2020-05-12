@@ -18,7 +18,7 @@
               v-model="assessmentType"
               name="name"
               native-value="exams"
-              disabled="true"
+              :disabled="true"
               title="Someone develop this!"
             >
               Exams

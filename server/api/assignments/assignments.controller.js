@@ -730,7 +730,7 @@ async function generateAssignments (ctx) {
   const term = ctx.session.currentTerm
   const courses = await ctx.state.user.getCoursesForTerm(term.code)
 
-  const generateAssessments = []
+  const generatedAssessments = []
   for (let i = 0; i < count; i++) {
     const newAssignment = new Assignment({
       _student: ctx.state.user._id,
@@ -738,10 +738,10 @@ async function generateAssignments (ctx) {
     })
     await newAssignment.save()
 
-    generateAssessments.push(newAssignment)
+    generatedAssessments.push(newAssignment)
   }
 
-  ctx.created({ generateAssessments })
+  ctx.created({ generatedAssessments })
 }
 
 module.exports = {
