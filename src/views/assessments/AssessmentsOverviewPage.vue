@@ -65,21 +65,24 @@
         @updated-assessment="updatedAssessment"
       />
 
-      <b-tooltip
-        :label="assessment.completed ? 'Mark incomplete' : 'Mark complete'"
-        position="is-left"
-        type="is-light"
-        class="fab has-text-white is-flex"
-        :class="assessment.completed ? 'has-background-danger' : 'has-background-success'"
-        @click.native="toggleCompleted"
-      >
-        <span class="icon">
-          <i
-            class="fas"
-            :class="assessment.completed ? 'fa-times' : 'fa-check'"
-          />
-        </span>
-      </b-tooltip>
+      <!-- <div class="right">
+        <b-tooltip
+          v-if="assessmentType === 'assignment'"
+          :label="assessment.completed ? 'Mark incomplete' : 'Mark complete'"
+          position="is-left"
+          type="is-light"
+          class="fab has-text-white is-flex"
+          :class="assessment.completed ? 'has-background-danger' : 'has-background-success'"
+          @click.native="toggleCompleted"
+        >
+          <span class="icon">
+            <i
+              class="fas"
+              :class="assessment.completed ? 'fa-times' : 'fa-check'"
+            />
+          </span>
+        </b-tooltip>
+      </div> -->
 
       <hr>
       <AssessmentOverviewActionButtons
@@ -379,15 +382,19 @@ export default {
   height: 100%;
 }
 
+section.section {
+  position: relative;
+}
+
 .fab {
   border-radius: 100%;
   width: 60px;
   height: 60px;
   transition: filter 0.1s, box-shadow 0.1s;
 
-  position: fixed;
+  position: sticky;
+  bottom: 20px;
   right: 25px;
-  bottom: 50px;
   z-index: 20;
   cursor: pointer;
 
