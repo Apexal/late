@@ -10,6 +10,7 @@
           class="box term"
           :to="{name: 'archive-term', params: {termCode: term.code}}"
         >
+          <span class="is-pulled-right has-text-grey">started on {{ shortDateFormat(term.startDate) }}</span>
           <h2>{{ term.name }}</h2>
         </router-link>
       </div>
