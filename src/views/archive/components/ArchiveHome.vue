@@ -34,7 +34,7 @@ export default {
       return this.$store.state.schedule.terms.filter(
         term =>
           this.$store.state.auth.user.terms.includes(term.code) &&
-          term.code !== this.currentTerm.code &&
+          // term.code !== this.currentTerm.code &&
           moment(term.startDate).isBefore(this.rightNow)
       )
     }
