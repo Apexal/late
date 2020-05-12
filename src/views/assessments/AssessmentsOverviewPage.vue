@@ -65,6 +65,22 @@
         @updated-assessment="updatedAssessment"
       />
 
+      <b-tooltip
+        :label="assessment.completed ? 'Mark incomplete' : 'Mark complete'"
+        position="is-left"
+        type="is-light"
+        class="fab has-text-white is-flex"
+        :class="assessment.completed ? 'has-background-danger' : 'has-background-success'"
+        @click.native="toggleCompleted"
+      >
+        <span class="icon">
+          <i
+            class="fas"
+            :class="assessment.completed ? 'fa-times' : 'fa-check'"
+          />
+        </span>
+      </b-tooltip>
+
       <hr>
       <AssessmentOverviewActionButtons
         :assessment="assessment"
@@ -361,5 +377,29 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.fab {
+  border-radius: 100%;
+  width: 60px;
+  height: 60px;
+  transition: filter 0.1s, box-shadow 0.1s;
+
+  position: fixed;
+  right: 25px;
+  bottom: 50px;
+  z-index: 20;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.1);
+    box-shadow: 3px 3px 3px #888888;
+  }
+
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+
+  box-shadow: 1px 1px 2px #888888;
 }
 </style>
