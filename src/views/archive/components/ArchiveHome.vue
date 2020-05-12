@@ -2,19 +2,24 @@
   <div class="archive-home">
     <div class="columns is-multiline term-select">
       <div
-        v-for="(term, index) in terms"
+        v-for="(term, index) in userTerms"
         :key="index"
         class="column is-half"
       >
         <router-link
           class="box term"
-          :class="hasTerm(term) ? '' : 'has-text-grey'"
           :to="{name: 'archive-term', params: {termCode: term.code}}"
         >
           <h2>{{ term.name }}</h2>
         </router-link>
       </div>
     </div>
+    <p
+      v-if="userTerms.length === 0"
+      class="has-text-grey has-text-centered"
+    >
+      You have no history yet! Once you finish a semester it will show up here.
+    </p>
   </div>
 </template>
 
@@ -24,17 +29,13 @@ import moment from 'moment'
 export default {
   name: 'ArchiveHome',
   computed: {
-    terms () {
+    userTerms () {
       return this.$store.state.schedule.terms.filter(
         term =>
+          this.$store.state.auth.user.terms.includes(term.code) &&
           term.code !== this.currentTerm.code &&
           moment(term.startDate).isBefore(this.rightNow)
       )
-    }
-  },
-  methods: {
-    hasTerm (term) {
-      return this.$store.state.auth.user.terms.includes(term.code)
     }
   }
 }

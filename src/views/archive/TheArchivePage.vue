@@ -10,12 +10,7 @@
 
 <script>
 export default {
-  name: 'ArchivePage',
-  data () {
-    return {
-      selectedTerm: ''
-    }
-  }
+  name: 'ArchivePage'
 }
 </script>
 
