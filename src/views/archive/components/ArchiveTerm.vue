@@ -6,7 +6,7 @@
       :can-cancel="false"
     />
 
-    <h2 class="subtitle">
+    <h2 class="title">
       {{ term.name }}
     </h2>
     <div class="box summary has-text-centered">
@@ -166,13 +166,6 @@
           </table>
         </div>
       </b-tab-item>
-      <b-tab-item>
-        <template slot="header">
-          <b-icon icon="check" />
-          <span>Todos <b-tag rounded>{{ termTodos.length }}</b-tag></span>
-        </template>
-        <span>Coming soon...</span>
-      </b-tab-item>
     </b-tabs>
 
     <hr>
@@ -200,8 +193,7 @@ export default {
       selectedCourse: null,
       termCourses: [],
       termAssignments: [],
-      termExams: [],
-      termTodos: []
+      termExams: []
     }
   },
   computed: {
