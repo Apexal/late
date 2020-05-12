@@ -186,6 +186,7 @@ export default {
   align-items: stretch;
   position: relative;
   border-left: 4px solid white;
+  background-color: white;
 
   .holder {
     padding: 12px 8px;
