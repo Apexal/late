@@ -216,7 +216,7 @@ export default {
       }
     }
 
-    const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
+    // const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
 
     console.log(this.sistext)
     console.log('%cSIS MAN says never share your SIS password!', 'font-weight: bold; text-align: center; font-size: 30px')
