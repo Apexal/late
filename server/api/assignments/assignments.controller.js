@@ -8,6 +8,7 @@ const Unavailability = require('../unavailabilities/unavailabilities.model')
 
 const google = require('../../modules/google')
 
+const { adminMiddleware } = require('../utils')
 const { generateDummyAssignment } = require('../../modules/dummydata')
 
 const sgMail = require('@sendgrid/mail')
@@ -720,7 +721,6 @@ async function deleteComment (ctx) {
 async function generateAssignments (ctx) {
   // Make sure proper environment
   if (process.env.NODE_ENV !== 'development') return ctx.forbidden('Must be in development mode to generate assignments.')
-  if (!ctx.state.user.admin) return ctx.forbidden('Must be an admin to generate assignments.')
 
   const { startDate, endDate, count } = ctx.request.body
   if (count < 0 || count > 30) {

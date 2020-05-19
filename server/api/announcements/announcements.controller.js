@@ -17,7 +17,7 @@ module.exports.getAnnouncements = async function (ctx) {
 }
 
 /**
- * Creates a new announcement.
+ * Creates a new announcement. (Admin only)
  *
  * **Request Body**
  * - title: title of the announcement
@@ -28,11 +28,6 @@ module.exports.getAnnouncements = async function (ctx) {
  * - createdAnnouncement: the created Announcement document
  */
 module.exports.createAnnouncement = async function (ctx) {
-  // Only admins can add announcements
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
-
   const { title, body, isPinned } = ctx.request.body
   const createdAnnouncement = Announcement({
     _student: ctx.state.user._id,
@@ -65,9 +60,6 @@ module.exports.createAnnouncement = async function (ctx) {
  * - updatedAnnouncement: the updated Announcement document
  */
 module.exports.editAnnouncement = async function (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const { announcementID } = ctx.params
   const { body } = ctx.request
 
@@ -100,9 +92,6 @@ module.exports.editAnnouncement = async function (ctx) {
  * - deletedAnnouncement: the deleted Announcement document
  */
 module.exports.deleteAnnouncement = async function (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const { announcementID } = ctx.params
 
   const deletedAnnouncement = await findOneOr404(ctx, Announcement.findOne({

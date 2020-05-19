@@ -56,8 +56,6 @@ async function createQuickLink (ctx) {
  * @param {Koa context} ctx
  */
 async function updateQuickLink (ctx) {
-  if (!ctx.state.user.admin) return ctx.forbidden('You are not an admin!')
-
   const { quickLinkID } = ctx.params
   const updatedQuickLink = await QuickLink.findOne({
     _id: quickLinkID
@@ -80,8 +78,6 @@ async function updateQuickLink (ctx) {
  * @param {Koa context} ctx
  */
 async function deleteQuickLink (ctx) {
-  if (!ctx.state.user.admin) return ctx.forbidden('You are not an admin!')
-
   const { quickLinkID } = ctx.params
   const deletedQuickLink = await QuickLink.findOne({
     _id: quickLinkID

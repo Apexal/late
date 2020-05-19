@@ -93,10 +93,6 @@ async function getStudents (ctx) {
   const itemsPerPage = parseInt(ctx.query.itemsPerPage) || 25
   const search = ctx.query.search || ''
 
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
-
   const searchObject = formSearchObject(search)
   if (search) {
     logger.info(ctx.state.user.rcs_id + ' searched user list with term: ' + search)
@@ -222,9 +218,6 @@ function checkForYearFilters (str) {
  * @param {*} ctx
  */
 async function getStudent (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const studentID = ctx.params.studentID
 
   const student = await Student.findById(studentID)
@@ -255,9 +248,6 @@ async function getStudent (ctx) {
  * @returns The updated student
  */
 async function editStudent (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const studentID = ctx.params.studentID
 
   const student = await Student.findById(studentID)
@@ -292,9 +282,6 @@ async function editStudent (ctx) {
 }
 
 async function deleteStudent (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const studentID = ctx.params.studentID
 
   if (ctx.state.user.rcs_id !== 'matraf') {
@@ -333,9 +320,6 @@ async function getStudentCounts (ctx) {
 }
 
 async function getLog (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const log = (await fs.readFile(
     path.join(__dirname, '..', '..', '..', 'logs', 'combined.log'),
     'utf8'
