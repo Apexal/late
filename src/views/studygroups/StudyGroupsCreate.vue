@@ -274,11 +274,7 @@ export default {
     },
     async createStudyGroup () {
       if (!this.allFieldsCompleted()) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'Make sure you fill out all the fields!'
-        })
-        return
+        return this.showError('Make sure you fill out all the fields!')
       }
 
       let request
@@ -298,11 +294,7 @@ export default {
           type: 'is-success'
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: 'There was an error creating this group.',
-          type: 'is-danger'
-        })
-        console.log(e)
+        this.showError('There was an error creating this group.')
       }
     },
     allFieldsCompleted () {

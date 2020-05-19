@@ -116,13 +116,6 @@
 
       <div class="buttons is-pulled-right">
         <b-button
-          type="is-dark"
-          @click="startImportFromSIS"
-        >
-          <i class="fas fa-cloud-download-alt" />
-          Import from SIS
-        </b-button>
-        <b-button
           type="is-primary"
           :loading="loading"
           @click="saveAndContinue"
@@ -168,36 +161,6 @@ export default {
       this.graduationYear = this.$store.state.auth.user.graduationYear || ''
       this.major = this.$store.state.auth.user.major || ''
     },
-    startImportFromSIS () {
-      this.promptCredentials(this.importFromSIS)
-    },
-    async importFromSIS (rin, pin) {
-      this.loading = true
-      let request
-      try {
-        request = await this.$http.post('/account/profile', {
-          method: 'sis',
-          rin,
-          pin
-        })
-      } catch (e) {
-        this.loading = false
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-      }
-
-      await this.$store.dispatch('SET_USER', request.data.updatedUser)
-
-      this.$store.commit('SET_CREDENTIALS', { rin, pin })
-
-      this.$buefy.toast.open({ type: 'is-success', message: 'Grabbed your info from SIS. Please correct any mistakes.' })
-
-      this.saved = true
-
-      this.loading = false
-    },
     async saveAndContinue () {
       if (this.saved) {
         this.$router.push({ name: 'setup-terms' })
@@ -209,7 +172,6 @@ export default {
       let request
       try {
         request = await this.$http.post('/account/profile', {
-          method: 'manual',
           first_name: this.firstName,
           last_name: this.lastName,
           graduationYear: this.graduationYear,
@@ -217,10 +179,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        return this.showError(e.response.data.message)
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser)

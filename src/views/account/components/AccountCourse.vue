@@ -25,13 +25,6 @@
               Section {{ course.sectionId }}
             </b-tag>
           </b-taglist>
-          <span
-            class="icon edit-course is-pulled-right"
-            title="Click to edit this course"
-            @click="editing = true"
-          >
-            <i class="fas fa-pencil-alt" />
-          </span>
         </summary>
 
         <div class="periods">
@@ -47,7 +40,7 @@
             <tbody>
               <tr
                 v-for="p in sortedPeriods"
-                :key="p.day + p.start"
+                :key="p.day + p.startTime"
               >
                 <td>{{ day(p.day) }}</td>
                 <td>
@@ -68,23 +61,41 @@
             </tbody>
           </table>
 
-          <b-taglist class="course-links">
-            <b-tag
-              v-for="l in course.links"
-              :key="l.url"
-              type="is-link"
-              class="course-link"
+          <b-button
+            class="is-pulled-right edit-button"
+            title="Click to edit this course"
+            icon-pack="fas"
+            icon-left="pencil-alt"
+            type="is-warning"
+            @click="editing = true"
+          >
+            Edit
+          </b-button>
+
+          <b-field
+            grouped
+            group-multiline
+          >
+            <div
+              v-for="(l, index) in course.links"
+              :key="index + l.url"
+              class="control"
             >
-              <span class="icon">
-                <i class="fa fa-link" />
-              </span>
-              <a
-                :href="l.url"
-                target="_blank"
-                style="color: white"
-              >{{ l.name }}</a>
-            </b-tag>
-          </b-taglist>
+              <b-tag
+                type="is-link"
+                class="course-link"
+              >
+                <span class="icon">
+                  <i class="fa fa-link" />
+                </span>
+                <a
+                  :href="l.url"
+                  target="_blank"
+                  style="color: white"
+                >{{ l.name }}</a>
+              </b-tag>
+            </div>
+          </b-field>
         </div>
       </details>
     </template>
@@ -142,6 +153,7 @@
           style="padding-bottom: 10px;"
         >
           <label :for="'course-links-' + elementID">Add/Remove Links</label>
+
           <b-taglist>
             <b-tag
               v-for="(link, index) in editedLinks"
@@ -291,13 +303,13 @@
                 </td>
                 <td>
                   <input
-                    v-model="newPeriod.start"
+                    v-model="newPeriod.startTime"
                     class="input time-input is-small"
                     type="time"
                   >
                   <span class="has-text-grey-light">-</span>
                   <input
-                    v-model="newPeriod.end"
+                    v-model="newPeriod.endTime"
                     class="input time-input is-small"
                     type="time"
                   >
@@ -402,8 +414,8 @@ export default {
       periodTypes: ['LEC', 'REC', 'LAB', 'TES', 'STU', 'MET'],
       newPeriod: {
         day: undefined,
-        start: '08:00',
-        end: '09:50',
+        startTime: '08:00',
+        endTime: '09:50',
         location: '',
         type: 'LEC'
       }
@@ -520,27 +532,21 @@ export default {
         this.courseData.title.length === 0 ||
         this.courseData.sectionId.length === 0
       ) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'You cannot set an empty name or section for a course!'
-        })
-        return
+        return this.showError('You cannot set an empty name or section for a course!')
       }
 
       let updatedCourse
       try {
         updatedCourse = await this.$store.dispatch(
           'UPDATE_COURSE',
-          this.updatedCourse
+          {
+            courseID: this.course.id,
+            updates: this.updatedCourse
+          }
         )
       } catch (e) {
         const message = e.response ? e.response.data.message : e.message
-        this.$buefy.toast.open({
-          duration: 5000,
-          message,
-          type: 'is-danger'
-        })
-        return
+        return this.showError(message)
       }
 
       this.$buefy.toast.open({
@@ -558,11 +564,11 @@ export default {
         message: `Remove <b>${this.courseData.title} ${this.type(
           periodToRemove.type
         )}</b> period on ${this.day(periodToRemove.day)} from <b>${moment(
-          periodToRemove.start,
+          periodToRemove.startTime,
           'HH:mm',
           true
         ).format('h:mma')}</b> to <b>${moment(
-          periodToRemove.end,
+          periodToRemove.endTime,
           'HH:mm',
           true
         ).format('h:mma')}</b>?`,
@@ -573,7 +579,7 @@ export default {
           this.editedPeriods = this.editedPeriods.filter(
             p =>
               !(
-                p.day === periodToRemove.day && p.start === periodToRemove.start
+                p.day === periodToRemove.day && p.startTime === periodToRemove.startTime
               )
           )
         }
@@ -583,27 +589,23 @@ export default {
       // Validate
       if (
         this.newPeriod.location.length === 0 ||
-        !this.newPeriod.start ||
-        !this.newPeriod.end
+        !this.newPeriod.startTime ||
+        !this.newPeriod.endTime
       ) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'Make sure the time and location is set!'
-        })
-        return
+        return this.showError('Make sure the time and location is set!')
       }
       // Remeber to convert start/end from HH:mm to HH:mm
       this.editedPeriods.push(
         Object.assign({}, this.newPeriod, {
-          start: moment(this.newPeriod.start, 'HH:mm', true).format('HH:mm'),
-          end: moment(this.newPeriod.end, 'HH:mm', true).format('HH:mm')
+          startTime: moment(this.newPeriod.startTime, 'HH:mm', true).format('HH:mm'),
+          endTime: moment(this.newPeriod.endTime, 'HH:mm', true).format('HH:mm')
         })
       )
 
       this.newPeriod = {
         day: 1,
-        start: '08:00',
-        end: '09:50',
+        startTime: '08:00',
+        endTime: '09:50',
         location: '',
         type: 'LEC'
       }
@@ -619,23 +621,15 @@ export default {
 
 .course.box {
 
-  .tags {
-    margin: 0;
-    .tag {
-      //padding: 10px;
-      margin-bottom: 0;
-    }
-  }
-
-  .edit-course {
-    display: none;
-    cursor: pointer;
-  }
-  &:hover {
-    .edit-course {
-      display: inherit;
-    }
-  }
+  // .edit-course {
+  //   display: none;
+  //   cursor: pointer;
+  // }
+  // &:hover {
+  //   .edit-course {
+  //     display: inherit;
+  //   }
+  // }
 
   .time-input {
     width: unset;
@@ -644,18 +638,13 @@ export default {
 }
 
 //Displays edit button with better margins
-.fa-pencil-alt {
-  margin-left: 6px;
-}
+// .fa-pencil-alt {
+//   margin-left: 6px;
+// }
 
 .course-edit {
   p {
     margin-top: 5px;
-  }
-  //Button readability and interactivity
-  button {
-    margin-top: 10px;
-    margin-right: 10px;
   }
 
   .remove-period,
@@ -673,4 +662,10 @@ td .location-link {
 td:hover .location-link {
   opacity: 1;
 }
+
+.edit-button {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 </style>

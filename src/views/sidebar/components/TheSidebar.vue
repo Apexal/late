@@ -167,10 +167,16 @@ export default {
       return this.todaysAgenda.find(this.isCurrentEvent)
     },
     countdown () {
-      if (!this.currentEvent);
+      if (!this.currentEvent) return
+
+      let { start, end } = this.currentEvent
+      if (typeof start === 'string') {
+        start = moment(start, 'HH:mm', true)
+        end = moment(end, 'HH:mm', true)
+      }
 
       const diff = moment.duration(
-        moment(this.currentEvent.end).diff(this.rightNow)
+        moment(end).diff(this.rightNow)
       )
       return `${diff.hours()}h ${diff.minutes()}m left`
     },
@@ -196,7 +202,12 @@ export default {
       }
     },
     isCurrentEvent (event) {
-      return moment(this.rightNow).isBetween(event.start, event.end)
+      let { start, end } = event
+      if (typeof start === 'string') {
+        start = moment(start, 'HH:mm', true)
+        end = moment(end, 'HH:mm', true)
+      }
+      return moment(this.rightNow).isBetween(start, end)
     },
     periodType (p) {
       return this.$store.getters.periodType(p.type)

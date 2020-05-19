@@ -4,6 +4,8 @@ const moment = require('moment')
 
 const Block = require('../blocks/blocks.model')
 
+const google = require('../../modules/google')
+
 const assessmentSchema = require('../assessments/assessment.mixin')
 
 const schema = new Schema(
@@ -59,6 +61,22 @@ schema.virtual('fullyScheduled').get(function () {
 schema.pre('save', async function () {
   // Delete any work blocks that are passed the exam date now
   if (!this.isNew) {
+    const Student = require('../students/students.model')
+    const student = await Student.findOne({ _id: this._student })
+
+    // GCal events
+    if (student.integrations.google.calendarID) {
+      const blocks = await Block.find({
+        _student: this._student,
+        _id: { $in: this._blocks },
+        endTime: { $gte: this.date }
+      })
+
+      try {
+        await Promise.allSettled(blocks.map(block => google.actions.deleteEvent(student, block.id)))
+      } catch (e) {}
+    }
+
     await Block.deleteMany({
       _student: this._student,
       _id: { $in: this._blocks },
@@ -70,10 +88,19 @@ schema.pre('save', async function () {
 })
 
 schema.pre('remove', async function () {
+  const Student = require('../students/students.model')
+  const student = await Student.findOne({ _id: this._student })
+
+  if (student.integrations.google.calendarID) {
+    try {
+      await Promise.allSettled(this._blocks.map(block => google.actions.deleteEvent(student, block.id)))
+    } catch (e) {}
+  }
+
   // Delete any work blocks for this exam
   await Block.deleteMany({
     _student: this._student,
-    _id: { $in: this._blocks }
+    _id: this._blocks
   })
 })
 

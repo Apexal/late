@@ -12,16 +12,16 @@
         <i class="fas fa-edit" />
         Edit {{ capitalizedAssessmentType }}
       </b-button>
-      <b-button
+      <!-- <b-button
         v-if="assessmentType === 'assignment' && isOwner"
         type="is-link"
-        class="tooltip is-tooltip-top share-assignment"
+        class="tooltip has-tooltip-top share-assignment"
         data-tooltip="Collaborate on this assignment with other students!"
         @click="toggleSharedClick"
       >
         <i class="fas fa-users" />
         {{ assessment.shared ? "Stop Sharing" : "Share" }}
-      </b-button>
+      </b-button> -->
       <b-button
         class="is-pulled-right copy-assessment"
         @click="$emit('copy-assessment')"
@@ -120,10 +120,7 @@ export default {
           updates: { shared: !this.assessment.shared }
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
         this.editing = false
         return
       }

@@ -1,7 +1,18 @@
 const Poll = require('./polls.model')
 
-async function createPoll (ctx) {
-  var poll = new Poll()
+const { findOneOr404 } = require('../utils')
+
+/**
+ * Create a new poll.
+ *
+ * **Request Body**
+ * - all poll properties
+ *
+ * **Response JSON**
+ * - createdPoll: the created Poll document
+ */
+module.exports.createPoll = async function (ctx) {
+  const poll = new Poll()
 
   poll.options.question = ctx.request.body.options.question
   poll.options.answers = ctx.request.body.options.answers
@@ -10,10 +21,19 @@ async function createPoll (ctx) {
   poll.endDate = ctx.request.body.endDate
 
   poll.save()
-  ctx.created()
+  ctx.created({ createdPoll: poll })
 }
 
-async function getPolls (ctx) {
+/**
+ * Get polls.
+ *
+ * **Request Query**
+ * - getAll: 'true' or 'false' for whether to get all polls or future ones
+ *
+ * **Response JSON**
+ * - polls: array of Poll documents
+ */
+module.exports.getPolls = async function (ctx) {
   // get polls if endDate has not passed
   // or get all polls if getAll flag is passed
 
@@ -34,12 +54,19 @@ async function getPolls (ctx) {
   return ctx.ok({ polls })
 }
 
-async function addVote (ctx) {
-  const UID = ctx.request.body.id
+/**
+ * Add a vote to a poll.
+ *
+ * **Request Body**
+ * - id: the ObjectID of the poll
+ * - value: the value of the answer to increment
+ */
+module.exports.addVote = async function (ctx) {
+  const pollID = ctx.request.body.id
   const voteValue = ctx.request.body.value
 
   // get poll by _id field
-  const updatedPoll = (await Poll.find({ _id: UID }))[0]
+  const updatedPoll = await findOneOr404(ctx, Poll.findOne({ _id: pollID }))
 
   // mark user as voted
   updatedPoll.voted.set(ctx.state.user.rcs_id, true)
@@ -57,7 +84,7 @@ async function addVote (ctx) {
 }
 
 // returns number of deleted polls
-async function deletePoll (ctx) {
+module.exports.deletePoll = async function (ctx) {
   const UID = ctx.request.query.UID
   let request
   if (UID) {
@@ -68,11 +95,4 @@ async function deletePoll (ctx) {
   }
 
   return ctx.ok(request.deletedCount)
-}
-
-module.exports = {
-  createPoll,
-  getPolls,
-  deletePoll,
-  addVote
 }

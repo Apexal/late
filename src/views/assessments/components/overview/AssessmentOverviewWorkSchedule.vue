@@ -60,6 +60,7 @@
       :views="calendar.views"
       :valid-range="validRange"
       :select-constraint="selectConstraint"
+      :event-constraint="selectConstraint"
       :business-hours="calendar.businessHours"
       :height="700"
       all-day-text="Due"
@@ -146,6 +147,10 @@ export default {
   },
   computed: {
     selectConstraint () {
+      // If assessment is a completed assignment, the completedAt date might be earlier and should be used
+      if (this.assessmentType === 'assignment' && this.assessment.completedAt && moment(this.assessment.completedAt).isBefore(this.assessmentDate)) {
+        return { end: this.assessment.completedAt }
+      }
       return { end: this.assessmentDate }
     },
     scheduledMinutes () {
@@ -314,10 +319,7 @@ export default {
           '/assignments/a/' + this.assessment._id + '/collaborators'
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: e.response.data.message
-        })
+        this.showError(e.response.data.message)
         return
       }
 

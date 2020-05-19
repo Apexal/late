@@ -1,6 +1,7 @@
 <!--Assessments: Upcoming assessments list-->
 <template>
   <div class="assessments-upcoming">
+    <AssignmentsOverdue />
     <p
       v-if="none"
       class="has-text-centered has-text-grey"
@@ -38,19 +39,25 @@
         empty-message="No assignments or exams due in over 2 weeks."
       />
     </div>
+    <p
+      v-else
+      class="has-text-centered has-text-grey"
+    >
+      No far future assignments after 3 weeks.
+    </p>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 
+import AssignmentsOverdue from '@/views/assessments/components/upcoming/AssignmentsOverdue'
 import AssessmentsUpcomingWeek from '@/views/assessments/components/upcoming/AssessmentsUpcomingWeek'
-import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock'
 import AssessmentsTable from '@/views/assessments/components/AssessmentsTable.vue'
 
 export default {
   name: 'AssessmentsUpcoming',
-  components: { AssessmentsUpcomingWeek, AssessmentsTable },
+  components: { AssignmentsOverdue, AssessmentsUpcomingWeek, AssessmentsTable },
   props: {
     showCompleted: {
       type: Boolean,

@@ -1,27 +1,34 @@
 const Announcement = require('./announcements.model')
 const logger = require('../../modules/logger')
 
+const { findOneOr404 } = require('../utils')
+
 /**
- * Fetches all existing announcements
- * @param {Koa context} ctx
- * @retuns A JSON list of announcements
+ * Fetches all announcements.
+ *
+ * **Response JSON**
+ * - announcements: array of Announcement objects sorted by creation date
  */
-async function getAnnouncements (ctx) {
-  const announcements = await Announcement.find()
+module.exports.getAnnouncements = async function (ctx) {
+  const announcements = await Announcement.find({})
     .populate('_student')
     .sort('-createdAt')
   return ctx.ok({ announcements })
 }
 
 /**
- * Saves a new announcement.
- * Request body:
- *  - title: title of the announcement
- *  - body: the announcement text
- *  - isPinned (optional): whether or not to pin the announcement
- * @param {Koa context} ctx
+ * Creates a new announcement.
+ *
+ * **Request Body**
+ * - title: title of the announcement
+ * - body: the announcement text
+ * - isPinned (optional): whether or not to pin the announcement
+ *
+ * **Response JSON**
+ * - createdAnnouncement: the created Announcement document
  */
-async function createAnnouncement (ctx) {
+module.exports.createAnnouncement = async function (ctx) {
+  // Only admins can add announcements
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!')
   }
@@ -46,17 +53,25 @@ async function createAnnouncement (ctx) {
   return ctx.created({ createdAnnouncement })
 }
 
-async function editAnnouncement (ctx) {
+/**
+ * Edits an existing announcement.
+ *
+ * **Request Body**
+ * - title: title of the announcement
+ * - body: the announcement text
+ * - isPinned (optional): whether or not to pin the announcement
+ *
+ * **Response JSON**
+ * - updatedAnnouncement: the updated Announcement document
+ */
+module.exports.editAnnouncement = async function (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!')
   }
-  const announcementID = ctx.params.announcementID
-  const body = ctx.request.body
-  const updatedAnnouncement = await Announcement.findOne({
-    _id: announcementID
-  })
+  const { announcementID } = ctx.params
+  const { body } = ctx.request
 
-  if (!updatedAnnouncement) return ctx.notFound('Could not find announcement.')
+  const updatedAnnouncement = await findOneOr404(ctx, Announcement.findById(announcementID))
 
   if ('title' in body) updatedAnnouncement.title = body.title
   if ('body' in body) updatedAnnouncement.body = body.body
@@ -77,32 +92,25 @@ async function editAnnouncement (ctx) {
 
 /**
  * Deletes an announcement given its ID.
- * Request parameters:
- *  - announcementID: the announcement ID
- * @param {Koa context} ctx
+ *
+ * **Request Body**
+ * - announcementID: the target Announcement's ObjectID
+ *
+ * **Response JSON**
+ * - deletedAnnouncement: the deleted Announcement document
  */
-async function deleteAnnouncement (ctx) {
+module.exports.deleteAnnouncement = async function (ctx) {
   if (!ctx.state.user.admin) {
     return ctx.forbidden('You are not an administrator!')
   }
   const { announcementID } = ctx.params
-  const deletedAnnouncement = await Announcement.findOne({
+
+  const deletedAnnouncement = await findOneOr404(ctx, Announcement.findOne({
     _id: announcementID
-  })
+  }))
 
-  if (!deletedAnnouncement) {
-    return ctx.notFound('Couldn\'t find the announcement!')
-  }
+  await deletedAnnouncement.remove()
 
-  deletedAnnouncement.remove()
-
-  logger.info(`Deleted announcement for ${ctx.state.user.identifier}`)
+  logger.info(`Deleted announcement ${announcementID} for ${ctx.state.user.identifier}`)
   ctx.ok({ deletedAnnouncement })
-}
-
-module.exports = {
-  getAnnouncements,
-  editAnnouncement,
-  createAnnouncement,
-  deleteAnnouncement
 }

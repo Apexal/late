@@ -20,21 +20,21 @@ const getters = {
   }
 }
 const actions = {
-  async ADD_TODO ({ commit }, newTodo) {
-    const response = await axios.post('/todos', { text: newTodo })
+  async ADD_TODO ({ commit }, newTodoText) {
+    const response = await axios.post('/todos', { text: newTodoText })
     commit('ADD_TODO', response.data.createdTodo)
   },
   async GET_TODOS ({ commit }) {
     const response = await axios.get('/todos')
     commit('SET_TODOS', response.data.todos)
   },
-  async UPDATE_TODO ({ commit }, todo) {
-    commit('UPDATE_TODO', todo)
-    await axios.post('/todos/' + todo._id, todo)
+  async UPDATE_TODO ({ commit }, { todoID, updates }) {
+    const response = await axios.post('/todos/' + todoID, updates)
+    commit('UPDATE_TODO', response.data.todo)
   },
   async REMOVE_TODO ({ commit }, todo) {
-    commit('REMOVE_TODO', todo)
     await axios.delete('/todos/' + todo._id)
+    commit('REMOVE_TODO', todo)
   }
 }
 const mutations = {
@@ -45,11 +45,8 @@ const mutations = {
     state.todos = todos
   },
   UPDATE_TODO: (state, todo) => {
-    const index = state.todos.findIndex((t) => t._id === todo._id)
-    if (index < 0) {
-      return
-    }
-    state.todos.splice(index, 1, todo)
+    const foundTodo = state.todos.find(t => t.id === todo.id)
+    if (foundTodo) Object.assign(foundTodo, todo)
   },
   REMOVE_TODO: (state, todo) => {
     state.todos = state.todos.filter(t => t._id !== todo._id)

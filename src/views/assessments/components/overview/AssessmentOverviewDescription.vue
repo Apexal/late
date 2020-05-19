@@ -22,7 +22,7 @@
       </template>
       <span
         v-if="assessmentType === 'exam' || isOwner"
-        class="edit-description tooltip is-tooltip-left"
+        class="edit-description tooltip has-tooltip-left"
         :data-tooltip="
           editing ? 'Click to save description.' : 'Click to edit description.'
         "
@@ -85,10 +85,7 @@ export default {
             updates: { description: this.edited }
           })
         } catch (e) {
-          this.$buefy.toast.open({
-            message: e.response.data.message,
-            type: 'is-danger'
-          })
+          this.showError(e.response.data.message)
           this.editing = false
           return
         }

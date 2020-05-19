@@ -1,7 +1,7 @@
 <template>
   <section class="section privacy-policy">
     <h1 class="title">
-      Privacy Policy
+      LATE's Privacy Policy
     </h1>
     <div class="content">
       <p>

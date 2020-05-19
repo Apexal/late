@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import * as Sentry from '@sentry/browser'
 
 import api from './api'
 
@@ -184,7 +185,8 @@ const router = new Router({
       path: '/about',
       name: 'about',
       meta: {
-        title: 'About'
+        title: 'About',
+        requiresAuth: false
       },
       component: () => import('@/views/TheAboutPage.vue')
     },
@@ -209,6 +211,15 @@ const router = new Router({
           component: () => import('@/views/courses/CourseTermPage.vue')
         }
       ]
+    },
+    {
+      path: '/changelog',
+      name: 'changelog',
+      meta: {
+        title: 'Changelog',
+        requiresAuth: false
+      },
+      component: () => import('@/views/changelog/TheChangelogPage.vue')
     },
     {
       path: '/coursework',
@@ -488,6 +499,15 @@ const router = new Router({
       component: () => import('@/views/ThePrivacyPolicyPage.vue')
     },
     {
+      path: '/tos',
+      name: 'terms-of-service',
+      meta: {
+        title: 'LATE Terms of Service',
+        requiresAuth: false
+      },
+      component: () => import('@/views/TheTermsOfServicePage.vue')
+    },
+    {
       path: '*',
       name: 'NotFound',
       meta: {
@@ -509,7 +529,11 @@ router.beforeEach(async (to, from, next) => {
     let rcsID = localStorage.getItem('devUserRcsId')
     if (rcsID === null) {
       rcsID = prompt('Log in as what user? (rcs_id) Leave blank to not login.')
-      localStorage.setItem('devUserRcsId', rcsID)
+      if (rcsID) {
+        localStorage.setItem('devUserRcsId', rcsID)
+      } else {
+        localStorage.removeItem('devUserRcsId')
+      }
     }
 
     if (rcsID) {
@@ -553,6 +577,10 @@ router.beforeEach(async (to, from, next) => {
     window.location = '/auth/login' + (to.fullPath ? '?redirectTo=' + to.fullPath : '')
     return
   }
+
+  Sentry.configureScope(function (scope) {
+    scope.setUser(store.state.auth.user ? { email: store.state.auth.user.rcs_id + '@rpi.edu' } : null)
+  })
 
   if (
     to.matched.some(record => record.meta.requiresAdmin) &&

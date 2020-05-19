@@ -78,13 +78,13 @@
       >
         <router-link
           :to="{name: 'coursework-upcoming'}"
-          class="tooltip is-tooltip-bottom has-text-white back-button"
+          class="tooltip has-tooltip-bottom has-text-white back-button"
           data-tooltip="Browse all course work."
         >
           <i class="fas fa-angle-left" />
         </router-link>
         <span
-          class="tooltip is-tooltip-bottom"
+          class="tooltip has-tooltip-bottom"
           :class="assessmentType"
           :data-tooltip="`${course.title} ${capitalizedAssessmentType}`"
           @click="$store.commit('OPEN_COURSE_MODAL', course)"
@@ -184,11 +184,7 @@ export default {
         })
       } catch (e) {
         this.editing = false
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$emit('updated-assessment', updatedAssessment)

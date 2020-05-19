@@ -115,8 +115,6 @@
 <script>
 import moment from 'moment'
 
-import 'bulma-steps'
-
 import ModalSelectCourse from '@/views/assessments/components/modal/ModalSelectCourse'
 import ModalCalendar from '@/views/assessments/components/modal/ModalCalendar'
 import ModalTitleAndDescription from '@/views/assessments/components/modal/ModalTitleAndDescription'
@@ -263,14 +261,15 @@ export default {
       this.loading = true
 
       if (!this.isComplete) {
-        this.$buefy.toast.open({
-          type: 'is-danger',
-          message: 'Make sure you complete every step!'
-        })
-        return
+        return this.showError('Make sure you complete every step!')
       }
+      // Fix multiple assignments being add with same description
       if (this.$store.state.assessments.upcomingAssessments.find(assessment => assessment.title === this.title && assessment.courseCRN === this.courseCRN && moment(assessment.dueDate).isSame(this.dueDate, 'day'))) {
-        alert('You\'ve already added this assignment!')
+        // Allow user to cancel adding repeat assignment
+        if (!confirm("You've already added an assignment with this name. Do you still want to continue?")) {
+          this.$emit('toggle-modal')
+          return
+        }
       }
       let request
       try {
@@ -289,13 +288,8 @@ export default {
           recurringDays: this.isRecurring ? this.recurringDays : undefined
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message:
-            'There was an error adding the assignment. Please try again later.',
-          type: 'is-danger'
-        })
         this.loading = false
-        return
+        return this.showError('There was an error adding the assignment. Please try again later.')
       }
 
       // Update global state if they are not in the past

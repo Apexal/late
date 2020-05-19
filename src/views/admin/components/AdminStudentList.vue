@@ -162,10 +162,7 @@ export default {
           params: { page: this.page, itemsPerPage: this.itemsPerPage, search: this.searchTerm }
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
         this.studentsOnPage = []
         this.loading = false
         return

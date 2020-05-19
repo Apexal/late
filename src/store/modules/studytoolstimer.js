@@ -6,8 +6,12 @@ const LONG_BREAK_DURATION = 15 * 60
 const padTime = time => (time < 10 ? '0' : '') + time
 
 window.addEventListener('load', (event) => {
-  if (Notification.permission !== 'denied') {
-    Notification.requestPermission()
+  if ('Notification' in window) {
+    if (Notification.permission !== 'denied') {
+      Notification.requestPermission()
+    }
+  } else {
+    console.log('Notifications are not supported in this browser.')
   }
 })
 
@@ -85,7 +89,7 @@ const actions = {
         }
         )
         audio.play()
-        if (Notification.permission === 'granted') {
+        if ('Notification' in window && Notification.permission === 'granted') {
           var notification = new Notification('LATE: Study Timer is up!')
         }
       }, 1000)

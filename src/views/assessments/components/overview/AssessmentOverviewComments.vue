@@ -28,12 +28,12 @@
           <div class="level-left">
             <small class="level-item has-text-grey">
               <b
-                class="tooltip is-tooltip-bottom"
+                class="tooltip has-tooltip-bottom"
                 :data-tooltip="c._student ? c._student.rcs_id : 'anonymous'"
               >{{ c._student ? c._student.displayName : "Anonymous" }}</b>
               &nbsp;|&nbsp;
               <span
-                class="tooltip is-tooltip-right"
+                class="tooltip has-tooltip-right"
                 :data-tooltip="longDateTimeFormat(c.addedAt)"
               >{{ fromNow(c.addedAt) }}</span>
             </small>
@@ -127,10 +127,7 @@ export default {
           { assessment: this.assessment, newComment: this.newComment }
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
         this.loading = false
         return
       }
@@ -155,10 +152,7 @@ export default {
           { assessment: this.assessment, commentIndex }
         )
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
         this.loading = false
         return
       }

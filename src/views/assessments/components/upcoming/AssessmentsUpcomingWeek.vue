@@ -1,7 +1,7 @@
 <template>
   <div class="assessments-upcoming-week">
-    <h1 class="subtitle week-name">
-      {{ weekName }}
+    <h1 class="title is-size-4 has-text-weight-medium week-name">
+      Due {{ weekName }} <span class="has-text-grey">({{ weekAssessments.length }})</span>
       <!-- <span class="tag is-danger">Heavy</span> -->
     </h1>
     <div class="columns is-multiline">
@@ -12,7 +12,8 @@
       >
         <div class="panel">
           <p
-            class="panel-heading has-background-dark has-text-white is-unselectable key-heading"
+            class="panel-heading has-text-white is-unselectable key-heading"
+            :class="headerClass(key)"
           >
             <span
               class="key"
@@ -32,13 +33,24 @@
               />
             </span>
           </p>
-          <AssessmentPanelBlock
-            v-for="a in assessments"
-            :key="a._id"
-            :group-by="'date'"
-            :show-scheduled="false"
-            :assessment="a"
-          />
+          <Draggable
+            :list="assessments"
+            group="upcoming-assessments"
+            :move="checkAssessmentDrag"
+            handle=".drag-assessment"
+            :data-date="key"
+            @end="draggedAssessment"
+          >
+            <AssessmentPanelBlock
+              v-for="a in assessments"
+              :key="a._id"
+              :group-by="'date'"
+              :show-scheduled="false"
+              :assessment="a"
+              :data-assessment-id="a.id"
+              :data-assessment-type="a.assessmentType"
+            />
+          </Draggable>
         </div>
       </div>
     </div>
@@ -47,12 +59,13 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
 import moment from 'moment'
-import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock2'
+import AssessmentPanelBlock from '@/views/assessments/components/upcoming/AssessmentPanelBlock'
 
 export default {
   name: 'AssessmentsUpcomingWeek',
-  components: { AssessmentPanelBlock },
+  components: { Draggable, AssessmentPanelBlock },
   props: {
     weekNumber: { type: Number, required: true },
     weekAssessments: { type: Array, required: true }
@@ -76,6 +89,37 @@ export default {
     }
   },
   methods: {
+    checkAssessmentDrag (event) {
+      return event.from.dataset.date !== event.to.dataset.date
+    },
+    async draggedAssessment ({ item, from, to }) {
+      if (from.dataset.date === to.dataset.date) return false
+      // Change assessment due date to other date
+      const assessmentID = item.dataset.assessmentId
+      const assessmentType = item.dataset.assessmentType
+
+      const assessment = await this.$store.getters.getUpcomingAssessmentById(assessmentID)
+      if (!assessment) return false
+
+      const newDate = moment(to.dataset.date, 'YYYY-MM-DD', true)
+
+      const newDueDate = moment(assessment.dueDate)
+      newDueDate.set({
+        year: newDate.year(),
+        month: newDate.month(),
+        date: newDate.date()
+      })
+
+      try {
+        await this.$store.dispatch('UPDATE_ASSESSMENT', { assessmentID, assessmentType, updates: { [assessmentType === 'assignment' ? 'dueDate' : 'date']: newDueDate } })
+        this.$store.commit('SORT_UPCOMING_ASSESSMENTS')
+      } catch (e) {
+        this.showError(`Failed to rescheduled ${assessmentType}...`)
+        return
+      }
+
+      this.$buefy.toast.open({ type: 'is-success', message: `Rescheduled ${assessmentType}!`, duration: 3000 })
+    },
     headerTitle (key) {
       const today = moment().startOf('day')
       const day = moment(key, 'YYYY-MM-DD', true)
@@ -85,6 +129,15 @@ export default {
     },
     headerText (key) {
       return this.relativeDateFormat(moment(key, 'YYYY-MM-DD', true))
+    },
+    headerClass (key) {
+      switch (this.headerText(key)) {
+        case 'Today':
+        case 'Tomorrow':
+          return 'has-background-grey-darker'
+        default:
+          return 'has-background-dark'
+      }
     },
     headerClick (key) {
       // TODO: this will open DayModal

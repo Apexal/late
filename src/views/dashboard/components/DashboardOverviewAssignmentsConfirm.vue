@@ -68,8 +68,7 @@ export default {
         }
       })
     } catch (e) {
-      this.$buefy.toast.open({ type: 'is-danger', message: e.response.data.message })
-      return
+      return this.showError(e.response.data.message)
     }
 
     this.unconfirmedAssignments = response.data.assignments

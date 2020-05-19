@@ -7,35 +7,43 @@
         Your Account
       </h1>
 
-      <div class="steps">
-        <router-link
-          v-for="s in setups"
-          :key="s.component"
-          :to="{path: s.link}"
-          tag="div"
-          class="step-item"
-          :class="{'is-completed': userSetup[s.setup_check]}"
-        >
-          <div class="step-marker">
-            <span class="icon">
-              <i
-                v-if="userSetup[s.setup_check]"
-                class="fas fa-check"
-              />
-              <i
-                v-else
-                class="fas fa-times"
-              />
-            </span>
-          </div>
+      <b-steps
+        v-model="setupIndex"
+        :has-navigation="false"
+        icon-pack="fas"
+        class="is-hidden-desktop"
+        vertical
+      >
+        <template v-for="(step, index) in setups">
+          <b-step-item
+            :key="index"
+            :step="index + 1"
+            :label="step.label"
+            :clickable="true"
+            :has-navigation="false"
+            :type="{'is-success': userSetup[step.setup_check]}"
+          />
+        </template>
+      </b-steps>
 
-          <div class="step-details">
-            <p class="step-title">
-              {{ s.label }}
-            </p>
-          </div>
-        </router-link>
-      </div>
+      <b-steps
+        v-model="setupIndex"
+        :has-navigation="false"
+        icon-pack="fas"
+        class="is-hidden-touch"
+      >
+        <template v-for="(step, index) in setups">
+          <b-step-item
+            :key="index"
+            :step="index + 1"
+            :label="step.label"
+            :clickable="true"
+            :has-navigation="false"
+            :type="{'is-success': userSetup[step.setup_check]}"
+          />
+        </template>
+      </b-steps>
+
       <keep-alive>
         <transition
           name="slide-left"
@@ -51,8 +59,6 @@
 </template>
 
 <script>
-import 'bulma-steps'
-
 export default {
   name: 'AccountPage',
   data () {
@@ -89,31 +95,28 @@ export default {
   computed: {
     userSetup () {
       return this.$store.getters.userSetup
+    },
+    setupIndex: {
+      get () {
+        const index = this.setups.indexOf(this.setups.find(s => { return s.link === this.$route.path }))
+        return Math.max(index, 0)
+      },
+      set (index) {
+        this.$router.push(this.setups[index].link)
+      }
     }
   }
 }
 </script>
 
-<style lang='scss' scoped>
-//Makes the marker appear more clickable to the user
-.step-marker {
-  cursor: pointer;
-}
-//Makes the hovered step icon appear more dynamic
-.step-marker:hover {
-  background-color: #5b9ba0 !important;
-}
-
-//Makes the current step bold
-.steps .step-item .step-details .step-title {
-  font-weight: inherit;
-}
-.steps .is-active .step-details {
-  font-weight: 600 !important;
-}
-</style>
-
 <style>
+nav.steps {
+  flex: 1;
+}
+section.step-content {
+  display: none !important;
+}
+
 .integration-note {
   text-align: center;
   margin: 1.5em 0em 1em 0em;

@@ -5,6 +5,7 @@ const google = require('../../modules/google')
 const Sentry = require('@sentry/node')
 
 const {
+  loginToSIS,
   scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,
@@ -78,28 +79,38 @@ async function updateCourses (studentID, termCode, newCourses) {
   return Promise.all(promises)
 }
 
-async function setAllFromSIS (ctx) {
-  const { rin, pin } = ctx.request.body
-
-  if (!rin || !pin) {
-    return ctx.badRequest('You must pass `rin` and `pin`!')
-  }
-
+/**
+ * Given SIS credentials, grab a student's course schedules, name and major, etc.
+ *
+ * **Request Body**
+ * - rin: String RIN of student
+ * - pin: String SIS password of student
+ *
+ * **Response JSON**
+ * - updatedUser: The updated logged in user document
+ * - courses: Array of new/updated Course documents
+ */
+module.exports.setAllFromSIS = async function (ctx, next) {
   const terms = await Term.find()
 
-  let registeredTermCodes = await scrapeSISForRegisteredTerms(rin, pin)
+  let registeredTermCodes = await scrapeSISForRegisteredTerms(ctx.state.jar)
   ctx.state.user.terms = registeredTermCodes
   ctx.state.user.setup.terms = true
 
-  const profileInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
-  if (!ctx.state.user.name.first) {
-    ctx.state.user.name.first = profileInfo.name.first
-  }
-  if (!ctx.state.user.name.last) {
-    ctx.state.user.name.last = profileInfo.name.last
-  }
-  if (!ctx.state.user.major) {
-    ctx.state.user.major = profileInfo.major
+  try {
+    const profileInfo = await scrapeSISForProfileInfo(ctx.state.jar)
+    if (!ctx.state.user.name.first) {
+      ctx.state.user.name.first = profileInfo.name.first
+    }
+    if (!ctx.state.user.name.last) {
+      ctx.state.user.name.last = profileInfo.name.last
+    }
+    if (!ctx.state.user.major) {
+      ctx.state.user.major = profileInfo.major
+    }
+  } catch (e) {
+    // Might fail for some random reason
+    logger.error(`Could not find profile details for ${ctx.state.user.rcs_id}`)
   }
 
   ctx.state.user.setup.profile = true
@@ -123,8 +134,7 @@ async function setAllFromSIS (ctx) {
     let courseSchedule
     try {
       courseSchedule = await scrapeSISForCourseSchedule(
-        rin,
-        pin,
+        ctx.state.jar,
         term,
         ctx.state.user._id
       )
@@ -159,80 +169,46 @@ async function setAllFromSIS (ctx) {
   }
 
   ctx.state.user.lastSISUpdate = new Date()
-  await ctx.state.user.save()
 
-  const courses = !ctx.session.currentTerm ? [] : await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code)
-
-  ctx.ok({
-    updatedUser: ctx.state.user,
-    courses
-  })
+  ctx.state.data.courses = !ctx.session.currentTerm ? [] : await ctx.state.user.getCoursesForTerm(ctx.session.currentTerm.code)
 }
 
 /**
- * Given personal info in the request body:
+ * Updates the profile of the current logged in student.
+ *
+ * **Request Body**
  * - first_name
  * - last_name
  * - rin
  * - graduationYear
- * Save it to the logged in user.
  *
- * @param {Koa context} ctx
+ * **Response JSON**
+ * - updatedUser: The updated user document
  */
-async function setProfile (ctx) {
+module.exports.setProfile = async function (ctx) {
   const body = ctx.request.body
 
-  // There are two methods:
-  // manual: the body has the fields given
-  // sis: the body has the RIN and PIN to scrape SIS
-
-  if (!body.method) {
-    return ctx.badRequest('You must supply a method!')
-  }
-
-  if (body.method === 'manual') {
-    ctx.state.user.name.first = body.first_name
-    ctx.state.user.name.last = body.last_name
-
-    if ('major' in body) { ctx.state.user.major = body.major ? body.major : undefined }
-
-    if ('graduationYear' in body) { ctx.state.user.graduationYear = isNaN(parseInt(body.graduationYear)) ? undefined : parseInt(body.graduationYear) }
-  } else if (body.method === 'sis') {
-    const { rin, pin } = body
-
-    // Grab as much info as possible from SIS
-    const scrapedInfo = await directory.getNameAndMajor(ctx.state.user.rcs_id)
-    ctx.state.user.set(scrapedInfo)
-  } else {
-    return ctx.badRequest('Invalid method.')
-  }
+  if ('first_name' in body) ctx.state.user.name.first = body.first_name
+  if ('last_name' in body) ctx.state.user.name.last = body.last_name
+  if ('major' in body) { ctx.state.user.major = body.major ? body.major : undefined }
+  if ('graduationYear' in body) { ctx.state.user.graduationYear = isNaN(parseInt(body.graduationYear)) ? undefined : parseInt(body.graduationYear) }
 
   ctx.state.user.setup.profile = true
 
-  try {
-    await ctx.state.user.save()
-
-    logger.info(`Saved personal info for ${ctx.state.user.identifier}`)
-    return ctx.ok({
-      updatedUser: ctx.state.user
-    })
-  } catch (err) {
-    logger.error(
-      `Failed to save personal info for ${ctx.state.user.identifier}: ${err}`
-    )
-    Sentry.captureException(err)
-    return ctx.badRequest('There was an error saving your personal info.')
-  }
+  logger.info(`Saving personal info for ${ctx.state.user.identifier}`)
 }
 
 /**
  * Set the logged in user's terms that they are on campus.
  * The term codes should be in the request body as `termCodes`
  *
- * @param {Koa context} ctx
- * @retturns updatedUser
+ * **Request Body**
+ * - termCodes: Array of term codes like '202001'
+ *
+ * **Response JSON**
+ * - updatedUser: The updated current user document
  */
-async function setTerms (ctx) {
+module.exports.setTerms = async function (ctx) {
   const { termCodes } = ctx.request.body
 
   logger.info(`Setting terms for ${ctx.state.user.identifier}`)
@@ -251,30 +227,23 @@ async function setTerms (ctx) {
 
   ctx.state.user.setup.terms = true
   ctx.state.user.terms = termCodes.sort() // this works even though they're strings
-
-  try {
-    await ctx.state.user.save()
-  } catch (e) {
-    logger.error(`Failed to save user ${ctx.state.user.identifier}: ${e}`)
-    Sentry.captureException(e)
-    return ctx.internalServerError('There was an error saving the terms.')
-  }
-
-  ctx.ok({
-    updatedUser: ctx.state.user
-  })
 }
 
 /**
- * Given the following data in the request body:
- * - SIS PIN as sis_pin
- *  OR
- * - Period CRNs as crns
- * Set the user's course schedule using SIS scraping.
+ * Set the user's course schedule for a school term using SIS scraping.
  *
- * @param {Koa context} ctx
+ * **Request Query**
+ * - termCode: (optional) Specific term code to grab courses from, defaults to current term
+ *
+ * **Request Body**
+ * - rin: The user's SIS RIN
+ * - pin: The user's SIS password
+ *
+ * **Response JSON**
+ * - updatedUser: The updated current user document
+ * - courses: The updated course array
  */
-async function importCourseSchedule (ctx) {
+module.exports.importCourseSchedule = async function (ctx) {
   const body = ctx.request.body
   const termCode = ctx.session.currentTerm ? ctx.session.currentTerm.code : ctx.query.termCode
 
@@ -289,8 +258,7 @@ async function importCourseSchedule (ctx) {
   let courseSchedule = []
   try {
     courseSchedule = await scrapeSISForCourseSchedule(
-      body.rin,
-      body.pin,
+      ctx.state.jar,
       targetTerm,
       ctx.state.user._id
     )
@@ -335,21 +303,24 @@ async function importCourseSchedule (ctx) {
     }
   }
 
-  await ctx.state.user.save()
-
-  ctx.ok({ updatedUser: ctx.state.user, courses })
+  ctx.state.data.courses = courses
 }
 
 /**
- * Given the CRN of a course in the URL params and the user's RIN and PIN in the request body,
- * grab a course from SIS and add it to the student's list.
+ * Grab a course from SIS and add it to the current student's list.
  *
- * @param {Koa context} ctx
- * @returns {Object} The new course
+ * **Request Params**
+ * - crn: The crn of the course to search for and add
+ *
+ * **Request Body**
+ * - rin: The user's SIS RIN
+ * - pin: The user's SIS password
+ *
+ * **Response JSON**
+ * - course: The new course document
  */
-async function addCourseByCRN (ctx) {
+module.exports.addCourseByCRN = async function (ctx) {
   const { crn } = ctx.params
-  const { rin, pin } = ctx.request.body
 
   // First make sure that the student hasn't already added this course
   const existingCourse = await Course.findOne({ _student: ctx.state.user._id, crn }).populate('_blocks')
@@ -359,7 +330,7 @@ async function addCourseByCRN (ctx) {
 
   let courseData
   try {
-    courseData = await scrapeSISForSingleCourse(rin, pin, ctx.session.currentTerm, crn)
+    courseData = await scrapeSISForSingleCourse(ctx.state.jar, ctx.session.currentTerm, crn)
   } catch (e) {
     logger.error(`Failed to scrape SIS for single course ${crn}: ${e}`)
     Sentry.captureException(e)
@@ -392,12 +363,14 @@ async function addCourseByCRN (ctx) {
 /**
  * Set the study/work time preference of the logged in user.
  *
- * Body:
- * - earliest 'HH:mm'
- * - latest 'HH:mm'
- * @param {Koa context} ctx
+ * **Request Body**
+ * - earliest: Earliest work time in string format 'HH:mm'
+ * - latest: Latest work time in string format 'HH:mm'
+ *
+ * **Request JSON**
+ * - updatedUser: The updated current user document
  */
-async function setTimePreference (ctx) {
+module.exports.setTimePreference = async function (ctx) {
   const { earliest, latest } = ctx.request.body
 
   if (!earliest || !latest) return ctx.badRequest('You must give an earliest AND latest time.')
@@ -411,27 +384,5 @@ async function setTimePreference (ctx) {
     ctx.state.user.setup.unavailability.push(ctx.session.currentTerm.code)
   }
 
-  try {
-    await ctx.state.user.save()
-  } catch (e) {
-    Sentry.captureException(e)
-    logger.error(
-      `Failed to set work/study time preference schedule for ${
-        ctx.state.user.rcs_id
-      }: ${e}`
-    )
-    return ctx.badRequest('Failed to set work/study time preference schedule.')
-  }
-
-  logger.info(`Set work/study time preference for ${ctx.state.user.identifier}`)
-  ctx.ok({ updatedUser: ctx.state.user })
-}
-
-module.exports = {
-  setAllFromSIS,
-  setProfile,
-  setTerms,
-  importCourseSchedule,
-  addCourseByCRN,
-  setTimePreference
+  logger.info(`Setting work/study time preference for ${ctx.state.user.identifier}`)
 }

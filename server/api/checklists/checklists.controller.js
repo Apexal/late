@@ -1,21 +1,18 @@
 const Checklist = require('./checklists.model')
 const logger = require('../../modules/logger')
 
+const { findOneOr404 } = require('../utils')
+
 /**
- * Get all non-private checklists.
+ * Get the checklist of the current logged in student if it exists.
  *
- * @param {Koa context} ctx
+ * **Response JSON**
+ * - checklist: the found Checklist document if it exists
  */
-async function getStudentChecklist (ctx) {
-  let checklist
-  try {
-    checklist = await Checklist.findOne({
-      _student: ctx.state.user._id
-    })
-  } catch (e) {
-    logger.error(`Failed to get checklist for ${ctx.state.user.identifier}: ${e}`)
-    return ctx.badRequest('Could not find the checklist!')
-  }
+module.exports.getStudentChecklist = async function (ctx) {
+  const checklist = await findOneOr404(ctx, Checklist.findOne({
+    _student: ctx.state.user._id
+  }))
 
   logger.info(`Sending checklist to ${ctx.state.user.identifier}`)
 
@@ -25,25 +22,18 @@ async function getStudentChecklist (ctx) {
 }
 
 /**
- * Get a public checklist by its ID
+ * Get a public checklist by its ID `checklistID`
  *
- * @param {Koa context} ctx
+ * **Request JSON**
+ * - checklist: the found Checklist document
  */
-async function getChecklist (ctx) {
+module.exports.getChecklist = async function (ctx) {
   const { checklistID } = ctx.params
 
-  let checklist
-  try {
-    checklist = await Checklist.findOne({
-      _id: checklistID,
-      private: false
-    }).populate('_student', 'rcs_id name graduationYear')
-  } catch (e) {
-    logger.error(`Failed to get checklist ${checklistID} for guest: ${e}`)
-    return ctx.badRequest('Could not find the checklist!')
-  }
-
-  if (!checklist) return ctx.notFound('That checklist doesn\'t exist or isn\'t public!')
+  const checklist = await findOneOr404(ctx, Checklist.findOne({
+    _id: checklistID,
+    private: false
+  }).populate('_student', 'rcs_id name graduationYear'))
 
   logger.info(`Sending checklist ${checklistID} to guest`)
 
@@ -52,7 +42,15 @@ async function getChecklist (ctx) {
   })
 }
 
-async function createOrUpdateChecklist (ctx) {
+/**
+ * Create or update the current student's checklist.
+ *
+ * **Request Body**
+ * - categories: an array of the checklist categories
+ * - private: if the checklist is private or not
+ */
+module.exports.createOrUpdateChecklist = async function (ctx) {
+  // DO NOT USE findOr404 since we want to create if does not exist
   let checklist
   try {
     checklist = await Checklist.findOne({
@@ -95,11 +93,4 @@ async function createOrUpdateChecklist (ctx) {
   })
 }
 
-async function removeChecklist (ctx) {}
-
-module.exports = {
-  getStudentChecklist,
-  getChecklist,
-  createOrUpdateChecklist,
-  removeChecklist
-}
+module.exports.removeChecklist = async function (ctx) {}

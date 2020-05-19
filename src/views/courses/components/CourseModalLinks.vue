@@ -79,8 +79,15 @@ export default {
     async addLink () {
       const newLinks = [...this.links, this.newLink]
 
-      // Send to server
-      await this.$store.dispatch('UPDATE_COURSE', Object.assign({}, this.course, { links: newLinks }))
+      try {
+        // Send to server
+        await this.$store.dispatch('UPDATE_COURSE', {
+          courseID: this.course.id,
+          updates: { links: newLinks }
+        })
+      } catch (e) {
+        return this.showError('There was an issue adding that link...')
+      }
 
       this.newLink = {
         name: '',

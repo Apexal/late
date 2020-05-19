@@ -15,6 +15,7 @@ import CourseAssessmentDot from '@/views/courses/components/CourseAssessmentDot'
 
 import datemethods from './mixins/datemethods'
 import sharedproperties from './mixins/sharedproperties'
+import utils from './mixins/utils'
 
 import * as VueGoogleMaps from 'vue2-google-maps'
 
@@ -43,15 +44,25 @@ const ignoreErrors = [
 ]
 
 Sentry.init({
-  dsn: process.env.NODE_ENV === 'production' ? 'https://8dc02c8aff11495696641a303123f176@sentry.io/1548286' : null,
-  integrations: [new Integrations.Vue({ Vue, attachProps: true })]
-  // beforeSend (event, hint) {
-  //   const error = hint.originalException
-  //   if (error && error.message && ignoreErrors.some(e => error.message.match(new RegExp(e, 'i')))) {
-  //     return null
-  //   }
-  //   return event
-  // }
+  dsn: 'https://8dc02c8aff11495696641a303123f176@o296943.ingest.sentry.io/1548286',
+  debug: process.env.NODE_ENV !== 'production',
+  environment: process.env.NODE_ENV,
+  integrations: [new Integrations.Vue({ Vue, attachProps: true, logErrors: process.env.NODE_ENV !== 'production' })],
+  beforeSend (event, hint) {
+    // Check if it is an exception, and if so, show the report dialog
+    if (event.exception) {
+      Sentry.showReportDialog({
+        eventId: event.event_id,
+        title: 'Something went wrong!',
+        subtitle: 'The LATE team has been notified.',
+        user: {
+          email: store.state.auth.user ? (store.state.auth.user.rcs_id + '@rpi.edu') : '',
+          name: store.state.auth.user ? store.state.auth.user.displayName : ''
+        }
+      })
+    }
+    return event
+  }
 })
 
 Vue.use(VueSocketio, io(process.env.BASE_URL), { store })
@@ -102,6 +113,7 @@ Vue.use(VueGoogleMaps, {
 
 Vue.mixin(datemethods)
 Vue.mixin(sharedproperties)
+Vue.mixin(utils)
 
 const app = new Vue({
   router,

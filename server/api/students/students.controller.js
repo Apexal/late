@@ -53,6 +53,37 @@ async function getUser (ctx) {
 }
 
 /**
+ * Edit the current user's document
+ *
+ * Request body should be object of updates, e.g.:
+ * { graduationYear: 2022, name: { first: 'Foo', last: 'bar' } }
+ *
+ * @param {Koa context} ctx
+ * @returns The updated current student
+ */
+async function editUser (ctx) {
+  delete ctx.request.body._id // Cannot change a user's _id!
+  delete ctx.request.body.rcs_id // Cannot change a user's rcs_id!
+
+  ctx.state.user.set(ctx.request.body)
+
+  try {
+    await ctx.state.user.save()
+  } catch (e) {
+    logger.error(
+      `Failed to update self ${ctx.state.user.identifier}: ${e}`
+    )
+    return ctx.badRequest('There was an error updating your account.')
+  }
+
+  logger.info(`${ctx.state.user.identifier} updated their account.`)
+
+  ctx.ok({
+    updatedUser: ctx.state.user
+  })
+}
+
+/**
  * For administrators, get all student documents.
  *
  * @param {Koa context} ctx
@@ -239,6 +270,9 @@ async function editStudent (ctx) {
 
   delete ctx.request.body._id // Cannot change a user's _id!
   delete ctx.request.body.rcs_id // Cannot change a user's rcs_id!
+  if (ctx.request.body.admin && ctx.request.body.admin === false && student.admin) {
+    return ctx.forbidden('Admins cannot demote other admins!')
+  }
   student.set(ctx.request.body)
 
   try {
@@ -314,6 +348,7 @@ async function getLog (ctx) {
 module.exports = {
   loginAs,
   getUser,
+  editUser,
   getStudent,
   editStudent,
   deleteStudent,

@@ -157,7 +157,7 @@
                 </a>
               </div>
             </div>
-            <div
+            <!-- <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
@@ -202,7 +202,7 @@
                   Peer Help
                 </a>
               </div>
-            </div>
+            </div> -->
             <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
@@ -374,9 +374,9 @@
 
                 <a
                   class="navbar-item"
-                  target="none"
+                  target="_blank"
                   title="Report a bug or request a feature on GitHub"
-                  @click="isBugReportModalOpen = true"
+                  href="https://forms.gle/SBbjRaxZ7KmbgPeC9"
                 >
                   <span class="icon bug-report">
                     <i
@@ -384,7 +384,7 @@
                       style="margin-right: 5px"
                     />
                   </span>
-                  <span>Report a bug</span>
+                  <span>Give feedback</span>
                 </a>
 
                 <hr class="navbar-divider">
@@ -449,11 +449,6 @@
         </div>
       </div>
     </nav>
-    <BugReportModal
-      :open="isBugReportModalOpen"
-      false
-      @close-modal="isBugReportModalOpen = false"
-    />
     <b-modal
       class="rick-roll-modal"
       style="height: 100%;"
@@ -473,15 +468,10 @@
 </template>
 
 <script>
-import BugReportModal from './BugReportModal.vue'
 export default {
   name: 'TheHeader',
-  components: {
-    BugReportModal
-  },
   data () {
     return {
-      isBugReportModalOpen: false,
       rickRollModalOpen: false
     }
   },
@@ -551,39 +541,6 @@ export default {
   margin-left: 5px;
 }
 
-@keyframes bellshake {
-  0% {
-    transform: rotate(0);
-  }
-  10% {
-    transform: rotate(5deg);
-  }
-  25% {
-    transform: rotate(-5deg);
-  }
-  40% {
-    transform: rotate(4deg);
-  }
-  55% {
-    transform: rotate(-4deg);
-  }
-  70% {
-    transform: rotate(2deg);
-  }
-  80% {
-    transform: rotate(-2deg);
-  }
-  87% {
-    transform: rotate(1deg);
-  }
-  95% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(0);
-  }
-}
-
 @keyframes navAnimOpen {
   0% {display: none;opacity: 0;margin-top: -5px}
   1% {display: block;opacity: 0;}
@@ -630,10 +587,6 @@ export default {
 #top-navbar {
   //Pushes the left and right navbar menus slightly off the edges of the screen.
   padding: 0;
-
-  .navbar-item {
-
-  }
 
   .announcement-icon {
     padding: 0.5rem 0.2rem;

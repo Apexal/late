@@ -6,7 +6,7 @@
         <b-field class="is-fullwidth">
           <label class="is-fullwidth">
             <input
-              v-model.trim="newTodo"
+              v-model.trim="newTodoText"
               class="input is-small"
               type="text"
               placeholder="Add to-do"
@@ -32,7 +32,7 @@
       </div>
     </form>
     <div
-      v-for="(t, index) in getIncompletedTodos()"
+      v-for="(t, index) in incompletedTodos"
       :key="index"
       class="panel-block todo incomplete"
     >
@@ -55,7 +55,7 @@
       </span>
     </div>
     <div
-      v-if="getIncompletedTodos().length === 0"
+      v-if="incompletedTodos.length === 0"
       class="panel-block has-text-grey no-items"
     >
       <i class="far fa-sticky-note no-items-icon" />
@@ -75,8 +75,16 @@ export default {
   },
   data () {
     return {
-      newTodo: '',
+      newTodoText: '',
       isShowingAllTodos: false
+    }
+  },
+  computed: {
+    incompletedTodos () {
+      return this.todos.filter(t => t.completed === null)
+    },
+    completedTodos () {
+      return this.todos.filter(t => t.completed !== null)
     }
   },
   methods: {
@@ -101,23 +109,9 @@ export default {
         parent: this,
         component: TodoListCompletedModal,
         hasModalCard: true,
-        props: { items: this.getCompletedTodos() },
+        props: { items: this.completedTodos },
         events: { 'delete-todo': this.removeTodo, 'uncheck-todo': (t) => this.setTodoCompletionStatus(t, null) }
       })
-    },
-    /**
-     * Get all of the todo list items that are NOT completed
-     * @returns {[]} Array of all items in {@link this.todos} which are NOT completed
-     */
-    getIncompletedTodos () {
-      return this.todos.filter(t => !t.completed)
-    },
-    /**
-     * Get all of the todo list items that are completed
-     * @returns {[]} Array of all items in {@link this.todos} which are completed
-     */
-    getCompletedTodos () {
-      return this.todos.filter(t => t.completed)
     },
     /**
      * Set the todo text value to the provided text
@@ -125,18 +119,14 @@ export default {
      * @param text Text to set on todo. Expected to be non-null
      */
     async setTodoValue (todo, text) {
-      todo.text = text
       try {
-        await this.$store.dispatch('UPDATE_TODO', todo)
+        await this.$store.dispatch('UPDATE_TODO', { todoID: todo.id, updates: { text } })
         this.$buefy.toast.open({
           type: 'is-success',
           message: `Changed to-do to '${text}'.`
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
       }
     },
     /**
@@ -145,42 +135,39 @@ export default {
      * @param completedAt {Date|null} Datetime of when this todo was completed. Null if incomplete
      * @returns {Promise<void>} void
      */
-    async setTodoCompletionStatus (todo, completedAt) {
-      todo.completed = completedAt
+    async setTodoCompletionStatus (todo, completed) {
       try {
-        await this.$store.dispatch('UPDATE_TODO', todo)
-        if (completedAt) {
+        await this.$store.dispatch('UPDATE_TODO', { todoID: todo.id, updates: { completed } })
+        if (completed) {
           this.$buefy.toast.open({
             type: 'is-success',
             message: `Completed to-do '${todo.text}'.`
           })
         }
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
       }
     },
     /**
-     * Adds whatever value is in {@link this.newTodo} to the todo list.
+     * Adds whatever value is in {@link this.newTodoText} to the todo list.
      * @returns {Promise<void>} void
      */
     async addTodo () {
-      if (!this.newTodo) return
+      if (!this.newTodoText) return
 
+      const split = this.newTodoText.split('and')
+      split.forEach(this.addTodoFromArray)
+    },
+    async addTodoFromArray (todoText) {
       try {
-        await this.$store.dispatch('ADD_TODO', this.newTodo)
+        await this.$store.dispatch('ADD_TODO', todoText)
         this.$buefy.toast.open({
           type: 'is-success',
-          message: `Added to-do '${this.newTodo}'.`
+          message: `Added to-do '${todoText}'.`
         })
-        this.newTodo = ''
+        this.newTodoText = '' // reset global todo string
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        this.showError(e.response.data.message)
       }
     },
     /**
@@ -189,17 +176,14 @@ export default {
      * @param callback Callback function that is called only if the user confirms the removal.
      * @returns {Promise<void>} void
      */
-    async removeTodo (todo, callback) {
+    removeTodo (todo, callback) {
       this.$buefy.dialog.confirm({
         message: `Permanently remove <i>${todo.text}</i>?`,
         onConfirm: async () => {
           try {
             await this.$store.dispatch('REMOVE_TODO', todo)
           } catch (e) {
-            this.$buefy.toast.open({
-              message: e.response.data.message,
-              type: 'is-danger'
-            })
+            this.showError(e.response.data.message)
           }
           if (callback) {
             callback()

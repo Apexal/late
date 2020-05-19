@@ -2,12 +2,12 @@
   <div class="assignment-tasks content">
     <ol v-if="assessment.tasks.length > 0">
       <Draggable
-        v-model="tasks"
-        @change="updateTasks"
+        v-model="assessment.tasks"
+        @change="updateTasks(assessment.tasks)"
       >
         <li
-          v-for="task in tasks"
-          :key="task.id"
+          v-for="task in assessment.tasks"
+          :key="task._id"
           class="task"
         >
           <b-checkbox
@@ -77,32 +77,20 @@ export default {
   data () {
     return {
       loading: false,
-      tasks: [],
       newTaskText: ''
     }
   },
-  watch: {
-    'assessment.tasks' (newTasks) {
-      this.tasks = newTasks
-    }
-  },
-  mounted () {
-    this.tasks = this.assessment.tasks
-  },
   methods: {
-    async updateTasks () {
+    async updateTasks (tasks) {
       let updatedAssessment
       try {
         updatedAssessment = await this.$store.dispatch('UPDATE_ASSESSMENT', {
           assessmentID: this.assessment._id,
           assessmentType: this.assessment.assessmentType,
-          updates: { tasks: this.tasks }
+          updates: { tasks }
         })
       } catch (e) {
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        return this.showError(e.response.data.message)
       }
 
       this.$emit('updated-assessment', updatedAssessment)
@@ -111,9 +99,9 @@ export default {
       this.loading = true
 
       const newTask = { text: this.newTaskText, addedAt: new Date() }
-      this.tasks = [...this.tasks, newTask]
+      const newTasks = [...this.assessment.tasks, newTask]
 
-      this.updateTasks()
+      this.updateTasks(newTasks)
 
       this.newTaskText = ''
 
@@ -125,16 +113,19 @@ export default {
       this.loading = false
     },
     async toggleTask (taskID) {
-      const task = this.tasks.find(task => task._id === taskID)
-      task.completed = !task.completed
-      task.completedAt = (task.completed ? new Date() : undefined)
+      const task = this.assessment.tasks.find(task => task._id === taskID)
+      const index = this.assessment.tasks.indexOf(task)
+      const updatedTask = Object.assign({}, task, { completed: !task.completed, completedAt: task.completed ? new Date() : undefined })
 
-      this.updateTasks()
+      const newTasks = [...this.assessment.tasks]
+      newTasks.splice(index, 1, updatedTask)
+
+      this.updateTasks(newTasks)
     },
     async deleteTask (taskID) {
-      this.tasks = this.tasks.filter(task => task._id !== taskID)
+      const newTasks = this.assessment.tasks.filter(task => task._id !== taskID)
 
-      this.updateTasks()
+      this.updateTasks(newTasks)
     }
   }
 }

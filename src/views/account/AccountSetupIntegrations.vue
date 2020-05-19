@@ -7,10 +7,10 @@
     <div class="columns">
       <div class="column">
         <h2 class="is-size-5">
-          Notification Preferences
+          Reports
         </h2>
         <hr class="title-divider">
-        <SetupIntegrationsPreferences />
+        <SetupReports />
       </div>
       <div class="column">
         <h2 class="is-size-5">
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import SetupIntegrationsPreferences from '@/views/account/components/SetupIntegrationsPreferences'
+import SetupReports from '@/views/account/components/SetupReports'
 import SetupIntegrationsSMS from '@/views/account/components/SetupIntegrationsSMS'
 import SetupIntegrationsEmail from '@/views/account/components/SetupIntegrationsEmail'
 import SetupIntegrationsDiscord from '@/views/account/components/SetupIntegrationsDiscord'
@@ -85,7 +85,7 @@ import SetupIntegrationsGoogleCalendar from '@/views/account/components/SetupInt
 export default {
   name: 'AccountSetupIntegrations',
   components: {
-    SetupIntegrationsPreferences,
+    SetupReports,
     SetupIntegrationsSMS,
     SetupIntegrationsEmail,
     SetupIntegrationsDiscord,

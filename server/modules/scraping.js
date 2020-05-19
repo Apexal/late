@@ -45,6 +45,14 @@ function checkLogin ($) {
   return $('title').text() !== 'User Login'
 }
 
+/**
+ * Given SIS credentials, attempt to login and return the cookie jar
+ * for further requests.
+ *
+ * @param {String} RIN String RIN of student
+ * @param {String} PIN String SIS password of student
+ * @returns jar Request jar
+ */
 async function loginToSIS (RIN, PIN) {
   const jar = request.jar()
 
@@ -75,9 +83,12 @@ async function loginToSIS (RIN, PIN) {
   return jar
 }
 
-async function scrapeSISForRegisteredTerms (RIN, PIN) {
-  const jar = await loginToSIS(RIN, PIN)
-
+/**
+ * Determine what terms a student is registered for from SIS.
+ *
+ * @param {*} jar
+ */
+async function scrapeSISForRegisteredTerms (jar) {
   logger.info('Getting registered terms for student from SIS.')
 
   const termCodes = possibleTerms()
@@ -104,13 +115,12 @@ async function scrapeSISForRegisteredTerms (RIN, PIN) {
 /**
  * Given a student's id (their RIN) and their PIN,
  * login to SIS for them and navigate to their unofficial transcript
- * ...
+ * to get their name and major.
+ *
+ * @param {*} jar Request jar after logging in
+ * @returns Object with name object and major string
  **/
-async function scrapeSISForProfileInfo (RIN, PIN) {
-  // The cookie jar to persist the login session
-  // Must be used with each request
-  const jar = await loginToSIS(RIN, PIN)
-
+async function scrapeSISForProfileInfo (jar) {
   logger.info('Getting profile info for student from SIS.')
 
   const $ = await request({
@@ -149,12 +159,13 @@ async function scrapeSISForProfileInfo (RIN, PIN) {
  * Given a student's id (their RIN) and their PIN,
  * login to SIS for them and navigate to their shedule page
  * and simply grab the CRNs of each of their courses and forget their credentials.
- **/
-async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
-  // The cookie jar to persist the login session
-  // Must be used with each request
-  const jar = await loginToSIS(RIN, PIN)
-
+ *
+ * @param {*} jar Request jar after logging in
+ * @param {Object} term Term document
+ * @param {ObjectID} studentID ID of Student document to create Course documents
+ * @returns Array of unsaved Course documents
+ */
+async function scrapeSISForCourseSchedule (jar, term, studentID) {
   logger.info(`Getting courses for student ${studentID} from SIS.`)
 
   // Submit schedule form choosing the right term
@@ -290,17 +301,12 @@ async function scrapeSISForCourseSchedule (RIN, PIN, term, studentID) {
 /**
  * Grab all the info for a particular course given the term and crn. It does not grab the proper period types though.
  *
- * @param {String} RIN A valid RIN
- * @param {String} PIN The matching SIS PIN
+ * @param {String} jar Request jar from logging in to SIS
  * @param {Object} term The term object for the course
  * @param {String} crn The CRN of the course
  * @returns {Object} The compiled course object with every required property set except _student and color.
  */
-async function scrapeSISForSingleCourse (RIN, PIN, term, crn) {
-  // The cookie jar to persist the login session
-  // Must be used with each request
-  const jar = await loginToSIS(RIN, PIN)
-
+async function scrapeSISForSingleCourse (jar, term, crn) {
   logger.info(`Getting course ${crn} for a student from SIS.`)
 
   // Submit schedule form choosing the right term
@@ -501,6 +507,7 @@ async function scrapePeriodTypesFromCRNs (termCode, courses) {
 }
 
 module.exports = {
+  loginToSIS,
   scrapeSISForRegisteredTerms,
   scrapeSISForProfileInfo,
   scrapeSISForCourseSchedule,

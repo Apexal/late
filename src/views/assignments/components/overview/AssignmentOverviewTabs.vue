@@ -20,7 +20,7 @@
             <span>Schedule</span>
             <span
               v-if="!assignment.completed && !fullyScheduled"
-              class="tag is-danger tooltip is-tooltip-right"
+              class="tag is-danger tooltip has-tooltip-right"
               data-tooltip="You haven't scheduled enough time to work on this!"
             >!</span>
           </a>
@@ -40,13 +40,33 @@
             <span>Tasks</span>
             <span
               v-if="assignment.tasks && assignment.tasks.length > 0"
-              class="tag tooltip is-tooltip-right"
+              class="tag tooltip has-tooltip-right"
               :class="tasksTagClass"
               :data-tooltip="`Completed ${completedTasksLength} out of ${assignment.tasks.length} tasks`"
             >{{ completedTasksLength }}/{{ assignment.tasks.length }}</span>
           </a>
         </li>
         <li
+          v-if="!assignment.completed && !assignment.passed"
+          class="reminders"
+          :class="{'is-active': tab === 'reminders'}"
+          @click="$emit('set-tab', 'reminders')"
+        >
+          <a>
+            <span class="icon is-small">
+              <i class="fas fa-bell" />
+            </span>
+            <span>Reminders</span>
+            <span
+              v-if="assignment.reminders && assignment.reminders.length > 0"
+              class="tag is-dark comment-count"
+            >{{
+              assignment.reminders.length
+            }}</span>
+          </a>
+        </li>
+        <li
+          v-if="assignment.shared"
           class="comments"
           :class="{'is-active': tab === 'comments'}"
           @click="$emit('set-tab', 'comments')"
@@ -58,7 +78,7 @@
               class="fas fa-comments"
               aria-hidden="true"
             /></span>
-            <span>Comments</span>
+            <span>Discussion</span>
             <span
               v-if="hasComments"
               class="tag is-dark comment-count"
@@ -113,26 +133,6 @@
               aria-hidden="true"
             /></span>
             <span>Related</span>
-          </a>
-        </li>
-
-        <li
-          v-if="!assignment.completed && !assignment.passed"
-          class="reminders"
-          :class="{'is-active': tab === 'reminders'}"
-          @click="$emit('set-tab', 'reminders')"
-        >
-          <a>
-            <span class="icon is-small">
-              <i class="fas fa-bell" />
-            </span>
-            <span>Reminders</span>
-            <span
-              v-if="assignment.reminders && assignment.reminders.length > 0"
-              class="tag is-dark comment-count"
-            >{{
-              assignment.reminders.length
-            }}</span>
           </a>
         </li>
       </ul>

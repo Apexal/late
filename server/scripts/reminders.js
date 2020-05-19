@@ -84,7 +84,7 @@ async function findAndSendAssessments () {
     }
   }
 
-  const [assignments, exams] = await Promise.all([Assignment.find(query).populate('_student', 'rcs_id name integrations'), Exam.find(query).populate('_student', 'rcs_id name integrations')])
+  const [assignments, exams] = await Promise.all([Assignment.find({ ...query, completed: false }).populate('_student', 'rcs_id name integrations'), Exam.find(query).populate('_student', 'rcs_id name integrations')])
 
   await Promise.all(assignments.concat(exams).map(async assessment => {
     const reminders = assessment.reminders.filter(r => r.sent === false && r.datetime <= now)

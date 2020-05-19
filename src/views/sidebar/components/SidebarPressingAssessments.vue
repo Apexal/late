@@ -69,7 +69,7 @@
             title="Shared assignment"
           />
           <small
-            class="has-text-grey is-pulled-right tooltip is-tooltip-left"
+            class="has-text-grey is-pulled-right tooltip has-tooltip-left"
             :data-tooltip="
               longDateTimeFormat(assessment.dueDate || assessment.date)
             "

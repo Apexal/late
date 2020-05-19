@@ -8,7 +8,12 @@
         :is-full-page="true"
         :active="!loaded"
         :can-cancel="false"
-      />
+      >
+        <img
+          src="@/assets/img/sisman.png"
+          class="loading-sis-man"
+        >
+      </b-loading>
 
       <div :class="appClass">
         <span
@@ -34,7 +39,7 @@
               :open="addAssignmentModalExpanded"
               @toggle-modal="$store.commit('TOGGLE_ADD_ASSIGNMENT_MODAL')"
             />
-            <ExamsModalAddRedux
+            <ExamsModalAdd
               v-if="!onBreak"
               :open="addExamModalExpanded"
               @toggle-modal="$store.commit('TOGGLE_ADD_EXAM_MODAL')"
@@ -57,11 +62,8 @@
             <AnnouncementsModal
               :open="announcementsModalOpen"
               :announcements="announcements"
-              @close-modal="
-                $store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)
-              "
+              @close-modal="$store.commit('SET_ANNOUNCEMENTS_MODEL_OPEN', false)"
             />
-
             <SISMan />
             <StudyToolsTimerOverlay
               v-if="$route.path !== '/studytools'"
@@ -83,14 +85,13 @@
 </template>
 
 <script>
-import * as Sentry from '@sentry/browser'
 import moment from 'moment'
 
 import TheHeader from '@/views/components/TheHeader'
 import TheFooter from '@/views/components/TheFooter'
 import TheSidebar from '@/views/sidebar/components/TheSidebar'
-import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAddRedux'
-import ExamsModalAddRedux from '@/views/exams/components/ExamsModalAddRedux'
+import AssignmentsModalAdd from '@/views/assignments/components/AssignmentsModalAdd'
+import ExamsModalAdd from '@/views/exams/components/ExamsModalAdd'
 import CourseModal from '@/views/courses/components/CourseModal'
 import PinnedAnnouncements from '@/views/announcements/components/PinnedAnnouncements'
 import AnnouncementsModal from '@/views/announcements/components/AnnouncementsModal'
@@ -102,6 +103,7 @@ import SISMan from '@/views/sisman/components/SISMan'
 
 import account from '@/mixins/account'
 
+import sistext from '@/modules/sistext'
 import Konami from 'konami'
 // import reverse from '@/modules/konami'
 
@@ -114,7 +116,7 @@ export default {
     TheSidebar,
     TheFooter,
     AssignmentsModalAdd,
-    ExamsModalAddRedux,
+    ExamsModalAdd,
     AnnouncementsModal,
     PinnedAnnouncements,
     StudyToolsTimerOverlay,
@@ -180,7 +182,7 @@ export default {
       return this.$store.getters.isUserSetup
     },
     sistext () {
-      return '                                              ,\n                                         ,⌐"▄└⌠ *▄\n                                       ╓▀  ▓▌▄▀ j█▀▄\n                                   ╓≈══▀═≡w█╓█▌ ▄███▄,,,\n                                 Ö███████████▀▀╜▀╙\'`. ╖`▀▀%\n                                 ▀███▀▀▀└   ,,▄▄▄▄▄▄▄`¥▀ ║  ▀▄\n                             ▄#*╙   ,▄▄#▀▀▀╙└,,,,"%███    ▌  `▀\n                         ,═"  ▄▄A▀╙`       ²█▀▀▀▀█  "█▌   █⌐╙▄▄▀\n                          ╓═"▄#MªΦµ          ,www,  `╗█   ║▌ █▀A█\n                      ,  █   ,+═══╓ ╓    ` A\'     █ ▌ █▌  ▐█ A▄▄█▄\n                      M ║⌐         ██▀  j█└  ╓▓Ω▌▄▀▄⌐▄█▌   █ ║█▄▐█\\,\n                     ▐  █  α, █▌▓▄█▀^    ⁿ▀w*▀▀▀▀▄▀,╣███   █H▐██ █▌█\n                     ▀ ▓M  ╙w▄▀█▌█                .ª└███   █▌▐██ ███Γ\n                    ▐ .█        JH   , , ,▓▄   ▓       █   █▌║██Γ███⌐\n                    ▌ ║█    ╓⌐   ▀▄▄▀█▄▄██▀l▄A▀▄▀╙½,   █   █▌▓██Γ███\n                    M ╡▌   Φ█▄═╓,  "▀▀█▄▄Φ▀└,Φ█▀¿ ▀   ▐▌   █M███▌██▀\n                 ,▄▀⌐ ╫▌    ▀▌▀▄▄▄└``  ,▄▄A▀▄▀▄╨      ╢M   █▄█▀██▓\n               ▄▀└¿▐⌐ █▌      "≈,▀▀▀▀▀▀▄▄#▀▄▄█▀Ä╓^ ▄▄▄█    ██▌¥╖ ▀═╓\n            ⁿ` ,A▀▄▀⌐ ╙▌        ⁿ═▄▄▄▌▄▄▄██████╨▄▄████½█═  ███▌▄▄ ,  "` \'▄\n         ^   ▄▌╝▀└  ⌐   "*═w▄▄╓╓,,J██████████▄▄██▀▀▀└¬╙   \'╙███▄ ║▌^    ▄▀\n         `µ ∩█       ⁿwç                        ,,▄▄▄▄▄▄██████▀█▀   ,═\n          ▓ ╞║∩        ╓▄█▀▀▀▀█▓▀███████████████▀▀▄████████▀█▓▀   ▄▀\n          ╙▌ Φ▌     ,*2÷▄▄▄▄▄▄█▄▄▄▄███▄▄▄▄▄▄▄▄▄▄████████▀▄#▀⌠▄*▄▄▀\n           ▀▄ ▀▄⌐ :╓▓#▀▀"└"═▄ ▄ ,,,▄▄▄▄▄▄██████████#K╨═   ▀▀▄▄████\n            `¥▀           `*▐▌ "*╙▀▀▀▀▀▀▀▀▀▀█▀▀▀▀L      ▄█▐█████▄▀\n             ▐⌐w█      └ "¥, ;▄▄▀ %      .▄▀ ▄▀╓▄⌐  ▄/½▄█▄▌█▄███▀\n               ╙▀▀▀K▀▀▀▓▀w;,▄█   " "  " "*▄ª╙ #^ «Φ╨ª▀██▌█▌█▀▓█\n              ,^    `    `    ` ─ ¬┘ ⁿ  ╨ ▌═Φ░╓A└,Γ ,▓█▀██`▄█└\n              *  -.╓▄J⌠⌠⌠,⌠,`   ```""""*****ⁿⁿⁿΦ▄▄▄⌐ █▀Γ``\n                              ▌`█⌐▌  -└╙╙▀█▀▀█▀▀▀▀▀▀▀\n                             AW▄▄█        ▌,,▐,\n                            ` \'╙██▀      ▐██═ ▐▌,▀▄█▄,         ,▄▄▄▄▄w,\n                      ▄▀▄▄¥ ▀  ▀█▄      .M██▀,▀█ █▀▄█▐▄∩^▄^▄ ^└      ╔▄▄╓\n   ,▄▄ΦK¥═≡≡≤, ╓≈╓▄╖▄Ñ▄█╙▓ ▄╙▀██▀▄█      ▄ ▄█▌▄█⌐▌██▌██▄█▌▄██═⌐ ╓▄#▀▀▀▀██▓\n ▄▀⌠           ▐M║█⌐█▌▐█▄█ ▀██ ██ ▀     ▐▌  █ ▀█.██ ▄▀╓▌ ███<*╙▄▄▓█████▀▀\n └ " Ö╓▄╓║▀▀▀▀███▄ █Ü╙▄ ███▓▄▄▄███╓▌     ▌  ║█▄███▄╓█w╝▀,▄▄▄███████▀▀\n  Φ████▄▓▄█▌██▀▀▀█▌w█ ║▄,████████▀▀       ▀ ╙▄▄▄▄█▓▄████████▀▀▀└`\n    ╙▀▀██████████████▄▄▄████████▓Φ███▄▄▄▄▄▄███████████▄▄══¬\n               ,▄≤≡▀▀██▀▀▀███▀▀▀███▀▀▀▀████▀▀▀████▀▀▀▀▀███▄▄▄==¬¬  .\n           ^`   ^^\'          `     `└'
+      return sistext
     }
   },
   watch: {
@@ -197,11 +199,7 @@ export default {
   },
   async mounted () {
     if (this.$route.query.accountLocked) {
-      return this.$buefy.toast.open({
-        message: 'Your account has been locked by administrators.',
-        type: 'is-warning',
-        duration: 70000
-      })
+      return this.showError('Your account has been locked by administrators.')
     } else if (this.$route.query.invited) {
       this.$buefy.toast.open({
         message: 'Your invitation has been accepted!',
@@ -211,21 +209,17 @@ export default {
     }
 
     if (this.loggedIn) {
-      this.$ga.set({ userId: this.$store.start.auth.user._id })
+      this.$ga.set({ userId: this.user.id })
       // Check if time to reupdate from SIS
       if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
         this.$router.push({ name: 'account', query: { importFromSIS: true } })
       }
-
-      Sentry.configureScope(function (scope) {
-        scope.setUser({ username: this.user.rcs_id })
-      })
     }
 
-    const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
-    // reverse.addReverse()
+    // const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
+
     console.log(this.sistext)
-    console.log('%cBetter LATE than never!', 'font-weight: bold; text-align: center; font-size: 30px')
+    console.log('%cSIS MAN says never share your SIS password!', 'font-weight: bold; text-align: center; font-size: 30px')
   },
   methods: {
     onTourStop () {
@@ -242,21 +236,10 @@ export default {
 /*               Global Styles
 /* These styles will apply to the whole app. */
 /*-------------------------------------------*/
-* {
-  word-wrap: break-word;
-  outline: 0;
-}
 
 .is-fullwidth {
   width: 100%;
 }
-
-//Removes annoying outline around elements when clicked.
-// *:focus {
-//   outline: none;
-//   box-shadow: none !important;
-//   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-// }
 
 html,
 body {
@@ -446,12 +429,6 @@ footer.footer {
   }
 }
 
-// .fc-time-grid-event:hover {
-//   min-height: fit-content !important;
-//   z-index: 100 !important;
-//   box-shadow: 1px 1px 2px white;
-// }
-
 .fc-content {
   .delete {
     display: none;
@@ -470,4 +447,46 @@ footer.footer {
   }
 }
 
+/* UTILS */
+.is-clickable {
+  cursor: pointer;
+}
+
+@keyframes bellshake {
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(5deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  40% {
+    transform: rotate(4deg);
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+  80% {
+    transform: rotate(-2deg);
+  }
+  87% {
+    transform: rotate(1deg);
+  }
+  95% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+.loading-sis-man {
+  animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation-iteration-count: infinite;
+}
 </style>

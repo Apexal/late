@@ -91,11 +91,8 @@ async function updateCourse (ctx) {
     }
 
     const forbiddenProperties = ['_id', '_student', 'crn', 'originalTitle']
-    if (forbiddenProperties.some(prop => prop in forbiddenProperties)) {
-      throw new Error(
-        'You cannot change the id, owner, crn, or original title of a course!'
-      )
-    }
+    forbiddenProperties.forEach(prop => delete ctx.request.body[prop])
+
     course.set(ctx.request.body)
 
     await course.save()

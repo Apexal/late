@@ -75,7 +75,7 @@
           </form>
           <p
             v-else
-            class="subtitle date tooltip is-tooltip-bottom"
+            class="subtitle date tooltip has-tooltip-bottom"
             :data-tooltip="timeLeft"
           >
             {{ shortDateTimeFormat(assessment.date) }}
@@ -97,7 +97,7 @@
             Completed
           </p>
           <p
-            class="subtitle tooltip is-tooltip-bottom"
+            class="subtitle tooltip has-tooltip-bottom"
             :data-tooltip="fromNow(assessment.completedAt)"
           >
             {{ shortDateTimeFormat(assessment.completedAt) }}
@@ -138,7 +138,7 @@
       :class="[assessment.assessmentType === 'assignment' && assessment.completed ? 'has-background-success' : 'has-background-grey-darker']"
     >
       <span
-        class="tooltip is-tooltip-bottom"
+        class="tooltip has-tooltip-bottom"
         :data-tooltip="priorityString + ' Priority'"
       >
         <i
@@ -148,11 +148,11 @@
         />
       </span>
       <span
-        class="tooltip is-tooltip-bottom"
+        class="tooltip has-tooltip-bottom"
         :data-tooltip="fromNow(assessment.date) + (assessment.completed ? ` | Completed ${shortDateTimeFormat(assessment.completedAt)}` : '')"
       >{{ shortDateTimeFormat(assessment.date) }}</span>
       <span
-        class="tooltip is-tooltip-bottom"
+        class="tooltip has-tooltip-bottom"
         :data-tooltip="(assessmentType === 'assignment' ? 'Work' : 'Study') + ' minutes left'"
       >{{ assessment.scheduledTimeRemaing }}
         <span class="has-text-grey">min</span>
@@ -309,11 +309,7 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
-        return
+        return this.showError(e.response.data.message)
       }
 
       this.$emit('updated-assessment', updatedAssessment)

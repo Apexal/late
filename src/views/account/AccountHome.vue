@@ -54,6 +54,7 @@ export default {
   data () {
     return {
       showingModal: false,
+      sisImportAttempts: 0,
       loading: false
     }
   },
@@ -67,6 +68,8 @@ export default {
   },
   methods: {
     startImportFromSIS () {
+      // Warn if too many attempts are made
+      if (this.sisImportAttempts === 2 && !confirm('You have made 2 attempts already. If you try again with the wrong details, you might lock your SIS account!')) return
       this.promptCredentials(this.importFromSIS)
     },
     async importFromSIS (rin, pin) {
@@ -80,10 +83,9 @@ export default {
         })
       } catch (e) {
         this.loading = false
-        return this.$buefy.toast.open({
-          message: e.response.data.message,
-          type: 'is-danger'
-        })
+        return this.showError(e.response.data.message)
+      } finally {
+        this.sisImportAttempts += 1
       }
 
       await this.$store.dispatch('SET_USER', request.data.updatedUser)
