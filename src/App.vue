@@ -204,10 +204,6 @@ export default {
           this.$router.push({ name: 'account', query: { importFromSIS: true } })
         }
 
-        Sentry.configureScope(scope => {
-          scope.setUser({ username: this.user.rcs_id })
-        })
-
         // Customerly
         window.customerlySettings = {
           app_id: 'e61edda9'
