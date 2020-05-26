@@ -195,6 +195,35 @@ export default {
     },
     user () {
       this.$socket.client.emit('authentication', this.user._id)
+
+      if (this.loggedIn) {
+        this.$ga.set({ userId: this.user.id })
+
+        // Check if time to reupdate from SIS
+        if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
+          this.$router.push({ name: 'account', query: { importFromSIS: true } })
+        }
+
+        Sentry.configureScope(scope => {
+          scope.setUser({ username: this.user.rcs_id })
+        })
+
+        // Customerly
+        window.customerlySettings = {
+          app_id: 'e61edda9'
+        }
+
+        window.customerlySettings.user_id = this.user._id
+        window.customerlySettings.name = this.user.displayName
+        window.customerlySettings.email = this.user.rcs_id + '@rpi.edu'
+        window.customerlySettings.attributes = {
+          joinedAt: this.user.createdAt
+        }
+
+        const customerly = document.createElement('script')
+        customerly.src = 'https://widget-ga.customerly.io/launcher.js'
+        document.body.appendChild(customerly)
+      }
     }
   },
   async mounted () {
