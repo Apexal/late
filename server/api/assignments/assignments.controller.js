@@ -8,6 +8,7 @@ const Unavailability = require('../unavailabilities/unavailabilities.model')
 
 const google = require('../../modules/google')
 
+const { adminMiddleware } = require('../utils')
 const { generateDummyAssignment } = require('../../modules/dummydata')
 
 const sgMail = require('@sendgrid/mail')
@@ -720,7 +721,6 @@ async function deleteComment (ctx) {
 async function generateAssignments (ctx) {
   // Make sure proper environment
   if (process.env.NODE_ENV !== 'development') return ctx.forbidden('Must be in development mode to generate assignments.')
-  if (!ctx.state.user.admin) return ctx.forbidden('Must be an admin to generate assignments.')
 
   const { startDate, endDate, count } = ctx.request.body
   if (count < 0 || count > 30) {
@@ -730,7 +730,7 @@ async function generateAssignments (ctx) {
   const term = ctx.session.currentTerm
   const courses = await ctx.state.user.getCoursesForTerm(term.code)
 
-  const generateAssessments = []
+  const generatedAssessments = []
   for (let i = 0; i < count; i++) {
     const newAssignment = new Assignment({
       _student: ctx.state.user._id,
@@ -738,10 +738,10 @@ async function generateAssignments (ctx) {
     })
     await newAssignment.save()
 
-    generateAssessments.push(newAssignment)
+    generatedAssessments.push(newAssignment)
   }
 
-  ctx.created({ generateAssessments })
+  ctx.created({ generatedAssessments })
 }
 
 module.exports = {

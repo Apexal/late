@@ -6,18 +6,12 @@
       :can-cancel="false"
     />
 
-    <h2 class="subtitle">
+    <h2 class="title">
       {{ term.name }}
     </h2>
     <div class="box summary has-text-centered">
       Ran from <b>{{ longDateFormat(term.startDate) }}</b> to
-      <b>{{ longDateFormat(term.endDate) }}</b> —
-      <a href="#archive-courses">{{ termCourses.length }} courses</a> —
-      <a
-        href="#archive-assignments"
-      >{{ termAssignments.length }} assignments</a>
-      — <a href="#archive-exams">{{ termExams.length }} exams</a> —
-      {{ termTodos.length }} todo's
+      <b>{{ longDateFormat(term.endDate) }}</b>
     </div>
 
     <b-modal
@@ -69,115 +63,111 @@
         </section>
       </div>
     </b-modal>
-    <h2
-      id="archive-courses"
-      class="subtitle"
-    >
-      Courses
-    </h2>
-    <ol>
-      <li
-        v-for="course in termCourses"
-        :key="course.crn"
-        @click="selectedCourse=course;courseModalOpen=true"
-      >
-        <i
-          class="course-dot"
-          :style="{backgroundColor: course.color}"
-        />
-        {{ course.title }}
-      </li>
-    </ol>
-    <hr>
 
-    <h2
-      id="archive-assignments"
-      class="subtitle"
+    <b-tabs
+      v-model="activeTab"
+      type="is-boxed"
     >
-      Assignments
-    </h2>
-
-    <div class="assignments">
-      <table class="table is-fullwidth">
-        <thead>
-          <tr>
-            <th>Due Date</th>
-            <th>Course</th>
-            <th>Title</th>
-            <th>Completed</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(assignment, index) in termAssignments"
-            :key="index"
+      <b-tab-item>
+        <template slot="header">
+          <b-icon icon="graduation-cap" />
+          <span>Courses <b-tag rounded>{{ termCourses.length }}</b-tag></span>
+        </template>
+        <ol>
+          <li
+            v-for="course in termCourses"
+            :key="course.crn"
+            class="is-clickable"
+            @click="selectedCourse=course;courseModalOpen=true"
           >
-            <td>{{ shortDateTimeFormat(assignment.dueDate) }}</td>
-            <td>
-              <i
-                class="course-dot"
-                :style="{
-                  backgroundColor: termCourse(assignment.courseCRN).color
-                }"
-              />
-              {{ termCourse(assignment.courseCRN).title }}
-            </td>
-            <td>{{ assignment.title }}</td>
-            <td :title="assignment.completedAt">
-              <i
-                class="fas"
-                :class="[assignment.completed ? 'fa-check' : 'fa-times']"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            <i
+              class="course-dot"
+              :style="{backgroundColor: course.color}"
+            />
+            {{ course.title }}
+          </li>
+        </ol>
+      </b-tab-item>
+      <b-tab-item>
+        <template slot="header">
+          <b-icon icon="clipboard-check" />
+          <span>Assignments <b-tag rounded>{{ termAssignments.length }}</b-tag></span>
+        </template>
+        <div class="assignments">
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>Due Date</th>
+                <th>Course</th>
+                <th>Title</th>
+                <th>Completed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(assignment, index) in termAssignments"
+                :key="index"
+              >
+                <td>{{ shortDateTimeFormat(assignment.dueDate) }}</td>
+                <td>
+                  <i
+                    class="course-dot"
+                    :style="{
+                      backgroundColor: termCourse(assignment.courseCRN).color
+                    }"
+                  />
+                  {{ termCourse(assignment.courseCRN).title }}
+                </td>
+                <td>{{ assignment.title }}</td>
+                <td :title="assignment.completedAt">
+                  <i
+                    class="fas"
+                    :class="[assignment.completed ? 'fa-check' : 'fa-times']"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-tab-item>
 
-    <hr>
+      <b-tab-item>
+        <template slot="header">
+          <b-icon icon="exclamation-triangle" />
+          <span>Exams <b-tag rounded>{{ termExams.length }}</b-tag></span>
+        </template>
+        <div class="exams">
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Course</th>
+                <th>Title</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(exam, index) in termExams"
+                :key="index"
+              >
+                <td>{{ shortDateTimeFormat(exam.date) }}</td>
+                <td>
+                  <i
+                    class="course-dot"
+                    :style="{
+                      backgroundColor: termCourse(exam.courseCRN).color
+                    }"
+                  />
+                  {{ termCourse(exam.courseCRN).title }}
+                </td>
+                <td>{{ exam.title }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-tab-item>
+    </b-tabs>
 
-    <h2
-      id="archive-exams"
-      class="subtitle"
-    >
-      Exams
-    </h2>
-
-    <div class="exams">
-      <table class="table is-fullwidth">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Course</th>
-            <th>Title</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(exam, index) in termExams"
-            :key="index"
-          >
-            <td>{{ shortDateTimeFormat(term.date) }}</td>
-            <td>
-              <i
-                class="course-dot"
-                :style="{
-                  backgroundColor: termCourse(exam.courseCRN).color
-                }"
-              />
-              {{ termCourse(exam.courseCRN).title }}
-            </td>
-            <td>{{ exam.title }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <hr>
-
-    <h2 class="subtitle">
-      Todos
-    </h2>
     <hr>
 
     <router-link
@@ -197,13 +187,13 @@ export default {
   name: 'ArchiveTerm',
   data () {
     return {
+      activeTab: 0,
       loading: true,
       courseModalOpen: false,
       selectedCourse: null,
       termCourses: [],
       termAssignments: [],
-      termExams: [],
-      termTodos: []
+      termExams: []
     }
   },
   computed: {
@@ -259,7 +249,6 @@ export default {
         this.loading = false
         return
       }
-
       this.termCourses = response.data.courses
 
       // Get assignments
@@ -270,7 +259,6 @@ export default {
         this.loading = false
         return
       }
-
       this.termAssignments = response.data.assignments
 
       // Get exams
@@ -281,7 +269,6 @@ export default {
         this.loading = false
         return
       }
-
       this.termExams = response.data.exams
 
       this.loading = false

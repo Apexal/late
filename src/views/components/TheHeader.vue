@@ -109,7 +109,7 @@
                 <span class="icon">
                   <i class="fas fa-graduation-cap" />
                 </span>
-                <span>Coursework</span>
+                <span>Your Coursework</span>
               </router-link>
 
               <div class="navbar-dropdown">
@@ -162,9 +162,9 @@
               class="navbar-item has-dropdown is-hoverable"
             >
               <router-link
-                :to="{name: 'schedule-planner'}"
+                :to="{name: 'courses'}"
                 class="navbar-link coursework-link"
-                title="Manage your assignments and exams!"
+                title="Backwork, study groups, and more!"
               >
                 <span class="icon">
                   <i class="fas fa-users" />
@@ -176,9 +176,9 @@
                 <a
                   class="navbar-item has-text-grey"
                   href="#"
-                  title="(coming soon) See what your peers have though about courses!"
+                  title="(coming soon) Find student resources for your major(s)!"
                 >
-                  Course Opinions
+                  Majors
                 </a>
                 <a
                   class="navbar-item has-text-grey"
@@ -203,7 +203,7 @@
                 </a>
               </div>
             </div> -->
-            <div
+            <!-- <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
@@ -227,7 +227,7 @@
                   Plan Course Schedule
                 </router-link>
               </div>
-            </div>
+            </div> -->
           </template>
           <template v-else>
             <router-link
@@ -541,39 +541,6 @@ export default {
   margin-left: 5px;
 }
 
-@keyframes bellshake {
-  0% {
-    transform: rotate(0);
-  }
-  10% {
-    transform: rotate(5deg);
-  }
-  25% {
-    transform: rotate(-5deg);
-  }
-  40% {
-    transform: rotate(4deg);
-  }
-  55% {
-    transform: rotate(-4deg);
-  }
-  70% {
-    transform: rotate(2deg);
-  }
-  80% {
-    transform: rotate(-2deg);
-  }
-  87% {
-    transform: rotate(1deg);
-  }
-  95% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(0);
-  }
-}
-
 @keyframes navAnimOpen {
   0% {display: none;opacity: 0;margin-top: -5px}
   1% {display: block;opacity: 0;}
@@ -620,10 +587,6 @@ export default {
 #top-navbar {
   //Pushes the left and right navbar menus slightly off the edges of the screen.
   padding: 0;
-
-  .navbar-item {
-
-  }
 
   .announcement-icon {
     padding: 0.5rem 0.2rem;

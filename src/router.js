@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import * as Sentry from '@sentry/browser'
 
 import api from './api'
 
@@ -155,14 +156,14 @@ const router = new Router({
           path: 'join',
           name: 'study-groups-join',
           component: () => import('@/views/studygroups/StudyGroupsJoin')
+        },
+        {
+          path: ':groupID',
+          name: 'study-groups-overview',
+          component: () =>
+            import('@/views/studygroups/StudyGroupsOverview')
         }
       ]
-    },
-    {
-      path: ':groupID',
-      name: 'study-groups-overview',
-      component: () =>
-        import('@/views/studygroups/StudyGroupsOverview')
     },
     {
       path: '/checklist',
@@ -188,6 +189,28 @@ const router = new Router({
         requiresAuth: false
       },
       component: () => import('@/views/TheAboutPage.vue')
+    },
+    {
+      path: '/courses',
+      name: 'courses',
+      component: () => import('@/views/courses/CoursesHome.vue'),
+      meta: {
+        title: 'Courses',
+        cantViewOnBreak: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/courses/:courseSummary',
+      name: 'course',
+      component: () => import('@/views/courses/CoursePage.vue'),
+      children: [
+        {
+          path: ':termCode',
+          name: 'course-term',
+          component: () => import('@/views/courses/CourseTermPage.vue')
+        }
+      ]
     },
     {
       path: '/changelog',
@@ -554,6 +577,10 @@ router.beforeEach(async (to, from, next) => {
     window.location = '/auth/login' + (to.fullPath ? '?redirectTo=' + to.fullPath : '')
     return
   }
+
+  Sentry.configureScope(function (scope) {
+    scope.setUser(store.state.auth.user ? { email: store.state.auth.user.rcs_id + '@rpi.edu' } : null)
+  })
 
   if (
     to.matched.some(record => record.meta.requiresAdmin) &&

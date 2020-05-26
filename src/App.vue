@@ -8,7 +8,12 @@
         :is-full-page="true"
         :active="!loaded"
         :can-cancel="false"
-      />
+      >
+        <img
+          src="@/assets/img/sisman.png"
+          class="loading-sis-man"
+        >
+      </b-loading>
 
       <div :class="appClass">
         <span
@@ -80,7 +85,6 @@
 </template>
 
 <script>
-import * as Sentry from '@sentry/browser'
 import moment from 'moment'
 
 import TheHeader from '@/views/components/TheHeader'
@@ -233,7 +237,15 @@ export default {
       })
     }
 
-    const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
+    if (this.loggedIn) {
+      this.$ga.set({ userId: this.user.id })
+      // Check if time to reupdate from SIS
+      if (!this.user.lastSISUpdate || moment().diff(this.user.lastSISUpdate, 'days') > 40) {
+        this.$router.push({ name: 'account', query: { importFromSIS: true } })
+      }
+    }
+
+    // const easterEgg = new Konami('http://www.shirleyannjackson.biz/')
 
     console.log(this.sistext)
     console.log('%cSIS MAN says never share your SIS password!', 'font-weight: bold; text-align: center; font-size: 30px')
@@ -469,4 +481,41 @@ footer.footer {
   cursor: pointer;
 }
 
+@keyframes bellshake {
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(5deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  40% {
+    transform: rotate(4deg);
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+  80% {
+    transform: rotate(-2deg);
+  }
+  87% {
+    transform: rotate(1deg);
+  }
+  95% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+.loading-sis-man {
+  animation: bellshake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation-iteration-count: infinite;
+}
 </style>

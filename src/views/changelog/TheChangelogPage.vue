@@ -71,7 +71,6 @@ export default {
     async getReleases () {
       const response = await this.$http.get('/integrations/changelog')
       this.releases = response.data.releases
-      console.log(response.data.releases)
     }
   }
 }

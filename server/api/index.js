@@ -3,23 +3,17 @@ const Router = require('koa-router')
 const router = new Router()
 const logger = require('../modules/logger')
 
-const notOnBreak = (ctx, next) => {
-  if (ctx.state.onBreak && !ctx.request.url.includes('/term/')) {
-    logger.error(`${ctx.state.user.identifier} tried to access '${ctx.request.url}' on break`)
-    return ctx.badRequest('You are on break!')
-  }
-  return next()
-}
+const { notOnBreakMiddleware } = require('./utils')
 
 router.use('/students', require('./students'))
-router.use('/courses', notOnBreak, require('./courses'))
-router.use('/assignments', notOnBreak, require('./assignments'))
-router.use('/exams', notOnBreak, require('./exams'))
+router.use('/courses', notOnBreakMiddleware, require('./courses'))
+router.use('/assignments', notOnBreakMiddleware, require('./assignments'))
+router.use('/exams', notOnBreakMiddleware, require('./exams'))
 router.use('/account', require('./account')) // removed notOnBreak temporarily
 router.use('/integrations', require('./integrations'))
 router.use('/terms', require('./terms'))
-router.use('/unavailabilities', notOnBreak, require('./unavailabilities'))
-router.use('/blocks', notOnBreak, require('./blocks'))
+router.use('/unavailabilities', notOnBreakMiddleware, require('./unavailabilities'))
+router.use('/blocks', notOnBreakMiddleware, require('./blocks'))
 router.use('/todos', require('./todos'))
 router.use('/announcements', require('./announcements'))
 router.use('/checklists', require('./checklists'))

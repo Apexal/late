@@ -39,7 +39,18 @@
           title="View the project that inspired LATE"
         >OnTrac</a>
       </p>
-      <p class="column is-5">
+      <p class="column">
+        <span class="icon">
+          <i class="fab fa-discord" />
+        </span>
+        Get suppport on the
+        <a
+          href="https://discord.gg/2GUKcHg"
+          target="_blank"
+          title="Join Discord server"
+        >Discord</a>
+      </p>
+      <p class="column">
         <span class="icon">
           <i class="fas fa-shield-alt" />
         </span>
@@ -130,9 +141,9 @@ export default {
   //Desktop styles
   @media screen and (min-width: 769px) {
     padding: 2rem 6rem 2rem !important;
-    //Bottom padding to set the h1 ("An RCOS Project!") apart from the columns below
+
     h2 {
-      padding-bottom: 1rem;
+      margin-bottom: 1rem;
     }
   }
 
@@ -143,7 +154,7 @@ export default {
 
   //Centers and clumps footer elements together
   .columns {
-    max-width: 1000px;
+    // max-width: 1200px;
     margin: 0 auto;
   }
 

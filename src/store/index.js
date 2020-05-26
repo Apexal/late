@@ -52,7 +52,6 @@ export default new Vuex.Store({
   getters: {
     todaysAgenda: (state, getters) => {
       if (!getters.userSetup.course_schedule) return []
-
       const events = getters.todayPeriods
         .filter(p => {
           if (p.type !== 'TES') return true

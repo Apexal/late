@@ -1,6 +1,8 @@
 const Router = require('koa-router')
 const router = new Router()
 
+const { adminMiddleware } = require('../utils')
+
 const Ctrl = require('./assignments.controller')
 
 router.get('/', Ctrl.getAssignments)
@@ -51,6 +53,6 @@ router.delete(
   Ctrl.deleteComment
 )
 
-router.post('/generate', Ctrl.generateAssignments)
+router.post('/generate', adminMiddleware, Ctrl.generateAssignments)
 
 module.exports = router.routes()

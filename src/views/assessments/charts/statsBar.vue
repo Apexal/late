@@ -19,7 +19,8 @@ export default {
   data () {
     return {
       newCategory: '',
-      categories: []
+      categories: [],
+      loading: true
     }
   },
   computed: {

@@ -53,6 +53,37 @@ async function getUser (ctx) {
 }
 
 /**
+ * Edit the current user's document
+ *
+ * Request body should be object of updates, e.g.:
+ * { graduationYear: 2022, name: { first: 'Foo', last: 'bar' } }
+ *
+ * @param {Koa context} ctx
+ * @returns The updated current student
+ */
+async function editUser (ctx) {
+  delete ctx.request.body._id // Cannot change a user's _id!
+  delete ctx.request.body.rcs_id // Cannot change a user's rcs_id!
+
+  ctx.state.user.set(ctx.request.body)
+
+  try {
+    await ctx.state.user.save()
+  } catch (e) {
+    logger.error(
+      `Failed to update self ${ctx.state.user.identifier}: ${e}`
+    )
+    return ctx.badRequest('There was an error updating your account.')
+  }
+
+  logger.info(`${ctx.state.user.identifier} updated their account.`)
+
+  ctx.ok({
+    updatedUser: ctx.state.user
+  })
+}
+
+/**
  * For administrators, get all student documents.
  *
  * @param {Koa context} ctx
@@ -61,10 +92,6 @@ async function getStudents (ctx) {
   const page = parseInt(ctx.query.page) || 1
   const itemsPerPage = parseInt(ctx.query.itemsPerPage) || 25
   const search = ctx.query.search || ''
-
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
 
   const searchObject = formSearchObject(search)
   if (search) {
@@ -191,9 +218,6 @@ function checkForYearFilters (str) {
  * @param {*} ctx
  */
 async function getStudent (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const studentID = ctx.params.studentID
 
   const student = await Student.findById(studentID)
@@ -224,9 +248,6 @@ async function getStudent (ctx) {
  * @returns The updated student
  */
 async function editStudent (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const studentID = ctx.params.studentID
 
   const student = await Student.findById(studentID)
@@ -261,9 +282,6 @@ async function editStudent (ctx) {
 }
 
 async function deleteStudent (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const studentID = ctx.params.studentID
 
   if (ctx.state.user.rcs_id !== 'matraf') {
@@ -302,9 +320,6 @@ async function getStudentCounts (ctx) {
 }
 
 async function getLog (ctx) {
-  if (!ctx.state.user.admin) {
-    return ctx.forbidden('You are not an administrator!')
-  }
   const log = (await fs.readFile(
     path.join(__dirname, '..', '..', '..', 'logs', 'combined.log'),
     'utf8'
@@ -317,6 +332,7 @@ async function getLog (ctx) {
 module.exports = {
   loginAs,
   getUser,
+  editUser,
   getStudent,
   editStudent,
   deleteStudent,
