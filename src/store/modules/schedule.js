@@ -1,5 +1,6 @@
 import axios from '@/api'
 import moment from 'moment'
+import Vue from 'vue'
 
 const removedCourse = {
   section_id: '00',
@@ -171,7 +172,8 @@ const mutations = {
     state.courses = courses
   },
   ADD_COURSE: (state, course) => {
-    state.courses = [...state.courses, course]
+    Vue.set(state, 'courses', [...state.courses, course])
+    // state.courses = [...state.courses, course]
   },
   UPDATE_COURSE: (state, updatedCourse) => {
     Object.assign(
