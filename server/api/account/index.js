@@ -32,6 +32,7 @@ async function userMiddleware (ctx, next) {
   ctx.state.data = {}
 
   await next()
+
   await ctx.state.user.save()
 
   ctx.ok({

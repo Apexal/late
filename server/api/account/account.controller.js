@@ -220,9 +220,7 @@ module.exports.setTerms = async function (ctx) {
     logger.error(
       `Could not set terms for ${ctx.state.user.identifier}: Invalid term(s) given (${termCodes.filter(code => !ctx.session.terms.find(term => term.code === code))})`
     )
-    return ctx.badRequest(
-      'Couldn\'t set terms. You gave an invalid term code!'
-    )
+    ctx.throw(400, 'Couldn\'t set terms. You gave an invalid term code!')
   }
 
   ctx.state.user.setup.terms = true
@@ -379,7 +377,7 @@ module.exports.addCourseByCRN = async function (ctx) {
 module.exports.setTimePreference = async function (ctx) {
   const { earliest, latest } = ctx.request.body
 
-  if (!earliest || !latest) return ctx.badRequest('You must give an earliest AND latest time.')
+  if (!earliest || !latest) return ctx.throw(400, 'You must give an earliest AND latest time.')
 
   ctx.state.user.earliestWorkTime = earliest
   ctx.state.user.latestWorkTime = latest
