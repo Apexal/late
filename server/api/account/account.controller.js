@@ -218,7 +218,7 @@ module.exports.setTerms = async function (ctx) {
     termCodes.some(code => !ctx.session.terms.find(term => term.code === code))
   ) {
     logger.error(
-      `Could not set terms for ${ctx.state.user.identifier}: Invalid term(s) given.`
+      `Could not set terms for ${ctx.state.user.identifier}: Invalid term(s) given (${termCodes.filter(code => !ctx.session.terms.find(term => term.code === code))})`
     )
     return ctx.badRequest(
       'Couldn\'t set terms. You gave an invalid term code!'
