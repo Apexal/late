@@ -218,7 +218,7 @@ module.exports.setTerms = async function (ctx) {
     termCodes.some(code => !ctx.session.terms.find(term => term.code === code))
   ) {
     logger.error(
-      `Could not set terms for ${ctx.state.user.identifier}: Invalid term given.`
+      `Could not set terms for ${ctx.state.user.identifier}: Invalid term(s) given.`
     )
     return ctx.badRequest(
       'Couldn\'t set terms. You gave an invalid term code!'
@@ -343,7 +343,11 @@ module.exports.addCourseByCRN = async function (ctx) {
     ...courseData
   })
 
-  await scrapePeriodTypesFromCRNs(ctx.session.currentTerm.code, [course])
+  try {
+    await scrapePeriodTypesFromCRNs(ctx.session.currentTerm.code, [course])
+  } catch (e) {
+    logger.info(`Could not get course types for crn ${crn}: ${e}`)
+  }
 
   try {
     await course.save()
