@@ -39,7 +39,7 @@ export default {
         return
       }
 
-      this.$store.commit('SET_USER', response.data.updatedStudent)
+      this.$store.commit('SET_USER', response.data.updatedUser)
 
       this.$buefy.toast.open({
         type: 'is-success',
