@@ -38,8 +38,6 @@ module.exports.getTerms = async function (ctx) {
  * - createdTerm: the created Term document
  **/
 module.exports.createTerm = async function (ctx) {
-  if (!ctx.state.user.admin) return ctx.forbidden('Only admins can add terms.')
-
   const { name, code, startDate, classesEndDate, endDate } = ctx.request.body
 
   const createdTerm = new Term({
@@ -90,8 +88,6 @@ module.exports.createTerm = async function (ctx) {
  * - updatedTerm: the updated Term document
  */
 module.exports.updateTerm = async function (ctx) {
-  if (!ctx.state.user.admin) return ctx.forbidden('Only admins can update terms.')
-
   const { termID } = ctx.params
 
   // Attempt to find the term by its ID

@@ -3,6 +3,12 @@
     <h1 class="title">
       LATE's Terms of Service
     </h1>
+
+    <div class="content">
+      <p class="has-text-grey">
+        In progress...
+      </p>
+    </div>
   </section>
 </template>
 

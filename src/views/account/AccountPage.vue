@@ -101,8 +101,12 @@ export default {
         const index = this.setups.indexOf(this.setups.find(s => { return s.link === this.$route.path }))
         return Math.max(index, 0)
       },
-      set (index) {
-        this.$router.push(this.setups[index].link)
+      async set (index) {
+        try {
+          await this.$router.push(this.setups[index].link)
+        } catch (e) {
+          // Already on this route
+        }
       }
     }
   }

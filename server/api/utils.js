@@ -17,3 +17,25 @@ module.exports.findOneOr404 = async function (ctx, Query) {
   }
   return document
 }
+
+/**
+ * Middleware to prevent access to a route if the current user is on break.
+ */
+module.exports.notOnBreakMiddleware = async function notOnBreak (ctx, next) {
+  if (ctx.state.onBreak && !ctx.request.url.includes('/term/')) {
+    logger.error(`${ctx.state.user.identifier} tried to access '${ctx.request.url}' on break`)
+    return ctx.badRequest('You are on break!')
+  }
+  return next()
+}
+
+/**
+ * Middleware to prevent access to a route if the current user is not an admin.
+ */
+module.exports.adminMiddleware = async function adminMiddleware (ctx, next) {
+  if (!ctx.state.user.admin) {
+    logger.error(`${ctx.state.user.identifier} tried to access admin route '${ctx.request.url}'`)
+    return ctx.unauthorized('You are not an admin!')
+  }
+  return next()
+}

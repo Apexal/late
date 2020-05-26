@@ -156,14 +156,14 @@ const router = new Router({
           path: 'join',
           name: 'study-groups-join',
           component: () => import('@/views/studygroups/StudyGroupsJoin')
+        },
+        {
+          path: ':groupID',
+          name: 'study-groups-overview',
+          component: () =>
+            import('@/views/studygroups/StudyGroupsOverview')
         }
       ]
-    },
-    {
-      path: ':groupID',
-      name: 'study-groups-overview',
-      component: () =>
-        import('@/views/studygroups/StudyGroupsOverview')
     },
     {
       path: '/checklist',
@@ -189,6 +189,28 @@ const router = new Router({
         requiresAuth: false
       },
       component: () => import('@/views/TheAboutPage.vue')
+    },
+    {
+      path: '/courses',
+      name: 'courses',
+      component: () => import('@/views/courses/CoursesHome.vue'),
+      meta: {
+        title: 'Courses',
+        cantViewOnBreak: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/courses/:courseSummary',
+      name: 'course',
+      component: () => import('@/views/courses/CoursePage.vue'),
+      children: [
+        {
+          path: ':termCode',
+          name: 'course-term',
+          component: () => import('@/views/courses/CourseTermPage.vue')
+        }
+      ]
     },
     {
       path: '/changelog',

@@ -15,6 +15,49 @@ async function getCourses (ctx) {
   return ctx.ok({ courses })
 }
 
+async function getUniqueCourses (ctx) {
+  const { termCode, courseSummary } = ctx.request.query
+
+  const $match = {}
+  if (termCode) $match.termCode = termCode
+  if (courseSummary) $match.summary = courseSummary
+
+  const data = await Course.aggregate(
+    [
+      {
+        $match
+      }, {
+        $unwind: {
+          path: '$crn',
+          preserveNullAndEmptyArrays: true
+        }
+      }, {
+        $unwind: {
+          path: '$links',
+          preserveNullAndEmptyArrays: true
+        }
+      }, {
+        $group: {
+          _id: '$summary',
+          title: { $first: '$originalTitle' },
+          links: {
+            $addToSet: '$links'
+          },
+          sections: {
+            $addToSet: '$crn'
+          },
+          terms: {
+            $addToSet: '$termCode'
+          },
+          count: { $sum: 1 }
+        }
+      }
+    ]
+  )
+
+  return ctx.ok(data)
+}
+
 async function getTermCourses (ctx) {
   const termCode = ctx.params.termCode
   const courses = await Course.find({
@@ -92,6 +135,7 @@ async function removeCourse (ctx) {
 
 module.exports = {
   getCourses,
+  getUniqueCourses,
   getTermCourses,
   updateCourse,
   removeCourse

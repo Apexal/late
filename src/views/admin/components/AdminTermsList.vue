@@ -73,19 +73,19 @@
           </td>
           <td>
             <b-datepicker
-              v-model="newTerm.start"
+              v-model="newTerm.startDate"
               placeholder="Start date"
             />
           </td>
           <td>
             <b-datepicker
-              v-model="newTerm.classesEnd"
+              v-model="newTerm.classesEndDate"
               placeholder="End of classes"
             />
           </td>
           <td>
             <b-datepicker
-              v-model="newTerm.end"
+              v-model="newTerm.endDate"
               placeholder="End date"
             />
           </td>
@@ -114,9 +114,9 @@ export default {
       newTerm: {
         code: '',
         name: '',
-        start: null,
-        classesEnd: null,
-        end: null
+        startDate: null,
+        classesEndDate: null,
+        endDate: null
       }
     }
   },
@@ -148,9 +148,9 @@ export default {
       this.newTerm = {
         code: '',
         name: '',
-        start: null,
-        classesEnd: null,
-        end: null
+        startDate: null,
+        classesEndDate: null,
+        endDate: null
       }
     }
   }
