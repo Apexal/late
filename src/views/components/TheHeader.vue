@@ -176,9 +176,9 @@
                 <a
                   class="navbar-item has-text-grey"
                   href="#"
-                  title="(coming soon) See what your peers have though about courses!"
+                  title="(coming soon) Find student resources for your major(s)!"
                 >
-                  Course Opinions
+                  Majors
                 </a>
                 <a
                   class="navbar-item has-text-grey"
@@ -203,7 +203,7 @@
                 </a>
               </div>
             </div> -->
-            <div
+            <!-- <div
               v-if="!onBreak"
               class="navbar-item has-dropdown is-hoverable"
             >
@@ -227,7 +227,7 @@
                   Plan Course Schedule
                 </router-link>
               </div>
-            </div>
+            </div> -->
           </template>
           <template v-else>
             <router-link
