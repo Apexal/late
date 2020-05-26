@@ -350,6 +350,8 @@ module.exports.addCourseByCRN = async function (ctx) {
   }
 
   try {
+    ctx.state.user.setup.course_schedule.push(ctx.session.currentTerm.code)
+    await ctx.state.user.save()
     await course.save()
   } catch (e) {
     logger.error(`Failed to save new course ${crn} for ${ctx.state.user.identifier}: ${e}`)
