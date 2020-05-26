@@ -78,9 +78,9 @@ app.use(async (ctx, next) => {
   ctx.state.isAPI = ctx.request.url.startsWith('/api')
 
   // If first request, get terms
-  if (ctx.state.env === 'development' || !ctx.session.terms) {
-    ctx.session.terms = await Term.find().exec()
-  }
+  // if (ctx.state.env === 'development' || !ctx.session.terms) {
+  ctx.session.terms = await Term.find().exec()
+  // }
 
   // Calculate current term on each request in case it changes (very unlikely but possible)
   if (
