@@ -17,7 +17,7 @@ const schema = new Schema(
     summary: { type: String, required: true }, // e.g. BIOL 1010
     crn: { type: String, required: true }, // e.g. 73691
     color: { type: String, required: true }, // e.g. #68d0a2
-    credits: { type: Number, min: 0, max: 10 }, // e.g. 4
+    credits: { type: Number, min: 0, max: 100 }, // e.g. 4
     links: { type: Array, default: [] },
     periods: [
       {
