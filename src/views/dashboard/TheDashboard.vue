@@ -32,15 +32,19 @@
     <DashboardNextTermPreview v-if="onBreak && nextTerm" />
     <template v-else-if="onBreak">
       <h2 class="subtitle">
-        You are on break and do not have another semester at RPI! If this is incorrect, please choose update your school terms.
+        You are on break! LATE will be available when you get back to school.
       </h2>
       <hr>
-      <router-link
-        :to="{name: 'account'}"
-        class="button is-dark"
+      <button
+        class="button is-primary"
+        :class="{'is-loading': loading}"
+        @click="addTerm('202005')"
       >
-        Account Setup
-      </router-link>
+        <span class="icon">
+          <i class="fas fa-plus" />
+        </span>
+        <span>I'm doing Arch!</span>
+      </button>
     </template>
     <router-view v-else />
   </section>
@@ -52,12 +56,44 @@ import DashboardNextTermPreview from './components/DashboardNextTermPreview'
 export default {
   name: 'TheDashboard',
   components: { DashboardNextTermPreview },
+  data () {
+    return {
+      loading: false
+    }
+  },
   computed: {
     tab () {
       return this.$route.hash.substring(1) || 'calendar'
     },
     nextTerm () {
       return this.$store.getters.nextTerm
+    }
+  },
+  methods: {
+    async addTerm (termCode) {
+      this.loading = true
+
+      let request
+      try {
+        request = await this.$http.post('/account/terms', {
+          termCodes: [...this.user.terms, '202005']
+        })
+      } catch (e) {
+        this.loading = false
+        return this.showError(e.response.data.message)
+      }
+
+      await this.$store.dispatch('SET_USER', request.data.updatedUser)
+      if (this.$store.getters.onBreak) {
+        this.$store.commit('SET_UPCOMING_ASSESSMENTS', [])
+        this.$store.commit('SET_COURSES', [])
+      } else {
+        await this.$store.dispatch('GET_COURSES')
+        await this.$store.dispatch('GET_UNAVAILABILITIES')
+        await this.$store.dispatch('AUTO_GET_UPCOMING_WORK')
+      }
+
+      this.loading = false
     }
   }
 }
