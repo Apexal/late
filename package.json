@@ -65,6 +65,7 @@
     "register-service-worker": "^1.7.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
+    "rrule": "^2.6.4",
     "sharp": "^0.25.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
