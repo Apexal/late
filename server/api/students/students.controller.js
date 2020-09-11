@@ -14,7 +14,7 @@ const Block = require('../blocks/blocks.model')
  * @param {Koa session} ctx
  **/
 async function loginAs (ctx) {
-  if (ctx.state.env !== 'development') {
+  if (process.env.NODE_ENV !== 'development') {
     return ctx.forbidden('Nice try, hackerman.')
   }
 

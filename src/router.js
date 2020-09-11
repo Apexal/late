@@ -103,85 +103,6 @@ const router = new Router({
       }
     },
     {
-      path: '/rpi-dorm-photos',
-      component: () => import('@/views/dormphotos/DormPhotos'),
-      children: [
-        {
-          path: '',
-          name: 'dorm-photos',
-          component: () => import('@/views/dormphotos/DormPhotosHome'),
-          meta: {
-            title: 'RPI Dorm Photos'
-          }
-        },
-        {
-          path: 'confirm',
-          name: 'dorm-photos-confirm',
-          component: () => import('@/views/dormphotos/DormPhotosConfirm'),
-          meta: {
-            title: 'Confirm Dorm Photos',
-            requiresAuth: true,
-            requiresAdmin: true
-          }
-        },
-        {
-          path: ':dormKey',
-          name: 'dorm-photos-view',
-          component: () => import('@/views/dormphotos/DormPhotosView')
-        }
-      ]
-    },
-    {
-      path: '/study-groups',
-      component: () => import('@/views/studygroups/StudyGroups'),
-      children: [
-        {
-          path: '',
-          redirect: 'home'
-        },
-        {
-          path: 'home',
-          name: 'study-groups-home',
-          component: () => import('@/views/studygroups/StudyGroupsHome'),
-          meta: {
-            title: 'Study Groups'
-          }
-        },
-        {
-          path: 'create',
-          name: 'study-groups-create',
-          component: () => import('@/views/studygroups/StudyGroupsCreate')
-        },
-        {
-          path: 'join',
-          name: 'study-groups-join',
-          component: () => import('@/views/studygroups/StudyGroupsJoin')
-        },
-        {
-          path: ':groupID',
-          name: 'study-groups-overview',
-          component: () =>
-            import('@/views/studygroups/StudyGroupsOverview')
-        }
-      ]
-    },
-    {
-      path: '/checklist',
-      name: 'checklist',
-      component: () => import('@/views/checklists/MoveInChecklist.vue'),
-      meta: {
-        title: 'Move In Checklist'
-      }
-    },
-    {
-      path: '/checklist/:checklistID',
-      name: 'view-checklist',
-      component: () => import('@/views/checklists/ViewChecklist.vue'),
-      meta: {
-        title: 'View Checklist'
-      }
-    },
-    {
       path: '/about',
       name: 'about',
       meta: {
@@ -326,14 +247,6 @@ const router = new Router({
       }
     },
     {
-      path: '/scheduling/plan',
-      name: 'schedule-planner',
-      component: () => import('@/views/scheduling/SchedulePlannerPage.vue'),
-      meta: {
-        title: 'Schedule Planner'
-      }
-    },
-    {
       path: '/account',
       component: () => import('@/views/account/AccountPage.vue'),
       meta: {
@@ -472,14 +385,6 @@ const router = new Router({
           component: () => import('@/views/admin/components/AdminFun.vue')
         },
         {
-          path: 'poll',
-          name: 'admin-poll',
-          meta: {
-            title: 'Admin Poll'
-          },
-          component: () => import('@/views/admin/components/AdminPoll.vue')
-        },
-        {
           path: 'development',
           name: 'admin-development',
           meta: {
@@ -559,7 +464,6 @@ router.beforeEach(async (to, from, next) => {
     }
     calls.concat([
       store.dispatch('GET_TODOS'),
-      store.dispatch('GET_POLLS', 'false'),
       store.dispatch('GET_ANNOUNCEMENTS'),
       store.dispatch('AUTO_UPDATE_NOW')
     ])

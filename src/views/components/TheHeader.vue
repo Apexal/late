@@ -279,20 +279,6 @@
               </router-link>
               <router-link
                 class="navbar-item"
-                :to="{name: 'checklist'}"
-                title="Create a checklist for dorm items for movein"
-              >
-                Dorm Checklist
-              </router-link>
-              <router-link
-                class="navbar-item"
-                :to="{name: 'dorm-photos'}"
-                title="Create a checklist for dorm items for movein"
-              >
-                RPI Dorm Photos
-              </router-link>
-              <router-link
-                class="navbar-item"
                 :to="{name: 'study-groups-home'}"
                 title="Create and join study groups with your peers"
               >

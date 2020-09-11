@@ -365,7 +365,7 @@ export default {
   margin-left: -10vw;
   height: 500px;
   z-index: -1;
-  background: url(/splash-bg.png);
+  background: url(/img/splash-bg.png);
   background-size: cover;
   background-repeat:no-repeat;
   height: 100%;

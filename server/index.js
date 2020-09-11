@@ -71,20 +71,17 @@ const Term = require('./api/terms/terms.model')
 app.use(async (ctx, next) => {
   /* Every route passes through this middleware first! */
 
-  // Make the environment available to routes so we know if we are in development or production
-  ctx.state.env = process.env.NODE_ENV
-
   // Is this route for the API?
   ctx.state.isAPI = ctx.request.url.startsWith('/api')
 
   // If first request, get terms
-  // if (ctx.state.env === 'development' || !ctx.session.terms) {
+  // if (process.env.NODE_ENV === 'development' || !ctx.session.terms) {
   ctx.session.terms = await Term.find().exec()
   // }
 
   // Calculate current term on each request in case it changes (very unlikely but possible)
   if (
-    ctx.state.env === 'development' ||
+    process.env.NODE_ENV === 'development' ||
     !ctx.session.currentTerm ||
     (ctx.session.currentTerm && moment().isAfter(ctx.session.currentTerm.endDate))
   ) {
@@ -128,7 +125,7 @@ app.use(async (ctx, next) => {
     // Only send details of error if in development mode (to protect confidential info)
     ctx.send(
       ctx.status,
-      ctx.state.env === 'development'
+      process.env.NODE_ENV === 'development'
         ? e.message
         : 'An error occurred. Please try again later.'
     )
