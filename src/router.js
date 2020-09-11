@@ -409,14 +409,6 @@ const router = new Router({
           component: () => import('@/views/admin/components/AdminFun.vue')
         },
         {
-          path: 'poll',
-          name: 'admin-poll',
-          meta: {
-            title: 'Admin Poll'
-          },
-          component: () => import('@/views/admin/components/AdminPoll.vue')
-        },
-        {
           path: 'development',
           name: 'admin-development',
           meta: {
@@ -496,7 +488,6 @@ router.beforeEach(async (to, from, next) => {
     }
     calls.concat([
       store.dispatch('GET_TODOS'),
-      store.dispatch('GET_POLLS', 'false'),
       store.dispatch('GET_ANNOUNCEMENTS'),
       store.dispatch('AUTO_UPDATE_NOW')
     ])

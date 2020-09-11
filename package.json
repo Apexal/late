@@ -76,7 +76,6 @@
     "vue-analytics": "^5.22.1",
     "vue-knob-control": "^1.6.0",
     "vue-markdown": "^2.2.4",
-    "vue-poll": "^0.1.8",
     "vue-progressbar": "^0.7.5",
     "vue-router": "^3.1.6",
     "vue-socket.io-extended": "^4.0.2",
