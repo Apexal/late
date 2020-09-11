@@ -13,8 +13,7 @@ const exceptions = [
   '/students/loginas',
   '/students/counts',
   '/quicklinks',
-  '/sms',
-  '/checklists'
+  '/sms'
 ]
 
 module.exports = router => {

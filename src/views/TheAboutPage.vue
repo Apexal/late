@@ -27,10 +27,6 @@
               It can also connect to your Google Calendar to add your course schedule and sync the times you are scheduled to work/study
               on LATE with your Google Calendar!
             </p>
-            <p>
-              It also provides a handful of useful student tools for users and non-users such as grade calculators, a work/study timer,
-              a move-in checklist creator, and more.
-            </p>
           </div>
         </div>
         <div class="tile is-child box">

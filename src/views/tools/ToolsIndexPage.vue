@@ -16,20 +16,6 @@
         <div class="tile is-parent is-vertical">
           <router-link
             tag="article"
-            :to="{name: 'checklist'}"
-            class="tile is-child tools-button notification"
-          >
-            <i class="fas fa-tasks" />
-            <p class="title">
-              Checklist
-            </p>
-            <p class="subtitle">
-              Create a checklist for all the items you need to move into your
-              dorm
-            </p>
-          </router-link>
-          <router-link
-            tag="article"
             :to="{name: 'study-tools'}"
             class="tile is-child tools-button notification"
           >

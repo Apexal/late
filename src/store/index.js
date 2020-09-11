@@ -14,7 +14,6 @@ import todos from './modules/todos'
 import unavailability from './modules/unavailability'
 import announcements from './modules/announcements'
 import studytoolstimer from './modules/studytoolstimer'
-import checklists from './modules/checklists'
 import SISMan from './modules/sisman'
 import tours from './modules/tours'
 import socketio from './modules/socketio'
@@ -36,7 +35,6 @@ export default new Vuex.Store({
     unavailability,
     announcements,
     studytoolstimer,
-    checklists,
     SISMan,
     tours,
     socketio
