@@ -103,35 +103,6 @@ const router = new Router({
       }
     },
     {
-      path: '/rpi-dorm-photos',
-      component: () => import('@/views/dormphotos/DormPhotos'),
-      children: [
-        {
-          path: '',
-          name: 'dorm-photos',
-          component: () => import('@/views/dormphotos/DormPhotosHome'),
-          meta: {
-            title: 'RPI Dorm Photos'
-          }
-        },
-        {
-          path: 'confirm',
-          name: 'dorm-photos-confirm',
-          component: () => import('@/views/dormphotos/DormPhotosConfirm'),
-          meta: {
-            title: 'Confirm Dorm Photos',
-            requiresAuth: true,
-            requiresAdmin: true
-          }
-        },
-        {
-          path: ':dormKey',
-          name: 'dorm-photos-view',
-          component: () => import('@/views/dormphotos/DormPhotosView')
-        }
-      ]
-    },
-    {
       path: '/study-groups',
       component: () => import('@/views/studygroups/StudyGroups'),
       children: [
