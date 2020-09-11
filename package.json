@@ -1,6 +1,6 @@
 {
   "name": "late",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "private": true,
   "description": "A web app for RPI students to manage their course load.",
   "author": "Frank Matranga <thefrankmatranga@gmail.com>",
@@ -128,7 +128,7 @@
     "url": "https://github.com/Apexal/late/issues"
   },
   "engines": {
-    "node": ">=13.0.0"
+    "node": ">=14.0.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
