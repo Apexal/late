@@ -1,3 +1,9 @@
+# No Longer Maintained
+Just use Google Calendar... Jokes aside, I was blessed to mentor and work with all the amazing RCOS contributors to LATE over the years. I appreciate you all and I hope you had a good time and learned a thing or two in the end, as I certainly did. In retrospect, working with everyone was easily the most fulfilling part of this project. However, now that I'm closing out my academic career soon I can't justify further investing time and effort into anything related to coursework! I'll keep this repository as a testament to all the work that was done and hopefully inspire future student developers :)
+
+
+---
+
 ![License](https://img.shields.io/github/license/Apexal/late.svg)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Apexal/late.svg?color=red)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/Apexal/late.svg)
